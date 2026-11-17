@@ -128,10 +128,13 @@ def _retest(db: Session, borrower: Borrower, pairs: set[tuple[uuid.UUID, date]],
     for facility_id, period_end in sorted(pairs, key=lambda pair: (pair[1], str(pair[0]))):
         run_covenant_tests(db, borrower=borrower, facility=db.get(Facility, facility_id), period_end=period_end,
                            cycle=_cycle(db, borrower.id, period_end), raise_items=raise_items)
+        names = {t.covenant_id: t.covenant_name for t in db.execute(select(CovenantTest).where(
+            CovenantTest.facility_id == facility_id, CovenantTest.period_end == period_end,
+            CovenantTest.superseded.is_(False))).scalars()}
         for covenant_id, outcome in sorted(_current_tests(db, facility_id, period_end).items()):
             entry = {"facility_id": str(facility_id), "period_end": period_end.isoformat(),
-                     "covenant_id": covenant_id, "before": before[(facility_id, period_end)].get(covenant_id),
-                     "after": outcome}
+                     "covenant_id": covenant_id, "covenant_name": names.get(covenant_id, covenant_id),
+                     "before": before[(facility_id, period_end)].get(covenant_id), "after": outcome}
             results.append(entry)
             if entry["before"] != entry["after"]:
                 changed.append(entry)
