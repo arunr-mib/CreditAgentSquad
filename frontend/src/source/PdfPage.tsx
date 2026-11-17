@@ -108,7 +108,7 @@ export function PdfPage({ documentId, page, width, title, marks = [], maxHeight,
       role={maxHeight ? 'group' : undefined}
       aria-label={maxHeight ? `${title}, page ${page}` : undefined}
       data-pdf-page={current?.status ?? 'loading'}
-      className={cx('relative rounded-sm border border-hairline-strong bg-white', maxHeight && 'overflow-y-auto', className)}
+      className={cx('relative rounded-sm border border-hairline-strong bg-white', Boolean(maxHeight) && 'overflow-y-auto', className)}
       style={{ width: width + 2, maxHeight }}
     >
       <div className="relative" style={{ width, height }}>

@@ -27,6 +27,7 @@ import {
 } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { useAsOf } from '@/shell/AsOf';
+import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import { FactFigure, SourcedFigure } from '@/source/figures';
 import { ErrorNotice, Notice, Textarea } from '../parts';
@@ -233,7 +234,8 @@ function Recommendation({ recommendation, item, headingLevel }: { recommendation
   const missing = Array.isArray(recommendation.missing_evidence) ? recommendation.missing_evidence.filter((entry): entry is string => typeof entry === 'string') : [];
   return (
     <>
-      <AgentNote agent={agent} headline={text(recommendation.headline) ?? HEADLINE[kind] ?? humanize(kind)} body={body} state="draft" runId={runId ? runId.slice(0, 8) : undefined} collapseAfter={2}>
+      <AgentNote agent={agent} headline={text(recommendation.headline) ?? HEADLINE[kind] ?? humanize(kind)} state="draft" runId={runId ? runId.slice(0, 8) : undefined}>
+        {body ? <AgentBody text={body} /> : null}
         {missing.length > 0 ? (
           <div className="mt-2">
             <p className="eyebrow">Evidence the agent says is missing</p>
@@ -320,7 +322,7 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
                     setProblem(null);
                     decide.reset();
                   }}
-                  className="mt-[3px] size-3.5 shrink-0 accent-(--cobalt)"
+                  className="mt-[3px] size-3.5 shrink-0 accent-cobalt"
                 />
                 <span className="min-w-0">
                   <span className="block text-body font-medium text-ink">{decisionLabel(option)}</span>

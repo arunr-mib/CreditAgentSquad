@@ -36,7 +36,9 @@ export function Select({ label, hideLabel, value, onValueChange, options, classN
             size === 'md' ? 'h-8' : 'h-7',
           )}
         >
-          <RadixSelect.Value />
+          <span className="whitespace-nowrap">
+            <RadixSelect.Value />
+          </span>
           <RadixSelect.Icon className="text-ink-500">
             <ChevronDown size={14} aria-hidden />
           </RadixSelect.Icon>

@@ -162,11 +162,20 @@ def render_markdown(results: dict[str, Any]) -> str:
     if results.get("mutations"):
         out.append("## Mutation checks")
         out.append("")
-        out.append("Each check tampers with the stand-in's answer and records who caught it.")
+        out.append("Each check tampers with the stand-in's answer in one way a model could be wrong, runs the live "
+                   "cycle, and records who caught it. `product`: refused into a work item or a guardrail note. "
+                   "`grader`: accepted by the product and named only by the grader, which is a finding about the "
+                   "product. `SLIPPED`: caught by neither.")
         out.append("")
-        out.append("| Mutation | Borrower | Caught by | Evidence |")
-        out.append("|---|---|---|---|")
+        counts: dict[str, int] = {}
         for m in results["mutations"]:
-            out.append(f"| {_cell(m['name'])} | `{m['borrower']}` | {m['caught_by']} | {_cell(m['evidence'])[:260]} |")
+            counts[m["caught_by"]] = counts.get(m["caught_by"], 0) + 1
+        out.append("Totals: " + ", ".join(f"{name} {count}" for name, count in sorted(counts.items())) + ".")
+        out.append("")
+        out.append("| Mutation | What the reader got wrong | Borrower | Caught by | Evidence |")
+        out.append("|---|---|---|---|---|")
+        for m in results["mutations"]:
+            out.append(f"| {_cell(m['name'])} | {_cell(m['what'])} | `{m['borrower']}` | {m['caught_by']} "
+                       f"| {_cell(m['evidence'])[:300]} |")
         out.append("")
     return "\n".join(out) + "\n"

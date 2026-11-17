@@ -85,7 +85,6 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
           </Link>
         ),
       },
-      { id: 'industry', header: 'Industry', sortValue: (row) => row.industry, cell: (row) => <span className="text-ink-700">{humanize(row.industry)}</span> },
       {
         id: 'rating',
         header: 'Rating',
@@ -236,7 +235,7 @@ export function Portfolio() {
       <Load query={portfolio} what="The portfolio summary" rows={3}>
         {(data) => (
           <section aria-label="Portfolio figures" className="grid grid-cols-5 divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong">
-            <Stat label="Total commitment" note={`${data.loans} loans to ${data.borrowers} borrowers`}>
+            <Stat label="Total commitment, USD millions" note={`${data.loans} loans to ${data.borrowers} borrowers`}>
               <SourcedFigure
                 value={data.exposure.commitment}
                 unit="usd"
@@ -245,18 +244,38 @@ export function Portfolio() {
                 source={totalSource('Total commitment', data.exposure.commitment, data, 'The sum of every loan’s commitment in the loan records.')}
                 scale={1000000}
                 dp={1}
+                unitMark={false}
                 weight="semibold"
               />
-              <span className="ml-1 text-body font-regular text-ink-500">m</span>
             </Stat>
             <Stat
-              label="Outstanding"
+              label="Outstanding, USD millions"
               note={
                 compare(data.exposure.commitment, '0') > 0 ? (
-                  <>
-                    Lines {formatFigure(data.exposure.revolver_outstanding, 'usd', { scale: 1000000, dp: 1 }).text}m · term loans{' '}
-                    {formatFigure(data.exposure.term_loan_outstanding, 'usd', { scale: 1000000, dp: 1 }).text}m
-                  </>
+                  <span className="inline-flex flex-wrap items-baseline gap-x-1.5">
+                    Lines
+                    <SourcedFigure
+                      value={data.exposure.revolver_outstanding}
+                      unit="usd"
+                      kind="calculated"
+                      label="Lines of credit outstanding across the book"
+                      source={totalSource('Lines of credit outstanding', data.exposure.revolver_outstanding, data, 'The sum of each borrower’s latest line of credit balance from the system of record.')}
+                      scale={1000000}
+                      dp={1}
+                      unitMark={false}
+                    />
+                    · term loans
+                    <SourcedFigure
+                      value={data.exposure.term_loan_outstanding}
+                      unit="usd"
+                      kind="calculated"
+                      label="Term loans outstanding across the book"
+                      source={totalSource('Term loans outstanding', data.exposure.term_loan_outstanding, data, 'The sum of each borrower’s latest term loan balance from the system of record.')}
+                      scale={1000000}
+                      dp={1}
+                      unitMark={false}
+                    />
+                  </span>
                 ) : undefined
               }
             >
@@ -268,9 +287,9 @@ export function Portfolio() {
                 source={totalSource('Total outstanding', data.exposure.outstanding, data, 'The sum of each borrower’s latest line of credit and term loan balances from the system of record.')}
                 scale={1000000}
                 dp={1}
+                unitMark={false}
                 weight="semibold"
               />
-              <span className="ml-1 text-body font-regular text-ink-500">m</span>
             </Stat>
             <Stat label="Covenant tests" note={data.period_end ? `${quarterLabel(data.period_end)}, calculated by code` : undefined}>
               <span className="tnum">{data.covenants.tests}</span>

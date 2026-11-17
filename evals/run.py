@@ -21,6 +21,7 @@ import tempfile
 import time
 import uuid
 from collections.abc import Callable
+from contextlib import contextmanager
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -48,11 +49,12 @@ COST_WARNING = (
 # A scripted, sensible decision for each kind of exception, so a cycle can continue past the
 # point where a person is needed. Items that are not listed are left open on purpose: the cycle
 # is waiting for the borrower (a new document) or for a person to key or confirm figures, and no
-# scripted decision can supply those.
+# scripted decision can supply those. `terms.unapproved_amendment` is left open too: the sensible
+# decision (`terms_update_requested`) starts the Terms Agent, which the stand-in does not answer,
+# so that cycle rests on the item its scenario expects.
 DECISIONS: dict[str, tuple[str, str]] = {
     "covenant.reported_mismatch": ("escalate_to_committee", "The calculated covenant fails while the certificate claims compliance; escalated for a decision on the bank's response."),
     "covenant.breach": ("escalate_to_committee", "The covenant fails its test for the period; escalated for a decision on the bank's response."),
-    "terms.unapproved_amendment": ("terms_update_requested", "A signed amendment is on file and is not in the approved terms; credit administration asked to prepare a new terms version for approval."),
     "bb.over_advance": ("paydown_required", "Borrowings exceed the recalculated borrowing base; paydown required under the agreement."),
     "bb.certificate_mismatch": ("bank_figures_stand", "The certificate differs from the recalculation; the bank's figures stand and the borrower is told."),
     "signal.high": ("acknowledged", "High-severity signal acknowledged; carried into the review."),
@@ -364,8 +366,9 @@ def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tam
 
 
 def check_may_start(mode: str, codes: list[str], *, allow_unsigned: bool = False, confirm_billable: bool = False,
-                    recordings: Path = RECORDINGS_DIR, out=sys.stderr) -> None:
+                    recordings: Path = RECORDINGS_DIR, out=None) -> None:
     """Refuse a run that should not start. Raises RunRefused with the reason."""
+    out = out or sys.stderr
     if mode not in MODES:
         raise RunRefused(f"unknown mode {mode!r}; choose one of {', '.join(MODES)}")
     if mode == "recorded" and not any(Path(recordings).rglob("*.json")):
@@ -385,6 +388,25 @@ def check_may_start(mode: str, codes: list[str], *, allow_unsigned: bool = False
                   "results are graded against unsigned expectations.", file=out)
         if not confirm_billable:
             raise RunRefused(f"a {mode} run is billable; pass --confirm-billable once the owner has agreed")
+
+
+@contextmanager
+def scratch_file_store():
+    """Documents loaded during a run are kept in a temporary directory, never in the repository."""
+    from app.core.config import get_settings
+
+    previous = os.environ.get("FILE_STORE_DIR")
+    with tempfile.TemporaryDirectory(prefix="evals-files-") as files:
+        os.environ["FILE_STORE_DIR"] = files
+        get_settings.cache_clear()
+        try:
+            yield files
+        finally:
+            if previous is None:
+                os.environ.pop("FILE_STORE_DIR", None)
+            else:
+                os.environ["FILE_STORE_DIR"] = previous
+            get_settings.cache_clear()
 
 
 def run_pass(engine: Engine, book: Book, client, *, decide: bool, progress: Callable[[str], None] | None = None,
@@ -407,8 +429,6 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
               tamper=None, progress: Callable[[str], None] | None = None, keep_recordings: bool = False,
               ) -> dict[str, Any]:
     """Run and grade the suite. Returns the results document (see evals/README.md)."""
-    from app.core.config import get_settings
-
     from evals.grade import build_results
 
     book = load_book(book_root, only)
@@ -418,11 +438,8 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
     own_engine = engine is None
     engine = engine or create_engine(database_url or default_database_url())
     started = time.monotonic()
-    previous_store = os.environ.get("FILE_STORE_DIR")
-    with tempfile.TemporaryDirectory(prefix="evals-files-") as files:
-        os.environ["FILE_STORE_DIR"] = files
-        get_settings.cache_clear()
-        try:
+    try:
+        with scratch_file_store():
             ensure_schema(engine)
             client = make_client(mode, book, recordings=recordings, tamper=tamper)
             all_passes = []
@@ -430,14 +447,9 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
                 if progress:
                     progress(f"pass {n} of {passes} ({mode})")
                 all_passes.append(run_pass(engine, book, client, decide=decide, progress=progress))
-        finally:
-            if previous_store is None:
-                os.environ.pop("FILE_STORE_DIR", None)
-            else:
-                os.environ["FILE_STORE_DIR"] = previous_store
-            get_settings.cache_clear()
-            if own_engine:
-                engine.dispose()
+    finally:
+        if own_engine:
+            engine.dispose()
     results = build_results(book, all_passes, mode=mode, decide=decide,
                             seconds=round(time.monotonic() - started, 1),
                             standin_disagreements=getattr(client, "disagreements", []),
@@ -491,6 +503,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", default=str(RESULTS_DIR), help="where latest.json and latest.md are written")
     parser.add_argument("--no-eval-run", action="store_true", help="do not write an EvalRun row")
     parser.add_argument("--save-recordings", metavar="FILE", help="also write the full per-borrower recordings")
+    parser.add_argument("--mutations", action="store_true",
+                        help="stand-in only: also run the mutation checks (about one minute) and add them to the scorecard")
     args = parser.parse_args(argv)
 
     url = args.database_url or default_database_url()
@@ -506,6 +520,18 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if args.save_recordings:
         Path(args.save_recordings).write_text(json.dumps(results["recordings"], indent=1))
+    if args.mutations and args.mode == "standin":
+        from evals.mutations import MUTATIONS, run_mutations
+
+        print("mutation checks (the stand-in's answers are tampered with on purpose)", flush=True)
+        with scratch_file_store():
+            results["mutations"] = run_mutations(
+                engine, load_book(args.book, sorted({m.borrower for m in MUTATIONS})),
+                progress=lambda line: print(line, flush=True))
+        slipped = [m["name"] for m in results["mutations"] if m["caught_by"] in ("SLIPPED", "NOT APPLIED")]
+        if slipped:
+            results["gate"]["passed"] = False
+            results["gate"]["reasons"].append("mutation(s) caught by neither the product nor the grader: " + ", ".join(slipped))
     json_path, md_path = write_results(results, Path(args.out))
     if not args.no_eval_run:
         results["meta"]["eval_run_id"] = save_eval_run(engine, results)

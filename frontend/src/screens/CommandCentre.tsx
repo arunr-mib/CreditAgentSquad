@@ -14,13 +14,13 @@ import { WorkItemPanel } from './work/WorkItemPanel';
 /** A headline count with its breakdown. Counts of records are not facts: each links to the list it counts. */
 function SummaryBlock({ label, value, note, children }: { label: string; value: number; note: string; children: ReactNode }) {
   return (
-    <div className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-6 px-5 py-3.5 first:pl-0 last:pr-0">
-      <div>
-        <h2 className="eyebrow whitespace-nowrap">{label}</h2>
-        <p className="tnum mt-0.5 text-display font-semibold tracking-[-0.02em] text-ink">{value}</p>
-        <p className="text-caption whitespace-nowrap text-ink-500">{note}</p>
-      </div>
-      <ul className="grid grid-cols-1 pt-[18px] text-body">{children}</ul>
+    <div className="min-w-0 px-5 py-3.5 first:pl-0 last:pr-0">
+      <h2 className="eyebrow whitespace-nowrap">{label}</h2>
+      <p className="mt-0.5 flex items-baseline gap-2">
+        <span className="tnum text-display font-semibold tracking-[-0.02em] text-ink">{value}</span>
+        <span className="text-caption whitespace-nowrap text-ink-500">{note}</span>
+      </p>
+      <ul className="mt-1.5 grid grid-cols-1 border-t border-hairline pt-1.5 text-body">{children}</ul>
     </div>
   );
 }
@@ -85,6 +85,7 @@ export function CommandCentre() {
         id: 'summary',
         header: 'Question',
         wrap: true,
+        width: '46%',
         sortValue: (item) => shortTitle(item),
         cell: (item) =>
           isBreachItem(item.item_type) ? (
@@ -95,7 +96,6 @@ export function CommandCentre() {
             <span className="text-ink-700">{shortTitle(item)}</span>
           ),
       },
-      { id: 'stage', header: 'Stage', sortValue: (item) => STAGE_ORDER.indexOf(item.stage ?? 'closed'), cell: (item) => <span className="text-ink-700">{stageLabel(item.stage)}</span> },
       {
         id: 'agent',
         header: 'Agent',
@@ -163,7 +163,7 @@ export function CommandCentre() {
       {header}
 
       {summary ? (
-        <section aria-label="Portfolio summary" className="grid grid-cols-2 gap-y-px divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong xl:grid-cols-4">
+        <section aria-label="Portfolio summary" className="grid grid-cols-4 divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong">
           <SummaryBlock label="Cycles in progress" value={summary.cycles.open} note={`of ${summary.borrowers} borrowers`}>
             {[...summary.cycles.by_stage]
               .sort((a, b) => STAGE_ORDER.indexOf(a.stage) - STAGE_ORDER.indexOf(b.stage))
