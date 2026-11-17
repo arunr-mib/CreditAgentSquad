@@ -3,6 +3,7 @@ rewritten by an owner must be detectable from a head kept outside the database."
 import pytest
 from app import cli
 from app.core import ledger
+from app.domain.credit import Borrower
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 
@@ -72,7 +73,8 @@ def test_the_runtime_role_appends_and_reads_but_cannot_disable_the_guard_or_chan
 def test_the_runtime_role_can_still_do_the_applications_other_work(db, runtime_role):
     db.execute(text(f"SET LOCAL ROLE {runtime_role}"))
     try:
-        db.execute(text("INSERT INTO borrowers (id, code, name) VALUES (gen_random_uuid(), 'R-1', 'Runtime Borrower')"))
+        db.add(Borrower(code="R-1", name="Runtime Borrower"))
+        db.flush()
         db.execute(text("UPDATE borrowers SET name = 'Renamed' WHERE code = 'R-1'"))
         assert db.execute(text("SELECT name FROM borrowers WHERE code = 'R-1'")).scalar() == "Renamed"
         with pytest.raises(DBAPIError, match="must be owner"):
