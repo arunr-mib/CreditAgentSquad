@@ -47,7 +47,8 @@ export function Select({ label, hideLabel, value, onValueChange, options, classN
           <RadixSelect.Content
             position="popper"
             sideOffset={4}
-            className="anim-pop z-50 min-w-(--radix-select-trigger-width) rounded-md border border-hairline-strong bg-surface p-1 shadow-raised"
+            collisionPadding={8}
+            className="anim-pop z-50 max-h-[min(var(--radix-select-content-available-height),420px)] min-w-(--radix-select-trigger-width) rounded-md border border-hairline-strong bg-surface p-1 shadow-raised"
           >
             <RadixSelect.Viewport>
               {options.map((option) => (

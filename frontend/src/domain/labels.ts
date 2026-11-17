@@ -148,6 +148,7 @@ const DECISION: Record<string, { label: string; hint: string; reason?: boolean }
   acknowledged: { label: 'Acknowledge', hint: 'Seen; no change to the risk rating.' },
   rating_review_requested: { label: 'Request a rating review', hint: 'The risk rating should be looked at again.', reason: true },
   add_to_watch_list: { label: 'Add to the watch list', hint: 'Monitor this borrower more closely.', reason: true },
+  values_confirmed: { label: 'Values confirmed', hint: 'Every held figure is accepted as read, and the spread is finished from them.' },
   values_corrected: { label: 'Values corrected', hint: 'The figures have been corrected with a citation.', reason: true },
   accept_as_reported: { label: 'Accept as reported', hint: 'Use the statement as it stands. Say why.', reason: true },
   request_new_document: { label: 'Request a new document', hint: 'Ask the borrower for a complete, readable copy.' },
