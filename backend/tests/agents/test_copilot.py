@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 import uuid
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pytest
@@ -23,6 +23,7 @@ from app.domain.documents import Document, DocumentPage
 from app.domain.facts import CalcRun, Fact
 from app.domain.monitoring import CovenantTest, WorkItem
 from app.domain.org import User
+from app.domain.reviews import Commentary, ReviewSheet
 from app.guardrails.numbers import extract_figures
 from app.seed_book import seed_book
 from sqlalchemy import select
@@ -257,6 +258,37 @@ def test_signals_work_items_calendar_terms_and_borrowing_base(db):
     assert review["outcome"] == "over_advance" and review["over_advanced"] is True
     assert review["availability"]["value"] == "-81949" and review["availability"]["fact_id"] in briar.facts
     assert briar.ok("review_sheet")["review_sheet"] is None
+
+
+def test_review_sheet_marks_draft_commentary_as_a_draft(db):
+    kestrel = borrower(db, "kestrel-bay-packaging")
+    test = db.execute(select(CovenantTest).where(
+        CovenantTest.borrower_id == kestrel.id, CovenantTest.covenant_id == "total_leverage",
+        CovenantTest.period_end == Q3)).scalar_one()
+    officer = db.execute(select(User).order_by(User.email)).scalars().first()
+    sheet = ReviewSheet(borrower_id=kestrel.id, cycle_id=test.cycle_id, status="draft",
+                        content={"period_end": "2026-09-30", "covenants": [{"value": str(test.value_fact_id)}],
+                                 "fact_labels": {str(test.value_fact_id): "Total Leverage Ratio, calculated"}})
+    db.add(sheet)
+    db.flush()
+    db.add(Commentary(borrower_id=kestrel.id, review_sheet_id=sheet.id, section="covenants", version=1,
+                      body=f"Leverage is {{{{fact:{test.value_fact_id}}}}}, above {{{{fact:{test.reported_fact_id}}}}}.",
+                      fact_ids=[str(test.value_fact_id), str(test.reported_fact_id)], author_type="agent",
+                      author_id="review@1", status="draft"))
+    db.add(Commentary(borrower_id=kestrel.id, review_sheet_id=sheet.id, section="summary", version=1,
+                      body="Performance weakened in the quarter.", fact_ids=[], author_type="user",
+                      author_id=str(officer.id), status="approved", approved_by=officer.id,
+                      approved_at=datetime.now(UTC)))
+    db.flush()
+    desk = Desk(db, borrower_id=kestrel.id)
+    out = desk.ok("review_sheet")["review_sheet"]
+    assert out["period_end"] == "2026-09-30" and out["status"] == "draft" and "fact_labels" not in out["content"]
+    assert out["facts"] == [{"what": "Total Leverage Ratio, calculated", "fact_id": str(test.value_fact_id),
+                             "value": "2.6", "unit": "ratio"}]
+    by_section = {c["section"]: c for c in out["commentary"]}
+    assert by_section["covenants"]["standing"] == "DRAFT, not approved, written by the Review Agent"
+    assert by_section["summary"]["standing"] == f"approved by {officer.name}"
+    assert {str(test.value_fact_id), str(test.reported_fact_id)} == set(desk.facts)
 
 
 def test_document_tools_read_the_open_borrower_only(db):
@@ -624,7 +656,7 @@ def test_scope_history_and_follow_ups(db):
     assert response.status == "answered" and response.answer == "It is still 2.60x."
     assert response.borrower == {"id": str(kestrel.id), "name": kestrel.name}
     assert response.follow_ups == ["What moved EBITDA?", "Who decides the breach?", "What does the certificate say?"]
-    assert [n["check"] for n in response.guardrail_notes] == ["follow_up_has_figure"]
+    assert [n["check"] for n in response.guardrail_notes] == ["follow_up_has_figure"] * 2
     # a figure the earlier turn showed is not in scope for this one
     carried, _ = ask(db, [final("As I said, leverage was 2.60x.")], question="Repeat that.", borrower_id=kestrel.id,
                      history=history)
