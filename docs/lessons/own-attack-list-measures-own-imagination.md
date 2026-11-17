@@ -1,0 +1,6 @@
+A list of attacks written by the builders shows what the builders thought of, so "all our tampering checks are caught" is not evidence that the product is safe.
+
+- **What happened (2026-11-17):** the evaluation had 29 tampering checks, all refused by the product, and the handoff said so. A reviewer with fresh context, told only to break the four success measures, found six more in a few hours; four of them turned a real covenant breach into a pass with nothing raised. One existing check ("a mis-mapped debt row can no longer hide a breach") passed only because it used the full row label; the reviewer used a fragment.
+- **Why:** each check was written right after its fix, by the person who wrote the fix, using the input the fix was designed for.
+- **Rule:** after any change to a guardrail, have someone who did not write it attack it, and vary every existing attack (fragment, synonym, neighbouring row, other page) before calling it closed. Report tampering results as "these N mistakes are refused", never as "mistakes are refused".
+- **How to apply:** the brief for the reviewer names the promise to break, not the checks to run. Add every hole found to `evals/mutations.py` so it stays closed.

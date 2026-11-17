@@ -6,6 +6,8 @@ Found here 2026-11-17 by the Terms and Covenant agents: a known ratio that ends 
 
 Confirmed here 2026-11-17 (found by the Terms Agent's tests): "shall not exceed 2.00 to 1.00." ends with a full stop and "2.00 to 1.00, tested quarterly" continues with a comma; both must drop the "to 1.00". Only a comma or full stop followed by a digit means the number continues ("to 1,900,000", "to 1.5").
 
-Rule: every normalisation or stripping rule ships with a test for what it must refuse and a test for what it must still allow.
+Found here 2026-11-17 by the independent reviewer: a list of "things with digits that are not figures" hides amounts. "Item 4,500,000", "Schedule 2.75x", "EBITDA of 2050", "(12)", "x-3.25", "USD4,500,000", "approx.3.10" and any number in words all passed the narrative check, because each matched a not-a-figure pattern or sat where the figure pattern could not start. Fix: each not-a-figure pattern is narrow (a section number has no comma, unit or seven digits; a year needs a word of time before it); and agent text is checked the other way round as well: once dates, references and well-formed figures are set aside, any digit left is refused (`stray_digits`), as are quantities in words, text joined onto a fact reference, and a format that does not fit a fact's unit.
+
+Rule: every normalisation or stripping rule ships with a test for what it must refuse and a test for what it must still allow. For agent-written text, refuse what is not recognised; do not try to list what is dangerous.
 
 Applies to: `backend/app/guardrails/numbers.py`.
