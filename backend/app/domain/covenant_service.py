@@ -139,6 +139,14 @@ def run_covenant_tests(
             value_fact = add_fact(db, borrower_id=borrower.id, facility_id=facility.id, key=f"cov.{covenant.id}.value",
                                   period_end=period_end, months=0, value=result.value, unit=unit, kind="calculated",
                                   calc_run_id=calc.id, actor=actor)
+            # the threshold in force and the headroom are shown to people, so they are facts too
+            add_fact(db, borrower_id=borrower.id, facility_id=facility.id, key=f"cov.{covenant.id}.threshold",
+                     period_end=period_end, months=0, value=result.threshold, unit=unit, kind="calculated",
+                     calc_run_id=calc.id, actor=actor)
+            if result.headroom_pct is not None:
+                add_fact(db, borrower_id=borrower.id, facility_id=facility.id, key=f"cov.{covenant.id}.headroom_pct",
+                         period_end=period_end, months=0, value=result.headroom_pct, unit="pct", kind="calculated",
+                         calc_run_id=calc.id, actor=actor)
         entry, reported_fact = _reported(db, borrower.id, covenant.id, period_end)
         outcome = calc_cov.determine_outcome(result, entry, tolerance.get(unit, Decimal("0")))
 

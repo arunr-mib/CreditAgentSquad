@@ -92,7 +92,7 @@ def test_work_queue_and_decision_rules(client, db, world):
                      severity="low", title="Unfiled document", question="What is this document?",
                      allowed_decisions=["classified_by_hand"], required_permission="upload_document")
     crit = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="covenant_testing",
-                      item_type="review.commentary_approval", severity="critical", title="Approve commentary",
+                      item_type="test.second_person", severity="critical", title="Approve commentary",
                       question="Approve the commentary for release?", allowed_decisions=["approve", "reject"],
                       required_permission="approve_terms", requires_second_person=True, prepared_by_id=str(preparer.id))
     sign_in(client, "priya.raman")
