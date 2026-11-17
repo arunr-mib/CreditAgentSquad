@@ -95,7 +95,14 @@ _LABELS = _known_labels()
 def _mapping_doubt(key: str, row_label: str, confirmed: bool = False) -> str | None:
     """A reason to hold a cell: the row's label, as code read it from the page, is not a known
     name for the line it was filed under, and no person has confirmed it for this borrower."""
-    return mapping_doubt(row_label, key, _LABELS, confirmed=confirmed)
+    doubt = mapping_doubt(row_label, key, _LABELS, confirmed=confirmed)
+    if doubt:  # say it in the template's own line names, which is what a person sees on screen
+        for name in sorted(_LABELS, key=len, reverse=True):
+            base = name.removeprefix(template.STATED_PREFIX)
+            printed = f"the printed total '{template.LINE_BY_KEY[base].label}'" if name != base \
+                else f"'{template.LINE_BY_KEY[base].label}'"
+            doubt = re.sub(rf"(?<![\w.]){re.escape(name)}(?![\w.])", printed, doubt)
+    return doubt
 
 
 def _allowed_key(key: str) -> bool:

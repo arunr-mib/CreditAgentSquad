@@ -206,7 +206,8 @@ def test_swapped_debt_rows_are_held_even_when_the_reader_reports_label_fragments
     debt["printed_label"], other["printed_label"] = "net of current portion", "liabilities"
     result, _ = spread(db, setup, answer)
     assert result.status == "needs_person" and items(db) == [("spread.value_unverified", "medium")]
-    assert "reads as bs.long_term_debt" in held(result, "bs.other_noncurrent_liabilities")[0]["detail"]
+    assert "reads as 'Long-term debt, net of current portion', not 'Other liabilities'" in held(
+        result, "bs.other_noncurrent_liabilities")[0]["detail"]
     assert held(result, "bs.other_noncurrent_liabilities")[0]["row_label"] == "Long-term debt, net of current portion"
     assert current_fact(db, setup.id, "bs.long_term_debt", PERIOD, 0) is None
     assert current_fact(db, setup.id, "bs.total_liabilities", PERIOD, 0) is None  # no totals from held lines
