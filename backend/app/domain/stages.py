@@ -19,9 +19,10 @@ from app.domain.covenant_service import governing_terms, run_covenant_tests
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document
 from app.domain.facts_service import current_fact
-from app.domain.monitoring import BorrowingBaseReview, Cycle, CycleStage, WorkItem
+from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, CycleStage, WorkItem
 from app.domain.reviews import Action
 from app.domain.signals_service import run_signals
+from app.domain.terms import TermsVersion
 from app.domain.terms_service import raise_unapproved_amendments
 from app.domain.work_items import raise_item
 
@@ -101,12 +102,19 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
 @workflow.stage_handler("covenant_testing")
 def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     borrower = _borrower(db, cycle)
-    facilities = list(db.execute(select(Facility).where(Facility.borrower_id == borrower.id)).scalars())
+    facilities = list(db.execute(select(Facility).where(Facility.borrower_id == borrower.id)
+                                 .order_by(Facility.code)).scalars())
+    governed = {f.id: governing_terms(db, f, cycle.period_end) for f in facilities}
+    untestable = loans_without_terms(db, facilities, {fid for fid, (row, _) in governed.items() if row is not None})
     tested = 0
     for facility in facilities:
         store_line_availability(db, borrower=borrower, facility=facility, period_end=cycle.period_end)
-        version_row, version = governing_terms(db, facility, cycle.period_end)
+        version_row, version = governed[facility.id]
         if version_row is None:
+            if facility.id in untestable:
+                # nothing can be tested for this loan: a person is asked, once, and the stage waits
+                retire_untestable_marker(db, facility, cycle.period_end)
+                run_covenant_tests(db, borrower=borrower, facility=facility, period_end=cycle.period_end, cycle=cycle)
             continue
         raise_unapproved_amendments(db, facility, cycle_id=cycle.id)
         certificates = _documents(db, cycle, "compliance_certificate")
@@ -137,8 +145,34 @@ def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
         if item.recommendation is None:
             covenant_agent.investigate(db, item, _llm())
             investigated += 1
-    st.detail = {**st.detail, "tests": tested, "investigations": investigated}
+    st.detail = {**st.detail, "tests": tested, "investigations": investigated,
+                 "loans_without_approved_terms": len(untestable)}
     return "done"
+
+
+def loans_without_terms(db: Session, facilities: list[Facility], governed: set) -> set:
+    """Loans whose covenants cannot be tested because no approved terms cover the period.
+
+    One agreement's terms are boarded on one of a borrower's loans, so a loan with no terms
+    version of its own is covered when a sister loan's approved terms are in force. The gap is a
+    loan that has versions on file with none in force (proposed, rejected or expired), or a
+    borrower with no approved terms on any loan."""
+    with_versions = set(db.execute(select(TermsVersion.facility_id).where(
+        TermsVersion.facility_id.in_([f.id for f in facilities]))).scalars())
+    gap = {f.id for f in facilities if f.id not in governed and f.id in with_versions}
+    if not governed and not gap and facilities:
+        gap.add(facilities[0].id)
+    return gap
+
+
+def retire_untestable_marker(db: Session, facility: Facility, period_end: date) -> None:
+    """The "no terms in force" record for a loan and period is replaced, not piled up, each time
+    the question is looked at again."""
+    for old in db.execute(select(CovenantTest).where(
+            CovenantTest.facility_id == facility.id, CovenantTest.period_end == period_end,
+            CovenantTest.covenant_id == "*", CovenantTest.superseded.is_(False))).scalars():
+        old.superseded = True
+    db.flush()
 
 
 @workflow.stage_handler("borrowing_base")
@@ -169,8 +203,8 @@ def borrowing_base_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
             db, borrower_id=borrower.id, facility_id=facility.id, cycle_id=cycle.id, stage="borrowing_base",
             item_type="bb.certificate_mismatch", severity="medium",
             title=f"{borrower.name}: the borrowing base certificate could not be read in full",
-            question="Some collateral figures could not be verified on the page, so the base was not recalculated. Correct them, or request a new certificate?",
-            allowed_decisions=["listing_corrected", "borrower_to_resubmit"],
+            question="Some collateral figures could not be verified on the page, so the base was not recalculated. Read the certificate again, or ask the borrower for a new one?",
+            allowed_decisions=["retry", "borrower_to_resubmit"],
             evidence={"document_id": str(documents[-1].id), "items": problems}, agent_run_id=reading.run_id,
             actor=("agent", "borrowing_base_reader"), dedupe_key=f"bb.unread:{documents[-1].id}")
         return "done"
