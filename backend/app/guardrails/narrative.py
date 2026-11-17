@@ -148,7 +148,8 @@ def check_narrative(
                           subject=word))
     said = " ".join(echo.lower().split())
     in_words = [m for m in _CARDINAL_WORD.finditer(outside)
-                if not _ALLOWED_COUNT.match(outside[m.end():]) and not _LABEL_BEFORE.search(outside[:m.start()])]
+                if not _ALLOWED_COUNT.match(outside[m.end():]) and not _LABEL_BEFORE.search(outside[:m.start()])
+                and not re.search(r"\d\s?$", outside[:m.start()])]  # "51.3 million" is already reported as a figure
     in_words += list(_OTHER_QUANTITY_WORDS.finditer(outside))
     in_words += [m for m in _ROMAN.finditer(outside) if m.group(0) and not _CAPITALISED_BEFORE.search(outside[:m.start()])]
     for m in sorted(in_words, key=lambda found: found.start()):
