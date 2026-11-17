@@ -22,7 +22,7 @@ Last full run: `uv run pytest` gave 458 passed, 1 failed; the one failure was a 
 ## Not yet verified
 
 - **No live model call has been made.** Every agent test uses a scripted model. The strict output schema and the request shape in `backend/app/agents/llm.py` have not been exercised against the real API. This needs an Anthropic API key (ask the owner; use the secure credential form) and the owner's go-ahead for cost.
-- The frontend has not been built or tested by the orchestrator; only the worker's own screenshots were reviewed.
+- The frontend's typecheck, 114 unit tests and build were rerun by the orchestrator and pass. Its accessibility run and its final screenshots were reported by the worker and not rechecked; it shows fixture data and is not wired to the API.
 - CI has not been observed running on GitHub.
 
 ## Open decisions for the owner
