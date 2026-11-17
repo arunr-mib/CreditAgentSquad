@@ -120,11 +120,10 @@ def test_signals_match_the_generator(seeded):
     for code, truth in truths.items():
         b = borrower(db, code)
         current = _day(truth["current_period"])
-        # rule ids are compared; two severities (receivable and payable days) are an open
-        # decision recorded in docs/HANDOFF.md
-        ours = sorted({s.rule_id for s in db.execute(select(Signal).where(
+        ours = sorted({(s.rule_id, s.severity) for s in db.execute(select(Signal).where(
             Signal.borrower_id == b.id, Signal.period_end == current)).scalars()})
-        book_signals = sorted({s["rule"] for s in truth["expected"]["signals"] if _day(s["period_end"]) == current})
+        book_signals = sorted({(s["rule"], s["severity"]) for s in truth["expected"]["signals"]
+                               if _day(s["period_end"]) == current})
         if ours != book_signals:
             problems.append(f"{code}: ours {ours}; book {book_signals}")
     assert problems == []

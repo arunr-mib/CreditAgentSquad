@@ -333,6 +333,8 @@ class BorrowingBase(_Model):
     reserves: list[Reserve]
     frequency: Frequency
     citation: Citation | None = None
+    # further clauses that state the block's numbers (eligibility, reserves, the commitment)
+    citations: list[Citation] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _check(self) -> BorrowingBase:

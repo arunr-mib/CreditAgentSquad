@@ -82,11 +82,16 @@ def doc_type(name: str) -> str:
     return DOC_TYPES.get(name, name)
 
 
-def normalise_terms(terms: dict[str, Any]) -> dict[str, Any]:
-    """The book's document type names -> the product's."""
+def normalise_terms(terms: dict[str, Any], clause_index: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """The book's document type names -> the product's; the book's clause index supplies the
+    further clauses that state the borrowing base block's numbers."""
     out = json.loads(json.dumps(terms))
     for req in out.get("reporting_requirements", []):
         req["document_type"] = doc_type(req["document_type"])
+    if out.get("borrowing_base") is not None:
+        out["borrowing_base"]["citations"] = [
+            c for c in clause_index or []
+            if c["field"].startswith("borrowing_base") or c["field"] == "facilities.revolver.commitment"]
     return out
 
 
@@ -240,7 +245,7 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
     # terms, exactly as the book states them: an approved version governs, a proposed one does not
     for tv in truth["terms_versions"]:
         facility = facilities[tv["facility_id"]]
-        terms = normalise_terms(tv["terms"])
+        terms = normalise_terms(tv["terms"], tv.get("clause_index"))
         Terms.model_validate(terms)
         approved = tv["status"] in ("approved", "superseded")
         approver = ensure_user(db, tv["approved_by"], Role.CREDIT_OFFICER, "Credit Officer", password_hash) \

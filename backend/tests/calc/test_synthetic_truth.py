@@ -60,8 +60,6 @@ BB_LINES = {
 
 # Labelling difference the spec does not settle (reported to the owner; not arithmetic).
 KNOWN_SEVERITY_DIFFERENCES = {  # rule id -> (app.calc severity, truth severity)
-    "dso_increase": ("low", "medium"),
-    "dpo_increase": ("low", "medium"),
 }
 
 

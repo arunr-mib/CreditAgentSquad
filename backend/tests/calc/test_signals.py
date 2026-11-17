@@ -72,7 +72,7 @@ def test_rule_table_is_signals_1():
     ]
     assert {r.id: r.severity for r in RULES} == {
         "covenant_headroom_low": "medium", "covenant_headroom_falling": "low", "revenue_ttm_decline": "medium",
-        "ebitda_margin_decline": "medium", "dso_increase": "low", "dpo_increase": "low",
+        "ebitda_margin_decline": "medium", "dso_increase": "medium", "dpo_increase": "medium",
         "leverage_increase": "medium", "net_loss": "high", "cash_decline": "medium", "line_usage_high": "medium",
         "availability_low": "medium", "reporting_late": "high", "payment_past_due": "high",
         "auditor_opinion": "high",

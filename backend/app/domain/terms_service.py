@@ -91,9 +91,23 @@ def check_provenance(db: Session, borrower_id: uuid.UUID, terms: Terms) -> list[
         _check_citation(db, borrower_id, req.citation, f"reporting_requirements.{req.id}",
                         [Decimal(req.due_days_after_period_end)], [], warnings)
     if terms.borrowing_base is not None:
-        # advance rates, limits and the commitment sit in several clauses, while the terms carry one
-        # citation for the block, so only the quote itself is checked here (see docs/HANDOFF.md)
-        _check_citation(db, borrower_id, terms.borrowing_base.citation, "borrowing_base", [], [], warnings)
+        bb = terms.borrowing_base
+        clauses = [c for c in [bb.citation, *bb.citations] if c is not None]
+        if not clauses:
+            warnings.append("citation_missing:borrowing_base")
+        for clause in clauses:
+            _check_citation(db, borrower_id, clause, "borrowing_base", [], [], warnings)
+        # each number of the block must be stated in at least one of its cited clauses
+        numbers = {"commitment": bb.commitment}
+        for component in bb.components:
+            numbers[f"{component.collateral}.advance_rate"] = component.advance_rate
+            if component.sublimit is not None:
+                numbers[f"{component.collateral}.sublimit"] = component.sublimit
+        for reserve in bb.reserves:
+            numbers[f"reserves.{reserve.name}"] = reserve.amount
+        for name, number in numbers.items():
+            if not any(c.quote and number_in_quote(number, c.quote) for c in clauses):
+                warnings.append(f"number_not_in_quote:borrowing_base.{name}")
     return warnings
 
 
