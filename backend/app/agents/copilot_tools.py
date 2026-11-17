@@ -147,6 +147,7 @@ def _find_borrower(ctx: ToolContext, args: FindInput) -> dict:
         raise Refusal("this conversation is about another borrower, so a different one cannot be opened here; "
                       "use portfolio_query to compare borrowers, or ask in a portfolio conversation")
     ctx.state["borrower_id"] = chosen.id
+    ctx.state.setdefault("opened", []).append(chosen.id)
     borrowers_seen(ctx).add(chosen.id)
     return {"found": True, "matches": listed, "opened": {"name": chosen.name, "industry": chosen.industry},
             "message": "this borrower is now open; the other tools read it"}
