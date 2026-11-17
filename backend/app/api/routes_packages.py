@@ -136,7 +136,7 @@ class ScheduleIn(BaseModel):
     scope: str = "portfolio"  # borrower | portfolio
     borrower_id: uuid.UUID | None = None
     cadence: str = "quarterly"  # monthly | quarterly
-    days_after_period_end: int = 60
+    days_after_period_end: int = Field(default=60, ge=0, le=366)
     formats: list[str] = Field(default_factory=lambda: list(service.FORMATS))
     next_run: date | None = None
 

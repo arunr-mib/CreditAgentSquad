@@ -1,7 +1,8 @@
 """Request dependencies: the signed-in user and permission checks."""
 from datetime import UTC, datetime
+from typing import Annotated
 
-from fastapi import Cookie, Depends, HTTPException, status
+from fastapi import Cookie, Depends, HTTPException, Path, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -11,6 +12,8 @@ from app.core.security import token_digest
 from app.domain.org import User, UserSession
 
 SESSION_COOKIE = "squad_session"
+# A page number in a path: a document has at least one page and far fewer than this many.
+PageNumber = Annotated[int, Path(ge=1, le=100_000)]
 
 
 def current_user(
