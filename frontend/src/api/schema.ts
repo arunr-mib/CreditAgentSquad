@@ -672,3 +672,70 @@ export interface ActionRow {
   closing_note: string | null;
   overdue: boolean;
 }
+
+/* ── Repairing figures ────────────────────────────────────────────────── */
+
+/** One figure the spread held for a person (`evidence.cells` of a held-spread work item). */
+export interface HeldCell {
+  key: string;
+  page: number | null;
+  printed_figure: string | null;
+  /** The label the reader reported. */
+  printed_label: string | null;
+  /** The row's label as code read it from the page. */
+  row_label: string | null;
+  reason: string;
+  detail: string | null;
+  /** Absent when nothing could be stored: the figure has to be keyed. */
+  fact_id: string | null;
+}
+
+/** One failed footing check (`evidence.checks` of a spread that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+  code: string;
+  message: string;
+  /** For a check that compared two amounts: what the lines give, what it was compared with, and the gap. */
+  detail?: { actual?: string; expected?: string; difference?: string } | null;
+}
+
+/** What the spread needs to be finished later (`evidence.spread`). */
+export interface SpreadContext {
+  document_id: string | null;
+  period_end: string;
+  months: number;
+  scale?: number;
+}
+
+export interface CovenantRetest {
+  facility_id: string;
+  period_end: string;
+  covenant_id: string;
+  before: string | null;
+  after: string;
+}
+
+/** What code did to the results that used a figure after it was corrected, rejected or keyed. */
+export interface Recalculation {
+  retired: number;
+  totals: null | 'recalculated' | 'does_not_foot' | 'not_recalculated';
+  metrics: Array<{ key: string; period_end: string; fact_id: string | null }>;
+  covenants: CovenantRetest[];
+}
+
+/** A fact as the confirm, correct, reject and key routes return it. */
+export interface StoredFact {
+  id: string;
+  borrower_id: string;
+  key: string;
+  value: string;
+  unit: Unit;
+  kind: FactKind;
+  status: FactStatusApi;
+  period_end: string;
+  months: number;
+}
+
+export interface FactChange extends StoredFact {
+  recalculation: Recalculation;
+}

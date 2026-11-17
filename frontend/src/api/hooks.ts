@@ -3,7 +3,7 @@
  * Query keys start with the resource name so a decision can invalidate what it changes.
  */
 import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { get, post, type Query } from './client';
+import { get, post, upload, type Query } from './client';
 import type {
   ActionRow,
   AgentRunDetail,
@@ -20,6 +20,7 @@ import type {
   CycleRow,
   DocumentDetail,
   DocumentRow,
+  FactChange,
   FactsById,
   FactSource,
   LedgerEvent,
@@ -32,6 +33,7 @@ import type {
   ReviewSheetRow,
   SignalRow,
   Spread,
+  StoredFact,
   UserName,
   WorkItemDetail,
   WorkItemRow,
@@ -75,6 +77,21 @@ export const useTimeline = (id?: string, includeRoutine = false) =>
 
 export const useDocuments = (borrowerId?: string) =>
   useQuery({ queryKey: ['borrower', borrowerId, 'documents'], queryFn: () => get<DocumentRow[]>(`/borrowers/${borrowerId}/documents`), enabled: enabled(borrowerId) });
+/** Files a PDF for the borrower. The route takes the file and an optional title; nothing else. */
+export function useUploadDocument(borrowerId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ file, title }: { file: File; title: string }) => {
+      const form = new FormData();
+      form.append('file', file);
+      if (title.trim()) form.append('title', title.trim());
+      return upload<DocumentRow>(`/borrowers/${borrowerId}/documents`, form);
+    },
+    onSuccess: () => {
+      for (const key of ['borrower', 'ledger', 'portfolio']) void client.invalidateQueries({ queryKey: [key] });
+    },
+  });
+}
 export const useDocument = (id?: string | null) =>
   useQuery({ queryKey: ['document', id], queryFn: () => get<DocumentDetail>(`/documents/${id}`), enabled: enabled(id), staleTime: 10 * 60_000 });
 export const usePageFigures = (documentId?: string | null, page?: number | null) =>
@@ -116,6 +133,24 @@ export function useFactsById(ids: Array<string | null | undefined>) {
   });
 }
 
+/**
+ * Confirming, correcting, rejecting or keying a figure changes what every screen shows: the
+ * figure itself, everything calculated from it, the queue and the ledger. Everything is read again.
+ */
+function useFigureMutation<TBody, TOut>(send: (body: TBody) => Promise<TOut>) {
+  const client = useQueryClient();
+  return useMutation({ mutationFn: send, onSuccess: () => void client.invalidateQueries() });
+}
+
+export const useConfirmFact = () => useFigureMutation((factId: string) => post<StoredFact>(`/facts/${factId}/confirm`));
+export const useCorrectFact = () =>
+  useFigureMutation(({ factId, value, reason }: { factId: string; value: string; reason: string }) => post<FactChange>(`/facts/${factId}/correct`, { value, reason }));
+export const useRejectFact = () => useFigureMutation(({ factId, reason }: { factId: string; reason: string }) => post<FactChange>(`/facts/${factId}/reject`, { reason }));
+export const useEnterFact = () =>
+  useFigureMutation(({ borrowerId, ...body }: { borrowerId: string; key: string; period_end: string; months: number; value: string; reason: string }) =>
+    post<FactChange>(`/borrowers/${borrowerId}/facts`, body),
+  );
+
 /* ── Work ─────────────────────────────────────────────────────────────── */
 
 export const useWorkItems = (query: { status?: string; borrower_id?: string } = {}) =>
@@ -138,8 +173,8 @@ export function useDecide(itemId: string) {
   });
 }
 
-export const useCycles = (query: { period_end?: string; borrower_id?: string } = {}) =>
-  useQuery({ queryKey: ['cycles', query], queryFn: () => get<Array<CycleRow & { borrower_name: string | null }>>('/cycles', query as Query) });
+export const useCycles = (query: { period_end?: string; borrower_id?: string } = {}, options: { enabled?: boolean } = {}) =>
+  useQuery({ queryKey: ['cycles', query], queryFn: () => get<Array<CycleRow & { borrower_name: string | null }>>('/cycles', query as Query), enabled: options.enabled ?? true });
 export const useCalendar = () => useQuery({ queryKey: ['calendar'], queryFn: () => get<CalendarResponse>('/calendar') });
 export const useSignals = (query: { status?: string; borrower_id?: string } = {}) =>
   useQuery({ queryKey: ['signals', query], queryFn: () => get<SignalRow[]>('/signals', query as Query) });

@@ -10,9 +10,10 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   server: {
-    port: 5173,
+    // Both can be moved so several checkouts can run side by side: PORT=5183 API_TARGET=http://localhost:8010 pnpm dev
+    port: Number(process.env.PORT ?? 5173),
     strictPort: true,
-    proxy: { '/api': { target: 'http://localhost:8000', changeOrigin: true } },
+    proxy: { '/api': { target: process.env.API_TARGET ?? 'http://localhost:8000', changeOrigin: true } },
   },
   test: {
     globals: true,

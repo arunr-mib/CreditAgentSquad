@@ -7,10 +7,12 @@ import { mul } from '@/api/decimal';
 import { useCalculation, useFactSource, useQuoteLocation } from '@/api/hooks';
 import type { FactSource, SourcePage } from '@/api/schema';
 import type { ProvenanceKind, Unit } from '@/api/types';
+import { useAuth } from '@/auth/context';
 import { Button, formatDate, formatFigure, provenance, ProvenanceGlyph, Quote, Skeleton, StatusDot, type StatusTone } from '@/design';
 import { docTypeLabel, formatTimestamp, periodLabel, toFact } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { CalculationBreakdown } from './CalculationBreakdown';
+import { ChangeFigure } from './ChangeFigure';
 import { SourceContext, useSource, type SourceRef } from './context';
 import { PdfPage } from './PdfPage';
 
@@ -132,6 +134,7 @@ function factFormat(unit: Unit) {
 function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
   const { data, isPending, error } = useFactSource(id);
   const source = useSource();
+  const { can } = useAuth();
   if (isPending) return <LoadingBody label="Loading the source of this figure" />;
   if (error || !data) return <ErrorBody message={errorMessage(error)} />;
   const { fact, page, calculation, clause } = data;
@@ -229,6 +232,12 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
             <Row label="Entered by">{fact.entered_by ?? 'Not recorded'}</Row>
             <Row label="When">{formatTimestamp(fact.created_at)}</Row>
           </dl>
+        </Section>
+      ) : null}
+
+      {can('confirm_spread') ? (
+        <Section title="Correct or reject" note={fact.kind === 'calculated' ? undefined : 'Needs a reason'}>
+          <ChangeFigure data={data} />
         </Section>
       ) : null}
 

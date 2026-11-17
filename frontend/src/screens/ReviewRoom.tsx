@@ -18,12 +18,12 @@ import {
 } from '@/api/hooks';
 import type { ActionRow, Meeting, ReviewSheetDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
-import { AgentNote, Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, useToast, type Step } from '@/design';
+import { Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, useToast, type Step } from '@/design';
 import { humanize, OUTCOME, quarterLabel, signalLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
-import { AgentBody } from '@/source/AgentBody';
 import { FactFigure } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, Notice, SeverityDot } from './parts';
+import { Commentary } from './review/Commentary';
 import { WorkItemPanel } from './work/WorkItemPanel';
 
 const PHASES: Array<{ id: Meeting['phase']; label: string; detail: string }> = [
@@ -184,28 +184,8 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
             )
           }
         />
-        <div className="space-y-4 border-t border-hairline px-4 pt-3.5 pb-4">
-          {sheet.commentary.length === 0 ? (
-            <p className="text-body text-ink-700">No commentary has been written for this sheet.</p>
-          ) : (
-            sheet.commentary.map((section) =>
-              section.written_by_agent ? (
-                <AgentNote key={section.id} agent="Review Agent" headline={`${humanize(section.section)}, version ${section.version}`} state={section.status === 'approved' ? 'approved' : 'draft'} approvedBy={sheet.approved_by_name ?? undefined} runId={section.agent_run_id?.slice(0, 8)}>
-                  <AgentBody text={section.body} />
-                </AgentNote>
-              ) : (
-                <section key={section.id} aria-label={`${humanize(section.section)}, written by ${section.author_name ?? 'a person'}`} className="rounded-md border border-hairline-strong px-4 py-3">
-                  <div className="flex items-center justify-between gap-3 text-caption">
-                    <span className="font-semibold text-ink">
-                      {humanize(section.section)}, version {section.version} · {section.author_name ?? 'A person'}
-                    </span>
-                    <StatusDot tone={section.status === 'approved' ? 'pass' : 'attention'}>{section.status === 'approved' ? 'Approved' : 'Draft, not yet approved'}</StatusDot>
-                  </div>
-                  <AgentBody text={section.body} className="mt-1.5" />
-                </section>
-              ),
-            )
-          )}
+        <div className="border-t border-hairline px-4 pt-3.5 pb-4">
+          <Commentary key={sheet.id} sheet={sheet} />
         </div>
         {(sheet.content.metrics ?? []).length > 0 ? (
           <table className="w-full border-separate border-spacing-0 text-body">

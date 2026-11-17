@@ -31,6 +31,7 @@ import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import { FactFigure, SourcedFigure } from '@/source/figures';
 import { ErrorNotice, Notice, Textarea } from '../parts';
+import { HeldFigures } from './HeldFigures';
 
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
@@ -485,6 +486,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
 
       <div className="mt-3.5 space-y-4 px-4 pb-4">
         <Evidence item={item} code={borrower?.code} headingLevel={SubHeading} />
+        {item.item_type === 'spread.value_unverified' || item.item_type === 'spread.does_not_foot' ? <HeldFigures item={item} code={borrower?.code} headingLevel={SubHeading} /> : null}
         {item.recommendation ? (
           <Recommendation recommendation={item.recommendation} item={item} headingLevel={SubHeading} code={borrower?.code} />
         ) : item.status === 'open' ? (

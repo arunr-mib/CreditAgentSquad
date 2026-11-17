@@ -12,16 +12,18 @@ export interface PopoverProps {
   className?: string;
   /** Accessible name for the popover panel. */
   label: string;
+  /** Where focus goes when the popover closes. By default it returns to the trigger; call `preventDefault` to send it elsewhere. */
+  onCloseAutoFocus?: (event: Event) => void;
 }
 
 export const popoverSurfaceClass = 'anim-pop z-50 rounded-md border border-hairline-strong bg-surface shadow-raised outline-none';
 
-export function Popover({ trigger, children, open, onOpenChange, side = 'bottom', align = 'start', className, label }: PopoverProps) {
+export function Popover({ trigger, children, open, onOpenChange, side = 'bottom', align = 'start', className, label, onCloseAutoFocus }: PopoverProps) {
   return (
     <RadixPopover.Root open={open} onOpenChange={onOpenChange}>
       <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
       <RadixPopover.Portal>
-        <RadixPopover.Content side={side} align={align} sideOffset={6} collisionPadding={12} aria-label={label} className={cx(popoverSurfaceClass, className)}>
+        <RadixPopover.Content side={side} align={align} sideOffset={6} collisionPadding={12} aria-label={label} onCloseAutoFocus={onCloseAutoFocus} className={cx(popoverSurfaceClass, className)}>
           {children}
         </RadixPopover.Content>
       </RadixPopover.Portal>

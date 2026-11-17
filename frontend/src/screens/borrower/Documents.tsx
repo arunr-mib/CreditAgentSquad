@@ -4,13 +4,15 @@ import { useMemo, useState } from 'react';
 import { API } from '@/api/client';
 import { useDocument, useDocuments, usePageFigures, useQuoteLocation } from '@/api/hooks';
 import type { DocumentRow, PageFigure } from '@/api/schema';
+import { useAuth } from '@/auth/context';
 import { Button, Card, DataTable, EmptyState, formatDate, formatFigure, IconButton, ProvenanceGlyph, Quote, Select, StatusDot, type DataColumn } from '@/design';
-import { docTypeLabel, quarterLabel, toFact } from '@/domain/labels';
+import { docTypeLabel, quarterLabel, roleLabel, ROLES_WITH, toFact } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { useSource } from '@/source/context';
 import { PdfPage, type PageMark } from '@/source/PdfPage';
 import { EmptyCard, ErrorNotice, Load, SectionHead } from '../parts';
 import { useCurrentBorrower } from './BorrowerLayout';
+import { UploadDocument } from './UploadDocument';
 
 const STATUS: Record<string, { tone: 'neutral' | 'attention' | 'muted'; label: string }> = {
   indexed: { tone: 'neutral', label: 'Read, page by page' },
@@ -24,8 +26,11 @@ export function Documents() {
   const documents = useDocuments(borrower.id);
   const navigate = useNavigate();
   const [type, setType] = useState('all');
+  const [filing, setFiling] = useState(false);
+  const { user, can } = useAuth();
+  const mayFile = can('upload_document');
 
-  const columns = useMemo<Array<DataColumn<DocumentRow>>>(
+  const columns =useMemo<Array<DataColumn<DocumentRow>>>(
     () => [
       {
         id: 'title',
@@ -78,9 +83,12 @@ export function Documents() {
       {(rows) => {
         const types = [...new Set(rows.map((row) => row.doc_type ?? 'unclassified'))].sort();
         const filtered = rows.filter((row) => type === 'all' || (row.doc_type ?? 'unclassified') === type);
+        const fileButton = mayFile && !filing ? <Button onClick={() => setFiling(true)}>File a document</Button> : undefined;
+        const form = filing ? <UploadDocument borrowerId={borrower.id} code={borrower.code} onClose={() => setFiling(false)} /> : null;
         return rows.length === 0 ? (
-          <div data-ready>
-            <EmptyCard title="No document is on file" description="Statements, certificates and agreements appear here as they are received." />
+          <div data-ready className="space-y-4">
+            <EmptyCard title="No document is on file" description="Statements, certificates and agreements appear here as they are received." action={fileButton} />
+            {form}
           </div>
         ) : (
           <section data-ready aria-labelledby="documents-heading">
@@ -89,17 +97,30 @@ export function Documents() {
               title="Documents"
               note={`${filtered.length} of ${rows.length} on file · newest first`}
               actions={
-                <Select
-                  label="Document type"
-                  hideLabel
-                  size="sm"
-                  className="w-56"
-                  value={type}
-                  onValueChange={setType}
-                  options={[{ value: 'all', label: 'All types' }, ...types.map((id) => ({ value: id, label: docTypeLabel(id === 'unclassified' ? null : id) }))]}
-                />
+                <>
+                  <Select
+                    label="Document type"
+                    hideLabel
+                    size="sm"
+                    className="w-56"
+                    value={type}
+                    onValueChange={setType}
+                    options={[{ value: 'all', label: 'All types' }, ...types.map((id) => ({ value: id, label: docTypeLabel(id === 'unclassified' ? null : id) }))]}
+                  />
+                  {mayFile && !filing ? (
+                    <Button size="sm" onClick={() => setFiling(true)}>
+                      File a document
+                    </Button>
+                  ) : null}
+                </>
               }
             />
+            {form ? <div className="mb-4">{form}</div> : null}
+            {!mayFile && user ? (
+              <p className="mb-2 text-caption text-ink-500">
+                Filing a document needs {(ROLES_WITH.upload_document ?? []).map((role) => `a ${roleLabel(role).toLowerCase()}`).join(' or ')}. Your role, {roleLabel(user.role)}, can read what is on file.
+              </p>
+            ) : null}
             <DataTable
               caption="Documents on file for this borrower"
               data={filtered}
