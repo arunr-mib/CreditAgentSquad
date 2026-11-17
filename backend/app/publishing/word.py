@@ -105,8 +105,8 @@ class _Memo:
         section.top_margin, section.bottom_margin = Inches(0.9), Inches(0.8)
         borrowers = self.content["borrowers"]
         who = borrowers[0]["borrower"]["name"] if self.content["scope"] == "borrower" else self.content["title"].split(":")[0]
-        period = f"Period ended {day(date.fromisoformat(self.content['period_end']))}"
-        for part, left, right in ((section.header, f"{who}. {period}", style.LENDER),
+        period = f"period ended {day(date.fromisoformat(self.content['period_end']))}"
+        for part, left, right in ((section.header, f"{who}, {period}", style.LENDER),
                                   (section.footer, style.SYNTHETIC, None)):
             p = part.paragraphs[0]
             p.style = self.doc.styles["Normal"]  # the header style brings its own tab stops

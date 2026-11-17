@@ -1,4 +1,4 @@
-"""A seeded world shared by the publishing tests: four borrowers loaded once through the real
+"""A seeded world for a publishing test module: four borrowers loaded once through the real
 services. Each test runs inside a savepoint that is rolled back, so packages do not leak."""
 import os
 import subprocess
@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 REPO = Path(__file__).resolve().parents[3]
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="module")
 def book(tmp_path_factory) -> Path:
     out = tmp_path_factory.mktemp("book")
     subprocess.run([sys.executable, "-m", "synthetic.generate", "--out", str(out)], cwd=REPO, check=True,
@@ -23,7 +23,7 @@ def book(tmp_path_factory) -> Path:
     return out
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="module")
 def seeded(engine, book, tmp_path_factory):
     os.environ["FILE_STORE_DIR"] = str(tmp_path_factory.mktemp("files"))
     get_settings.cache_clear()

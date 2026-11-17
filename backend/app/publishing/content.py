@@ -483,7 +483,16 @@ def build_borrower(db: Session, reg: Registry, borrower: Borrower, period_end: d
         subject = (s.basis or {}).get("subject")
         evidence: list[dict[str, Any]] = []
         metric = SIGNAL_METRIC.get(s.rule_id)
-        if metric and metric in trend_by_metric:
+        metric_ids, system_ids = (s.basis or {}).get("metric_fact_ids") or {}, (s.basis or {}).get("system_fact_ids") or {}
+        if metric_ids or system_ids:  # the signal names the stored facts behind its figures
+            name = labels.get(metric or "", SIGNAL_LABELS.get(s.rule_id, s.rule_id))
+            for key, label in (("current", "Now"), ("year_earlier", "A year earlier")):
+                evidence.append({"label": label, "fig": reg.add_id(metric_ids.get(key), f"{name}, {label.lower()}")})
+            for key, label in (("sys.revolver_outstanding", "Outstanding"), ("sys.commitment", "Commitment"),
+                               ("sys.past_due_days", "Days past due")):
+                if (s.rule_id == "payment_past_due") == (key == "sys.past_due_days"):
+                    evidence.append({"label": label, "fig": reg.add_id(system_ids.get(key), f"{label}, system of record")})
+        elif metric and metric in trend_by_metric:
             evidence.append({"label": "Now", "fig": trend_by_metric[metric]["cells"][-1]})
             evidence.append({"label": "A year earlier", "fig": year_earlier.get(metric)})
         elif s.rule_id.startswith("covenant_headroom") and subject in current_tests:
