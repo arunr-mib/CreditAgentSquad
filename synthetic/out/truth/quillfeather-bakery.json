@@ -1,0 +1,5688 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "quillfeather-bakery",
+  "name": "Quillfeather Bakery Brands, Inc.",
+  "legal_form": "corporation",
+  "industry": "food processing",
+  "city": "Lancaster",
+  "state": "PA",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Priya Venkataraman",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 5,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Imogen Barraclough",
+  "auditor": "Morrow Castellan LLP"
+ },
+ "facilities": [
+  {
+   "id": "quillfeather-bakery-rlc",
+   "borrower_id": "quillfeather-bakery",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "7000000",
+   "original_amount": "7000000",
+   "closing_date": "2021-12-03",
+   "maturity_date": "2027-12-03",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "quillfeather-bakery-tl",
+   "borrower_id": "quillfeather-bakery",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "19440000",
+   "original_amount": "19440000",
+   "closing_date": "2021-12-03",
+   "maturity_date": "2028-12-03",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "432000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-quillfeather-bakery-1",
+   "facility_id": "quillfeather-bakery-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2021-12-03",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2021-12-09",
+   "warnings": [],
+   "source_documents": [
+    "quillfeather-bakery.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": [
+       {
+        "name": "restructuring",
+        "source_key": "is.nonrecurring_expense",
+        "cap": {
+         "type": "amount",
+         "value": "500000"
+        },
+        "citation": {
+         "field": "definitions.ebitda.addbacks.restructuring",
+         "document_id": "quillfeather-bakery.credit-agreement",
+         "section": "1.1",
+         "page": 4,
+         "quote": "\"Adjusted EBITDA\" means, for any period, EBITDA for such period plus restructuring and other non-recurring charges deducted in determining net income for such period, provided that the aggregate amount added back pursuant to this definition shall not exceed $500,000 in any period of four consecutive fiscal quarters."
+        }
+       }
+      ]
+     }
+    },
+    "covenants": [
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "adjusted_ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.75",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "quillfeather-bakery.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.75 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "quillfeather-bakery.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) Adjusted EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "adjusted_ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.15",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "quillfeather-bakery.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.15 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "quillfeather-bakery.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) Adjusted EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "quillfeather-bakery.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "quillfeather-bakery.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "quillfeather-bakery.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "quillfeather-bakery.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "quillfeather-bakery.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "quillfeather-bakery.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $7,000,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "quillfeather-bakery.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $19,440,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "quillfeather-bakery.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $432,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "17964000",
+    "is.cogs": "13566000",
+    "is.gross_profit": "4398000",
+    "is.sga": "2425000",
+    "is.depreciation_amortization": "567000",
+    "is.other_operating_expense": "54000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1352000",
+    "is.interest_expense": "349000",
+    "is.other_income_net": "11000",
+    "is.pretax_income": "1014000",
+    "is.income_tax_expense": "254000",
+    "is.net_income": "760000",
+    "bs.cash": "2156000",
+    "bs.accounts_receivable": "6497000",
+    "bs.inventory": "6541000",
+    "bs.other_current_assets": "862000",
+    "bs.total_current_assets": "16056000",
+    "bs.net_ppe": "24715000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "45091000",
+    "bs.accounts_payable": "5055000",
+    "bs.accrued_liabilities": "1183000",
+    "bs.revolver": "3593000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1260000",
+    "bs.total_current_liabilities": "12819000",
+    "bs.long_term_debt": "13392000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1145000",
+    "bs.total_liabilities": "27356000",
+    "bs.total_equity": "17735000",
+    "bs.total_liabilities_and_equity": "45091000",
+    "cf.net_income": "760000",
+    "cf.depreciation_amortization": "567000",
+    "cf.change_in_working_capital": "14000",
+    "cf.other_operating": "13000",
+    "cf.cfo": "1354000",
+    "cf.capex": "611000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-611000",
+    "cf.revolver_net": "-151000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "432000",
+    "cf.distributions": "250000",
+    "cf.other_financing": "0",
+    "cf.cff": "-833000",
+    "cf.net_change_in_cash": "-90000",
+    "sup.cash_interest_paid": "352000",
+    "sup.cash_taxes_paid": "276000",
+    "sup.scheduled_principal": "432000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "12362000",
+    "cash.beginning_of_year": "2246000",
+    "debt.term_total": "15120000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "36554000",
+    "is.cogs": "27624000",
+    "is.gross_profit": "8930000",
+    "is.sga": "4935000",
+    "is.depreciation_amortization": "1135000",
+    "is.other_operating_expense": "110000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2750000",
+    "is.interest_expense": "687000",
+    "is.other_income_net": "22000",
+    "is.pretax_income": "2085000",
+    "is.income_tax_expense": "522000",
+    "is.net_income": "1563000",
+    "bs.cash": "2231000",
+    "bs.accounts_receivable": "6845000",
+    "bs.inventory": "6779000",
+    "bs.other_current_assets": "892000",
+    "bs.total_current_assets": "16747000",
+    "bs.net_ppe": "24779000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "45846000",
+    "bs.accounts_payable": "5238000",
+    "bs.accrued_liabilities": "1217000",
+    "bs.revolver": "3778000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1309000",
+    "bs.total_current_liabilities": "13270000",
+    "bs.long_term_debt": "12960000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1158000",
+    "bs.total_liabilities": "27388000",
+    "bs.total_equity": "18458000",
+    "bs.total_liabilities_and_equity": "45846000",
+    "cf.net_income": "1563000",
+    "cf.depreciation_amortization": "1135000",
+    "cf.change_in_working_capital": "-336000",
+    "cf.other_operating": "26000",
+    "cf.cfo": "2388000",
+    "cf.capex": "1243000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1243000",
+    "cf.revolver_net": "34000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "864000",
+    "cf.distributions": "330000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1160000",
+    "cf.net_change_in_cash": "-15000",
+    "sup.cash_interest_paid": "693000",
+    "sup.cash_taxes_paid": "530000",
+    "sup.scheduled_principal": "864000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "13085000",
+    "cash.beginning_of_year": "2246000",
+    "debt.term_total": "14688000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "55759000",
+    "is.cogs": "42126000",
+    "is.gross_profit": "13633000",
+    "is.sga": "7528000",
+    "is.depreciation_amortization": "1705000",
+    "is.other_operating_expense": "168000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4232000",
+    "is.interest_expense": "1021000",
+    "is.other_income_net": "34000",
+    "is.pretax_income": "3245000",
+    "is.income_tax_expense": "812000",
+    "is.net_income": "2433000",
+    "bs.cash": "2305000",
+    "bs.accounts_receivable": "6861000",
+    "bs.inventory": "6993000",
+    "bs.other_current_assets": "922000",
+    "bs.total_current_assets": "17081000",
+    "bs.net_ppe": "24862000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "46263000",
+    "bs.accounts_payable": "5403000",
+    "bs.accrued_liabilities": "1252000",
+    "bs.revolver": "3841000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1365000",
+    "bs.total_current_liabilities": "13589000",
+    "bs.long_term_debt": "12528000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1171000",
+    "bs.total_liabilities": "27288000",
+    "bs.total_equity": "18975000",
+    "bs.total_liabilities_and_equity": "46263000",
+    "cf.net_income": "2433000",
+    "cf.depreciation_amortization": "1705000",
+    "cf.change_in_working_capital": "-340000",
+    "cf.other_operating": "39000",
+    "cf.cfo": "3837000",
+    "cf.capex": "1896000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1896000",
+    "cf.revolver_net": "97000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1296000",
+    "cf.distributions": "683000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1882000",
+    "cf.net_change_in_cash": "59000",
+    "sup.cash_interest_paid": "1029000",
+    "sup.cash_taxes_paid": "798000",
+    "sup.scheduled_principal": "1296000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "13602000",
+    "cash.beginning_of_year": "2246000",
+    "debt.term_total": "14256000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "75250000",
+    "is.cogs": "56888000",
+    "is.gross_profit": "18362000",
+    "is.sga": "10159000",
+    "is.depreciation_amortization": "2277000",
+    "is.other_operating_expense": "226000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5700000",
+    "is.interest_expense": "1348000",
+    "is.other_income_net": "46000",
+    "is.pretax_income": "4398000",
+    "is.income_tax_expense": "1100000",
+    "is.net_income": "3298000",
+    "bs.cash": "2339000",
+    "bs.accounts_receivable": "7305000",
+    "bs.inventory": "7118000",
+    "bs.other_current_assets": "936000",
+    "bs.total_current_assets": "17698000",
+    "bs.net_ppe": "24953000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "46971000",
+    "bs.accounts_payable": "5500000",
+    "bs.accrued_liabilities": "1267000",
+    "bs.revolver": "4064000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1379000",
+    "bs.total_current_liabilities": "13938000",
+    "bs.long_term_debt": "12096000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1184000",
+    "bs.total_liabilities": "27218000",
+    "bs.total_equity": "19753000",
+    "bs.total_liabilities_and_equity": "46971000",
+    "cf.net_income": "3298000",
+    "cf.depreciation_amortization": "2277000",
+    "cf.change_in_working_capital": "-797000",
+    "cf.other_operating": "52000",
+    "cf.cfo": "4830000",
+    "cf.capex": "2559000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2559000",
+    "cf.revolver_net": "320000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1728000",
+    "cf.distributions": "770000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2178000",
+    "cf.net_change_in_cash": "93000",
+    "sup.cash_interest_paid": "1358000",
+    "sup.cash_taxes_paid": "1088000",
+    "sup.scheduled_principal": "1728000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "14380000",
+    "cash.beginning_of_year": "2246000",
+    "debt.term_total": "13824000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "18807000",
+    "is.cogs": "14226000",
+    "is.gross_profit": "4581000",
+    "is.sga": "2539000",
+    "is.depreciation_amortization": "574000",
+    "is.other_operating_expense": "56000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1412000",
+    "is.interest_expense": "324000",
+    "is.other_income_net": "11000",
+    "is.pretax_income": "1099000",
+    "is.income_tax_expense": "275000",
+    "is.net_income": "824000",
+    "bs.cash": "2257000",
+    "bs.accounts_receivable": "6616000",
+    "bs.inventory": "6860000",
+    "bs.other_current_assets": "903000",
+    "bs.total_current_assets": "16636000",
+    "bs.net_ppe": "25018000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "45974000",
+    "bs.accounts_payable": "5301000",
+    "bs.accrued_liabilities": "1225000",
+    "bs.revolver": "3572000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1328000",
+    "bs.total_current_liabilities": "13154000",
+    "bs.long_term_debt": "11664000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1197000",
+    "bs.total_liabilities": "26015000",
+    "bs.total_equity": "19959000",
+    "bs.total_liabilities_and_equity": "45974000",
+    "cf.net_income": "824000",
+    "cf.depreciation_amortization": "574000",
+    "cf.change_in_working_capital": "688000",
+    "cf.other_operating": "13000",
+    "cf.cfo": "2099000",
+    "cf.capex": "639000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-639000",
+    "cf.revolver_net": "-492000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "432000",
+    "cf.distributions": "618000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1542000",
+    "cf.net_change_in_cash": "-82000",
+    "sup.cash_interest_paid": "325000",
+    "sup.cash_taxes_paid": "288000",
+    "sup.scheduled_principal": "432000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "14586000",
+    "cash.beginning_of_year": "2339000",
+    "debt.term_total": "13392000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "38185000",
+    "is.cogs": "28918000",
+    "is.gross_profit": "9267000",
+    "is.sga": "5155000",
+    "is.depreciation_amortization": "1149000",
+    "is.other_operating_expense": "114000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2849000",
+    "is.interest_expense": "631000",
+    "is.other_income_net": "23000",
+    "is.pretax_income": "2241000",
+    "is.income_tax_expense": "561000",
+    "is.net_income": "1680000",
+    "bs.cash": "2325000",
+    "bs.accounts_receivable": "7199000",
+    "bs.inventory": "7084000",
+    "bs.other_current_assets": "930000",
+    "bs.total_current_assets": "17538000",
+    "bs.net_ppe": "25102000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "46960000",
+    "bs.accounts_payable": "5474000",
+    "bs.accrued_liabilities": "1253000",
+    "bs.revolver": "3963000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1371000",
+    "bs.total_current_liabilities": "13789000",
+    "bs.long_term_debt": "11232000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1210000",
+    "bs.total_liabilities": "26231000",
+    "bs.total_equity": "20729000",
+    "bs.total_liabilities_and_equity": "46960000",
+    "cf.net_income": "1680000",
+    "cf.depreciation_amortization": "1149000",
+    "cf.change_in_working_capital": "98000",
+    "cf.other_operating": "26000",
+    "cf.cfo": "2953000",
+    "cf.capex": "1298000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1298000",
+    "cf.revolver_net": "-101000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "864000",
+    "cf.distributions": "704000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1669000",
+    "cf.net_change_in_cash": "-14000",
+    "sup.cash_interest_paid": "638000",
+    "sup.cash_taxes_paid": "563000",
+    "sup.scheduled_principal": "864000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "15356000",
+    "cash.beginning_of_year": "2339000",
+    "debt.term_total": "12960000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "58195000",
+    "is.cogs": "44054000",
+    "is.gross_profit": "14141000",
+    "is.sga": "7856000",
+    "is.depreciation_amortization": "1726000",
+    "is.other_operating_expense": "174000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4385000",
+    "is.interest_expense": "938000",
+    "is.other_income_net": "35000",
+    "is.pretax_income": "3482000",
+    "is.income_tax_expense": "871000",
+    "is.net_income": "2611000",
+    "bs.cash": "2401000",
+    "bs.accounts_receivable": "7193000",
+    "bs.inventory": "7298000",
+    "bs.other_current_assets": "960000",
+    "bs.total_current_assets": "17852000",
+    "bs.net_ppe": "25205000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "47377000",
+    "bs.accounts_payable": "5640000",
+    "bs.accrued_liabilities": "1290000",
+    "bs.revolver": "4002000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1431000",
+    "bs.total_current_liabilities": "14091000",
+    "bs.long_term_debt": "10800000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1223000",
+    "bs.total_liabilities": "26114000",
+    "bs.total_equity": "21263000",
+    "bs.total_liabilities_and_equity": "47377000",
+    "cf.net_income": "2611000",
+    "cf.depreciation_amortization": "1726000",
+    "cf.change_in_working_capital": "123000",
+    "cf.other_operating": "39000",
+    "cf.cfo": "4499000",
+    "cf.capex": "1978000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1978000",
+    "cf.revolver_net": "-62000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1296000",
+    "cf.distributions": "1101000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2459000",
+    "cf.net_change_in_cash": "62000",
+    "sup.cash_interest_paid": "945000",
+    "sup.cash_taxes_paid": "849000",
+    "sup.scheduled_principal": "1296000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "15890000",
+    "cash.beginning_of_year": "2339000",
+    "debt.term_total": "12528000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "78440000",
+    "is.cogs": "59325000",
+    "is.gross_profit": "19115000",
+    "is.sga": "10589000",
+    "is.depreciation_amortization": "2306000",
+    "is.other_operating_expense": "235000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5985000",
+    "is.interest_expense": "1238000",
+    "is.other_income_net": "47000",
+    "is.pretax_income": "4794000",
+    "is.income_tax_expense": "1199000",
+    "is.net_income": "3595000",
+    "bs.cash": "2429000",
+    "bs.accounts_receivable": "7344000",
+    "bs.inventory": "7364000",
+    "bs.other_current_assets": "972000",
+    "bs.total_current_assets": "18109000",
+    "bs.net_ppe": "25313000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "47742000",
+    "bs.accounts_payable": "5690000",
+    "bs.accrued_liabilities": "1303000",
+    "bs.revolver": "4049000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1462000",
+    "bs.total_current_liabilities": "14232000",
+    "bs.long_term_debt": "10368000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1236000",
+    "bs.total_liabilities": "25836000",
+    "bs.total_equity": "21906000",
+    "bs.total_liabilities_and_equity": "47742000",
+    "cf.net_income": "3595000",
+    "cf.depreciation_amortization": "2306000",
+    "cf.change_in_working_capital": "-12000",
+    "cf.other_operating": "52000",
+    "cf.cfo": "5941000",
+    "cf.capex": "2666000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2666000",
+    "cf.revolver_net": "-15000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1728000",
+    "cf.distributions": "1442000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3185000",
+    "cf.net_change_in_cash": "90000",
+    "sup.cash_interest_paid": "1247000",
+    "sup.cash_taxes_paid": "1159000",
+    "sup.scheduled_principal": "1728000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "16533000",
+    "cash.beginning_of_year": "2339000",
+    "debt.term_total": "12096000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "19497000",
+    "is.cogs": "14722000",
+    "is.gross_profit": "4775000",
+    "is.sga": "2632000",
+    "is.depreciation_amortization": "582000",
+    "is.other_operating_expense": "58000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1503000",
+    "is.interest_expense": "293000",
+    "is.other_income_net": "12000",
+    "is.pretax_income": "1222000",
+    "is.income_tax_expense": "306000",
+    "is.net_income": "916000",
+    "bs.cash": "2340000",
+    "bs.accounts_receivable": "7030000",
+    "bs.inventory": "7099000",
+    "bs.other_current_assets": "936000",
+    "bs.total_current_assets": "17405000",
+    "bs.net_ppe": "25394000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "47119000",
+    "bs.accounts_payable": "5485000",
+    "bs.accrued_liabilities": "1256000",
+    "bs.revolver": "3899000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1398000",
+    "bs.total_current_liabilities": "13766000",
+    "bs.long_term_debt": "9936000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1249000",
+    "bs.total_liabilities": "24951000",
+    "bs.total_equity": "22168000",
+    "bs.total_liabilities_and_equity": "47119000",
+    "cf.net_income": "916000",
+    "cf.depreciation_amortization": "582000",
+    "cf.change_in_working_capital": "299000",
+    "cf.other_operating": "13000",
+    "cf.cfo": "1810000",
+    "cf.capex": "663000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-663000",
+    "cf.revolver_net": "-150000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "432000",
+    "cf.distributions": "654000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1236000",
+    "cf.net_change_in_cash": "-89000",
+    "sup.cash_interest_paid": "295000",
+    "sup.cash_taxes_paid": "328000",
+    "sup.scheduled_principal": "432000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "16795000",
+    "cash.beginning_of_year": "2429000",
+    "debt.term_total": "11664000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "39823000",
+    "is.cogs": "30058000",
+    "is.gross_profit": "9765000",
+    "is.sga": "5376000",
+    "is.depreciation_amortization": "1166000",
+    "is.other_operating_expense": "119000",
+    "is.nonrecurring_expense": "620000",
+    "is.operating_income": "2484000",
+    "is.interest_expense": "576000",
+    "is.other_income_net": "24000",
+    "is.pretax_income": "1932000",
+    "is.income_tax_expense": "484000",
+    "is.net_income": "1448000",
+    "bs.cash": "2439000",
+    "bs.accounts_receivable": "7373000",
+    "bs.inventory": "7395000",
+    "bs.other_current_assets": "976000",
+    "bs.total_current_assets": "18183000",
+    "bs.net_ppe": "25501000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "48004000",
+    "bs.accounts_payable": "5714000",
+    "bs.accrued_liabilities": "1301000",
+    "bs.revolver": "4532000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1316000",
+    "bs.total_current_liabilities": "14591000",
+    "bs.long_term_debt": "9504000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1262000",
+    "bs.total_liabilities": "25357000",
+    "bs.total_equity": "22647000",
+    "bs.total_liabilities_and_equity": "48004000",
+    "cf.net_income": "1448000",
+    "cf.depreciation_amortization": "1166000",
+    "cf.change_in_working_capital": "-188000",
+    "cf.other_operating": "26000",
+    "cf.cfo": "2452000",
+    "cf.capex": "1354000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1354000",
+    "cf.revolver_net": "483000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "864000",
+    "cf.distributions": "707000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1088000",
+    "cf.net_change_in_cash": "10000",
+    "sup.cash_interest_paid": "582000",
+    "sup.cash_taxes_paid": "634000",
+    "sup.scheduled_principal": "864000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "17274000",
+    "cash.beginning_of_year": "2429000",
+    "debt.term_total": "11232000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "60655000",
+    "is.cogs": "45842000",
+    "is.gross_profit": "14813000",
+    "is.sga": "8188000",
+    "is.depreciation_amortization": "1753000",
+    "is.other_operating_expense": "181000",
+    "is.nonrecurring_expense": "1100000",
+    "is.operating_income": "3591000",
+    "is.interest_expense": "863000",
+    "is.other_income_net": "36000",
+    "is.pretax_income": "2764000",
+    "is.income_tax_expense": "692000",
+    "is.net_income": "2072000",
+    "bs.cash": "2500000",
+    "bs.accounts_receivable": "7831000",
+    "bs.inventory": "7611000",
+    "bs.other_current_assets": "1000000",
+    "bs.total_current_assets": "18942000",
+    "bs.net_ppe": "25622000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "48884000",
+    "bs.accounts_payable": "5881000",
+    "bs.accrued_liabilities": "1333000",
+    "bs.revolver": "5011000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1375000",
+    "bs.total_current_liabilities": "15328000",
+    "bs.long_term_debt": "9072000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1275000",
+    "bs.total_liabilities": "25675000",
+    "bs.total_equity": "23209000",
+    "bs.total_liabilities_and_equity": "48884000",
+    "cf.net_income": "2072000",
+    "cf.depreciation_amortization": "1753000",
+    "cf.change_in_working_capital": "-628000",
+    "cf.other_operating": "39000",
+    "cf.cfo": "3236000",
+    "cf.capex": "2062000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2062000",
+    "cf.revolver_net": "962000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1296000",
+    "cf.distributions": "769000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1103000",
+    "cf.net_change_in_cash": "71000",
+    "sup.cash_interest_paid": "867000",
+    "sup.cash_taxes_paid": "812000",
+    "sup.scheduled_principal": "1296000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "17836000",
+    "cash.beginning_of_year": "2429000",
+    "debt.term_total": "10800000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "72000000",
+    "is.cogs": "54357000",
+    "is.gross_profit": "17643000",
+    "is.sga": "9721000",
+    "is.depreciation_amortization": "2256000",
+    "is.other_operating_expense": "215000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5451000",
+    "is.interest_expense": "1458000",
+    "is.other_income_net": "43000",
+    "is.pretax_income": "4036000",
+    "is.income_tax_expense": "1010000",
+    "is.net_income": "3026000",
+    "bs.cash": "2246000",
+    "bs.accounts_receivable": "6524000",
+    "bs.inventory": "6809000",
+    "bs.other_current_assets": "899000",
+    "bs.total_current_assets": "16478000",
+    "bs.net_ppe": "24671000",
+    "bs.intangibles": "3600000",
+    "bs.other_noncurrent_assets": "720000",
+    "bs.total_assets": "45469000",
+    "bs.accounts_payable": "5261000",
+    "bs.accrued_liabilities": "1231000",
+    "bs.revolver": "3744000",
+    "bs.cpltd": "1728000",
+    "bs.other_current_liabilities": "1324000",
+    "bs.total_current_liabilities": "13288000",
+    "bs.long_term_debt": "13824000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1132000",
+    "bs.total_liabilities": "28244000",
+    "bs.total_equity": "17225000",
+    "bs.total_liabilities_and_equity": "45469000",
+    "cf.net_income": "3026000",
+    "cf.depreciation_amortization": "2256000",
+    "cf.change_in_working_capital": "-65000",
+    "cf.other_operating": "52000",
+    "cf.cfo": "5269000",
+    "cf.capex": "2447000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2447000",
+    "cf.revolver_net": "144000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1728000",
+    "cf.distributions": "1152000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2736000",
+    "cf.net_change_in_cash": "86000",
+    "sup.cash_interest_paid": "1464000",
+    "sup.cash_taxes_paid": "1044000",
+    "sup.scheduled_principal": "1728000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5373000",
+    "equity.retained_earnings": "11852000",
+    "cash.beginning_of_year": "2160000",
+    "debt.term_total": "15552000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "2.10",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "16964000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3362000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1323000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1121000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2284000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8090000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8090000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.44",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3362000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1323000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1121000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2284000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8090000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8090000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2587000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1100000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4403000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1331000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3059000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "2.08",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "16923000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3415000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1292000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1139000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2291000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8137000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8137000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.45",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3415000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1292000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1139000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2291000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8137000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8137000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2614000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1121000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4402000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1303000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3031000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "2.02",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "16530000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3476000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1265000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1159000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2298000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8198000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8198000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.47",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3476000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1265000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1159000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2298000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8198000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8198000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2641000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1139000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4418000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1274000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3002000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "1.94",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "16145000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3595000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1238000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1199000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2306000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8338000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8338000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.52",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3595000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1238000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1199000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2306000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8338000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8338000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2666000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1159000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4513000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1247000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2975000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "1.84",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "15563000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3687000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1207000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1230000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2314000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8438000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8438000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.54",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3687000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1207000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1230000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2314000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8438000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8438000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2690000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1199000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4549000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1217000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2945000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "1.86",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "15764000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3363000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1183000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1122000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2323000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7991000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "500000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8491000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.55",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3363000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1183000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1122000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2323000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7991000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "500000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8491000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2722000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1230000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4539000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1191000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2919000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Imogen Barraclough",
+   "reported": {
+    "total_leverage": {
+     "value": "1.82",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "15811000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3056000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1163000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1020000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2333000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7572000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "1100000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8672000"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.66",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3056000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1163000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1020000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2333000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7572000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "1100000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "8672000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2750000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1122000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4800000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1169000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1728000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2897000"
+      }
+     ]
+    }
+   },
+   "document_id": "quillfeather-bakery.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "3723000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15552000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "3662000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15552000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "3593000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15120000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "3604000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15120000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "3679000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15120000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "3778000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14688000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "3772000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14688000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "3786000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14688000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "3841000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14256000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "3864000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14256000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "3930000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14256000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "4064000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13824000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "3853000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13824000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "3702000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13824000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "3572000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13392000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "3691000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13392000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "3833000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13392000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "3963000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12960000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "3984000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12960000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "3977000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12960000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "4002000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12528000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "3973000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12528000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "4082000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12528000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "4049000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12096000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "4007000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12096000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "3985000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12096000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "3899000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11664000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "4159000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11664000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "4373000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11664000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "4532000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11232000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "4673000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11232000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "4890000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11232000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "5011000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10800000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "4951000",
+   "commitment": "7000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10800000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "quillfeather-bakery.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/quillfeather-bakery/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Quillfeather Bakery Brands, Inc. and Bank of Stoic",
+   "received_date": "2021-12-03",
+   "document_date": "2021-12-03"
+  },
+  {
+   "id": "quillfeather-bakery.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/quillfeather-bakery/afs-2024.pdf",
+   "pages": 7,
+   "title": "Quillfeather Bakery Brands, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-12",
+   "document_date": "2025-04-03",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,339"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "7,305"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "7,118"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "936"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "17,698"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "24,953"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "46,971"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "5,500"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,267"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,064"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,379"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "13,938"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "12,096"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,184"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "27,218"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "19,753"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "46,971"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "75,250"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "56,888"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "18,362"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "10,159"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,277"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "226"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "5,700"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,348"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "46"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "4,398"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,100"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,298"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,298"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,277"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(797)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "52"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "4,830"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,559)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(2,559)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "320"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,728)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(770)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,178)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "93"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,358"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,088"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,728"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,246",
+    "bs.accounts_receivable": "6,524",
+    "bs.inventory": "6,809",
+    "bs.other_current_assets": "899",
+    "bs.total_current_assets": "16,478",
+    "bs.net_ppe": "24,671",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "45,469",
+    "bs.accounts_payable": "5,261",
+    "bs.accrued_liabilities": "1,231",
+    "bs.revolver": "3,744",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,324",
+    "bs.total_current_liabilities": "13,288",
+    "bs.long_term_debt": "13,824",
+    "bs.other_noncurrent_liabilities": "1,132",
+    "bs.total_liabilities": "28,244",
+    "bs.total_equity": "17,225",
+    "bs.total_liabilities_and_equity": "45,469",
+    "is.revenue": "72,000",
+    "is.cogs": "54,357",
+    "is.gross_profit": "17,643",
+    "is.sga": "9,721",
+    "is.depreciation_amortization": "2,256",
+    "is.other_operating_expense": "215",
+    "is.operating_income": "5,451",
+    "is.interest_expense": "1,458",
+    "is.other_income_net": "43",
+    "is.pretax_income": "4,036",
+    "is.income_tax_expense": "1,010",
+    "is.net_income": "3,026",
+    "cf.net_income": "3,026",
+    "cf.depreciation_amortization": "2,256",
+    "cf.change_in_working_capital": "(65)",
+    "cf.other_operating": "52",
+    "cf.cfo": "5,269",
+    "cf.capex": "(2,447)",
+    "cf.cfi": "(2,447)",
+    "cf.revolver_net": "144",
+    "cf.term_debt_repayments": "(1,728)",
+    "cf.distributions": "(1,152)",
+    "cf.cff": "(2,736)",
+    "cf.net_change_in_cash": "86",
+    "sup.cash_interest_paid": "1,464",
+    "sup.cash_taxes_paid": "1,044",
+    "sup.scheduled_principal": "1,728",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/quillfeather-bakery/afs-2025.pdf",
+   "pages": 7,
+   "title": "Quillfeather Bakery Brands, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-14",
+   "document_date": "2026-04-05",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,429"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "7,344"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "7,364"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "972"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "18,109"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "25,313"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "47,742"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "5,690"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,303"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,049"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,462"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "14,232"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "10,368"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,236"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "25,836"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "21,906"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "47,742"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "78,440"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "59,325"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "19,115"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "10,589"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,306"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "235"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "5,985"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,238"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "47"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "4,794"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,199"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,595"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,595"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,306"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(12)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "52"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "5,941"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,666)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(2,666)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(15)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,728)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,442)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,185)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "90"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,247"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,159"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,728"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,339",
+    "bs.accounts_receivable": "7,305",
+    "bs.inventory": "7,118",
+    "bs.other_current_assets": "936",
+    "bs.total_current_assets": "17,698",
+    "bs.net_ppe": "24,953",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "46,971",
+    "bs.accounts_payable": "5,500",
+    "bs.accrued_liabilities": "1,267",
+    "bs.revolver": "4,064",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,379",
+    "bs.total_current_liabilities": "13,938",
+    "bs.long_term_debt": "12,096",
+    "bs.other_noncurrent_liabilities": "1,184",
+    "bs.total_liabilities": "27,218",
+    "bs.total_equity": "19,753",
+    "bs.total_liabilities_and_equity": "46,971",
+    "is.revenue": "75,250",
+    "is.cogs": "56,888",
+    "is.gross_profit": "18,362",
+    "is.sga": "10,159",
+    "is.depreciation_amortization": "2,277",
+    "is.other_operating_expense": "226",
+    "is.operating_income": "5,700",
+    "is.interest_expense": "1,348",
+    "is.other_income_net": "46",
+    "is.pretax_income": "4,398",
+    "is.income_tax_expense": "1,100",
+    "is.net_income": "3,298",
+    "cf.net_income": "3,298",
+    "cf.depreciation_amortization": "2,277",
+    "cf.change_in_working_capital": "(797)",
+    "cf.other_operating": "52",
+    "cf.cfo": "4,830",
+    "cf.capex": "(2,559)",
+    "cf.cfi": "(2,559)",
+    "cf.revolver_net": "320",
+    "cf.term_debt_repayments": "(1,728)",
+    "cf.distributions": "(770)",
+    "cf.cff": "(2,178)",
+    "cf.net_change_in_cash": "93",
+    "sup.cash_interest_paid": "1,358",
+    "sup.cash_taxes_paid": "1,088",
+    "sup.scheduled_principal": "1,728",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/quillfeather-bakery/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Quillfeather Bakery Brands, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-07",
+   "document_date": "2025-05-03",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,257"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,616"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "6,860"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "903"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "16,636"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "25,018"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "45,974"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,301"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,225"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "3,572"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,328"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "13,154"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,664"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,197"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "26,015"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "19,959"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "45,974"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "18,807"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "14,226"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,581"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,539"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "574"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "56"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,412"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "324"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "11"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,099"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "275"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "824"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "824"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "574"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "688"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "13"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,099"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(639)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(639)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(492)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(432)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(618)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,542)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(82)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "325"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "288"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "432"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,156",
+    "bs.accounts_receivable": "6,497",
+    "bs.inventory": "6,541",
+    "bs.other_current_assets": "862",
+    "bs.total_current_assets": "16,056",
+    "bs.net_ppe": "24,715",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "45,091",
+    "bs.accounts_payable": "5,055",
+    "bs.accrued_liabilities": "1,183",
+    "bs.revolver": "3,593",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,260",
+    "bs.total_current_liabilities": "12,819",
+    "bs.long_term_debt": "13,392",
+    "bs.other_noncurrent_liabilities": "1,145",
+    "bs.total_liabilities": "27,356",
+    "bs.total_equity": "17,735",
+    "bs.total_liabilities_and_equity": "45,091",
+    "is.revenue": "17,964",
+    "is.cogs": "13,566",
+    "is.gross_profit": "4,398",
+    "is.sga": "2,425",
+    "is.depreciation_amortization": "567",
+    "is.other_operating_expense": "54",
+    "is.operating_income": "1,352",
+    "is.interest_expense": "349",
+    "is.other_income_net": "11",
+    "is.pretax_income": "1,014",
+    "is.income_tax_expense": "254",
+    "is.net_income": "760",
+    "cf.net_income": "760",
+    "cf.depreciation_amortization": "567",
+    "cf.change_in_working_capital": "14",
+    "cf.other_operating": "13",
+    "cf.cfo": "1,354",
+    "cf.capex": "(611)",
+    "cf.cfi": "(611)",
+    "cf.revolver_net": "(151)",
+    "cf.term_debt_repayments": "(432)",
+    "cf.distributions": "(250)",
+    "cf.cff": "(833)",
+    "cf.net_change_in_cash": "(90)",
+    "sup.cash_interest_paid": "352",
+    "sup.cash_taxes_paid": "276",
+    "sup.scheduled_principal": "432",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/quillfeather-bakery/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Quillfeather Bakery Brands, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-07-26",
+   "document_date": "2025-07-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,325"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,199"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,084"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "930"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,538"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "25,102"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "46,960"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,474"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,253"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "3,963"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,371"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "13,789"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,232"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,210"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "26,231"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "20,729"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "46,960"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "38,185"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "28,918"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,267"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,155"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,149"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "114"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,849"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "631"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "23"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,241"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "561"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,680"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,680"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,149"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "98"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "26"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,953"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,298)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,298)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(101)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(864)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(704)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,669)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(14)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "638"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "563"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "864"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,231",
+    "bs.accounts_receivable": "6,845",
+    "bs.inventory": "6,779",
+    "bs.other_current_assets": "892",
+    "bs.total_current_assets": "16,747",
+    "bs.net_ppe": "24,779",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "45,846",
+    "bs.accounts_payable": "5,238",
+    "bs.accrued_liabilities": "1,217",
+    "bs.revolver": "3,778",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,309",
+    "bs.total_current_liabilities": "13,270",
+    "bs.long_term_debt": "12,960",
+    "bs.other_noncurrent_liabilities": "1,158",
+    "bs.total_liabilities": "27,388",
+    "bs.total_equity": "18,458",
+    "bs.total_liabilities_and_equity": "45,846",
+    "is.revenue": "36,554",
+    "is.cogs": "27,624",
+    "is.gross_profit": "8,930",
+    "is.sga": "4,935",
+    "is.depreciation_amortization": "1,135",
+    "is.other_operating_expense": "110",
+    "is.operating_income": "2,750",
+    "is.interest_expense": "687",
+    "is.other_income_net": "22",
+    "is.pretax_income": "2,085",
+    "is.income_tax_expense": "522",
+    "is.net_income": "1,563",
+    "cf.net_income": "1,563",
+    "cf.depreciation_amortization": "1,135",
+    "cf.change_in_working_capital": "(336)",
+    "cf.other_operating": "26",
+    "cf.cfo": "2,388",
+    "cf.capex": "(1,243)",
+    "cf.cfi": "(1,243)",
+    "cf.revolver_net": "34",
+    "cf.term_debt_repayments": "(864)",
+    "cf.distributions": "(330)",
+    "cf.cff": "(1,160)",
+    "cf.net_change_in_cash": "(15)",
+    "sup.cash_interest_paid": "693",
+    "sup.cash_taxes_paid": "530",
+    "sup.scheduled_principal": "864",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/quillfeather-bakery/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Quillfeather Bakery Brands, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-10-29",
+   "document_date": "2025-10-25",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,401"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,193"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,298"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "960"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,852"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "25,205"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "47,377"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,640"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,290"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,002"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,431"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "14,091"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "10,800"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,223"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "26,114"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "21,263"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "47,377"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "58,195"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "44,054"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "14,141"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,856"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,726"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "174"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,385"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "938"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "35"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,482"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "871"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,611"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,611"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,726"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "123"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "39"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,499"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,978)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,978)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(62)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,296)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,101)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,459)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "62"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "945"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "849"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,296"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,305",
+    "bs.accounts_receivable": "6,861",
+    "bs.inventory": "6,993",
+    "bs.other_current_assets": "922",
+    "bs.total_current_assets": "17,081",
+    "bs.net_ppe": "24,862",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "46,263",
+    "bs.accounts_payable": "5,403",
+    "bs.accrued_liabilities": "1,252",
+    "bs.revolver": "3,841",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,365",
+    "bs.total_current_liabilities": "13,589",
+    "bs.long_term_debt": "12,528",
+    "bs.other_noncurrent_liabilities": "1,171",
+    "bs.total_liabilities": "27,288",
+    "bs.total_equity": "18,975",
+    "bs.total_liabilities_and_equity": "46,263",
+    "is.revenue": "55,759",
+    "is.cogs": "42,126",
+    "is.gross_profit": "13,633",
+    "is.sga": "7,528",
+    "is.depreciation_amortization": "1,705",
+    "is.other_operating_expense": "168",
+    "is.operating_income": "4,232",
+    "is.interest_expense": "1,021",
+    "is.other_income_net": "34",
+    "is.pretax_income": "3,245",
+    "is.income_tax_expense": "812",
+    "is.net_income": "2,433",
+    "cf.net_income": "2,433",
+    "cf.depreciation_amortization": "1,705",
+    "cf.change_in_working_capital": "(340)",
+    "cf.other_operating": "39",
+    "cf.cfo": "3,837",
+    "cf.capex": "(1,896)",
+    "cf.cfi": "(1,896)",
+    "cf.revolver_net": "97",
+    "cf.term_debt_repayments": "(1,296)",
+    "cf.distributions": "(683)",
+    "cf.cff": "(1,882)",
+    "cf.net_change_in_cash": "59",
+    "sup.cash_interest_paid": "1,029",
+    "sup.cash_taxes_paid": "798",
+    "sup.scheduled_principal": "1,296",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/quillfeather-bakery/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Quillfeather Bakery Brands, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-04-26",
+   "document_date": "2026-04-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,340"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,030"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,099"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "936"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,405"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "25,394"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "47,119"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,485"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,256"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "3,899"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,398"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "13,766"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,936"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,249"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "24,951"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "22,168"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "47,119"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "19,497"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "14,722"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,775"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,632"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "582"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "58"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,503"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "293"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "12"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,222"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "306"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "916"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "916"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "582"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "299"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "13"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,810"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(663)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(663)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(150)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(432)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(654)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,236)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(89)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "295"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "328"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "432"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,257",
+    "bs.accounts_receivable": "6,616",
+    "bs.inventory": "6,860",
+    "bs.other_current_assets": "903",
+    "bs.total_current_assets": "16,636",
+    "bs.net_ppe": "25,018",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "45,974",
+    "bs.accounts_payable": "5,301",
+    "bs.accrued_liabilities": "1,225",
+    "bs.revolver": "3,572",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,328",
+    "bs.total_current_liabilities": "13,154",
+    "bs.long_term_debt": "11,664",
+    "bs.other_noncurrent_liabilities": "1,197",
+    "bs.total_liabilities": "26,015",
+    "bs.total_equity": "19,959",
+    "bs.total_liabilities_and_equity": "45,974",
+    "is.revenue": "18,807",
+    "is.cogs": "14,226",
+    "is.gross_profit": "4,581",
+    "is.sga": "2,539",
+    "is.depreciation_amortization": "574",
+    "is.other_operating_expense": "56",
+    "is.operating_income": "1,412",
+    "is.interest_expense": "324",
+    "is.other_income_net": "11",
+    "is.pretax_income": "1,099",
+    "is.income_tax_expense": "275",
+    "is.net_income": "824",
+    "cf.net_income": "824",
+    "cf.depreciation_amortization": "574",
+    "cf.change_in_working_capital": "688",
+    "cf.other_operating": "13",
+    "cf.cfo": "2,099",
+    "cf.capex": "(639)",
+    "cf.cfi": "(639)",
+    "cf.revolver_net": "(492)",
+    "cf.term_debt_repayments": "(432)",
+    "cf.distributions": "(618)",
+    "cf.cff": "(1,542)",
+    "cf.net_change_in_cash": "(82)",
+    "sup.cash_interest_paid": "325",
+    "sup.cash_taxes_paid": "288",
+    "sup.scheduled_principal": "432",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/quillfeather-bakery/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Quillfeather Bakery Brands, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-07-28",
+   "document_date": "2026-07-24",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,439"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,373"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,395"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "976"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "18,183"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "25,501"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "48,004"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,714"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,301"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,532"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,316"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "14,591"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,504"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,262"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "25,357"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "22,647"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "48,004"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "39,823"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "30,058"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,765"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,376"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,166"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "119"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "620"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,484"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "576"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "24"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,932"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "484"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,448"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,448"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,166"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(188)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "26"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,452"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,354)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,354)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "483"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(864)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(707)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,088)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "10"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "582"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "634"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "864"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,325",
+    "bs.accounts_receivable": "7,199",
+    "bs.inventory": "7,084",
+    "bs.other_current_assets": "930",
+    "bs.total_current_assets": "17,538",
+    "bs.net_ppe": "25,102",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "46,960",
+    "bs.accounts_payable": "5,474",
+    "bs.accrued_liabilities": "1,253",
+    "bs.revolver": "3,963",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,371",
+    "bs.total_current_liabilities": "13,789",
+    "bs.long_term_debt": "11,232",
+    "bs.other_noncurrent_liabilities": "1,210",
+    "bs.total_liabilities": "26,231",
+    "bs.total_equity": "20,729",
+    "bs.total_liabilities_and_equity": "46,960",
+    "is.revenue": "38,185",
+    "is.cogs": "28,918",
+    "is.gross_profit": "9,267",
+    "is.sga": "5,155",
+    "is.depreciation_amortization": "1,149",
+    "is.other_operating_expense": "114",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "2,849",
+    "is.interest_expense": "631",
+    "is.other_income_net": "23",
+    "is.pretax_income": "2,241",
+    "is.income_tax_expense": "561",
+    "is.net_income": "1,680",
+    "cf.net_income": "1,680",
+    "cf.depreciation_amortization": "1,149",
+    "cf.change_in_working_capital": "98",
+    "cf.other_operating": "26",
+    "cf.cfo": "2,953",
+    "cf.capex": "(1,298)",
+    "cf.cfi": "(1,298)",
+    "cf.revolver_net": "(101)",
+    "cf.term_debt_repayments": "(864)",
+    "cf.distributions": "(704)",
+    "cf.cff": "(1,669)",
+    "cf.net_change_in_cash": "(14)",
+    "sup.cash_interest_paid": "638",
+    "sup.cash_taxes_paid": "563",
+    "sup.scheduled_principal": "864",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/quillfeather-bakery/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Quillfeather Bakery Brands, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,500"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,831"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,611"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,000"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "18,942"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "25,622"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,600"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "720"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "48,884"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,881"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,333"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,011"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,728"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,375"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "15,328"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,072"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,275"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "25,675"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "23,209"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "48,884"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "60,655"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "45,842"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "14,813"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,188"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,753"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "181"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "1,100"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,591"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "863"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "36"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,764"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "692"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,072"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,072"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,753"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(628)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "39"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,236"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,062)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,062)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "962"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,296)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(769)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,103)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "71"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "867"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "812"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,296"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,401",
+    "bs.accounts_receivable": "7,193",
+    "bs.inventory": "7,298",
+    "bs.other_current_assets": "960",
+    "bs.total_current_assets": "17,852",
+    "bs.net_ppe": "25,205",
+    "bs.intangibles": "3,600",
+    "bs.other_noncurrent_assets": "720",
+    "bs.total_assets": "47,377",
+    "bs.accounts_payable": "5,640",
+    "bs.accrued_liabilities": "1,290",
+    "bs.revolver": "4,002",
+    "bs.cpltd": "1,728",
+    "bs.other_current_liabilities": "1,431",
+    "bs.total_current_liabilities": "14,091",
+    "bs.long_term_debt": "10,800",
+    "bs.other_noncurrent_liabilities": "1,223",
+    "bs.total_liabilities": "26,114",
+    "bs.total_equity": "21,263",
+    "bs.total_liabilities_and_equity": "47,377",
+    "is.revenue": "58,195",
+    "is.cogs": "44,054",
+    "is.gross_profit": "14,141",
+    "is.sga": "7,856",
+    "is.depreciation_amortization": "1,726",
+    "is.other_operating_expense": "174",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "4,385",
+    "is.interest_expense": "938",
+    "is.other_income_net": "35",
+    "is.pretax_income": "3,482",
+    "is.income_tax_expense": "871",
+    "is.net_income": "2,611",
+    "cf.net_income": "2,611",
+    "cf.depreciation_amortization": "1,726",
+    "cf.change_in_working_capital": "123",
+    "cf.other_operating": "39",
+    "cf.cfo": "4,499",
+    "cf.capex": "(1,978)",
+    "cf.cfi": "(1,978)",
+    "cf.revolver_net": "(62)",
+    "cf.term_debt_repayments": "(1,296)",
+    "cf.distributions": "(1,101)",
+    "cf.cff": "(2,459)",
+    "cf.net_change_in_cash": "62",
+    "sup.cash_interest_paid": "945",
+    "sup.cash_taxes_paid": "849",
+    "sup.scheduled_principal": "1,296",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "quillfeather-bakery.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/quillfeather-bakery/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-07",
+   "document_date": "2025-05-05",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "quillfeather-bakery.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/quillfeather-bakery/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-07-26",
+   "document_date": "2025-07-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "quillfeather-bakery.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/quillfeather-bakery/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-10-29",
+   "document_date": "2025-10-27",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "quillfeather-bakery.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/quillfeather-bakery/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-02",
+   "document_date": "2026-01-31",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "quillfeather-bakery.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/quillfeather-bakery/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-04-26",
+   "document_date": "2026-04-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "quillfeather-bakery.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/quillfeather-bakery/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-07-28",
+   "document_date": "2026-07-26",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "quillfeather-bakery.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/quillfeather-bakery/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Quillfeather Bakery Brands, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "addback_over_cap",
+  "description": "Add-back over its cap: the certificate adds back all restructuring charges although the agreement caps the add-back. Both calculations pass, so the difference is a logged variance.",
+  "details": {
+   "addback": "restructuring",
+   "cap": "500000",
+   "taken_by_borrower": "1100000"
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.10",
+    "pass": true,
+    "headroom": "0.2364",
+    "reported_value": "2.10",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "16964000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3362000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1323000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1121000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2284000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8090000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8090000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.44",
+    "pass": true,
+    "headroom": "0.2522",
+    "reported_value": "1.44",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3362000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1323000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1121000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2284000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8090000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8090000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2587000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1100000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4403000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1331000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3059000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.08",
+    "pass": true,
+    "headroom": "0.2436",
+    "reported_value": "2.08",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "16923000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3415000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1292000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1139000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2291000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8137000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8137000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.45",
+    "pass": true,
+    "headroom": "0.2609",
+    "reported_value": "1.45",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3415000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1292000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1139000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2291000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8137000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8137000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2614000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1121000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4402000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1303000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3031000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.02",
+    "pass": true,
+    "headroom": "0.2655",
+    "reported_value": "2.02",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "16530000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3476000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1265000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1159000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2298000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8198000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8198000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.47",
+    "pass": true,
+    "headroom": "0.2783",
+    "reported_value": "1.47",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3476000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1265000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1159000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2298000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8198000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8198000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2641000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1139000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4418000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1274000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3002000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.94",
+    "pass": true,
+    "headroom": "0.2945",
+    "reported_value": "1.94",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "16145000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3595000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1238000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1199000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2306000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8338000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8338000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.52",
+    "pass": true,
+    "headroom": "0.3217",
+    "reported_value": "1.52",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3595000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1238000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1199000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2306000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8338000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8338000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2666000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1159000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4513000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1247000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2975000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.84",
+    "pass": true,
+    "headroom": "0.3309",
+    "reported_value": "1.84",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "15563000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3687000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1207000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1230000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2314000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8438000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8438000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.54",
+    "pass": true,
+    "headroom": "0.3391",
+    "reported_value": "1.54",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3687000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1207000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1230000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2314000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8438000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8438000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2690000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1199000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4549000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1217000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2945000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.86",
+    "pass": true,
+    "headroom": "0.3236",
+    "reported_value": "1.86",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "15764000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3363000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1183000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1122000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2323000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7991000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8491000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.55",
+    "pass": true,
+    "headroom": "0.3478",
+    "reported_value": "1.55",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3363000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1183000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1122000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2323000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7991000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8491000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2722000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1230000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4539000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1191000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2919000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.96",
+    "pass": true,
+    "headroom": "0.2873",
+    "reported_value": "1.82",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant_variance",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "15811000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3056000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1163000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1020000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2333000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7572000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8072000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "quillfeather-bakery-rlc",
+    "terms_version_id": "tv-quillfeather-bakery-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.45",
+    "pass": true,
+    "headroom": "0.2609",
+    "reported_value": "1.66",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant_variance",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3056000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1163000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1020000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2333000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7572000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "8072000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2750000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1122000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4200000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1169000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1728000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2897000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.2873",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "total_leverage",
+     "two_periods_ago": "0.3309",
+     "prior_period": "0.3236"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}

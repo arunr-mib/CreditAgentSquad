@@ -1,0 +1,6269 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "halvorsen-plastics",
+  "name": "Halvorsen Plastics & Molding, Inc.",
+  "legal_form": "corporation",
+  "industry": "manufacturing",
+  "city": "Erie",
+  "state": "PA",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Dana Whitcombe",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 5,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Stellan Brodeur",
+  "auditor": "Wexley Arnault LLP"
+ },
+ "facilities": [
+  {
+   "id": "halvorsen-plastics-rlc",
+   "borrower_id": "halvorsen-plastics",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "7250000",
+   "original_amount": "7250000",
+   "closing_date": "2021-11-19",
+   "maturity_date": "2027-11-19",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  },
+  {
+   "id": "halvorsen-plastics-tl",
+   "borrower_id": "halvorsen-plastics",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "25650000",
+   "original_amount": "25650000",
+   "closing_date": "2021-11-19",
+   "maturity_date": "2028-11-19",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "570000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-halvorsen-plastics-1",
+   "facility_id": "halvorsen-plastics-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2021-11-19",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2021-11-25",
+   "warnings": [],
+   "source_documents": [
+    "halvorsen-plastics.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.05",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "halvorsen-plastics.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.05 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "halvorsen-plastics.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "halvorsen-plastics.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "halvorsen-plastics.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "halvorsen-plastics.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "halvorsen-plastics.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "halvorsen-plastics.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "halvorsen-plastics.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "7250000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "2750000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "75000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "halvorsen-plastics.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $2,750,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $75,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $7,250,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $25,650,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "halvorsen-plastics.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $570,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "19176000",
+    "is.cogs": "13655000",
+    "is.gross_profit": "5521000",
+    "is.sga": "3164000",
+    "is.depreciation_amortization": "600000",
+    "is.other_operating_expense": "77000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1680000",
+    "is.interest_expense": "444000",
+    "is.other_income_net": "12000",
+    "is.pretax_income": "1248000",
+    "is.income_tax_expense": "312000",
+    "is.net_income": "936000",
+    "bs.cash": "2301000",
+    "bs.accounts_receivable": "10108000",
+    "bs.inventory": "9278000",
+    "bs.other_current_assets": "920000",
+    "bs.total_current_assets": "22607000",
+    "bs.net_ppe": "23052000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "50979000",
+    "bs.accounts_payable": "6135000",
+    "bs.accrued_liabilities": "1540000",
+    "bs.revolver": "4247000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1386000",
+    "bs.total_current_liabilities": "15588000",
+    "bs.long_term_debt": "17670000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1210000",
+    "bs.total_liabilities": "34468000",
+    "bs.total_equity": "16511000",
+    "bs.total_liabilities_and_equity": "50979000",
+    "cf.net_income": "936000",
+    "cf.depreciation_amortization": "600000",
+    "cf.change_in_working_capital": "-299000",
+    "cf.other_operating": "14000",
+    "cf.cfo": "1251000",
+    "cf.capex": "652000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-652000",
+    "cf.revolver_net": "109000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "570000",
+    "cf.distributions": "94000",
+    "cf.other_financing": "0",
+    "cf.cff": "-555000",
+    "cf.net_change_in_cash": "44000",
+    "sup.cash_interest_paid": "449000",
+    "sup.cash_taxes_paid": "278000",
+    "sup.scheduled_principal": "570000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "11907000",
+    "cash.beginning_of_year": "2257000",
+    "debt.term_total": "19950000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "39246000",
+    "is.cogs": "28047000",
+    "is.gross_profit": "11199000",
+    "is.sga": "6476000",
+    "is.depreciation_amortization": "1201000",
+    "is.other_operating_expense": "157000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3365000",
+    "is.interest_expense": "880000",
+    "is.other_income_net": "24000",
+    "is.pretax_income": "2509000",
+    "is.income_tax_expense": "627000",
+    "is.net_income": "1882000",
+    "bs.cash": "2408000",
+    "bs.accounts_receivable": "10205000",
+    "bs.inventory": "9779000",
+    "bs.other_current_assets": "963000",
+    "bs.total_current_assets": "23355000",
+    "bs.net_ppe": "23133000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "51808000",
+    "bs.accounts_payable": "6467000",
+    "bs.accrued_liabilities": "1602000",
+    "bs.revolver": "4415000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1439000",
+    "bs.total_current_liabilities": "16203000",
+    "bs.long_term_debt": "17100000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1224000",
+    "bs.total_liabilities": "34527000",
+    "bs.total_equity": "17281000",
+    "bs.total_liabilities_and_equity": "51808000",
+    "cf.net_income": "1882000",
+    "cf.depreciation_amortization": "1201000",
+    "cf.change_in_working_capital": "-493000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "2618000",
+    "cf.capex": "1334000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1334000",
+    "cf.revolver_net": "277000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1140000",
+    "cf.distributions": "270000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1133000",
+    "cf.net_change_in_cash": "151000",
+    "sup.cash_interest_paid": "888000",
+    "sup.cash_taxes_paid": "590000",
+    "sup.scheduled_principal": "1140000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "12677000",
+    "cash.beginning_of_year": "2257000",
+    "debt.term_total": "19380000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "59791000",
+    "is.cogs": "42667000",
+    "is.gross_profit": "17124000",
+    "is.sga": "9866000",
+    "is.depreciation_amortization": "1804000",
+    "is.other_operating_expense": "239000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5215000",
+    "is.interest_expense": "1310000",
+    "is.other_income_net": "36000",
+    "is.pretax_income": "3941000",
+    "is.income_tax_expense": "985000",
+    "is.net_income": "2956000",
+    "bs.cash": "2465000",
+    "bs.accounts_receivable": "10852000",
+    "bs.inventory": "9934000",
+    "bs.other_current_assets": "986000",
+    "bs.total_current_assets": "24237000",
+    "bs.net_ppe": "23229000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "52786000",
+    "bs.accounts_payable": "6569000",
+    "bs.accrued_liabilities": "1635000",
+    "bs.revolver": "4777000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1509000",
+    "bs.total_current_liabilities": "16770000",
+    "bs.long_term_debt": "16530000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1238000",
+    "bs.total_liabilities": "34538000",
+    "bs.total_equity": "18248000",
+    "bs.total_liabilities_and_equity": "52786000",
+    "cf.net_income": "2956000",
+    "cf.depreciation_amortization": "1804000",
+    "cf.change_in_working_capital": "-1113000",
+    "cf.other_operating": "42000",
+    "cf.cfo": "3689000",
+    "cf.capex": "2033000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2033000",
+    "cf.revolver_net": "639000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1710000",
+    "cf.distributions": "377000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1448000",
+    "cf.net_change_in_cash": "208000",
+    "sup.cash_interest_paid": "1320000",
+    "sup.cash_taxes_paid": "905000",
+    "sup.scheduled_principal": "1710000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "13644000",
+    "cash.beginning_of_year": "2257000",
+    "debt.term_total": "18810000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "79487000",
+    "is.cogs": "56691000",
+    "is.gross_profit": "22796000",
+    "is.sga": "13116000",
+    "is.depreciation_amortization": "2410000",
+    "is.other_operating_expense": "318000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6952000",
+    "is.interest_expense": "1736000",
+    "is.other_income_net": "48000",
+    "is.pretax_income": "5264000",
+    "is.income_tax_expense": "1316000",
+    "is.net_income": "3948000",
+    "bs.cash": "2364000",
+    "bs.accounts_receivable": "9864000",
+    "bs.inventory": "9529000",
+    "bs.other_current_assets": "945000",
+    "bs.total_current_assets": "22702000",
+    "bs.net_ppe": "23293000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "51315000",
+    "bs.accounts_payable": "6301000",
+    "bs.accrued_liabilities": "1572000",
+    "bs.revolver": "4020000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1434000",
+    "bs.total_current_liabilities": "15607000",
+    "bs.long_term_debt": "15960000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1252000",
+    "bs.total_liabilities": "32819000",
+    "bs.total_equity": "18496000",
+    "bs.total_liabilities_and_equity": "51315000",
+    "cf.net_income": "3948000",
+    "cf.depreciation_amortization": "2410000",
+    "cf.change_in_working_capital": "-85000",
+    "cf.other_operating": "56000",
+    "cf.cfo": "6329000",
+    "cf.capex": "2703000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2703000",
+    "cf.revolver_net": "-118000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2280000",
+    "cf.distributions": "1121000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3519000",
+    "cf.net_change_in_cash": "107000",
+    "sup.cash_interest_paid": "1747000",
+    "sup.cash_taxes_paid": "1263000",
+    "sup.scheduled_principal": "2280000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "13892000",
+    "cash.beginning_of_year": "2257000",
+    "debt.term_total": "18240000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "19841000",
+    "is.cogs": "14228000",
+    "is.gross_profit": "5613000",
+    "is.sga": "3274000",
+    "is.depreciation_amortization": "607000",
+    "is.other_operating_expense": "79000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1653000",
+    "is.interest_expense": "402000",
+    "is.other_income_net": "12000",
+    "is.pretax_income": "1263000",
+    "is.income_tax_expense": "316000",
+    "is.net_income": "947000",
+    "bs.cash": "2381000",
+    "bs.accounts_receivable": "10154000",
+    "bs.inventory": "9667000",
+    "bs.other_current_assets": "952000",
+    "bs.total_current_assets": "23154000",
+    "bs.net_ppe": "23361000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "51835000",
+    "bs.accounts_payable": "6393000",
+    "bs.accrued_liabilities": "1575000",
+    "bs.revolver": "4365000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1427000",
+    "bs.total_current_liabilities": "16040000",
+    "bs.long_term_debt": "15390000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1266000",
+    "bs.total_liabilities": "32696000",
+    "bs.total_equity": "19139000",
+    "bs.total_liabilities_and_equity": "51835000",
+    "cf.net_income": "947000",
+    "cf.depreciation_amortization": "607000",
+    "cf.change_in_working_capital": "-347000",
+    "cf.other_operating": "14000",
+    "cf.cfo": "1221000",
+    "cf.capex": "675000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-675000",
+    "cf.revolver_net": "345000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "570000",
+    "cf.distributions": "304000",
+    "cf.other_financing": "0",
+    "cf.cff": "-529000",
+    "cf.net_change_in_cash": "17000",
+    "sup.cash_interest_paid": "410000",
+    "sup.cash_taxes_paid": "331000",
+    "sup.scheduled_principal": "570000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "14535000",
+    "cash.beginning_of_year": "2364000",
+    "debt.term_total": "17670000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "40638000",
+    "is.cogs": "29152000",
+    "is.gross_profit": "11486000",
+    "is.sga": "6706000",
+    "is.depreciation_amortization": "1216000",
+    "is.other_operating_expense": "162000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3402000",
+    "is.interest_expense": "800000",
+    "is.other_income_net": "24000",
+    "is.pretax_income": "2626000",
+    "is.income_tax_expense": "657000",
+    "is.net_income": "1969000",
+    "bs.cash": "2496000",
+    "bs.accounts_receivable": "10416000",
+    "bs.inventory": "10140000",
+    "bs.other_current_assets": "998000",
+    "bs.total_current_assets": "24050000",
+    "bs.net_ppe": "23459000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "52829000",
+    "bs.accounts_payable": "6706000",
+    "bs.accrued_liabilities": "1643000",
+    "bs.revolver": "4575000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1506000",
+    "bs.total_current_liabilities": "16710000",
+    "bs.long_term_debt": "14820000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1280000",
+    "bs.total_liabilities": "32810000",
+    "bs.total_equity": "20019000",
+    "bs.total_liabilities_and_equity": "52829000",
+    "cf.net_income": "1969000",
+    "cf.depreciation_amortization": "1216000",
+    "cf.change_in_working_capital": "-668000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "2545000",
+    "cf.capex": "1382000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1382000",
+    "cf.revolver_net": "555000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1140000",
+    "cf.distributions": "446000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1031000",
+    "cf.net_change_in_cash": "132000",
+    "sup.cash_interest_paid": "809000",
+    "sup.cash_taxes_paid": "647000",
+    "sup.scheduled_principal": "1140000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "15415000",
+    "cash.beginning_of_year": "2364000",
+    "debt.term_total": "17100000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "62231000",
+    "is.cogs": "44572000",
+    "is.gross_profit": "17659000",
+    "is.sga": "10269000",
+    "is.depreciation_amortization": "1827000",
+    "is.other_operating_expense": "248000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5315000",
+    "is.interest_expense": "1192000",
+    "is.other_income_net": "37000",
+    "is.pretax_income": "4160000",
+    "is.income_tax_expense": "1041000",
+    "is.net_income": "3119000",
+    "bs.cash": "2591000",
+    "bs.accounts_receivable": "11288000",
+    "bs.inventory": "10477000",
+    "bs.other_current_assets": "1036000",
+    "bs.total_current_assets": "25392000",
+    "bs.net_ppe": "23582000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "54294000",
+    "bs.accounts_payable": "6928000",
+    "bs.accrued_liabilities": "1699000",
+    "bs.revolver": "5196000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1593000",
+    "bs.total_current_liabilities": "17696000",
+    "bs.long_term_debt": "14250000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1294000",
+    "bs.total_liabilities": "33240000",
+    "bs.total_equity": "21054000",
+    "bs.total_liabilities_and_equity": "54294000",
+    "cf.net_income": "3119000",
+    "cf.depreciation_amortization": "1827000",
+    "cf.change_in_working_capital": "-1550000",
+    "cf.other_operating": "42000",
+    "cf.cfo": "3438000",
+    "cf.capex": "2116000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2116000",
+    "cf.revolver_net": "1176000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1710000",
+    "cf.distributions": "561000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1095000",
+    "cf.net_change_in_cash": "227000",
+    "sup.cash_interest_paid": "1203000",
+    "sup.cash_taxes_paid": "988000",
+    "sup.scheduled_principal": "1710000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "16450000",
+    "cash.beginning_of_year": "2364000",
+    "debt.term_total": "16530000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "82756000",
+    "is.cogs": "59215000",
+    "is.gross_profit": "23541000",
+    "is.sga": "13656000",
+    "is.depreciation_amortization": "2442000",
+    "is.other_operating_expense": "330000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7113000",
+    "is.interest_expense": "1586000",
+    "is.other_income_net": "49000",
+    "is.pretax_income": "5576000",
+    "is.income_tax_expense": "1395000",
+    "is.net_income": "4181000",
+    "bs.cash": "2463000",
+    "bs.accounts_receivable": "10482000",
+    "bs.inventory": "9949000",
+    "bs.other_current_assets": "985000",
+    "bs.total_current_assets": "23879000",
+    "bs.net_ppe": "23665000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "52864000",
+    "bs.accounts_payable": "6579000",
+    "bs.accrued_liabilities": "1621000",
+    "bs.revolver": "4516000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1503000",
+    "bs.total_current_liabilities": "16499000",
+    "bs.long_term_debt": "13680000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1308000",
+    "bs.total_liabilities": "31487000",
+    "bs.total_equity": "21377000",
+    "bs.total_liabilities_and_equity": "52864000",
+    "cf.net_income": "4181000",
+    "cf.depreciation_amortization": "2442000",
+    "cf.change_in_working_capital": "-682000",
+    "cf.other_operating": "56000",
+    "cf.cfo": "5997000",
+    "cf.capex": "2814000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2814000",
+    "cf.revolver_net": "496000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2280000",
+    "cf.distributions": "1300000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3084000",
+    "cf.net_change_in_cash": "99000",
+    "sup.cash_interest_paid": "1597000",
+    "sup.cash_taxes_paid": "1372000",
+    "sup.scheduled_principal": "2280000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "16773000",
+    "cash.beginning_of_year": "2364000",
+    "debt.term_total": "15960000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "20601000",
+    "is.cogs": "14744000",
+    "is.gross_profit": "5857000",
+    "is.sga": "3399000",
+    "is.depreciation_amortization": "617000",
+    "is.other_operating_expense": "82000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1759000",
+    "is.interest_expense": "371000",
+    "is.other_income_net": "12000",
+    "is.pretax_income": "1400000",
+    "is.income_tax_expense": "350000",
+    "is.net_income": "1050000",
+    "bs.cash": "2472000",
+    "bs.accounts_receivable": "10882000",
+    "bs.inventory": "10018000",
+    "bs.other_current_assets": "989000",
+    "bs.total_current_assets": "24361000",
+    "bs.net_ppe": "23748000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "53429000",
+    "bs.accounts_payable": "6625000",
+    "bs.accrued_liabilities": "1620000",
+    "bs.revolver": "4646000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1504000",
+    "bs.total_current_liabilities": "16675000",
+    "bs.long_term_debt": "13110000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1322000",
+    "bs.total_liabilities": "31107000",
+    "bs.total_equity": "22322000",
+    "bs.total_liabilities_and_equity": "53429000",
+    "cf.net_income": "1050000",
+    "cf.depreciation_amortization": "617000",
+    "cf.change_in_working_capital": "-427000",
+    "cf.other_operating": "14000",
+    "cf.cfo": "1254000",
+    "cf.capex": "700000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-700000",
+    "cf.revolver_net": "130000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "570000",
+    "cf.distributions": "105000",
+    "cf.other_financing": "0",
+    "cf.cff": "-545000",
+    "cf.net_change_in_cash": "9000",
+    "sup.cash_interest_paid": "378000",
+    "sup.cash_taxes_paid": "354000",
+    "sup.scheduled_principal": "570000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "17718000",
+    "cash.beginning_of_year": "2463000",
+    "debt.term_total": "15390000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "42386000",
+    "is.cogs": "30340000",
+    "is.gross_profit": "12046000",
+    "is.sga": "6994000",
+    "is.depreciation_amortization": "1236000",
+    "is.other_operating_expense": "169000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3647000",
+    "is.interest_expense": "734000",
+    "is.other_income_net": "25000",
+    "is.pretax_income": "2938000",
+    "is.income_tax_expense": "735000",
+    "is.net_income": "2203000",
+    "bs.cash": "2614000",
+    "bs.accounts_receivable": "11507000",
+    "bs.inventory": "10597000",
+    "bs.other_current_assets": "1046000",
+    "bs.total_current_assets": "25764000",
+    "bs.net_ppe": "23870000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "54954000",
+    "bs.accounts_payable": "7008000",
+    "bs.accrued_liabilities": "1703000",
+    "bs.revolver": "5122000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1605000",
+    "bs.total_current_liabilities": "17718000",
+    "bs.long_term_debt": "12540000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1336000",
+    "bs.total_liabilities": "31594000",
+    "bs.total_equity": "23360000",
+    "bs.total_liabilities_and_equity": "54954000",
+    "cf.net_income": "2203000",
+    "cf.depreciation_amortization": "1236000",
+    "cf.change_in_working_capital": "-1121000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "2346000",
+    "cf.capex": "1441000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1441000",
+    "cf.revolver_net": "606000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1140000",
+    "cf.distributions": "220000",
+    "cf.other_financing": "0",
+    "cf.cff": "-754000",
+    "cf.net_change_in_cash": "151000",
+    "sup.cash_interest_paid": "744000",
+    "sup.cash_taxes_paid": "704000",
+    "sup.scheduled_principal": "1140000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "18756000",
+    "cash.beginning_of_year": "2463000",
+    "debt.term_total": "14820000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "64944000",
+    "is.cogs": "46399000",
+    "is.gross_profit": "18545000",
+    "is.sga": "10716000",
+    "is.depreciation_amortization": "1858000",
+    "is.other_operating_expense": "259000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5712000",
+    "is.interest_expense": "1096000",
+    "is.other_income_net": "39000",
+    "is.pretax_income": "4655000",
+    "is.income_tax_expense": "1164000",
+    "is.net_income": "3491000",
+    "bs.cash": "2707000",
+    "bs.accounts_receivable": "11495000",
+    "bs.inventory": "10911000",
+    "bs.other_current_assets": "1083000",
+    "bs.total_current_assets": "26196000",
+    "bs.net_ppe": "24015000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "55531000",
+    "bs.accounts_payable": "7216000",
+    "bs.accrued_liabilities": "1759000",
+    "bs.revolver": "4963000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1692000",
+    "bs.total_current_liabilities": "17910000",
+    "bs.long_term_debt": "11970000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1350000",
+    "bs.total_liabilities": "31230000",
+    "bs.total_equity": "24301000",
+    "bs.total_liabilities_and_equity": "55531000",
+    "cf.net_income": "3491000",
+    "cf.depreciation_amortization": "1858000",
+    "cf.change_in_working_capital": "-1109000",
+    "cf.other_operating": "42000",
+    "cf.cfo": "4282000",
+    "cf.capex": "2208000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2208000",
+    "cf.revolver_net": "447000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1710000",
+    "cf.distributions": "567000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1830000",
+    "cf.net_change_in_cash": "244000",
+    "sup.cash_interest_paid": "1106000",
+    "sup.cash_taxes_paid": "1089000",
+    "sup.scheduled_principal": "1710000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "19697000",
+    "cash.beginning_of_year": "2463000",
+    "debt.term_total": "14250000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "76000000",
+    "is.cogs": "54208000",
+    "is.gross_profit": "21792000",
+    "is.sga": "12541000",
+    "is.depreciation_amortization": "2384000",
+    "is.other_operating_expense": "304000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6563000",
+    "is.interest_expense": "1886000",
+    "is.other_income_net": "46000",
+    "is.pretax_income": "4723000",
+    "is.income_tax_expense": "1181000",
+    "is.net_income": "3542000",
+    "bs.cash": "2257000",
+    "bs.accounts_receivable": "9792000",
+    "bs.inventory": "9156000",
+    "bs.other_current_assets": "903000",
+    "bs.total_current_assets": "22108000",
+    "bs.net_ppe": "23000000",
+    "bs.intangibles": "4560000",
+    "bs.other_noncurrent_assets": "760000",
+    "bs.total_assets": "50428000",
+    "bs.accounts_payable": "6055000",
+    "bs.accrued_liabilities": "1519000",
+    "bs.revolver": "4138000",
+    "bs.cpltd": "2280000",
+    "bs.other_current_liabilities": "1331000",
+    "bs.total_current_liabilities": "15323000",
+    "bs.long_term_debt": "18240000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1196000",
+    "bs.total_liabilities": "34759000",
+    "bs.total_equity": "15669000",
+    "bs.total_liabilities_and_equity": "50428000",
+    "cf.net_income": "3542000",
+    "cf.depreciation_amortization": "2384000",
+    "cf.change_in_working_capital": "-71000",
+    "cf.other_operating": "56000",
+    "cf.cfo": "5911000",
+    "cf.capex": "2584000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2584000",
+    "cf.revolver_net": "-42000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2280000",
+    "cf.distributions": "1028000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3350000",
+    "cf.net_change_in_cash": "-23000",
+    "sup.cash_interest_paid": "1895000",
+    "sup.cash_taxes_paid": "1247000",
+    "sup.scheduled_principal": "2280000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4604000",
+    "equity.retained_earnings": "11065000",
+    "cash.beginning_of_year": "2280000",
+    "debt.term_total": "20520000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.34",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3959000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1694000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1320000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2417000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9390000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2726000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1316000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5348000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1708000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3988000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.35",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "22035000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3959000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1694000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1320000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2417000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9390000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.37",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4035000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1656000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1346000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2425000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9462000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2751000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1320000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5391000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1668000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3948000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.29",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "21675000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4035000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1656000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1346000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2425000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9462000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.38",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4111000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1618000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1372000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2433000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9534000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2786000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1346000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5402000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1630000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3910000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.28",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "21726000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4111000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1618000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1372000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2433000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9534000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.40",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4181000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1586000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1395000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2442000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9604000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2814000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1372000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5418000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1597000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3877000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.13",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20476000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4181000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1586000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1395000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2442000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9604000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.43",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4284000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1555000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1429000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2452000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9720000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2839000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1395000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5486000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1565000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3845000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.06",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20036000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4284000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1555000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1429000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2452000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9720000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.46",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4415000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1520000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1473000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2462000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9870000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2873000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1429000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5568000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1532000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3812000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.02",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "19942000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4415000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1520000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1473000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2462000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9870000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Stellan Brodeur",
+   "reported": {
+    "fccr": {
+     "value": "1.50",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4553000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1490000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1518000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2473000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10034000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2906000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1473000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5655000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1500000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2280000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "3780000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.91",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "19213000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4553000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1490000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1518000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2473000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10034000"
+      }
+     ]
+    }
+   },
+   "document_id": "halvorsen-plastics.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Assembly, LLC",
+     "category": "trade",
+     "contra": "99200",
+     "buckets": {
+      "0_30": "1191600",
+      "31_60": "314000",
+      "61_90": "132000",
+      "over_90": "16400"
+     },
+     "total": "1654000"
+    },
+    {
+     "customer": "County of Redfern Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "233200",
+      "31_60": "60400",
+      "61_90": "8800",
+      "over_90": "0"
+     },
+     "total": "302400"
+    },
+    {
+     "customer": "Easton Systems, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "936400",
+      "31_60": "259600",
+      "61_90": "64800",
+      "over_90": "38800"
+     },
+     "total": "1299600"
+    },
+    {
+     "customer": "Elmhurst Equipment, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "944000",
+      "31_60": "314400",
+      "61_90": "109200",
+      "over_90": "0"
+     },
+     "total": "1367600"
+    },
+    {
+     "customer": "Foxhollow Machine Works, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "446800",
+      "31_60": "133600",
+      "61_90": "44400",
+      "over_90": "12400"
+     },
+     "total": "637200"
+    },
+    {
+     "customer": "Halvorsen Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "354600",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "354600"
+    },
+    {
+     "customer": "Hartsfield Fabrication, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "912000",
+      "31_60": "353600",
+      "61_90": "68000",
+      "over_90": "27200"
+     },
+     "total": "1360800"
+    },
+    {
+     "customer": "Kingsway Machine Works, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "291600",
+      "31_60": "136400",
+      "61_90": "13600",
+      "over_90": "13600"
+     },
+     "total": "455200"
+    },
+    {
+     "customer": "Norwood Equipment, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "294800",
+      "31_60": "114800",
+      "61_90": "16800",
+      "over_90": "0"
+     },
+     "total": "426400"
+    },
+    {
+     "customer": "Prescott Fabrication, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "887200",
+      "31_60": "258400",
+      "61_90": "86000",
+      "over_90": "0"
+     },
+     "total": "1231600"
+    },
+    {
+     "customer": "Quarry Systems, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "840800",
+      "31_60": "244800",
+      "61_90": "70000",
+      "over_90": "11600"
+     },
+     "total": "1167200"
+    },
+    {
+     "customer": "Underhill Fabrication Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "218000",
+      "31_60": "75600",
+      "61_90": "8800",
+      "over_90": "0"
+     },
+     "total": "302400"
+    },
+    {
+     "customer": "Yarrow Systems, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "699200",
+      "31_60": "179200",
+      "61_90": "37600",
+      "over_90": "28000"
+     },
+     "total": "944000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "3638400"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "5350800"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "1712800"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "959400",
+    "ineligible_over_age": "148000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "99200",
+    "ineligible_concentration": "0",
+    "gross_ar": "11503000",
+    "total_ineligible_ar": "1206600",
+    "eligible_ar": "10296400",
+    "ar_availability": "8751940",
+    "gross_inventory": "10702000",
+    "ineligible_inventory": "1712800",
+    "eligible_inventory": "8989200",
+    "inventory_availability_before_sublimit": "4494600",
+    "inventory_availability": "2750000",
+    "reserves": "75000",
+    "borrowing_base": "11426940",
+    "commitment": "7250000",
+    "lesser_of_base_and_commitment": "7250000",
+    "outstanding": "5084000",
+    "letters_of_credit": "0",
+    "availability": "2166000"
+   },
+   "outstanding": "5084000",
+   "letters_of_credit": "0",
+   "document_id": "halvorsen-plastics.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Assembly, LLC",
+     "category": "trade",
+     "contra": "98800",
+     "buckets": {
+      "0_30": "1191200",
+      "31_60": "297200",
+      "61_90": "148400",
+      "over_90": "16400"
+     },
+     "total": "1653200"
+    },
+    {
+     "customer": "County of Redfern Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "233200",
+      "31_60": "57200",
+      "61_90": "12000",
+      "over_90": "0"
+     },
+     "total": "302400"
+    },
+    {
+     "customer": "Easton Systems, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "936000",
+      "31_60": "246800",
+      "61_90": "77600",
+      "over_90": "38800"
+     },
+     "total": "1299200"
+    },
+    {
+     "customer": "Elmhurst Equipment, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "944000",
+      "31_60": "300400",
+      "61_90": "122800",
+      "over_90": "0"
+     },
+     "total": "1367200"
+    },
+    {
+     "customer": "Foxhollow Machine Works, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "446400",
+      "31_60": "127200",
+      "61_90": "50800",
+      "over_90": "12400"
+     },
+     "total": "636800"
+    },
+    {
+     "customer": "Halvorsen Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "354200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "354200"
+    },
+    {
+     "customer": "Hartsfield Fabrication, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "911200",
+      "31_60": "340000",
+      "61_90": "81600",
+      "over_90": "27200"
+     },
+     "total": "1360000"
+    },
+    {
+     "customer": "Kingsway Machine Works, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "291600",
+      "31_60": "132000",
+      "61_90": "18000",
+      "over_90": "13600"
+     },
+     "total": "455200"
+    },
+    {
+     "customer": "Norwood Equipment, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "294400",
+      "31_60": "110800",
+      "61_90": "21200",
+      "over_90": "0"
+     },
+     "total": "426400"
+    },
+    {
+     "customer": "Prescott Fabrication, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "886800",
+      "31_60": "246000",
+      "61_90": "98400",
+      "over_90": "0"
+     },
+     "total": "1231200"
+    },
+    {
+     "customer": "Quarry Systems, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "840400",
+      "31_60": "233200",
+      "61_90": "81600",
+      "over_90": "11600"
+     },
+     "total": "1166800"
+    },
+    {
+     "customer": "Underhill Fabrication Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "218000",
+      "31_60": "72400",
+      "61_90": "12000",
+      "over_90": "0"
+     },
+     "total": "302400"
+    },
+    {
+     "customer": "Yarrow Systems, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "699200",
+      "31_60": "169600",
+      "61_90": "47200",
+      "over_90": "28000"
+     },
+     "total": "944000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "3674000"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "5402800"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "1729200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "959000",
+    "ineligible_over_age": "148000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "98800",
+    "ineligible_concentration": "0",
+    "gross_ar": "11499000",
+    "total_ineligible_ar": "1205800",
+    "eligible_ar": "10293200",
+    "ar_availability": "8749220",
+    "gross_inventory": "10806000",
+    "ineligible_inventory": "1729200",
+    "eligible_inventory": "9076800",
+    "inventory_availability_before_sublimit": "4538400",
+    "inventory_availability": "2750000",
+    "reserves": "75000",
+    "borrowing_base": "11424220",
+    "commitment": "7250000",
+    "lesser_of_base_and_commitment": "7250000",
+    "outstanding": "4941000",
+    "letters_of_credit": "0",
+    "availability": "2309000"
+   },
+   "outstanding": "4941000",
+   "letters_of_credit": "0",
+   "document_id": "halvorsen-plastics.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Alder Assembly, LLC",
+     "category": "trade",
+     "contra": "98800",
+     "buckets": {
+      "0_30": "1190400",
+      "31_60": "280800",
+      "61_90": "165200",
+      "over_90": "16400"
+     },
+     "total": "1652800"
+    },
+    {
+     "customer": "County of Redfern Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "233200",
+      "31_60": "54000",
+      "61_90": "14800",
+      "over_90": "0"
+     },
+     "total": "302000"
+    },
+    {
+     "customer": "Easton Systems, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "935600",
+      "31_60": "233600",
+      "61_90": "90800",
+      "over_90": "38800"
+     },
+     "total": "1298800"
+    },
+    {
+     "customer": "Elmhurst Equipment, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "943200",
+      "31_60": "286800",
+      "61_90": "136400",
+      "over_90": "0"
+     },
+     "total": "1366400"
+    },
+    {
+     "customer": "Foxhollow Machine Works, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "446400",
+      "31_60": "120800",
+      "61_90": "57200",
+      "over_90": "12400"
+     },
+     "total": "636800"
+    },
+    {
+     "customer": "Halvorsen Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "354200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "354200"
+    },
+    {
+     "customer": "Hartsfield Fabrication, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "912000",
+      "31_60": "326000",
+      "61_90": "94800",
+      "over_90": "26800"
+     },
+     "total": "1359600"
+    },
+    {
+     "customer": "Kingsway Machine Works, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "292000",
+      "31_60": "127200",
+      "61_90": "22400",
+      "over_90": "13600"
+     },
+     "total": "455200"
+    },
+    {
+     "customer": "Norwood Equipment, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "294800",
+      "31_60": "106400",
+      "61_90": "25200",
+      "over_90": "0"
+     },
+     "total": "426400"
+    },
+    {
+     "customer": "Prescott Fabrication, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "886800",
+      "31_60": "233600",
+      "61_90": "110400",
+      "over_90": "0"
+     },
+     "total": "1230800"
+    },
+    {
+     "customer": "Quarry Systems, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "840000",
+      "31_60": "221600",
+      "61_90": "93200",
+      "over_90": "11600"
+     },
+     "total": "1166400"
+    },
+    {
+     "customer": "Underhill Fabrication Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "218000",
+      "31_60": "69200",
+      "61_90": "14800",
+      "over_90": "0"
+     },
+     "total": "302000"
+    },
+    {
+     "customer": "Yarrow Systems, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "698800",
+      "31_60": "160400",
+      "61_90": "56400",
+      "over_90": "28000"
+     },
+     "total": "943600"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "3709600"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "5455200"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "1746200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "958200",
+    "ineligible_over_age": "147600",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "98800",
+    "ineligible_concentration": "0",
+    "gross_ar": "11495000",
+    "total_ineligible_ar": "1204600",
+    "eligible_ar": "10290400",
+    "ar_availability": "8746840",
+    "gross_inventory": "10911000",
+    "ineligible_inventory": "1746200",
+    "eligible_inventory": "9164800",
+    "inventory_availability_before_sublimit": "4582400",
+    "inventory_availability": "2750000",
+    "reserves": "75000",
+    "borrowing_base": "11421840",
+    "commitment": "7250000",
+    "lesser_of_base_and_commitment": "7250000",
+    "outstanding": "4963000",
+    "letters_of_credit": "0",
+    "availability": "2287000"
+   },
+   "outstanding": "4963000",
+   "letters_of_credit": "0",
+   "document_id": "halvorsen-plastics.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "4170000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20520000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "4148000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20520000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "4247000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19950000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "4256000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19950000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "4311000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19950000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "4415000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19380000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "4599000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19380000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "4591000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19380000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "4777000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18810000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "4561000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18810000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "4277000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18810000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "4020000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18240000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "4114000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18240000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "4263000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18240000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "4365000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17670000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "4426000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17670000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "4505000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17670000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "4575000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17100000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "4720000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17100000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "4929000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17100000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "5196000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16530000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "4959000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16530000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "4771000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16530000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "4516000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15960000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "4619000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15960000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "4570000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15960000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "4646000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15390000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "4757000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15390000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "4983000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15390000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "5122000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14820000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "5084000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14820000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "4941000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14820000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "4963000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14250000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "4953000",
+   "commitment": "7250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14250000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "halvorsen-plastics.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/halvorsen-plastics/credit-agreement.pdf",
+   "pages": 13,
+   "title": "Credit Agreement between Halvorsen Plastics & Molding, Inc. and Bank of Stoic",
+   "received_date": "2021-11-19",
+   "document_date": "2021-11-19"
+  },
+  {
+   "id": "halvorsen-plastics.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/halvorsen-plastics/afs-2024.pdf",
+   "pages": 7,
+   "title": "Halvorsen Plastics & Molding, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-21",
+   "document_date": "2025-03-12",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,364"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "9,864"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "9,529"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "945"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "22,702"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "23,293"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "51,315"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "6,301"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,572"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,020"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,434"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "15,607"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "15,960"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,252"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "32,819"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "18,496"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "51,315"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "79,487"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "56,691"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "22,796"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "13,116"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,410"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "318"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "6,952"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,736"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "48"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "5,264"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,316"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,948"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,948"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,410"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(85)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "56"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "6,329"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,703)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(2,703)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(118)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,280)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,121)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,519)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "107"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,747"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,263"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,280"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,257",
+    "bs.accounts_receivable": "9,792",
+    "bs.inventory": "9,156",
+    "bs.other_current_assets": "903",
+    "bs.total_current_assets": "22,108",
+    "bs.net_ppe": "23,000",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "50,428",
+    "bs.accounts_payable": "6,055",
+    "bs.accrued_liabilities": "1,519",
+    "bs.revolver": "4,138",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,331",
+    "bs.total_current_liabilities": "15,323",
+    "bs.long_term_debt": "18,240",
+    "bs.other_noncurrent_liabilities": "1,196",
+    "bs.total_liabilities": "34,759",
+    "bs.total_equity": "15,669",
+    "bs.total_liabilities_and_equity": "50,428",
+    "is.revenue": "76,000",
+    "is.cogs": "54,208",
+    "is.gross_profit": "21,792",
+    "is.sga": "12,541",
+    "is.depreciation_amortization": "2,384",
+    "is.other_operating_expense": "304",
+    "is.operating_income": "6,563",
+    "is.interest_expense": "1,886",
+    "is.other_income_net": "46",
+    "is.pretax_income": "4,723",
+    "is.income_tax_expense": "1,181",
+    "is.net_income": "3,542",
+    "cf.net_income": "3,542",
+    "cf.depreciation_amortization": "2,384",
+    "cf.change_in_working_capital": "(71)",
+    "cf.other_operating": "56",
+    "cf.cfo": "5,911",
+    "cf.capex": "(2,584)",
+    "cf.cfi": "(2,584)",
+    "cf.revolver_net": "(42)",
+    "cf.term_debt_repayments": "(2,280)",
+    "cf.distributions": "(1,028)",
+    "cf.cff": "(3,350)",
+    "cf.net_change_in_cash": "(23)",
+    "sup.cash_interest_paid": "1,895",
+    "sup.cash_taxes_paid": "1,247",
+    "sup.scheduled_principal": "2,280",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/halvorsen-plastics/afs-2025.pdf",
+   "pages": 7,
+   "title": "Halvorsen Plastics & Molding, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-04",
+   "document_date": "2026-03-26",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,463"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "10,482"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "9,949"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "985"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "23,879"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "23,665"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "52,864"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "6,579"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,621"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,516"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,503"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "16,499"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "13,680"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,308"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "31,487"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "21,377"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "52,864"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "82,756"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "59,215"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "23,541"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "13,656"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,442"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "330"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "7,113"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,586"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "49"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "5,576"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,395"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,181"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "4,181"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,442"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(682)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "56"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "5,997"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,814)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(2,814)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "496"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,280)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,300)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,084)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "99"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,597"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,372"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,280"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,364",
+    "bs.accounts_receivable": "9,864",
+    "bs.inventory": "9,529",
+    "bs.other_current_assets": "945",
+    "bs.total_current_assets": "22,702",
+    "bs.net_ppe": "23,293",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "51,315",
+    "bs.accounts_payable": "6,301",
+    "bs.accrued_liabilities": "1,572",
+    "bs.revolver": "4,020",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,434",
+    "bs.total_current_liabilities": "15,607",
+    "bs.long_term_debt": "15,960",
+    "bs.other_noncurrent_liabilities": "1,252",
+    "bs.total_liabilities": "32,819",
+    "bs.total_equity": "18,496",
+    "bs.total_liabilities_and_equity": "51,315",
+    "is.revenue": "79,487",
+    "is.cogs": "56,691",
+    "is.gross_profit": "22,796",
+    "is.sga": "13,116",
+    "is.depreciation_amortization": "2,410",
+    "is.other_operating_expense": "318",
+    "is.operating_income": "6,952",
+    "is.interest_expense": "1,736",
+    "is.other_income_net": "48",
+    "is.pretax_income": "5,264",
+    "is.income_tax_expense": "1,316",
+    "is.net_income": "3,948",
+    "cf.net_income": "3,948",
+    "cf.depreciation_amortization": "2,410",
+    "cf.change_in_working_capital": "(85)",
+    "cf.other_operating": "56",
+    "cf.cfo": "6,329",
+    "cf.capex": "(2,703)",
+    "cf.cfi": "(2,703)",
+    "cf.revolver_net": "(118)",
+    "cf.term_debt_repayments": "(2,280)",
+    "cf.distributions": "(1,121)",
+    "cf.cff": "(3,519)",
+    "cf.net_change_in_cash": "107",
+    "sup.cash_interest_paid": "1,747",
+    "sup.cash_taxes_paid": "1,263",
+    "sup.scheduled_principal": "2,280",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/halvorsen-plastics/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Halvorsen Plastics & Molding, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-11",
+   "document_date": "2025-05-07",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,381"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "10,154"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "9,667"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "952"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,154"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "23,361"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "51,835"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,393"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,575"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,365"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,427"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "16,040"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "15,390"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,266"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "32,696"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "19,139"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "51,835"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "19,841"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "14,228"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,613"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,274"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "607"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "79"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,653"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "402"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "12"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,263"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "316"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "947"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "947"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "607"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(347)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "14"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,221"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(675)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(675)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "345"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(570)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(304)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(529)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "17"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "410"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "331"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "570"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,301",
+    "bs.accounts_receivable": "10,108",
+    "bs.inventory": "9,278",
+    "bs.other_current_assets": "920",
+    "bs.total_current_assets": "22,607",
+    "bs.net_ppe": "23,052",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "50,979",
+    "bs.accounts_payable": "6,135",
+    "bs.accrued_liabilities": "1,540",
+    "bs.revolver": "4,247",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,386",
+    "bs.total_current_liabilities": "15,588",
+    "bs.long_term_debt": "17,670",
+    "bs.other_noncurrent_liabilities": "1,210",
+    "bs.total_liabilities": "34,468",
+    "bs.total_equity": "16,511",
+    "bs.total_liabilities_and_equity": "50,979",
+    "is.revenue": "19,176",
+    "is.cogs": "13,655",
+    "is.gross_profit": "5,521",
+    "is.sga": "3,164",
+    "is.depreciation_amortization": "600",
+    "is.other_operating_expense": "77",
+    "is.operating_income": "1,680",
+    "is.interest_expense": "444",
+    "is.other_income_net": "12",
+    "is.pretax_income": "1,248",
+    "is.income_tax_expense": "312",
+    "is.net_income": "936",
+    "cf.net_income": "936",
+    "cf.depreciation_amortization": "600",
+    "cf.change_in_working_capital": "(299)",
+    "cf.other_operating": "14",
+    "cf.cfo": "1,251",
+    "cf.capex": "(652)",
+    "cf.cfi": "(652)",
+    "cf.revolver_net": "109",
+    "cf.term_debt_repayments": "(570)",
+    "cf.distributions": "(94)",
+    "cf.cff": "(555)",
+    "cf.net_change_in_cash": "44",
+    "sup.cash_interest_paid": "449",
+    "sup.cash_taxes_paid": "278",
+    "sup.scheduled_principal": "570",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/halvorsen-plastics/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Halvorsen Plastics & Molding, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-27",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,496"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "10,416"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,140"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "998"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "24,050"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "23,459"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "52,829"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,706"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,643"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,575"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,506"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "16,710"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,820"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,280"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "32,810"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "20,019"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "52,829"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "40,638"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "29,152"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "11,486"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,706"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,216"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "162"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,402"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "800"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "24"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,626"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "657"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,969"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,969"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,216"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(668)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "28"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,545"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,382)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,382)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "555"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,140)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(446)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,031)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "132"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "809"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "647"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,140"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,408",
+    "bs.accounts_receivable": "10,205",
+    "bs.inventory": "9,779",
+    "bs.other_current_assets": "963",
+    "bs.total_current_assets": "23,355",
+    "bs.net_ppe": "23,133",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "51,808",
+    "bs.accounts_payable": "6,467",
+    "bs.accrued_liabilities": "1,602",
+    "bs.revolver": "4,415",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,439",
+    "bs.total_current_liabilities": "16,203",
+    "bs.long_term_debt": "17,100",
+    "bs.other_noncurrent_liabilities": "1,224",
+    "bs.total_liabilities": "34,527",
+    "bs.total_equity": "17,281",
+    "bs.total_liabilities_and_equity": "51,808",
+    "is.revenue": "39,246",
+    "is.cogs": "28,047",
+    "is.gross_profit": "11,199",
+    "is.sga": "6,476",
+    "is.depreciation_amortization": "1,201",
+    "is.other_operating_expense": "157",
+    "is.operating_income": "3,365",
+    "is.interest_expense": "880",
+    "is.other_income_net": "24",
+    "is.pretax_income": "2,509",
+    "is.income_tax_expense": "627",
+    "is.net_income": "1,882",
+    "cf.net_income": "1,882",
+    "cf.depreciation_amortization": "1,201",
+    "cf.change_in_working_capital": "(493)",
+    "cf.other_operating": "28",
+    "cf.cfo": "2,618",
+    "cf.capex": "(1,334)",
+    "cf.cfi": "(1,334)",
+    "cf.revolver_net": "277",
+    "cf.term_debt_repayments": "(1,140)",
+    "cf.distributions": "(270)",
+    "cf.cff": "(1,133)",
+    "cf.net_change_in_cash": "151",
+    "sup.cash_interest_paid": "888",
+    "sup.cash_taxes_paid": "590",
+    "sup.scheduled_principal": "1,140",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/halvorsen-plastics/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Halvorsen Plastics & Molding, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-11-10",
+   "document_date": "2025-11-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,591"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,288"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,477"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,036"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "25,392"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "23,582"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "54,294"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,928"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,699"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,196"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,593"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "17,696"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,250"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,294"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "33,240"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "21,054"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "54,294"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "62,231"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "44,572"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "17,659"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,269"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,827"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "248"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,315"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,192"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "37"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,160"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,041"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,119"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,119"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,827"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,550)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "42"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,438"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,116)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,116)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,176"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,710)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(561)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,095)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "227"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,203"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "988"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,710"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,465",
+    "bs.accounts_receivable": "10,852",
+    "bs.inventory": "9,934",
+    "bs.other_current_assets": "986",
+    "bs.total_current_assets": "24,237",
+    "bs.net_ppe": "23,229",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "52,786",
+    "bs.accounts_payable": "6,569",
+    "bs.accrued_liabilities": "1,635",
+    "bs.revolver": "4,777",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,509",
+    "bs.total_current_liabilities": "16,770",
+    "bs.long_term_debt": "16,530",
+    "bs.other_noncurrent_liabilities": "1,238",
+    "bs.total_liabilities": "34,538",
+    "bs.total_equity": "18,248",
+    "bs.total_liabilities_and_equity": "52,786",
+    "is.revenue": "59,791",
+    "is.cogs": "42,667",
+    "is.gross_profit": "17,124",
+    "is.sga": "9,866",
+    "is.depreciation_amortization": "1,804",
+    "is.other_operating_expense": "239",
+    "is.operating_income": "5,215",
+    "is.interest_expense": "1,310",
+    "is.other_income_net": "36",
+    "is.pretax_income": "3,941",
+    "is.income_tax_expense": "985",
+    "is.net_income": "2,956",
+    "cf.net_income": "2,956",
+    "cf.depreciation_amortization": "1,804",
+    "cf.change_in_working_capital": "(1,113)",
+    "cf.other_operating": "42",
+    "cf.cfo": "3,689",
+    "cf.capex": "(2,033)",
+    "cf.cfi": "(2,033)",
+    "cf.revolver_net": "639",
+    "cf.term_debt_repayments": "(1,710)",
+    "cf.distributions": "(377)",
+    "cf.cff": "(1,448)",
+    "cf.net_change_in_cash": "208",
+    "sup.cash_interest_paid": "1,320",
+    "sup.cash_taxes_paid": "905",
+    "sup.scheduled_principal": "1,710",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/halvorsen-plastics/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Halvorsen Plastics & Molding, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-05-10",
+   "document_date": "2026-05-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,472"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "10,882"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,018"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "989"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "24,361"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "23,748"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "53,429"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,625"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,620"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,646"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,504"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "16,675"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "13,110"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,322"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,107"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "22,322"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "53,429"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "20,601"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "14,744"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,857"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,399"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "617"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "82"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,759"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "371"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "12"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,400"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "350"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,050"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,050"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "617"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(427)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "14"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,254"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(700)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(700)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "130"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(570)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(105)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(545)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "9"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "378"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "354"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "570"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,381",
+    "bs.accounts_receivable": "10,154",
+    "bs.inventory": "9,667",
+    "bs.other_current_assets": "952",
+    "bs.total_current_assets": "23,154",
+    "bs.net_ppe": "23,361",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "51,835",
+    "bs.accounts_payable": "6,393",
+    "bs.accrued_liabilities": "1,575",
+    "bs.revolver": "4,365",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,427",
+    "bs.total_current_liabilities": "16,040",
+    "bs.long_term_debt": "15,390",
+    "bs.other_noncurrent_liabilities": "1,266",
+    "bs.total_liabilities": "32,696",
+    "bs.total_equity": "19,139",
+    "bs.total_liabilities_and_equity": "51,835",
+    "is.revenue": "19,841",
+    "is.cogs": "14,228",
+    "is.gross_profit": "5,613",
+    "is.sga": "3,274",
+    "is.depreciation_amortization": "607",
+    "is.other_operating_expense": "79",
+    "is.operating_income": "1,653",
+    "is.interest_expense": "402",
+    "is.other_income_net": "12",
+    "is.pretax_income": "1,263",
+    "is.income_tax_expense": "316",
+    "is.net_income": "947",
+    "cf.net_income": "947",
+    "cf.depreciation_amortization": "607",
+    "cf.change_in_working_capital": "(347)",
+    "cf.other_operating": "14",
+    "cf.cfo": "1,221",
+    "cf.capex": "(675)",
+    "cf.cfi": "(675)",
+    "cf.revolver_net": "345",
+    "cf.term_debt_repayments": "(570)",
+    "cf.distributions": "(304)",
+    "cf.cff": "(529)",
+    "cf.net_change_in_cash": "17",
+    "sup.cash_interest_paid": "410",
+    "sup.cash_taxes_paid": "331",
+    "sup.scheduled_principal": "570",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/halvorsen-plastics/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Halvorsen Plastics & Molding, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-08-03",
+   "document_date": "2026-07-30",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,614"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,507"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,597"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,046"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "25,764"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "23,870"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "54,954"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,008"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,703"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,122"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,605"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "17,718"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "12,540"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,336"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,594"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "23,360"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "54,954"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "42,386"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "30,340"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "12,046"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,994"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,236"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "169"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,647"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "734"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "25"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,938"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "735"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,203"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,203"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,236"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,121)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "28"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,346"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,441)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,441)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "606"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,140)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(220)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(754)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "151"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "744"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "704"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,140"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,496",
+    "bs.accounts_receivable": "10,416",
+    "bs.inventory": "10,140",
+    "bs.other_current_assets": "998",
+    "bs.total_current_assets": "24,050",
+    "bs.net_ppe": "23,459",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "52,829",
+    "bs.accounts_payable": "6,706",
+    "bs.accrued_liabilities": "1,643",
+    "bs.revolver": "4,575",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,506",
+    "bs.total_current_liabilities": "16,710",
+    "bs.long_term_debt": "14,820",
+    "bs.other_noncurrent_liabilities": "1,280",
+    "bs.total_liabilities": "32,810",
+    "bs.total_equity": "20,019",
+    "bs.total_liabilities_and_equity": "52,829",
+    "is.revenue": "40,638",
+    "is.cogs": "29,152",
+    "is.gross_profit": "11,486",
+    "is.sga": "6,706",
+    "is.depreciation_amortization": "1,216",
+    "is.other_operating_expense": "162",
+    "is.operating_income": "3,402",
+    "is.interest_expense": "800",
+    "is.other_income_net": "24",
+    "is.pretax_income": "2,626",
+    "is.income_tax_expense": "657",
+    "is.net_income": "1,969",
+    "cf.net_income": "1,969",
+    "cf.depreciation_amortization": "1,216",
+    "cf.change_in_working_capital": "(668)",
+    "cf.other_operating": "28",
+    "cf.cfo": "2,545",
+    "cf.capex": "(1,382)",
+    "cf.cfi": "(1,382)",
+    "cf.revolver_net": "555",
+    "cf.term_debt_repayments": "(1,140)",
+    "cf.distributions": "(446)",
+    "cf.cff": "(1,031)",
+    "cf.net_change_in_cash": "132",
+    "sup.cash_interest_paid": "809",
+    "sup.cash_taxes_paid": "647",
+    "sup.scheduled_principal": "1,140",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/halvorsen-plastics/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Halvorsen Plastics & Molding, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,707"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,495"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,911"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,083"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "26,196"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "24,015"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,560"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "760"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "55,531"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,216"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,759"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,963"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,280"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,692"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "17,910"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,970"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,350"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,230"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "24,301"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "55,531"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "64,944"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "46,399"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "18,545"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,716"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,858"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "259"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,712"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,096"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "39"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,655"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,164"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,491"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,491"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,858"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,109)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "42"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,282"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,208)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,208)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "447"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,710)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(567)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,830)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "244"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,106"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,089"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,710"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,591",
+    "bs.accounts_receivable": "11,288",
+    "bs.inventory": "10,477",
+    "bs.other_current_assets": "1,036",
+    "bs.total_current_assets": "25,392",
+    "bs.net_ppe": "23,582",
+    "bs.intangibles": "4,560",
+    "bs.other_noncurrent_assets": "760",
+    "bs.total_assets": "54,294",
+    "bs.accounts_payable": "6,928",
+    "bs.accrued_liabilities": "1,699",
+    "bs.revolver": "5,196",
+    "bs.cpltd": "2,280",
+    "bs.other_current_liabilities": "1,593",
+    "bs.total_current_liabilities": "17,696",
+    "bs.long_term_debt": "14,250",
+    "bs.other_noncurrent_liabilities": "1,294",
+    "bs.total_liabilities": "33,240",
+    "bs.total_equity": "21,054",
+    "bs.total_liabilities_and_equity": "54,294",
+    "is.revenue": "61,484",
+    "is.cogs": "43,825",
+    "is.gross_profit": "17,659",
+    "is.sga": "10,269",
+    "is.depreciation_amortization": "1,827",
+    "is.other_operating_expense": "248",
+    "is.operating_income": "5,315",
+    "is.interest_expense": "1,192",
+    "is.other_income_net": "37",
+    "is.pretax_income": "4,160",
+    "is.income_tax_expense": "1,041",
+    "is.net_income": "3,119",
+    "cf.net_income": "3,119",
+    "cf.depreciation_amortization": "1,827",
+    "cf.change_in_working_capital": "(1,550)",
+    "cf.other_operating": "42",
+    "cf.cfo": "3,438",
+    "cf.capex": "(2,116)",
+    "cf.cfi": "(2,116)",
+    "cf.revolver_net": "1,176",
+    "cf.term_debt_repayments": "(1,710)",
+    "cf.distributions": "(561)",
+    "cf.cff": "(1,095)",
+    "cf.net_change_in_cash": "227",
+    "sup.cash_interest_paid": "1,203",
+    "sup.cash_taxes_paid": "988",
+    "sup.scheduled_principal": "1,710",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "halvorsen-plastics.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/halvorsen-plastics/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-11",
+   "document_date": "2025-05-09",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/halvorsen-plastics/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-29",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/halvorsen-plastics/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-11-10",
+   "document_date": "2025-11-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/halvorsen-plastics/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-05",
+   "document_date": "2026-02-03",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/halvorsen-plastics/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-05-10",
+   "document_date": "2026-05-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/halvorsen-plastics/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-08-03",
+   "document_date": "2026-08-01",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/halvorsen-plastics/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Halvorsen Plastics & Molding, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "halvorsen-plastics.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/halvorsen-plastics/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Halvorsen Plastics & Molding, Inc. borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-10",
+   "document_date": "2026-08-08",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "halvorsen-plastics.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/halvorsen-plastics/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Halvorsen Plastics & Molding, Inc. borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-16",
+   "document_date": "2026-09-14",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "halvorsen-plastics.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/halvorsen-plastics/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Halvorsen Plastics & Molding, Inc. borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-15",
+   "document_date": "2026-10-13",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "restated_comparative",
+  "description": "Restated prior period: the comparative column of the current interim statements differs from the prior-year interim statements as originally delivered.",
+  "details": {
+   "document_id": "halvorsen-plastics.ifs-2026-09-30",
+   "comparative_period_end": "2025-09-30",
+   "restated_lines": [
+    {
+     "key": "is.revenue",
+     "as_previously_reported": "62231000",
+     "as_restated": "61484000"
+    },
+    {
+     "key": "is.cogs",
+     "as_previously_reported": "44572000",
+     "as_restated": "43825000"
+    }
+   ]
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.34",
+    "pass": true,
+    "headroom": "0.2762",
+    "reported_value": "1.34",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3959000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1694000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1320000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2417000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9390000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2726000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1316000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5348000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1708000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3988000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.35",
+    "pass": true,
+    "headroom": "0.2167",
+    "reported_value": "2.35",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "22035000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3959000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1694000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1320000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2417000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9390000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.37",
+    "pass": true,
+    "headroom": "0.3048",
+    "reported_value": "1.37",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4035000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1656000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1346000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2425000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9462000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2751000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1320000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5391000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1668000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3948000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.29",
+    "pass": true,
+    "headroom": "0.2367",
+    "reported_value": "2.29",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "21675000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4035000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1656000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1346000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2425000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9462000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.38",
+    "pass": true,
+    "headroom": "0.3143",
+    "reported_value": "1.38",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4111000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1618000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1372000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2433000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9534000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2786000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1346000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5402000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1630000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3910000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.28",
+    "pass": true,
+    "headroom": "0.2400",
+    "reported_value": "2.28",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "21726000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4111000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1618000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1372000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2433000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9534000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.40",
+    "pass": true,
+    "headroom": "0.3333",
+    "reported_value": "1.40",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4181000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1586000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1395000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2442000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9604000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2814000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1372000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5418000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1597000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3877000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.13",
+    "pass": true,
+    "headroom": "0.2900",
+    "reported_value": "2.13",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20476000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4181000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1586000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1395000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2442000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9604000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.43",
+    "pass": true,
+    "headroom": "0.3619",
+    "reported_value": "1.43",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4284000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1555000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1429000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2452000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9720000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2839000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1395000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5486000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1565000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3845000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.06",
+    "pass": true,
+    "headroom": "0.3133",
+    "reported_value": "2.06",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20036000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4284000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1555000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1429000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2452000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9720000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.46",
+    "pass": true,
+    "headroom": "0.3905",
+    "reported_value": "1.46",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4415000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1520000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1473000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2462000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9870000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2873000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1429000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5568000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1532000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3812000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.02",
+    "pass": true,
+    "headroom": "0.3267",
+    "reported_value": "2.02",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "19942000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4415000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1520000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1473000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2462000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9870000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.50",
+    "pass": true,
+    "headroom": "0.4286",
+    "reported_value": "1.50",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4553000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1490000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1518000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2473000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10034000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2906000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1473000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5655000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1500000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2280000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "3780000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "halvorsen-plastics-rlc",
+    "terms_version_id": "tv-halvorsen-plastics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "1.91",
+    "pass": true,
+    "headroom": "0.3633",
+    "reported_value": "1.91",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "19213000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4553000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1490000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1518000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2473000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10034000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "halvorsen-plastics-rlc",
+    "calculated": {
+     "ineligible_excluded": "959400",
+     "ineligible_over_age": "148000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "99200",
+     "ineligible_concentration": "0",
+     "gross_ar": "11503000",
+     "total_ineligible_ar": "1206600",
+     "eligible_ar": "10296400",
+     "ar_availability": "8751940",
+     "gross_inventory": "10702000",
+     "ineligible_inventory": "1712800",
+     "eligible_inventory": "8989200",
+     "inventory_availability_before_sublimit": "4494600",
+     "inventory_availability": "2750000",
+     "reserves": "75000",
+     "borrowing_base": "11426940",
+     "commitment": "7250000",
+     "lesser_of_base_and_commitment": "7250000",
+     "outstanding": "5084000",
+     "letters_of_credit": "0",
+     "availability": "2166000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "2166000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "halvorsen-plastics-rlc",
+    "calculated": {
+     "ineligible_excluded": "959000",
+     "ineligible_over_age": "148000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "98800",
+     "ineligible_concentration": "0",
+     "gross_ar": "11499000",
+     "total_ineligible_ar": "1205800",
+     "eligible_ar": "10293200",
+     "ar_availability": "8749220",
+     "gross_inventory": "10806000",
+     "ineligible_inventory": "1729200",
+     "eligible_inventory": "9076800",
+     "inventory_availability_before_sublimit": "4538400",
+     "inventory_availability": "2750000",
+     "reserves": "75000",
+     "borrowing_base": "11424220",
+     "commitment": "7250000",
+     "lesser_of_base_and_commitment": "7250000",
+     "outstanding": "4941000",
+     "letters_of_credit": "0",
+     "availability": "2309000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "2309000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "halvorsen-plastics-rlc",
+    "calculated": {
+     "ineligible_excluded": "958200",
+     "ineligible_over_age": "147600",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "98800",
+     "ineligible_concentration": "0",
+     "gross_ar": "11495000",
+     "total_ineligible_ar": "1204600",
+     "eligible_ar": "10290400",
+     "ar_availability": "8746840",
+     "gross_inventory": "10911000",
+     "ineligible_inventory": "1746200",
+     "eligible_inventory": "9164800",
+     "inventory_availability_before_sublimit": "4582400",
+     "inventory_availability": "2750000",
+     "reserves": "75000",
+     "borrowing_base": "11421840",
+     "commitment": "7250000",
+     "lesser_of_base_and_commitment": "7250000",
+     "outstanding": "4963000",
+     "letters_of_credit": "0",
+     "availability": "2287000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "2287000"
+   }
+  ],
+  "signals": [],
+  "exceptions": [
+   {
+    "type": "spread.restatement",
+    "severity": "medium",
+    "period_end": "2026-09-30",
+    "subject": "document:halvorsen-plastics.ifs-2026-09-30",
+    "summary": "The prior-year comparative column differs from the interim statements delivered a year ago."
+   }
+  ]
+ }
+}

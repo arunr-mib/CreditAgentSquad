@@ -1,0 +1,6043 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "larkspur-environmental",
+  "name": "Larkspur Environmental Services, Inc.",
+  "legal_form": "corporation",
+  "industry": "services",
+  "city": "Durham",
+  "state": "NC",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Colin Abernathy",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 3,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Tobias Wennerstrom",
+  "auditor": "Hobart Lindgren & Co. LLP"
+ },
+ "facilities": [
+  {
+   "id": "larkspur-environmental-rlc",
+   "borrower_id": "larkspur-environmental",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "2750000",
+   "original_amount": "2750000",
+   "closing_date": "2022-01-28",
+   "maturity_date": "2028-01-28",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "larkspur-environmental-tl",
+   "borrower_id": "larkspur-environmental",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "12242000",
+   "original_amount": "12242000",
+   "closing_date": "2022-01-28",
+   "maturity_date": "2029-01-28",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "278000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-larkspur-environmental-1",
+   "facility_id": "larkspur-environmental-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-01-28",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2022-02-03",
+   "warnings": [],
+   "source_documents": [
+    "larkspur-environmental.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": [
+       {
+        "name": "restructuring",
+        "source_key": "is.nonrecurring_expense",
+        "cap": {
+         "type": "pct_of",
+         "value": "0.10",
+         "of": {
+          "op": "named",
+          "name": "ebitda"
+         }
+        },
+        "citation": {
+         "field": "definitions.ebitda.addbacks.restructuring",
+         "document_id": "larkspur-environmental.credit-agreement",
+         "section": "1.1",
+         "page": 4,
+         "quote": "\"Adjusted EBITDA\" means, for any period, EBITDA for such period plus restructuring and other non-recurring charges deducted in determining net income for such period, provided that the aggregate amount added back pursuant to this definition shall not exceed 10% of EBITDA for such period, calculated before giving effect to such add-back."
+        }
+       }
+      ]
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "adjusted_ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes",
+        "distributions"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "larkspur-environmental.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "larkspur-environmental.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) Adjusted EBITDA for such period minus Unfinanced Capital Expenditures, cash paid for income taxes and distributions to owners for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "adjusted_ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "larkspur-environmental.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "larkspur-environmental.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) Adjusted EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "max_capex",
+      "name": "Maximum Capital Expenditures",
+      "archetype": "max_capex",
+      "params": {},
+      "test": {
+       "operator": "<=",
+       "threshold": "1700000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "larkspur-environmental.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall not make Capital Expenditures in an aggregate amount exceeding $1,700,000 in any period of four consecutive fiscal quarters, measured as of the last day of each fiscal quarter."
+       },
+       {
+        "field": "definition",
+        "document_id": "larkspur-environmental.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Capital Expenditures\" means, for any period, purchases of property and equipment by the Borrower during such period."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "larkspur-environmental.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "larkspur-environmental.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "larkspur-environmental.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "larkspur-environmental.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "larkspur-environmental.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "larkspur-environmental.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $2,750,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "larkspur-environmental.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $12,242,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "larkspur-environmental.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $278,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "13464000",
+    "is.cogs": "9011000",
+    "is.gross_profit": "4453000",
+    "is.sga": "3029000",
+    "is.depreciation_amortization": "272000",
+    "is.other_operating_expense": "54000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1098000",
+    "is.interest_expense": "213000",
+    "is.other_income_net": "8000",
+    "is.pretax_income": "893000",
+    "is.income_tax_expense": "223000",
+    "is.net_income": "670000",
+    "bs.cash": "1616000",
+    "bs.accounts_receivable": "8160000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "646000",
+    "bs.total_current_assets": "10422000",
+    "bs.net_ppe": "6472000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "21134000",
+    "bs.accounts_payable": "2765000",
+    "bs.accrued_liabilities": "1404000",
+    "bs.revolver": "1854000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "977000",
+    "bs.total_current_liabilities": "8112000",
+    "bs.long_term_debt": "8628000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "845000",
+    "bs.total_liabilities": "17585000",
+    "bs.total_equity": "3549000",
+    "bs.total_liabilities_and_equity": "21134000",
+    "cf.net_income": "670000",
+    "cf.depreciation_amortization": "272000",
+    "cf.change_in_working_capital": "-103000",
+    "cf.other_operating": "10000",
+    "cf.cfo": "849000",
+    "cf.capex": "296000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-296000",
+    "cf.revolver_net": "19000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "278000",
+    "cf.distributions": "268000",
+    "cf.other_financing": "0",
+    "cf.cff": "-527000",
+    "cf.net_change_in_cash": "26000",
+    "sup.cash_interest_paid": "217000",
+    "sup.cash_taxes_paid": "218000",
+    "sup.scheduled_principal": "278000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "2999000",
+    "cash.beginning_of_year": "1590000",
+    "debt.term_total": "9740000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "27396000",
+    "is.cogs": "18325000",
+    "is.gross_profit": "9071000",
+    "is.sga": "6164000",
+    "is.depreciation_amortization": "545000",
+    "is.other_operating_expense": "110000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2252000",
+    "is.interest_expense": "422000",
+    "is.other_income_net": "16000",
+    "is.pretax_income": "1846000",
+    "is.income_tax_expense": "461000",
+    "is.net_income": "1385000",
+    "bs.cash": "1672000",
+    "bs.accounts_receivable": "8321000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "669000",
+    "bs.total_current_assets": "10662000",
+    "bs.net_ppe": "6506000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "21408000",
+    "bs.accounts_payable": "2858000",
+    "bs.accrued_liabilities": "1449000",
+    "bs.revolver": "1788000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1018000",
+    "bs.total_current_liabilities": "8225000",
+    "bs.long_term_debt": "8350000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "855000",
+    "bs.total_liabilities": "17430000",
+    "bs.total_equity": "3978000",
+    "bs.total_liabilities_and_equity": "21408000",
+    "cf.net_income": "1385000",
+    "cf.depreciation_amortization": "545000",
+    "cf.change_in_working_capital": "-108000",
+    "cf.other_operating": "20000",
+    "cf.cfo": "1842000",
+    "cf.capex": "603000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-603000",
+    "cf.revolver_net": "-47000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "556000",
+    "cf.distributions": "554000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1157000",
+    "cf.net_change_in_cash": "82000",
+    "sup.cash_interest_paid": "427000",
+    "sup.cash_taxes_paid": "441000",
+    "sup.scheduled_principal": "556000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "3428000",
+    "cash.beginning_of_year": "1590000",
+    "debt.term_total": "9462000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "41415000",
+    "is.cogs": "27685000",
+    "is.gross_profit": "13730000",
+    "is.sga": "9318000",
+    "is.depreciation_amortization": "819000",
+    "is.other_operating_expense": "166000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3427000",
+    "is.interest_expense": "625000",
+    "is.other_income_net": "24000",
+    "is.pretax_income": "2826000",
+    "is.income_tax_expense": "706000",
+    "is.net_income": "2120000",
+    "bs.cash": "1682000",
+    "bs.accounts_receivable": "8373000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "673000",
+    "bs.total_current_assets": "10728000",
+    "bs.net_ppe": "6540000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "21508000",
+    "bs.accounts_payable": "2872000",
+    "bs.accrued_liabilities": "1456000",
+    "bs.revolver": "1682000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1030000",
+    "bs.total_current_liabilities": "8152000",
+    "bs.long_term_debt": "8072000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "865000",
+    "bs.total_liabilities": "17089000",
+    "bs.total_equity": "4419000",
+    "bs.total_liabilities_and_equity": "21508000",
+    "cf.net_income": "2120000",
+    "cf.depreciation_amortization": "819000",
+    "cf.change_in_working_capital": "-131000",
+    "cf.other_operating": "30000",
+    "cf.cfo": "2838000",
+    "cf.capex": "911000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-911000",
+    "cf.revolver_net": "-153000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "834000",
+    "cf.distributions": "848000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1835000",
+    "cf.net_change_in_cash": "92000",
+    "sup.cash_interest_paid": "632000",
+    "sup.cash_taxes_paid": "679000",
+    "sup.scheduled_principal": "834000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "3869000",
+    "cash.beginning_of_year": "1590000",
+    "debt.term_total": "9184000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "55192000",
+    "is.cogs": "36928000",
+    "is.gross_profit": "18264000",
+    "is.sga": "12418000",
+    "is.depreciation_amortization": "1095000",
+    "is.other_operating_expense": "221000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4530000",
+    "is.interest_expense": "821000",
+    "is.other_income_net": "32000",
+    "is.pretax_income": "3741000",
+    "is.income_tax_expense": "935000",
+    "is.net_income": "2806000",
+    "bs.cash": "1653000",
+    "bs.accounts_receivable": "8530000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "661000",
+    "bs.total_current_assets": "10844000",
+    "bs.net_ppe": "6567000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "21651000",
+    "bs.accounts_payable": "2836000",
+    "bs.accrued_liabilities": "1429000",
+    "bs.revolver": "1773000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1001000",
+    "bs.total_current_liabilities": "8151000",
+    "bs.long_term_debt": "7794000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "875000",
+    "bs.total_liabilities": "16820000",
+    "bs.total_equity": "4831000",
+    "bs.total_liabilities_and_equity": "21651000",
+    "cf.net_income": "2806000",
+    "cf.depreciation_amortization": "1095000",
+    "cf.change_in_working_capital": "-368000",
+    "cf.other_operating": "40000",
+    "cf.cfo": "3573000",
+    "cf.capex": "1214000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1214000",
+    "cf.revolver_net": "-62000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1112000",
+    "cf.distributions": "1122000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2296000",
+    "cf.net_change_in_cash": "63000",
+    "sup.cash_interest_paid": "831000",
+    "sup.cash_taxes_paid": "924000",
+    "sup.scheduled_principal": "1112000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "4281000",
+    "cash.beginning_of_year": "1590000",
+    "debt.term_total": "8906000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "13990000",
+    "is.cogs": "9369000",
+    "is.gross_profit": "4621000",
+    "is.sga": "3148000",
+    "is.depreciation_amortization": "277000",
+    "is.other_operating_expense": "56000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1140000",
+    "is.interest_expense": "192000",
+    "is.other_income_net": "8000",
+    "is.pretax_income": "956000",
+    "is.income_tax_expense": "239000",
+    "is.net_income": "717000",
+    "bs.cash": "1679000",
+    "bs.accounts_receivable": "8662000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "672000",
+    "bs.total_current_assets": "11013000",
+    "bs.net_ppe": "6598000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "21851000",
+    "bs.accounts_payable": "2875000",
+    "bs.accrued_liabilities": "1449000",
+    "bs.revolver": "1731000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1022000",
+    "bs.total_current_liabilities": "8189000",
+    "bs.long_term_debt": "7516000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "885000",
+    "bs.total_liabilities": "16590000",
+    "bs.total_equity": "5261000",
+    "bs.total_liabilities_and_equity": "21851000",
+    "cf.net_income": "717000",
+    "cf.depreciation_amortization": "277000",
+    "cf.change_in_working_capital": "-63000",
+    "cf.other_operating": "10000",
+    "cf.cfo": "941000",
+    "cf.capex": "308000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-308000",
+    "cf.revolver_net": "-42000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "278000",
+    "cf.distributions": "287000",
+    "cf.other_financing": "0",
+    "cf.cff": "-607000",
+    "cf.net_change_in_cash": "26000",
+    "sup.cash_interest_paid": "193000",
+    "sup.cash_taxes_paid": "229000",
+    "sup.scheduled_principal": "278000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "4711000",
+    "cash.beginning_of_year": "1653000",
+    "debt.term_total": "8628000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "28545000",
+    "is.cogs": "19108000",
+    "is.gross_profit": "9437000",
+    "is.sga": "6423000",
+    "is.depreciation_amortization": "555000",
+    "is.other_operating_expense": "114000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2345000",
+    "is.interest_expense": "379000",
+    "is.other_income_net": "17000",
+    "is.pretax_income": "1983000",
+    "is.income_tax_expense": "496000",
+    "is.net_income": "1487000",
+    "bs.cash": "1747000",
+    "bs.accounts_receivable": "8837000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "699000",
+    "bs.total_current_assets": "11283000",
+    "bs.net_ppe": "6640000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "22163000",
+    "bs.accounts_payable": "2988000",
+    "bs.accrued_liabilities": "1503000",
+    "bs.revolver": "1632000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1072000",
+    "bs.total_current_liabilities": "8307000",
+    "bs.long_term_debt": "7238000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "895000",
+    "bs.total_liabilities": "16440000",
+    "bs.total_equity": "5723000",
+    "bs.total_liabilities_and_equity": "22163000",
+    "cf.net_income": "1487000",
+    "cf.depreciation_amortization": "555000",
+    "cf.change_in_working_capital": "-48000",
+    "cf.other_operating": "20000",
+    "cf.cfo": "2014000",
+    "cf.capex": "628000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-628000",
+    "cf.revolver_net": "-141000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "556000",
+    "cf.distributions": "595000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1292000",
+    "cf.net_change_in_cash": "94000",
+    "sup.cash_interest_paid": "382000",
+    "sup.cash_taxes_paid": "468000",
+    "sup.scheduled_principal": "556000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "5173000",
+    "cash.beginning_of_year": "1653000",
+    "debt.term_total": "8350000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "43122000",
+    "is.cogs": "28921000",
+    "is.gross_profit": "14201000",
+    "is.sga": "9703000",
+    "is.depreciation_amortization": "835000",
+    "is.other_operating_expense": "172000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3491000",
+    "is.interest_expense": "559000",
+    "is.other_income_net": "26000",
+    "is.pretax_income": "2958000",
+    "is.income_tax_expense": "740000",
+    "is.net_income": "2218000",
+    "bs.cash": "1749000",
+    "bs.accounts_receivable": "8946000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "700000",
+    "bs.total_current_assets": "11395000",
+    "bs.net_ppe": "6681000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "22316000",
+    "bs.accounts_payable": "3011000",
+    "bs.accrued_liabilities": "1503000",
+    "bs.revolver": "1603000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1060000",
+    "bs.total_current_liabilities": "8289000",
+    "bs.long_term_debt": "6960000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "905000",
+    "bs.total_liabilities": "16154000",
+    "bs.total_equity": "6162000",
+    "bs.total_liabilities_and_equity": "22316000",
+    "cf.net_income": "2218000",
+    "cf.depreciation_amortization": "835000",
+    "cf.change_in_working_capital": "-147000",
+    "cf.other_operating": "30000",
+    "cf.cfo": "2936000",
+    "cf.capex": "949000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-949000",
+    "cf.revolver_net": "-170000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "834000",
+    "cf.distributions": "887000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1891000",
+    "cf.net_change_in_cash": "96000",
+    "sup.cash_interest_paid": "564000",
+    "sup.cash_taxes_paid": "725000",
+    "sup.scheduled_principal": "834000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "5612000",
+    "cash.beginning_of_year": "1653000",
+    "debt.term_total": "8072000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "57443000",
+    "is.cogs": "38519000",
+    "is.gross_profit": "18924000",
+    "is.sga": "12925000",
+    "is.depreciation_amortization": "1117000",
+    "is.other_operating_expense": "229000",
+    "is.nonrecurring_expense": "310000",
+    "is.operating_income": "4343000",
+    "is.interest_expense": "733000",
+    "is.other_income_net": "35000",
+    "is.pretax_income": "3645000",
+    "is.income_tax_expense": "912000",
+    "is.net_income": "2733000",
+    "bs.cash": "1719000",
+    "bs.accounts_receivable": "8663000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "687000",
+    "bs.total_current_assets": "11069000",
+    "bs.net_ppe": "6714000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "22023000",
+    "bs.accounts_payable": "2945000",
+    "bs.accrued_liabilities": "1476000",
+    "bs.revolver": "1448000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "974000",
+    "bs.total_current_liabilities": "7955000",
+    "bs.long_term_debt": "6682000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "915000",
+    "bs.total_liabilities": "15552000",
+    "bs.total_equity": "6471000",
+    "bs.total_liabilities_and_equity": "22023000",
+    "cf.net_income": "2733000",
+    "cf.depreciation_amortization": "1117000",
+    "cf.change_in_working_capital": "-30000",
+    "cf.other_operating": "40000",
+    "cf.cfo": "3860000",
+    "cf.capex": "1264000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1264000",
+    "cf.revolver_net": "-325000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1112000",
+    "cf.distributions": "1093000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2530000",
+    "cf.net_change_in_cash": "66000",
+    "sup.cash_interest_paid": "740000",
+    "sup.cash_taxes_paid": "969000",
+    "sup.scheduled_principal": "1112000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "5921000",
+    "cash.beginning_of_year": "1653000",
+    "debt.term_total": "7794000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "14778000",
+    "is.cogs": "9916000",
+    "is.gross_profit": "4862000",
+    "is.sga": "3325000",
+    "is.depreciation_amortization": "283000",
+    "is.other_operating_expense": "59000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1195000",
+    "is.interest_expense": "166000",
+    "is.other_income_net": "9000",
+    "is.pretax_income": "1038000",
+    "is.income_tax_expense": "260000",
+    "is.net_income": "778000",
+    "bs.cash": "1773000",
+    "bs.accounts_receivable": "8923000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "709000",
+    "bs.total_current_assets": "11405000",
+    "bs.net_ppe": "6756000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "22401000",
+    "bs.accounts_payable": "3043000",
+    "bs.accrued_liabilities": "1518000",
+    "bs.revolver": "1373000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1088000",
+    "bs.total_current_liabilities": "8134000",
+    "bs.long_term_debt": "6404000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "925000",
+    "bs.total_liabilities": "15463000",
+    "bs.total_equity": "6938000",
+    "bs.total_liabilities_and_equity": "22401000",
+    "cf.net_income": "778000",
+    "cf.depreciation_amortization": "283000",
+    "cf.change_in_working_capital": "-28000",
+    "cf.other_operating": "10000",
+    "cf.cfo": "1043000",
+    "cf.capex": "325000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-325000",
+    "cf.revolver_net": "-75000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "278000",
+    "cf.distributions": "311000",
+    "cf.other_financing": "0",
+    "cf.cff": "-664000",
+    "cf.net_change_in_cash": "54000",
+    "sup.cash_interest_paid": "169000",
+    "sup.cash_taxes_paid": "172000",
+    "sup.scheduled_principal": "278000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "6388000",
+    "cash.beginning_of_year": "1719000",
+    "debt.term_total": "7516000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "29837000",
+    "is.cogs": "19978000",
+    "is.gross_profit": "9859000",
+    "is.sga": "6713000",
+    "is.depreciation_amortization": "568000",
+    "is.other_operating_expense": "119000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2459000",
+    "is.interest_expense": "326000",
+    "is.other_income_net": "18000",
+    "is.pretax_income": "2151000",
+    "is.income_tax_expense": "538000",
+    "is.net_income": "1613000",
+    "bs.cash": "1807000",
+    "bs.accounts_receivable": "9110000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "723000",
+    "bs.total_current_assets": "11640000",
+    "bs.net_ppe": "6802000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "22682000",
+    "bs.accounts_payable": "3088000",
+    "bs.accrued_liabilities": "1544000",
+    "bs.revolver": "1317000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1121000",
+    "bs.total_current_liabilities": "8182000",
+    "bs.long_term_debt": "6126000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "935000",
+    "bs.total_liabilities": "15243000",
+    "bs.total_equity": "7439000",
+    "bs.total_liabilities_and_equity": "22682000",
+    "cf.net_income": "1613000",
+    "cf.depreciation_amortization": "568000",
+    "cf.change_in_working_capital": "-125000",
+    "cf.other_operating": "20000",
+    "cf.cfo": "2076000",
+    "cf.capex": "656000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-656000",
+    "cf.revolver_net": "-131000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "556000",
+    "cf.distributions": "645000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1332000",
+    "cf.net_change_in_cash": "88000",
+    "sup.cash_interest_paid": "331000",
+    "sup.cash_taxes_paid": "432000",
+    "sup.scheduled_principal": "556000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "6889000",
+    "cash.beginning_of_year": "1719000",
+    "debt.term_total": "7238000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "45111000",
+    "is.cogs": "30209000",
+    "is.gross_profit": "14902000",
+    "is.sga": "10150000",
+    "is.depreciation_amortization": "855000",
+    "is.other_operating_expense": "180000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3717000",
+    "is.interest_expense": "480000",
+    "is.other_income_net": "27000",
+    "is.pretax_income": "3264000",
+    "is.income_tax_expense": "816000",
+    "is.net_income": "2448000",
+    "bs.cash": "1833000",
+    "bs.accounts_receivable": "9541000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "733000",
+    "bs.total_current_assets": "12107000",
+    "bs.net_ppe": "6851000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "23198000",
+    "bs.accounts_payable": "3139000",
+    "bs.accrued_liabilities": "1563000",
+    "bs.revolver": "1518000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "1133000",
+    "bs.total_current_liabilities": "8465000",
+    "bs.long_term_debt": "5848000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "945000",
+    "bs.total_liabilities": "15258000",
+    "bs.total_equity": "7940000",
+    "bs.total_liabilities_and_equity": "23198000",
+    "cf.net_income": "2448000",
+    "cf.depreciation_amortization": "855000",
+    "cf.change_in_working_capital": "-484000",
+    "cf.other_operating": "30000",
+    "cf.cfo": "2849000",
+    "cf.capex": "992000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-992000",
+    "cf.revolver_net": "70000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "834000",
+    "cf.distributions": "979000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1743000",
+    "cf.net_change_in_cash": "114000",
+    "sup.cash_interest_paid": "487000",
+    "sup.cash_taxes_paid": "710000",
+    "sup.scheduled_principal": "834000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "7390000",
+    "cash.beginning_of_year": "1719000",
+    "debt.term_total": "6960000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "53001000",
+    "is.cogs": "35381000",
+    "is.gross_profit": "17620000",
+    "is.sga": "11925000",
+    "is.depreciation_amortization": "1078000",
+    "is.other_operating_expense": "212000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4405000",
+    "is.interest_expense": "930000",
+    "is.other_income_net": "32000",
+    "is.pretax_income": "3507000",
+    "is.income_tax_expense": "878000",
+    "is.net_income": "2629000",
+    "bs.cash": "1590000",
+    "bs.accounts_receivable": "7986000",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "636000",
+    "bs.total_current_assets": "10212000",
+    "bs.net_ppe": "6448000",
+    "bs.intangibles": "3710000",
+    "bs.other_noncurrent_assets": "530000",
+    "bs.total_assets": "20900000",
+    "bs.accounts_payable": "2718000",
+    "bs.accrued_liabilities": "1387000",
+    "bs.revolver": "1835000",
+    "bs.cpltd": "1112000",
+    "bs.other_current_liabilities": "960000",
+    "bs.total_current_liabilities": "8012000",
+    "bs.long_term_debt": "8906000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "835000",
+    "bs.total_liabilities": "17753000",
+    "bs.total_equity": "3147000",
+    "bs.total_liabilities_and_equity": "20900000",
+    "cf.net_income": "2629000",
+    "cf.depreciation_amortization": "1078000",
+    "cf.change_in_working_capital": "133000",
+    "cf.other_operating": "40000",
+    "cf.cfo": "3880000",
+    "cf.capex": "1166000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1166000",
+    "cf.revolver_net": "-550000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1112000",
+    "cf.distributions": "1052000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2714000",
+    "cf.net_change_in_cash": "0",
+    "sup.cash_interest_paid": "936000",
+    "sup.cash_taxes_paid": "879000",
+    "sup.scheduled_principal": "1112000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "550000",
+    "equity.retained_earnings": "2597000",
+    "cash.beginning_of_year": "1590000",
+    "debt.term_total": "10018000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.25",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2853000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "800000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "951000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1100000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5704000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5704000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1226000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "935000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1141000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2402000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "807000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1919000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.82",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "10359000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2853000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "800000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "951000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1100000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5704000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5704000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1226000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1226000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.27",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2908000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "778000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "970000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1105000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5761000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5761000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1239000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "951000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1163000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2408000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "786000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1898000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.73",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9982000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2908000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "778000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "970000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1105000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5761000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5761000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1239000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1239000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.26",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2904000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "755000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "969000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1111000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5739000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5739000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1252000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "970000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1161000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2356000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "763000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1875000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.69",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9675000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2904000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "755000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "969000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1111000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5739000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5739000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1252000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1252000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.34",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2733000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "733000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "912000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1117000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5495000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5805000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1264000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "969000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1093000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2479000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "740000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1852000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.59",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9242000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2733000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "733000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "912000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1117000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5495000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5805000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1264000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1264000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.40",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2794000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "707000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "933000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1123000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5557000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5867000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1281000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "912000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1117000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2557000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "716000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1828000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.52",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "8889000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2794000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "707000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "933000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1123000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5557000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5867000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1281000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1281000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.42",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2859000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "680000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "954000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1130000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5623000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5933000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1292000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "933000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1143000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2565000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "689000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1801000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.44",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "8555000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2859000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "680000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "954000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1130000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5623000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "5933000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1292000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1292000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Tobias Wennerstrom",
+   "reported": {
+    "fccr": {
+     "value": "1.47",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2963000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "654000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "988000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1137000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5742000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "6052000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1307000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "954000"
+      },
+      {
+       "label": "Less: Distributions to owners",
+       "amount": "1185000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2606000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "663000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1112000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1775000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.40",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "8478000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2963000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "654000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "988000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1137000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5742000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "310000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "6052000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1307000",
+     "threshold": "1700000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1307000"
+      }
+     ]
+    }
+   },
+   "document_id": "larkspur-environmental.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "1827000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10018000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "1825000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10018000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "1854000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9740000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "1837000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9740000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "1821000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9740000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "1788000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9462000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "1735000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9462000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "1709000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9462000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "1682000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9184000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "1693000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9184000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "1723000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9184000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "1773000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8906000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "1777000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8906000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "1752000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8906000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "1731000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8628000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "1720000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8628000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "1665000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8628000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "1632000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8350000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "1603000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8350000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "1621000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8350000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "1603000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8072000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "1565000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8072000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "1509000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8072000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "1448000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7794000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "1440000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7794000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "1378000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7794000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "1373000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7516000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "1343000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7516000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "1352000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7516000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "1317000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7238000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "1377000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7238000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "1445000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7238000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "1518000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6960000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "1515000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6960000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "larkspur-environmental.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/larkspur-environmental/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Larkspur Environmental Services, Inc. and Bank of Stoic",
+   "received_date": "2022-01-28",
+   "document_date": "2022-01-28"
+  },
+  {
+   "id": "larkspur-environmental.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/larkspur-environmental/afs-2024.pdf",
+   "pages": 7,
+   "title": "Larkspur Environmental Services, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-09",
+   "document_date": "2025-03-31",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,653"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "8,530"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "661"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "10,844"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "6,567"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "21,651"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "2,836"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,429"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,773"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,001"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "8,151"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,794"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "875"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "16,820"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "4,831"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "21,651"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "55,192"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "36,928"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "18,264"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "12,418"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,095"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "221"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "4,530"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "821"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "32"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "3,741"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "935"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,806"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,806"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,095"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(368)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "40"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,573"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,214)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,214)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(62)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,112)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,122)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,296)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "63"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "831"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "924"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,112"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,590",
+    "bs.accounts_receivable": "7,986",
+    "bs.other_current_assets": "636",
+    "bs.total_current_assets": "10,212",
+    "bs.net_ppe": "6,448",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "20,900",
+    "bs.accounts_payable": "2,718",
+    "bs.accrued_liabilities": "1,387",
+    "bs.revolver": "1,835",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "960",
+    "bs.total_current_liabilities": "8,012",
+    "bs.long_term_debt": "8,906",
+    "bs.other_noncurrent_liabilities": "835",
+    "bs.total_liabilities": "17,753",
+    "bs.total_equity": "3,147",
+    "bs.total_liabilities_and_equity": "20,900",
+    "is.revenue": "53,001",
+    "is.cogs": "35,381",
+    "is.gross_profit": "17,620",
+    "is.sga": "11,925",
+    "is.depreciation_amortization": "1,078",
+    "is.other_operating_expense": "212",
+    "is.operating_income": "4,405",
+    "is.interest_expense": "930",
+    "is.other_income_net": "32",
+    "is.pretax_income": "3,507",
+    "is.income_tax_expense": "878",
+    "is.net_income": "2,629",
+    "cf.net_income": "2,629",
+    "cf.depreciation_amortization": "1,078",
+    "cf.change_in_working_capital": "133",
+    "cf.other_operating": "40",
+    "cf.cfo": "3,880",
+    "cf.capex": "(1,166)",
+    "cf.cfi": "(1,166)",
+    "cf.revolver_net": "(550)",
+    "cf.term_debt_repayments": "(1,112)",
+    "cf.distributions": "(1,052)",
+    "cf.cff": "(2,714)",
+    "cf.net_change_in_cash": "-",
+    "sup.cash_interest_paid": "936",
+    "sup.cash_taxes_paid": "879",
+    "sup.scheduled_principal": "1,112",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/larkspur-environmental/afs-2025.pdf",
+   "pages": 7,
+   "title": "Larkspur Environmental Services, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-07",
+   "document_date": "2026-03-29",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,719"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "8,663"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "687"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "11,069"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "6,714"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "22,023"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "2,945"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,476"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,448"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "974"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "7,955"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,682"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "915"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "15,552"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "6,471"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "22,023"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "57,443"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "38,519"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "18,924"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "12,925"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,117"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "229"
+    },
+    "is.nonrecurring_expense": {
+     "page": 4,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "310"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "4,343"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "733"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "35"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "3,645"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "912"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,733"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,733"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,117"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(30)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "40"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,860"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,264)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,264)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(325)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,112)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,093)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,530)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "66"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "740"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "969"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,112"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,653",
+    "bs.accounts_receivable": "8,530",
+    "bs.other_current_assets": "661",
+    "bs.total_current_assets": "10,844",
+    "bs.net_ppe": "6,567",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "21,651",
+    "bs.accounts_payable": "2,836",
+    "bs.accrued_liabilities": "1,429",
+    "bs.revolver": "1,773",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "1,001",
+    "bs.total_current_liabilities": "8,151",
+    "bs.long_term_debt": "7,794",
+    "bs.other_noncurrent_liabilities": "875",
+    "bs.total_liabilities": "16,820",
+    "bs.total_equity": "4,831",
+    "bs.total_liabilities_and_equity": "21,651",
+    "is.revenue": "55,192",
+    "is.cogs": "36,928",
+    "is.gross_profit": "18,264",
+    "is.sga": "12,418",
+    "is.depreciation_amortization": "1,095",
+    "is.other_operating_expense": "221",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "4,530",
+    "is.interest_expense": "821",
+    "is.other_income_net": "32",
+    "is.pretax_income": "3,741",
+    "is.income_tax_expense": "935",
+    "is.net_income": "2,806",
+    "cf.net_income": "2,806",
+    "cf.depreciation_amortization": "1,095",
+    "cf.change_in_working_capital": "(368)",
+    "cf.other_operating": "40",
+    "cf.cfo": "3,573",
+    "cf.capex": "(1,214)",
+    "cf.cfi": "(1,214)",
+    "cf.revolver_net": "(62)",
+    "cf.term_debt_repayments": "(1,112)",
+    "cf.distributions": "(1,122)",
+    "cf.cff": "(2,296)",
+    "cf.net_change_in_cash": "63",
+    "sup.cash_interest_paid": "831",
+    "sup.cash_taxes_paid": "924",
+    "sup.scheduled_principal": "1,112",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/larkspur-environmental/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Larkspur Environmental Services, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-04-30",
+   "document_date": "2025-04-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,679"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,662"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "672"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "11,013"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,598"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "21,851"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,875"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,449"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,731"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,022"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "8,189"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,516"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "885"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "16,590"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "5,261"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "21,851"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "13,990"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "9,369"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,621"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,148"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "277"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "56"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,140"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "192"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "8"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "956"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "239"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "717"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "717"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "277"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(63)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "10"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "941"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(308)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(308)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(42)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(278)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(287)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(607)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "26"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "193"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "229"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "278"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,616",
+    "bs.accounts_receivable": "8,160",
+    "bs.other_current_assets": "646",
+    "bs.total_current_assets": "10,422",
+    "bs.net_ppe": "6,472",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "21,134",
+    "bs.accounts_payable": "2,765",
+    "bs.accrued_liabilities": "1,404",
+    "bs.revolver": "1,854",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "977",
+    "bs.total_current_liabilities": "8,112",
+    "bs.long_term_debt": "8,628",
+    "bs.other_noncurrent_liabilities": "845",
+    "bs.total_liabilities": "17,585",
+    "bs.total_equity": "3,549",
+    "bs.total_liabilities_and_equity": "21,134",
+    "is.revenue": "13,464",
+    "is.cogs": "9,011",
+    "is.gross_profit": "4,453",
+    "is.sga": "3,029",
+    "is.depreciation_amortization": "272",
+    "is.other_operating_expense": "54",
+    "is.operating_income": "1,098",
+    "is.interest_expense": "213",
+    "is.other_income_net": "8",
+    "is.pretax_income": "893",
+    "is.income_tax_expense": "223",
+    "is.net_income": "670",
+    "cf.net_income": "670",
+    "cf.depreciation_amortization": "272",
+    "cf.change_in_working_capital": "(103)",
+    "cf.other_operating": "10",
+    "cf.cfo": "849",
+    "cf.capex": "(296)",
+    "cf.cfi": "(296)",
+    "cf.revolver_net": "19",
+    "cf.term_debt_repayments": "(278)",
+    "cf.distributions": "(268)",
+    "cf.cff": "(527)",
+    "cf.net_change_in_cash": "26",
+    "sup.cash_interest_paid": "217",
+    "sup.cash_taxes_paid": "218",
+    "sup.scheduled_principal": "278",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/larkspur-environmental/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Larkspur Environmental Services, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-08-01",
+   "document_date": "2025-07-28",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,747"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,837"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "699"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "11,283"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,640"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "22,163"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,988"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,503"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,632"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,072"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "8,307"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,238"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "895"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "16,440"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "5,723"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "22,163"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "28,545"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "19,108"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,437"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,423"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "555"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "114"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,345"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "379"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "17"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,983"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "496"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,487"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,487"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "555"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(48)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "20"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,014"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(628)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(628)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(141)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(556)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(595)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,292)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "94"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "382"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "468"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "556"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,672",
+    "bs.accounts_receivable": "8,321",
+    "bs.other_current_assets": "669",
+    "bs.total_current_assets": "10,662",
+    "bs.net_ppe": "6,506",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "21,408",
+    "bs.accounts_payable": "2,858",
+    "bs.accrued_liabilities": "1,449",
+    "bs.revolver": "1,788",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "1,018",
+    "bs.total_current_liabilities": "8,225",
+    "bs.long_term_debt": "8,350",
+    "bs.other_noncurrent_liabilities": "855",
+    "bs.total_liabilities": "17,430",
+    "bs.total_equity": "3,978",
+    "bs.total_liabilities_and_equity": "21,408",
+    "is.revenue": "27,396",
+    "is.cogs": "18,325",
+    "is.gross_profit": "9,071",
+    "is.sga": "6,164",
+    "is.depreciation_amortization": "545",
+    "is.other_operating_expense": "110",
+    "is.operating_income": "2,252",
+    "is.interest_expense": "422",
+    "is.other_income_net": "16",
+    "is.pretax_income": "1,846",
+    "is.income_tax_expense": "461",
+    "is.net_income": "1,385",
+    "cf.net_income": "1,385",
+    "cf.depreciation_amortization": "545",
+    "cf.change_in_working_capital": "(108)",
+    "cf.other_operating": "20",
+    "cf.cfo": "1,842",
+    "cf.capex": "(603)",
+    "cf.cfi": "(603)",
+    "cf.revolver_net": "(47)",
+    "cf.term_debt_repayments": "(556)",
+    "cf.distributions": "(554)",
+    "cf.cff": "(1,157)",
+    "cf.net_change_in_cash": "82",
+    "sup.cash_interest_paid": "427",
+    "sup.cash_taxes_paid": "441",
+    "sup.scheduled_principal": "556",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/larkspur-environmental/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Larkspur Environmental Services, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-11-10",
+   "document_date": "2025-11-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,749"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,946"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "700"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "11,395"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,681"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "22,316"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,011"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,503"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,603"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,060"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "8,289"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,960"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "905"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "16,154"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "6,162"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "22,316"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "43,122"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "28,921"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "14,201"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "9,703"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "835"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "172"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,491"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "559"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "26"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,958"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "740"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,218"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,218"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "835"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(147)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "30"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,936"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(949)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(949)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(170)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(834)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(887)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,891)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "96"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "564"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "725"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "834"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,682",
+    "bs.accounts_receivable": "8,373",
+    "bs.other_current_assets": "673",
+    "bs.total_current_assets": "10,728",
+    "bs.net_ppe": "6,540",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "21,508",
+    "bs.accounts_payable": "2,872",
+    "bs.accrued_liabilities": "1,456",
+    "bs.revolver": "1,682",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "1,030",
+    "bs.total_current_liabilities": "8,152",
+    "bs.long_term_debt": "8,072",
+    "bs.other_noncurrent_liabilities": "865",
+    "bs.total_liabilities": "17,089",
+    "bs.total_equity": "4,419",
+    "bs.total_liabilities_and_equity": "21,508",
+    "is.revenue": "41,415",
+    "is.cogs": "27,685",
+    "is.gross_profit": "13,730",
+    "is.sga": "9,318",
+    "is.depreciation_amortization": "819",
+    "is.other_operating_expense": "166",
+    "is.operating_income": "3,427",
+    "is.interest_expense": "625",
+    "is.other_income_net": "24",
+    "is.pretax_income": "2,826",
+    "is.income_tax_expense": "706",
+    "is.net_income": "2,120",
+    "cf.net_income": "2,120",
+    "cf.depreciation_amortization": "819",
+    "cf.change_in_working_capital": "(131)",
+    "cf.other_operating": "30",
+    "cf.cfo": "2,838",
+    "cf.capex": "(911)",
+    "cf.cfi": "(911)",
+    "cf.revolver_net": "(153)",
+    "cf.term_debt_repayments": "(834)",
+    "cf.distributions": "(848)",
+    "cf.cff": "(1,835)",
+    "cf.net_change_in_cash": "92",
+    "sup.cash_interest_paid": "632",
+    "sup.cash_taxes_paid": "679",
+    "sup.scheduled_principal": "834",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/larkspur-environmental/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Larkspur Environmental Services, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-05-12",
+   "document_date": "2026-05-08",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,773"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,923"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "709"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "11,405"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,756"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "22,401"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,043"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,518"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,373"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,088"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "8,134"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,404"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "925"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,463"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "6,938"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "22,401"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "14,778"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "9,916"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,862"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,325"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "283"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "59"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,195"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "166"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "9"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,038"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "260"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "778"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "778"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "283"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(28)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "10"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,043"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(325)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(325)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(75)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(278)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(311)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(664)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "54"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "169"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "172"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "278"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,679",
+    "bs.accounts_receivable": "8,662",
+    "bs.other_current_assets": "672",
+    "bs.total_current_assets": "11,013",
+    "bs.net_ppe": "6,598",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "21,851",
+    "bs.accounts_payable": "2,875",
+    "bs.accrued_liabilities": "1,449",
+    "bs.revolver": "1,731",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "1,022",
+    "bs.total_current_liabilities": "8,189",
+    "bs.long_term_debt": "7,516",
+    "bs.other_noncurrent_liabilities": "885",
+    "bs.total_liabilities": "16,590",
+    "bs.total_equity": "5,261",
+    "bs.total_liabilities_and_equity": "21,851",
+    "is.revenue": "13,990",
+    "is.cogs": "9,369",
+    "is.gross_profit": "4,621",
+    "is.sga": "3,148",
+    "is.depreciation_amortization": "277",
+    "is.other_operating_expense": "56",
+    "is.operating_income": "1,140",
+    "is.interest_expense": "192",
+    "is.other_income_net": "8",
+    "is.pretax_income": "956",
+    "is.income_tax_expense": "239",
+    "is.net_income": "717",
+    "cf.net_income": "717",
+    "cf.depreciation_amortization": "277",
+    "cf.change_in_working_capital": "(63)",
+    "cf.other_operating": "10",
+    "cf.cfo": "941",
+    "cf.capex": "(308)",
+    "cf.cfi": "(308)",
+    "cf.revolver_net": "(42)",
+    "cf.term_debt_repayments": "(278)",
+    "cf.distributions": "(287)",
+    "cf.cff": "(607)",
+    "cf.net_change_in_cash": "26",
+    "sup.cash_interest_paid": "193",
+    "sup.cash_taxes_paid": "229",
+    "sup.scheduled_principal": "278",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/larkspur-environmental/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Larkspur Environmental Services, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-08-06",
+   "document_date": "2026-08-02",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,807"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,110"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "723"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "11,640"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,802"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "22,682"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,088"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,544"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,317"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,121"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "8,182"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,126"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "935"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,243"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "7,439"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "22,682"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "29,837"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "19,978"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,859"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,713"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "568"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "119"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,459"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "326"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "18"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,151"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "538"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,613"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,613"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "568"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(125)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "20"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,076"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(656)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(656)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(131)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(556)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(645)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,332)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "88"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "331"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "432"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "556"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,747",
+    "bs.accounts_receivable": "8,837",
+    "bs.other_current_assets": "699",
+    "bs.total_current_assets": "11,283",
+    "bs.net_ppe": "6,640",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "22,163",
+    "bs.accounts_payable": "2,988",
+    "bs.accrued_liabilities": "1,503",
+    "bs.revolver": "1,632",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "1,072",
+    "bs.total_current_liabilities": "8,307",
+    "bs.long_term_debt": "7,238",
+    "bs.other_noncurrent_liabilities": "895",
+    "bs.total_liabilities": "16,440",
+    "bs.total_equity": "5,723",
+    "bs.total_liabilities_and_equity": "22,163",
+    "is.revenue": "28,545",
+    "is.cogs": "19,108",
+    "is.gross_profit": "9,437",
+    "is.sga": "6,423",
+    "is.depreciation_amortization": "555",
+    "is.other_operating_expense": "114",
+    "is.operating_income": "2,345",
+    "is.interest_expense": "379",
+    "is.other_income_net": "17",
+    "is.pretax_income": "1,983",
+    "is.income_tax_expense": "496",
+    "is.net_income": "1,487",
+    "cf.net_income": "1,487",
+    "cf.depreciation_amortization": "555",
+    "cf.change_in_working_capital": "(48)",
+    "cf.other_operating": "20",
+    "cf.cfo": "2,014",
+    "cf.capex": "(628)",
+    "cf.cfi": "(628)",
+    "cf.revolver_net": "(141)",
+    "cf.term_debt_repayments": "(556)",
+    "cf.distributions": "(595)",
+    "cf.cff": "(1,292)",
+    "cf.net_change_in_cash": "94",
+    "sup.cash_interest_paid": "382",
+    "sup.cash_taxes_paid": "468",
+    "sup.scheduled_principal": "556",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/larkspur-environmental/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Larkspur Environmental Services, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-10-26",
+   "document_date": "2026-10-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,833"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,541"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "733"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,107"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,851"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,710"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "530"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "23,198"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,139"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,563"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,518"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,112"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,133"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "8,465"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,848"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "945"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,258"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "7,940"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "23,198"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "45,111"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "30,209"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "14,902"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,150"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "855"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "180"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,717"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "480"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "27"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,264"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "816"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,448"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,448"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "855"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(484)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "30"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,849"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(992)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(992)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "70"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(834)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(979)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,743)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "114"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "487"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "710"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "834"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,749",
+    "bs.accounts_receivable": "8,946",
+    "bs.other_current_assets": "700",
+    "bs.total_current_assets": "11,395",
+    "bs.net_ppe": "6,681",
+    "bs.intangibles": "3,710",
+    "bs.other_noncurrent_assets": "530",
+    "bs.total_assets": "22,316",
+    "bs.accounts_payable": "3,011",
+    "bs.accrued_liabilities": "1,503",
+    "bs.revolver": "1,603",
+    "bs.cpltd": "1,112",
+    "bs.other_current_liabilities": "1,060",
+    "bs.total_current_liabilities": "8,289",
+    "bs.long_term_debt": "6,960",
+    "bs.other_noncurrent_liabilities": "905",
+    "bs.total_liabilities": "16,154",
+    "bs.total_equity": "6,162",
+    "bs.total_liabilities_and_equity": "22,316",
+    "is.revenue": "43,122",
+    "is.cogs": "28,921",
+    "is.gross_profit": "14,201",
+    "is.sga": "9,703",
+    "is.depreciation_amortization": "835",
+    "is.other_operating_expense": "172",
+    "is.operating_income": "3,491",
+    "is.interest_expense": "559",
+    "is.other_income_net": "26",
+    "is.pretax_income": "2,958",
+    "is.income_tax_expense": "740",
+    "is.net_income": "2,218",
+    "cf.net_income": "2,218",
+    "cf.depreciation_amortization": "835",
+    "cf.change_in_working_capital": "(147)",
+    "cf.other_operating": "30",
+    "cf.cfo": "2,936",
+    "cf.capex": "(949)",
+    "cf.cfi": "(949)",
+    "cf.revolver_net": "(170)",
+    "cf.term_debt_repayments": "(834)",
+    "cf.distributions": "(887)",
+    "cf.cff": "(1,891)",
+    "cf.net_change_in_cash": "96",
+    "sup.cash_interest_paid": "564",
+    "sup.cash_taxes_paid": "725",
+    "sup.scheduled_principal": "834",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "larkspur-environmental.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/larkspur-environmental/cc-2025-03-31.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-04-30",
+   "document_date": "2025-04-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "larkspur-environmental.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/larkspur-environmental/cc-2025-06-30.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-08-01",
+   "document_date": "2025-07-30",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "larkspur-environmental.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/larkspur-environmental/cc-2025-09-30.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-11-10",
+   "document_date": "2025-11-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "larkspur-environmental.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/larkspur-environmental/cc-2025-12-31.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-04",
+   "document_date": "2026-02-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "larkspur-environmental.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/larkspur-environmental/cc-2026-03-31.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-05-12",
+   "document_date": "2026-05-10",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "larkspur-environmental.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/larkspur-environmental/cc-2026-06-30.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-08-06",
+   "document_date": "2026-08-04",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "larkspur-environmental.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/larkspur-environmental/cc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Larkspur Environmental Services, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-10-26",
+   "document_date": "2026-10-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.25",
+    "pass": true,
+    "headroom": "0.2500",
+    "reported_value": "1.25",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2853000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "800000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "951000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1100000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5704000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5704000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1226000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "935000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1141000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2402000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "807000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1919000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.82",
+    "pass": true,
+    "headroom": "0.2720",
+    "reported_value": "1.82",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "10359000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2853000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "800000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "951000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1100000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5704000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5704000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1226000",
+    "pass": true,
+    "headroom": "0.2788",
+    "reported_value": "1226000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1226000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.27",
+    "pass": true,
+    "headroom": "0.2700",
+    "reported_value": "1.27",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2908000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "778000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "970000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1105000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5761000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5761000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1239000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "951000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1163000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2408000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "786000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1898000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.73",
+    "pass": true,
+    "headroom": "0.3080",
+    "reported_value": "1.73",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9982000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2908000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "778000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "970000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1105000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5761000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5761000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1239000",
+    "pass": true,
+    "headroom": "0.2712",
+    "reported_value": "1239000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1239000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.26",
+    "pass": true,
+    "headroom": "0.2600",
+    "reported_value": "1.26",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2904000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "755000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "969000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1111000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5739000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5739000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1252000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "970000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1161000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2356000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "763000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1875000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.69",
+    "pass": true,
+    "headroom": "0.3240",
+    "reported_value": "1.69",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9675000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2904000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "755000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "969000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1111000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5739000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5739000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1252000",
+    "pass": true,
+    "headroom": "0.2635",
+    "reported_value": "1252000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1252000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.34",
+    "pass": true,
+    "headroom": "0.3400",
+    "reported_value": "1.34",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2733000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "733000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "912000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1117000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5495000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5805000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1264000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "969000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1093000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2479000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "740000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1852000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.59",
+    "pass": true,
+    "headroom": "0.3640",
+    "reported_value": "1.59",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9242000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2733000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "733000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "912000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1117000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5495000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5805000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1264000",
+    "pass": true,
+    "headroom": "0.2565",
+    "reported_value": "1264000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1264000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.40",
+    "pass": true,
+    "headroom": "0.4000",
+    "reported_value": "1.40",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2794000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "707000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "933000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1123000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5557000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5867000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1281000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "912000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1117000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2557000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "716000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1828000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.52",
+    "pass": true,
+    "headroom": "0.3920",
+    "reported_value": "1.52",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "8889000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2794000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "707000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "933000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1123000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5557000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5867000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1281000",
+    "pass": true,
+    "headroom": "0.2465",
+    "reported_value": "1281000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1281000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.42",
+    "pass": true,
+    "headroom": "0.4200",
+    "reported_value": "1.42",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2859000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "680000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "954000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1130000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5623000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5933000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1292000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "933000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1143000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2565000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "689000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1801000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.44",
+    "pass": true,
+    "headroom": "0.4240",
+    "reported_value": "1.44",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "8555000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2859000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "680000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "954000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1130000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5623000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "5933000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1292000",
+    "pass": true,
+    "headroom": "0.2400",
+    "reported_value": "1292000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1292000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.47",
+    "pass": true,
+    "headroom": "0.4700",
+    "reported_value": "1.47",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2963000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "654000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "988000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1137000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5742000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "6052000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1307000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "954000"
+     },
+     {
+      "label": "Less: Distributions to owners",
+      "amount": "1185000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2606000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "663000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1112000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1775000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.40",
+    "pass": true,
+    "headroom": "0.4400",
+    "reported_value": "1.40",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "8478000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2963000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "654000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "988000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1137000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5742000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "310000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "6052000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "larkspur-environmental-rlc",
+    "terms_version_id": "tv-larkspur-environmental-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "1700000",
+    "value": "1307000",
+    "pass": true,
+    "headroom": "0.2312",
+    "reported_value": "1307000",
+    "reported_threshold": "1700000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1307000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.2635",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2788",
+     "prior_period": "0.2712"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.2565",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2712",
+     "prior_period": "0.2635"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.2465",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2635",
+     "prior_period": "0.2565"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.2400",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2565",
+     "prior_period": "0.2465"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.2312",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2465",
+     "prior_period": "0.2400"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}

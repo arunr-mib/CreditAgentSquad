@@ -1,0 +1,5601 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "vantry-freight",
+  "name": "Vantry Freight Systems, LLC",
+  "legal_form": "llc",
+  "industry": "logistics",
+  "city": "Memphis",
+  "state": "TN",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Marcus Oyelaran",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 6,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Garrett Molyneux",
+  "auditor": "Greaves & Tolland, P.C."
+ },
+ "facilities": [
+  {
+   "id": "vantry-freight-rlc",
+   "borrower_id": "vantry-freight",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "9250000",
+   "original_amount": "9250000",
+   "closing_date": "2022-10-14",
+   "maturity_date": "2028-10-14",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "vantry-freight-tl",
+   "borrower_id": "vantry-freight",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "22161000",
+   "original_amount": "22161000",
+   "closing_date": "2022-10-14",
+   "maturity_date": "2029-10-14",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "541000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-vantry-freight-1",
+   "facility_id": "vantry-freight-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-10-14",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2022-10-20",
+   "warnings": [],
+   "source_documents": [
+    "vantry-freight.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": [
+       {
+        "name": "restructuring",
+        "source_key": "is.nonrecurring_expense",
+        "cap": {
+         "type": "amount",
+         "value": "500000"
+        },
+        "citation": {
+         "field": "definitions.ebitda.addbacks.restructuring",
+         "document_id": "vantry-freight.credit-agreement",
+         "section": "1.1",
+         "page": 4,
+         "quote": "\"Adjusted EBITDA\" means, for any period, EBITDA for such period plus restructuring and other non-recurring charges deducted in determining net income for such period, provided that the aggregate amount added back pursuant to this definition shall not exceed $500,000 in any period of four consecutive fiscal quarters."
+        }
+       }
+      ]
+     }
+    },
+    "covenants": [
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "adjusted_ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "vantry-freight.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "vantry-freight.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) Adjusted EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "interest_coverage",
+      "name": "Interest Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "adjusted_ebitda",
+       "deductions": [],
+       "denominator": [
+        "interest_expense"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "vantry-freight.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Interest Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "vantry-freight.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Interest Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) Adjusted EBITDA for such period to (b) interest expense for such period."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "vantry-freight.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "vantry-freight.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "vantry-freight.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "vantry-freight.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "vantry-freight.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "vantry-freight.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $9,250,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "vantry-freight.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $22,161,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "vantry-freight.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $541,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "23756000",
+    "is.cogs": "18104000",
+    "is.gross_profit": "5652000",
+    "is.sga": "2732000",
+    "is.depreciation_amortization": "871000",
+    "is.other_operating_expense": "95000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1954000",
+    "is.interest_expense": "430000",
+    "is.other_income_net": "14000",
+    "is.pretax_income": "1538000",
+    "is.income_tax_expense": "31000",
+    "is.net_income": "1507000",
+    "bs.cash": "2851000",
+    "bs.accounts_receivable": "11377000",
+    "bs.inventory": "397000",
+    "bs.other_current_assets": "1140000",
+    "bs.total_current_assets": "15765000",
+    "bs.net_ppe": "39851000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "63136000",
+    "bs.accounts_payable": "5754000",
+    "bs.accrued_liabilities": "1345000",
+    "bs.revolver": "4276000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1361000",
+    "bs.total_current_liabilities": "14900000",
+    "bs.long_term_debt": "16751000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1495000",
+    "bs.total_liabilities": "33146000",
+    "bs.total_equity": "29990000",
+    "bs.total_liabilities_and_equity": "63136000",
+    "cf.net_income": "1507000",
+    "cf.depreciation_amortization": "871000",
+    "cf.change_in_working_capital": "264000",
+    "cf.other_operating": "17000",
+    "cf.cfo": "2659000",
+    "cf.capex": "950000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-950000",
+    "cf.revolver_net": "-81000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "541000",
+    "cf.distributions": "1141000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1763000",
+    "cf.net_change_in_cash": "-54000",
+    "sup.cash_interest_paid": "433000",
+    "sup.cash_taxes_paid": "31000",
+    "sup.scheduled_principal": "541000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "20538000",
+    "cash.beginning_of_year": "2905000",
+    "debt.term_total": "18915000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "48130000",
+    "is.cogs": "36823000",
+    "is.gross_profit": "11307000",
+    "is.sga": "5535000",
+    "is.depreciation_amortization": "1744000",
+    "is.other_operating_expense": "192000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3836000",
+    "is.interest_expense": "849000",
+    "is.other_income_net": "29000",
+    "is.pretax_income": "3016000",
+    "is.income_tax_expense": "61000",
+    "is.net_income": "2955000",
+    "bs.cash": "2925000",
+    "bs.accounts_receivable": "12073000",
+    "bs.inventory": "410000",
+    "bs.other_current_assets": "1170000",
+    "bs.total_current_assets": "16578000",
+    "bs.net_ppe": "39953000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "64051000",
+    "bs.accounts_payable": "5949000",
+    "bs.accrued_liabilities": "1373000",
+    "bs.revolver": "4444000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1395000",
+    "bs.total_current_liabilities": "15325000",
+    "bs.long_term_debt": "16210000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1512000",
+    "bs.total_liabilities": "33047000",
+    "bs.total_equity": "31004000",
+    "bs.total_liabilities_and_equity": "64051000",
+    "cf.net_income": "2955000",
+    "cf.depreciation_amortization": "1744000",
+    "cf.change_in_working_capital": "-218000",
+    "cf.other_operating": "34000",
+    "cf.cfo": "4515000",
+    "cf.capex": "1925000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1925000",
+    "cf.revolver_net": "87000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1082000",
+    "cf.distributions": "1575000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2570000",
+    "cf.net_change_in_cash": "20000",
+    "sup.cash_interest_paid": "855000",
+    "sup.cash_taxes_paid": "62000",
+    "sup.scheduled_principal": "1082000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "21552000",
+    "cash.beginning_of_year": "2905000",
+    "debt.term_total": "18374000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "72772000",
+    "is.cogs": "55613000",
+    "is.gross_profit": "17159000",
+    "is.sga": "8369000",
+    "is.depreciation_amortization": "2619000",
+    "is.other_operating_expense": "291000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5880000",
+    "is.interest_expense": "1261000",
+    "is.other_income_net": "44000",
+    "is.pretax_income": "4663000",
+    "is.income_tax_expense": "94000",
+    "is.net_income": "4569000",
+    "bs.cash": "2957000",
+    "bs.accounts_receivable": "11936000",
+    "bs.inventory": "412000",
+    "bs.other_current_assets": "1183000",
+    "bs.total_current_assets": "16488000",
+    "bs.net_ppe": "40064000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "64072000",
+    "bs.accounts_payable": "5972000",
+    "bs.accrued_liabilities": "1384000",
+    "bs.revolver": "4436000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1413000",
+    "bs.total_current_liabilities": "15369000",
+    "bs.long_term_debt": "15669000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1529000",
+    "bs.total_liabilities": "32567000",
+    "bs.total_equity": "31505000",
+    "bs.total_liabilities_and_equity": "64072000",
+    "cf.net_income": "4569000",
+    "cf.depreciation_amortization": "2619000",
+    "cf.change_in_working_capital": "-44000",
+    "cf.other_operating": "51000",
+    "cf.cfo": "7195000",
+    "cf.capex": "2911000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2911000",
+    "cf.revolver_net": "79000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1623000",
+    "cf.distributions": "2688000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4232000",
+    "cf.net_change_in_cash": "52000",
+    "sup.cash_interest_paid": "1270000",
+    "sup.cash_taxes_paid": "92000",
+    "sup.scheduled_principal": "1623000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "22053000",
+    "cash.beginning_of_year": "2905000",
+    "debt.term_total": "17833000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "98323000",
+    "is.cogs": "75114000",
+    "is.gross_profit": "23209000",
+    "is.sga": "11307000",
+    "is.depreciation_amortization": "3497000",
+    "is.other_operating_expense": "393000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8012000",
+    "is.interest_expense": "1663000",
+    "is.other_income_net": "59000",
+    "is.pretax_income": "6408000",
+    "is.income_tax_expense": "129000",
+    "is.net_income": "6279000",
+    "bs.cash": "3066000",
+    "bs.accounts_receivable": "12180000",
+    "bs.inventory": "427000",
+    "bs.other_current_assets": "1226000",
+    "bs.total_current_assets": "16899000",
+    "bs.net_ppe": "40208000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "64627000",
+    "bs.accounts_payable": "6198000",
+    "bs.accrued_liabilities": "1427000",
+    "bs.revolver": "4599000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1466000",
+    "bs.total_current_liabilities": "15854000",
+    "bs.long_term_debt": "15128000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1546000",
+    "bs.total_liabilities": "32528000",
+    "bs.total_equity": "32099000",
+    "bs.total_liabilities_and_equity": "64627000",
+    "cf.net_income": "6279000",
+    "cf.depreciation_amortization": "3497000",
+    "cf.change_in_working_capital": "-24000",
+    "cf.other_operating": "68000",
+    "cf.cfo": "9820000",
+    "cf.capex": "3933000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3933000",
+    "cf.revolver_net": "242000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2164000",
+    "cf.distributions": "3804000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5726000",
+    "cf.net_change_in_cash": "161000",
+    "sup.cash_interest_paid": "1675000",
+    "sup.cash_taxes_paid": "125000",
+    "sup.scheduled_principal": "2164000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "22647000",
+    "cash.beginning_of_year": "2905000",
+    "debt.term_total": "17292000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "24587000",
+    "is.cogs": "18792000",
+    "is.gross_profit": "5795000",
+    "is.sga": "2828000",
+    "is.depreciation_amortization": "881000",
+    "is.other_operating_expense": "98000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1988000",
+    "is.interest_expense": "396000",
+    "is.other_income_net": "15000",
+    "is.pretax_income": "1607000",
+    "is.income_tax_expense": "32000",
+    "is.net_income": "1575000",
+    "bs.cash": "2950000",
+    "bs.accounts_receivable": "12260000",
+    "bs.inventory": "412000",
+    "bs.other_current_assets": "1180000",
+    "bs.total_current_assets": "16802000",
+    "bs.net_ppe": "40310000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "64632000",
+    "bs.accounts_payable": "5972000",
+    "bs.accrued_liabilities": "1376000",
+    "bs.revolver": "4426000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1409000",
+    "bs.total_current_liabilities": "15347000",
+    "bs.long_term_debt": "14587000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1563000",
+    "bs.total_liabilities": "31497000",
+    "bs.total_equity": "33135000",
+    "bs.total_liabilities_and_equity": "64632000",
+    "cf.net_income": "1575000",
+    "cf.depreciation_amortization": "881000",
+    "cf.change_in_working_capital": "-353000",
+    "cf.other_operating": "17000",
+    "cf.cfo": "2120000",
+    "cf.capex": "983000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-983000",
+    "cf.revolver_net": "-173000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "541000",
+    "cf.distributions": "539000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1253000",
+    "cf.net_change_in_cash": "-116000",
+    "sup.cash_interest_paid": "398000",
+    "sup.cash_taxes_paid": "35000",
+    "sup.scheduled_principal": "541000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "23683000",
+    "cash.beginning_of_year": "3066000",
+    "debt.term_total": "16751000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "50328000",
+    "is.cogs": "38435000",
+    "is.gross_profit": "11893000",
+    "is.sga": "5788000",
+    "is.depreciation_amortization": "1764000",
+    "is.other_operating_expense": "201000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4140000",
+    "is.interest_expense": "779000",
+    "is.other_income_net": "30000",
+    "is.pretax_income": "3391000",
+    "is.income_tax_expense": "68000",
+    "is.net_income": "3323000",
+    "bs.cash": "3089000",
+    "bs.accounts_receivable": "12384000",
+    "bs.inventory": "431000",
+    "bs.other_current_assets": "1236000",
+    "bs.total_current_assets": "17140000",
+    "bs.net_ppe": "40457000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "65117000",
+    "bs.accounts_payable": "6243000",
+    "bs.accrued_liabilities": "1430000",
+    "bs.revolver": "4633000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1477000",
+    "bs.total_current_liabilities": "15947000",
+    "bs.long_term_debt": "14046000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1580000",
+    "bs.total_liabilities": "31573000",
+    "bs.total_equity": "33544000",
+    "bs.total_liabilities_and_equity": "65117000",
+    "cf.net_income": "3323000",
+    "cf.depreciation_amortization": "1764000",
+    "cf.change_in_working_capital": "-159000",
+    "cf.other_operating": "34000",
+    "cf.cfo": "4962000",
+    "cf.capex": "2013000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2013000",
+    "cf.revolver_net": "34000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1082000",
+    "cf.distributions": "1878000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2926000",
+    "cf.net_change_in_cash": "23000",
+    "sup.cash_interest_paid": "785000",
+    "sup.cash_taxes_paid": "67000",
+    "sup.scheduled_principal": "1082000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "24092000",
+    "cash.beginning_of_year": "3066000",
+    "debt.term_total": "16210000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "76177000",
+    "is.cogs": "58184000",
+    "is.gross_profit": "17993000",
+    "is.sga": "8761000",
+    "is.depreciation_amortization": "2650000",
+    "is.other_operating_expense": "304000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6278000",
+    "is.interest_expense": "1156000",
+    "is.other_income_net": "46000",
+    "is.pretax_income": "5168000",
+    "is.income_tax_expense": "104000",
+    "is.net_income": "5064000",
+    "bs.cash": "3102000",
+    "bs.accounts_receivable": "12436000",
+    "bs.inventory": "433000",
+    "bs.other_current_assets": "1241000",
+    "bs.total_current_assets": "17212000",
+    "bs.net_ppe": "40605000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "65337000",
+    "bs.accounts_payable": "6276000",
+    "bs.accrued_liabilities": "1434000",
+    "bs.revolver": "4653000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1484000",
+    "bs.total_current_liabilities": "16011000",
+    "bs.long_term_debt": "13505000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1597000",
+    "bs.total_liabilities": "31113000",
+    "bs.total_equity": "34224000",
+    "bs.total_liabilities_and_equity": "65337000",
+    "cf.net_income": "5064000",
+    "cf.depreciation_amortization": "2650000",
+    "cf.change_in_working_capital": "-174000",
+    "cf.other_operating": "51000",
+    "cf.cfo": "7591000",
+    "cf.capex": "3047000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3047000",
+    "cf.revolver_net": "54000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1623000",
+    "cf.distributions": "2939000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4508000",
+    "cf.net_change_in_cash": "36000",
+    "sup.cash_interest_paid": "1164000",
+    "sup.cash_taxes_paid": "103000",
+    "sup.scheduled_principal": "1623000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "24772000",
+    "cash.beginning_of_year": "3066000",
+    "debt.term_total": "15669000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "103113000",
+    "is.cogs": "78777000",
+    "is.gross_profit": "24336000",
+    "is.sga": "11859000",
+    "is.depreciation_amortization": "3539000",
+    "is.other_operating_expense": "412000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8526000",
+    "is.interest_expense": "1524000",
+    "is.other_income_net": "62000",
+    "is.pretax_income": "7064000",
+    "is.income_tax_expense": "142000",
+    "is.net_income": "6922000",
+    "bs.cash": "3232000",
+    "bs.accounts_receivable": "12752000",
+    "bs.inventory": "451000",
+    "bs.other_current_assets": "1293000",
+    "bs.total_current_assets": "17728000",
+    "bs.net_ppe": "40793000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "66041000",
+    "bs.accounts_payable": "6545000",
+    "bs.accrued_liabilities": "1486000",
+    "bs.revolver": "4848000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1546000",
+    "bs.total_current_liabilities": "16589000",
+    "bs.long_term_debt": "12964000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1614000",
+    "bs.total_liabilities": "31167000",
+    "bs.total_equity": "34874000",
+    "bs.total_liabilities_and_equity": "66041000",
+    "cf.net_income": "6922000",
+    "cf.depreciation_amortization": "3539000",
+    "cf.change_in_working_capital": "-177000",
+    "cf.other_operating": "68000",
+    "cf.cfo": "10352000",
+    "cf.capex": "4124000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4124000",
+    "cf.revolver_net": "249000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2164000",
+    "cf.distributions": "4147000",
+    "cf.other_financing": "0",
+    "cf.cff": "-6062000",
+    "cf.net_change_in_cash": "166000",
+    "sup.cash_interest_paid": "1535000",
+    "sup.cash_taxes_paid": "139000",
+    "sup.scheduled_principal": "2164000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "25422000",
+    "cash.beginning_of_year": "3066000",
+    "debt.term_total": "15128000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "25612000",
+    "is.cogs": "19660000",
+    "is.gross_profit": "5952000",
+    "is.sga": "2945000",
+    "is.depreciation_amortization": "894000",
+    "is.other_operating_expense": "102000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2011000",
+    "is.interest_expense": "362000",
+    "is.other_income_net": "15000",
+    "is.pretax_income": "1664000",
+    "is.income_tax_expense": "33000",
+    "is.net_income": "1631000",
+    "bs.cash": "3073000",
+    "bs.accounts_receivable": "12069000",
+    "bs.inventory": "431000",
+    "bs.other_current_assets": "1229000",
+    "bs.total_current_assets": "16802000",
+    "bs.net_ppe": "40923000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "65245000",
+    "bs.accounts_payable": "6248000",
+    "bs.accrued_liabilities": "1417000",
+    "bs.revolver": "4610000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1467000",
+    "bs.total_current_liabilities": "15906000",
+    "bs.long_term_debt": "12423000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1631000",
+    "bs.total_liabilities": "29960000",
+    "bs.total_equity": "35285000",
+    "bs.total_liabilities_and_equity": "65245000",
+    "cf.net_income": "1631000",
+    "cf.depreciation_amortization": "894000",
+    "cf.change_in_working_capital": "322000",
+    "cf.other_operating": "17000",
+    "cf.cfo": "2864000",
+    "cf.capex": "1024000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1024000",
+    "cf.revolver_net": "-238000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "541000",
+    "cf.distributions": "1220000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1999000",
+    "cf.net_change_in_cash": "-159000",
+    "sup.cash_interest_paid": "364000",
+    "sup.cash_taxes_paid": "38000",
+    "sup.scheduled_principal": "541000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "25833000",
+    "cash.beginning_of_year": "3232000",
+    "debt.term_total": "14587000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "52352000",
+    "is.cogs": "40025000",
+    "is.gross_profit": "12327000",
+    "is.sga": "6020000",
+    "is.depreciation_amortization": "1790000",
+    "is.other_operating_expense": "209000",
+    "is.nonrecurring_expense": "1400000",
+    "is.operating_income": "2908000",
+    "is.interest_expense": "710000",
+    "is.other_income_net": "31000",
+    "is.pretax_income": "2229000",
+    "is.income_tax_expense": "44000",
+    "is.net_income": "2185000",
+    "bs.cash": "3209000",
+    "bs.accounts_receivable": "12571000",
+    "bs.inventory": "446000",
+    "bs.other_current_assets": "1284000",
+    "bs.total_current_assets": "17510000",
+    "bs.net_ppe": "41097000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "66127000",
+    "bs.accounts_payable": "6472000",
+    "bs.accrued_liabilities": "1469000",
+    "bs.revolver": "5311000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1508000",
+    "bs.total_current_liabilities": "16924000",
+    "bs.long_term_debt": "11882000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1648000",
+    "bs.total_liabilities": "30454000",
+    "bs.total_equity": "35673000",
+    "bs.total_liabilities_and_equity": "66127000",
+    "cf.net_income": "2185000",
+    "cf.depreciation_amortization": "1790000",
+    "cf.change_in_working_capital": "67000",
+    "cf.other_operating": "34000",
+    "cf.cfo": "4076000",
+    "cf.capex": "2094000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2094000",
+    "cf.revolver_net": "463000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1082000",
+    "cf.distributions": "1386000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2005000",
+    "cf.net_change_in_cash": "-23000",
+    "sup.cash_interest_paid": "717000",
+    "sup.cash_taxes_paid": "71000",
+    "sup.scheduled_principal": "1082000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "26221000",
+    "cash.beginning_of_year": "3232000",
+    "debt.term_total": "14046000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "79659000",
+    "is.cogs": "60969000",
+    "is.gross_profit": "18690000",
+    "is.sga": "9160000",
+    "is.depreciation_amortization": "2690000",
+    "is.other_operating_expense": "318000",
+    "is.nonrecurring_expense": "3300000",
+    "is.operating_income": "3222000",
+    "is.interest_expense": "1062000",
+    "is.other_income_net": "47000",
+    "is.pretax_income": "2207000",
+    "is.income_tax_expense": "44000",
+    "is.net_income": "2163000",
+    "bs.cash": "3277000",
+    "bs.accounts_receivable": "13227000",
+    "bs.inventory": "459000",
+    "bs.other_current_assets": "1311000",
+    "bs.total_current_assets": "18274000",
+    "bs.net_ppe": "41289000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "67083000",
+    "bs.accounts_payable": "6656000",
+    "bs.accrued_liabilities": "1499000",
+    "bs.revolver": "6578000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1529000",
+    "bs.total_current_liabilities": "18426000",
+    "bs.long_term_debt": "11341000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1665000",
+    "bs.total_liabilities": "31432000",
+    "bs.total_equity": "35651000",
+    "bs.total_liabilities_and_equity": "67083000",
+    "cf.net_income": "2163000",
+    "cf.depreciation_amortization": "2690000",
+    "cf.change_in_working_capital": "-394000",
+    "cf.other_operating": "51000",
+    "cf.cfo": "4510000",
+    "cf.capex": "3186000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3186000",
+    "cf.revolver_net": "1730000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1623000",
+    "cf.distributions": "1386000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1279000",
+    "cf.net_change_in_cash": "45000",
+    "sup.cash_interest_paid": "1068000",
+    "sup.cash_taxes_paid": "82000",
+    "sup.scheduled_principal": "1623000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "26199000",
+    "cash.beginning_of_year": "3232000",
+    "debt.term_total": "13505000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "94000000",
+    "is.cogs": "71793000",
+    "is.gross_profit": "22207000",
+    "is.sga": "10811000",
+    "is.depreciation_amortization": "3467000",
+    "is.other_operating_expense": "376000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7553000",
+    "is.interest_expense": "1804000",
+    "is.other_income_net": "57000",
+    "is.pretax_income": "5806000",
+    "is.income_tax_expense": "117000",
+    "is.net_income": "5689000",
+    "bs.cash": "2905000",
+    "bs.accounts_receivable": "11778000",
+    "bs.inventory": "405000",
+    "bs.other_current_assets": "1162000",
+    "bs.total_current_assets": "16250000",
+    "bs.net_ppe": "39772000",
+    "bs.intangibles": "6580000",
+    "bs.other_noncurrent_assets": "940000",
+    "bs.total_assets": "63542000",
+    "bs.accounts_payable": "5870000",
+    "bs.accrued_liabilities": "1371000",
+    "bs.revolver": "4357000",
+    "bs.cpltd": "2164000",
+    "bs.other_current_liabilities": "1386000",
+    "bs.total_current_liabilities": "15148000",
+    "bs.long_term_debt": "17292000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1478000",
+    "bs.total_liabilities": "33918000",
+    "bs.total_equity": "29624000",
+    "bs.total_liabilities_and_equity": "63542000",
+    "cf.net_income": "5689000",
+    "cf.depreciation_amortization": "3467000",
+    "cf.change_in_working_capital": "-273000",
+    "cf.other_operating": "68000",
+    "cf.cfo": "8951000",
+    "cf.capex": "3759000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3759000",
+    "cf.revolver_net": "127000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2164000",
+    "cf.distributions": "3070000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5107000",
+    "cf.net_change_in_cash": "85000",
+    "sup.cash_interest_paid": "1813000",
+    "sup.cash_taxes_paid": "122000",
+    "sup.scheduled_principal": "2164000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "9452000",
+    "equity.retained_earnings": "20172000",
+    "cash.beginning_of_year": "2820000",
+    "debt.term_total": "19456000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.82",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "21177000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6347000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1629000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "130000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3507000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11613000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11613000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "7.13",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6347000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1629000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "130000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3507000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11613000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11613000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "11613000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1629000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1629000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.75",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20843000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6647000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1593000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "136000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3517000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11893000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11893000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "7.47",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6647000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1593000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "136000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3517000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11893000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11893000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "11893000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1593000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1593000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.69",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20322000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6774000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1558000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "139000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3528000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11999000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11999000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "7.70",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6774000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1558000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "139000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3528000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11999000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11999000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "11999000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1558000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1558000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.65",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "19976000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6922000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1524000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "142000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3539000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "12127000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "12127000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "7.96",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6922000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1524000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "142000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3539000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "12127000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "12127000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12127000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1524000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1524000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.58",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "19197000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6978000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1490000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "143000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3552000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "12163000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "12163000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "8.16",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6978000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1490000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "143000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3552000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "12163000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "12163000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12163000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1490000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1490000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.69",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "19357000"
+      },
+      {
+       "label": "Net income",
+       "amount": "5784000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1455000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "118000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3565000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10922000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "500000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11422000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "7.85",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "5784000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1455000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "118000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3565000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10922000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "500000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "11422000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "11422000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1455000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1455000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Garrett Molyneux",
+   "reported": {
+    "total_leverage": {
+     "value": "1.62",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20083000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4021000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1430000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "82000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3579000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9112000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "3300000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "12412000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "8.68",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4021000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1430000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "82000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3579000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9112000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "3300000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "12412000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12412000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1430000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1430000"
+      }
+     ]
+    }
+   },
+   "document_id": "vantry-freight.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "4295000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19456000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "4350000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19456000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "4276000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18915000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "4371000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18915000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "4388000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18915000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "4444000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18374000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "4388000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18374000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "4434000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18374000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "4436000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17833000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "4432000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17833000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "4504000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17833000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "4599000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17292000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "4541000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17292000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "4443000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17292000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "4426000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16751000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "4482000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16751000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "4550000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16751000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "4633000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16210000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "4584000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16210000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "4679000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16210000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "4653000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15669000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "4775000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15669000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "4764000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15669000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "4848000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15128000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "4726000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15128000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "4638000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15128000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "4610000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14587000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "4892000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14587000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "5103000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14587000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "5311000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14046000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "5670000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14046000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "6236000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14046000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "6578000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13505000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "6664000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13505000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "vantry-freight.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/vantry-freight/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Vantry Freight Systems, LLC and Bank of Stoic",
+   "received_date": "2022-10-14",
+   "document_date": "2022-10-14"
+  },
+  {
+   "id": "vantry-freight.amendment-1",
+   "type": "amendment",
+   "period_end": null,
+   "path": "documents/vantry-freight/amendment-1.pdf",
+   "pages": 2,
+   "title": "First Amendment to Credit Agreement, Vantry Freight Systems, LLC",
+   "received_date": "2026-08-24",
+   "document_date": "2026-08-21"
+  },
+  {
+   "id": "vantry-freight.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/vantry-freight/afs-2024.pdf",
+   "pages": 7,
+   "title": "Vantry Freight Systems, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-13",
+   "document_date": "2025-04-04",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "3,066"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "12,180"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "427"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,226"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "16,899"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "40,208"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "64,627"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "6,198"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,427"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,599"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,466"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "15,854"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "15,128"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,546"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "32,528"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "32,099"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "64,627"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "98,323"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "75,114"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "23,209"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "11,307"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,497"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "393"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "8,012"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,663"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "59"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "6,408"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "129"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,279"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,279"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "3,497"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(24)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "68"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "9,820"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,933)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(3,933)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "242"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,164)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(3,804)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(5,726)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "161"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,675"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "125"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,164"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,905",
+    "bs.accounts_receivable": "11,778",
+    "bs.inventory": "405",
+    "bs.other_current_assets": "1,162",
+    "bs.total_current_assets": "16,250",
+    "bs.net_ppe": "39,772",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "63,542",
+    "bs.accounts_payable": "5,870",
+    "bs.accrued_liabilities": "1,371",
+    "bs.revolver": "4,357",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,386",
+    "bs.total_current_liabilities": "15,148",
+    "bs.long_term_debt": "17,292",
+    "bs.other_noncurrent_liabilities": "1,478",
+    "bs.total_liabilities": "33,918",
+    "bs.total_equity": "29,624",
+    "bs.total_liabilities_and_equity": "63,542",
+    "is.revenue": "94,000",
+    "is.cogs": "71,793",
+    "is.gross_profit": "22,207",
+    "is.sga": "10,811",
+    "is.depreciation_amortization": "3,467",
+    "is.other_operating_expense": "376",
+    "is.operating_income": "7,553",
+    "is.interest_expense": "1,804",
+    "is.other_income_net": "57",
+    "is.pretax_income": "5,806",
+    "is.income_tax_expense": "117",
+    "is.net_income": "5,689",
+    "cf.net_income": "5,689",
+    "cf.depreciation_amortization": "3,467",
+    "cf.change_in_working_capital": "(273)",
+    "cf.other_operating": "68",
+    "cf.cfo": "8,951",
+    "cf.capex": "(3,759)",
+    "cf.cfi": "(3,759)",
+    "cf.revolver_net": "127",
+    "cf.term_debt_repayments": "(2,164)",
+    "cf.distributions": "(3,070)",
+    "cf.cff": "(5,107)",
+    "cf.net_change_in_cash": "85",
+    "sup.cash_interest_paid": "1,813",
+    "sup.cash_taxes_paid": "122",
+    "sup.scheduled_principal": "2,164",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/vantry-freight/afs-2025.pdf",
+   "pages": 7,
+   "title": "Vantry Freight Systems, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-30",
+   "document_date": "2026-03-21",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "3,232"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "12,752"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "451"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,293"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "17,728"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "40,793"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "66,041"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "6,545"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,486"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,848"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,546"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "16,589"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "12,964"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,614"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "31,167"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "34,874"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "66,041"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "103,113"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "78,777"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "24,336"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "11,859"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,539"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "412"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "8,526"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,524"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "62"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "7,064"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "142"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,922"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,922"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "3,539"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(177)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "68"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "10,352"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,124)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(4,124)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "249"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,164)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(4,147)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(6,062)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "166"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,535"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "139"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,164"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,066",
+    "bs.accounts_receivable": "12,180",
+    "bs.inventory": "427",
+    "bs.other_current_assets": "1,226",
+    "bs.total_current_assets": "16,899",
+    "bs.net_ppe": "40,208",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "64,627",
+    "bs.accounts_payable": "6,198",
+    "bs.accrued_liabilities": "1,427",
+    "bs.revolver": "4,599",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,466",
+    "bs.total_current_liabilities": "15,854",
+    "bs.long_term_debt": "15,128",
+    "bs.other_noncurrent_liabilities": "1,546",
+    "bs.total_liabilities": "32,528",
+    "bs.total_equity": "32,099",
+    "bs.total_liabilities_and_equity": "64,627",
+    "is.revenue": "98,323",
+    "is.cogs": "75,114",
+    "is.gross_profit": "23,209",
+    "is.sga": "11,307",
+    "is.depreciation_amortization": "3,497",
+    "is.other_operating_expense": "393",
+    "is.operating_income": "8,012",
+    "is.interest_expense": "1,663",
+    "is.other_income_net": "59",
+    "is.pretax_income": "6,408",
+    "is.income_tax_expense": "129",
+    "is.net_income": "6,279",
+    "cf.net_income": "6,279",
+    "cf.depreciation_amortization": "3,497",
+    "cf.change_in_working_capital": "(24)",
+    "cf.other_operating": "68",
+    "cf.cfo": "9,820",
+    "cf.capex": "(3,933)",
+    "cf.cfi": "(3,933)",
+    "cf.revolver_net": "242",
+    "cf.term_debt_repayments": "(2,164)",
+    "cf.distributions": "(3,804)",
+    "cf.cff": "(5,726)",
+    "cf.net_change_in_cash": "161",
+    "sup.cash_interest_paid": "1,675",
+    "sup.cash_taxes_paid": "125",
+    "sup.scheduled_principal": "2,164",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/vantry-freight/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Vantry Freight Systems, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-05-12",
+   "document_date": "2025-05-08",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,950"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,260"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "412"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,180"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "16,802"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "40,310"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "64,632"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,972"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,376"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,426"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,409"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "15,347"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,587"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,563"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,497"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "33,135"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "64,632"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "24,587"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "18,792"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,795"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,828"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "881"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "98"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,988"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "396"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "15"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,607"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "32"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,575"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,575"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "881"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(353)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "17"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,120"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(983)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(983)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(173)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(541)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(539)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,253)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(116)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "398"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "35"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "541"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,851",
+    "bs.accounts_receivable": "11,377",
+    "bs.inventory": "397",
+    "bs.other_current_assets": "1,140",
+    "bs.total_current_assets": "15,765",
+    "bs.net_ppe": "39,851",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "63,136",
+    "bs.accounts_payable": "5,754",
+    "bs.accrued_liabilities": "1,345",
+    "bs.revolver": "4,276",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,361",
+    "bs.total_current_liabilities": "14,900",
+    "bs.long_term_debt": "16,751",
+    "bs.other_noncurrent_liabilities": "1,495",
+    "bs.total_liabilities": "33,146",
+    "bs.total_equity": "29,990",
+    "bs.total_liabilities_and_equity": "63,136",
+    "is.revenue": "23,756",
+    "is.cogs": "18,104",
+    "is.gross_profit": "5,652",
+    "is.sga": "2,732",
+    "is.depreciation_amortization": "871",
+    "is.other_operating_expense": "95",
+    "is.operating_income": "1,954",
+    "is.interest_expense": "430",
+    "is.other_income_net": "14",
+    "is.pretax_income": "1,538",
+    "is.income_tax_expense": "31",
+    "is.net_income": "1,507",
+    "cf.net_income": "1,507",
+    "cf.depreciation_amortization": "871",
+    "cf.change_in_working_capital": "264",
+    "cf.other_operating": "17",
+    "cf.cfo": "2,659",
+    "cf.capex": "(950)",
+    "cf.cfi": "(950)",
+    "cf.revolver_net": "(81)",
+    "cf.term_debt_repayments": "(541)",
+    "cf.distributions": "(1,141)",
+    "cf.cff": "(1,763)",
+    "cf.net_change_in_cash": "(54)",
+    "sup.cash_interest_paid": "433",
+    "sup.cash_taxes_paid": "31",
+    "sup.scheduled_principal": "541",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/vantry-freight/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Vantry Freight Systems, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-27",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,089"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,384"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "431"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,236"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,140"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "40,457"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "65,117"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,243"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,430"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,633"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,477"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "15,947"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,046"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,580"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,573"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "33,544"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "65,117"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "50,328"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "38,435"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "11,893"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,788"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,764"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "201"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,140"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "779"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "30"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,391"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "68"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,323"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,323"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,764"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(159)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "34"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,962"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,013)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,013)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "34"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,082)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,878)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,926)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "23"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "785"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "67"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,082"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,925",
+    "bs.accounts_receivable": "12,073",
+    "bs.inventory": "410",
+    "bs.other_current_assets": "1,170",
+    "bs.total_current_assets": "16,578",
+    "bs.net_ppe": "39,953",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "64,051",
+    "bs.accounts_payable": "5,949",
+    "bs.accrued_liabilities": "1,373",
+    "bs.revolver": "4,444",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,395",
+    "bs.total_current_liabilities": "15,325",
+    "bs.long_term_debt": "16,210",
+    "bs.other_noncurrent_liabilities": "1,512",
+    "bs.total_liabilities": "33,047",
+    "bs.total_equity": "31,004",
+    "bs.total_liabilities_and_equity": "64,051",
+    "is.revenue": "48,130",
+    "is.cogs": "36,823",
+    "is.gross_profit": "11,307",
+    "is.sga": "5,535",
+    "is.depreciation_amortization": "1,744",
+    "is.other_operating_expense": "192",
+    "is.operating_income": "3,836",
+    "is.interest_expense": "849",
+    "is.other_income_net": "29",
+    "is.pretax_income": "3,016",
+    "is.income_tax_expense": "61",
+    "is.net_income": "2,955",
+    "cf.net_income": "2,955",
+    "cf.depreciation_amortization": "1,744",
+    "cf.change_in_working_capital": "(218)",
+    "cf.other_operating": "34",
+    "cf.cfo": "4,515",
+    "cf.capex": "(1,925)",
+    "cf.cfi": "(1,925)",
+    "cf.revolver_net": "87",
+    "cf.term_debt_repayments": "(1,082)",
+    "cf.distributions": "(1,575)",
+    "cf.cff": "(2,570)",
+    "cf.net_change_in_cash": "20",
+    "sup.cash_interest_paid": "855",
+    "sup.cash_taxes_paid": "62",
+    "sup.scheduled_principal": "1,082",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/vantry-freight/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Vantry Freight Systems, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-28",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,102"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,436"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "433"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,241"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,212"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "40,605"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "65,337"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,276"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,434"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,653"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,484"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "16,011"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "13,505"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,597"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,113"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "34,224"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "65,337"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "76,177"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "58,184"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "17,993"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,761"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,650"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "304"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,278"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,156"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "46"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "5,168"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "104"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "5,064"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,064"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,650"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(174)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "51"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "7,591"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,047)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(3,047)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "54"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,623)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(2,939)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(4,508)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "36"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,164"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "103"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,623"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,957",
+    "bs.accounts_receivable": "11,936",
+    "bs.inventory": "412",
+    "bs.other_current_assets": "1,183",
+    "bs.total_current_assets": "16,488",
+    "bs.net_ppe": "40,064",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "64,072",
+    "bs.accounts_payable": "5,972",
+    "bs.accrued_liabilities": "1,384",
+    "bs.revolver": "4,436",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,413",
+    "bs.total_current_liabilities": "15,369",
+    "bs.long_term_debt": "15,669",
+    "bs.other_noncurrent_liabilities": "1,529",
+    "bs.total_liabilities": "32,567",
+    "bs.total_equity": "31,505",
+    "bs.total_liabilities_and_equity": "64,072",
+    "is.revenue": "72,772",
+    "is.cogs": "55,613",
+    "is.gross_profit": "17,159",
+    "is.sga": "8,369",
+    "is.depreciation_amortization": "2,619",
+    "is.other_operating_expense": "291",
+    "is.operating_income": "5,880",
+    "is.interest_expense": "1,261",
+    "is.other_income_net": "44",
+    "is.pretax_income": "4,663",
+    "is.income_tax_expense": "94",
+    "is.net_income": "4,569",
+    "cf.net_income": "4,569",
+    "cf.depreciation_amortization": "2,619",
+    "cf.change_in_working_capital": "(44)",
+    "cf.other_operating": "51",
+    "cf.cfo": "7,195",
+    "cf.capex": "(2,911)",
+    "cf.cfi": "(2,911)",
+    "cf.revolver_net": "79",
+    "cf.term_debt_repayments": "(1,623)",
+    "cf.distributions": "(2,688)",
+    "cf.cff": "(4,232)",
+    "cf.net_change_in_cash": "52",
+    "sup.cash_interest_paid": "1,270",
+    "sup.cash_taxes_paid": "92",
+    "sup.scheduled_principal": "1,623",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/vantry-freight/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Vantry Freight Systems, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-05-08",
+   "document_date": "2026-05-04",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,073"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,069"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "431"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,229"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "16,802"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "40,923"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "65,245"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,248"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,417"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,610"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,467"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "15,906"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "12,423"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,631"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "29,960"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "35,285"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "65,245"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "25,612"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "19,660"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,952"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,945"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "894"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "102"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,011"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "362"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "15"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,664"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "33"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,631"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,631"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "894"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "322"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "17"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,864"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,024)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,024)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(238)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(541)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,220)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,999)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(159)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "364"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "38"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "541"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,950",
+    "bs.accounts_receivable": "12,260",
+    "bs.inventory": "412",
+    "bs.other_current_assets": "1,180",
+    "bs.total_current_assets": "16,802",
+    "bs.net_ppe": "40,310",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "64,632",
+    "bs.accounts_payable": "5,972",
+    "bs.accrued_liabilities": "1,376",
+    "bs.revolver": "4,426",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,409",
+    "bs.total_current_liabilities": "15,347",
+    "bs.long_term_debt": "14,587",
+    "bs.other_noncurrent_liabilities": "1,563",
+    "bs.total_liabilities": "31,497",
+    "bs.total_equity": "33,135",
+    "bs.total_liabilities_and_equity": "64,632",
+    "is.revenue": "24,587",
+    "is.cogs": "18,792",
+    "is.gross_profit": "5,795",
+    "is.sga": "2,828",
+    "is.depreciation_amortization": "881",
+    "is.other_operating_expense": "98",
+    "is.operating_income": "1,988",
+    "is.interest_expense": "396",
+    "is.other_income_net": "15",
+    "is.pretax_income": "1,607",
+    "is.income_tax_expense": "32",
+    "is.net_income": "1,575",
+    "cf.net_income": "1,575",
+    "cf.depreciation_amortization": "881",
+    "cf.change_in_working_capital": "(353)",
+    "cf.other_operating": "17",
+    "cf.cfo": "2,120",
+    "cf.capex": "(983)",
+    "cf.cfi": "(983)",
+    "cf.revolver_net": "(173)",
+    "cf.term_debt_repayments": "(541)",
+    "cf.distributions": "(539)",
+    "cf.cff": "(1,253)",
+    "cf.net_change_in_cash": "(116)",
+    "sup.cash_interest_paid": "398",
+    "sup.cash_taxes_paid": "35",
+    "sup.scheduled_principal": "541",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/vantry-freight/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Vantry Freight Systems, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-07-26",
+   "document_date": "2026-07-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,209"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,571"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "446"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,284"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,510"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "41,097"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "66,127"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,472"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,469"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,311"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,508"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "16,924"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,882"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,648"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "30,454"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "35,673"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "66,127"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "52,352"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "40,025"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "12,327"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,020"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,790"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "209"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "1,400"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,908"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "710"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "31"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,229"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "44"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,185"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,185"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,790"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "67"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "34"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,076"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,094)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,094)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "463"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,082)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,386)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,005)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(23)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "717"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "71"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,082"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,089",
+    "bs.accounts_receivable": "12,384",
+    "bs.inventory": "431",
+    "bs.other_current_assets": "1,236",
+    "bs.total_current_assets": "17,140",
+    "bs.net_ppe": "40,457",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "65,117",
+    "bs.accounts_payable": "6,243",
+    "bs.accrued_liabilities": "1,430",
+    "bs.revolver": "4,633",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,477",
+    "bs.total_current_liabilities": "15,947",
+    "bs.long_term_debt": "14,046",
+    "bs.other_noncurrent_liabilities": "1,580",
+    "bs.total_liabilities": "31,573",
+    "bs.total_equity": "33,544",
+    "bs.total_liabilities_and_equity": "65,117",
+    "is.revenue": "50,328",
+    "is.cogs": "38,435",
+    "is.gross_profit": "11,893",
+    "is.sga": "5,788",
+    "is.depreciation_amortization": "1,764",
+    "is.other_operating_expense": "201",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "4,140",
+    "is.interest_expense": "779",
+    "is.other_income_net": "30",
+    "is.pretax_income": "3,391",
+    "is.income_tax_expense": "68",
+    "is.net_income": "3,323",
+    "cf.net_income": "3,323",
+    "cf.depreciation_amortization": "1,764",
+    "cf.change_in_working_capital": "(159)",
+    "cf.other_operating": "34",
+    "cf.cfo": "4,962",
+    "cf.capex": "(2,013)",
+    "cf.cfi": "(2,013)",
+    "cf.revolver_net": "34",
+    "cf.term_debt_repayments": "(1,082)",
+    "cf.distributions": "(1,878)",
+    "cf.cff": "(2,926)",
+    "cf.net_change_in_cash": "23",
+    "sup.cash_interest_paid": "785",
+    "sup.cash_taxes_paid": "67",
+    "sup.scheduled_principal": "1,082",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/vantry-freight/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Vantry Freight Systems, LLC interim financial statements, Q3 2026",
+   "received_date": "2026-10-29",
+   "document_date": "2026-10-25",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,277"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "13,227"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "459"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,311"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "18,274"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "41,289"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "6,580"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "940"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "67,083"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,656"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,499"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,578"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,164"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,529"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "18,426"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,341"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,665"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "31,432"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "35,651"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "67,083"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "79,659"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "60,969"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "18,690"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "9,160"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,690"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "318"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "3,300"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,222"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,062"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "47"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,207"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "44"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,163"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,163"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,690"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(394)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "51"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,510"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,186)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(3,186)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,730"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,623)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,386)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,279)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "45"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,068"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "82"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,623"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,102",
+    "bs.accounts_receivable": "12,436",
+    "bs.inventory": "433",
+    "bs.other_current_assets": "1,241",
+    "bs.total_current_assets": "17,212",
+    "bs.net_ppe": "40,605",
+    "bs.intangibles": "6,580",
+    "bs.other_noncurrent_assets": "940",
+    "bs.total_assets": "65,337",
+    "bs.accounts_payable": "6,276",
+    "bs.accrued_liabilities": "1,434",
+    "bs.revolver": "4,653",
+    "bs.cpltd": "2,164",
+    "bs.other_current_liabilities": "1,484",
+    "bs.total_current_liabilities": "16,011",
+    "bs.long_term_debt": "13,505",
+    "bs.other_noncurrent_liabilities": "1,597",
+    "bs.total_liabilities": "31,113",
+    "bs.total_equity": "34,224",
+    "bs.total_liabilities_and_equity": "65,337",
+    "is.revenue": "76,177",
+    "is.cogs": "58,184",
+    "is.gross_profit": "17,993",
+    "is.sga": "8,761",
+    "is.depreciation_amortization": "2,650",
+    "is.other_operating_expense": "304",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "6,278",
+    "is.interest_expense": "1,156",
+    "is.other_income_net": "46",
+    "is.pretax_income": "5,168",
+    "is.income_tax_expense": "104",
+    "is.net_income": "5,064",
+    "cf.net_income": "5,064",
+    "cf.depreciation_amortization": "2,650",
+    "cf.change_in_working_capital": "(174)",
+    "cf.other_operating": "51",
+    "cf.cfo": "7,591",
+    "cf.capex": "(3,047)",
+    "cf.cfi": "(3,047)",
+    "cf.revolver_net": "54",
+    "cf.term_debt_repayments": "(1,623)",
+    "cf.distributions": "(2,939)",
+    "cf.cff": "(4,508)",
+    "cf.net_change_in_cash": "36",
+    "sup.cash_interest_paid": "1,164",
+    "sup.cash_taxes_paid": "103",
+    "sup.scheduled_principal": "1,623",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "vantry-freight.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/vantry-freight/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-05-12",
+   "document_date": "2025-05-10",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "vantry-freight.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/vantry-freight/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-29",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "vantry-freight.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/vantry-freight/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-30",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "vantry-freight.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/vantry-freight/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, FY2025",
+   "received_date": "2026-02-08",
+   "document_date": "2026-02-06",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "vantry-freight.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/vantry-freight/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-05-08",
+   "document_date": "2026-05-06",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "vantry-freight.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/vantry-freight/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-07-26",
+   "document_date": "2026-07-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "vantry-freight.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/vantry-freight/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Vantry Freight Systems, LLC compliance certificate, Q3 2026",
+   "received_date": "2026-10-29",
+   "document_date": "2026-10-27",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "unapproved_amendment",
+  "description": "Amendment on file but not approved into terms: a signed amendment raises the cap on the restructuring add-back. The test passes under the amendment and fails under the approved terms.",
+  "details": {
+   "field": "definitions.ebitda.addbacks.restructuring.cap",
+   "document_id": "vantry-freight.amendment-1",
+   "section": "1",
+   "page": 1,
+   "quote": "\"Adjusted EBITDA\" means, for any period, EBITDA for such period plus restructuring and other non-recurring charges deducted in determining net income for such period, provided that the aggregate amount added back pursuant to this definition shall not exceed $3,500,000 in any period of four consecutive fiscal quarters.",
+   "document_date": "2026-08-21",
+   "effective_from": "2026-07-01",
+   "approved_cap": "500000",
+   "amended_cap": "3500000",
+   "covenant_id": "total_leverage",
+   "under_amendment": {
+    "value": "1.62",
+    "threshold": "2.00",
+    "pass": true
+   }
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.82",
+    "pass": true,
+    "headroom": "0.0900",
+    "reported_value": "1.82",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "21177000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6347000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1629000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "130000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3507000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11613000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11613000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "7.13",
+    "pass": true,
+    "headroom": "1.3767",
+    "reported_value": "7.13",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6347000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1629000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "130000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3507000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11613000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11613000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "11613000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1629000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1629000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.75",
+    "pass": true,
+    "headroom": "0.1250",
+    "reported_value": "1.75",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20843000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6647000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1593000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "136000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3517000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11893000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11893000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "7.47",
+    "pass": true,
+    "headroom": "1.4900",
+    "reported_value": "7.47",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6647000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1593000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "136000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3517000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11893000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11893000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "11893000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1593000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1593000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.69",
+    "pass": true,
+    "headroom": "0.1550",
+    "reported_value": "1.69",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20322000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6774000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1558000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "139000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3528000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11999000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11999000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "7.70",
+    "pass": true,
+    "headroom": "1.5667",
+    "reported_value": "7.70",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6774000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1558000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "139000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3528000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11999000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11999000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "11999000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1558000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1558000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.65",
+    "pass": true,
+    "headroom": "0.1750",
+    "reported_value": "1.65",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "19976000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6922000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1524000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "142000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3539000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "12127000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "12127000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "7.96",
+    "pass": true,
+    "headroom": "1.6533",
+    "reported_value": "7.96",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6922000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1524000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "142000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3539000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "12127000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "12127000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12127000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1524000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1524000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.58",
+    "pass": true,
+    "headroom": "0.2100",
+    "reported_value": "1.58",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "19197000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6978000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1490000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "143000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3552000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "12163000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "12163000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.16",
+    "pass": true,
+    "headroom": "1.7200",
+    "reported_value": "8.16",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6978000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1490000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "143000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3552000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "12163000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "12163000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12163000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1490000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1490000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.69",
+    "pass": true,
+    "headroom": "0.1550",
+    "reported_value": "1.69",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "19357000"
+     },
+     {
+      "label": "Net income",
+      "amount": "5784000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1455000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "118000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3565000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10922000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11422000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "7.85",
+    "pass": true,
+    "headroom": "1.6167",
+    "reported_value": "7.85",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "5784000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1455000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "118000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3565000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10922000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "11422000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "11422000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1455000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1455000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "2.09",
+    "pass": false,
+    "headroom": "-0.0450",
+    "reported_value": "1.62",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "breach_reported_compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20083000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4021000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1430000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "82000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3579000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9112000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "9612000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "vantry-freight-rlc",
+    "terms_version_id": "tv-vantry-freight-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "6.72",
+    "pass": true,
+    "headroom": "1.2400",
+    "reported_value": "8.68",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant_variance",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4021000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1430000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "82000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3579000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9112000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "500000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "9612000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "9612000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1430000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1430000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-03-31",
+    "severity": "medium",
+    "value": "0.0900",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.0450",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "-0.0450",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "total_leverage",
+     "two_periods_ago": "0.2100",
+     "prior_period": "0.1550"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "1.2400",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "interest_coverage",
+     "two_periods_ago": "1.7200",
+     "prior_period": "1.6167"
+    }
+   },
+   {
+    "rule": "ebitda_margin_decline",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.0325",
+    "trigger": "-0.03",
+    "detail": {}
+   },
+   {
+    "rule": "leverage_increase",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "0.51",
+    "trigger": "0.5",
+    "detail": {}
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "terms.unapproved_amendment",
+    "severity": "high",
+    "period_end": "2026-09-30",
+    "subject": "document:vantry-freight.amendment-1",
+    "summary": "A signed amendment is on file but has not been approved into the governing terms."
+   },
+   {
+    "type": "covenant.reported_mismatch",
+    "severity": "critical",
+    "period_end": "2026-09-30",
+    "subject": "covenant:total_leverage",
+    "summary": "Total Leverage Ratio fails its threshold while the certificate claims compliance."
+   }
+  ]
+ }
+}

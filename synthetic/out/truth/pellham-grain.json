@@ -1,0 +1,6730 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "pellham-grain",
+  "name": "Pellham Grain & Milling Co.",
+  "legal_form": "corporation",
+  "industry": "food processing",
+  "city": "Salina",
+  "state": "KS",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Dana Whitcombe",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 7,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Augustin Lindqvist-Hale",
+  "auditor": "Wexley Arnault LLP"
+ },
+ "facilities": [
+  {
+   "id": "pellham-grain-rlc",
+   "borrower_id": "pellham-grain",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "21000000",
+   "original_amount": "21000000",
+   "closing_date": "2021-08-27",
+   "maturity_date": "2027-08-27",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  },
+  {
+   "id": "pellham-grain-tl",
+   "borrower_id": "pellham-grain",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "59340000",
+   "original_amount": "59340000",
+   "closing_date": "2021-08-27",
+   "maturity_date": "2028-08-27",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "1290000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-pellham-grain-1",
+   "facility_id": "pellham-grain-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2021-08-27",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2021-09-02",
+   "warnings": [],
+   "source_documents": [
+    "pellham-grain.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.35",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "pellham-grain.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.35 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "pellham-grain.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.40",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "pellham-grain.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.40 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "pellham-grain.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "min_tnw",
+      "name": "Minimum Tangible Net Worth",
+      "archetype": "min_tangible_net_worth",
+      "params": {
+       "step_up_pct_of_net_income": null
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "39000000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "pellham-grain.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall maintain Tangible Net Worth, measured as of the last day of each fiscal quarter, of not less than $39,000,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "pellham-grain.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Tangible Net Worth\" means, as of any date, total equity of the Borrower minus goodwill and intangibles as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "pellham-grain.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "pellham-grain.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "pellham-grain.credit-agreement",
+       "section": "5.1(c)",
+       "page": 8,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "pellham-grain.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "21000000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "8250000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "250000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "pellham-grain.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $8,250,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $250,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $21,000,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $59,340,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "pellham-grain.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $1,290,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "53417000",
+    "is.cogs": "40399000",
+    "is.gross_profit": "13018000",
+    "is.sga": "7211000",
+    "is.depreciation_amortization": "1694000",
+    "is.other_operating_expense": "160000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3953000",
+    "is.interest_expense": "1052000",
+    "is.other_income_net": "32000",
+    "is.pretax_income": "2933000",
+    "is.income_tax_expense": "733000",
+    "is.net_income": "2200000",
+    "bs.cash": "6410000",
+    "bs.accounts_receivable": "19259000",
+    "bs.inventory": "19480000",
+    "bs.other_current_assets": "2564000",
+    "bs.total_current_assets": "47713000",
+    "bs.net_ppe": "73793000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "134406000",
+    "bs.accounts_payable": "15053000",
+    "bs.accrued_liabilities": "3524000",
+    "bs.revolver": "10683000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "3724000",
+    "bs.total_current_liabilities": "38144000",
+    "bs.long_term_debt": "39990000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3420000",
+    "bs.total_liabilities": "81554000",
+    "bs.total_equity": "52852000",
+    "bs.total_liabilities_and_equity": "134406000",
+    "cf.net_income": "2200000",
+    "cf.depreciation_amortization": "1694000",
+    "cf.change_in_working_capital": "1433000",
+    "cf.other_operating": "39000",
+    "cf.cfo": "5366000",
+    "cf.capex": "1816000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1816000",
+    "cf.revolver_net": "-1068000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1290000",
+    "cf.distributions": "1490000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3848000",
+    "cf.net_change_in_cash": "-298000",
+    "sup.cash_interest_paid": "1054000",
+    "sup.cash_taxes_paid": "830000",
+    "sup.scheduled_principal": "1290000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "36809000",
+    "cash.beginning_of_year": "6708000",
+    "debt.term_total": "45150000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "109259000",
+    "is.cogs": "82727000",
+    "is.gross_profit": "26532000",
+    "is.sga": "14750000",
+    "is.depreciation_amortization": "3391000",
+    "is.other_operating_expense": "328000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8063000",
+    "is.interest_expense": "2060000",
+    "is.other_income_net": "66000",
+    "is.pretax_income": "6069000",
+    "is.income_tax_expense": "1517000",
+    "is.net_income": "4552000",
+    "bs.cash": "6701000",
+    "bs.accounts_receivable": "20562000",
+    "bs.inventory": "20410000",
+    "bs.other_current_assets": "2680000",
+    "bs.total_current_assets": "50353000",
+    "bs.net_ppe": "73995000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "137248000",
+    "bs.accounts_payable": "15772000",
+    "bs.accrued_liabilities": "3653000",
+    "bs.revolver": "11624000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "3911000",
+    "bs.total_current_liabilities": "40120000",
+    "bs.long_term_debt": "38700000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3459000",
+    "bs.total_liabilities": "82279000",
+    "bs.total_equity": "54969000",
+    "bs.total_liabilities_and_equity": "137248000",
+    "cf.net_income": "4552000",
+    "cf.depreciation_amortization": "3391000",
+    "cf.change_in_working_capital": "119000",
+    "cf.other_operating": "78000",
+    "cf.cfo": "8140000",
+    "cf.capex": "3715000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3715000",
+    "cf.revolver_net": "-127000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2580000",
+    "cf.distributions": "1725000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4432000",
+    "cf.net_change_in_cash": "-7000",
+    "sup.cash_interest_paid": "2077000",
+    "sup.cash_taxes_paid": "1563000",
+    "sup.scheduled_principal": "2580000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "38926000",
+    "cash.beginning_of_year": "6708000",
+    "debt.term_total": "43860000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "166195000",
+    "is.cogs": "125856000",
+    "is.gross_profit": "40339000",
+    "is.sga": "22436000",
+    "is.depreciation_amortization": "5093000",
+    "is.other_operating_expense": "499000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "12311000",
+    "is.interest_expense": "3064000",
+    "is.other_income_net": "100000",
+    "is.pretax_income": "9347000",
+    "is.income_tax_expense": "2337000",
+    "is.net_income": "7010000",
+    "bs.cash": "6832000",
+    "bs.accounts_receivable": "19779000",
+    "bs.inventory": "20796000",
+    "bs.other_current_assets": "2733000",
+    "bs.total_current_assets": "50140000",
+    "bs.net_ppe": "74229000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "137269000",
+    "bs.accounts_payable": "16070000",
+    "bs.accrued_liabilities": "3717000",
+    "bs.revolver": "11387000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4008000",
+    "bs.total_current_liabilities": "40342000",
+    "bs.long_term_debt": "37410000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3498000",
+    "bs.total_liabilities": "81250000",
+    "bs.total_equity": "56019000",
+    "bs.total_liabilities_and_equity": "137269000",
+    "cf.net_income": "7010000",
+    "cf.depreciation_amortization": "5093000",
+    "cf.change_in_working_capital": "922000",
+    "cf.other_operating": "117000",
+    "cf.cfo": "13142000",
+    "cf.capex": "5651000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5651000",
+    "cf.revolver_net": "-364000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3870000",
+    "cf.distributions": "3133000",
+    "cf.other_financing": "0",
+    "cf.cff": "-7367000",
+    "cf.net_change_in_cash": "124000",
+    "sup.cash_interest_paid": "3082000",
+    "sup.cash_taxes_paid": "2347000",
+    "sup.scheduled_principal": "3870000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "39976000",
+    "cash.beginning_of_year": "6708000",
+    "debt.term_total": "42570000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "225248000",
+    "is.cogs": "170600000",
+    "is.gross_profit": "54648000",
+    "is.sga": "30408000",
+    "is.depreciation_amortization": "6800000",
+    "is.other_operating_expense": "676000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "16764000",
+    "is.interest_expense": "4040000",
+    "is.other_income_net": "135000",
+    "is.pretax_income": "12859000",
+    "is.income_tax_expense": "3215000",
+    "is.net_income": "9644000",
+    "bs.cash": "7086000",
+    "bs.accounts_receivable": "21939000",
+    "bs.inventory": "21575000",
+    "bs.other_current_assets": "2835000",
+    "bs.total_current_assets": "53435000",
+    "bs.net_ppe": "74530000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "140865000",
+    "bs.accounts_payable": "16672000",
+    "bs.accrued_liabilities": "3833000",
+    "bs.revolver": "12968000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4185000",
+    "bs.total_current_liabilities": "42818000",
+    "bs.long_term_debt": "36120000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3537000",
+    "bs.total_liabilities": "82475000",
+    "bs.total_equity": "58390000",
+    "bs.total_liabilities_and_equity": "140865000",
+    "cf.net_income": "9644000",
+    "cf.depreciation_amortization": "6800000",
+    "cf.change_in_working_capital": "-1224000",
+    "cf.other_operating": "156000",
+    "cf.cfo": "15376000",
+    "cf.capex": "7659000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-7659000",
+    "cf.revolver_net": "1217000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "5160000",
+    "cf.distributions": "3396000",
+    "cf.other_financing": "0",
+    "cf.cff": "-7339000",
+    "cf.net_change_in_cash": "378000",
+    "sup.cash_interest_paid": "4068000",
+    "sup.cash_taxes_paid": "3167000",
+    "sup.scheduled_principal": "5160000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "42347000",
+    "cash.beginning_of_year": "6708000",
+    "debt.term_total": "41280000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "55949000",
+    "is.cogs": "42437000",
+    "is.gross_profit": "13512000",
+    "is.sga": "7553000",
+    "is.depreciation_amortization": "1714000",
+    "is.other_operating_expense": "168000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4077000",
+    "is.interest_expense": "984000",
+    "is.other_income_net": "34000",
+    "is.pretax_income": "3127000",
+    "is.income_tax_expense": "782000",
+    "is.net_income": "2345000",
+    "bs.cash": "6714000",
+    "bs.accounts_receivable": "20601000",
+    "bs.inventory": "20463000",
+    "bs.other_current_assets": "2686000",
+    "bs.total_current_assets": "50464000",
+    "bs.net_ppe": "74718000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "138082000",
+    "bs.accounts_payable": "15812000",
+    "bs.accrued_liabilities": "3651000",
+    "bs.revolver": "11190000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "3915000",
+    "bs.total_current_liabilities": "39728000",
+    "bs.long_term_debt": "34830000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3576000",
+    "bs.total_liabilities": "78134000",
+    "bs.total_equity": "59948000",
+    "bs.total_liabilities_and_equity": "138082000",
+    "cf.net_income": "2345000",
+    "cf.depreciation_amortization": "1714000",
+    "cf.change_in_working_capital": "1287000",
+    "cf.other_operating": "39000",
+    "cf.cfo": "5385000",
+    "cf.capex": "1902000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1902000",
+    "cf.revolver_net": "-1778000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1290000",
+    "cf.distributions": "787000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3855000",
+    "cf.net_change_in_cash": "-372000",
+    "sup.cash_interest_paid": "981000",
+    "sup.cash_taxes_paid": "878000",
+    "sup.scheduled_principal": "1290000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "43905000",
+    "cash.beginning_of_year": "7086000",
+    "debt.term_total": "39990000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "114449000",
+    "is.cogs": "86488000",
+    "is.gross_profit": "27961000",
+    "is.sga": "15451000",
+    "is.depreciation_amortization": "3433000",
+    "is.other_operating_expense": "344000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8733000",
+    "is.interest_expense": "1911000",
+    "is.other_income_net": "69000",
+    "is.pretax_income": "6891000",
+    "is.income_tax_expense": "1723000",
+    "is.net_income": "5168000",
+    "bs.cash": "7020000",
+    "bs.accounts_receivable": "20515000",
+    "bs.inventory": "21241000",
+    "bs.other_current_assets": "2808000",
+    "bs.total_current_assets": "51584000",
+    "bs.net_ppe": "74988000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "139472000",
+    "bs.accounts_payable": "16414000",
+    "bs.accrued_liabilities": "3784000",
+    "bs.revolver": "11700000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4217000",
+    "bs.total_current_liabilities": "41275000",
+    "bs.long_term_debt": "33540000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3615000",
+    "bs.total_liabilities": "78430000",
+    "bs.total_equity": "61042000",
+    "bs.total_liabilities_and_equity": "139472000",
+    "cf.net_income": "5168000",
+    "cf.depreciation_amortization": "3433000",
+    "cf.change_in_working_capital": "1510000",
+    "cf.other_operating": "78000",
+    "cf.cfo": "10189000",
+    "cf.capex": "3891000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3891000",
+    "cf.revolver_net": "-1268000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2580000",
+    "cf.distributions": "2516000",
+    "cf.other_financing": "0",
+    "cf.cff": "-6364000",
+    "cf.net_change_in_cash": "-66000",
+    "sup.cash_interest_paid": "1927000",
+    "sup.cash_taxes_paid": "1660000",
+    "sup.scheduled_principal": "2580000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "44999000",
+    "cash.beginning_of_year": "7086000",
+    "debt.term_total": "38700000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "174249000",
+    "is.cogs": "131685000",
+    "is.gross_profit": "42564000",
+    "is.sga": "23524000",
+    "is.depreciation_amortization": "5158000",
+    "is.other_operating_expense": "523000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "13359000",
+    "is.interest_expense": "2825000",
+    "is.other_income_net": "105000",
+    "is.pretax_income": "10639000",
+    "is.income_tax_expense": "2660000",
+    "is.net_income": "7979000",
+    "bs.cash": "7176000",
+    "bs.accounts_receivable": "21823000",
+    "bs.inventory": "21794000",
+    "bs.other_current_assets": "2870000",
+    "bs.total_current_assets": "53663000",
+    "bs.net_ppe": "75296000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "141859000",
+    "bs.accounts_payable": "16841000",
+    "bs.accrued_liabilities": "3857000",
+    "bs.revolver": "12239000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4286000",
+    "bs.total_current_liabilities": "42383000",
+    "bs.long_term_debt": "32250000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3654000",
+    "bs.total_liabilities": "78287000",
+    "bs.total_equity": "63572000",
+    "bs.total_liabilities_and_equity": "141859000",
+    "cf.net_income": "7979000",
+    "cf.depreciation_amortization": "5158000",
+    "cf.change_in_working_capital": "156000",
+    "cf.other_operating": "117000",
+    "cf.cfo": "13410000",
+    "cf.capex": "5924000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5924000",
+    "cf.revolver_net": "-729000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3870000",
+    "cf.distributions": "2797000",
+    "cf.other_financing": "0",
+    "cf.cff": "-7396000",
+    "cf.net_change_in_cash": "90000",
+    "sup.cash_interest_paid": "2845000",
+    "sup.cash_taxes_paid": "2601000",
+    "sup.scheduled_principal": "3870000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "47529000",
+    "cash.beginning_of_year": "7086000",
+    "debt.term_total": "37410000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "235410000",
+    "is.cogs": "177733000",
+    "is.gross_profit": "57677000",
+    "is.sga": "31781000",
+    "is.depreciation_amortization": "6890000",
+    "is.other_operating_expense": "706000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "18300000",
+    "is.interest_expense": "3726000",
+    "is.other_income_net": "142000",
+    "is.pretax_income": "14716000",
+    "is.income_tax_expense": "3679000",
+    "is.net_income": "11037000",
+    "bs.cash": "7339000",
+    "bs.accounts_receivable": "22923000",
+    "bs.inventory": "22204000",
+    "bs.other_current_assets": "2936000",
+    "bs.total_current_assets": "55402000",
+    "bs.net_ppe": "75643000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "143945000",
+    "bs.accounts_payable": "17158000",
+    "bs.accrued_liabilities": "3933000",
+    "bs.revolver": "12273000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4444000",
+    "bs.total_current_liabilities": "42968000",
+    "bs.long_term_debt": "30960000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3693000",
+    "bs.total_liabilities": "77621000",
+    "bs.total_equity": "66324000",
+    "bs.total_liabilities_and_equity": "143945000",
+    "cf.net_income": "11037000",
+    "cf.depreciation_amortization": "6890000",
+    "cf.change_in_working_capital": "-869000",
+    "cf.other_operating": "156000",
+    "cf.cfo": "17214000",
+    "cf.capex": "8003000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-8003000",
+    "cf.revolver_net": "-695000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "5160000",
+    "cf.distributions": "3103000",
+    "cf.other_financing": "0",
+    "cf.cff": "-8958000",
+    "cf.net_change_in_cash": "253000",
+    "sup.cash_interest_paid": "3751000",
+    "sup.cash_taxes_paid": "3538000",
+    "sup.scheduled_principal": "5160000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "50281000",
+    "cash.beginning_of_year": "7086000",
+    "debt.term_total": "36120000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "58400000",
+    "is.cogs": "44291000",
+    "is.gross_profit": "14109000",
+    "is.sga": "7884000",
+    "is.depreciation_amortization": "1740000",
+    "is.other_operating_expense": "175000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4310000",
+    "is.interest_expense": "879000",
+    "is.other_income_net": "35000",
+    "is.pretax_income": "3466000",
+    "is.income_tax_expense": "867000",
+    "is.net_income": "2599000",
+    "bs.cash": "7008000",
+    "bs.accounts_receivable": "21440000",
+    "bs.inventory": "21357000",
+    "bs.other_current_assets": "2803000",
+    "bs.total_current_assets": "52608000",
+    "bs.net_ppe": "75889000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "141397000",
+    "bs.accounts_payable": "16503000",
+    "bs.accrued_liabilities": "3762000",
+    "bs.revolver": "11459000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4137000",
+    "bs.total_current_liabilities": "41021000",
+    "bs.long_term_debt": "29670000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3732000",
+    "bs.total_liabilities": "74423000",
+    "bs.total_equity": "66974000",
+    "bs.total_liabilities_and_equity": "141397000",
+    "cf.net_income": "2599000",
+    "cf.depreciation_amortization": "1740000",
+    "cf.change_in_working_capital": "1330000",
+    "cf.other_operating": "39000",
+    "cf.cfo": "5708000",
+    "cf.capex": "1986000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1986000",
+    "cf.revolver_net": "-814000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1290000",
+    "cf.distributions": "1949000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4053000",
+    "cf.net_change_in_cash": "-331000",
+    "sup.cash_interest_paid": "886000",
+    "sup.cash_taxes_paid": "1019000",
+    "sup.scheduled_principal": "1290000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "50931000",
+    "cash.beginning_of_year": "7339000",
+    "debt.term_total": "34830000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "119609000",
+    "is.cogs": "90332000",
+    "is.gross_profit": "29277000",
+    "is.sga": "16147000",
+    "is.depreciation_amortization": "3485000",
+    "is.other_operating_expense": "359000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "9286000",
+    "is.interest_expense": "1719000",
+    "is.other_income_net": "72000",
+    "is.pretax_income": "7639000",
+    "is.income_tax_expense": "1910000",
+    "is.net_income": "5729000",
+    "bs.cash": "7345000",
+    "bs.accounts_receivable": "21800000",
+    "bs.inventory": "22201000",
+    "bs.other_current_assets": "2938000",
+    "bs.total_current_assets": "54284000",
+    "bs.net_ppe": "76225000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "143409000",
+    "bs.accounts_payable": "17155000",
+    "bs.accrued_liabilities": "3916000",
+    "bs.revolver": "12242000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "4471000",
+    "bs.total_current_liabilities": "42944000",
+    "bs.long_term_debt": "28380000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3771000",
+    "bs.total_liabilities": "75095000",
+    "bs.total_equity": "68314000",
+    "bs.total_liabilities_and_equity": "143409000",
+    "cf.net_income": "5729000",
+    "cf.depreciation_amortization": "3485000",
+    "cf.change_in_working_capital": "1131000",
+    "cf.other_operating": "78000",
+    "cf.cfo": "10423000",
+    "cf.capex": "4067000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4067000",
+    "cf.revolver_net": "-31000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2580000",
+    "cf.distributions": "3739000",
+    "cf.other_financing": "0",
+    "cf.cff": "-6350000",
+    "cf.net_change_in_cash": "6000",
+    "sup.cash_interest_paid": "1739000",
+    "sup.cash_taxes_paid": "1886000",
+    "sup.scheduled_principal": "2580000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "52271000",
+    "cash.beginning_of_year": "7339000",
+    "debt.term_total": "33540000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "182124000",
+    "is.cogs": "140632000",
+    "is.gross_profit": "41492000",
+    "is.sga": "24587000",
+    "is.depreciation_amortization": "5238000",
+    "is.other_operating_expense": "547000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "11120000",
+    "is.interest_expense": "2552000",
+    "is.other_income_net": "110000",
+    "is.pretax_income": "8678000",
+    "is.income_tax_expense": "2170000",
+    "is.net_income": "6508000",
+    "bs.cash": "7502000",
+    "bs.accounts_receivable": "22266000",
+    "bs.inventory": "24254000",
+    "bs.other_current_assets": "3001000",
+    "bs.total_current_assets": "57023000",
+    "bs.net_ppe": "76598000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "146521000",
+    "bs.accounts_payable": "18742000",
+    "bs.accrued_liabilities": "3992000",
+    "bs.revolver": "14951000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "3761000",
+    "bs.total_current_liabilities": "46606000",
+    "bs.long_term_debt": "27090000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3810000",
+    "bs.total_liabilities": "77506000",
+    "bs.total_equity": "69015000",
+    "bs.total_liabilities_and_equity": "146521000",
+    "cf.net_income": "6508000",
+    "cf.depreciation_amortization": "5238000",
+    "cf.change_in_working_capital": "-498000",
+    "cf.other_operating": "117000",
+    "cf.cfo": "11365000",
+    "cf.capex": "6193000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-6193000",
+    "cf.revolver_net": "2678000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3870000",
+    "cf.distributions": "3817000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5009000",
+    "cf.net_change_in_cash": "163000",
+    "sup.cash_interest_paid": "2574000",
+    "sup.cash_taxes_paid": "2929000",
+    "sup.scheduled_principal": "3870000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "52972000",
+    "cash.beginning_of_year": "7339000",
+    "debt.term_total": "32250000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "215001000",
+    "is.cogs": "162519000",
+    "is.gross_profit": "52482000",
+    "is.sga": "29026000",
+    "is.depreciation_amortization": "6739000",
+    "is.other_operating_expense": "645000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "16072000",
+    "is.interest_expense": "4359000",
+    "is.other_income_net": "130000",
+    "is.pretax_income": "11843000",
+    "is.income_tax_expense": "2960000",
+    "is.net_income": "8883000",
+    "bs.cash": "6708000",
+    "bs.accounts_receivable": "20767000",
+    "bs.inventory": "20324000",
+    "bs.other_current_assets": "2683000",
+    "bs.total_current_assets": "50482000",
+    "bs.net_ppe": "73671000",
+    "bs.intangibles": "10750000",
+    "bs.other_noncurrent_assets": "2150000",
+    "bs.total_assets": "137053000",
+    "bs.accounts_payable": "15705000",
+    "bs.accrued_liabilities": "3674000",
+    "bs.revolver": "11751000",
+    "bs.cpltd": "5160000",
+    "bs.other_current_liabilities": "3960000",
+    "bs.total_current_liabilities": "40250000",
+    "bs.long_term_debt": "41280000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "3381000",
+    "bs.total_liabilities": "84911000",
+    "bs.total_equity": "52142000",
+    "bs.total_liabilities_and_equity": "137053000",
+    "cf.net_income": "8883000",
+    "cf.depreciation_amortization": "6739000",
+    "cf.change_in_working_capital": "-1473000",
+    "cf.other_operating": "156000",
+    "cf.cfo": "14305000",
+    "cf.capex": "7310000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-7310000",
+    "cf.revolver_net": "1001000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "5160000",
+    "cf.distributions": "2578000",
+    "cf.other_financing": "0",
+    "cf.cff": "-6737000",
+    "cf.net_change_in_cash": "258000",
+    "sup.cash_interest_paid": "4381000",
+    "sup.cash_taxes_paid": "3055000",
+    "sup.scheduled_principal": "5160000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "16043000",
+    "equity.retained_earnings": "36099000",
+    "cash.beginning_of_year": "6450000",
+    "debt.term_total": "46440000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.41",
+     "threshold": "1.35",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9789000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3972000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3264000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6820000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "23845000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "7745000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3215000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12885000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3995000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "9155000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.15",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "51180000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9789000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3972000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3264000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6820000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "23845000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "49198000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "59948000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "49198000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.47",
+     "threshold": "1.35",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "10260000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3891000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3421000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6842000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "24414000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "7835000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3264000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "13315000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3918000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "9078000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.06",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "50400000"
+      },
+      {
+       "label": "Net income",
+       "amount": "10260000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3891000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3421000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6842000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "24414000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "50292000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "61042000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "50292000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.50",
+     "threshold": "1.35",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "10613000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3801000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3538000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6865000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "24817000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "7932000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3421000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "13464000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3831000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "8991000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.00",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "49649000"
+      },
+      {
+       "label": "Net income",
+       "amount": "10613000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3801000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3538000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6865000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "24817000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "52822000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "63572000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "52822000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.55",
+     "threshold": "1.35",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "11037000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3726000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3679000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6890000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "25332000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "8003000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3538000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "13791000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3751000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "8911000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.91",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "48393000"
+      },
+      {
+       "label": "Net income",
+       "amount": "11037000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3726000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3679000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6890000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "25332000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "55574000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "66324000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "55574000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.57",
+     "threshold": "1.35",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "11291000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3621000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3764000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6916000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "25592000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "8087000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3679000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "13826000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3656000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "8816000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.81",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "46289000"
+      },
+      {
+       "label": "Net income",
+       "amount": "11291000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3621000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3764000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6916000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "25592000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "56224000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "66974000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "56224000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.60",
+     "threshold": "1.35",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "11598000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3534000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3866000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6942000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "25940000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "8179000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3764000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "13997000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3563000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "8723000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.76",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "45782000"
+      },
+      {
+       "label": "Net income",
+       "amount": "11598000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3534000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3866000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6942000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "25940000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "57564000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "68314000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "57564000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Augustin Lindqvist-Hale",
+   "reported": {
+    "fccr": {
+     "value": "1.28",
+     "threshold": "1.35",
+     "in_compliance": false,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9566000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3453000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3189000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6970000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "23178000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "8272000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "3866000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "11040000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3480000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "5160000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "8640000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.04",
+     "threshold": "2.40",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "47201000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9566000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3453000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "3189000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "6970000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "23178000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "58265000",
+     "threshold": "39000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "69015000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "10750000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "58265000"
+      }
+     ]
+    }
+   },
+   "document_id": "pellham-grain.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Foods, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1784400",
+      "31_60": "603200",
+      "61_90": "236000",
+      "over_90": "0"
+     },
+     "total": "2623600"
+    },
+    {
+     "customer": "Ashdown Grocers, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1897200",
+      "31_60": "587600",
+      "61_90": "106800",
+      "over_90": "80000"
+     },
+     "total": "2671600"
+    },
+    {
+     "customer": "County of Redfern Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "339600",
+      "31_60": "138400",
+      "61_90": "35600",
+      "over_90": "0"
+     },
+     "total": "513600"
+    },
+    {
+     "customer": "Elmhurst Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "722800",
+      "31_60": "304400",
+      "61_90": "78800",
+      "over_90": "22400"
+     },
+     "total": "1128400"
+    },
+    {
+     "customer": "Foxhollow Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "745600",
+      "31_60": "274800",
+      "61_90": "102800",
+      "over_90": "22800"
+     },
+     "total": "1146000"
+    },
+    {
+     "customer": "Glenhaven Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1096000",
+      "31_60": "455200",
+      "61_90": "134800",
+      "over_90": "0"
+     },
+     "total": "1686000"
+    },
+    {
+     "customer": "Kingsway Grocers Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "430000",
+      "31_60": "176800",
+      "61_90": "25200",
+      "over_90": "0"
+     },
+     "total": "632000"
+    },
+    {
+     "customer": "Lowell Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1066000",
+      "31_60": "426400",
+      "61_90": "114800",
+      "over_90": "32800"
+     },
+     "total": "1640000"
+    },
+    {
+     "customer": "Oakmont Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "992800",
+      "31_60": "429600",
+      "61_90": "59200",
+      "over_90": "0"
+     },
+     "total": "1481600"
+    },
+    {
+     "customer": "Pellham Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "674200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "674200"
+    },
+    {
+     "customer": "Prescott Restaurants, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1373600",
+      "31_60": "476800",
+      "61_90": "57200",
+      "over_90": "0"
+     },
+     "total": "1907600"
+    },
+    {
+     "customer": "Stonegate Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1876800",
+      "31_60": "462800",
+      "61_90": "97200",
+      "over_90": "0"
+     },
+     "total": "2436800"
+    },
+    {
+     "customer": "Tamarack Grocers, Corp.",
+     "category": "trade",
+     "contra": "63600",
+     "buckets": {
+      "0_30": "756400",
+      "31_60": "266000",
+      "61_90": "42400",
+      "over_90": "0"
+     },
+     "total": "1064800"
+    },
+    {
+     "customer": "Yarrow Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1527200",
+      "31_60": "634000",
+      "61_90": "187600",
+      "over_90": "0"
+     },
+     "total": "2348800"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "8696000"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "11213600"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "2975400"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1819800",
+    "ineligible_over_age": "158000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "63600",
+    "ineligible_concentration": "0",
+    "gross_ar": "21955000",
+    "total_ineligible_ar": "2041400",
+    "eligible_ar": "19913600",
+    "ar_availability": "16926560",
+    "gross_inventory": "22885000",
+    "ineligible_inventory": "2975400",
+    "eligible_inventory": "19909600",
+    "inventory_availability_before_sublimit": "9954800",
+    "inventory_availability": "8250000",
+    "reserves": "250000",
+    "borrowing_base": "24926560",
+    "commitment": "21000000",
+    "lesser_of_base_and_commitment": "21000000",
+    "outstanding": "13342000",
+    "letters_of_credit": "0",
+    "availability": "7658000"
+   },
+   "outstanding": "13342000",
+   "letters_of_credit": "0",
+   "document_id": "pellham-grain.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Foods, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1796800",
+      "31_60": "581200",
+      "61_90": "264000",
+      "over_90": "0"
+     },
+     "total": "2642000"
+    },
+    {
+     "customer": "Ashdown Grocers, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1911200",
+      "31_60": "564800",
+      "61_90": "134400",
+      "over_90": "80400"
+     },
+     "total": "2690800"
+    },
+    {
+     "customer": "County of Redfern Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "341600",
+      "31_60": "134400",
+      "61_90": "41200",
+      "over_90": "0"
+     },
+     "total": "517200"
+    },
+    {
+     "customer": "Elmhurst Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "728000",
+      "31_60": "295200",
+      "61_90": "90800",
+      "over_90": "22400"
+     },
+     "total": "1136400"
+    },
+    {
+     "customer": "Foxhollow Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "750800",
+      "31_60": "265200",
+      "61_90": "115200",
+      "over_90": "22800"
+     },
+     "total": "1154000"
+    },
+    {
+     "customer": "Glenhaven Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1104000",
+      "31_60": "441200",
+      "61_90": "152800",
+      "over_90": "0"
+     },
+     "total": "1698000"
+    },
+    {
+     "customer": "Kingsway Grocers Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "433200",
+      "31_60": "171600",
+      "61_90": "31600",
+      "over_90": "0"
+     },
+     "total": "636400"
+    },
+    {
+     "customer": "Lowell Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1074000",
+      "31_60": "412800",
+      "61_90": "132000",
+      "over_90": "32800"
+     },
+     "total": "1651600"
+    },
+    {
+     "customer": "Oakmont Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1000400",
+      "31_60": "417600",
+      "61_90": "74400",
+      "over_90": "0"
+     },
+     "total": "1492400"
+    },
+    {
+     "customer": "Pellham Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "679400",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "679400"
+    },
+    {
+     "customer": "Prescott Restaurants, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1383600",
+      "31_60": "460800",
+      "61_90": "76800",
+      "over_90": "0"
+     },
+     "total": "1921200"
+    },
+    {
+     "customer": "Stonegate Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1890000",
+      "31_60": "441600",
+      "61_90": "122400",
+      "over_90": "0"
+     },
+     "total": "2454000"
+    },
+    {
+     "customer": "Tamarack Grocers, Corp.",
+     "category": "trade",
+     "contra": "64000",
+     "buckets": {
+      "0_30": "761200",
+      "31_60": "257200",
+      "61_90": "53600",
+      "over_90": "0"
+     },
+     "total": "1072000"
+    },
+    {
+     "customer": "Yarrow Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1538000",
+      "31_60": "614800",
+      "61_90": "212800",
+      "over_90": "0"
+     },
+     "total": "2365600"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "8956400"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "11549200"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "3064400"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1833000",
+    "ineligible_over_age": "158400",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "64000",
+    "ineligible_concentration": "0",
+    "gross_ar": "22111000",
+    "total_ineligible_ar": "2055400",
+    "eligible_ar": "20055600",
+    "ar_availability": "17047260",
+    "gross_inventory": "23570000",
+    "ineligible_inventory": "3064400",
+    "eligible_inventory": "20505600",
+    "inventory_availability_before_sublimit": "10252800",
+    "inventory_availability": "8250000",
+    "reserves": "250000",
+    "borrowing_base": "25047260",
+    "commitment": "21000000",
+    "lesser_of_base_and_commitment": "21000000",
+    "outstanding": "14006000",
+    "letters_of_credit": "0",
+    "availability": "6994000"
+   },
+   "outstanding": "14006000",
+   "letters_of_credit": "0",
+   "document_id": "pellham-grain.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Alder Foods, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1809600",
+      "31_60": "558400",
+      "61_90": "292400",
+      "over_90": "0"
+     },
+     "total": "2660400"
+    },
+    {
+     "customer": "Ashdown Grocers, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1924400",
+      "31_60": "541600",
+      "61_90": "162400",
+      "over_90": "81200"
+     },
+     "total": "2709600"
+    },
+    {
+     "customer": "County of Redfern Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "344000",
+      "31_60": "130000",
+      "61_90": "46800",
+      "over_90": "0"
+     },
+     "total": "520800"
+    },
+    {
+     "customer": "Elmhurst Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "732800",
+      "31_60": "286000",
+      "61_90": "102800",
+      "over_90": "22800"
+     },
+     "total": "1144400"
+    },
+    {
+     "customer": "Foxhollow Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "755600",
+      "31_60": "255600",
+      "61_90": "127600",
+      "over_90": "23200"
+     },
+     "total": "1162000"
+    },
+    {
+     "customer": "Glenhaven Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1112000",
+      "31_60": "427200",
+      "61_90": "170800",
+      "over_90": "0"
+     },
+     "total": "1710000"
+    },
+    {
+     "customer": "Kingsway Grocers Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "436400",
+      "31_60": "166400",
+      "61_90": "38400",
+      "over_90": "0"
+     },
+     "total": "641200"
+    },
+    {
+     "customer": "Lowell Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1081600",
+      "31_60": "398800",
+      "61_90": "149600",
+      "over_90": "33200"
+     },
+     "total": "1663200"
+    },
+    {
+     "customer": "Oakmont Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1007200",
+      "31_60": "405600",
+      "61_90": "90000",
+      "over_90": "0"
+     },
+     "total": "1502800"
+    },
+    {
+     "customer": "Pellham Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "683600",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "683600"
+    },
+    {
+     "customer": "Prescott Restaurants, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1393600",
+      "31_60": "444800",
+      "61_90": "96400",
+      "over_90": "0"
+     },
+     "total": "1934800"
+    },
+    {
+     "customer": "Stonegate Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1903200",
+      "31_60": "420000",
+      "61_90": "148000",
+      "over_90": "0"
+     },
+     "total": "2471200"
+    },
+    {
+     "customer": "Tamarack Grocers, Corp.",
+     "category": "trade",
+     "contra": "64400",
+     "buckets": {
+      "0_30": "767200",
+      "31_60": "248000",
+      "61_90": "64400",
+      "over_90": "0"
+     },
+     "total": "1079600"
+    },
+    {
+     "customer": "Yarrow Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1548800",
+      "31_60": "595600",
+      "61_90": "238000",
+      "over_90": "0"
+     },
+     "total": "2382400"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "9216400"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "11884400"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "3153200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1845600",
+    "ineligible_over_age": "160400",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "64400",
+    "ineligible_concentration": "0",
+    "gross_ar": "22266000",
+    "total_ineligible_ar": "2070400",
+    "eligible_ar": "20195600",
+    "ar_availability": "17166260",
+    "gross_inventory": "24254000",
+    "ineligible_inventory": "3153200",
+    "eligible_inventory": "21100800",
+    "inventory_availability_before_sublimit": "10550400",
+    "inventory_availability": "8250000",
+    "reserves": "250000",
+    "borrowing_base": "25166260",
+    "commitment": "21000000",
+    "lesser_of_base_and_commitment": "21000000",
+    "outstanding": "14951000",
+    "letters_of_credit": "0",
+    "availability": "6049000"
+   },
+   "outstanding": "14951000",
+   "letters_of_credit": "0",
+   "document_id": "pellham-grain.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "11258000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "46440000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "11183000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "46440000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "10683000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "45150000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "10909000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "45150000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "11265000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "45150000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "11624000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "43860000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "11499000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "43860000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "11351000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "43860000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "11387000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "42570000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "11819000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "42570000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "12341000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "42570000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "12968000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "41280000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "12511000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "41280000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "11818000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "41280000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "11190000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "39990000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "11326000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "39990000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "11357000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "39990000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "11700000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "38700000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "11856000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "38700000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "12144000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "38700000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "12239000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "37410000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "12226000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "37410000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "12127000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "37410000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "12273000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "36120000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "12002000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "36120000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "11707000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "36120000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "11459000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "34830000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "11802000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "34830000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "11945000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "34830000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "12242000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "33540000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "13342000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "33540000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "14006000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "33540000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "14951000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32250000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "14996000",
+   "commitment": "21000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32250000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "pellham-grain.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/pellham-grain/credit-agreement.pdf",
+   "pages": 14,
+   "title": "Credit Agreement between Pellham Grain & Milling Co. and Bank of Stoic",
+   "received_date": "2021-08-27",
+   "document_date": "2021-08-27"
+  },
+  {
+   "id": "pellham-grain.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/pellham-grain/afs-2024.pdf",
+   "pages": 7,
+   "title": "Pellham Grain & Milling Co. audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-29",
+   "document_date": "2025-03-20",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "7,086"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "21,939"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "21,575"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "2,835"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "53,435"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "74,530"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "140,865"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "16,672"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "3,833"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "12,968"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "4,185"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "42,818"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "36,120"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "3,537"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "82,475"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "58,390"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "140,865"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "225,248"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "170,600"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "54,648"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "30,408"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "6,800"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "676"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "16,764"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "4,040"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "135"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "12,859"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "3,215"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "9,644"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "9,644"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "6,800"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(1,224)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "156"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "15,376"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(7,659)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(7,659)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,217"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(5,160)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(3,396)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(7,339)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "378"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "4,068"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "3,167"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "5,160"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,708",
+    "bs.accounts_receivable": "20,767",
+    "bs.inventory": "20,324",
+    "bs.other_current_assets": "2,683",
+    "bs.total_current_assets": "50,482",
+    "bs.net_ppe": "73,671",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "137,053",
+    "bs.accounts_payable": "15,705",
+    "bs.accrued_liabilities": "3,674",
+    "bs.revolver": "11,751",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "3,960",
+    "bs.total_current_liabilities": "40,250",
+    "bs.long_term_debt": "41,280",
+    "bs.other_noncurrent_liabilities": "3,381",
+    "bs.total_liabilities": "84,911",
+    "bs.total_equity": "52,142",
+    "bs.total_liabilities_and_equity": "137,053",
+    "is.revenue": "215,001",
+    "is.cogs": "162,519",
+    "is.gross_profit": "52,482",
+    "is.sga": "29,026",
+    "is.depreciation_amortization": "6,739",
+    "is.other_operating_expense": "645",
+    "is.operating_income": "16,072",
+    "is.interest_expense": "4,359",
+    "is.other_income_net": "130",
+    "is.pretax_income": "11,843",
+    "is.income_tax_expense": "2,960",
+    "is.net_income": "8,883",
+    "cf.net_income": "8,883",
+    "cf.depreciation_amortization": "6,739",
+    "cf.change_in_working_capital": "(1,473)",
+    "cf.other_operating": "156",
+    "cf.cfo": "14,305",
+    "cf.capex": "(7,310)",
+    "cf.cfi": "(7,310)",
+    "cf.revolver_net": "1,001",
+    "cf.term_debt_repayments": "(5,160)",
+    "cf.distributions": "(2,578)",
+    "cf.cff": "(6,737)",
+    "cf.net_change_in_cash": "258",
+    "sup.cash_interest_paid": "4,381",
+    "sup.cash_taxes_paid": "3,055",
+    "sup.scheduled_principal": "5,160",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/pellham-grain/afs-2025.pdf",
+   "pages": 7,
+   "title": "Pellham Grain & Milling Co. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-15",
+   "document_date": "2026-04-06",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "7,339"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "22,923"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "22,204"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "2,936"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "55,402"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "75,643"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "143,945"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "17,158"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "3,933"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "12,273"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "4,444"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "42,968"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "30,960"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "3,693"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "77,621"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "66,324"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "143,945"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "235,410"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "177,733"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "57,677"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "31,781"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "6,890"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "706"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "18,300"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "3,726"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "142"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "14,716"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "3,679"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "11,037"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "11,037"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "6,890"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(869)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "156"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "17,214"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(8,003)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(8,003)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(695)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(5,160)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(3,103)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(8,958)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "253"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "3,751"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "3,538"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "5,160"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "7,086",
+    "bs.accounts_receivable": "21,939",
+    "bs.inventory": "21,575",
+    "bs.other_current_assets": "2,835",
+    "bs.total_current_assets": "53,435",
+    "bs.net_ppe": "74,530",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "140,865",
+    "bs.accounts_payable": "16,672",
+    "bs.accrued_liabilities": "3,833",
+    "bs.revolver": "12,968",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "4,185",
+    "bs.total_current_liabilities": "42,818",
+    "bs.long_term_debt": "36,120",
+    "bs.other_noncurrent_liabilities": "3,537",
+    "bs.total_liabilities": "82,475",
+    "bs.total_equity": "58,390",
+    "bs.total_liabilities_and_equity": "140,865",
+    "is.revenue": "225,248",
+    "is.cogs": "170,600",
+    "is.gross_profit": "54,648",
+    "is.sga": "30,408",
+    "is.depreciation_amortization": "6,800",
+    "is.other_operating_expense": "676",
+    "is.operating_income": "16,764",
+    "is.interest_expense": "4,040",
+    "is.other_income_net": "135",
+    "is.pretax_income": "12,859",
+    "is.income_tax_expense": "3,215",
+    "is.net_income": "9,644",
+    "cf.net_income": "9,644",
+    "cf.depreciation_amortization": "6,800",
+    "cf.change_in_working_capital": "(1,224)",
+    "cf.other_operating": "156",
+    "cf.cfo": "15,376",
+    "cf.capex": "(7,659)",
+    "cf.cfi": "(7,659)",
+    "cf.revolver_net": "1,217",
+    "cf.term_debt_repayments": "(5,160)",
+    "cf.distributions": "(3,396)",
+    "cf.cff": "(7,339)",
+    "cf.net_change_in_cash": "378",
+    "sup.cash_interest_paid": "4,068",
+    "sup.cash_taxes_paid": "3,167",
+    "sup.scheduled_principal": "5,160",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/pellham-grain/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Pellham Grain & Milling Co. interim financial statements, Q1 2025",
+   "received_date": "2025-04-27",
+   "document_date": "2025-04-23",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "6,714"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "20,601"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "20,463"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,686"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "50,464"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "74,718"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "138,082"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "15,812"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,651"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "11,190"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,915"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "39,728"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "34,830"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,576"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "78,134"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "59,948"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "138,082"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "55,949"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "42,437"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "13,512"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,553"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,714"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "168"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,077"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "984"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "34"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,127"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "782"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,345"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,345"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,714"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "1,287"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "39"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,385"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,902)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,902)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(1,778)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,290)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(787)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(3,855)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(372)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "981"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "878"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,290"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,410",
+    "bs.accounts_receivable": "19,259",
+    "bs.inventory": "19,480",
+    "bs.other_current_assets": "2,564",
+    "bs.total_current_assets": "47,713",
+    "bs.net_ppe": "73,793",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "134,406",
+    "bs.accounts_payable": "15,053",
+    "bs.accrued_liabilities": "3,524",
+    "bs.revolver": "10,683",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "3,724",
+    "bs.total_current_liabilities": "38,144",
+    "bs.long_term_debt": "39,990",
+    "bs.other_noncurrent_liabilities": "3,420",
+    "bs.total_liabilities": "81,554",
+    "bs.total_equity": "52,852",
+    "bs.total_liabilities_and_equity": "134,406",
+    "is.revenue": "53,417",
+    "is.cogs": "40,399",
+    "is.gross_profit": "13,018",
+    "is.sga": "7,211",
+    "is.depreciation_amortization": "1,694",
+    "is.other_operating_expense": "160",
+    "is.operating_income": "3,953",
+    "is.interest_expense": "1,052",
+    "is.other_income_net": "32",
+    "is.pretax_income": "2,933",
+    "is.income_tax_expense": "733",
+    "is.net_income": "2,200",
+    "cf.net_income": "2,200",
+    "cf.depreciation_amortization": "1,694",
+    "cf.change_in_working_capital": "1,433",
+    "cf.other_operating": "39",
+    "cf.cfo": "5,366",
+    "cf.capex": "(1,816)",
+    "cf.cfi": "(1,816)",
+    "cf.revolver_net": "(1,068)",
+    "cf.term_debt_repayments": "(1,290)",
+    "cf.distributions": "(1,490)",
+    "cf.cff": "(3,848)",
+    "cf.net_change_in_cash": "(298)",
+    "sup.cash_interest_paid": "1,054",
+    "sup.cash_taxes_paid": "830",
+    "sup.scheduled_principal": "1,290",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/pellham-grain/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Pellham Grain & Milling Co. interim financial statements, Q2 2025",
+   "received_date": "2025-08-04",
+   "document_date": "2025-07-31",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,020"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "20,515"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "21,241"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,808"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "51,584"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "74,988"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "139,472"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "16,414"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,784"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "11,700"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "4,217"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "41,275"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "33,540"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,615"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "78,430"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "61,042"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "139,472"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "114,449"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "86,488"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "27,961"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "15,451"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "3,433"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "344"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "8,733"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,911"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "69"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "6,891"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,723"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "5,168"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,168"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,433"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "1,510"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "78"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "10,189"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,891)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(3,891)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(1,268)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,580)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,516)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(6,364)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(66)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,927"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,660"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,580"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,701",
+    "bs.accounts_receivable": "20,562",
+    "bs.inventory": "20,410",
+    "bs.other_current_assets": "2,680",
+    "bs.total_current_assets": "50,353",
+    "bs.net_ppe": "73,995",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "137,248",
+    "bs.accounts_payable": "15,772",
+    "bs.accrued_liabilities": "3,653",
+    "bs.revolver": "11,624",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "3,911",
+    "bs.total_current_liabilities": "40,120",
+    "bs.long_term_debt": "38,700",
+    "bs.other_noncurrent_liabilities": "3,459",
+    "bs.total_liabilities": "82,279",
+    "bs.total_equity": "54,969",
+    "bs.total_liabilities_and_equity": "137,248",
+    "is.revenue": "109,259",
+    "is.cogs": "82,727",
+    "is.gross_profit": "26,532",
+    "is.sga": "14,750",
+    "is.depreciation_amortization": "3,391",
+    "is.other_operating_expense": "328",
+    "is.operating_income": "8,063",
+    "is.interest_expense": "2,060",
+    "is.other_income_net": "66",
+    "is.pretax_income": "6,069",
+    "is.income_tax_expense": "1,517",
+    "is.net_income": "4,552",
+    "cf.net_income": "4,552",
+    "cf.depreciation_amortization": "3,391",
+    "cf.change_in_working_capital": "119",
+    "cf.other_operating": "78",
+    "cf.cfo": "8,140",
+    "cf.capex": "(3,715)",
+    "cf.cfi": "(3,715)",
+    "cf.revolver_net": "(127)",
+    "cf.term_debt_repayments": "(2,580)",
+    "cf.distributions": "(1,725)",
+    "cf.cff": "(4,432)",
+    "cf.net_change_in_cash": "(7)",
+    "sup.cash_interest_paid": "2,077",
+    "sup.cash_taxes_paid": "1,563",
+    "sup.scheduled_principal": "2,580",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/pellham-grain/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Pellham Grain & Milling Co. interim financial statements, Q3 2025",
+   "received_date": "2025-11-09",
+   "document_date": "2025-11-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,176"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "21,823"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "21,794"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,870"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "53,663"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "75,296"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "141,859"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "16,841"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,857"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "12,239"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "4,286"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "42,383"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "32,250"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,654"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "78,287"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "63,572"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "141,859"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "174,249"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "131,685"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "42,564"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "23,524"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "5,158"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "523"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "13,359"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "2,825"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "105"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "10,639"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "2,660"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "7,979"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "7,979"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "5,158"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "156"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "117"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "13,410"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(5,924)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(5,924)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(729)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,870)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,797)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(7,396)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "90"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "2,845"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "2,601"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,870"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,832",
+    "bs.accounts_receivable": "19,779",
+    "bs.inventory": "20,796",
+    "bs.other_current_assets": "2,733",
+    "bs.total_current_assets": "50,140",
+    "bs.net_ppe": "74,229",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "137,269",
+    "bs.accounts_payable": "16,070",
+    "bs.accrued_liabilities": "3,717",
+    "bs.revolver": "11,387",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "4,008",
+    "bs.total_current_liabilities": "40,342",
+    "bs.long_term_debt": "37,410",
+    "bs.other_noncurrent_liabilities": "3,498",
+    "bs.total_liabilities": "81,250",
+    "bs.total_equity": "56,019",
+    "bs.total_liabilities_and_equity": "137,269",
+    "is.revenue": "166,195",
+    "is.cogs": "125,856",
+    "is.gross_profit": "40,339",
+    "is.sga": "22,436",
+    "is.depreciation_amortization": "5,093",
+    "is.other_operating_expense": "499",
+    "is.operating_income": "12,311",
+    "is.interest_expense": "3,064",
+    "is.other_income_net": "100",
+    "is.pretax_income": "9,347",
+    "is.income_tax_expense": "2,337",
+    "is.net_income": "7,010",
+    "cf.net_income": "7,010",
+    "cf.depreciation_amortization": "5,093",
+    "cf.change_in_working_capital": "922",
+    "cf.other_operating": "117",
+    "cf.cfo": "13,142",
+    "cf.capex": "(5,651)",
+    "cf.cfi": "(5,651)",
+    "cf.revolver_net": "(364)",
+    "cf.term_debt_repayments": "(3,870)",
+    "cf.distributions": "(3,133)",
+    "cf.cff": "(7,367)",
+    "cf.net_change_in_cash": "124",
+    "sup.cash_interest_paid": "3,082",
+    "sup.cash_taxes_paid": "2,347",
+    "sup.scheduled_principal": "3,870",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/pellham-grain/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Pellham Grain & Milling Co. interim financial statements, Q1 2026",
+   "received_date": "2026-04-28",
+   "document_date": "2026-04-24",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,008"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "21,440"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "21,357"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,803"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "52,608"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "75,889"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "141,397"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "16,503"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,762"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "11,459"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "4,137"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "41,021"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "29,670"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,732"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "74,423"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "66,974"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "141,397"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "58,400"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "44,291"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "14,109"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,884"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,740"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "175"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,310"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "879"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "35"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,466"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "867"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,599"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,599"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,740"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "1,330"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "39"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,708"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,986)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,986)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(814)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,290)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,949)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(4,053)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(331)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "886"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,019"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,290"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,714",
+    "bs.accounts_receivable": "20,601",
+    "bs.inventory": "20,463",
+    "bs.other_current_assets": "2,686",
+    "bs.total_current_assets": "50,464",
+    "bs.net_ppe": "74,718",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "138,082",
+    "bs.accounts_payable": "15,812",
+    "bs.accrued_liabilities": "3,651",
+    "bs.revolver": "11,190",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "3,915",
+    "bs.total_current_liabilities": "39,728",
+    "bs.long_term_debt": "34,830",
+    "bs.other_noncurrent_liabilities": "3,576",
+    "bs.total_liabilities": "78,134",
+    "bs.total_equity": "59,948",
+    "bs.total_liabilities_and_equity": "138,082",
+    "is.revenue": "55,949",
+    "is.cogs": "42,437",
+    "is.gross_profit": "13,512",
+    "is.sga": "7,553",
+    "is.depreciation_amortization": "1,714",
+    "is.other_operating_expense": "168",
+    "is.operating_income": "4,077",
+    "is.interest_expense": "984",
+    "is.other_income_net": "34",
+    "is.pretax_income": "3,127",
+    "is.income_tax_expense": "782",
+    "is.net_income": "2,345",
+    "cf.net_income": "2,345",
+    "cf.depreciation_amortization": "1,714",
+    "cf.change_in_working_capital": "1,287",
+    "cf.other_operating": "39",
+    "cf.cfo": "5,385",
+    "cf.capex": "(1,902)",
+    "cf.cfi": "(1,902)",
+    "cf.revolver_net": "(1,778)",
+    "cf.term_debt_repayments": "(1,290)",
+    "cf.distributions": "(787)",
+    "cf.cff": "(3,855)",
+    "cf.net_change_in_cash": "(372)",
+    "sup.cash_interest_paid": "981",
+    "sup.cash_taxes_paid": "878",
+    "sup.scheduled_principal": "1,290",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/pellham-grain/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Pellham Grain & Milling Co. interim financial statements, Q2 2026",
+   "received_date": "2026-07-27",
+   "document_date": "2026-07-23",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,345"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "21,800"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "22,201"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,938"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "54,284"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "76,225"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "143,409"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "17,155"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,916"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "12,242"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "4,471"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "42,944"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "28,380"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,771"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "75,095"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "68,314"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "143,409"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "119,609"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "90,332"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "29,277"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "16,147"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "3,485"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "359"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "9,286"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,719"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "72"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "7,639"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,910"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "5,729"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,729"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,485"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "1,131"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "78"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "10,423"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,067)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(4,067)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(31)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,580)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(3,739)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(6,350)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "6"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,739"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,886"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,580"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "7,020",
+    "bs.accounts_receivable": "20,515",
+    "bs.inventory": "21,241",
+    "bs.other_current_assets": "2,808",
+    "bs.total_current_assets": "51,584",
+    "bs.net_ppe": "74,988",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "139,472",
+    "bs.accounts_payable": "16,414",
+    "bs.accrued_liabilities": "3,784",
+    "bs.revolver": "11,700",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "4,217",
+    "bs.total_current_liabilities": "41,275",
+    "bs.long_term_debt": "33,540",
+    "bs.other_noncurrent_liabilities": "3,615",
+    "bs.total_liabilities": "78,430",
+    "bs.total_equity": "61,042",
+    "bs.total_liabilities_and_equity": "139,472",
+    "is.revenue": "114,449",
+    "is.cogs": "86,488",
+    "is.gross_profit": "27,961",
+    "is.sga": "15,451",
+    "is.depreciation_amortization": "3,433",
+    "is.other_operating_expense": "344",
+    "is.operating_income": "8,733",
+    "is.interest_expense": "1,911",
+    "is.other_income_net": "69",
+    "is.pretax_income": "6,891",
+    "is.income_tax_expense": "1,723",
+    "is.net_income": "5,168",
+    "cf.net_income": "5,168",
+    "cf.depreciation_amortization": "3,433",
+    "cf.change_in_working_capital": "1,510",
+    "cf.other_operating": "78",
+    "cf.cfo": "10,189",
+    "cf.capex": "(3,891)",
+    "cf.cfi": "(3,891)",
+    "cf.revolver_net": "(1,268)",
+    "cf.term_debt_repayments": "(2,580)",
+    "cf.distributions": "(2,516)",
+    "cf.cff": "(6,364)",
+    "cf.net_change_in_cash": "(66)",
+    "sup.cash_interest_paid": "1,927",
+    "sup.cash_taxes_paid": "1,660",
+    "sup.scheduled_principal": "2,580",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/pellham-grain/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Pellham Grain & Milling Co. interim financial statements, Q3 2026",
+   "received_date": "2026-11-02",
+   "document_date": "2026-10-29",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,502"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "22,266"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "24,254"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "3,001"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "57,023"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "76,598"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "10,750"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,150"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "146,521"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "18,742"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,992"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "14,951"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "5,160"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,761"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "46,606"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "27,090"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,810"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "77,506"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "69,015"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "146,521"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "182,124"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "140,632"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "41,492"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "24,587"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "5,238"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "547"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "11,120"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "2,552"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "110"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "8,678"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "2,170"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "6,508"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,508"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "5,238"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(498)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "117"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "11,365"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(6,193)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(6,193)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "2,678"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,870)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(3,817)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(5,009)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "163"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "2,574"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "2,929"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,870"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "7,176",
+    "bs.accounts_receivable": "21,823",
+    "bs.inventory": "21,794",
+    "bs.other_current_assets": "2,870",
+    "bs.total_current_assets": "53,663",
+    "bs.net_ppe": "75,296",
+    "bs.intangibles": "10,750",
+    "bs.other_noncurrent_assets": "2,150",
+    "bs.total_assets": "141,859",
+    "bs.accounts_payable": "16,841",
+    "bs.accrued_liabilities": "3,857",
+    "bs.revolver": "12,239",
+    "bs.cpltd": "5,160",
+    "bs.other_current_liabilities": "4,286",
+    "bs.total_current_liabilities": "42,383",
+    "bs.long_term_debt": "32,250",
+    "bs.other_noncurrent_liabilities": "3,654",
+    "bs.total_liabilities": "78,287",
+    "bs.total_equity": "63,572",
+    "bs.total_liabilities_and_equity": "141,859",
+    "is.revenue": "174,249",
+    "is.cogs": "131,685",
+    "is.gross_profit": "42,564",
+    "is.sga": "23,524",
+    "is.depreciation_amortization": "5,158",
+    "is.other_operating_expense": "523",
+    "is.operating_income": "13,359",
+    "is.interest_expense": "2,825",
+    "is.other_income_net": "105",
+    "is.pretax_income": "10,639",
+    "is.income_tax_expense": "2,660",
+    "is.net_income": "7,979",
+    "cf.net_income": "7,979",
+    "cf.depreciation_amortization": "5,158",
+    "cf.change_in_working_capital": "156",
+    "cf.other_operating": "117",
+    "cf.cfo": "13,410",
+    "cf.capex": "(5,924)",
+    "cf.cfi": "(5,924)",
+    "cf.revolver_net": "(729)",
+    "cf.term_debt_repayments": "(3,870)",
+    "cf.distributions": "(2,797)",
+    "cf.cff": "(7,396)",
+    "cf.net_change_in_cash": "90",
+    "sup.cash_interest_paid": "2,845",
+    "sup.cash_taxes_paid": "2,601",
+    "sup.scheduled_principal": "3,870",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "pellham-grain.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/pellham-grain/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, Q1 2025",
+   "received_date": "2025-04-27",
+   "document_date": "2025-04-25",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/pellham-grain/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, Q2 2025",
+   "received_date": "2025-08-04",
+   "document_date": "2025-08-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/pellham-grain/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, Q3 2025",
+   "received_date": "2025-11-09",
+   "document_date": "2025-11-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/pellham-grain/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, FY2025",
+   "received_date": "2026-02-09",
+   "document_date": "2026-02-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/pellham-grain/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, Q1 2026",
+   "received_date": "2026-04-28",
+   "document_date": "2026-04-26",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/pellham-grain/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, Q2 2026",
+   "received_date": "2026-07-27",
+   "document_date": "2026-07-25",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/pellham-grain/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Pellham Grain & Milling Co. compliance certificate, Q3 2026",
+   "received_date": "2026-11-02",
+   "document_date": "2026-10-31",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellham-grain.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/pellham-grain/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Pellham Grain & Milling Co. borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-17",
+   "document_date": "2026-08-15",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "pellham-grain.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/pellham-grain/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Pellham Grain & Milling Co. borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-10",
+   "document_date": "2026-09-08",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "pellham-grain.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/pellham-grain/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Pellham Grain & Milling Co. borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-11",
+   "document_date": "2026-10-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "reported_breach",
+  "description": "True breach, correctly reported: the fixed charge coverage covenant fails for the current quarter and the borrower's certificate reports the breach.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.41",
+    "pass": true,
+    "headroom": "0.0444",
+    "reported_value": "1.41",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9789000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3972000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3264000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6820000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "23845000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "7745000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3215000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12885000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3995000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "9155000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "2.15",
+    "pass": true,
+    "headroom": "0.1042",
+    "reported_value": "2.15",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "51180000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9789000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3972000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3264000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6820000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "23845000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "49198000",
+    "pass": true,
+    "headroom": "0.2615",
+    "reported_value": "49198000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "59948000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "49198000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.47",
+    "pass": true,
+    "headroom": "0.0889",
+    "reported_value": "1.47",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "10260000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3891000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3421000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6842000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "24414000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "7835000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3264000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "13315000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3918000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "9078000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "2.06",
+    "pass": true,
+    "headroom": "0.1417",
+    "reported_value": "2.06",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "50400000"
+     },
+     {
+      "label": "Net income",
+      "amount": "10260000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3891000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3421000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6842000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "24414000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "50292000",
+    "pass": true,
+    "headroom": "0.2895",
+    "reported_value": "50292000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "61042000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "50292000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.50",
+    "pass": true,
+    "headroom": "0.1111",
+    "reported_value": "1.50",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "10613000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3801000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3538000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6865000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "24817000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "7932000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3421000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "13464000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3831000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "8991000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "2.00",
+    "pass": true,
+    "headroom": "0.1667",
+    "reported_value": "2.00",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "49649000"
+     },
+     {
+      "label": "Net income",
+      "amount": "10613000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3801000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3538000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6865000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "24817000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "52822000",
+    "pass": true,
+    "headroom": "0.3544",
+    "reported_value": "52822000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "63572000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "52822000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.55",
+    "pass": true,
+    "headroom": "0.1481",
+    "reported_value": "1.55",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "11037000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3726000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3679000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6890000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "25332000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "8003000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3538000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "13791000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3751000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "8911000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "1.91",
+    "pass": true,
+    "headroom": "0.2042",
+    "reported_value": "1.91",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "48393000"
+     },
+     {
+      "label": "Net income",
+      "amount": "11037000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3726000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3679000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6890000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "25332000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "55574000",
+    "pass": true,
+    "headroom": "0.4250",
+    "reported_value": "55574000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "66324000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "55574000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.57",
+    "pass": true,
+    "headroom": "0.1630",
+    "reported_value": "1.57",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "11291000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3621000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3764000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6916000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "25592000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "8087000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3679000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "13826000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3656000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "8816000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "1.81",
+    "pass": true,
+    "headroom": "0.2458",
+    "reported_value": "1.81",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "46289000"
+     },
+     {
+      "label": "Net income",
+      "amount": "11291000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3621000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3764000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6916000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "25592000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "56224000",
+    "pass": true,
+    "headroom": "0.4416",
+    "reported_value": "56224000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "66974000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "56224000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.60",
+    "pass": true,
+    "headroom": "0.1852",
+    "reported_value": "1.60",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "11598000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3534000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3866000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6942000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "25940000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "8179000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3764000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "13997000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3563000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "8723000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "1.76",
+    "pass": true,
+    "headroom": "0.2667",
+    "reported_value": "1.76",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "45782000"
+     },
+     {
+      "label": "Net income",
+      "amount": "11598000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3534000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3866000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6942000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "25940000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "57564000",
+    "pass": true,
+    "headroom": "0.4760",
+    "reported_value": "57564000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "68314000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "57564000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.35",
+    "value": "1.28",
+    "pass": false,
+    "headroom": "-0.0519",
+    "reported_value": "1.28",
+    "reported_threshold": "1.35",
+    "reported_in_compliance": false,
+    "outcome": "breach",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9566000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3453000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3189000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6970000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "23178000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "8272000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "3866000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "11040000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3480000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "5160000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "8640000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.40",
+    "value": "2.04",
+    "pass": true,
+    "headroom": "0.1500",
+    "reported_value": "2.04",
+    "reported_threshold": "2.40",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "47201000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9566000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3453000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "3189000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "6970000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "23178000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "pellham-grain-rlc",
+    "terms_version_id": "tv-pellham-grain-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "39000000",
+    "value": "58265000",
+    "pass": true,
+    "headroom": "0.4940",
+    "reported_value": "58265000",
+    "reported_threshold": "39000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "69015000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "10750000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "58265000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "pellham-grain-rlc",
+    "calculated": {
+     "ineligible_excluded": "1819800",
+     "ineligible_over_age": "158000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "63600",
+     "ineligible_concentration": "0",
+     "gross_ar": "21955000",
+     "total_ineligible_ar": "2041400",
+     "eligible_ar": "19913600",
+     "ar_availability": "16926560",
+     "gross_inventory": "22885000",
+     "ineligible_inventory": "2975400",
+     "eligible_inventory": "19909600",
+     "inventory_availability_before_sublimit": "9954800",
+     "inventory_availability": "8250000",
+     "reserves": "250000",
+     "borrowing_base": "24926560",
+     "commitment": "21000000",
+     "lesser_of_base_and_commitment": "21000000",
+     "outstanding": "13342000",
+     "letters_of_credit": "0",
+     "availability": "7658000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "7658000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "pellham-grain-rlc",
+    "calculated": {
+     "ineligible_excluded": "1833000",
+     "ineligible_over_age": "158400",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "64000",
+     "ineligible_concentration": "0",
+     "gross_ar": "22111000",
+     "total_ineligible_ar": "2055400",
+     "eligible_ar": "20055600",
+     "ar_availability": "17047260",
+     "gross_inventory": "23570000",
+     "ineligible_inventory": "3064400",
+     "eligible_inventory": "20505600",
+     "inventory_availability_before_sublimit": "10252800",
+     "inventory_availability": "8250000",
+     "reserves": "250000",
+     "borrowing_base": "25047260",
+     "commitment": "21000000",
+     "lesser_of_base_and_commitment": "21000000",
+     "outstanding": "14006000",
+     "letters_of_credit": "0",
+     "availability": "6994000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "6994000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "pellham-grain-rlc",
+    "calculated": {
+     "ineligible_excluded": "1845600",
+     "ineligible_over_age": "160400",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "64400",
+     "ineligible_concentration": "0",
+     "gross_ar": "22266000",
+     "total_ineligible_ar": "2070400",
+     "eligible_ar": "20195600",
+     "ar_availability": "17166260",
+     "gross_inventory": "24254000",
+     "ineligible_inventory": "3153200",
+     "eligible_inventory": "21100800",
+     "inventory_availability_before_sublimit": "10550400",
+     "inventory_availability": "8250000",
+     "reserves": "250000",
+     "borrowing_base": "25166260",
+     "commitment": "21000000",
+     "lesser_of_base_and_commitment": "21000000",
+     "outstanding": "14951000",
+     "letters_of_credit": "0",
+     "availability": "6049000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "6049000"
+   }
+  ],
+  "signals": [
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-03-31",
+    "severity": "medium",
+    "value": "0.0444",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "fccr"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-06-30",
+    "severity": "medium",
+    "value": "0.0889",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "fccr"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.0519",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "fccr"
+    }
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "covenant.breach",
+    "severity": "high",
+    "period_end": "2026-09-30",
+    "subject": "covenant:fccr",
+    "summary": "Fixed Charge Coverage Ratio fails its threshold."
+   }
+  ]
+ }
+}

@@ -1,0 +1,6953 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "ostrander-valley-foods",
+  "name": "Ostrander Valley Foods, Inc.",
+  "legal_form": "corporation",
+  "industry": "food processing",
+  "city": "Yakima",
+  "state": "WA",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Dana Whitcombe",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 4,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Noreen Vandersteen",
+  "auditor": "Wexley Arnault LLP"
+ },
+ "facilities": [
+  {
+   "id": "ostrander-valley-foods-rlc",
+   "borrower_id": "ostrander-valley-foods",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "13500000",
+   "original_amount": "13500000",
+   "closing_date": "2022-08-12",
+   "maturity_date": "2028-08-12",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  },
+  {
+   "id": "ostrander-valley-foods-tl",
+   "borrower_id": "ostrander-valley-foods",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "39564000",
+   "original_amount": "39564000",
+   "closing_date": "2022-08-12",
+   "maturity_date": "2029-08-12",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "942000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-ostrander-valley-foods-1",
+   "facility_id": "ostrander-valley-foods-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-08-12",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2022-08-18",
+   "warnings": [],
+   "source_documents": [
+    "ostrander-valley-foods.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": [
+       {
+        "name": "restructuring",
+        "source_key": "is.nonrecurring_expense",
+        "cap": null,
+        "citation": {
+         "field": "definitions.ebitda.addbacks.restructuring",
+         "document_id": "ostrander-valley-foods.credit-agreement",
+         "section": "1.1",
+         "page": 4,
+         "quote": "\"Adjusted EBITDA\" means, for any period, EBITDA for such period plus restructuring and other non-recurring charges deducted in determining net income for such period."
+        }
+       }
+      ]
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "adjusted_ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.15",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "ostrander-valley-foods.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.15 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "ostrander-valley-foods.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) Adjusted EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "adjusted_ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.75",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "ostrander-valley-foods.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.75 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "ostrander-valley-foods.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) Adjusted EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "min_tnw",
+      "name": "Minimum Tangible Net Worth",
+      "archetype": "min_tangible_net_worth",
+      "params": {
+       "step_up_pct_of_net_income": null
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "28000000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "ostrander-valley-foods.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall maintain Tangible Net Worth, measured as of the last day of each fiscal quarter, of not less than $28,000,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "ostrander-valley-foods.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Tangible Net Worth\" means, as of any date, total equity of the Borrower minus goodwill and intangibles as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "ostrander-valley-foods.credit-agreement",
+       "section": "5.1(a)",
+       "page": 8,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "ostrander-valley-foods.credit-agreement",
+       "section": "5.1(b)",
+       "page": 8,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "ostrander-valley-foods.credit-agreement",
+       "section": "5.1(c)",
+       "page": 8,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "ostrander-valley-foods.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "13500000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "5250000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "150000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "ostrander-valley-foods.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $5,250,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $150,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $13,500,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $39,564,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "ostrander-valley-foods.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $942,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "39261000",
+    "is.cogs": "29670000",
+    "is.gross_profit": "9591000",
+    "is.sga": "5300000",
+    "is.depreciation_amortization": "1237000",
+    "is.other_operating_expense": "118000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2936000",
+    "is.interest_expense": "760000",
+    "is.other_income_net": "24000",
+    "is.pretax_income": "2200000",
+    "is.income_tax_expense": "550000",
+    "is.net_income": "1650000",
+    "bs.cash": "4711000",
+    "bs.accounts_receivable": "14026000",
+    "bs.inventory": "14307000",
+    "bs.other_current_assets": "1885000",
+    "bs.total_current_assets": "34929000",
+    "bs.net_ppe": "53894000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "98243000",
+    "bs.accounts_payable": "11055000",
+    "bs.accrued_liabilities": "2585000",
+    "bs.revolver": "7852000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "2749000",
+    "bs.total_current_liabilities": "28009000",
+    "bs.long_term_debt": "29202000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2495000",
+    "bs.total_liabilities": "59706000",
+    "bs.total_equity": "38537000",
+    "bs.total_liabilities_and_equity": "98243000",
+    "cf.net_income": "1650000",
+    "cf.depreciation_amortization": "1237000",
+    "cf.change_in_working_capital": "341000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "3256000",
+    "cf.capex": "1335000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1335000",
+    "cf.revolver_net": "-312000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "942000",
+    "cf.distributions": "854000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2108000",
+    "cf.net_change_in_cash": "-187000",
+    "sup.cash_interest_paid": "767000",
+    "sup.cash_taxes_paid": "598000",
+    "sup.scheduled_principal": "942000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "26822000",
+    "cash.beginning_of_year": "4898000",
+    "debt.term_total": "32970000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "80206000",
+    "is.cogs": "60461000",
+    "is.gross_profit": "19745000",
+    "is.sga": "10828000",
+    "is.depreciation_amortization": "2477000",
+    "is.other_operating_expense": "241000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6199000",
+    "is.interest_expense": "1497000",
+    "is.other_income_net": "49000",
+    "is.pretax_income": "4751000",
+    "is.income_tax_expense": "1188000",
+    "is.net_income": "3563000",
+    "bs.cash": "4913000",
+    "bs.accounts_receivable": "14942000",
+    "bs.inventory": "14847000",
+    "bs.other_current_assets": "1965000",
+    "bs.total_current_assets": "36667000",
+    "bs.net_ppe": "54046000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "100133000",
+    "bs.accounts_payable": "11473000",
+    "bs.accrued_liabilities": "2678000",
+    "bs.revolver": "8241000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "2931000",
+    "bs.total_current_liabilities": "29091000",
+    "bs.long_term_debt": "28260000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2523000",
+    "bs.total_liabilities": "59874000",
+    "bs.total_equity": "40259000",
+    "bs.total_liabilities_and_equity": "100133000",
+    "cf.net_income": "3563000",
+    "cf.depreciation_amortization": "2477000",
+    "cf.change_in_working_capital": "-502000",
+    "cf.other_operating": "56000",
+    "cf.cfo": "5594000",
+    "cf.capex": "2727000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2727000",
+    "cf.revolver_net": "77000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1884000",
+    "cf.distributions": "1045000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2852000",
+    "cf.net_change_in_cash": "15000",
+    "sup.cash_interest_paid": "1511000",
+    "sup.cash_taxes_paid": "1148000",
+    "sup.scheduled_principal": "1884000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "28544000",
+    "cash.beginning_of_year": "4898000",
+    "debt.term_total": "32028000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "122331000",
+    "is.cogs": "92185000",
+    "is.gross_profit": "30146000",
+    "is.sga": "16515000",
+    "is.depreciation_amortization": "3720000",
+    "is.other_operating_expense": "367000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "9544000",
+    "is.interest_expense": "2225000",
+    "is.other_income_net": "74000",
+    "is.pretax_income": "7393000",
+    "is.income_tax_expense": "1849000",
+    "is.net_income": "5544000",
+    "bs.cash": "5055000",
+    "bs.accounts_receivable": "15834000",
+    "bs.inventory": "15297000",
+    "bs.other_current_assets": "2022000",
+    "bs.total_current_assets": "38208000",
+    "bs.net_ppe": "54235000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "101863000",
+    "bs.accounts_payable": "11820000",
+    "bs.accrued_liabilities": "2745000",
+    "bs.revolver": "8599000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3020000",
+    "bs.total_current_liabilities": "29952000",
+    "bs.long_term_debt": "27318000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2551000",
+    "bs.total_liabilities": "59821000",
+    "bs.total_equity": "42042000",
+    "bs.total_liabilities_and_equity": "101863000",
+    "cf.net_income": "5544000",
+    "cf.depreciation_amortization": "3720000",
+    "cf.change_in_working_capital": "-1398000",
+    "cf.other_operating": "84000",
+    "cf.cfo": "7950000",
+    "cf.capex": "4159000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4159000",
+    "cf.revolver_net": "435000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2826000",
+    "cf.distributions": "1243000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3634000",
+    "cf.net_change_in_cash": "157000",
+    "sup.cash_interest_paid": "2242000",
+    "sup.cash_taxes_paid": "1786000",
+    "sup.scheduled_principal": "2826000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "30327000",
+    "cash.beginning_of_year": "4898000",
+    "debt.term_total": "31086000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "165041000",
+    "is.cogs": "124512000",
+    "is.gross_profit": "40529000",
+    "is.sga": "22281000",
+    "is.depreciation_amortization": "4967000",
+    "is.other_operating_expense": "495000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "12786000",
+    "is.interest_expense": "2943000",
+    "is.other_income_net": "100000",
+    "is.pretax_income": "9943000",
+    "is.income_tax_expense": "2487000",
+    "is.net_income": "7456000",
+    "bs.cash": "5125000",
+    "bs.accounts_receivable": "15446000",
+    "bs.inventory": "15588000",
+    "bs.other_current_assets": "2050000",
+    "bs.total_current_assets": "38209000",
+    "bs.net_ppe": "54440000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "102069000",
+    "bs.accounts_payable": "12045000",
+    "bs.accrued_liabilities": "2776000",
+    "bs.revolver": "8542000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3030000",
+    "bs.total_current_liabilities": "30161000",
+    "bs.long_term_debt": "26376000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2579000",
+    "bs.total_liabilities": "59116000",
+    "bs.total_equity": "42953000",
+    "bs.total_liabilities_and_equity": "102069000",
+    "cf.net_income": "7456000",
+    "cf.depreciation_amortization": "4967000",
+    "cf.change_in_working_capital": "-1063000",
+    "cf.other_operating": "112000",
+    "cf.cfo": "11472000",
+    "cf.capex": "5611000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5611000",
+    "cf.revolver_net": "378000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3768000",
+    "cf.distributions": "2244000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5634000",
+    "cf.net_change_in_cash": "227000",
+    "sup.cash_interest_paid": "2964000",
+    "sup.cash_taxes_paid": "2447000",
+    "sup.scheduled_principal": "3768000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "31238000",
+    "cash.beginning_of_year": "4898000",
+    "debt.term_total": "30144000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "40847000",
+    "is.cogs": "30917000",
+    "is.gross_profit": "9930000",
+    "is.sga": "5514000",
+    "is.depreciation_amortization": "1252000",
+    "is.other_operating_expense": "123000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3041000",
+    "is.interest_expense": "701000",
+    "is.other_income_net": "25000",
+    "is.pretax_income": "2365000",
+    "is.income_tax_expense": "591000",
+    "is.net_income": "1774000",
+    "bs.cash": "4902000",
+    "bs.accounts_receivable": "14235000",
+    "bs.inventory": "14908000",
+    "bs.other_current_assets": "1961000",
+    "bs.total_current_assets": "36006000",
+    "bs.net_ppe": "54577000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "100003000",
+    "bs.accounts_payable": "11520000",
+    "bs.accrued_liabilities": "2660000",
+    "bs.revolver": "7740000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "2878000",
+    "bs.total_current_liabilities": "28566000",
+    "bs.long_term_debt": "25434000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2607000",
+    "bs.total_liabilities": "56607000",
+    "bs.total_equity": "43396000",
+    "bs.total_liabilities_and_equity": "100003000",
+    "cf.net_income": "1774000",
+    "cf.depreciation_amortization": "1252000",
+    "cf.change_in_working_capital": "1187000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "4241000",
+    "cf.capex": "1389000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1389000",
+    "cf.revolver_net": "-802000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "942000",
+    "cf.distributions": "1331000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3075000",
+    "cf.net_change_in_cash": "-223000",
+    "sup.cash_interest_paid": "706000",
+    "sup.cash_taxes_paid": "638000",
+    "sup.scheduled_principal": "942000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "31681000",
+    "cash.beginning_of_year": "5125000",
+    "debt.term_total": "29202000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "84109000",
+    "is.cogs": "63550000",
+    "is.gross_profit": "20559000",
+    "is.sga": "11354000",
+    "is.depreciation_amortization": "2507000",
+    "is.other_operating_expense": "253000",
+    "is.nonrecurring_expense": "640000",
+    "is.operating_income": "5805000",
+    "is.interest_expense": "1369000",
+    "is.other_income_net": "51000",
+    "is.pretax_income": "4487000",
+    "is.income_tax_expense": "1122000",
+    "is.net_income": "3365000",
+    "bs.cash": "5191000",
+    "bs.accounts_receivable": "15930000",
+    "bs.inventory": "15735000",
+    "bs.other_current_assets": "2077000",
+    "bs.total_current_assets": "38933000",
+    "bs.net_ppe": "54793000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "103146000",
+    "bs.accounts_payable": "12159000",
+    "bs.accrued_liabilities": "2793000",
+    "bs.revolver": "9517000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "2954000",
+    "bs.total_current_liabilities": "31191000",
+    "bs.long_term_debt": "24492000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2635000",
+    "bs.total_liabilities": "58318000",
+    "bs.total_equity": "44828000",
+    "bs.total_liabilities_and_equity": "103146000",
+    "cf.net_income": "3365000",
+    "cf.depreciation_amortization": "2507000",
+    "cf.change_in_working_capital": "-603000",
+    "cf.other_operating": "56000",
+    "cf.cfo": "5325000",
+    "cf.capex": "2860000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2860000",
+    "cf.revolver_net": "975000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1884000",
+    "cf.distributions": "1490000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2399000",
+    "cf.net_change_in_cash": "66000",
+    "sup.cash_interest_paid": "1385000",
+    "sup.cash_taxes_paid": "1229000",
+    "sup.scheduled_principal": "1884000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "33113000",
+    "cash.beginning_of_year": "5125000",
+    "debt.term_total": "28260000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "127839000",
+    "is.cogs": "96492000",
+    "is.gross_profit": "31347000",
+    "is.sga": "17258000",
+    "is.depreciation_amortization": "3767000",
+    "is.other_operating_expense": "384000",
+    "is.nonrecurring_expense": "640000",
+    "is.operating_income": "9298000",
+    "is.interest_expense": "2055000",
+    "is.other_income_net": "77000",
+    "is.pretax_income": "7320000",
+    "is.income_tax_expense": "1830000",
+    "is.net_income": "5490000",
+    "bs.cash": "5248000",
+    "bs.accounts_receivable": "16390000",
+    "bs.inventory": "15884000",
+    "bs.other_current_assets": "2099000",
+    "bs.total_current_assets": "39621000",
+    "bs.net_ppe": "55020000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "104061000",
+    "bs.accounts_payable": "12274000",
+    "bs.accrued_liabilities": "2827000",
+    "bs.revolver": "9082000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3157000",
+    "bs.total_current_liabilities": "31108000",
+    "bs.long_term_debt": "23550000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2663000",
+    "bs.total_liabilities": "57321000",
+    "bs.total_equity": "46740000",
+    "bs.total_liabilities_and_equity": "104061000",
+    "cf.net_income": "5490000",
+    "cf.depreciation_amortization": "3767000",
+    "cf.change_in_working_capital": "-882000",
+    "cf.other_operating": "84000",
+    "cf.cfo": "8459000",
+    "cf.capex": "4347000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4347000",
+    "cf.revolver_net": "540000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2826000",
+    "cf.distributions": "1703000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3989000",
+    "cf.net_change_in_cash": "123000",
+    "sup.cash_interest_paid": "2065000",
+    "sup.cash_taxes_paid": "1760000",
+    "sup.scheduled_principal": "2826000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "35025000",
+    "cash.beginning_of_year": "5125000",
+    "debt.term_total": "27318000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "172689000",
+    "is.cogs": "130300000",
+    "is.gross_profit": "42389000",
+    "is.sga": "23313000",
+    "is.depreciation_amortization": "5032000",
+    "is.other_operating_expense": "519000",
+    "is.nonrecurring_expense": "640000",
+    "is.operating_income": "12885000",
+    "is.interest_expense": "2716000",
+    "is.other_income_net": "104000",
+    "is.pretax_income": "10273000",
+    "is.income_tax_expense": "2568000",
+    "is.net_income": "7705000",
+    "bs.cash": "5382000",
+    "bs.accounts_receivable": "16613000",
+    "bs.inventory": "16302000",
+    "bs.other_current_assets": "2153000",
+    "bs.total_current_assets": "40450000",
+    "bs.net_ppe": "55280000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "105150000",
+    "bs.accounts_payable": "12597000",
+    "bs.accrued_liabilities": "2884000",
+    "bs.revolver": "8970000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3250000",
+    "bs.total_current_liabilities": "31469000",
+    "bs.long_term_debt": "22608000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2691000",
+    "bs.total_liabilities": "56768000",
+    "bs.total_equity": "48382000",
+    "bs.total_liabilities_and_equity": "105150000",
+    "cf.net_income": "7705000",
+    "cf.depreciation_amortization": "5032000",
+    "cf.change_in_working_capital": "-1104000",
+    "cf.other_operating": "112000",
+    "cf.cfo": "11745000",
+    "cf.capex": "5872000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5872000",
+    "cf.revolver_net": "428000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3768000",
+    "cf.distributions": "2276000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5616000",
+    "cf.net_change_in_cash": "257000",
+    "sup.cash_interest_paid": "2735000",
+    "sup.cash_taxes_paid": "2468000",
+    "sup.scheduled_principal": "3768000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "36667000",
+    "cash.beginning_of_year": "5125000",
+    "debt.term_total": "26376000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "42338000",
+    "is.cogs": "31914000",
+    "is.gross_profit": "10424000",
+    "is.sga": "5716000",
+    "is.depreciation_amortization": "1271000",
+    "is.other_operating_expense": "127000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3310000",
+    "is.interest_expense": "642000",
+    "is.other_income_net": "25000",
+    "is.pretax_income": "2693000",
+    "is.income_tax_expense": "673000",
+    "is.net_income": "2020000",
+    "bs.cash": "5081000",
+    "bs.accounts_receivable": "14801000",
+    "bs.inventory": "15389000",
+    "bs.other_current_assets": "2032000",
+    "bs.total_current_assets": "37303000",
+    "bs.net_ppe": "55448000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "102171000",
+    "bs.accounts_payable": "11891000",
+    "bs.accrued_liabilities": "2729000",
+    "bs.revolver": "7467000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3044000",
+    "bs.total_current_liabilities": "28899000",
+    "bs.long_term_debt": "21666000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2719000",
+    "bs.total_liabilities": "53284000",
+    "bs.total_equity": "48887000",
+    "bs.total_liabilities_and_equity": "102171000",
+    "cf.net_income": "2020000",
+    "cf.depreciation_amortization": "1271000",
+    "cf.change_in_working_capital": "1779000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "5098000",
+    "cf.capex": "1439000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1439000",
+    "cf.revolver_net": "-1503000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "942000",
+    "cf.distributions": "1515000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3960000",
+    "cf.net_change_in_cash": "-301000",
+    "sup.cash_interest_paid": "648000",
+    "sup.cash_taxes_paid": "738000",
+    "sup.scheduled_principal": "942000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "37172000",
+    "cash.beginning_of_year": "5382000",
+    "debt.term_total": "25434000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "87741000",
+    "is.cogs": "66266000",
+    "is.gross_profit": "21475000",
+    "is.sga": "11845000",
+    "is.depreciation_amortization": "2546000",
+    "is.other_operating_expense": "263000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6821000",
+    "is.interest_expense": "1238000",
+    "is.other_income_net": "52000",
+    "is.pretax_income": "5635000",
+    "is.income_tax_expense": "1409000",
+    "is.net_income": "4226000",
+    "bs.cash": "5448000",
+    "bs.accounts_receivable": "16171000",
+    "bs.inventory": "16564000",
+    "bs.other_current_assets": "2179000",
+    "bs.total_current_assets": "40362000",
+    "bs.net_ppe": "55717000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "105499000",
+    "bs.accounts_payable": "12800000",
+    "bs.accrued_liabilities": "2896000",
+    "bs.revolver": "9081000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3279000",
+    "bs.total_current_liabilities": "31824000",
+    "bs.long_term_debt": "20724000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2747000",
+    "bs.total_liabilities": "55295000",
+    "bs.total_equity": "50204000",
+    "bs.total_liabilities_and_equity": "105499000",
+    "cf.net_income": "4226000",
+    "cf.depreciation_amortization": "2546000",
+    "cf.change_in_working_capital": "398000",
+    "cf.other_operating": "56000",
+    "cf.cfo": "7226000",
+    "cf.capex": "2983000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2983000",
+    "cf.revolver_net": "111000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1884000",
+    "cf.distributions": "2404000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4177000",
+    "cf.net_change_in_cash": "66000",
+    "sup.cash_interest_paid": "1259000",
+    "sup.cash_taxes_paid": "1411000",
+    "sup.scheduled_principal": "1884000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "38489000",
+    "cash.beginning_of_year": "5382000",
+    "debt.term_total": "24492000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "133706000",
+    "is.cogs": "101006000",
+    "is.gross_profit": "32700000",
+    "is.sga": "18050000",
+    "is.depreciation_amortization": "3827000",
+    "is.other_operating_expense": "401000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "10422000",
+    "is.interest_expense": "1849000",
+    "is.other_income_net": "80000",
+    "is.pretax_income": "8653000",
+    "is.income_tax_expense": "2164000",
+    "is.net_income": "6489000",
+    "bs.cash": "5516000",
+    "bs.accounts_receivable": "17177000",
+    "bs.inventory": "16751000",
+    "bs.other_current_assets": "2206000",
+    "bs.total_current_assets": "41650000",
+    "bs.net_ppe": "55999000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "107069000",
+    "bs.accounts_payable": "12944000",
+    "bs.accrued_liabilities": "2934000",
+    "bs.revolver": "9296000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "3329000",
+    "bs.total_current_liabilities": "32271000",
+    "bs.long_term_debt": "19782000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2775000",
+    "bs.total_liabilities": "54828000",
+    "bs.total_equity": "52241000",
+    "bs.total_liabilities_and_equity": "107069000",
+    "cf.net_income": "6489000",
+    "cf.depreciation_amortization": "3827000",
+    "cf.change_in_working_capital": "-590000",
+    "cf.other_operating": "84000",
+    "cf.cfo": "9810000",
+    "cf.capex": "4546000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4546000",
+    "cf.revolver_net": "326000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2826000",
+    "cf.distributions": "2630000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5130000",
+    "cf.net_change_in_cash": "134000",
+    "sup.cash_interest_paid": "1865000",
+    "sup.cash_taxes_paid": "2147000",
+    "sup.scheduled_principal": "2826000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "40526000",
+    "cash.beginning_of_year": "5382000",
+    "debt.term_total": "23550000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "157001000",
+    "is.cogs": "118361000",
+    "is.gross_profit": "38640000",
+    "is.sga": "21196000",
+    "is.depreciation_amortization": "4922000",
+    "is.other_operating_expense": "471000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "12051000",
+    "is.interest_expense": "3185000",
+    "is.other_income_net": "93000",
+    "is.pretax_income": "8959000",
+    "is.income_tax_expense": "2240000",
+    "is.net_income": "6719000",
+    "bs.cash": "4898000",
+    "bs.accounts_receivable": "14404000",
+    "bs.inventory": "14853000",
+    "bs.other_current_assets": "1959000",
+    "bs.total_current_assets": "36114000",
+    "bs.net_ppe": "53796000",
+    "bs.intangibles": "7850000",
+    "bs.other_noncurrent_assets": "1570000",
+    "bs.total_assets": "99330000",
+    "bs.accounts_payable": "11477000",
+    "bs.accrued_liabilities": "2685000",
+    "bs.revolver": "8164000",
+    "bs.cpltd": "3768000",
+    "bs.other_current_liabilities": "2884000",
+    "bs.total_current_liabilities": "28978000",
+    "bs.long_term_debt": "30144000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2467000",
+    "bs.total_liabilities": "61589000",
+    "bs.total_equity": "37741000",
+    "bs.total_liabilities_and_equity": "99330000",
+    "cf.net_income": "6719000",
+    "cf.depreciation_amortization": "4922000",
+    "cf.change_in_working_capital": "-323000",
+    "cf.other_operating": "112000",
+    "cf.cfo": "11430000",
+    "cf.capex": "5338000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5338000",
+    "cf.revolver_net": "314000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3768000",
+    "cf.distributions": "2450000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5904000",
+    "cf.net_change_in_cash": "188000",
+    "sup.cash_interest_paid": "3199000",
+    "sup.cash_taxes_paid": "2318000",
+    "sup.scheduled_principal": "3768000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "11715000",
+    "equity.retained_earnings": "26026000",
+    "cash.beginning_of_year": "4710000",
+    "debt.term_total": "33912000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.47",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7580000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2884000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2528000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4982000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17974000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "17974000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5665000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2487000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "9822000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2903000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6671000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.06",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "36942000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7580000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2884000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2528000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4982000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17974000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "17974000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "35546000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "43396000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "35546000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.49",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7258000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2815000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2421000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4997000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17491000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18131000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5744000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2528000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "9859000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2838000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6606000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.08",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "37777000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7258000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2815000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2421000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4997000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17491000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18131000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "36978000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "44828000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "36978000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.54",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7402000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2773000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2468000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5014000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17657000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18297000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5799000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2421000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "10077000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2787000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6555000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.99",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "36400000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7402000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2773000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2468000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5014000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17657000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18297000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "38890000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "46740000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "38890000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.59",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7705000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2716000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2568000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5032000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "18021000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18661000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5872000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2468000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "10321000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2735000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6503000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.89",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "35346000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7705000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2716000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2568000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5032000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "18021000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18661000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "40532000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "48382000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "40532000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.62",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7951000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2657000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2650000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5051000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "18309000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18949000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5922000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2568000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "10459000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2677000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6445000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.74",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "32901000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7951000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2657000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2650000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5051000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "18309000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "640000"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "18949000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "41037000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "48887000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "41037000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.64",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "8566000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2585000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2855000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5071000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "19077000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "19077000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5995000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2650000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "10432000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2609000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6377000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.76",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "33573000"
+      },
+      {
+       "label": "Net income",
+       "amount": "8566000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2585000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2855000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5071000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "19077000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "19077000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "42354000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "50204000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "42354000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Noreen Vandersteen",
+   "reported": {
+    "fccr": {
+     "value": "1.63",
+     "threshold": "1.15",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "8704000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2510000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2902000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5092000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "19208000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "19208000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "6071000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2855000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "10282000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2535000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3768000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "6303000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.71",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "32846000"
+      },
+      {
+       "label": "Net income",
+       "amount": "8704000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2510000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2902000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5092000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "19208000"
+      },
+      {
+       "label": "Add-back: restructuring",
+       "amount": "0"
+      },
+      {
+       "label": "Adjusted EBITDA",
+       "amount": "19208000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "44391000",
+     "threshold": "28000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "52241000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7850000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "44391000"
+      }
+     ]
+    }
+   },
+   "document_id": "ostrander-valley-foods.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Bexley Provisions, Inc.",
+     "category": "trade",
+     "contra": "54400",
+     "buckets": {
+      "0_30": "693600",
+      "31_60": "191600",
+      "61_90": "27200",
+      "over_90": "0"
+     },
+     "total": "912400"
+    },
+    {
+     "customer": "Birchfield Foods, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "480800",
+      "31_60": "216400",
+      "61_90": "61600",
+      "over_90": "15200"
+     },
+     "total": "774000"
+    },
+    {
+     "customer": "Coldwater Provisions, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1263200",
+      "31_60": "543600",
+      "61_90": "116400",
+      "over_90": "19200"
+     },
+     "total": "1942400"
+    },
+    {
+     "customer": "County of Dovetail Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "312400",
+      "31_60": "85200",
+      "61_90": "29600",
+      "over_90": "0"
+     },
+     "total": "427200"
+    },
+    {
+     "customer": "Foxhollow Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1072400",
+      "31_60": "444800",
+      "61_90": "82400",
+      "over_90": "49200"
+     },
+     "total": "1648800"
+    },
+    {
+     "customer": "Kingsway Provisions Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "352400",
+      "31_60": "151200",
+      "61_90": "37600",
+      "over_90": "0"
+     },
+     "total": "541200"
+    },
+    {
+     "customer": "Norwood Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "370800",
+      "31_60": "112400",
+      "61_90": "37200",
+      "over_90": "16000"
+     },
+     "total": "536400"
+    },
+    {
+     "customer": "Oakmont Provisions, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "600800",
+      "31_60": "211600",
+      "61_90": "70400",
+      "over_90": "0"
+     },
+     "total": "882800"
+    },
+    {
+     "customer": "Ostrander Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "508000",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "508000"
+    },
+    {
+     "customer": "Quarry Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "542400",
+      "31_60": "124800",
+      "61_90": "20800",
+      "over_90": "6800"
+     },
+     "total": "694800"
+    },
+    {
+     "customer": "Stonegate Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "866000",
+      "31_60": "359600",
+      "61_90": "93200",
+      "over_90": "13200"
+     },
+     "total": "1332000"
+    },
+    {
+     "customer": "Valemount Provisions, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1064000",
+      "31_60": "329600",
+      "61_90": "104800",
+      "over_90": "0"
+     },
+     "total": "1498400"
+    },
+    {
+     "customer": "Westbrook Restaurants, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1704800",
+      "31_60": "503600",
+      "61_90": "119600",
+      "over_90": "71600"
+     },
+     "total": "2399600"
+    },
+    {
+     "customer": "Yarrow Provisions, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1517600",
+      "31_60": "674000",
+      "61_90": "168400",
+      "over_90": "48000"
+     },
+     "total": "2408000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "6317600"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "8146400"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "2162000"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1476400",
+    "ineligible_over_age": "239200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "54400",
+    "ineligible_concentration": "0",
+    "gross_ar": "16506000",
+    "total_ineligible_ar": "1770000",
+    "eligible_ar": "14736000",
+    "ar_availability": "12525600",
+    "gross_inventory": "16626000",
+    "ineligible_inventory": "2162000",
+    "eligible_inventory": "14464000",
+    "inventory_availability_before_sublimit": "7232000",
+    "inventory_availability": "5250000",
+    "reserves": "150000",
+    "borrowing_base": "17625600",
+    "commitment": "13500000",
+    "lesser_of_base_and_commitment": "13500000",
+    "outstanding": "9235000",
+    "letters_of_credit": "0",
+    "availability": "4265000"
+   },
+   "outstanding": "9235000",
+   "letters_of_credit": "0",
+   "document_id": "ostrander-valley-foods.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Bexley Provisions, Inc.",
+     "category": "trade",
+     "contra": "55600",
+     "buckets": {
+      "0_30": "708000",
+      "31_60": "186000",
+      "61_90": "37200",
+      "over_90": "0"
+     },
+     "total": "931200"
+    },
+    {
+     "customer": "Birchfield Foods, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "490400",
+      "31_60": "212800",
+      "61_90": "70800",
+      "over_90": "15600"
+     },
+     "total": "789600"
+    },
+    {
+     "customer": "Coldwater Provisions, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1289200",
+      "31_60": "534800",
+      "61_90": "138400",
+      "over_90": "19600"
+     },
+     "total": "1982000"
+    },
+    {
+     "customer": "County of Dovetail Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "318400",
+      "31_60": "82800",
+      "61_90": "34800",
+      "over_90": "0"
+     },
+     "total": "436000"
+    },
+    {
+     "customer": "Foxhollow Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1094000",
+      "31_60": "437200",
+      "61_90": "100800",
+      "over_90": "50400"
+     },
+     "total": "1682400"
+    },
+    {
+     "customer": "Kingsway Provisions Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "359600",
+      "31_60": "148800",
+      "61_90": "44000",
+      "over_90": "0"
+     },
+     "total": "552400"
+    },
+    {
+     "customer": "Norwood Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "378000",
+      "31_60": "109200",
+      "61_90": "43600",
+      "over_90": "16400"
+     },
+     "total": "547200"
+    },
+    {
+     "customer": "Oakmont Provisions, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "613200",
+      "31_60": "206800",
+      "61_90": "80800",
+      "over_90": "0"
+     },
+     "total": "900800"
+    },
+    {
+     "customer": "Ostrander Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "517600",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "517600"
+    },
+    {
+     "customer": "Quarry Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "553600",
+      "31_60": "120400",
+      "61_90": "28000",
+      "over_90": "6800"
+     },
+     "total": "708800"
+    },
+    {
+     "customer": "Stonegate Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "884000",
+      "31_60": "353200",
+      "61_90": "108400",
+      "over_90": "13200"
+     },
+     "total": "1358800"
+    },
+    {
+     "customer": "Valemount Provisions, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1086400",
+      "31_60": "320800",
+      "61_90": "122000",
+      "over_90": "0"
+     },
+     "total": "1529200"
+    },
+    {
+     "customer": "Westbrook Restaurants, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1739200",
+      "31_60": "489600",
+      "61_90": "146800",
+      "over_90": "73200"
+     },
+     "total": "2448800"
+    },
+    {
+     "customer": "Yarrow Provisions, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1548800",
+      "31_60": "663200",
+      "61_90": "196400",
+      "over_90": "48800"
+     },
+     "total": "2457200"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "6341600"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "8177600"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "2169800"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1506000",
+    "ineligible_over_age": "244000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "55600",
+    "ineligible_concentration": "0",
+    "gross_ar": "16842000",
+    "total_ineligible_ar": "1805600",
+    "eligible_ar": "15036400",
+    "ar_availability": "12780940",
+    "gross_inventory": "16689000",
+    "ineligible_inventory": "2169800",
+    "eligible_inventory": "14519200",
+    "inventory_availability_before_sublimit": "7259600",
+    "inventory_availability": "5250000",
+    "reserves": "150000",
+    "borrowing_base": "17880940",
+    "commitment": "13500000",
+    "lesser_of_base_and_commitment": "13500000",
+    "outstanding": "9270000",
+    "letters_of_credit": "0",
+    "availability": "4230000"
+   },
+   "outstanding": "9270000",
+   "letters_of_credit": "0",
+   "document_id": "ostrander-valley-foods.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Bexley Provisions, Inc.",
+     "category": "trade",
+     "contra": "56800",
+     "buckets": {
+      "0_30": "722000",
+      "31_60": "180400",
+      "61_90": "47200",
+      "over_90": "0"
+     },
+     "total": "949600"
+    },
+    {
+     "customer": "Birchfield Foods, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "500000",
+      "31_60": "209200",
+      "61_90": "80400",
+      "over_90": "16000"
+     },
+     "total": "805600"
+    },
+    {
+     "customer": "Coldwater Provisions, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1314400",
+      "31_60": "525600",
+      "61_90": "161600",
+      "over_90": "20000"
+     },
+     "total": "2021600"
+    },
+    {
+     "customer": "County of Dovetail Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "324800",
+      "31_60": "80000",
+      "61_90": "40000",
+      "over_90": "0"
+     },
+     "total": "444800"
+    },
+    {
+     "customer": "Foxhollow Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1115600",
+      "31_60": "428800",
+      "61_90": "120000",
+      "over_90": "51200"
+     },
+     "total": "1715600"
+    },
+    {
+     "customer": "Kingsway Provisions Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "366400",
+      "31_60": "146400",
+      "61_90": "50400",
+      "over_90": "0"
+     },
+     "total": "563200"
+    },
+    {
+     "customer": "Norwood Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "385600",
+      "31_60": "106000",
+      "61_90": "50000",
+      "over_90": "16400"
+     },
+     "total": "558000"
+    },
+    {
+     "customer": "Oakmont Provisions, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "625200",
+      "31_60": "202000",
+      "61_90": "91600",
+      "over_90": "0"
+     },
+     "total": "918800"
+    },
+    {
+     "customer": "Ostrander Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "528200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "528200"
+    },
+    {
+     "customer": "Quarry Restaurants, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "564000",
+      "31_60": "115600",
+      "61_90": "36000",
+      "over_90": "7200"
+     },
+     "total": "722800"
+    },
+    {
+     "customer": "Stonegate Foods, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "901600",
+      "31_60": "346400",
+      "61_90": "124400",
+      "over_90": "13600"
+     },
+     "total": "1386000"
+    },
+    {
+     "customer": "Valemount Provisions, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1108000",
+      "31_60": "311600",
+      "61_90": "140000",
+      "over_90": "0"
+     },
+     "total": "1559600"
+    },
+    {
+     "customer": "Westbrook Restaurants, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1773200",
+      "31_60": "474400",
+      "61_90": "174800",
+      "over_90": "74800"
+     },
+     "total": "2497200"
+    },
+    {
+     "customer": "Yarrow Provisions, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1579600",
+      "31_60": "651200",
+      "61_90": "225200",
+      "over_90": "50000"
+     },
+     "total": "2506000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "6365200"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "8207600"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "2178200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1536200",
+    "ineligible_over_age": "249200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "56800",
+    "ineligible_concentration": "0",
+    "gross_ar": "17177000",
+    "total_ineligible_ar": "1842200",
+    "eligible_ar": "15334800",
+    "ar_availability": "13034580",
+    "gross_inventory": "16751000",
+    "ineligible_inventory": "2178200",
+    "eligible_inventory": "14572800",
+    "inventory_availability_before_sublimit": "7286400",
+    "inventory_availability": "5250000",
+    "reserves": "150000",
+    "borrowing_base": "18134580",
+    "commitment": "13500000",
+    "lesser_of_base_and_commitment": "13500000",
+    "outstanding": "9296000",
+    "letters_of_credit": "0",
+    "availability": "4204000"
+   },
+   "outstanding": "9296000",
+   "letters_of_credit": "0",
+   "document_id": "ostrander-valley-foods.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "7947000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "33912000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "7868000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "33912000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "7852000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32970000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "8069000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32970000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "8160000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32970000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "8241000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32028000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "8402000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32028000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "8522000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "32028000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "8599000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "31086000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "8486000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "31086000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "8672000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "31086000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "8542000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30144000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "8192000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30144000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "7975000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30144000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "7740000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "29202000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "8274000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "29202000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "8987000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "29202000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "9517000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "28260000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "9391000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "28260000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "9107000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "28260000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "9082000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "27318000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "9045000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "27318000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "8935000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "27318000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "8970000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26376000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "8486000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26376000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "8064000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26376000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "7467000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25434000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "8053000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25434000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "8560000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25434000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "9081000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24492000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "9235000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24492000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "9270000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24492000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "9296000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23550000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "9268000",
+   "commitment": "13500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23550000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "ostrander-valley-foods.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/ostrander-valley-foods/credit-agreement.pdf",
+   "pages": 14,
+   "title": "Credit Agreement between Ostrander Valley Foods, Inc. and Bank of Stoic",
+   "received_date": "2022-08-12",
+   "document_date": "2022-08-12"
+  },
+  {
+   "id": "ostrander-valley-foods.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/ostrander-valley-foods/afs-2024.pdf",
+   "pages": 7,
+   "title": "Ostrander Valley Foods, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-12",
+   "document_date": "2025-04-03",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "5,125"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "15,446"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "15,588"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "2,050"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "38,209"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "54,440"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "102,069"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "12,045"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,776"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "8,542"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "3,030"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "30,161"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "26,376"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,579"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "59,116"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "42,953"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "102,069"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "165,041"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "124,512"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "40,529"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "22,281"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "4,967"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "495"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "12,786"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,943"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "100"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "9,943"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "2,487"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "7,456"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "7,456"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "4,967"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(1,063)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "112"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "11,472"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(5,611)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(5,611)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "378"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,768)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(2,244)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(5,634)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "227"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,964"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "2,447"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,768"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,898",
+    "bs.accounts_receivable": "14,404",
+    "bs.inventory": "14,853",
+    "bs.other_current_assets": "1,959",
+    "bs.total_current_assets": "36,114",
+    "bs.net_ppe": "53,796",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "99,330",
+    "bs.accounts_payable": "11,477",
+    "bs.accrued_liabilities": "2,685",
+    "bs.revolver": "8,164",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "2,884",
+    "bs.total_current_liabilities": "28,978",
+    "bs.long_term_debt": "30,144",
+    "bs.other_noncurrent_liabilities": "2,467",
+    "bs.total_liabilities": "61,589",
+    "bs.total_equity": "37,741",
+    "bs.total_liabilities_and_equity": "99,330",
+    "is.revenue": "157,001",
+    "is.cogs": "118,361",
+    "is.gross_profit": "38,640",
+    "is.sga": "21,196",
+    "is.depreciation_amortization": "4,922",
+    "is.other_operating_expense": "471",
+    "is.operating_income": "12,051",
+    "is.interest_expense": "3,185",
+    "is.other_income_net": "93",
+    "is.pretax_income": "8,959",
+    "is.income_tax_expense": "2,240",
+    "is.net_income": "6,719",
+    "cf.net_income": "6,719",
+    "cf.depreciation_amortization": "4,922",
+    "cf.change_in_working_capital": "(323)",
+    "cf.other_operating": "112",
+    "cf.cfo": "11,430",
+    "cf.capex": "(5,338)",
+    "cf.cfi": "(5,338)",
+    "cf.revolver_net": "314",
+    "cf.term_debt_repayments": "(3,768)",
+    "cf.distributions": "(2,450)",
+    "cf.cff": "(5,904)",
+    "cf.net_change_in_cash": "188",
+    "sup.cash_interest_paid": "3,199",
+    "sup.cash_taxes_paid": "2,318",
+    "sup.scheduled_principal": "3,768",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/ostrander-valley-foods/afs-2025.pdf",
+   "pages": 7,
+   "title": "Ostrander Valley Foods, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-11",
+   "document_date": "2026-04-02",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "5,382"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "16,613"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "16,302"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "2,153"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "40,450"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "55,280"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "105,150"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "12,597"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,884"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "8,970"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "3,250"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "31,469"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "22,608"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,691"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "56,768"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "48,382"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "105,150"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "172,689"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "130,300"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "42,389"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "23,313"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "5,032"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "519"
+    },
+    "is.nonrecurring_expense": {
+     "page": 4,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "640"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "12,885"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,716"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "104"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "10,273"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "2,568"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "7,705"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "7,705"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "5,032"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(1,104)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "112"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "11,745"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(5,872)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(5,872)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "428"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,768)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(2,276)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(5,616)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "257"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,735"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "2,468"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,768"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "5,125",
+    "bs.accounts_receivable": "15,446",
+    "bs.inventory": "15,588",
+    "bs.other_current_assets": "2,050",
+    "bs.total_current_assets": "38,209",
+    "bs.net_ppe": "54,440",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "102,069",
+    "bs.accounts_payable": "12,045",
+    "bs.accrued_liabilities": "2,776",
+    "bs.revolver": "8,542",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "3,030",
+    "bs.total_current_liabilities": "30,161",
+    "bs.long_term_debt": "26,376",
+    "bs.other_noncurrent_liabilities": "2,579",
+    "bs.total_liabilities": "59,116",
+    "bs.total_equity": "42,953",
+    "bs.total_liabilities_and_equity": "102,069",
+    "is.revenue": "165,041",
+    "is.cogs": "124,512",
+    "is.gross_profit": "40,529",
+    "is.sga": "22,281",
+    "is.depreciation_amortization": "4,967",
+    "is.other_operating_expense": "495",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "12,786",
+    "is.interest_expense": "2,943",
+    "is.other_income_net": "100",
+    "is.pretax_income": "9,943",
+    "is.income_tax_expense": "2,487",
+    "is.net_income": "7,456",
+    "cf.net_income": "7,456",
+    "cf.depreciation_amortization": "4,967",
+    "cf.change_in_working_capital": "(1,063)",
+    "cf.other_operating": "112",
+    "cf.cfo": "11,472",
+    "cf.capex": "(5,611)",
+    "cf.cfi": "(5,611)",
+    "cf.revolver_net": "378",
+    "cf.term_debt_repayments": "(3,768)",
+    "cf.distributions": "(2,244)",
+    "cf.cff": "(5,634)",
+    "cf.net_change_in_cash": "227",
+    "sup.cash_interest_paid": "2,964",
+    "sup.cash_taxes_paid": "2,447",
+    "sup.scheduled_principal": "3,768",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/ostrander-valley-foods/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Ostrander Valley Foods, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-11",
+   "document_date": "2025-05-07",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,902"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "14,235"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "14,908"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,961"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "36,006"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "54,577"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "100,003"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "11,520"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,660"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "7,740"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,878"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "28,566"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "25,434"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,607"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "56,607"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "43,396"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "100,003"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "40,847"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "30,917"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,930"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,514"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,252"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "123"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,041"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "701"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "25"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,365"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "591"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,774"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,774"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,252"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "1,187"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "28"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,241"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,389)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,389)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(802)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(942)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,331)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(3,075)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(223)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "706"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "638"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "942"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,711",
+    "bs.accounts_receivable": "14,026",
+    "bs.inventory": "14,307",
+    "bs.other_current_assets": "1,885",
+    "bs.total_current_assets": "34,929",
+    "bs.net_ppe": "53,894",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "98,243",
+    "bs.accounts_payable": "11,055",
+    "bs.accrued_liabilities": "2,585",
+    "bs.revolver": "7,852",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "2,749",
+    "bs.total_current_liabilities": "28,009",
+    "bs.long_term_debt": "29,202",
+    "bs.other_noncurrent_liabilities": "2,495",
+    "bs.total_liabilities": "59,706",
+    "bs.total_equity": "38,537",
+    "bs.total_liabilities_and_equity": "98,243",
+    "is.revenue": "39,261",
+    "is.cogs": "29,670",
+    "is.gross_profit": "9,591",
+    "is.sga": "5,300",
+    "is.depreciation_amortization": "1,237",
+    "is.other_operating_expense": "118",
+    "is.operating_income": "2,936",
+    "is.interest_expense": "760",
+    "is.other_income_net": "24",
+    "is.pretax_income": "2,200",
+    "is.income_tax_expense": "550",
+    "is.net_income": "1,650",
+    "cf.net_income": "1,650",
+    "cf.depreciation_amortization": "1,237",
+    "cf.change_in_working_capital": "341",
+    "cf.other_operating": "28",
+    "cf.cfo": "3,256",
+    "cf.capex": "(1,335)",
+    "cf.cfi": "(1,335)",
+    "cf.revolver_net": "(312)",
+    "cf.term_debt_repayments": "(942)",
+    "cf.distributions": "(854)",
+    "cf.cff": "(2,108)",
+    "cf.net_change_in_cash": "(187)",
+    "sup.cash_interest_paid": "767",
+    "sup.cash_taxes_paid": "598",
+    "sup.scheduled_principal": "942",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/ostrander-valley-foods/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Ostrander Valley Foods, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-08-05",
+   "document_date": "2025-08-01",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "5,191"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "15,930"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,735"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,077"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "38,933"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "54,793"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "103,146"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,159"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,793"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,517"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,954"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "31,191"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "24,492"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,635"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "58,318"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "44,828"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "103,146"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "84,109"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "63,550"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "20,559"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "11,354"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,507"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "253"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "640"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,805"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,369"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "51"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,487"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,122"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,365"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,365"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,507"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(603)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "56"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,325"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,860)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,860)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "975"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,884)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,490)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,399)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "66"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,385"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,229"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,884"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,913",
+    "bs.accounts_receivable": "14,942",
+    "bs.inventory": "14,847",
+    "bs.other_current_assets": "1,965",
+    "bs.total_current_assets": "36,667",
+    "bs.net_ppe": "54,046",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "100,133",
+    "bs.accounts_payable": "11,473",
+    "bs.accrued_liabilities": "2,678",
+    "bs.revolver": "8,241",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "2,931",
+    "bs.total_current_liabilities": "29,091",
+    "bs.long_term_debt": "28,260",
+    "bs.other_noncurrent_liabilities": "2,523",
+    "bs.total_liabilities": "59,874",
+    "bs.total_equity": "40,259",
+    "bs.total_liabilities_and_equity": "100,133",
+    "is.revenue": "80,206",
+    "is.cogs": "60,461",
+    "is.gross_profit": "19,745",
+    "is.sga": "10,828",
+    "is.depreciation_amortization": "2,477",
+    "is.other_operating_expense": "241",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "6,199",
+    "is.interest_expense": "1,497",
+    "is.other_income_net": "49",
+    "is.pretax_income": "4,751",
+    "is.income_tax_expense": "1,188",
+    "is.net_income": "3,563",
+    "cf.net_income": "3,563",
+    "cf.depreciation_amortization": "2,477",
+    "cf.change_in_working_capital": "(502)",
+    "cf.other_operating": "56",
+    "cf.cfo": "5,594",
+    "cf.capex": "(2,727)",
+    "cf.cfi": "(2,727)",
+    "cf.revolver_net": "77",
+    "cf.term_debt_repayments": "(1,884)",
+    "cf.distributions": "(1,045)",
+    "cf.cff": "(2,852)",
+    "cf.net_change_in_cash": "15",
+    "sup.cash_interest_paid": "1,511",
+    "sup.cash_taxes_paid": "1,148",
+    "sup.scheduled_principal": "1,884",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/ostrander-valley-foods/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Ostrander Valley Foods, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-11-10",
+   "document_date": "2025-11-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "5,248"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,390"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,884"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,099"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "39,621"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "55,020"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "104,061"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,274"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,827"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,082"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,157"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "31,108"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "23,550"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,663"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "57,321"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "46,740"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "104,061"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "127,839"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "96,492"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "31,347"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "17,258"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "3,767"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "384"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "640"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "9,298"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "2,055"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "77"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "7,320"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,830"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "5,490"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,490"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,767"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(882)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "84"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "8,459"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,347)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(4,347)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "540"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,826)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,703)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(3,989)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "123"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "2,065"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,760"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,826"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "5,055",
+    "bs.accounts_receivable": "15,834",
+    "bs.inventory": "15,297",
+    "bs.other_current_assets": "2,022",
+    "bs.total_current_assets": "38,208",
+    "bs.net_ppe": "54,235",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "101,863",
+    "bs.accounts_payable": "11,820",
+    "bs.accrued_liabilities": "2,745",
+    "bs.revolver": "8,599",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "3,020",
+    "bs.total_current_liabilities": "29,952",
+    "bs.long_term_debt": "27,318",
+    "bs.other_noncurrent_liabilities": "2,551",
+    "bs.total_liabilities": "59,821",
+    "bs.total_equity": "42,042",
+    "bs.total_liabilities_and_equity": "101,863",
+    "is.revenue": "122,331",
+    "is.cogs": "92,185",
+    "is.gross_profit": "30,146",
+    "is.sga": "16,515",
+    "is.depreciation_amortization": "3,720",
+    "is.other_operating_expense": "367",
+    "is.nonrecurring_expense": "-",
+    "is.operating_income": "9,544",
+    "is.interest_expense": "2,225",
+    "is.other_income_net": "74",
+    "is.pretax_income": "7,393",
+    "is.income_tax_expense": "1,849",
+    "is.net_income": "5,544",
+    "cf.net_income": "5,544",
+    "cf.depreciation_amortization": "3,720",
+    "cf.change_in_working_capital": "(1,398)",
+    "cf.other_operating": "84",
+    "cf.cfo": "7,950",
+    "cf.capex": "(4,159)",
+    "cf.cfi": "(4,159)",
+    "cf.revolver_net": "435",
+    "cf.term_debt_repayments": "(2,826)",
+    "cf.distributions": "(1,243)",
+    "cf.cff": "(3,634)",
+    "cf.net_change_in_cash": "157",
+    "sup.cash_interest_paid": "2,242",
+    "sup.cash_taxes_paid": "1,786",
+    "sup.scheduled_principal": "2,826",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/ostrander-valley-foods/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Ostrander Valley Foods, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-04-30",
+   "document_date": "2026-04-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "5,081"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "14,801"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,389"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,032"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "37,303"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "55,448"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "102,171"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "11,891"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,729"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "7,467"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,044"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "28,899"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "21,666"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,719"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "53,284"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "48,887"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "102,171"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "42,338"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "31,914"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "10,424"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,716"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,271"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "127"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,310"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "642"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "25"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,693"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "673"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,020"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,020"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,271"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "1,779"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "28"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,098"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,439)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,439)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(1,503)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(942)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,515)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(3,960)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(301)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "648"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "738"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "942"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,902",
+    "bs.accounts_receivable": "14,235",
+    "bs.inventory": "14,908",
+    "bs.other_current_assets": "1,961",
+    "bs.total_current_assets": "36,006",
+    "bs.net_ppe": "54,577",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "100,003",
+    "bs.accounts_payable": "11,520",
+    "bs.accrued_liabilities": "2,660",
+    "bs.revolver": "7,740",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "2,878",
+    "bs.total_current_liabilities": "28,566",
+    "bs.long_term_debt": "25,434",
+    "bs.other_noncurrent_liabilities": "2,607",
+    "bs.total_liabilities": "56,607",
+    "bs.total_equity": "43,396",
+    "bs.total_liabilities_and_equity": "100,003",
+    "is.revenue": "40,847",
+    "is.cogs": "30,917",
+    "is.gross_profit": "9,930",
+    "is.sga": "5,514",
+    "is.depreciation_amortization": "1,252",
+    "is.other_operating_expense": "123",
+    "is.operating_income": "3,041",
+    "is.interest_expense": "701",
+    "is.other_income_net": "25",
+    "is.pretax_income": "2,365",
+    "is.income_tax_expense": "591",
+    "is.net_income": "1,774",
+    "cf.net_income": "1,774",
+    "cf.depreciation_amortization": "1,252",
+    "cf.change_in_working_capital": "1,187",
+    "cf.other_operating": "28",
+    "cf.cfo": "4,241",
+    "cf.capex": "(1,389)",
+    "cf.cfi": "(1,389)",
+    "cf.revolver_net": "(802)",
+    "cf.term_debt_repayments": "(942)",
+    "cf.distributions": "(1,331)",
+    "cf.cff": "(3,075)",
+    "cf.net_change_in_cash": "(223)",
+    "sup.cash_interest_paid": "706",
+    "sup.cash_taxes_paid": "638",
+    "sup.scheduled_principal": "942",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/ostrander-valley-foods/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Ostrander Valley Foods, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-08-04",
+   "document_date": "2026-07-31",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "5,448"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,171"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "16,564"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,179"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "40,362"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "55,717"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "105,499"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,800"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,896"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,081"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,279"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "31,824"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "20,724"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,747"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "55,295"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "50,204"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "105,499"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "87,741"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "66,266"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "21,475"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "11,845"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,546"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "263"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "-"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,821"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,238"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "52"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "5,635"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,409"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "4,226"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,226"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,546"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "398"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "56"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "7,226"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,983)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,983)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "111"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,884)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,404)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(4,177)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "66"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,259"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,411"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,884"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "5,191",
+    "bs.accounts_receivable": "15,930",
+    "bs.inventory": "15,735",
+    "bs.other_current_assets": "2,077",
+    "bs.total_current_assets": "38,933",
+    "bs.net_ppe": "54,793",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "103,146",
+    "bs.accounts_payable": "12,159",
+    "bs.accrued_liabilities": "2,793",
+    "bs.revolver": "9,517",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "2,954",
+    "bs.total_current_liabilities": "31,191",
+    "bs.long_term_debt": "24,492",
+    "bs.other_noncurrent_liabilities": "2,635",
+    "bs.total_liabilities": "58,318",
+    "bs.total_equity": "44,828",
+    "bs.total_liabilities_and_equity": "103,146",
+    "is.revenue": "84,109",
+    "is.cogs": "63,550",
+    "is.gross_profit": "20,559",
+    "is.sga": "11,354",
+    "is.depreciation_amortization": "2,507",
+    "is.other_operating_expense": "253",
+    "is.nonrecurring_expense": "640",
+    "is.operating_income": "5,805",
+    "is.interest_expense": "1,369",
+    "is.other_income_net": "51",
+    "is.pretax_income": "4,487",
+    "is.income_tax_expense": "1,122",
+    "is.net_income": "3,365",
+    "cf.net_income": "3,365",
+    "cf.depreciation_amortization": "2,507",
+    "cf.change_in_working_capital": "(603)",
+    "cf.other_operating": "56",
+    "cf.cfo": "5,325",
+    "cf.capex": "(2,860)",
+    "cf.cfi": "(2,860)",
+    "cf.revolver_net": "975",
+    "cf.term_debt_repayments": "(1,884)",
+    "cf.distributions": "(1,490)",
+    "cf.cff": "(2,399)",
+    "cf.net_change_in_cash": "66",
+    "sup.cash_interest_paid": "1,385",
+    "sup.cash_taxes_paid": "1,229",
+    "sup.scheduled_principal": "1,884",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/ostrander-valley-foods/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Ostrander Valley Foods, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-11-03",
+   "document_date": "2026-10-30",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "5,516"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,177"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "16,751"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,206"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "41,650"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "55,999"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,850"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,570"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "107,069"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,944"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,934"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,296"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,768"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,329"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "32,271"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "19,782"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,775"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "54,828"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "52,241"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "107,069"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "133,706"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "101,006"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "32,700"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "18,050"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "3,827"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "401"
+    },
+    "is.nonrecurring_expense": {
+     "page": 3,
+     "label": "Restructuring and other non-recurring charges",
+     "printed": "-"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "10,422"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,849"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "80"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "8,653"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "2,164"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "6,489"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,489"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,827"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(590)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "84"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "9,810"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,546)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(4,546)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "326"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,826)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,630)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(5,130)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "134"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,865"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "2,147"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,826"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "5,248",
+    "bs.accounts_receivable": "16,390",
+    "bs.inventory": "15,884",
+    "bs.other_current_assets": "2,099",
+    "bs.total_current_assets": "39,621",
+    "bs.net_ppe": "55,020",
+    "bs.intangibles": "7,850",
+    "bs.other_noncurrent_assets": "1,570",
+    "bs.total_assets": "104,061",
+    "bs.accounts_payable": "12,274",
+    "bs.accrued_liabilities": "2,827",
+    "bs.revolver": "9,082",
+    "bs.cpltd": "3,768",
+    "bs.other_current_liabilities": "3,157",
+    "bs.total_current_liabilities": "31,108",
+    "bs.long_term_debt": "23,550",
+    "bs.other_noncurrent_liabilities": "2,663",
+    "bs.total_liabilities": "57,321",
+    "bs.total_equity": "46,740",
+    "bs.total_liabilities_and_equity": "104,061",
+    "is.revenue": "127,839",
+    "is.cogs": "96,492",
+    "is.gross_profit": "31,347",
+    "is.sga": "17,258",
+    "is.depreciation_amortization": "3,767",
+    "is.other_operating_expense": "384",
+    "is.nonrecurring_expense": "640",
+    "is.operating_income": "9,298",
+    "is.interest_expense": "2,055",
+    "is.other_income_net": "77",
+    "is.pretax_income": "7,320",
+    "is.income_tax_expense": "1,830",
+    "is.net_income": "5,490",
+    "cf.net_income": "5,490",
+    "cf.depreciation_amortization": "3,767",
+    "cf.change_in_working_capital": "(882)",
+    "cf.other_operating": "84",
+    "cf.cfo": "8,459",
+    "cf.capex": "(4,347)",
+    "cf.cfi": "(4,347)",
+    "cf.revolver_net": "540",
+    "cf.term_debt_repayments": "(2,826)",
+    "cf.distributions": "(1,703)",
+    "cf.cff": "(3,989)",
+    "cf.net_change_in_cash": "123",
+    "sup.cash_interest_paid": "2,065",
+    "sup.cash_taxes_paid": "1,760",
+    "sup.scheduled_principal": "2,826",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/ostrander-valley-foods/cc-2025-03-31.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-11",
+   "document_date": "2025-05-09",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/ostrander-valley-foods/cc-2025-06-30.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-08-05",
+   "document_date": "2025-08-03",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/ostrander-valley-foods/cc-2025-09-30.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-11-10",
+   "document_date": "2025-11-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/ostrander-valley-foods/cc-2025-12-31.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-04",
+   "document_date": "2026-02-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/ostrander-valley-foods/cc-2026-03-31.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-04-30",
+   "document_date": "2026-04-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/ostrander-valley-foods/cc-2026-06-30.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-08-04",
+   "document_date": "2026-08-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/ostrander-valley-foods/cc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-11-03",
+   "document_date": "2026-11-01",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/ostrander-valley-foods/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-11",
+   "document_date": "2026-08-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/ostrander-valley-foods/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-14",
+   "document_date": "2026-09-12",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "ostrander-valley-foods.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/ostrander-valley-foods/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Ostrander Valley Foods, Inc. borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-12",
+   "document_date": "2026-10-10",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.47",
+    "pass": true,
+    "headroom": "0.2783",
+    "reported_value": "1.47",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7580000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2884000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2528000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4982000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17974000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "17974000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5665000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2487000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "9822000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2903000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6671000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.06",
+    "pass": true,
+    "headroom": "0.2509",
+    "reported_value": "2.06",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "36942000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7580000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2884000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2528000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4982000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17974000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "17974000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "35546000",
+    "pass": true,
+    "headroom": "0.2695",
+    "reported_value": "35546000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "43396000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "35546000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.49",
+    "pass": true,
+    "headroom": "0.2957",
+    "reported_value": "1.49",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7258000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2815000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2421000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4997000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17491000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18131000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5744000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2528000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "9859000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2838000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6606000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.08",
+    "pass": true,
+    "headroom": "0.2436",
+    "reported_value": "2.08",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "37777000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7258000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2815000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2421000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4997000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17491000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18131000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "36978000",
+    "pass": true,
+    "headroom": "0.3206",
+    "reported_value": "36978000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "44828000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "36978000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.54",
+    "pass": true,
+    "headroom": "0.3391",
+    "reported_value": "1.54",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7402000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2773000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2468000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5014000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17657000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18297000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5799000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2421000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "10077000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2787000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6555000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.99",
+    "pass": true,
+    "headroom": "0.2764",
+    "reported_value": "1.99",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "36400000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7402000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2773000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2468000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5014000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17657000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18297000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "38890000",
+    "pass": true,
+    "headroom": "0.3889",
+    "reported_value": "38890000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "46740000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "38890000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.59",
+    "pass": true,
+    "headroom": "0.3826",
+    "reported_value": "1.59",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7705000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2716000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2568000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5032000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "18021000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18661000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5872000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2468000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "10321000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2735000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6503000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.89",
+    "pass": true,
+    "headroom": "0.3127",
+    "reported_value": "1.89",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "35346000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7705000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2716000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2568000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5032000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "18021000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18661000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "40532000",
+    "pass": true,
+    "headroom": "0.4476",
+    "reported_value": "40532000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "48382000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "40532000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.62",
+    "pass": true,
+    "headroom": "0.4087",
+    "reported_value": "1.62",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7951000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2657000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2650000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5051000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "18309000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18949000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5922000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2568000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "10459000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2677000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6445000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.74",
+    "pass": true,
+    "headroom": "0.3673",
+    "reported_value": "1.74",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "32901000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7951000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2657000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2650000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5051000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "18309000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "640000"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "18949000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "41037000",
+    "pass": true,
+    "headroom": "0.4656",
+    "reported_value": "41037000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "48887000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "41037000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.64",
+    "pass": true,
+    "headroom": "0.4261",
+    "reported_value": "1.64",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "8566000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2585000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2855000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5071000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "19077000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "19077000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5995000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2650000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "10432000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2609000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6377000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.76",
+    "pass": true,
+    "headroom": "0.3600",
+    "reported_value": "1.76",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "33573000"
+     },
+     {
+      "label": "Net income",
+      "amount": "8566000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2585000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2855000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5071000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "19077000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "19077000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "42354000",
+    "pass": true,
+    "headroom": "0.5126",
+    "reported_value": "42354000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "50204000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "42354000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.15",
+    "value": "1.63",
+    "pass": true,
+    "headroom": "0.4174",
+    "reported_value": "1.63",
+    "reported_threshold": "1.15",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "8704000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2510000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2902000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5092000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "19208000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "19208000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "6071000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2855000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "10282000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2535000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3768000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "6303000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.71",
+    "pass": true,
+    "headroom": "0.3782",
+    "reported_value": "1.71",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "32846000"
+     },
+     {
+      "label": "Net income",
+      "amount": "8704000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2510000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2902000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5092000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "19208000"
+     },
+     {
+      "label": "Add-back: restructuring",
+      "amount": "0"
+     },
+     {
+      "label": "Adjusted EBITDA",
+      "amount": "19208000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "terms_version_id": "tv-ostrander-valley-foods-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "28000000",
+    "value": "44391000",
+    "pass": true,
+    "headroom": "0.5854",
+    "reported_value": "44391000",
+    "reported_threshold": "28000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "52241000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7850000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "44391000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "calculated": {
+     "ineligible_excluded": "1476400",
+     "ineligible_over_age": "239200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "54400",
+     "ineligible_concentration": "0",
+     "gross_ar": "16506000",
+     "total_ineligible_ar": "1770000",
+     "eligible_ar": "14736000",
+     "ar_availability": "12525600",
+     "gross_inventory": "16626000",
+     "ineligible_inventory": "2162000",
+     "eligible_inventory": "14464000",
+     "inventory_availability_before_sublimit": "7232000",
+     "inventory_availability": "5250000",
+     "reserves": "150000",
+     "borrowing_base": "17625600",
+     "commitment": "13500000",
+     "lesser_of_base_and_commitment": "13500000",
+     "outstanding": "9235000",
+     "letters_of_credit": "0",
+     "availability": "4265000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "4265000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "calculated": {
+     "ineligible_excluded": "1506000",
+     "ineligible_over_age": "244000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "55600",
+     "ineligible_concentration": "0",
+     "gross_ar": "16842000",
+     "total_ineligible_ar": "1805600",
+     "eligible_ar": "15036400",
+     "ar_availability": "12780940",
+     "gross_inventory": "16689000",
+     "ineligible_inventory": "2169800",
+     "eligible_inventory": "14519200",
+     "inventory_availability_before_sublimit": "7259600",
+     "inventory_availability": "5250000",
+     "reserves": "150000",
+     "borrowing_base": "17880940",
+     "commitment": "13500000",
+     "lesser_of_base_and_commitment": "13500000",
+     "outstanding": "9270000",
+     "letters_of_credit": "0",
+     "availability": "4230000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "4230000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "ostrander-valley-foods-rlc",
+    "calculated": {
+     "ineligible_excluded": "1536200",
+     "ineligible_over_age": "249200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "56800",
+     "ineligible_concentration": "0",
+     "gross_ar": "17177000",
+     "total_ineligible_ar": "1842200",
+     "eligible_ar": "15334800",
+     "ar_availability": "13034580",
+     "gross_inventory": "16751000",
+     "ineligible_inventory": "2178200",
+     "eligible_inventory": "14572800",
+     "inventory_availability_before_sublimit": "7286400",
+     "inventory_availability": "5250000",
+     "reserves": "150000",
+     "borrowing_base": "18134580",
+     "commitment": "13500000",
+     "lesser_of_base_and_commitment": "13500000",
+     "outstanding": "9296000",
+     "letters_of_credit": "0",
+     "availability": "4204000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "4204000"
+   }
+  ],
+  "signals": [],
+  "exceptions": []
+ }
+}

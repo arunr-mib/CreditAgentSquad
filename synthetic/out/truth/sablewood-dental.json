@@ -1,0 +1,5265 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "sablewood-dental",
+  "name": "Sablewood Dental Management, LLC",
+  "legal_form": "llc",
+  "industry": "healthcare services",
+  "city": "Boise",
+  "state": "ID",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Priya Venkataraman",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 4,
+  "statement_scale": 1,
+  "chief_financial_officer": "Annika Prewitt",
+  "auditor": "Morrow Castellan LLP"
+ },
+ "facilities": [
+  {
+   "id": "sablewood-dental-tl",
+   "borrower_id": "sablewood-dental",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "7000000",
+   "original_amount": "7000000",
+   "closing_date": "2023-05-19",
+   "maturity_date": "2030-05-19",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "175000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-sablewood-dental-1",
+   "facility_id": "sablewood-dental-tl",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2023-05-19",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2023-05-25",
+   "warnings": [],
+   "source_documents": [
+    "sablewood-dental.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "dscr",
+      "name": "Debt Service Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "cash_taxes"
+       ],
+       "denominator": [
+        "interest_expense",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "sablewood-dental.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Debt Service Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "sablewood-dental.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Debt Service Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus cash paid for income taxes for such period to (b) the sum of interest expense and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "sablewood-dental.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "sablewood-dental.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "sablewood-dental.credit-agreement",
+       "section": "5.1(a)",
+       "page": 6,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "sablewood-dental.credit-agreement",
+       "section": "5.1(b)",
+       "page": 6,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "sablewood-dental.credit-agreement",
+       "section": "5.1(c)",
+       "page": 6,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "sablewood-dental.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "sablewood-dental.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "sablewood-dental.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $7,000,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "sablewood-dental.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $175,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "7301000",
+    "is.cogs": "4484274",
+    "is.gross_profit": "2816726",
+    "is.sga": "1971270",
+    "is.depreciation_amortization": "169503",
+    "is.other_operating_expense": "36505",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "639448",
+    "is.interest_expense": "111825",
+    "is.other_income_net": "4381",
+    "is.pretax_income": "532004",
+    "is.income_tax_expense": "10640",
+    "is.net_income": "521364",
+    "bs.cash": "876120",
+    "bs.accounts_receivable": "3872530",
+    "bs.inventory": "245714",
+    "bs.other_current_assets": "350448",
+    "bs.total_current_assets": "5344812",
+    "bs.net_ppe": "4555515",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13540327",
+    "bs.accounts_payable": "1474282",
+    "bs.accrued_liabilities": "904634",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "419496",
+    "bs.total_current_liabilities": "3498412",
+    "bs.long_term_debt": "5425000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "445200",
+    "bs.total_liabilities": "9368612",
+    "bs.total_equity": "4171715",
+    "bs.total_liabilities_and_equity": "13540327",
+    "cf.net_income": "521364",
+    "cf.depreciation_amortization": "169503",
+    "cf.change_in_working_capital": "-93080",
+    "cf.other_operating": "5040",
+    "cf.cfo": "602827",
+    "cf.capex": "189826",
+    "cf.other_investing": "0",
+    "cf.cfi": "-189826",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "175000",
+    "cf.distributions": "218681",
+    "cf.other_financing": "0",
+    "cf.cff": "-393681",
+    "cf.net_change_in_cash": "19320",
+    "sup.cash_interest_paid": "112860",
+    "sup.cash_taxes_paid": "9632",
+    "sup.scheduled_principal": "175000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "3058679",
+    "cash.beginning_of_year": "856800",
+    "debt.term_total": "6125000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "14699300",
+    "is.cogs": "9028310",
+    "is.gross_profit": "5670990",
+    "is.sga": "3968811",
+    "is.depreciation_amortization": "339765",
+    "is.other_operating_expense": "73497",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1288917",
+    "is.interest_expense": "220544",
+    "is.other_income_net": "8820",
+    "is.pretax_income": "1077193",
+    "is.income_tax_expense": "21544",
+    "is.net_income": "1055649",
+    "bs.cash": "887796",
+    "bs.accounts_receivable": "4021432",
+    "bs.inventory": "248988",
+    "bs.other_current_assets": "355118",
+    "bs.total_current_assets": "5513334",
+    "bs.net_ppe": "4577609",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13730943",
+    "bs.accounts_payable": "1493930",
+    "bs.accrued_liabilities": "915158",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "425209",
+    "bs.total_current_liabilities": "3534297",
+    "bs.long_term_debt": "5250000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "450240",
+    "bs.total_liabilities": "9234537",
+    "bs.total_equity": "4496406",
+    "bs.total_liabilities_and_equity": "13730943",
+    "cf.net_income": "1055649",
+    "cf.depreciation_amortization": "339765",
+    "cf.change_in_working_capital": "-214041",
+    "cf.other_operating": "10080",
+    "cf.cfo": "1191453",
+    "cf.capex": "382182",
+    "cf.other_investing": "0",
+    "cf.cfi": "-382182",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "350000",
+    "cf.distributions": "428275",
+    "cf.other_financing": "0",
+    "cf.cff": "-778275",
+    "cf.net_change_in_cash": "30996",
+    "sup.cash_interest_paid": "222614",
+    "sup.cash_taxes_paid": "20272",
+    "sup.scheduled_principal": "350000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "3383370",
+    "cash.beginning_of_year": "856800",
+    "debt.term_total": "5950000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "21817922",
+    "is.cogs": "13427618",
+    "is.gross_profit": "8390304",
+    "is.sga": "5890839",
+    "is.depreciation_amortization": "510853",
+    "is.other_operating_expense": "109090",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1879522",
+    "is.interest_expense": "326157",
+    "is.other_income_net": "13091",
+    "is.pretax_income": "1566456",
+    "is.income_tax_expense": "31329",
+    "is.net_income": "1535127",
+    "bs.cash": "866116",
+    "bs.accounts_receivable": "3853807",
+    "bs.inventory": "241058",
+    "bs.other_current_assets": "341694",
+    "bs.total_current_assets": "5302675",
+    "bs.net_ppe": "4591605",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13534280",
+    "bs.accounts_payable": "1446348",
+    "bs.accrued_liabilities": "880896",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "408428",
+    "bs.total_current_liabilities": "3435672",
+    "bs.long_term_debt": "5075000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "455280",
+    "bs.total_liabilities": "8965952",
+    "bs.total_equity": "4568328",
+    "bs.total_liabilities_and_equity": "13534280",
+    "cf.net_income": "1535127",
+    "cf.depreciation_amortization": "510853",
+    "cf.change_in_working_capital": "-123687",
+    "cf.other_operating": "15120",
+    "cf.cfo": "1937413",
+    "cf.capex": "567266",
+    "cf.other_investing": "0",
+    "cf.cfi": "-567266",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "525000",
+    "cf.distributions": "835831",
+    "cf.other_financing": "0",
+    "cf.cff": "-1360831",
+    "cf.net_change_in_cash": "9316",
+    "sup.cash_interest_paid": "329263",
+    "sup.cash_taxes_paid": "31176",
+    "sup.scheduled_principal": "525000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "3455292",
+    "cash.beginning_of_year": "856800",
+    "debt.term_total": "5775000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "29242808",
+    "is.cogs": "17999120",
+    "is.gross_profit": "11243688",
+    "is.sga": "7895558",
+    "is.depreciation_amortization": "682464",
+    "is.other_operating_expense": "146214",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2519452",
+    "is.interest_expense": "428663",
+    "is.other_income_net": "17546",
+    "is.pretax_income": "2108335",
+    "is.income_tax_expense": "42167",
+    "is.net_income": "2066168",
+    "bs.cash": "890986",
+    "bs.accounts_receivable": "3962651",
+    "bs.inventory": "250493",
+    "bs.other_current_assets": "356395",
+    "bs.total_current_assets": "5460525",
+    "bs.net_ppe": "4613041",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13713566",
+    "bs.accounts_payable": "1502960",
+    "bs.accrued_liabilities": "916245",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "426632",
+    "bs.total_current_liabilities": "3545837",
+    "bs.long_term_debt": "4900000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "460320",
+    "bs.total_liabilities": "8906157",
+    "bs.total_equity": "4807409",
+    "bs.total_liabilities_and_equity": "13713566",
+    "cf.net_income": "2066168",
+    "cf.depreciation_amortization": "682464",
+    "cf.change_in_working_capital": "-146502",
+    "cf.other_operating": "20160",
+    "cf.cfo": "2622290",
+    "cf.capex": "760313",
+    "cf.other_investing": "0",
+    "cf.cfi": "-760313",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "700000",
+    "cf.distributions": "1127791",
+    "cf.other_financing": "0",
+    "cf.cff": "-1827791",
+    "cf.net_change_in_cash": "34186",
+    "sup.cash_interest_paid": "432804",
+    "sup.cash_taxes_paid": "40961",
+    "sup.scheduled_principal": "700000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "3694373",
+    "cash.beginning_of_year": "856800",
+    "debt.term_total": "5600000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "7698174",
+    "is.cogs": "4718211",
+    "is.gross_profit": "2979963",
+    "is.sga": "2078507",
+    "is.depreciation_amortization": "172412",
+    "is.other_operating_expense": "38491",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "690553",
+    "is.interest_expense": "99400",
+    "is.other_income_net": "4619",
+    "is.pretax_income": "595772",
+    "is.income_tax_expense": "11915",
+    "is.net_income": "583857",
+    "bs.cash": "923781",
+    "bs.accounts_receivable": "4159123",
+    "bs.inventory": "258532",
+    "bs.other_current_assets": "369512",
+    "bs.total_current_assets": "5710948",
+    "bs.net_ppe": "4640782",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13991730",
+    "bs.accounts_payable": "1551193",
+    "bs.accrued_liabilities": "947676",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "443013",
+    "bs.total_current_liabilities": "3641882",
+    "bs.long_term_debt": "4725000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "465360",
+    "bs.total_liabilities": "8832242",
+    "bs.total_equity": "5159488",
+    "bs.total_liabilities_and_equity": "13991730",
+    "cf.net_income": "583857",
+    "cf.depreciation_amortization": "172412",
+    "cf.change_in_working_capital": "-121583",
+    "cf.other_operating": "5040",
+    "cf.cfo": "639726",
+    "cf.capex": "200153",
+    "cf.other_investing": "0",
+    "cf.cfi": "-200153",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "175000",
+    "cf.distributions": "231778",
+    "cf.other_financing": "0",
+    "cf.cff": "-406778",
+    "cf.net_change_in_cash": "32795",
+    "sup.cash_interest_paid": "100436",
+    "sup.cash_taxes_paid": "10838",
+    "sup.scheduled_principal": "175000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "4046452",
+    "cash.beginning_of_year": "890986",
+    "debt.term_total": "5425000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "15341358",
+    "is.cogs": "9418005",
+    "is.gross_profit": "5923353",
+    "is.sga": "4142167",
+    "is.depreciation_amortization": "345861",
+    "is.other_operating_expense": "76707",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1358618",
+    "is.interest_expense": "195694",
+    "is.other_income_net": "9205",
+    "is.pretax_income": "1172129",
+    "is.income_tax_expense": "23442",
+    "is.net_income": "1148687",
+    "bs.cash": "917182",
+    "bs.accounts_receivable": "4196422",
+    "bs.inventory": "257523",
+    "bs.other_current_assets": "366873",
+    "bs.total_current_assets": "5738000",
+    "bs.net_ppe": "4666056",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "14044056",
+    "bs.accounts_payable": "1545138",
+    "bs.accrued_liabilities": "940108",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "439545",
+    "bs.total_current_liabilities": "3624791",
+    "bs.long_term_debt": "4550000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "470400",
+    "bs.total_liabilities": "8645191",
+    "bs.total_equity": "5398865",
+    "bs.total_liabilities_and_equity": "14044056",
+    "cf.net_income": "1148687",
+    "cf.depreciation_amortization": "345861",
+    "cf.change_in_working_capital": "-172325",
+    "cf.other_operating": "10080",
+    "cf.cfo": "1332303",
+    "cf.capex": "398876",
+    "cf.other_investing": "0",
+    "cf.cfi": "-398876",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "350000",
+    "cf.distributions": "557231",
+    "cf.other_financing": "0",
+    "cf.cff": "-907231",
+    "cf.net_change_in_cash": "26196",
+    "sup.cash_interest_paid": "197765",
+    "sup.cash_taxes_paid": "22753",
+    "sup.scheduled_principal": "350000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "4285829",
+    "cash.beginning_of_year": "890986",
+    "debt.term_total": "5250000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "22841538",
+    "is.cogs": "14036616",
+    "is.gross_profit": "8804922",
+    "is.sga": "6167216",
+    "is.depreciation_amortization": "520255",
+    "is.other_operating_expense": "114208",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2003243",
+    "is.interest_expense": "288882",
+    "is.other_income_net": "13705",
+    "is.pretax_income": "1728066",
+    "is.income_tax_expense": "34561",
+    "is.net_income": "1693505",
+    "bs.cash": "919005",
+    "bs.accounts_receivable": "4043933",
+    "bs.inventory": "253075",
+    "bs.other_current_assets": "360009",
+    "bs.total_current_assets": "5576022",
+    "bs.net_ppe": "4686667",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13902689",
+    "bs.accounts_payable": "1518447",
+    "bs.accrued_liabilities": "922085",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "431129",
+    "bs.total_current_liabilities": "3571661",
+    "bs.long_term_debt": "4375000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "475440",
+    "bs.total_liabilities": "8422101",
+    "bs.total_equity": "5480588",
+    "bs.total_liabilities_and_equity": "13902689",
+    "cf.net_income": "1693505",
+    "cf.depreciation_amortization": "520255",
+    "cf.change_in_working_capital": "-61654",
+    "cf.other_operating": "15120",
+    "cf.cfo": "2167226",
+    "cf.capex": "593881",
+    "cf.other_investing": "0",
+    "cf.cfi": "-593881",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "525000",
+    "cf.distributions": "1020326",
+    "cf.other_financing": "0",
+    "cf.cff": "-1545326",
+    "cf.net_change_in_cash": "28019",
+    "sup.cash_interest_paid": "291988",
+    "sup.cash_taxes_paid": "34280",
+    "sup.scheduled_principal": "525000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "4367552",
+    "cash.beginning_of_year": "890986",
+    "debt.term_total": "5075000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "30650291",
+    "is.cogs": "18853055",
+    "is.gross_profit": "11797236",
+    "is.sga": "8275579",
+    "is.depreciation_amortization": "695419",
+    "is.other_operating_expense": "153252",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2672986",
+    "is.interest_expense": "378963",
+    "is.other_income_net": "18390",
+    "is.pretax_income": "2312413",
+    "is.income_tax_expense": "46248",
+    "is.net_income": "2266165",
+    "bs.cash": "937050",
+    "bs.accounts_receivable": "4184636",
+    "bs.inventory": "263914",
+    "bs.other_current_assets": "374820",
+    "bs.total_current_assets": "5760420",
+    "bs.net_ppe": "4714531",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "14114951",
+    "bs.accounts_payable": "1583487",
+    "bs.accrued_liabilities": "957707",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "448977",
+    "bs.total_current_liabilities": "3690171",
+    "bs.long_term_debt": "4200000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "480480",
+    "bs.total_liabilities": "8370651",
+    "bs.total_equity": "5744300",
+    "bs.total_liabilities_and_equity": "14114951",
+    "cf.net_income": "2266165",
+    "cf.depreciation_amortization": "695419",
+    "cf.change_in_working_capital": "-109497",
+    "cf.other_operating": "20160",
+    "cf.cfo": "2872247",
+    "cf.capex": "796909",
+    "cf.other_investing": "0",
+    "cf.cfi": "-796909",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "700000",
+    "cf.distributions": "1329274",
+    "cf.other_financing": "0",
+    "cf.cff": "-2029274",
+    "cf.net_change_in_cash": "46064",
+    "sup.cash_interest_paid": "383105",
+    "sup.cash_taxes_paid": "45399",
+    "sup.scheduled_principal": "700000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "4631264",
+    "cash.beginning_of_year": "890986",
+    "debt.term_total": "4900000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "8079234",
+    "is.cogs": "4992967",
+    "is.gross_profit": "3086267",
+    "is.sga": "2181393",
+    "is.depreciation_amortization": "176206",
+    "is.other_operating_expense": "40396",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "688272",
+    "is.interest_expense": "86975",
+    "is.other_income_net": "4848",
+    "is.pretax_income": "606145",
+    "is.income_tax_expense": "12123",
+    "is.net_income": "594022",
+    "bs.cash": "969508",
+    "bs.accounts_receivable": "4311876",
+    "bs.inventory": "273587",
+    "bs.other_current_assets": "387803",
+    "bs.total_current_assets": "5942774",
+    "bs.net_ppe": "4748385",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "14331159",
+    "bs.accounts_payable": "1641523",
+    "bs.accrued_liabilities": "988805",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "464560",
+    "bs.total_current_liabilities": "3794888",
+    "bs.long_term_debt": "4025000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "485520",
+    "bs.total_liabilities": "8305408",
+    "bs.total_equity": "6025751",
+    "bs.total_liabilities_and_equity": "14331159",
+    "cf.net_income": "594022",
+    "cf.depreciation_amortization": "176206",
+    "cf.change_in_working_capital": "-45179",
+    "cf.other_operating": "5040",
+    "cf.cfo": "730089",
+    "cf.capex": "210060",
+    "cf.other_investing": "0",
+    "cf.cfi": "-210060",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "175000",
+    "cf.distributions": "312571",
+    "cf.other_financing": "0",
+    "cf.cff": "-487571",
+    "cf.net_change_in_cash": "32458",
+    "sup.cash_interest_paid": "88010",
+    "sup.cash_taxes_paid": "11687",
+    "sup.scheduled_principal": "175000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "4912715",
+    "cash.beginning_of_year": "937050",
+    "debt.term_total": "4725000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "16142793",
+    "is.cogs": "9980278",
+    "is.gross_profit": "6162515",
+    "is.sga": "4358554",
+    "is.depreciation_amortization": "353677",
+    "is.other_operating_expense": "80714",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1369570",
+    "is.interest_expense": "170844",
+    "is.other_income_net": "9686",
+    "is.pretax_income": "1208412",
+    "is.income_tax_expense": "24168",
+    "is.net_income": "1184244",
+    "bs.cash": "967627",
+    "bs.accounts_receivable": "4241653",
+    "bs.inventory": "273277",
+    "bs.other_current_assets": "387051",
+    "bs.total_current_assets": "5869608",
+    "bs.net_ppe": "4780567",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "14290175",
+    "bs.accounts_payable": "1639664",
+    "bs.accrued_liabilities": "985907",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "463604",
+    "bs.total_current_liabilities": "3789175",
+    "bs.long_term_debt": "3850000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "490560",
+    "bs.total_liabilities": "8129735",
+    "bs.total_equity": "6160440",
+    "bs.total_liabilities_and_equity": "14290175",
+    "cf.net_income": "1184244",
+    "cf.depreciation_amortization": "353677",
+    "cf.change_in_working_capital": "20393",
+    "cf.other_operating": "10080",
+    "cf.cfo": "1568394",
+    "cf.capex": "419713",
+    "cf.other_investing": "0",
+    "cf.cfi": "-419713",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "350000",
+    "cf.distributions": "768104",
+    "cf.other_financing": "0",
+    "cf.cff": "-1118104",
+    "cf.net_change_in_cash": "30577",
+    "sup.cash_interest_paid": "172915",
+    "sup.cash_taxes_paid": "23810",
+    "sup.scheduled_principal": "350000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "5047404",
+    "cash.beginning_of_year": "937050",
+    "debt.term_total": "4550000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "24051733",
+    "is.cogs": "14861676",
+    "is.gross_profit": "9190057",
+    "is.sga": "6493968",
+    "is.depreciation_amortization": "532351",
+    "is.other_operating_expense": "120259",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2043479",
+    "is.interest_expense": "251607",
+    "is.other_income_net": "14431",
+    "is.pretax_income": "1806303",
+    "is.income_tax_expense": "36126",
+    "is.net_income": "1770177",
+    "bs.cash": "949073",
+    "bs.accounts_receivable": "4281662",
+    "bs.inventory": "267474",
+    "bs.other_current_assets": "379629",
+    "bs.total_current_assets": "5877838",
+    "bs.net_ppe": "4807525",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "14325363",
+    "bs.accounts_payable": "1604843",
+    "bs.accrued_liabilities": "966503",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "454859",
+    "bs.total_current_liabilities": "3726205",
+    "bs.long_term_debt": "3675000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "495600",
+    "bs.total_liabilities": "7896805",
+    "bs.total_equity": "6428558",
+    "bs.total_liabilities_and_equity": "14325363",
+    "cf.net_income": "1770177",
+    "cf.depreciation_amortization": "532351",
+    "cf.change_in_working_capital": "-69361",
+    "cf.other_operating": "15120",
+    "cf.cfo": "2248287",
+    "cf.capex": "625345",
+    "cf.other_investing": "0",
+    "cf.cfi": "-625345",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "525000",
+    "cf.distributions": "1085919",
+    "cf.other_financing": "0",
+    "cf.cff": "-1610919",
+    "cf.net_change_in_cash": "12023",
+    "sup.cash_interest_paid": "254713",
+    "sup.cash_taxes_paid": "35855",
+    "sup.scheduled_principal": "525000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "5315522",
+    "cash.beginning_of_year": "937050",
+    "debt.term_total": "4375000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "28000000",
+    "is.cogs": "17299856",
+    "is.gross_profit": "10700144",
+    "is.sga": "7560000",
+    "is.depreciation_amortization": "672808",
+    "is.other_operating_expense": "140000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2327336",
+    "is.interest_expense": "478363",
+    "is.other_income_net": "16800",
+    "is.pretax_income": "1865773",
+    "is.income_tax_expense": "37315",
+    "is.net_income": "1828458",
+    "bs.cash": "856800",
+    "bs.accounts_receivable": "3740186",
+    "bs.inventory": "241938",
+    "bs.other_current_assets": "342720",
+    "bs.total_current_assets": "5181644",
+    "bs.net_ppe": "4535192",
+    "bs.intangibles": "3360000",
+    "bs.other_noncurrent_assets": "280000",
+    "bs.total_assets": "13356836",
+    "bs.accounts_payable": "1451630",
+    "bs.accrued_liabilities": "886542",
+    "bs.revolver": "0",
+    "bs.cpltd": "700000",
+    "bs.other_current_liabilities": "409472",
+    "bs.total_current_liabilities": "3447644",
+    "bs.long_term_debt": "5600000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "440160",
+    "bs.total_liabilities": "9487804",
+    "bs.total_equity": "3869032",
+    "bs.total_liabilities_and_equity": "13356836",
+    "cf.net_income": "1828458",
+    "cf.depreciation_amortization": "672808",
+    "cf.change_in_working_capital": "62903",
+    "cf.other_operating": "20160",
+    "cf.cfo": "2584329",
+    "cf.capex": "728000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-728000",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "700000",
+    "cf.distributions": "1139529",
+    "cf.other_financing": "0",
+    "cf.cff": "-1839529",
+    "cf.net_change_in_cash": "16800",
+    "sup.cash_interest_paid": "481470",
+    "sup.cash_taxes_paid": "38015",
+    "sup.scheduled_principal": "700000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1113036",
+    "equity.retained_earnings": "2755996",
+    "cash.beginning_of_year": "840000",
+    "debt.term_total": "6300000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "2.90",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2128661"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "416238"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "43442"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "685373"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3273714"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "42167"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3231547"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "416238"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1116238"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.66",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "5425000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2128661"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "416238"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "43442"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "685373"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3273714"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "2.95",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2159206"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "403813"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "44065"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "688560"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3295644"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "43442"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3252202"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "403813"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1103813"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.59",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "5250000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2159206"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "403813"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "44065"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "688560"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3295644"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "3.03",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2224546"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "391388"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "45399"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "691866"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3353199"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "44065"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3309134"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "391388"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1091388"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.51",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "5075000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2224546"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "391388"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "45399"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "691866"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3353199"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "3.10",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2266165"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "378963"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "46248"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "695419"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3386795"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "45399"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3341396"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "378963"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1078963"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.45",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4900000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2266165"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "378963"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "46248"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "695419"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3386795"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "3.13",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2276330"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "366538"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "46456"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "699213"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3388537"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "46248"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3342289"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "366538"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1066538"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.39",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4725000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2276330"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "366538"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "46456"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "699213"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3388537"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "3.19",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2301722"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "354113"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "46974"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "703235"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3406044"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "46456"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3359588"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "354113"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1054113"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.34",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4550000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2301722"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "354113"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "46974"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "703235"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3406044"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Annika Prewitt",
+   "reported": {
+    "dscr": {
+     "value": "3.26",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2342837"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "341688"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "47813"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "707515"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3439853"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "46974"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3392879"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "341688"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "700000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1041688"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.27",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4375000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2342837"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "341688"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "47813"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "707515"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3439853"
+      }
+     ]
+    }
+   },
+   "document_id": "sablewood-dental.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6300000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6300000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6125000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6125000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6125000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5950000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5950000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5950000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5775000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5775000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5775000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5600000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5600000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5600000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5425000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5425000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5425000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5250000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5250000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5250000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5075000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5075000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5075000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4900000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4900000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4900000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4725000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4725000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4725000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4550000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4550000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4550000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4375000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "0",
+   "commitment": "0",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4375000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "sablewood-dental.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/sablewood-dental/credit-agreement.pdf",
+   "pages": 11,
+   "title": "Credit Agreement between Sablewood Dental Management, LLC and Bank of Stoic",
+   "received_date": "2023-05-19",
+   "document_date": "2023-05-19"
+  },
+  {
+   "id": "sablewood-dental.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/sablewood-dental/afs-2024.pdf",
+   "pages": 7,
+   "title": "Sablewood Dental Management, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-17",
+   "document_date": "2025-03-08",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "890,986"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "3,962,651"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "250,493"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "356,395"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "5,460,525"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "4,613,041"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "13,713,566"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,502,960"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "916,245"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "426,632"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,545,837"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,900,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "460,320"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "8,906,157"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "4,807,409"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "13,713,566"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "29,242,808"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "17,999,120"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "11,243,688"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "7,895,558"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "682,464"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "146,214"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "2,519,452"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "428,663"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "17,546"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,108,335"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "42,167"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,066,168"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,066,168"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "682,464"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(146,502)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "20,160"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,622,290"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(760,313)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(760,313)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(700,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(1,127,791)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,827,791)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "34,186"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "432,804"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "40,961"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "700,000"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "856,800",
+    "bs.accounts_receivable": "3,740,186",
+    "bs.inventory": "241,938",
+    "bs.other_current_assets": "342,720",
+    "bs.total_current_assets": "5,181,644",
+    "bs.net_ppe": "4,535,192",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,356,836",
+    "bs.accounts_payable": "1,451,630",
+    "bs.accrued_liabilities": "886,542",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "409,472",
+    "bs.total_current_liabilities": "3,447,644",
+    "bs.long_term_debt": "5,600,000",
+    "bs.other_noncurrent_liabilities": "440,160",
+    "bs.total_liabilities": "9,487,804",
+    "bs.total_equity": "3,869,032",
+    "bs.total_liabilities_and_equity": "13,356,836",
+    "is.revenue": "28,000,000",
+    "is.cogs": "17,299,856",
+    "is.gross_profit": "10,700,144",
+    "is.sga": "7,560,000",
+    "is.depreciation_amortization": "672,808",
+    "is.other_operating_expense": "140,000",
+    "is.operating_income": "2,327,336",
+    "is.interest_expense": "478,363",
+    "is.other_income_net": "16,800",
+    "is.pretax_income": "1,865,773",
+    "is.income_tax_expense": "37,315",
+    "is.net_income": "1,828,458",
+    "cf.net_income": "1,828,458",
+    "cf.depreciation_amortization": "672,808",
+    "cf.change_in_working_capital": "62,903",
+    "cf.other_operating": "20,160",
+    "cf.cfo": "2,584,329",
+    "cf.capex": "(728,000)",
+    "cf.cfi": "(728,000)",
+    "cf.term_debt_repayments": "(700,000)",
+    "cf.distributions": "(1,139,529)",
+    "cf.cff": "(1,839,529)",
+    "cf.net_change_in_cash": "16,800",
+    "sup.cash_interest_paid": "481,470",
+    "sup.cash_taxes_paid": "38,015",
+    "sup.scheduled_principal": "700,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/sablewood-dental/afs-2025.pdf",
+   "pages": 7,
+   "title": "Sablewood Dental Management, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-27",
+   "document_date": "2026-03-18",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "937,050"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "4,184,636"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "263,914"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "374,820"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "5,760,420"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "4,714,531"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "14,114,951"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,583,487"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "957,707"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "448,977"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,690,171"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,200,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "480,480"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "8,370,651"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "5,744,300"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "14,114,951"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "30,650,291"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "18,853,055"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "11,797,236"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "8,275,579"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "695,419"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "153,252"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "2,672,986"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "378,963"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "18,390"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,312,413"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "46,248"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,266,165"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,266,165"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "695,419"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(109,497)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "20,160"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,872,247"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(796,909)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(796,909)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(700,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(1,329,274)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,029,274)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "46,064"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "383,105"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "45,399"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "700,000"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "890,986",
+    "bs.accounts_receivable": "3,962,651",
+    "bs.inventory": "250,493",
+    "bs.other_current_assets": "356,395",
+    "bs.total_current_assets": "5,460,525",
+    "bs.net_ppe": "4,613,041",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,713,566",
+    "bs.accounts_payable": "1,502,960",
+    "bs.accrued_liabilities": "916,245",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "426,632",
+    "bs.total_current_liabilities": "3,545,837",
+    "bs.long_term_debt": "4,900,000",
+    "bs.other_noncurrent_liabilities": "460,320",
+    "bs.total_liabilities": "8,906,157",
+    "bs.total_equity": "4,807,409",
+    "bs.total_liabilities_and_equity": "13,713,566",
+    "is.revenue": "29,242,808",
+    "is.cogs": "17,999,120",
+    "is.gross_profit": "11,243,688",
+    "is.sga": "7,895,558",
+    "is.depreciation_amortization": "682,464",
+    "is.other_operating_expense": "146,214",
+    "is.operating_income": "2,519,452",
+    "is.interest_expense": "428,663",
+    "is.other_income_net": "17,546",
+    "is.pretax_income": "2,108,335",
+    "is.income_tax_expense": "42,167",
+    "is.net_income": "2,066,168",
+    "cf.net_income": "2,066,168",
+    "cf.depreciation_amortization": "682,464",
+    "cf.change_in_working_capital": "(146,502)",
+    "cf.other_operating": "20,160",
+    "cf.cfo": "2,622,290",
+    "cf.capex": "(760,313)",
+    "cf.cfi": "(760,313)",
+    "cf.term_debt_repayments": "(700,000)",
+    "cf.distributions": "(1,127,791)",
+    "cf.cff": "(1,827,791)",
+    "cf.net_change_in_cash": "34,186",
+    "sup.cash_interest_paid": "432,804",
+    "sup.cash_taxes_paid": "40,961",
+    "sup.scheduled_principal": "700,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/sablewood-dental/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Sablewood Dental Management, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-04-30",
+   "document_date": "2025-04-26",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "923,781"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,159,123"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "258,532"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "369,512"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,710,948"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,640,782"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "13,991,730"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,551,193"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "947,676"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "443,013"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,641,882"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,725,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "465,360"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "8,832,242"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "5,159,488"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "13,991,730"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "7,698,174"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "4,718,211"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,979,963"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,078,507"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "172,412"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "38,491"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "690,553"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "99,400"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "4,619"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "595,772"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "11,915"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "583,857"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "583,857"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "172,412"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(121,583)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "5,040"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "639,726"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(200,153)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(200,153)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(175,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(231,778)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(406,778)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "32,795"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "100,436"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "10,838"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "175,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "876,120",
+    "bs.accounts_receivable": "3,872,530",
+    "bs.inventory": "245,714",
+    "bs.other_current_assets": "350,448",
+    "bs.total_current_assets": "5,344,812",
+    "bs.net_ppe": "4,555,515",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,540,327",
+    "bs.accounts_payable": "1,474,282",
+    "bs.accrued_liabilities": "904,634",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "419,496",
+    "bs.total_current_liabilities": "3,498,412",
+    "bs.long_term_debt": "5,425,000",
+    "bs.other_noncurrent_liabilities": "445,200",
+    "bs.total_liabilities": "9,368,612",
+    "bs.total_equity": "4,171,715",
+    "bs.total_liabilities_and_equity": "13,540,327",
+    "is.revenue": "7,301,000",
+    "is.cogs": "4,484,274",
+    "is.gross_profit": "2,816,726",
+    "is.sga": "1,971,270",
+    "is.depreciation_amortization": "169,503",
+    "is.other_operating_expense": "36,505",
+    "is.operating_income": "639,448",
+    "is.interest_expense": "111,825",
+    "is.other_income_net": "4,381",
+    "is.pretax_income": "532,004",
+    "is.income_tax_expense": "10,640",
+    "is.net_income": "521,364",
+    "cf.net_income": "521,364",
+    "cf.depreciation_amortization": "169,503",
+    "cf.change_in_working_capital": "(93,080)",
+    "cf.other_operating": "5,040",
+    "cf.cfo": "602,827",
+    "cf.capex": "(189,826)",
+    "cf.cfi": "(189,826)",
+    "cf.term_debt_repayments": "(175,000)",
+    "cf.distributions": "(218,681)",
+    "cf.cff": "(393,681)",
+    "cf.net_change_in_cash": "19,320",
+    "sup.cash_interest_paid": "112,860",
+    "sup.cash_taxes_paid": "9,632",
+    "sup.scheduled_principal": "175,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/sablewood-dental/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Sablewood Dental Management, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-08-03",
+   "document_date": "2025-07-30",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "917,182"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,196,422"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "257,523"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "366,873"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,738,000"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,666,056"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "14,044,056"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,545,138"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "940,108"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "439,545"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,624,791"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,550,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "470,400"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "8,645,191"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "5,398,865"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "14,044,056"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "15,341,358"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "9,418,005"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,923,353"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,142,167"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "345,861"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "76,707"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,358,618"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "195,694"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "9,205"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,172,129"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "23,442"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,148,687"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,148,687"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "345,861"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(172,325)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "10,080"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,332,303"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(398,876)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(398,876)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(350,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(557,231)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(907,231)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "26,196"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "197,765"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "22,753"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "350,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "887,796",
+    "bs.accounts_receivable": "4,021,432",
+    "bs.inventory": "248,988",
+    "bs.other_current_assets": "355,118",
+    "bs.total_current_assets": "5,513,334",
+    "bs.net_ppe": "4,577,609",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,730,943",
+    "bs.accounts_payable": "1,493,930",
+    "bs.accrued_liabilities": "915,158",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "425,209",
+    "bs.total_current_liabilities": "3,534,297",
+    "bs.long_term_debt": "5,250,000",
+    "bs.other_noncurrent_liabilities": "450,240",
+    "bs.total_liabilities": "9,234,537",
+    "bs.total_equity": "4,496,406",
+    "bs.total_liabilities_and_equity": "13,730,943",
+    "is.revenue": "14,699,300",
+    "is.cogs": "9,028,310",
+    "is.gross_profit": "5,670,990",
+    "is.sga": "3,968,811",
+    "is.depreciation_amortization": "339,765",
+    "is.other_operating_expense": "73,497",
+    "is.operating_income": "1,288,917",
+    "is.interest_expense": "220,544",
+    "is.other_income_net": "8,820",
+    "is.pretax_income": "1,077,193",
+    "is.income_tax_expense": "21,544",
+    "is.net_income": "1,055,649",
+    "cf.net_income": "1,055,649",
+    "cf.depreciation_amortization": "339,765",
+    "cf.change_in_working_capital": "(214,041)",
+    "cf.other_operating": "10,080",
+    "cf.cfo": "1,191,453",
+    "cf.capex": "(382,182)",
+    "cf.cfi": "(382,182)",
+    "cf.term_debt_repayments": "(350,000)",
+    "cf.distributions": "(428,275)",
+    "cf.cff": "(778,275)",
+    "cf.net_change_in_cash": "30,996",
+    "sup.cash_interest_paid": "222,614",
+    "sup.cash_taxes_paid": "20,272",
+    "sup.scheduled_principal": "350,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/sablewood-dental/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Sablewood Dental Management, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-11-03",
+   "document_date": "2025-10-30",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "919,005"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,043,933"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "253,075"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "360,009"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,576,022"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,686,667"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "13,902,689"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,518,447"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "922,085"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "431,129"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,571,661"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,375,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "475,440"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "8,422,101"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "5,480,588"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "13,902,689"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "22,841,538"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "14,036,616"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,804,922"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,167,216"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "520,255"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "114,208"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,003,243"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "288,882"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "13,705"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,728,066"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "34,561"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,693,505"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,693,505"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "520,255"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(61,654)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "15,120"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,167,226"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(593,881)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(593,881)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(525,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,020,326)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,545,326)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "28,019"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "291,988"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "34,280"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "525,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "866,116",
+    "bs.accounts_receivable": "3,853,807",
+    "bs.inventory": "241,058",
+    "bs.other_current_assets": "341,694",
+    "bs.total_current_assets": "5,302,675",
+    "bs.net_ppe": "4,591,605",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,534,280",
+    "bs.accounts_payable": "1,446,348",
+    "bs.accrued_liabilities": "880,896",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "408,428",
+    "bs.total_current_liabilities": "3,435,672",
+    "bs.long_term_debt": "5,075,000",
+    "bs.other_noncurrent_liabilities": "455,280",
+    "bs.total_liabilities": "8,965,952",
+    "bs.total_equity": "4,568,328",
+    "bs.total_liabilities_and_equity": "13,534,280",
+    "is.revenue": "21,817,922",
+    "is.cogs": "13,427,618",
+    "is.gross_profit": "8,390,304",
+    "is.sga": "5,890,839",
+    "is.depreciation_amortization": "510,853",
+    "is.other_operating_expense": "109,090",
+    "is.operating_income": "1,879,522",
+    "is.interest_expense": "326,157",
+    "is.other_income_net": "13,091",
+    "is.pretax_income": "1,566,456",
+    "is.income_tax_expense": "31,329",
+    "is.net_income": "1,535,127",
+    "cf.net_income": "1,535,127",
+    "cf.depreciation_amortization": "510,853",
+    "cf.change_in_working_capital": "(123,687)",
+    "cf.other_operating": "15,120",
+    "cf.cfo": "1,937,413",
+    "cf.capex": "(567,266)",
+    "cf.cfi": "(567,266)",
+    "cf.term_debt_repayments": "(525,000)",
+    "cf.distributions": "(835,831)",
+    "cf.cff": "(1,360,831)",
+    "cf.net_change_in_cash": "9,316",
+    "sup.cash_interest_paid": "329,263",
+    "sup.cash_taxes_paid": "31,176",
+    "sup.scheduled_principal": "525,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/sablewood-dental/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Sablewood Dental Management, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-05-06",
+   "document_date": "2026-05-02",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "969,508"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,311,876"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "273,587"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "387,803"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,942,774"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,748,385"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "14,331,159"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,641,523"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "988,805"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "464,560"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,794,888"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,025,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "485,520"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "8,305,408"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "6,025,751"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "14,331,159"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "8,079,234"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "4,992,967"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "3,086,267"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,181,393"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "176,206"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "40,396"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "688,272"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "86,975"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "4,848"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "606,145"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "12,123"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "594,022"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "594,022"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "176,206"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(45,179)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "5,040"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "730,089"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(210,060)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(210,060)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(175,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(312,571)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(487,571)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "32,458"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "88,010"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "11,687"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "175,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "923,781",
+    "bs.accounts_receivable": "4,159,123",
+    "bs.inventory": "258,532",
+    "bs.other_current_assets": "369,512",
+    "bs.total_current_assets": "5,710,948",
+    "bs.net_ppe": "4,640,782",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,991,730",
+    "bs.accounts_payable": "1,551,193",
+    "bs.accrued_liabilities": "947,676",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "443,013",
+    "bs.total_current_liabilities": "3,641,882",
+    "bs.long_term_debt": "4,725,000",
+    "bs.other_noncurrent_liabilities": "465,360",
+    "bs.total_liabilities": "8,832,242",
+    "bs.total_equity": "5,159,488",
+    "bs.total_liabilities_and_equity": "13,991,730",
+    "is.revenue": "7,698,174",
+    "is.cogs": "4,718,211",
+    "is.gross_profit": "2,979,963",
+    "is.sga": "2,078,507",
+    "is.depreciation_amortization": "172,412",
+    "is.other_operating_expense": "38,491",
+    "is.operating_income": "690,553",
+    "is.interest_expense": "99,400",
+    "is.other_income_net": "4,619",
+    "is.pretax_income": "595,772",
+    "is.income_tax_expense": "11,915",
+    "is.net_income": "583,857",
+    "cf.net_income": "583,857",
+    "cf.depreciation_amortization": "172,412",
+    "cf.change_in_working_capital": "(121,583)",
+    "cf.other_operating": "5,040",
+    "cf.cfo": "639,726",
+    "cf.capex": "(200,153)",
+    "cf.cfi": "(200,153)",
+    "cf.term_debt_repayments": "(175,000)",
+    "cf.distributions": "(231,778)",
+    "cf.cff": "(406,778)",
+    "cf.net_change_in_cash": "32,795",
+    "sup.cash_interest_paid": "100,436",
+    "sup.cash_taxes_paid": "10,838",
+    "sup.scheduled_principal": "175,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/sablewood-dental/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Sablewood Dental Management, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-08-04",
+   "document_date": "2026-07-31",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "967,627"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,241,653"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "273,277"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "387,051"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,869,608"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,780,567"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "14,290,175"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,639,664"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "985,907"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "463,604"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,789,175"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,850,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "490,560"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "8,129,735"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "6,160,440"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "14,290,175"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "16,142,793"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "9,980,278"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,162,515"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,358,554"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "353,677"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "80,714"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,369,570"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "170,844"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "9,686"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,208,412"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "24,168"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,184,244"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,184,244"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "353,677"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "20,393"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "10,080"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,568,394"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(419,713)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(419,713)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(350,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(768,104)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,118,104)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "30,577"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "172,915"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "23,810"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "350,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "917,182",
+    "bs.accounts_receivable": "4,196,422",
+    "bs.inventory": "257,523",
+    "bs.other_current_assets": "366,873",
+    "bs.total_current_assets": "5,738,000",
+    "bs.net_ppe": "4,666,056",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "14,044,056",
+    "bs.accounts_payable": "1,545,138",
+    "bs.accrued_liabilities": "940,108",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "439,545",
+    "bs.total_current_liabilities": "3,624,791",
+    "bs.long_term_debt": "4,550,000",
+    "bs.other_noncurrent_liabilities": "470,400",
+    "bs.total_liabilities": "8,645,191",
+    "bs.total_equity": "5,398,865",
+    "bs.total_liabilities_and_equity": "14,044,056",
+    "is.revenue": "15,341,358",
+    "is.cogs": "9,418,005",
+    "is.gross_profit": "5,923,353",
+    "is.sga": "4,142,167",
+    "is.depreciation_amortization": "345,861",
+    "is.other_operating_expense": "76,707",
+    "is.operating_income": "1,358,618",
+    "is.interest_expense": "195,694",
+    "is.other_income_net": "9,205",
+    "is.pretax_income": "1,172,129",
+    "is.income_tax_expense": "23,442",
+    "is.net_income": "1,148,687",
+    "cf.net_income": "1,148,687",
+    "cf.depreciation_amortization": "345,861",
+    "cf.change_in_working_capital": "(172,325)",
+    "cf.other_operating": "10,080",
+    "cf.cfo": "1,332,303",
+    "cf.capex": "(398,876)",
+    "cf.cfi": "(398,876)",
+    "cf.term_debt_repayments": "(350,000)",
+    "cf.distributions": "(557,231)",
+    "cf.cff": "(907,231)",
+    "cf.net_change_in_cash": "26,196",
+    "sup.cash_interest_paid": "197,765",
+    "sup.cash_taxes_paid": "22,753",
+    "sup.scheduled_principal": "350,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/sablewood-dental/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Sablewood Dental Management, LLC interim financial statements, Q3 2026",
+   "received_date": "2026-10-27",
+   "document_date": "2026-10-23",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "949,073"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,281,662"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "267,474"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "379,629"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,877,838"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,807,525"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,360,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "280,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "14,325,363"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,604,843"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "966,503"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "700,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "454,859"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,726,205"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,675,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "495,600"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "7,896,805"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "6,428,558"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "14,325,363"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "24,051,733"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "14,861,676"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,190,057"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,493,968"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "532,351"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "120,259"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,043,479"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "251,607"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "14,431"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,806,303"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "36,126"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,770,177"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,770,177"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "532,351"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(69,361)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "15,120"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,248,287"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(625,345)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(625,345)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(525,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,085,919)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,610,919)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "12,023"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "254,713"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "35,855"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "525,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "919,005",
+    "bs.accounts_receivable": "4,043,933",
+    "bs.inventory": "253,075",
+    "bs.other_current_assets": "360,009",
+    "bs.total_current_assets": "5,576,022",
+    "bs.net_ppe": "4,686,667",
+    "bs.intangibles": "3,360,000",
+    "bs.other_noncurrent_assets": "280,000",
+    "bs.total_assets": "13,902,689",
+    "bs.accounts_payable": "1,518,447",
+    "bs.accrued_liabilities": "922,085",
+    "bs.cpltd": "700,000",
+    "bs.other_current_liabilities": "431,129",
+    "bs.total_current_liabilities": "3,571,661",
+    "bs.long_term_debt": "4,375,000",
+    "bs.other_noncurrent_liabilities": "475,440",
+    "bs.total_liabilities": "8,422,101",
+    "bs.total_equity": "5,480,588",
+    "bs.total_liabilities_and_equity": "13,902,689",
+    "is.revenue": "22,841,538",
+    "is.cogs": "14,036,616",
+    "is.gross_profit": "8,804,922",
+    "is.sga": "6,167,216",
+    "is.depreciation_amortization": "520,255",
+    "is.other_operating_expense": "114,208",
+    "is.operating_income": "2,003,243",
+    "is.interest_expense": "288,882",
+    "is.other_income_net": "13,705",
+    "is.pretax_income": "1,728,066",
+    "is.income_tax_expense": "34,561",
+    "is.net_income": "1,693,505",
+    "cf.net_income": "1,693,505",
+    "cf.depreciation_amortization": "520,255",
+    "cf.change_in_working_capital": "(61,654)",
+    "cf.other_operating": "15,120",
+    "cf.cfo": "2,167,226",
+    "cf.capex": "(593,881)",
+    "cf.cfi": "(593,881)",
+    "cf.term_debt_repayments": "(525,000)",
+    "cf.distributions": "(1,020,326)",
+    "cf.cff": "(1,545,326)",
+    "cf.net_change_in_cash": "28,019",
+    "sup.cash_interest_paid": "291,988",
+    "sup.cash_taxes_paid": "34,280",
+    "sup.scheduled_principal": "525,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.revolver",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.revolver_net",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "sablewood-dental.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/sablewood-dental/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-04-30",
+   "document_date": "2025-04-28",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "sablewood-dental.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/sablewood-dental/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-08-03",
+   "document_date": "2025-08-01",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "sablewood-dental.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/sablewood-dental/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-11-03",
+   "document_date": "2025-11-01",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "sablewood-dental.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/sablewood-dental/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, FY2025",
+   "received_date": "2026-02-11",
+   "document_date": "2026-02-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "sablewood-dental.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/sablewood-dental/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-05-06",
+   "document_date": "2026-05-04",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "sablewood-dental.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/sablewood-dental/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-08-04",
+   "document_date": "2026-08-02",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "sablewood-dental.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/sablewood-dental/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Sablewood Dental Management, LLC compliance certificate, Q3 2026",
+   "received_date": "2026-10-27",
+   "document_date": "2026-10-25",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.90",
+    "pass": true,
+    "headroom": "1.3200",
+    "reported_value": "2.90",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2128661"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "416238"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "43442"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "685373"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3273714"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "42167"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3231547"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "416238"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1116238"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.66",
+    "pass": true,
+    "headroom": "0.3360",
+    "reported_value": "1.66",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "5425000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2128661"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "416238"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "43442"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "685373"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3273714"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.95",
+    "pass": true,
+    "headroom": "1.3600",
+    "reported_value": "2.95",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2159206"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "403813"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "44065"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "688560"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3295644"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "43442"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3252202"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "403813"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1103813"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.59",
+    "pass": true,
+    "headroom": "0.3640",
+    "reported_value": "1.59",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "5250000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2159206"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "403813"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "44065"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "688560"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3295644"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "3.03",
+    "pass": true,
+    "headroom": "1.4240",
+    "reported_value": "3.03",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2224546"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "391388"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "45399"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "691866"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3353199"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "44065"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3309134"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "391388"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1091388"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.51",
+    "pass": true,
+    "headroom": "0.3960",
+    "reported_value": "1.51",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "5075000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2224546"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "391388"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "45399"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "691866"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3353199"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "3.10",
+    "pass": true,
+    "headroom": "1.4800",
+    "reported_value": "3.10",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2266165"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "378963"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "46248"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "695419"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3386795"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "45399"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3341396"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "378963"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1078963"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.45",
+    "pass": true,
+    "headroom": "0.4200",
+    "reported_value": "1.45",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4900000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2266165"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "378963"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "46248"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "695419"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3386795"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "3.13",
+    "pass": true,
+    "headroom": "1.5040",
+    "reported_value": "3.13",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2276330"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "366538"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "46456"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "699213"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3388537"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "46248"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3342289"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "366538"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1066538"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.39",
+    "pass": true,
+    "headroom": "0.4440",
+    "reported_value": "1.39",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4725000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2276330"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "366538"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "46456"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "699213"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3388537"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "3.19",
+    "pass": true,
+    "headroom": "1.5520",
+    "reported_value": "3.19",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2301722"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "354113"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "46974"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "703235"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3406044"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "46456"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3359588"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "354113"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1054113"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.34",
+    "pass": true,
+    "headroom": "0.4640",
+    "reported_value": "1.34",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4550000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2301722"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "354113"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "46974"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "703235"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3406044"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "3.26",
+    "pass": true,
+    "headroom": "1.6080",
+    "reported_value": "3.26",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2342837"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "341688"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "47813"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "707515"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3439853"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "46974"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3392879"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "341688"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "700000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1041688"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "sablewood-dental-tl",
+    "terms_version_id": "tv-sablewood-dental-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.27",
+    "pass": true,
+    "headroom": "0.4920",
+    "reported_value": "1.27",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4375000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2342837"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "341688"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "47813"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "707515"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3439853"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [],
+  "exceptions": []
+ }
+}

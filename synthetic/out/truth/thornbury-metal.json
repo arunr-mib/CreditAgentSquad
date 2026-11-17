@@ -1,0 +1,5871 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "thornbury-metal",
+  "name": "Thornbury Metal Fabricators, Inc.",
+  "legal_form": "corporation",
+  "industry": "manufacturing",
+  "city": "Chattanooga",
+  "state": "TN",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Colin Abernathy",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 7,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Winston Praeger",
+  "auditor": "Hobart Lindgren & Co. LLP"
+ },
+ "facilities": [
+  {
+   "id": "thornbury-metal-rlc",
+   "borrower_id": "thornbury-metal",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "4200000",
+   "original_amount": "4200000",
+   "closing_date": "2021-04-16",
+   "maturity_date": "2027-04-16",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "thornbury-metal-tl",
+   "borrower_id": "thornbury-metal",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "16571000",
+   "original_amount": "16571000",
+   "closing_date": "2021-04-16",
+   "maturity_date": "2028-04-16",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "353000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-thornbury-metal-1",
+   "facility_id": "thornbury-metal-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2021-04-16",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2021-04-22",
+   "warnings": [],
+   "source_documents": [
+    "thornbury-metal.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "4.10",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "thornbury-metal.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 4.10 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "thornbury-metal.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "interest_coverage",
+      "name": "Interest Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [],
+       "denominator": [
+        "interest_expense"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "3.45",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "thornbury-metal.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Interest Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 3.45 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "thornbury-metal.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Interest Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period to (b) interest expense for such period."
+       }
+      ]
+     },
+     {
+      "id": "current_ratio",
+      "name": "Current Ratio",
+      "archetype": "current_ratio",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "1.10",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "thornbury-metal.credit-agreement",
+        "section": "6.3",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Current Ratio, measured as of the last day of each fiscal quarter, to be less than 1.10 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "thornbury-metal.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Current Ratio\" means, as of any date, the ratio of (a) total current assets to (b) total current liabilities of the Borrower as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "thornbury-metal.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "thornbury-metal.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "thornbury-metal.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "thornbury-metal.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "thornbury-metal.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "thornbury-metal.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $4,200,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "thornbury-metal.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $16,571,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "thornbury-metal.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $353,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "11907000",
+    "is.cogs": "8537000",
+    "is.gross_profit": "3370000",
+    "is.sga": "1965000",
+    "is.depreciation_amortization": "371000",
+    "is.other_operating_expense": "48000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "986000",
+    "is.interest_expense": "275000",
+    "is.other_income_net": "7000",
+    "is.pretax_income": "718000",
+    "is.income_tax_expense": "180000",
+    "is.net_income": "538000",
+    "bs.cash": "1429000",
+    "bs.accounts_receivable": "6290000",
+    "bs.inventory": "5800000",
+    "bs.other_current_assets": "572000",
+    "bs.total_current_assets": "14091000",
+    "bs.net_ppe": "14258000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "31639000",
+    "bs.accounts_payable": "3836000",
+    "bs.accrued_liabilities": "957000",
+    "bs.revolver": "2664000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "847000",
+    "bs.total_current_liabilities": "9716000",
+    "bs.long_term_debt": "10923000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "745000",
+    "bs.total_liabilities": "21384000",
+    "bs.total_equity": "10255000",
+    "bs.total_liabilities_and_equity": "31639000",
+    "cf.net_income": "538000",
+    "cf.depreciation_amortization": "371000",
+    "cf.change_in_working_capital": "-177000",
+    "cf.other_operating": "8000",
+    "cf.cfo": "740000",
+    "cf.capex": "405000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-405000",
+    "cf.revolver_net": "105000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "353000",
+    "cf.distributions": "54000",
+    "cf.other_financing": "0",
+    "cf.cff": "-302000",
+    "cf.net_change_in_cash": "33000",
+    "sup.cash_interest_paid": "278000",
+    "sup.cash_taxes_paid": "166000",
+    "sup.scheduled_principal": "353000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "7408000",
+    "cash.beginning_of_year": "1396000",
+    "debt.term_total": "12335000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "24308000",
+    "is.cogs": "17376000",
+    "is.gross_profit": "6932000",
+    "is.sga": "4011000",
+    "is.depreciation_amortization": "743000",
+    "is.other_operating_expense": "98000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2080000",
+    "is.interest_expense": "546000",
+    "is.other_income_net": "14000",
+    "is.pretax_income": "1548000",
+    "is.income_tax_expense": "388000",
+    "is.net_income": "1160000",
+    "bs.cash": "1488000",
+    "bs.accounts_receivable": "6387000",
+    "bs.inventory": "6006000",
+    "bs.other_current_assets": "595000",
+    "bs.total_current_assets": "14476000",
+    "bs.net_ppe": "14308000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32074000",
+    "bs.accounts_payable": "3971000",
+    "bs.accrued_liabilities": "990000",
+    "bs.revolver": "2728000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "902000",
+    "bs.total_current_liabilities": "10003000",
+    "bs.long_term_debt": "10570000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "753000",
+    "bs.total_liabilities": "21326000",
+    "bs.total_equity": "10748000",
+    "bs.total_liabilities_and_equity": "32074000",
+    "cf.net_income": "1160000",
+    "cf.depreciation_amortization": "743000",
+    "cf.change_in_working_capital": "-280000",
+    "cf.other_operating": "16000",
+    "cf.cfo": "1639000",
+    "cf.capex": "827000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-827000",
+    "cf.revolver_net": "169000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "706000",
+    "cf.distributions": "183000",
+    "cf.other_financing": "0",
+    "cf.cff": "-720000",
+    "cf.net_change_in_cash": "92000",
+    "sup.cash_interest_paid": "551000",
+    "sup.cash_taxes_paid": "346000",
+    "sup.scheduled_principal": "706000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "7901000",
+    "cash.beginning_of_year": "1396000",
+    "debt.term_total": "11982000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "37006000",
+    "is.cogs": "26449000",
+    "is.gross_profit": "10557000",
+    "is.sga": "6106000",
+    "is.depreciation_amortization": "1116000",
+    "is.other_operating_expense": "149000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3186000",
+    "is.interest_expense": "812000",
+    "is.other_income_net": "22000",
+    "is.pretax_income": "2396000",
+    "is.income_tax_expense": "600000",
+    "is.net_income": "1796000",
+    "bs.cash": "1524000",
+    "bs.accounts_receivable": "6582000",
+    "bs.inventory": "6165000",
+    "bs.other_current_assets": "610000",
+    "bs.total_current_assets": "14881000",
+    "bs.net_ppe": "14367000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32538000",
+    "bs.accounts_payable": "4077000",
+    "bs.accrued_liabilities": "1011000",
+    "bs.revolver": "2817000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "923000",
+    "bs.total_current_liabilities": "10240000",
+    "bs.long_term_debt": "10217000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "761000",
+    "bs.total_liabilities": "21218000",
+    "bs.total_equity": "11320000",
+    "bs.total_liabilities_and_equity": "32538000",
+    "cf.net_income": "1796000",
+    "cf.depreciation_amortization": "1116000",
+    "cf.change_in_working_capital": "-501000",
+    "cf.other_operating": "24000",
+    "cf.cfo": "2435000",
+    "cf.capex": "1259000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1259000",
+    "cf.revolver_net": "258000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1059000",
+    "cf.distributions": "247000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1048000",
+    "cf.net_change_in_cash": "128000",
+    "sup.cash_interest_paid": "818000",
+    "sup.cash_taxes_paid": "554000",
+    "sup.scheduled_principal": "1059000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "8473000",
+    "cash.beginning_of_year": "1396000",
+    "debt.term_total": "11629000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "49288000",
+    "is.cogs": "35224000",
+    "is.gross_profit": "14064000",
+    "is.sga": "8133000",
+    "is.depreciation_amortization": "1490000",
+    "is.other_operating_expense": "198000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4243000",
+    "is.interest_expense": "1073000",
+    "is.other_income_net": "29000",
+    "is.pretax_income": "3199000",
+    "is.income_tax_expense": "801000",
+    "is.net_income": "2398000",
+    "bs.cash": "1474000",
+    "bs.accounts_receivable": "6299000",
+    "bs.inventory": "5962000",
+    "bs.other_current_assets": "590000",
+    "bs.total_current_assets": "14325000",
+    "bs.net_ppe": "14411000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32026000",
+    "bs.accounts_payable": "3943000",
+    "bs.accrued_liabilities": "979000",
+    "bs.revolver": "2700000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "889000",
+    "bs.total_current_liabilities": "9923000",
+    "bs.long_term_debt": "9864000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "769000",
+    "bs.total_liabilities": "20556000",
+    "bs.total_equity": "11470000",
+    "bs.total_liabilities_and_equity": "32026000",
+    "cf.net_income": "2398000",
+    "cf.depreciation_amortization": "1490000",
+    "cf.change_in_working_capital": "-195000",
+    "cf.other_operating": "32000",
+    "cf.cfo": "3725000",
+    "cf.capex": "1677000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1677000",
+    "cf.revolver_net": "141000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1412000",
+    "cf.distributions": "699000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1970000",
+    "cf.net_change_in_cash": "78000",
+    "sup.cash_interest_paid": "1081000",
+    "sup.cash_taxes_paid": "766000",
+    "sup.scheduled_principal": "1412000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "8623000",
+    "cash.beginning_of_year": "1396000",
+    "debt.term_total": "11276000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "12320000",
+    "is.cogs": "8801000",
+    "is.gross_profit": "3519000",
+    "is.sga": "2033000",
+    "is.depreciation_amortization": "376000",
+    "is.other_operating_expense": "49000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1061000",
+    "is.interest_expense": "252000",
+    "is.other_income_net": "7000",
+    "is.pretax_income": "816000",
+    "is.income_tax_expense": "204000",
+    "is.net_income": "612000",
+    "bs.cash": "1478000",
+    "bs.accounts_receivable": "6346000",
+    "bs.inventory": "5980000",
+    "bs.other_current_assets": "591000",
+    "bs.total_current_assets": "14395000",
+    "bs.net_ppe": "14454000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32139000",
+    "bs.accounts_payable": "3954000",
+    "bs.accrued_liabilities": "979000",
+    "bs.revolver": "2710000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "894000",
+    "bs.total_current_liabilities": "9949000",
+    "bs.long_term_debt": "9511000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "777000",
+    "bs.total_liabilities": "20237000",
+    "bs.total_equity": "11902000",
+    "bs.total_liabilities_and_equity": "32139000",
+    "cf.net_income": "612000",
+    "cf.depreciation_amortization": "376000",
+    "cf.change_in_working_capital": "-50000",
+    "cf.other_operating": "8000",
+    "cf.cfo": "946000",
+    "cf.capex": "419000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-419000",
+    "cf.revolver_net": "10000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "353000",
+    "cf.distributions": "180000",
+    "cf.other_financing": "0",
+    "cf.cff": "-523000",
+    "cf.net_change_in_cash": "4000",
+    "sup.cash_interest_paid": "255000",
+    "sup.cash_taxes_paid": "201000",
+    "sup.scheduled_principal": "353000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "9055000",
+    "cash.beginning_of_year": "1474000",
+    "debt.term_total": "10923000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "25284000",
+    "is.cogs": "18030000",
+    "is.gross_profit": "7254000",
+    "is.sga": "4172000",
+    "is.depreciation_amortization": "753000",
+    "is.other_operating_expense": "101000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2228000",
+    "is.interest_expense": "498000",
+    "is.other_income_net": "15000",
+    "is.pretax_income": "1745000",
+    "is.income_tax_expense": "436000",
+    "is.net_income": "1309000",
+    "bs.cash": "1556000",
+    "bs.accounts_receivable": "6549000",
+    "bs.inventory": "6271000",
+    "bs.other_current_assets": "622000",
+    "bs.total_current_assets": "14998000",
+    "bs.net_ppe": "14518000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32806000",
+    "bs.accounts_payable": "4147000",
+    "bs.accrued_liabilities": "1023000",
+    "bs.revolver": "2852000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "958000",
+    "bs.total_current_liabilities": "10392000",
+    "bs.long_term_debt": "9158000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "785000",
+    "bs.total_liabilities": "20335000",
+    "bs.total_equity": "12471000",
+    "bs.total_liabilities_and_equity": "32806000",
+    "cf.net_income": "1309000",
+    "cf.depreciation_amortization": "753000",
+    "cf.change_in_working_capital": "-274000",
+    "cf.other_operating": "16000",
+    "cf.cfo": "1804000",
+    "cf.capex": "860000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-860000",
+    "cf.revolver_net": "152000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "706000",
+    "cf.distributions": "308000",
+    "cf.other_financing": "0",
+    "cf.cff": "-862000",
+    "cf.net_change_in_cash": "82000",
+    "sup.cash_interest_paid": "503000",
+    "sup.cash_taxes_paid": "405000",
+    "sup.scheduled_principal": "706000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "9624000",
+    "cash.beginning_of_year": "1474000",
+    "debt.term_total": "10570000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "37588000",
+    "is.cogs": "26937000",
+    "is.gross_profit": "10651000",
+    "is.sga": "6202000",
+    "is.depreciation_amortization": "1131000",
+    "is.other_operating_expense": "150000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3168000",
+    "is.interest_expense": "741000",
+    "is.other_income_net": "22000",
+    "is.pretax_income": "2449000",
+    "is.income_tax_expense": "612000",
+    "is.net_income": "1837000",
+    "bs.cash": "1476000",
+    "bs.accounts_receivable": "6701000",
+    "bs.inventory": "6052000",
+    "bs.other_current_assets": "591000",
+    "bs.total_current_assets": "14820000",
+    "bs.net_ppe": "14558000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32668000",
+    "bs.accounts_payable": "4490000",
+    "bs.accrued_liabilities": "974000",
+    "bs.revolver": "2707000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "865000",
+    "bs.total_current_liabilities": "10448000",
+    "bs.long_term_debt": "8805000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "793000",
+    "bs.total_liabilities": "20046000",
+    "bs.total_equity": "12622000",
+    "bs.total_liabilities_and_equity": "32668000",
+    "cf.net_income": "1837000",
+    "cf.depreciation_amortization": "1131000",
+    "cf.change_in_working_capital": "25000",
+    "cf.other_operating": "24000",
+    "cf.cfo": "3017000",
+    "cf.capex": "1278000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1278000",
+    "cf.revolver_net": "7000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1059000",
+    "cf.distributions": "685000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1737000",
+    "cf.net_change_in_cash": "2000",
+    "sup.cash_interest_paid": "747000",
+    "sup.cash_taxes_paid": "637000",
+    "sup.scheduled_principal": "1059000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "9775000",
+    "cash.beginning_of_year": "1474000",
+    "debt.term_total": "10217000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "48867000",
+    "is.cogs": "35283000",
+    "is.gross_profit": "13584000",
+    "is.sga": "8063000",
+    "is.depreciation_amortization": "1510000",
+    "is.other_operating_expense": "195000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3816000",
+    "is.interest_expense": "975000",
+    "is.other_income_net": "29000",
+    "is.pretax_income": "2870000",
+    "is.income_tax_expense": "717000",
+    "is.net_income": "2153000",
+    "bs.cash": "1353000",
+    "bs.accounts_receivable": "6638000",
+    "bs.inventory": "5671000",
+    "bs.other_current_assets": "541000",
+    "bs.total_current_assets": "14203000",
+    "bs.net_ppe": "14562000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32055000",
+    "bs.accounts_payable": "4665000",
+    "bs.accrued_liabilities": "897000",
+    "bs.revolver": "2390000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "737000",
+    "bs.total_current_liabilities": "10101000",
+    "bs.long_term_debt": "8452000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "801000",
+    "bs.total_liabilities": "19354000",
+    "bs.total_equity": "12701000",
+    "bs.total_liabilities_and_equity": "32055000",
+    "cf.net_income": "2153000",
+    "cf.depreciation_amortization": "1510000",
+    "cf.change_in_working_capital": "489000",
+    "cf.other_operating": "32000",
+    "cf.cfo": "4184000",
+    "cf.capex": "1661000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1661000",
+    "cf.revolver_net": "-310000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1412000",
+    "cf.distributions": "922000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2644000",
+    "cf.net_change_in_cash": "-121000",
+    "sup.cash_interest_paid": "984000",
+    "sup.cash_taxes_paid": "813000",
+    "sup.scheduled_principal": "1412000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "9854000",
+    "cash.beginning_of_year": "1474000",
+    "debt.term_total": "9864000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "10763000",
+    "is.cogs": "8102000",
+    "is.gross_profit": "2661000",
+    "is.sga": "1776000",
+    "is.depreciation_amortization": "380000",
+    "is.other_operating_expense": "43000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "462000",
+    "is.interest_expense": "221000",
+    "is.other_income_net": "6000",
+    "is.pretax_income": "247000",
+    "is.income_tax_expense": "62000",
+    "is.net_income": "185000",
+    "bs.cash": "1292000",
+    "bs.accounts_receivable": "6936000",
+    "bs.inventory": "5505000",
+    "bs.other_current_assets": "517000",
+    "bs.total_current_assets": "14250000",
+    "bs.net_ppe": "14548000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "32088000",
+    "bs.accounts_payable": "5061000",
+    "bs.accrued_liabilities": "855000",
+    "bs.revolver": "2368000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "665000",
+    "bs.total_current_liabilities": "10361000",
+    "bs.long_term_debt": "8099000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "809000",
+    "bs.total_liabilities": "19269000",
+    "bs.total_equity": "12819000",
+    "bs.total_liabilities_and_equity": "32088000",
+    "cf.net_income": "185000",
+    "cf.depreciation_amortization": "380000",
+    "cf.change_in_working_capital": "174000",
+    "cf.other_operating": "8000",
+    "cf.cfo": "747000",
+    "cf.capex": "366000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-366000",
+    "cf.revolver_net": "-22000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "353000",
+    "cf.distributions": "67000",
+    "cf.other_financing": "0",
+    "cf.cff": "-442000",
+    "cf.net_change_in_cash": "-61000",
+    "sup.cash_interest_paid": "225000",
+    "sup.cash_taxes_paid": "105000",
+    "sup.scheduled_principal": "353000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "9972000",
+    "cash.beginning_of_year": "1353000",
+    "debt.term_total": "9511000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "21950000",
+    "is.cogs": "16694000",
+    "is.gross_profit": "5256000",
+    "is.sga": "3622000",
+    "is.depreciation_amortization": "759000",
+    "is.other_operating_expense": "88000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "787000",
+    "is.interest_expense": "436000",
+    "is.other_income_net": "13000",
+    "is.pretax_income": "364000",
+    "is.income_tax_expense": "91000",
+    "is.net_income": "273000",
+    "bs.cash": "1342000",
+    "bs.accounts_receivable": "7760000",
+    "bs.inventory": "5838000",
+    "bs.other_current_assets": "537000",
+    "bs.total_current_assets": "15477000",
+    "bs.net_ppe": "14549000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "33316000",
+    "bs.accounts_payable": "5932000",
+    "bs.accrued_liabilities": "884000",
+    "bs.revolver": "2972000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "655000",
+    "bs.total_current_liabilities": "11855000",
+    "bs.long_term_debt": "7746000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "817000",
+    "bs.total_liabilities": "20418000",
+    "bs.total_equity": "12898000",
+    "bs.total_liabilities_and_equity": "33316000",
+    "cf.net_income": "273000",
+    "cf.depreciation_amortization": "759000",
+    "cf.change_in_working_capital": "-113000",
+    "cf.other_operating": "16000",
+    "cf.cfo": "935000",
+    "cf.capex": "746000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-746000",
+    "cf.revolver_net": "582000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "706000",
+    "cf.distributions": "76000",
+    "cf.other_financing": "0",
+    "cf.cff": "-200000",
+    "cf.net_change_in_cash": "-11000",
+    "sup.cash_interest_paid": "442000",
+    "sup.cash_taxes_paid": "167000",
+    "sup.scheduled_principal": "706000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "10051000",
+    "cash.beginning_of_year": "1353000",
+    "debt.term_total": "9158000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "32582000",
+    "is.cogs": "24885000",
+    "is.gross_profit": "7697000",
+    "is.sga": "5376000",
+    "is.depreciation_amortization": "1138000",
+    "is.other_operating_expense": "131000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1052000",
+    "is.interest_expense": "656000",
+    "is.other_income_net": "19000",
+    "is.pretax_income": "415000",
+    "is.income_tax_expense": "104000",
+    "is.net_income": "311000",
+    "bs.cash": "1276000",
+    "bs.accounts_receivable": "8179000",
+    "bs.inventory": "5565000",
+    "bs.other_current_assets": "510000",
+    "bs.total_current_assets": "15530000",
+    "bs.net_ppe": "15283000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "34103000",
+    "bs.accounts_payable": "6194000",
+    "bs.accrued_liabilities": "845000",
+    "bs.revolver": "3894000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "608000",
+    "bs.total_current_liabilities": "12953000",
+    "bs.long_term_debt": "7393000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "825000",
+    "bs.total_liabilities": "21171000",
+    "bs.total_equity": "12932000",
+    "bs.total_liabilities_and_equity": "34103000",
+    "cf.net_income": "311000",
+    "cf.depreciation_amortization": "1138000",
+    "cf.change_in_working_capital": "-56000",
+    "cf.other_operating": "24000",
+    "cf.cfo": "1417000",
+    "cf.capex": "1859000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1859000",
+    "cf.revolver_net": "1504000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1059000",
+    "cf.distributions": "80000",
+    "cf.other_financing": "0",
+    "cf.cff": "365000",
+    "cf.net_change_in_cash": "-77000",
+    "sup.cash_interest_paid": "661000",
+    "sup.cash_taxes_paid": "196000",
+    "sup.scheduled_principal": "1059000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "10085000",
+    "cash.beginning_of_year": "1353000",
+    "debt.term_total": "8805000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "47001000",
+    "is.cogs": "33662000",
+    "is.gross_profit": "13339000",
+    "is.sga": "7755000",
+    "is.depreciation_amortization": "1475000",
+    "is.other_operating_expense": "188000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3921000",
+    "is.interest_expense": "1168000",
+    "is.other_income_net": "28000",
+    "is.pretax_income": "2781000",
+    "is.income_tax_expense": "695000",
+    "is.net_income": "2086000",
+    "bs.cash": "1396000",
+    "bs.accounts_receivable": "6119000",
+    "bs.inventory": "5678000",
+    "bs.other_current_assets": "558000",
+    "bs.total_current_assets": "13751000",
+    "bs.net_ppe": "14224000",
+    "bs.intangibles": "2820000",
+    "bs.other_noncurrent_assets": "470000",
+    "bs.total_assets": "31265000",
+    "bs.accounts_payable": "3754000",
+    "bs.accrued_liabilities": "939000",
+    "bs.revolver": "2559000",
+    "bs.cpltd": "1412000",
+    "bs.other_current_liabilities": "817000",
+    "bs.total_current_liabilities": "9481000",
+    "bs.long_term_debt": "11276000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "737000",
+    "bs.total_liabilities": "21494000",
+    "bs.total_equity": "9771000",
+    "bs.total_liabilities_and_equity": "31265000",
+    "cf.net_income": "2086000",
+    "cf.depreciation_amortization": "1475000",
+    "cf.change_in_working_capital": "-120000",
+    "cf.other_operating": "32000",
+    "cf.cfo": "3473000",
+    "cf.capex": "1599000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1599000",
+    "cf.revolver_net": "-26000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1412000",
+    "cf.distributions": "450000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1888000",
+    "cf.net_change_in_cash": "-14000",
+    "sup.cash_interest_paid": "1173000",
+    "sup.cash_taxes_paid": "742000",
+    "sup.scheduled_principal": "1412000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2847000",
+    "equity.retained_earnings": "6924000",
+    "cash.beginning_of_year": "1410000",
+    "debt.term_total": "12688000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "2.33",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "13633000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2472000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1050000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "825000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1495000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5842000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "5.56",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2472000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1050000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "825000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1495000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5842000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5842000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1050000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1050000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.45",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "14395000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "9949000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "2.27",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "13422000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2547000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1025000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "849000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1500000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5921000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "5.78",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2547000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1025000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "849000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1500000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5921000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5921000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1025000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1025000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.44",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "14998000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "10392000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "2.24",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "12924000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2439000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1002000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "813000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1505000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5759000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "5.75",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2439000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1002000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "813000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1505000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5759000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5759000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1002000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1002000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.42",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "14820000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "10448000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "2.29",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "12254000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2153000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "975000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "717000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1510000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5355000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "5.49",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2153000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "975000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "717000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1510000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5355000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5355000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "975000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "975000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.41",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "14203000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "10101000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "2.50",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "11879000"
+      },
+      {
+       "label": "Net income",
+       "amount": "1726000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "944000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "575000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1514000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4759000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "5.04",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1726000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "944000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "575000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1514000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4759000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4759000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "944000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "944000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.38",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "14250000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "10361000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "3.10",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "12130000"
+      },
+      {
+       "label": "Net income",
+       "amount": "1117000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "913000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "372000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1516000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3918000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "4.29",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1117000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "913000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "372000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1516000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3918000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3918000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "913000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "913000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.31",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "15477000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "11855000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Winston Praeger",
+   "reported": {
+    "total_leverage": {
+     "value": "3.92",
+     "threshold": "4.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "12699000"
+      },
+      {
+       "label": "Net income",
+       "amount": "627000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "890000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "209000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1517000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3243000"
+      }
+     ]
+    },
+    "interest_coverage": {
+     "value": "3.64",
+     "threshold": "3.45",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "627000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "890000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "209000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1517000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3243000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3243000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "890000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "890000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.20",
+     "threshold": "1.10",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "15530000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "12953000"
+      }
+     ]
+    }
+   },
+   "document_id": "thornbury-metal.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "2597000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12688000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "2640000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12688000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "2664000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12335000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "2683000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12335000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "2742000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12335000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "2728000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11982000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "2782000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11982000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "2804000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11982000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "2817000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11629000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "2756000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11629000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "2736000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11629000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "2700000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11276000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "2725000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11276000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "2709000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11276000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "2710000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10923000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "2735000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10923000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "2847000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10923000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "2852000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10570000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "2776000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10570000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "2764000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10570000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "2707000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10217000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "2614000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10217000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "2486000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10217000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "2390000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9864000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "2349000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9864000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "2390000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9864000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "2368000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9511000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "2592000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9511000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "2779000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9511000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "2972000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9158000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "3289000",
+   "commitment": "4200000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9158000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "3623000",
+   "commitment": "4200000",
+   "past_due_days": 6,
+   "term_loan_outstanding": "9158000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "3894000",
+   "commitment": "4200000",
+   "past_due_days": 12,
+   "term_loan_outstanding": "8805000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "3863000",
+   "commitment": "4200000",
+   "past_due_days": 19,
+   "term_loan_outstanding": "8805000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "thornbury-metal.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/thornbury-metal/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Thornbury Metal Fabricators, Inc. and Bank of Stoic",
+   "received_date": "2021-04-16",
+   "document_date": "2021-04-16"
+  },
+  {
+   "id": "thornbury-metal.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/thornbury-metal/afs-2024.pdf",
+   "pages": 7,
+   "title": "Thornbury Metal Fabricators, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-14",
+   "document_date": "2025-04-05",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,474"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "6,299"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "5,962"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "590"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "14,325"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "14,411"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "32,026"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "3,943"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "979"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "2,700"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "889"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "9,923"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,864"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "769"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "20,556"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "11,470"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "32,026"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "49,288"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "35,224"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "14,064"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "8,133"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,490"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "198"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "4,243"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,073"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "29"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "3,199"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "801"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,398"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,398"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,490"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(195)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "32"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,725"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,677)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,677)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "141"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,412)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(699)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,970)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "78"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,081"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "766"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,412"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,396",
+    "bs.accounts_receivable": "6,119",
+    "bs.inventory": "5,678",
+    "bs.other_current_assets": "558",
+    "bs.total_current_assets": "13,751",
+    "bs.net_ppe": "14,224",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "31,265",
+    "bs.accounts_payable": "3,754",
+    "bs.accrued_liabilities": "939",
+    "bs.revolver": "2,559",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "817",
+    "bs.total_current_liabilities": "9,481",
+    "bs.long_term_debt": "11,276",
+    "bs.other_noncurrent_liabilities": "737",
+    "bs.total_liabilities": "21,494",
+    "bs.total_equity": "9,771",
+    "bs.total_liabilities_and_equity": "31,265",
+    "is.revenue": "47,001",
+    "is.cogs": "33,662",
+    "is.gross_profit": "13,339",
+    "is.sga": "7,755",
+    "is.depreciation_amortization": "1,475",
+    "is.other_operating_expense": "188",
+    "is.operating_income": "3,921",
+    "is.interest_expense": "1,168",
+    "is.other_income_net": "28",
+    "is.pretax_income": "2,781",
+    "is.income_tax_expense": "695",
+    "is.net_income": "2,086",
+    "cf.net_income": "2,086",
+    "cf.depreciation_amortization": "1,475",
+    "cf.change_in_working_capital": "(120)",
+    "cf.other_operating": "32",
+    "cf.cfo": "3,473",
+    "cf.capex": "(1,599)",
+    "cf.cfi": "(1,599)",
+    "cf.revolver_net": "(26)",
+    "cf.term_debt_repayments": "(1,412)",
+    "cf.distributions": "(450)",
+    "cf.cff": "(1,888)",
+    "cf.net_change_in_cash": "(14)",
+    "sup.cash_interest_paid": "1,173",
+    "sup.cash_taxes_paid": "742",
+    "sup.scheduled_principal": "1,412",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/thornbury-metal/afs-2025.pdf",
+   "pages": 7,
+   "title": "Thornbury Metal Fabricators, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-29",
+   "document_date": "2026-03-20",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,353"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "6,638"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "5,671"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "541"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "14,203"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "14,562"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "32,055"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "4,665"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "897"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "2,390"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "737"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "10,101"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,452"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "801"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "19,354"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "12,701"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "32,055"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "48,867"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "35,283"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "13,584"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "8,063"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,510"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "195"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,816"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "975"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "29"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,870"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "717"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,153"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,153"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,510"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "489"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "32"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "4,184"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,661)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,661)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(310)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,412)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(922)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,644)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "(121)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "984"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "813"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,412"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,474",
+    "bs.accounts_receivable": "6,299",
+    "bs.inventory": "5,962",
+    "bs.other_current_assets": "590",
+    "bs.total_current_assets": "14,325",
+    "bs.net_ppe": "14,411",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "32,026",
+    "bs.accounts_payable": "3,943",
+    "bs.accrued_liabilities": "979",
+    "bs.revolver": "2,700",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "889",
+    "bs.total_current_liabilities": "9,923",
+    "bs.long_term_debt": "9,864",
+    "bs.other_noncurrent_liabilities": "769",
+    "bs.total_liabilities": "20,556",
+    "bs.total_equity": "11,470",
+    "bs.total_liabilities_and_equity": "32,026",
+    "is.revenue": "49,288",
+    "is.cogs": "35,224",
+    "is.gross_profit": "14,064",
+    "is.sga": "8,133",
+    "is.depreciation_amortization": "1,490",
+    "is.other_operating_expense": "198",
+    "is.operating_income": "4,243",
+    "is.interest_expense": "1,073",
+    "is.other_income_net": "29",
+    "is.pretax_income": "3,199",
+    "is.income_tax_expense": "801",
+    "is.net_income": "2,398",
+    "cf.net_income": "2,398",
+    "cf.depreciation_amortization": "1,490",
+    "cf.change_in_working_capital": "(195)",
+    "cf.other_operating": "32",
+    "cf.cfo": "3,725",
+    "cf.capex": "(1,677)",
+    "cf.cfi": "(1,677)",
+    "cf.revolver_net": "141",
+    "cf.term_debt_repayments": "(1,412)",
+    "cf.distributions": "(699)",
+    "cf.cff": "(1,970)",
+    "cf.net_change_in_cash": "78",
+    "sup.cash_interest_paid": "1,081",
+    "sup.cash_taxes_paid": "766",
+    "sup.scheduled_principal": "1,412",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/thornbury-metal/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Thornbury Metal Fabricators, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-10",
+   "document_date": "2025-05-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,478"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,346"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "5,980"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "591"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "14,395"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "14,454"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "32,139"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,954"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "979"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,710"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "894"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "9,949"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,511"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "777"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,237"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,902"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "32,139"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "12,320"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "8,801"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "3,519"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,033"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "376"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "49"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,061"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "252"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "7"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "816"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "204"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "612"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "612"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "376"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(50)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "8"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "946"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(419)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(419)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "10"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(353)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(180)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(523)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "4"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "255"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "201"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "353"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,429",
+    "bs.accounts_receivable": "6,290",
+    "bs.inventory": "5,800",
+    "bs.other_current_assets": "572",
+    "bs.total_current_assets": "14,091",
+    "bs.net_ppe": "14,258",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "31,639",
+    "bs.accounts_payable": "3,836",
+    "bs.accrued_liabilities": "957",
+    "bs.revolver": "2,664",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "847",
+    "bs.total_current_liabilities": "9,716",
+    "bs.long_term_debt": "10,923",
+    "bs.other_noncurrent_liabilities": "745",
+    "bs.total_liabilities": "21,384",
+    "bs.total_equity": "10,255",
+    "bs.total_liabilities_and_equity": "31,639",
+    "is.revenue": "11,907",
+    "is.cogs": "8,537",
+    "is.gross_profit": "3,370",
+    "is.sga": "1,965",
+    "is.depreciation_amortization": "371",
+    "is.other_operating_expense": "48",
+    "is.operating_income": "986",
+    "is.interest_expense": "275",
+    "is.other_income_net": "7",
+    "is.pretax_income": "718",
+    "is.income_tax_expense": "180",
+    "is.net_income": "538",
+    "cf.net_income": "538",
+    "cf.depreciation_amortization": "371",
+    "cf.change_in_working_capital": "(177)",
+    "cf.other_operating": "8",
+    "cf.cfo": "740",
+    "cf.capex": "(405)",
+    "cf.cfi": "(405)",
+    "cf.revolver_net": "105",
+    "cf.term_debt_repayments": "(353)",
+    "cf.distributions": "(54)",
+    "cf.cff": "(302)",
+    "cf.net_change_in_cash": "33",
+    "sup.cash_interest_paid": "278",
+    "sup.cash_taxes_paid": "166",
+    "sup.scheduled_principal": "353",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/thornbury-metal/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Thornbury Metal Fabricators, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-27",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,556"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,549"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "6,271"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "622"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "14,998"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "14,518"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "32,806"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "4,147"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,023"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,852"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "958"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,392"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,158"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "785"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,335"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "12,471"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "32,806"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "25,284"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "18,030"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,254"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,172"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "753"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "101"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,228"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "498"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "15"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,745"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "436"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,309"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,309"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "753"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(274)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "16"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,804"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(860)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(860)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "152"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(706)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(308)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(862)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "82"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "503"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "405"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "706"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,488",
+    "bs.accounts_receivable": "6,387",
+    "bs.inventory": "6,006",
+    "bs.other_current_assets": "595",
+    "bs.total_current_assets": "14,476",
+    "bs.net_ppe": "14,308",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "32,074",
+    "bs.accounts_payable": "3,971",
+    "bs.accrued_liabilities": "990",
+    "bs.revolver": "2,728",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "902",
+    "bs.total_current_liabilities": "10,003",
+    "bs.long_term_debt": "10,570",
+    "bs.other_noncurrent_liabilities": "753",
+    "bs.total_liabilities": "21,326",
+    "bs.total_equity": "10,748",
+    "bs.total_liabilities_and_equity": "32,074",
+    "is.revenue": "24,308",
+    "is.cogs": "17,376",
+    "is.gross_profit": "6,932",
+    "is.sga": "4,011",
+    "is.depreciation_amortization": "743",
+    "is.other_operating_expense": "98",
+    "is.operating_income": "2,080",
+    "is.interest_expense": "546",
+    "is.other_income_net": "14",
+    "is.pretax_income": "1,548",
+    "is.income_tax_expense": "388",
+    "is.net_income": "1,160",
+    "cf.net_income": "1,160",
+    "cf.depreciation_amortization": "743",
+    "cf.change_in_working_capital": "(280)",
+    "cf.other_operating": "16",
+    "cf.cfo": "1,639",
+    "cf.capex": "(827)",
+    "cf.cfi": "(827)",
+    "cf.revolver_net": "169",
+    "cf.term_debt_repayments": "(706)",
+    "cf.distributions": "(183)",
+    "cf.cff": "(720)",
+    "cf.net_change_in_cash": "92",
+    "sup.cash_interest_paid": "551",
+    "sup.cash_taxes_paid": "346",
+    "sup.scheduled_principal": "706",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/thornbury-metal/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Thornbury Metal Fabricators, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-11-09",
+   "document_date": "2025-11-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,476"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,701"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "6,052"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "591"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "14,820"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "14,558"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "32,668"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "4,490"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "974"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,707"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "865"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,448"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,805"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "793"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,046"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "12,622"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "32,668"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "37,588"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "26,937"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "10,651"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,202"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,131"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "150"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,168"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "741"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "22"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,449"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "612"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,837"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,837"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,131"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "25"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "24"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,017"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,278)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,278)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "7"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,059)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(685)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,737)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "2"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "747"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "637"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,059"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,524",
+    "bs.accounts_receivable": "6,582",
+    "bs.inventory": "6,165",
+    "bs.other_current_assets": "610",
+    "bs.total_current_assets": "14,881",
+    "bs.net_ppe": "14,367",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "32,538",
+    "bs.accounts_payable": "4,077",
+    "bs.accrued_liabilities": "1,011",
+    "bs.revolver": "2,817",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "923",
+    "bs.total_current_liabilities": "10,240",
+    "bs.long_term_debt": "10,217",
+    "bs.other_noncurrent_liabilities": "761",
+    "bs.total_liabilities": "21,218",
+    "bs.total_equity": "11,320",
+    "bs.total_liabilities_and_equity": "32,538",
+    "is.revenue": "37,006",
+    "is.cogs": "26,449",
+    "is.gross_profit": "10,557",
+    "is.sga": "6,106",
+    "is.depreciation_amortization": "1,116",
+    "is.other_operating_expense": "149",
+    "is.operating_income": "3,186",
+    "is.interest_expense": "812",
+    "is.other_income_net": "22",
+    "is.pretax_income": "2,396",
+    "is.income_tax_expense": "600",
+    "is.net_income": "1,796",
+    "cf.net_income": "1,796",
+    "cf.depreciation_amortization": "1,116",
+    "cf.change_in_working_capital": "(501)",
+    "cf.other_operating": "24",
+    "cf.cfo": "2,435",
+    "cf.capex": "(1,259)",
+    "cf.cfi": "(1,259)",
+    "cf.revolver_net": "258",
+    "cf.term_debt_repayments": "(1,059)",
+    "cf.distributions": "(247)",
+    "cf.cff": "(1,048)",
+    "cf.net_change_in_cash": "128",
+    "sup.cash_interest_paid": "818",
+    "sup.cash_taxes_paid": "554",
+    "sup.scheduled_principal": "1,059",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/thornbury-metal/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Thornbury Metal Fabricators, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-04-30",
+   "document_date": "2026-04-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,292"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,936"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "5,505"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "517"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "14,250"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "14,548"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "32,088"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,061"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "855"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,368"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "665"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,361"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,099"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "809"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "19,269"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "12,819"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "32,088"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "10,763"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "8,102"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,661"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "1,776"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "380"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "43"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "462"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "221"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "6"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "247"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "62"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "185"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "185"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "380"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "174"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "8"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "747"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(366)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(366)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(22)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(353)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(67)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(442)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(61)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "225"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "105"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "353"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,478",
+    "bs.accounts_receivable": "6,346",
+    "bs.inventory": "5,980",
+    "bs.other_current_assets": "591",
+    "bs.total_current_assets": "14,395",
+    "bs.net_ppe": "14,454",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "32,139",
+    "bs.accounts_payable": "3,954",
+    "bs.accrued_liabilities": "979",
+    "bs.revolver": "2,710",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "894",
+    "bs.total_current_liabilities": "9,949",
+    "bs.long_term_debt": "9,511",
+    "bs.other_noncurrent_liabilities": "777",
+    "bs.total_liabilities": "20,237",
+    "bs.total_equity": "11,902",
+    "bs.total_liabilities_and_equity": "32,139",
+    "is.revenue": "12,320",
+    "is.cogs": "8,801",
+    "is.gross_profit": "3,519",
+    "is.sga": "2,033",
+    "is.depreciation_amortization": "376",
+    "is.other_operating_expense": "49",
+    "is.operating_income": "1,061",
+    "is.interest_expense": "252",
+    "is.other_income_net": "7",
+    "is.pretax_income": "816",
+    "is.income_tax_expense": "204",
+    "is.net_income": "612",
+    "cf.net_income": "612",
+    "cf.depreciation_amortization": "376",
+    "cf.change_in_working_capital": "(50)",
+    "cf.other_operating": "8",
+    "cf.cfo": "946",
+    "cf.capex": "(419)",
+    "cf.cfi": "(419)",
+    "cf.revolver_net": "10",
+    "cf.term_debt_repayments": "(353)",
+    "cf.distributions": "(180)",
+    "cf.cff": "(523)",
+    "cf.net_change_in_cash": "4",
+    "sup.cash_interest_paid": "255",
+    "sup.cash_taxes_paid": "201",
+    "sup.scheduled_principal": "353",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/thornbury-metal/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Thornbury Metal Fabricators, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-07-30",
+   "document_date": "2026-07-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,342"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,760"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "5,838"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "537"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "15,477"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "14,549"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "33,316"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,932"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "884"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,972"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "655"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "11,855"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,746"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "817"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,418"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "12,898"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "33,316"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "21,950"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "16,694"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,256"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,622"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "759"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "88"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "787"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "436"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "13"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "364"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "91"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "273"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "273"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "759"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(113)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "16"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "935"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(746)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(746)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "582"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(706)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(76)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(200)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(11)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "442"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "167"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "706"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,556",
+    "bs.accounts_receivable": "6,549",
+    "bs.inventory": "6,271",
+    "bs.other_current_assets": "622",
+    "bs.total_current_assets": "14,998",
+    "bs.net_ppe": "14,518",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "32,806",
+    "bs.accounts_payable": "4,147",
+    "bs.accrued_liabilities": "1,023",
+    "bs.revolver": "2,852",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "958",
+    "bs.total_current_liabilities": "10,392",
+    "bs.long_term_debt": "9,158",
+    "bs.other_noncurrent_liabilities": "785",
+    "bs.total_liabilities": "20,335",
+    "bs.total_equity": "12,471",
+    "bs.total_liabilities_and_equity": "32,806",
+    "is.revenue": "25,284",
+    "is.cogs": "18,030",
+    "is.gross_profit": "7,254",
+    "is.sga": "4,172",
+    "is.depreciation_amortization": "753",
+    "is.other_operating_expense": "101",
+    "is.operating_income": "2,228",
+    "is.interest_expense": "498",
+    "is.other_income_net": "15",
+    "is.pretax_income": "1,745",
+    "is.income_tax_expense": "436",
+    "is.net_income": "1,309",
+    "cf.net_income": "1,309",
+    "cf.depreciation_amortization": "753",
+    "cf.change_in_working_capital": "(274)",
+    "cf.other_operating": "16",
+    "cf.cfo": "1,804",
+    "cf.capex": "(860)",
+    "cf.cfi": "(860)",
+    "cf.revolver_net": "152",
+    "cf.term_debt_repayments": "(706)",
+    "cf.distributions": "(308)",
+    "cf.cff": "(862)",
+    "cf.net_change_in_cash": "82",
+    "sup.cash_interest_paid": "503",
+    "sup.cash_taxes_paid": "405",
+    "sup.scheduled_principal": "706",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/thornbury-metal/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Thornbury Metal Fabricators, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,276"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,179"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "5,565"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "510"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "15,530"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,283"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,820"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "470"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "34,103"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,194"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "845"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "3,894"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,412"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "608"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "12,953"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,393"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "825"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "21,171"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "12,932"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "34,103"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "32,582"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "24,885"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,697"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,376"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,138"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "131"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,052"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "656"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "19"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "415"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "104"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "311"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "311"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,138"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(56)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "24"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,417"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,859)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,859)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,504"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,059)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(80)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "365"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(77)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "661"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "196"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,059"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,476",
+    "bs.accounts_receivable": "6,701",
+    "bs.inventory": "6,052",
+    "bs.other_current_assets": "591",
+    "bs.total_current_assets": "14,820",
+    "bs.net_ppe": "14,558",
+    "bs.intangibles": "2,820",
+    "bs.other_noncurrent_assets": "470",
+    "bs.total_assets": "32,668",
+    "bs.accounts_payable": "4,490",
+    "bs.accrued_liabilities": "974",
+    "bs.revolver": "2,707",
+    "bs.cpltd": "1,412",
+    "bs.other_current_liabilities": "865",
+    "bs.total_current_liabilities": "10,448",
+    "bs.long_term_debt": "8,805",
+    "bs.other_noncurrent_liabilities": "793",
+    "bs.total_liabilities": "20,046",
+    "bs.total_equity": "12,622",
+    "bs.total_liabilities_and_equity": "32,668",
+    "is.revenue": "37,588",
+    "is.cogs": "26,937",
+    "is.gross_profit": "10,651",
+    "is.sga": "6,202",
+    "is.depreciation_amortization": "1,131",
+    "is.other_operating_expense": "150",
+    "is.operating_income": "3,168",
+    "is.interest_expense": "741",
+    "is.other_income_net": "22",
+    "is.pretax_income": "2,449",
+    "is.income_tax_expense": "612",
+    "is.net_income": "1,837",
+    "cf.net_income": "1,837",
+    "cf.depreciation_amortization": "1,131",
+    "cf.change_in_working_capital": "25",
+    "cf.other_operating": "24",
+    "cf.cfo": "3,017",
+    "cf.capex": "(1,278)",
+    "cf.cfi": "(1,278)",
+    "cf.revolver_net": "7",
+    "cf.term_debt_repayments": "(1,059)",
+    "cf.distributions": "(685)",
+    "cf.cff": "(1,737)",
+    "cf.net_change_in_cash": "2",
+    "sup.cash_interest_paid": "747",
+    "sup.cash_taxes_paid": "637",
+    "sup.scheduled_principal": "1,059",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "thornbury-metal.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/thornbury-metal/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-10",
+   "document_date": "2025-05-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "thornbury-metal.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/thornbury-metal/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-29",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "thornbury-metal.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/thornbury-metal/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-11-09",
+   "document_date": "2025-11-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "thornbury-metal.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/thornbury-metal/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-07",
+   "document_date": "2026-02-05",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "thornbury-metal.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/thornbury-metal/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-04-30",
+   "document_date": "2026-04-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "thornbury-metal.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/thornbury-metal/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-07-30",
+   "document_date": "2026-07-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "thornbury-metal.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/thornbury-metal/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Thornbury Metal Fabricators, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "deteriorating_trend",
+  "description": "Deteriorating trend: revenue, margin, collections and leverage worsen over five quarters. Covenants still pass, but early-warning signals fire and the line is nearly fully drawn.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "2.33",
+    "pass": true,
+    "headroom": "0.4317",
+    "reported_value": "2.33",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "13633000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2472000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1050000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "825000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1495000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5842000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "5.56",
+    "pass": true,
+    "headroom": "0.6116",
+    "reported_value": "5.56",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2472000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1050000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "825000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1495000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5842000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5842000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1050000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1050000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.45",
+    "pass": true,
+    "headroom": "0.3182",
+    "reported_value": "1.45",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "14395000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "9949000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "2.27",
+    "pass": true,
+    "headroom": "0.4463",
+    "reported_value": "2.27",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "13422000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2547000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1025000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "849000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1500000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5921000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "5.78",
+    "pass": true,
+    "headroom": "0.6754",
+    "reported_value": "5.78",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2547000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1025000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "849000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1500000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5921000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5921000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1025000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1025000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.44",
+    "pass": true,
+    "headroom": "0.3091",
+    "reported_value": "1.44",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "14998000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "10392000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "2.24",
+    "pass": true,
+    "headroom": "0.4537",
+    "reported_value": "2.24",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "12924000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2439000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1002000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "813000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1505000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5759000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "5.75",
+    "pass": true,
+    "headroom": "0.6667",
+    "reported_value": "5.75",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2439000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1002000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "813000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1505000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5759000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5759000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1002000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1002000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.42",
+    "pass": true,
+    "headroom": "0.2909",
+    "reported_value": "1.42",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "14820000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "10448000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "2.29",
+    "pass": true,
+    "headroom": "0.4415",
+    "reported_value": "2.29",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "12254000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2153000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "975000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "717000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1510000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5355000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "5.49",
+    "pass": true,
+    "headroom": "0.5913",
+    "reported_value": "5.49",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2153000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "975000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "717000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1510000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5355000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5355000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "975000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "975000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.41",
+    "pass": true,
+    "headroom": "0.2818",
+    "reported_value": "1.41",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "14203000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "10101000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "2.50",
+    "pass": true,
+    "headroom": "0.3902",
+    "reported_value": "2.50",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "11879000"
+     },
+     {
+      "label": "Net income",
+      "amount": "1726000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "944000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "575000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1514000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4759000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "5.04",
+    "pass": true,
+    "headroom": "0.4609",
+    "reported_value": "5.04",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1726000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "944000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "575000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1514000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4759000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4759000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "944000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "944000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.38",
+    "pass": true,
+    "headroom": "0.2545",
+    "reported_value": "1.38",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "14250000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "10361000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "3.10",
+    "pass": true,
+    "headroom": "0.2439",
+    "reported_value": "3.10",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "12130000"
+     },
+     {
+      "label": "Net income",
+      "amount": "1117000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "913000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "372000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1516000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3918000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "4.29",
+    "pass": true,
+    "headroom": "0.2435",
+    "reported_value": "4.29",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1117000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "913000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "372000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1516000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3918000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3918000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "913000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "913000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.31",
+    "pass": true,
+    "headroom": "0.1909",
+    "reported_value": "1.31",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "15477000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "11855000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "4.10",
+    "value": "3.92",
+    "pass": true,
+    "headroom": "0.0439",
+    "reported_value": "3.92",
+    "reported_threshold": "4.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "12699000"
+     },
+     {
+      "label": "Net income",
+      "amount": "627000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "890000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "209000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1517000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3243000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.45",
+    "value": "3.64",
+    "pass": true,
+    "headroom": "0.0551",
+    "reported_value": "3.64",
+    "reported_threshold": "3.45",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "627000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "890000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "209000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1517000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3243000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3243000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "890000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "890000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "thornbury-metal-rlc",
+    "terms_version_id": "tv-thornbury-metal-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.10",
+    "value": "1.20",
+    "pass": true,
+    "headroom": "0.0909",
+    "reported_value": "1.20",
+    "reported_threshold": "1.10",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "15530000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "12953000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.2909",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.3182",
+     "prior_period": "0.3091"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.5913",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "interest_coverage",
+     "two_periods_ago": "0.6754",
+     "prior_period": "0.6667"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.2818",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.3091",
+     "prior_period": "0.2909"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.3902",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "total_leverage",
+     "two_periods_ago": "0.4537",
+     "prior_period": "0.4415"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.4609",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "interest_coverage",
+     "two_periods_ago": "0.6667",
+     "prior_period": "0.5913"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.2545",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.2909",
+     "prior_period": "0.2818"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.2439",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "total_leverage",
+     "two_periods_ago": "0.4415",
+     "prior_period": "0.3902"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.2435",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "interest_coverage",
+     "two_periods_ago": "0.5913",
+     "prior_period": "0.4609"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.1909",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.2818",
+     "prior_period": "0.2545"
+    }
+   },
+   {
+    "rule": "ebitda_margin_decline",
+    "period_end": "2026-06-30",
+    "severity": "medium",
+    "value": "-0.0318",
+    "trigger": "-0.03",
+    "detail": {}
+   },
+   {
+    "rule": "dso_increase",
+    "period_end": "2026-06-30",
+    "severity": "medium",
+    "value": "14.6",
+    "trigger": "10",
+    "detail": {}
+   },
+   {
+    "rule": "dpo_increase",
+    "period_end": "2026-06-30",
+    "severity": "medium",
+    "value": "21.6",
+    "trigger": "15",
+    "detail": {}
+   },
+   {
+    "rule": "leverage_increase",
+    "period_end": "2026-06-30",
+    "severity": "medium",
+    "value": "0.83",
+    "trigger": "0.5",
+    "detail": {}
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "0.0439",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.0439",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "total_leverage",
+     "two_periods_ago": "0.3902",
+     "prior_period": "0.2439"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "0.0551",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "interest_coverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.0551",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "interest_coverage",
+     "two_periods_ago": "0.4609",
+     "prior_period": "0.2435"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "0.0909",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "current_ratio"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.0909",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.2545",
+     "prior_period": "0.1909"
+    }
+   },
+   {
+    "rule": "revenue_ttm_decline",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.1205",
+    "trigger": "-0.10",
+    "detail": {}
+   },
+   {
+    "rule": "ebitda_margin_decline",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.0415",
+    "trigger": "-0.03",
+    "detail": {}
+   },
+   {
+    "rule": "dso_increase",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "19.0",
+    "trigger": "10",
+    "detail": {}
+   },
+   {
+    "rule": "dpo_increase",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "22.1",
+    "trigger": "15",
+    "detail": {}
+   },
+   {
+    "rule": "leverage_increase",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "1.67",
+    "trigger": "0.5",
+    "detail": {}
+   },
+   {
+    "rule": "line_usage_high",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "0.9271",
+    "trigger": "0.90",
+    "detail": {}
+   },
+   {
+    "rule": "payment_past_due",
+    "period_end": "2026-09-30",
+    "severity": "high",
+    "value": "12",
+    "trigger": "10",
+    "detail": {}
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "signal.high",
+    "severity": "high",
+    "period_end": "2026-09-30",
+    "subject": "signal:payment_past_due",
+    "summary": "High-severity signal payment_past_due."
+   }
+  ]
+ }
+}

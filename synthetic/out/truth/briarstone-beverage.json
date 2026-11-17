@@ -1,0 +1,6338 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "briarstone-beverage",
+  "name": "Briarstone Beverage Company",
+  "legal_form": "corporation",
+  "industry": "food processing",
+  "city": "Asheville",
+  "state": "NC",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Priya Venkataraman",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 6,
+  "statement_scale": 1,
+  "chief_financial_officer": "Hadley Quarmby",
+  "auditor": "Morrow Castellan LLP"
+ },
+ "facilities": [
+  {
+   "id": "briarstone-beverage-rlc",
+   "borrower_id": "briarstone-beverage",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "5250000",
+   "original_amount": "5250000",
+   "closing_date": "2023-03-31",
+   "maturity_date": "2029-03-31",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  },
+  {
+   "id": "briarstone-beverage-tl",
+   "borrower_id": "briarstone-beverage",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "7800000",
+   "original_amount": "7800000",
+   "closing_date": "2023-03-31",
+   "maturity_date": "2030-03-31",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "195000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-briarstone-beverage-1",
+   "facility_id": "briarstone-beverage-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2023-03-31",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2023-04-06",
+   "warnings": [],
+   "source_documents": [
+    "briarstone-beverage.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.20",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "briarstone-beverage.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.20 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "briarstone-beverage.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "briarstone-beverage.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "briarstone-beverage.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "briarstone-beverage.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "briarstone-beverage.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "briarstone-beverage.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "briarstone-beverage.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "5250000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "2000000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "50000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "briarstone-beverage.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $2,000,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $50,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $5,250,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $7,800,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "briarstone-beverage.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $195,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "9721920",
+    "is.cogs": "7332272",
+    "is.gross_profit": "2389648",
+    "is.sga": "1312459",
+    "is.depreciation_amortization": "307363",
+    "is.other_operating_expense": "29166",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "740660",
+    "is.interest_expense": "201835",
+    "is.other_income_net": "5833",
+    "is.pretax_income": "544658",
+    "is.income_tax_expense": "136165",
+    "is.net_income": "408493",
+    "bs.cash": "1166630",
+    "bs.accounts_receivable": "3451947",
+    "bs.inventory": "3535561",
+    "bs.other_current_assets": "466652",
+    "bs.total_current_assets": "8620790",
+    "bs.net_ppe": "13386774",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "24347564",
+    "bs.accounts_payable": "2732025",
+    "bs.accrued_liabilities": "644760",
+    "bs.revolver": "3888768",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "680593",
+    "bs.total_current_liabilities": "8726146",
+    "bs.long_term_debt": "6045000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "620100",
+    "bs.total_liabilities": "15391246",
+    "bs.total_equity": "8956318",
+    "bs.total_liabilities_and_equity": "24347564",
+    "cf.net_income": "408493",
+    "cf.depreciation_amortization": "307363",
+    "cf.change_in_working_capital": "69781",
+    "cf.other_operating": "7020",
+    "cf.cfo": "792657",
+    "cf.capex": "330545",
+    "cf.other_investing": "0",
+    "cf.cfi": "-330545",
+    "cf.revolver_net": "-97280",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "195000",
+    "cf.distributions": "220002",
+    "cf.other_financing": "0",
+    "cf.cff": "-512282",
+    "cf.net_change_in_cash": "-50170",
+    "sup.cash_interest_paid": "202937",
+    "sup.cash_taxes_paid": "135988",
+    "sup.scheduled_principal": "195000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "6183127",
+    "cash.beginning_of_year": "1216800",
+    "debt.term_total": "6825000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "19913030",
+    "is.cogs": "15055095",
+    "is.gross_profit": "4857935",
+    "is.sga": "2688259",
+    "is.depreciation_amortization": "615259",
+    "is.other_operating_expense": "59739",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1494678",
+    "is.interest_expense": "398324",
+    "is.other_income_net": "11948",
+    "is.pretax_income": "1108302",
+    "is.income_tax_expense": "277076",
+    "is.net_income": "831226",
+    "bs.cash": "1222933",
+    "bs.accounts_receivable": "3830741",
+    "bs.inventory": "3723882",
+    "bs.other_current_assets": "489173",
+    "bs.total_current_assets": "9266729",
+    "bs.net_ppe": "13425376",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25032105",
+    "bs.accounts_payable": "2877545",
+    "bs.accrued_liabilities": "670848",
+    "bs.revolver": "4178201",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "711613",
+    "bs.total_current_liabilities": "9218207",
+    "bs.long_term_debt": "5850000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "627120",
+    "bs.total_liabilities": "15695327",
+    "bs.total_equity": "9336778",
+    "bs.total_liabilities_and_equity": "25032105",
+    "cf.net_income": "831226",
+    "cf.depreciation_amortization": "615259",
+    "cf.change_in_working_capital": "-317227",
+    "cf.other_operating": "14040",
+    "cf.cfo": "1143298",
+    "cf.capex": "677043",
+    "cf.other_investing": "0",
+    "cf.cfi": "-677043",
+    "cf.revolver_net": "192153",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "390000",
+    "cf.distributions": "262275",
+    "cf.other_financing": "0",
+    "cf.cff": "-460122",
+    "cf.net_change_in_cash": "6133",
+    "sup.cash_interest_paid": "401208",
+    "sup.cash_taxes_paid": "272153",
+    "sup.scheduled_principal": "390000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "6563587",
+    "cash.beginning_of_year": "1216800",
+    "debt.term_total": "6630000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "30366220",
+    "is.cogs": "22960843",
+    "is.gross_profit": "7405377",
+    "is.sga": "4099440",
+    "is.depreciation_amortization": "924043",
+    "is.other_operating_expense": "91099",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2290795",
+    "is.interest_expense": "596959",
+    "is.other_income_net": "18220",
+    "is.pretax_income": "1712056",
+    "is.income_tax_expense": "428015",
+    "is.net_income": "1284041",
+    "bs.cash": "1254383",
+    "bs.accounts_receivable": "3665776",
+    "bs.inventory": "3812087",
+    "bs.other_current_assets": "501753",
+    "bs.total_current_assets": "9233999",
+    "bs.net_ppe": "13472000",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25045999",
+    "bs.accounts_payable": "2945703",
+    "bs.accrued_liabilities": "687132",
+    "bs.revolver": "4157724",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "736318",
+    "bs.total_current_liabilities": "9306877",
+    "bs.long_term_debt": "5655000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "634140",
+    "bs.total_liabilities": "15596017",
+    "bs.total_equity": "9449982",
+    "bs.total_liabilities_and_equity": "25045999",
+    "cf.net_income": "1284041",
+    "cf.depreciation_amortization": "924043",
+    "cf.change_in_working_capital": "-143900",
+    "cf.other_operating": "21060",
+    "cf.cfo": "2085244",
+    "cf.capex": "1032451",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1032451",
+    "cf.revolver_net": "171676",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "585000",
+    "cf.distributions": "601886",
+    "cf.other_financing": "0",
+    "cf.cff": "-1015210",
+    "cf.net_change_in_cash": "37583",
+    "sup.cash_interest_paid": "599127",
+    "sup.cash_taxes_paid": "413064",
+    "sup.scheduled_principal": "585000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "6676791",
+    "cash.beginning_of_year": "1216800",
+    "debt.term_total": "6435000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "40920946",
+    "is.cogs": "30966603",
+    "is.gross_profit": "9954343",
+    "is.sga": "5524328",
+    "is.depreciation_amortization": "1233899",
+    "is.other_operating_expense": "122763",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3073353",
+    "is.interest_expense": "791736",
+    "is.other_income_net": "24553",
+    "is.pretax_income": "2306170",
+    "is.income_tax_expense": "576544",
+    "is.net_income": "1729626",
+    "bs.cash": "1266567",
+    "bs.accounts_receivable": "3747651",
+    "bs.inventory": "3860312",
+    "bs.other_current_assets": "506627",
+    "bs.total_current_assets": "9381157",
+    "bs.net_ppe": "13521005",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25242162",
+    "bs.accounts_payable": "2982968",
+    "bs.accrued_liabilities": "691877",
+    "bs.revolver": "4221890",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "739594",
+    "bs.total_current_liabilities": "9416329",
+    "bs.long_term_debt": "5460000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "641160",
+    "bs.total_liabilities": "15517489",
+    "bs.total_equity": "9724673",
+    "bs.total_liabilities_and_equity": "25242162",
+    "cf.net_income": "1729626",
+    "cf.depreciation_amortization": "1233899",
+    "cf.change_in_working_capital": "-233588",
+    "cf.other_operating": "28080",
+    "cf.cfo": "2758017",
+    "cf.capex": "1391312",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1391312",
+    "cf.revolver_net": "235842",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "780000",
+    "cf.distributions": "772780",
+    "cf.other_financing": "0",
+    "cf.cff": "-1316938",
+    "cf.net_change_in_cash": "49767",
+    "sup.cash_interest_paid": "795190",
+    "sup.cash_taxes_paid": "564003",
+    "sup.scheduled_principal": "780000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "6951482",
+    "cash.beginning_of_year": "1216800",
+    "debt.term_total": "6240000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "10233293",
+    "is.cogs": "7725113",
+    "is.gross_profit": "2508180",
+    "is.sga": "1381495",
+    "is.depreciation_amortization": "310983",
+    "is.other_operating_expense": "30700",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "785002",
+    "is.interest_expense": "192559",
+    "is.other_income_net": "6140",
+    "is.pretax_income": "598583",
+    "is.income_tax_expense": "149646",
+    "is.net_income": "448937",
+    "bs.cash": "1227995",
+    "bs.accounts_receivable": "3835382",
+    "bs.inventory": "3724986",
+    "bs.other_current_assets": "491198",
+    "bs.total_current_assets": "9279561",
+    "bs.net_ppe": "13557954",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25177515",
+    "bs.accounts_payable": "2878398",
+    "bs.accrued_liabilities": "672044",
+    "bs.revolver": "4093317",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "722710",
+    "bs.total_current_liabilities": "9146469",
+    "bs.long_term_debt": "5265000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "648180",
+    "bs.total_liabilities": "15059649",
+    "bs.total_equity": "10117866",
+    "bs.total_liabilities_and_equity": "25177515",
+    "cf.net_income": "448937",
+    "cf.depreciation_amortization": "310983",
+    "cf.change_in_working_capital": "-78263",
+    "cf.other_operating": "7020",
+    "cf.cfo": "688677",
+    "cf.capex": "347932",
+    "cf.other_investing": "0",
+    "cf.cfi": "-347932",
+    "cf.revolver_net": "-128573",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "195000",
+    "cf.distributions": "55744",
+    "cf.other_financing": "0",
+    "cf.cff": "-379317",
+    "cf.net_change_in_cash": "-38572",
+    "sup.cash_interest_paid": "193299",
+    "sup.cash_taxes_paid": "148529",
+    "sup.scheduled_principal": "195000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "7344675",
+    "cash.beginning_of_year": "1266567",
+    "debt.term_total": "6045000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "20771920",
+    "is.cogs": "15678615",
+    "is.gross_profit": "5093305",
+    "is.sga": "2804210",
+    "is.depreciation_amortization": "622816",
+    "is.other_operating_expense": "62316",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1603963",
+    "is.interest_expense": "379166",
+    "is.other_income_net": "12463",
+    "is.pretax_income": "1237260",
+    "is.income_tax_expense": "309315",
+    "is.net_income": "927945",
+    "bs.cash": "1264635",
+    "bs.accounts_receivable": "3845877",
+    "bs.inventory": "3835113",
+    "bs.other_current_assets": "505854",
+    "bs.total_current_assets": "9451479",
+    "bs.net_ppe": "13604434",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25395913",
+    "bs.accounts_payable": "2963497",
+    "bs.accrued_liabilities": "688197",
+    "bs.revolver": "4215451",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "749832",
+    "bs.total_current_liabilities": "9396977",
+    "bs.long_term_debt": "5070000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "655200",
+    "bs.total_liabilities": "15122177",
+    "bs.total_equity": "10273736",
+    "bs.total_liabilities_and_equity": "25395913",
+    "cf.net_income": "927945",
+    "cf.depreciation_amortization": "622816",
+    "cf.change_in_working_capital": "-85167",
+    "cf.other_operating": "14040",
+    "cf.cfo": "1479634",
+    "cf.capex": "706245",
+    "cf.other_investing": "0",
+    "cf.cfi": "-706245",
+    "cf.revolver_net": "-6439",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "390000",
+    "cf.distributions": "378882",
+    "cf.other_financing": "0",
+    "cf.cff": "-775321",
+    "cf.net_change_in_cash": "-1932",
+    "sup.cash_interest_paid": "381890",
+    "sup.cash_taxes_paid": "298175",
+    "sup.scheduled_principal": "390000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "7500545",
+    "cash.beginning_of_year": "1266567",
+    "debt.term_total": "5850000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "31795854",
+    "is.cogs": "23978535",
+    "is.gross_profit": "7817319",
+    "is.sga": "4292441",
+    "is.depreciation_amortization": "935718",
+    "is.other_operating_expense": "95388",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2493772",
+    "is.interest_expense": "564678",
+    "is.other_income_net": "19077",
+    "is.pretax_income": "1948171",
+    "is.income_tax_expense": "487043",
+    "is.net_income": "1461128",
+    "bs.cash": "1322872",
+    "bs.accounts_receivable": "3926333",
+    "bs.inventory": "4002153",
+    "bs.other_current_assets": "529149",
+    "bs.total_current_assets": "9780507",
+    "bs.net_ppe": "13666346",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25786853",
+    "bs.accounts_payable": "3092573",
+    "bs.accrued_liabilities": "716659",
+    "bs.revolver": "4409574",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "795068",
+    "bs.total_current_liabilities": "9793874",
+    "bs.long_term_debt": "4875000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "662220",
+    "bs.total_liabilities": "15331094",
+    "bs.total_equity": "10455759",
+    "bs.total_liabilities_and_equity": "25786853",
+    "cf.net_income": "1461128",
+    "cf.depreciation_amortization": "935718",
+    "cf.change_in_working_capital": "-153184",
+    "cf.other_operating": "21060",
+    "cf.cfo": "2264722",
+    "cf.capex": "1081059",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1081059",
+    "cf.revolver_net": "187684",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "585000",
+    "cf.distributions": "730042",
+    "cf.other_financing": "0",
+    "cf.cff": "-1127358",
+    "cf.net_change_in_cash": "56305",
+    "sup.cash_interest_paid": "567767",
+    "sup.cash_taxes_paid": "457844",
+    "sup.scheduled_principal": "585000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "7682568",
+    "cash.beginning_of_year": "1266567",
+    "debt.term_total": "5655000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "42789657",
+    "is.cogs": "32290949",
+    "is.gross_profit": "10498708",
+    "is.sga": "5776604",
+    "is.depreciation_amortization": "1250044",
+    "is.other_operating_expense": "128369",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3343691",
+    "is.interest_expense": "750490",
+    "is.other_income_net": "25673",
+    "is.pretax_income": "2618874",
+    "is.income_tax_expense": "654719",
+    "is.net_income": "1964155",
+    "bs.cash": "1319256",
+    "bs.accounts_receivable": "3843313",
+    "bs.inventory": "4008178",
+    "bs.other_current_assets": "527703",
+    "bs.total_current_assets": "9698450",
+    "bs.net_ppe": "13725809",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25764259",
+    "bs.accounts_payable": "3097228",
+    "bs.accrued_liabilities": "714969",
+    "bs.revolver": "4397521",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "783329",
+    "bs.total_current_liabilities": "9773047",
+    "bs.long_term_debt": "4680000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "669240",
+    "bs.total_liabilities": "15122287",
+    "bs.total_equity": "10641972",
+    "bs.total_liabilities_and_equity": "25764259",
+    "cf.net_income": "1964155",
+    "cf.depreciation_amortization": "1250044",
+    "cf.change_in_working_capital": "-83517",
+    "cf.other_operating": "28080",
+    "cf.cfo": "3158762",
+    "cf.capex": "1454848",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1454848",
+    "cf.revolver_net": "175631",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "780000",
+    "cf.distributions": "1046856",
+    "cf.other_financing": "0",
+    "cf.cff": "-1651225",
+    "cf.net_change_in_cash": "52689",
+    "sup.cash_interest_paid": "753479",
+    "sup.cash_taxes_paid": "635572",
+    "sup.scheduled_principal": "780000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "7868781",
+    "cash.beginning_of_year": "1266567",
+    "debt.term_total": "5460000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "10748028",
+    "is.cogs": "8144856",
+    "is.gross_profit": "2603172",
+    "is.sga": "1450984",
+    "is.depreciation_amortization": "315694",
+    "is.other_operating_expense": "32244",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "804250",
+    "is.interest_expense": "182117",
+    "is.other_income_net": "6449",
+    "is.pretax_income": "628582",
+    "is.income_tax_expense": "157146",
+    "is.net_income": "471436",
+    "bs.cash": "1289763",
+    "bs.accounts_receivable": "3863401",
+    "bs.inventory": "3927383",
+    "bs.other_current_assets": "515905",
+    "bs.total_current_assets": "9596452",
+    "bs.net_ppe": "13775548",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "25712000",
+    "bs.accounts_payable": "3034796",
+    "bs.accrued_liabilities": "699139",
+    "bs.revolver": "4299211",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "759036",
+    "bs.total_current_liabilities": "9572182",
+    "bs.long_term_debt": "4485000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "676260",
+    "bs.total_liabilities": "14733442",
+    "bs.total_equity": "10978558",
+    "bs.total_liabilities_and_equity": "25712000",
+    "cf.net_income": "471436",
+    "cf.depreciation_amortization": "315694",
+    "cf.change_in_working_capital": "-30050",
+    "cf.other_operating": "7020",
+    "cf.cfo": "764100",
+    "cf.capex": "365433",
+    "cf.other_investing": "0",
+    "cf.cfi": "-365433",
+    "cf.revolver_net": "-98310",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "195000",
+    "cf.distributions": "134850",
+    "cf.other_financing": "0",
+    "cf.cff": "-428160",
+    "cf.net_change_in_cash": "-29493",
+    "sup.cash_interest_paid": "183348",
+    "sup.cash_taxes_paid": "167676",
+    "sup.scheduled_principal": "195000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "8205367",
+    "cash.beginning_of_year": "1319256",
+    "debt.term_total": "5265000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "21871549",
+    "is.cogs": "16506407",
+    "is.gross_profit": "5365142",
+    "is.sga": "2952659",
+    "is.depreciation_amortization": "632532",
+    "is.other_operating_expense": "65615",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1714336",
+    "is.interest_expense": "358868",
+    "is.other_income_net": "13123",
+    "is.pretax_income": "1368591",
+    "is.income_tax_expense": "342148",
+    "is.net_income": "1026443",
+    "bs.cash": "1334823",
+    "bs.accounts_receivable": "4010563",
+    "bs.inventory": "4031871",
+    "bs.other_current_assets": "533929",
+    "bs.total_current_assets": "9911186",
+    "bs.net_ppe": "13836910",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "26088096",
+    "bs.accounts_payable": "3115537",
+    "bs.accrued_liabilities": "719654",
+    "bs.revolver": "4449408",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "807919",
+    "bs.total_current_liabilities": "9872518",
+    "bs.long_term_debt": "4290000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "683280",
+    "bs.total_liabilities": "14845798",
+    "bs.total_equity": "11242298",
+    "bs.total_liabilities_and_equity": "26088096",
+    "cf.net_income": "1026443",
+    "cf.depreciation_amortization": "632532",
+    "cf.change_in_working_capital": "-149585",
+    "cf.other_operating": "14040",
+    "cf.cfo": "1523430",
+    "cf.capex": "743633",
+    "cf.other_investing": "0",
+    "cf.cfi": "-743633",
+    "cf.revolver_net": "51887",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "390000",
+    "cf.distributions": "426117",
+    "cf.other_financing": "0",
+    "cf.cff": "-764230",
+    "cf.net_change_in_cash": "15567",
+    "sup.cash_interest_paid": "361888",
+    "sup.cash_taxes_paid": "324822",
+    "sup.scheduled_principal": "390000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "8469107",
+    "cash.beginning_of_year": "1319256",
+    "debt.term_total": "5070000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "33327621",
+    "is.cogs": "25116791",
+    "is.gross_profit": "8210830",
+    "is.sga": "4499229",
+    "is.depreciation_amortization": "950781",
+    "is.other_operating_expense": "99983",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2660837",
+    "is.interest_expense": "535068",
+    "is.other_income_net": "19997",
+    "is.pretax_income": "2145766",
+    "is.income_tax_expense": "536442",
+    "is.net_income": "1609324",
+    "bs.cash": "1374729",
+    "bs.accounts_receivable": "4230900",
+    "bs.inventory": "4151856",
+    "bs.other_current_assets": "549891",
+    "bs.total_current_assets": "10307376",
+    "bs.net_ppe": "13908167",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "26555543",
+    "bs.accounts_payable": "3208253",
+    "bs.accrued_liabilities": "739224",
+    "bs.revolver": "4582429",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "835834",
+    "bs.total_current_liabilities": "10145740",
+    "bs.long_term_debt": "4095000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "690300",
+    "bs.total_liabilities": "14931040",
+    "bs.total_equity": "11624503",
+    "bs.total_liabilities_and_equity": "26555543",
+    "cf.net_income": "1609324",
+    "cf.depreciation_amortization": "950781",
+    "cf.change_in_working_capital": "-365668",
+    "cf.other_operating": "21060",
+    "cf.cfo": "2215497",
+    "cf.capex": "1133139",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1133139",
+    "cf.revolver_net": "184908",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "585000",
+    "cf.distributions": "626793",
+    "cf.other_financing": "0",
+    "cf.cff": "-1026885",
+    "cf.net_change_in_cash": "55473",
+    "sup.cash_interest_paid": "538272",
+    "sup.cash_taxes_paid": "509824",
+    "sup.scheduled_principal": "585000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "8851312",
+    "cash.beginning_of_year": "1319256",
+    "debt.term_total": "4875000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "39000000",
+    "is.cogs": "29398864",
+    "is.gross_profit": "9601136",
+    "is.sga": "5265001",
+    "is.depreciation_amortization": "1222408",
+    "is.other_operating_expense": "117001",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2996726",
+    "is.interest_expense": "830377",
+    "is.other_income_net": "23401",
+    "is.pretax_income": "2189750",
+    "is.income_tax_expense": "547438",
+    "is.net_income": "1642312",
+    "bs.cash": "1216800",
+    "bs.accounts_receivable": "3511496",
+    "bs.inventory": "3708629",
+    "bs.other_current_assets": "486720",
+    "bs.total_current_assets": "8923645",
+    "bs.net_ppe": "13363592",
+    "bs.intangibles": "1950000",
+    "bs.other_noncurrent_assets": "390000",
+    "bs.total_assets": "24627237",
+    "bs.accounts_payable": "2865758",
+    "bs.accrued_liabilities": "670696",
+    "bs.revolver": "3986048",
+    "bs.cpltd": "780000",
+    "bs.other_current_liabilities": "703828",
+    "bs.total_current_liabilities": "9006330",
+    "bs.long_term_debt": "6240000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "613080",
+    "bs.total_liabilities": "15859410",
+    "bs.total_equity": "8767827",
+    "bs.total_liabilities_and_equity": "24627237",
+    "cf.net_income": "1642312",
+    "cf.depreciation_amortization": "1222408",
+    "cf.change_in_working_capital": "-28160",
+    "cf.other_operating": "28080",
+    "cf.cfo": "2864640",
+    "cf.capex": "1326000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1326000",
+    "cf.revolver_net": "86048",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "780000",
+    "cf.distributions": "797888",
+    "cf.other_financing": "0",
+    "cf.cff": "-1491840",
+    "cf.net_change_in_cash": "46800",
+    "sup.cash_interest_paid": "833335",
+    "sup.cash_taxes_paid": "577298",
+    "sup.scheduled_principal": "780000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "2773191",
+    "equity.retained_earnings": "5994636",
+    "cash.beginning_of_year": "1170000",
+    "debt.term_total": "7020000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.53",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1770070"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "782460"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "590025"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1237519"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4380074"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1408699"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "576544"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2394831"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "785552"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1565552"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.31",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "10138317"
+      },
+      {
+       "label": "Net income",
+       "amount": "1770070"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "782460"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "590025"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1237519"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4380074"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.57",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1826345"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "772578"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "608783"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1241456"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4449162"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1420514"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "590025"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2438623"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "775872"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1555872"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.26",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "10065451"
+      },
+      {
+       "label": "Net income",
+       "amount": "1826345"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "772578"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "608783"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1241456"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4449162"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.62",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1906713"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "759455"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "635572"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1245574"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4547314"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1439920"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "608783"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2498611"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "763830"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1543830"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.21",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "10064574"
+      },
+      {
+       "label": "Net income",
+       "amount": "1906713"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "759455"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "635572"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1245574"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4547314"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.65",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1964155"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "750490"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "654719"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1250044"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4619408"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1454848"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "635572"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2528988"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "753479"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1533479"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.13",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9857521"
+      },
+      {
+       "label": "Net income",
+       "amount": "1964155"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "750490"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "654719"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1250044"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4619408"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.65",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1986654"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "740048"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "662219"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1254755"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4643676"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1472349"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "654719"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2516608"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "743528"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1523528"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.06",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9564211"
+      },
+      {
+       "label": "Net income",
+       "amount": "1986654"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "740048"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "662219"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1254755"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4643676"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.71",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2062653"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "730192"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "687552"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1259760"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4740157"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1492236"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "662219"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2585702"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "733477"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1513477"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.01",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9519408"
+      },
+      {
+       "label": "Net income",
+       "amount": "2062653"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "730192"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "687552"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1259760"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4740157"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Hadley Quarmby",
+   "reported": {
+    "fccr": {
+     "value": "1.73",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2112351"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "720880"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "704118"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1265107"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4802456"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1506928"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "687552"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2607976"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "723984"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "780000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1503984"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.97",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9457429"
+      },
+      {
+       "label": "Net income",
+       "amount": "2112351"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "720880"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "704118"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1265107"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4802456"
+      }
+     ]
+    }
+   },
+   "document_id": "briarstone-beverage.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Foods, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "82000",
+      "31_60": "28400",
+      "61_90": "4400",
+      "over_90": "0"
+     },
+     "total": "114800"
+    },
+    {
+     "customer": "Briarstone Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "127609",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "127609"
+    },
+    {
+     "customer": "County of Yarrow Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "56400",
+      "31_60": "25600",
+      "61_90": "6800",
+      "over_90": "0"
+     },
+     "total": "88800"
+    },
+    {
+     "customer": "Dunleith Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "138400",
+      "31_60": "36000",
+      "61_90": "7200",
+      "over_90": "0"
+     },
+     "total": "181600"
+    },
+    {
+     "customer": "Fenwick Provisions, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "177200",
+      "31_60": "80000",
+      "61_90": "19200",
+      "over_90": "0"
+     },
+     "total": "276400"
+    },
+    {
+     "customer": "Foxhollow Kitchens, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "175600",
+      "31_60": "47200",
+      "61_90": "19600",
+      "over_90": "7200"
+     },
+     "total": "249600"
+    },
+    {
+     "customer": "Glenhaven Foods, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "144400",
+      "31_60": "47200",
+      "61_90": "5600",
+      "over_90": "0"
+     },
+     "total": "197200"
+    },
+    {
+     "customer": "Hartsfield Restaurants, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "214800",
+      "31_60": "82800",
+      "61_90": "9200",
+      "over_90": "0"
+     },
+     "total": "306800"
+    },
+    {
+     "customer": "Juniper Grocers, Inc.",
+     "category": "trade",
+     "contra": "20000",
+     "buckets": {
+      "0_30": "251200",
+      "31_60": "71200",
+      "61_90": "16800",
+      "over_90": "0"
+     },
+     "total": "339200"
+    },
+    {
+     "customer": "Norwood Grocers, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "175600",
+      "31_60": "328800",
+      "61_90": "26400",
+      "over_90": "0"
+     },
+     "total": "530800"
+    },
+    {
+     "customer": "Oakmont Kitchens, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "209200",
+      "31_60": "48000",
+      "61_90": "10400",
+      "over_90": "0"
+     },
+     "total": "267600"
+    },
+    {
+     "customer": "Tamarack Kitchens, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "217600",
+      "31_60": "101600",
+      "61_90": "16800",
+      "over_90": "3200"
+     },
+     "total": "339200"
+    },
+    {
+     "customer": "Underhill Restaurants Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "128400",
+      "31_60": "31600",
+      "61_90": "15600",
+      "over_90": "0"
+     },
+     "total": "175600"
+    },
+    {
+     "customer": "Valemount Restaurants, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "288800",
+      "31_60": "118400",
+      "61_90": "16800",
+      "over_90": "0"
+     },
+     "total": "424000"
+    },
+    {
+     "customer": "Westbrook Kitchens, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "298400",
+      "31_60": "139200",
+      "61_90": "13600",
+      "over_90": "13600"
+     },
+     "total": "464800"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "1547200"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "1995200"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "529466"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "392009",
+    "ineligible_over_age": "24000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "20000",
+    "ineligible_concentration": "0",
+    "gross_ar": "4084009",
+    "total_ineligible_ar": "436009",
+    "eligible_ar": "3648000",
+    "ar_availability": "3100800",
+    "gross_inventory": "4071866",
+    "ineligible_inventory": "529466",
+    "eligible_inventory": "3542400",
+    "inventory_availability_before_sublimit": "1771200",
+    "inventory_availability": "1771200",
+    "reserves": "50000",
+    "borrowing_base": "4822000",
+    "commitment": "5250000",
+    "lesser_of_base_and_commitment": "4822000",
+    "outstanding": "4543000",
+    "letters_of_credit": "0",
+    "availability": "279000"
+   },
+   "outstanding": "4543000",
+   "letters_of_credit": "0",
+   "document_id": "briarstone-beverage.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Foods, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "83600",
+      "31_60": "28000",
+      "61_90": "5600",
+      "over_90": "0"
+     },
+     "total": "117200"
+    },
+    {
+     "customer": "Briarstone Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "129854",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "129854"
+    },
+    {
+     "customer": "County of Yarrow Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "57200",
+      "31_60": "25200",
+      "61_90": "8000",
+      "over_90": "0"
+     },
+     "total": "90400"
+    },
+    {
+     "customer": "Dunleith Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "140800",
+      "31_60": "34800",
+      "61_90": "9200",
+      "over_90": "0"
+     },
+     "total": "184800"
+    },
+    {
+     "customer": "Fenwick Provisions, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "180400",
+      "31_60": "78400",
+      "61_90": "22400",
+      "over_90": "0"
+     },
+     "total": "281200"
+    },
+    {
+     "customer": "Foxhollow Kitchens, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "178400",
+      "31_60": "45600",
+      "61_90": "22800",
+      "over_90": "7600"
+     },
+     "total": "254400"
+    },
+    {
+     "customer": "Glenhaven Foods, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "146800",
+      "31_60": "46000",
+      "61_90": "8000",
+      "over_90": "0"
+     },
+     "total": "200800"
+    },
+    {
+     "customer": "Hartsfield Restaurants, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "218800",
+      "31_60": "81200",
+      "61_90": "12400",
+      "over_90": "0"
+     },
+     "total": "312400"
+    },
+    {
+     "customer": "Juniper Grocers, Inc.",
+     "category": "trade",
+     "contra": "20400",
+     "buckets": {
+      "0_30": "256000",
+      "31_60": "68800",
+      "61_90": "20400",
+      "over_90": "0"
+     },
+     "total": "345200"
+    },
+    {
+     "customer": "Norwood Grocers, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "151600",
+      "31_60": "54000",
+      "61_90": "334800",
+      "over_90": "0"
+     },
+     "total": "540400"
+    },
+    {
+     "customer": "Oakmont Kitchens, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "212800",
+      "31_60": "46000",
+      "61_90": "13600",
+      "over_90": "0"
+     },
+     "total": "272400"
+    },
+    {
+     "customer": "Tamarack Kitchens, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "221600",
+      "31_60": "100000",
+      "61_90": "20400",
+      "over_90": "3200"
+     },
+     "total": "345200"
+    },
+    {
+     "customer": "Underhill Restaurants Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "130800",
+      "31_60": "30000",
+      "61_90": "17600",
+      "over_90": "0"
+     },
+     "total": "178400"
+    },
+    {
+     "customer": "Valemount Restaurants, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "294000",
+      "31_60": "116400",
+      "61_90": "21200",
+      "over_90": "0"
+     },
+     "total": "431600"
+    },
+    {
+     "customer": "Westbrook Kitchens, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "303200",
+      "31_60": "137200",
+      "61_90": "18800",
+      "over_90": "14000"
+     },
+     "total": "473200"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "1562400"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "2014800"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "534661"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "398654",
+    "ineligible_over_age": "24800",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "20400",
+    "ineligible_concentration": "0",
+    "gross_ar": "4157454",
+    "total_ineligible_ar": "443854",
+    "eligible_ar": "3713600",
+    "ar_availability": "3156560",
+    "gross_inventory": "4111861",
+    "ineligible_inventory": "534661",
+    "eligible_inventory": "3577200",
+    "inventory_availability_before_sublimit": "1788600",
+    "inventory_availability": "1788600",
+    "reserves": "50000",
+    "borrowing_base": "4895160",
+    "commitment": "5250000",
+    "lesser_of_base_and_commitment": "4895160",
+    "outstanding": "4524000",
+    "letters_of_credit": "0",
+    "availability": "371160"
+   },
+   "outstanding": "4524000",
+   "letters_of_credit": "0",
+   "document_id": "briarstone-beverage.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Alder Foods, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "85200",
+      "31_60": "27200",
+      "61_90": "6800",
+      "over_90": "0"
+     },
+     "total": "119200"
+    },
+    {
+     "customer": "Briarstone Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "132500",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "132500"
+    },
+    {
+     "customer": "County of Yarrow Purchasing Office",
+     "category": "government",
+     "contra": "0",
+     "buckets": {
+      "0_30": "58000",
+      "31_60": "24800",
+      "61_90": "9200",
+      "over_90": "0"
+     },
+     "total": "92000"
+    },
+    {
+     "customer": "Dunleith Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "143200",
+      "31_60": "33600",
+      "61_90": "11200",
+      "over_90": "0"
+     },
+     "total": "188000"
+    },
+    {
+     "customer": "Fenwick Provisions, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "183600",
+      "31_60": "77200",
+      "61_90": "25600",
+      "over_90": "0"
+     },
+     "total": "286400"
+    },
+    {
+     "customer": "Foxhollow Kitchens, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "182000",
+      "31_60": "43600",
+      "61_90": "25600",
+      "over_90": "7600"
+     },
+     "total": "258800"
+    },
+    {
+     "customer": "Glenhaven Foods, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "149200",
+      "31_60": "44800",
+      "61_90": "10000",
+      "over_90": "0"
+     },
+     "total": "204000"
+    },
+    {
+     "customer": "Hartsfield Restaurants, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "223200",
+      "31_60": "79200",
+      "61_90": "15600",
+      "over_90": "0"
+     },
+     "total": "318000"
+    },
+    {
+     "customer": "Juniper Grocers, Inc.",
+     "category": "trade",
+     "contra": "20800",
+     "buckets": {
+      "0_30": "260400",
+      "31_60": "66400",
+      "61_90": "24400",
+      "over_90": "0"
+     },
+     "total": "351200"
+    },
+    {
+     "customer": "Norwood Grocers, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "127200",
+      "31_60": "54800",
+      "61_90": "27200",
+      "over_90": "340800"
+     },
+     "total": "550000"
+    },
+    {
+     "customer": "Oakmont Kitchens, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "216800",
+      "31_60": "44000",
+      "61_90": "16400",
+      "over_90": "0"
+     },
+     "total": "277200"
+    },
+    {
+     "customer": "Tamarack Kitchens, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "225600",
+      "31_60": "98000",
+      "61_90": "24400",
+      "over_90": "3200"
+     },
+     "total": "351200"
+    },
+    {
+     "customer": "Underhill Restaurants Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "133200",
+      "31_60": "28800",
+      "61_90": "19600",
+      "over_90": "0"
+     },
+     "total": "181600"
+    },
+    {
+     "customer": "Valemount Restaurants, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "299200",
+      "31_60": "114000",
+      "61_90": "26000",
+      "over_90": "0"
+     },
+     "total": "439200"
+    },
+    {
+     "customer": "Westbrook Kitchens, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "308400",
+      "31_60": "134800",
+      "61_90": "24000",
+      "over_90": "14400"
+     },
+     "total": "481600"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "1577600"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "2034400"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "539856"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "406100",
+    "ineligible_over_age": "366000",
+    "ineligible_cross_aging": "209200",
+    "ineligible_contra": "20800",
+    "ineligible_concentration": "0",
+    "gross_ar": "4230900",
+    "total_ineligible_ar": "1002100",
+    "eligible_ar": "3228800",
+    "ar_availability": "2744480",
+    "gross_inventory": "4151856",
+    "ineligible_inventory": "539856",
+    "eligible_inventory": "3612000",
+    "inventory_availability_before_sublimit": "1806000",
+    "inventory_availability": "1806000",
+    "reserves": "50000",
+    "borrowing_base": "4500480",
+    "commitment": "5250000",
+    "lesser_of_base_and_commitment": "4500480",
+    "outstanding": "4582429",
+    "letters_of_credit": "0",
+    "availability": "-81949"
+   },
+   "outstanding": "4582429",
+   "letters_of_credit": "0",
+   "document_id": "briarstone-beverage.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "3989000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7020000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "3980000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7020000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "3888768",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6825000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "3965000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6825000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "4061000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6825000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "4178201",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6630000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "4205000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6630000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "4152000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6630000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "4157724",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6435000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "4175000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6435000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "4222000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6435000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "4221890",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6240000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "4242000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6240000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "4091000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6240000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "4093317",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6045000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "4080000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6045000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "4233000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6045000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "4215451",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5850000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "4306000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5850000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "4371000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5850000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "4409574",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5655000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "4348000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5655000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "4388000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5655000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "4397521",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5460000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "4369000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5460000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "4393000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5460000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "4299211",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5265000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "4332000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5265000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "4457000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5265000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "4449408",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5070000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "4543000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5070000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "4524000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5070000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "4582429",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4875000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "4555000",
+   "commitment": "5250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4875000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "briarstone-beverage.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/briarstone-beverage/credit-agreement.pdf",
+   "pages": 13,
+   "title": "Credit Agreement between Briarstone Beverage Company and Bank of Stoic",
+   "received_date": "2023-03-31",
+   "document_date": "2023-03-31"
+  },
+  {
+   "id": "briarstone-beverage.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/briarstone-beverage/afs-2024.pdf",
+   "pages": 7,
+   "title": "Briarstone Beverage Company audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-28",
+   "document_date": "2025-03-19",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,266,567"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "3,747,651"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "3,860,312"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "506,627"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "9,381,157"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "13,521,005"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "25,242,162"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "2,982,968"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "691,877"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,221,890"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "739,594"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "9,416,329"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,460,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "641,160"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "15,517,489"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "9,724,673"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,242,162"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "40,920,946"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "30,966,603"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "9,954,343"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "5,524,328"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,233,899"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "122,763"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,073,353"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "791,736"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "24,553"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,306,170"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "576,544"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,729,626"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,729,626"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,233,899"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(233,588)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "28,080"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,758,017"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,391,312)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,391,312)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "235,842"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(780,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(772,780)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,316,938)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "49,767"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "795,190"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "564,003"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "780,000"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,216,800",
+    "bs.accounts_receivable": "3,511,496",
+    "bs.inventory": "3,708,629",
+    "bs.other_current_assets": "486,720",
+    "bs.total_current_assets": "8,923,645",
+    "bs.net_ppe": "13,363,592",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "24,627,237",
+    "bs.accounts_payable": "2,865,758",
+    "bs.accrued_liabilities": "670,696",
+    "bs.revolver": "3,986,048",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "703,828",
+    "bs.total_current_liabilities": "9,006,330",
+    "bs.long_term_debt": "6,240,000",
+    "bs.other_noncurrent_liabilities": "613,080",
+    "bs.total_liabilities": "15,859,410",
+    "bs.total_equity": "8,767,827",
+    "bs.total_liabilities_and_equity": "24,627,237",
+    "is.revenue": "39,000,000",
+    "is.cogs": "29,398,864",
+    "is.gross_profit": "9,601,136",
+    "is.sga": "5,265,001",
+    "is.depreciation_amortization": "1,222,408",
+    "is.other_operating_expense": "117,001",
+    "is.operating_income": "2,996,726",
+    "is.interest_expense": "830,377",
+    "is.other_income_net": "23,401",
+    "is.pretax_income": "2,189,750",
+    "is.income_tax_expense": "547,438",
+    "is.net_income": "1,642,312",
+    "cf.net_income": "1,642,312",
+    "cf.depreciation_amortization": "1,222,408",
+    "cf.change_in_working_capital": "(28,160)",
+    "cf.other_operating": "28,080",
+    "cf.cfo": "2,864,640",
+    "cf.capex": "(1,326,000)",
+    "cf.cfi": "(1,326,000)",
+    "cf.revolver_net": "86,048",
+    "cf.term_debt_repayments": "(780,000)",
+    "cf.distributions": "(797,888)",
+    "cf.cff": "(1,491,840)",
+    "cf.net_change_in_cash": "46,800",
+    "sup.cash_interest_paid": "833,335",
+    "sup.cash_taxes_paid": "577,298",
+    "sup.scheduled_principal": "780,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/briarstone-beverage/afs-2025.pdf",
+   "pages": 7,
+   "title": "Briarstone Beverage Company audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-19",
+   "document_date": "2026-03-10",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,319,256"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "3,843,313"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "4,008,178"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "527,703"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "9,698,450"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "13,725,809"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "25,764,259"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "3,097,228"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "714,969"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,397,521"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "783,329"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "9,773,047"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,680,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "669,240"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "15,122,287"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "10,641,972"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,764,259"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "42,789,657"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "32,290,949"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "10,498,708"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "5,776,604"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,250,044"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "128,369"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,343,691"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "750,490"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "25,673"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,618,874"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "654,719"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,964,155"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,964,155"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,250,044"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(83,517)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "28,080"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,158,762"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,454,848)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,454,848)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "175,631"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(780,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,046,856)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,651,225)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "52,689"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "753,479"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "635,572"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "780,000"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,266,567",
+    "bs.accounts_receivable": "3,747,651",
+    "bs.inventory": "3,860,312",
+    "bs.other_current_assets": "506,627",
+    "bs.total_current_assets": "9,381,157",
+    "bs.net_ppe": "13,521,005",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "25,242,162",
+    "bs.accounts_payable": "2,982,968",
+    "bs.accrued_liabilities": "691,877",
+    "bs.revolver": "4,221,890",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "739,594",
+    "bs.total_current_liabilities": "9,416,329",
+    "bs.long_term_debt": "5,460,000",
+    "bs.other_noncurrent_liabilities": "641,160",
+    "bs.total_liabilities": "15,517,489",
+    "bs.total_equity": "9,724,673",
+    "bs.total_liabilities_and_equity": "25,242,162",
+    "is.revenue": "40,920,946",
+    "is.cogs": "30,966,603",
+    "is.gross_profit": "9,954,343",
+    "is.sga": "5,524,328",
+    "is.depreciation_amortization": "1,233,899",
+    "is.other_operating_expense": "122,763",
+    "is.operating_income": "3,073,353",
+    "is.interest_expense": "791,736",
+    "is.other_income_net": "24,553",
+    "is.pretax_income": "2,306,170",
+    "is.income_tax_expense": "576,544",
+    "is.net_income": "1,729,626",
+    "cf.net_income": "1,729,626",
+    "cf.depreciation_amortization": "1,233,899",
+    "cf.change_in_working_capital": "(233,588)",
+    "cf.other_operating": "28,080",
+    "cf.cfo": "2,758,017",
+    "cf.capex": "(1,391,312)",
+    "cf.cfi": "(1,391,312)",
+    "cf.revolver_net": "235,842",
+    "cf.term_debt_repayments": "(780,000)",
+    "cf.distributions": "(772,780)",
+    "cf.cff": "(1,316,938)",
+    "cf.net_change_in_cash": "49,767",
+    "sup.cash_interest_paid": "795,190",
+    "sup.cash_taxes_paid": "564,003",
+    "sup.scheduled_principal": "780,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/briarstone-beverage/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Briarstone Beverage Company interim financial statements, Q1 2025",
+   "received_date": "2025-05-12",
+   "document_date": "2025-05-08",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,227,995"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,835,382"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "3,724,986"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "491,198"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "9,279,561"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "13,557,954"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "25,177,515"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,878,398"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "672,044"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,093,317"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "722,710"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "9,146,469"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,265,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "648,180"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,059,649"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "10,117,866"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,177,515"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "10,233,293"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "7,725,113"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,508,180"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "1,381,495"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "310,983"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "30,700"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "785,002"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "192,559"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "6,140"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "598,583"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "149,646"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "448,937"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "448,937"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "310,983"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(78,263)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "7,020"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "688,677"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(347,932)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(347,932)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(128,573)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(195,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(55,744)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(379,317)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(38,572)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "193,299"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "148,529"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "195,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,166,630",
+    "bs.accounts_receivable": "3,451,947",
+    "bs.inventory": "3,535,561",
+    "bs.other_current_assets": "466,652",
+    "bs.total_current_assets": "8,620,790",
+    "bs.net_ppe": "13,386,774",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "24,347,564",
+    "bs.accounts_payable": "2,732,025",
+    "bs.accrued_liabilities": "644,760",
+    "bs.revolver": "3,888,768",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "680,593",
+    "bs.total_current_liabilities": "8,726,146",
+    "bs.long_term_debt": "6,045,000",
+    "bs.other_noncurrent_liabilities": "620,100",
+    "bs.total_liabilities": "15,391,246",
+    "bs.total_equity": "8,956,318",
+    "bs.total_liabilities_and_equity": "24,347,564",
+    "is.revenue": "9,721,920",
+    "is.cogs": "7,332,272",
+    "is.gross_profit": "2,389,648",
+    "is.sga": "1,312,459",
+    "is.depreciation_amortization": "307,363",
+    "is.other_operating_expense": "29,166",
+    "is.operating_income": "740,660",
+    "is.interest_expense": "201,835",
+    "is.other_income_net": "5,833",
+    "is.pretax_income": "544,658",
+    "is.income_tax_expense": "136,165",
+    "is.net_income": "408,493",
+    "cf.net_income": "408,493",
+    "cf.depreciation_amortization": "307,363",
+    "cf.change_in_working_capital": "69,781",
+    "cf.other_operating": "7,020",
+    "cf.cfo": "792,657",
+    "cf.capex": "(330,545)",
+    "cf.cfi": "(330,545)",
+    "cf.revolver_net": "(97,280)",
+    "cf.term_debt_repayments": "(195,000)",
+    "cf.distributions": "(220,002)",
+    "cf.cff": "(512,282)",
+    "cf.net_change_in_cash": "(50,170)",
+    "sup.cash_interest_paid": "202,937",
+    "sup.cash_taxes_paid": "135,988",
+    "sup.scheduled_principal": "195,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/briarstone-beverage/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Briarstone Beverage Company interim financial statements, Q2 2025",
+   "received_date": "2025-08-09",
+   "document_date": "2025-08-05",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,264,635"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,845,877"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "3,835,113"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "505,854"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "9,451,479"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "13,604,434"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "25,395,913"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,963,497"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "688,197"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,215,451"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "749,832"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "9,396,977"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,070,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "655,200"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,122,177"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "10,273,736"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,395,913"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "20,771,920"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "15,678,615"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,093,305"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,804,210"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "622,816"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "62,316"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,603,963"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "379,166"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "12,463"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,237,260"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "309,315"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "927,945"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "927,945"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "622,816"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(85,167)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "14,040"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,479,634"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(706,245)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(706,245)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(6,439)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(390,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(378,882)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(775,321)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(1,932)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "381,890"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "298,175"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "390,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,222,933",
+    "bs.accounts_receivable": "3,830,741",
+    "bs.inventory": "3,723,882",
+    "bs.other_current_assets": "489,173",
+    "bs.total_current_assets": "9,266,729",
+    "bs.net_ppe": "13,425,376",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "25,032,105",
+    "bs.accounts_payable": "2,877,545",
+    "bs.accrued_liabilities": "670,848",
+    "bs.revolver": "4,178,201",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "711,613",
+    "bs.total_current_liabilities": "9,218,207",
+    "bs.long_term_debt": "5,850,000",
+    "bs.other_noncurrent_liabilities": "627,120",
+    "bs.total_liabilities": "15,695,327",
+    "bs.total_equity": "9,336,778",
+    "bs.total_liabilities_and_equity": "25,032,105",
+    "is.revenue": "19,913,030",
+    "is.cogs": "15,055,095",
+    "is.gross_profit": "4,857,935",
+    "is.sga": "2,688,259",
+    "is.depreciation_amortization": "615,259",
+    "is.other_operating_expense": "59,739",
+    "is.operating_income": "1,494,678",
+    "is.interest_expense": "398,324",
+    "is.other_income_net": "11,948",
+    "is.pretax_income": "1,108,302",
+    "is.income_tax_expense": "277,076",
+    "is.net_income": "831,226",
+    "cf.net_income": "831,226",
+    "cf.depreciation_amortization": "615,259",
+    "cf.change_in_working_capital": "(317,227)",
+    "cf.other_operating": "14,040",
+    "cf.cfo": "1,143,298",
+    "cf.capex": "(677,043)",
+    "cf.cfi": "(677,043)",
+    "cf.revolver_net": "192,153",
+    "cf.term_debt_repayments": "(390,000)",
+    "cf.distributions": "(262,275)",
+    "cf.cff": "(460,122)",
+    "cf.net_change_in_cash": "6,133",
+    "sup.cash_interest_paid": "401,208",
+    "sup.cash_taxes_paid": "272,153",
+    "sup.scheduled_principal": "390,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/briarstone-beverage/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Briarstone Beverage Company interim financial statements, Q3 2025",
+   "received_date": "2025-11-05",
+   "document_date": "2025-11-01",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,322,872"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,926,333"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "4,002,153"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "529,149"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "9,780,507"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "13,666,346"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "25,786,853"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,092,573"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "716,659"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,409,574"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "795,068"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "9,793,874"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,875,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "662,220"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,331,094"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "10,455,759"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,786,853"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "31,795,854"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "23,978,535"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,817,319"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,292,441"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "935,718"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "95,388"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,493,772"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "564,678"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "19,077"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,948,171"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "487,043"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,461,128"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,461,128"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "935,718"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(153,184)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "21,060"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,264,722"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,081,059)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,081,059)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "187,684"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(585,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(730,042)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,127,358)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "56,305"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "567,767"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "457,844"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "585,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,254,383",
+    "bs.accounts_receivable": "3,665,776",
+    "bs.inventory": "3,812,087",
+    "bs.other_current_assets": "501,753",
+    "bs.total_current_assets": "9,233,999",
+    "bs.net_ppe": "13,472,000",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "25,045,999",
+    "bs.accounts_payable": "2,945,703",
+    "bs.accrued_liabilities": "687,132",
+    "bs.revolver": "4,157,724",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "736,318",
+    "bs.total_current_liabilities": "9,306,877",
+    "bs.long_term_debt": "5,655,000",
+    "bs.other_noncurrent_liabilities": "634,140",
+    "bs.total_liabilities": "15,596,017",
+    "bs.total_equity": "9,449,982",
+    "bs.total_liabilities_and_equity": "25,045,999",
+    "is.revenue": "30,366,220",
+    "is.cogs": "22,960,843",
+    "is.gross_profit": "7,405,377",
+    "is.sga": "4,099,440",
+    "is.depreciation_amortization": "924,043",
+    "is.other_operating_expense": "91,099",
+    "is.operating_income": "2,290,795",
+    "is.interest_expense": "596,959",
+    "is.other_income_net": "18,220",
+    "is.pretax_income": "1,712,056",
+    "is.income_tax_expense": "428,015",
+    "is.net_income": "1,284,041",
+    "cf.net_income": "1,284,041",
+    "cf.depreciation_amortization": "924,043",
+    "cf.change_in_working_capital": "(143,900)",
+    "cf.other_operating": "21,060",
+    "cf.cfo": "2,085,244",
+    "cf.capex": "(1,032,451)",
+    "cf.cfi": "(1,032,451)",
+    "cf.revolver_net": "171,676",
+    "cf.term_debt_repayments": "(585,000)",
+    "cf.distributions": "(601,886)",
+    "cf.cff": "(1,015,210)",
+    "cf.net_change_in_cash": "37,583",
+    "sup.cash_interest_paid": "599,127",
+    "sup.cash_taxes_paid": "413,064",
+    "sup.scheduled_principal": "585,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/briarstone-beverage/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Briarstone Beverage Company interim financial statements, Q1 2026",
+   "received_date": "2026-04-26",
+   "document_date": "2026-04-22",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,289,763"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,863,401"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "3,927,383"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "515,905"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "9,596,452"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "13,775,548"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "25,712,000"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,034,796"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "699,139"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,299,211"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "759,036"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "9,572,182"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,485,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "676,260"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,733,442"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "10,978,558"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,712,000"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "10,748,028"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "8,144,856"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,603,172"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "1,450,984"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "315,694"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "32,244"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "804,250"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "182,117"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "6,449"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "628,582"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "157,146"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "471,436"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "471,436"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "315,694"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(30,050)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "7,020"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "764,100"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(365,433)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(365,433)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(98,310)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(195,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(134,850)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(428,160)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(29,493)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "183,348"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "167,676"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "195,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,227,995",
+    "bs.accounts_receivable": "3,835,382",
+    "bs.inventory": "3,724,986",
+    "bs.other_current_assets": "491,198",
+    "bs.total_current_assets": "9,279,561",
+    "bs.net_ppe": "13,557,954",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "25,177,515",
+    "bs.accounts_payable": "2,878,398",
+    "bs.accrued_liabilities": "672,044",
+    "bs.revolver": "4,093,317",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "722,710",
+    "bs.total_current_liabilities": "9,146,469",
+    "bs.long_term_debt": "5,265,000",
+    "bs.other_noncurrent_liabilities": "648,180",
+    "bs.total_liabilities": "15,059,649",
+    "bs.total_equity": "10,117,866",
+    "bs.total_liabilities_and_equity": "25,177,515",
+    "is.revenue": "10,233,293",
+    "is.cogs": "7,725,113",
+    "is.gross_profit": "2,508,180",
+    "is.sga": "1,381,495",
+    "is.depreciation_amortization": "310,983",
+    "is.other_operating_expense": "30,700",
+    "is.operating_income": "785,002",
+    "is.interest_expense": "192,559",
+    "is.other_income_net": "6,140",
+    "is.pretax_income": "598,583",
+    "is.income_tax_expense": "149,646",
+    "is.net_income": "448,937",
+    "cf.net_income": "448,937",
+    "cf.depreciation_amortization": "310,983",
+    "cf.change_in_working_capital": "(78,263)",
+    "cf.other_operating": "7,020",
+    "cf.cfo": "688,677",
+    "cf.capex": "(347,932)",
+    "cf.cfi": "(347,932)",
+    "cf.revolver_net": "(128,573)",
+    "cf.term_debt_repayments": "(195,000)",
+    "cf.distributions": "(55,744)",
+    "cf.cff": "(379,317)",
+    "cf.net_change_in_cash": "(38,572)",
+    "sup.cash_interest_paid": "193,299",
+    "sup.cash_taxes_paid": "148,529",
+    "sup.scheduled_principal": "195,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/briarstone-beverage/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Briarstone Beverage Company interim financial statements, Q2 2026",
+   "received_date": "2026-07-31",
+   "document_date": "2026-07-27",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,334,823"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,010,563"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "4,031,871"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "533,929"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "9,911,186"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "13,836,910"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "26,088,096"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,115,537"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "719,654"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,449,408"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "807,919"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "9,872,518"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,290,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "683,280"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,845,798"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,242,298"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "26,088,096"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "21,871,549"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "16,506,407"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,365,142"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,952,659"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "632,532"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "65,615"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,714,336"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "358,868"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "13,123"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,368,591"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "342,148"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,026,443"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,026,443"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "632,532"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(149,585)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "14,040"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,523,430"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(743,633)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(743,633)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "51,887"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(390,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(426,117)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(764,230)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "15,567"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "361,888"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "324,822"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "390,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,264,635",
+    "bs.accounts_receivable": "3,845,877",
+    "bs.inventory": "3,835,113",
+    "bs.other_current_assets": "505,854",
+    "bs.total_current_assets": "9,451,479",
+    "bs.net_ppe": "13,604,434",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "25,395,913",
+    "bs.accounts_payable": "2,963,497",
+    "bs.accrued_liabilities": "688,197",
+    "bs.revolver": "4,215,451",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "749,832",
+    "bs.total_current_liabilities": "9,396,977",
+    "bs.long_term_debt": "5,070,000",
+    "bs.other_noncurrent_liabilities": "655,200",
+    "bs.total_liabilities": "15,122,177",
+    "bs.total_equity": "10,273,736",
+    "bs.total_liabilities_and_equity": "25,395,913",
+    "is.revenue": "20,771,920",
+    "is.cogs": "15,678,615",
+    "is.gross_profit": "5,093,305",
+    "is.sga": "2,804,210",
+    "is.depreciation_amortization": "622,816",
+    "is.other_operating_expense": "62,316",
+    "is.operating_income": "1,603,963",
+    "is.interest_expense": "379,166",
+    "is.other_income_net": "12,463",
+    "is.pretax_income": "1,237,260",
+    "is.income_tax_expense": "309,315",
+    "is.net_income": "927,945",
+    "cf.net_income": "927,945",
+    "cf.depreciation_amortization": "622,816",
+    "cf.change_in_working_capital": "(85,167)",
+    "cf.other_operating": "14,040",
+    "cf.cfo": "1,479,634",
+    "cf.capex": "(706,245)",
+    "cf.cfi": "(706,245)",
+    "cf.revolver_net": "(6,439)",
+    "cf.term_debt_repayments": "(390,000)",
+    "cf.distributions": "(378,882)",
+    "cf.cff": "(775,321)",
+    "cf.net_change_in_cash": "(1,932)",
+    "sup.cash_interest_paid": "381,890",
+    "sup.cash_taxes_paid": "298,175",
+    "sup.scheduled_principal": "390,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/briarstone-beverage/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Briarstone Beverage Company interim financial statements, Q3 2026",
+   "received_date": "2026-10-31",
+   "document_date": "2026-10-27",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,374,729"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "4,230,900"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "4,151,856"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "549,891"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "10,307,376"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "13,908,167"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,950,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "390,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "26,555,543"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,208,253"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "739,224"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,582,429"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "780,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "835,834"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,145,740"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,095,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "690,300"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,931,040"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,624,503"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "26,555,543"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "33,327,621"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "25,116,791"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,210,830"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,499,229"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "950,781"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "99,983"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,660,837"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "535,068"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "19,997"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,145,766"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "536,442"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,609,324"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,609,324"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "950,781"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(365,668)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "21,060"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,215,497"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,133,139)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,133,139)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "184,908"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(585,000)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(626,793)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,026,885)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "55,473"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "538,272"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "509,824"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "585,000"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,322,872",
+    "bs.accounts_receivable": "3,926,333",
+    "bs.inventory": "4,002,153",
+    "bs.other_current_assets": "529,149",
+    "bs.total_current_assets": "9,780,507",
+    "bs.net_ppe": "13,666,346",
+    "bs.intangibles": "1,950,000",
+    "bs.other_noncurrent_assets": "390,000",
+    "bs.total_assets": "25,786,853",
+    "bs.accounts_payable": "3,092,573",
+    "bs.accrued_liabilities": "716,659",
+    "bs.revolver": "4,409,574",
+    "bs.cpltd": "780,000",
+    "bs.other_current_liabilities": "795,068",
+    "bs.total_current_liabilities": "9,793,874",
+    "bs.long_term_debt": "4,875,000",
+    "bs.other_noncurrent_liabilities": "662,220",
+    "bs.total_liabilities": "15,331,094",
+    "bs.total_equity": "10,455,759",
+    "bs.total_liabilities_and_equity": "25,786,853",
+    "is.revenue": "31,795,854",
+    "is.cogs": "23,978,535",
+    "is.gross_profit": "7,817,319",
+    "is.sga": "4,292,441",
+    "is.depreciation_amortization": "935,718",
+    "is.other_operating_expense": "95,388",
+    "is.operating_income": "2,493,772",
+    "is.interest_expense": "564,678",
+    "is.other_income_net": "19,077",
+    "is.pretax_income": "1,948,171",
+    "is.income_tax_expense": "487,043",
+    "is.net_income": "1,461,128",
+    "cf.net_income": "1,461,128",
+    "cf.depreciation_amortization": "935,718",
+    "cf.change_in_working_capital": "(153,184)",
+    "cf.other_operating": "21,060",
+    "cf.cfo": "2,264,722",
+    "cf.capex": "(1,081,059)",
+    "cf.cfi": "(1,081,059)",
+    "cf.revolver_net": "187,684",
+    "cf.term_debt_repayments": "(585,000)",
+    "cf.distributions": "(730,042)",
+    "cf.cff": "(1,127,358)",
+    "cf.net_change_in_cash": "56,305",
+    "sup.cash_interest_paid": "567,767",
+    "sup.cash_taxes_paid": "457,844",
+    "sup.scheduled_principal": "585,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/briarstone-beverage/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, Q1 2025",
+   "received_date": "2025-05-12",
+   "document_date": "2025-05-10",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/briarstone-beverage/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, Q2 2025",
+   "received_date": "2025-08-09",
+   "document_date": "2025-08-07",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/briarstone-beverage/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, Q3 2025",
+   "received_date": "2025-11-05",
+   "document_date": "2025-11-03",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/briarstone-beverage/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, FY2025",
+   "received_date": "2026-02-05",
+   "document_date": "2026-02-03",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/briarstone-beverage/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, Q1 2026",
+   "received_date": "2026-04-26",
+   "document_date": "2026-04-24",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/briarstone-beverage/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, Q2 2026",
+   "received_date": "2026-07-31",
+   "document_date": "2026-07-29",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/briarstone-beverage/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Briarstone Beverage Company compliance certificate, Q3 2026",
+   "received_date": "2026-10-31",
+   "document_date": "2026-10-29",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "briarstone-beverage.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/briarstone-beverage/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Briarstone Beverage Company borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-17",
+   "document_date": "2026-08-15",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "briarstone-beverage.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/briarstone-beverage/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Briarstone Beverage Company borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-16",
+   "document_date": "2026-09-14",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "briarstone-beverage.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/briarstone-beverage/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Briarstone Beverage Company borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-11",
+   "document_date": "2026-10-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "over_advance",
+  "description": "Over-advance: a large customer has cross-aged out of the borrowing base, and the line outstanding now exceeds the borrowing base.",
+  "details": {
+   "document_id": "briarstone-beverage.bbc-2026-09-30",
+   "over_advance_amount": "81949"
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.53",
+    "pass": true,
+    "headroom": "0.2750",
+    "reported_value": "1.53",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1770070"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "782460"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "590025"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1237519"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4380074"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1408699"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "576544"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2394831"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "785552"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1565552"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.31",
+    "pass": true,
+    "headroom": "0.2300",
+    "reported_value": "2.31",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "10138317"
+     },
+     {
+      "label": "Net income",
+      "amount": "1770070"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "782460"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "590025"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1237519"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4380074"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.57",
+    "pass": true,
+    "headroom": "0.3083",
+    "reported_value": "1.57",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1826345"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "772578"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "608783"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1241456"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4449162"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1420514"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "590025"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2438623"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "775872"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1555872"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.26",
+    "pass": true,
+    "headroom": "0.2467",
+    "reported_value": "2.26",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "10065451"
+     },
+     {
+      "label": "Net income",
+      "amount": "1826345"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "772578"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "608783"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1241456"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4449162"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.62",
+    "pass": true,
+    "headroom": "0.3500",
+    "reported_value": "1.62",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1906713"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "759455"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "635572"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1245574"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4547314"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1439920"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "608783"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2498611"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "763830"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1543830"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.21",
+    "pass": true,
+    "headroom": "0.2633",
+    "reported_value": "2.21",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "10064574"
+     },
+     {
+      "label": "Net income",
+      "amount": "1906713"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "759455"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "635572"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1245574"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4547314"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.65",
+    "pass": true,
+    "headroom": "0.3750",
+    "reported_value": "1.65",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1964155"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "750490"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "654719"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1250044"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4619408"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1454848"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "635572"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2528988"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "753479"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1533479"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.13",
+    "pass": true,
+    "headroom": "0.2900",
+    "reported_value": "2.13",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9857521"
+     },
+     {
+      "label": "Net income",
+      "amount": "1964155"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "750490"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "654719"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1250044"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4619408"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.65",
+    "pass": true,
+    "headroom": "0.3750",
+    "reported_value": "1.65",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1986654"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "740048"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "662219"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1254755"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4643676"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1472349"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "654719"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2516608"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "743528"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1523528"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.06",
+    "pass": true,
+    "headroom": "0.3133",
+    "reported_value": "2.06",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9564211"
+     },
+     {
+      "label": "Net income",
+      "amount": "1986654"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "740048"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "662219"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1254755"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4643676"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.71",
+    "pass": true,
+    "headroom": "0.4250",
+    "reported_value": "1.71",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2062653"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "730192"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "687552"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1259760"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4740157"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1492236"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "662219"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2585702"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "733477"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1513477"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.01",
+    "pass": true,
+    "headroom": "0.3300",
+    "reported_value": "2.01",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9519408"
+     },
+     {
+      "label": "Net income",
+      "amount": "2062653"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "730192"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "687552"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1259760"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4740157"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.73",
+    "pass": true,
+    "headroom": "0.4417",
+    "reported_value": "1.73",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2112351"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "720880"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "704118"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1265107"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4802456"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1506928"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "687552"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2607976"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "723984"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "780000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1503984"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "briarstone-beverage-rlc",
+    "terms_version_id": "tv-briarstone-beverage-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "1.97",
+    "pass": true,
+    "headroom": "0.3433",
+    "reported_value": "1.97",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9457429"
+     },
+     {
+      "label": "Net income",
+      "amount": "2112351"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "720880"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "704118"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1265107"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4802456"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "briarstone-beverage-rlc",
+    "calculated": {
+     "ineligible_excluded": "392009",
+     "ineligible_over_age": "24000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "20000",
+     "ineligible_concentration": "0",
+     "gross_ar": "4084009",
+     "total_ineligible_ar": "436009",
+     "eligible_ar": "3648000",
+     "ar_availability": "3100800",
+     "gross_inventory": "4071866",
+     "ineligible_inventory": "529466",
+     "eligible_inventory": "3542400",
+     "inventory_availability_before_sublimit": "1771200",
+     "inventory_availability": "1771200",
+     "reserves": "50000",
+     "borrowing_base": "4822000",
+     "commitment": "5250000",
+     "lesser_of_base_and_commitment": "4822000",
+     "outstanding": "4543000",
+     "letters_of_credit": "0",
+     "availability": "279000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "279000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "briarstone-beverage-rlc",
+    "calculated": {
+     "ineligible_excluded": "398654",
+     "ineligible_over_age": "24800",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "20400",
+     "ineligible_concentration": "0",
+     "gross_ar": "4157454",
+     "total_ineligible_ar": "443854",
+     "eligible_ar": "3713600",
+     "ar_availability": "3156560",
+     "gross_inventory": "4111861",
+     "ineligible_inventory": "534661",
+     "eligible_inventory": "3577200",
+     "inventory_availability_before_sublimit": "1788600",
+     "inventory_availability": "1788600",
+     "reserves": "50000",
+     "borrowing_base": "4895160",
+     "commitment": "5250000",
+     "lesser_of_base_and_commitment": "4895160",
+     "outstanding": "4524000",
+     "letters_of_credit": "0",
+     "availability": "371160"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "371160"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "briarstone-beverage-rlc",
+    "calculated": {
+     "ineligible_excluded": "406100",
+     "ineligible_over_age": "366000",
+     "ineligible_cross_aging": "209200",
+     "ineligible_contra": "20800",
+     "ineligible_concentration": "0",
+     "gross_ar": "4230900",
+     "total_ineligible_ar": "1002100",
+     "eligible_ar": "3228800",
+     "ar_availability": "2744480",
+     "gross_inventory": "4151856",
+     "ineligible_inventory": "539856",
+     "eligible_inventory": "3612000",
+     "inventory_availability_before_sublimit": "1806000",
+     "inventory_availability": "1806000",
+     "reserves": "50000",
+     "borrowing_base": "4500480",
+     "commitment": "5250000",
+     "lesser_of_base_and_commitment": "4500480",
+     "outstanding": "4582429",
+     "letters_of_credit": "0",
+     "availability": "-81949"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": true,
+    "availability": "-81949"
+   }
+  ],
+  "signals": [
+   {
+    "rule": "availability_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.0156",
+    "trigger": "0.10",
+    "detail": {}
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "bb.over_advance",
+    "severity": "high",
+    "period_end": "2026-09-30",
+    "subject": "borrowing_base:2026-09-30",
+    "summary": "Line outstanding exceeds the borrowing base."
+   }
+  ]
+ }
+}

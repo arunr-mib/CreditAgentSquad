@@ -1,0 +1,5761 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "northgale-electrical",
+  "name": "Northgale Electrical Wholesale, Inc.",
+  "legal_form": "corporation",
+  "industry": "distribution",
+  "city": "Tulsa",
+  "state": "OK",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Marcus Oyelaran",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 5,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Bertrand Skaggs",
+  "auditor": "Greaves & Tolland, P.C."
+ },
+ "facilities": [
+  {
+   "id": "northgale-electrical-rlc",
+   "borrower_id": "northgale-electrical",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "13000000",
+   "original_amount": "13000000",
+   "closing_date": "2022-12-09",
+   "maturity_date": "2028-12-09",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-northgale-electrical-1",
+   "facility_id": "northgale-electrical-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-12-09",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2022-12-15",
+   "warnings": [],
+   "source_documents": [
+    "northgale-electrical.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "interest_coverage",
+      "name": "Interest Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [],
+       "denominator": [
+        "interest_expense"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "northgale-electrical.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Interest Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "northgale-electrical.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Interest Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period to (b) interest expense for such period."
+       }
+      ]
+     },
+     {
+      "id": "debt_to_tnw",
+      "name": "Total Liabilities to Tangible Net Worth Ratio",
+      "archetype": "debt_to_tnw",
+      "params": {},
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "northgale-electrical.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Liabilities to Tangible Net Worth Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "northgale-electrical.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Liabilities to Tangible Net Worth Ratio\" means, as of any date, the ratio of (a) total liabilities of the Borrower to (b) Tangible Net Worth as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "northgale-electrical.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "northgale-electrical.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "northgale-electrical.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "northgale-electrical.credit-agreement",
+       "section": "5.1(d)",
+       "page": 7,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "13000000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "5000000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "150000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "northgale-electrical.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $5,000,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "northgale-electrical.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "northgale-electrical.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "northgale-electrical.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "northgale-electrical.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "northgale-electrical.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $150,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "northgale-electrical.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $13,000,000."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "21398000",
+    "is.cogs": "16859000",
+    "is.gross_profit": "4539000",
+    "is.sga": "3210000",
+    "is.depreciation_amortization": "205000",
+    "is.other_operating_expense": "64000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1060000",
+    "is.interest_expense": "161000",
+    "is.other_income_net": "13000",
+    "is.pretax_income": "912000",
+    "is.income_tax_expense": "228000",
+    "is.net_income": "684000",
+    "bs.cash": "2568000",
+    "bs.accounts_receivable": "9450000",
+    "bs.inventory": "9607000",
+    "bs.other_current_assets": "1027000",
+    "bs.total_current_assets": "22652000",
+    "bs.net_ppe": "6238000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "33290000",
+    "bs.accounts_payable": "6836000",
+    "bs.accrued_liabilities": "1466000",
+    "bs.revolver": "7806000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1426000",
+    "bs.total_current_liabilities": "17534000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1400000",
+    "bs.total_liabilities": "18934000",
+    "bs.total_equity": "14356000",
+    "bs.total_liabilities_and_equity": "33290000",
+    "cf.net_income": "684000",
+    "cf.depreciation_amortization": "205000",
+    "cf.change_in_working_capital": "317000",
+    "cf.other_operating": "16000",
+    "cf.cfo": "1222000",
+    "cf.capex": "214000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-214000",
+    "cf.revolver_net": "-514000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "513000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1027000",
+    "cf.net_change_in_cash": "-19000",
+    "sup.cash_interest_paid": "167000",
+    "sup.cash_taxes_paid": "238000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "9652000",
+    "cash.beginning_of_year": "2587000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "45193000",
+    "is.cogs": "35464000",
+    "is.gross_profit": "9729000",
+    "is.sga": "6779000",
+    "is.depreciation_amortization": "410000",
+    "is.other_operating_expense": "135000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2405000",
+    "is.interest_expense": "312000",
+    "is.other_income_net": "27000",
+    "is.pretax_income": "2120000",
+    "is.income_tax_expense": "530000",
+    "is.net_income": "1590000",
+    "bs.cash": "2855000",
+    "bs.accounts_receivable": "10561000",
+    "bs.inventory": "10602000",
+    "bs.other_current_assets": "1142000",
+    "bs.total_current_assets": "25160000",
+    "bs.net_ppe": "6271000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "35831000",
+    "bs.accounts_payable": "7544000",
+    "bs.accrued_liabilities": "1620000",
+    "bs.revolver": "9034000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1635000",
+    "bs.total_current_liabilities": "19833000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1416000",
+    "bs.total_liabilities": "21249000",
+    "bs.total_equity": "14582000",
+    "bs.total_liabilities_and_equity": "35831000",
+    "cf.net_income": "1590000",
+    "cf.depreciation_amortization": "410000",
+    "cf.change_in_working_capital": "-833000",
+    "cf.other_operating": "32000",
+    "cf.cfo": "1199000",
+    "cf.capex": "452000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-452000",
+    "cf.revolver_net": "714000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1193000",
+    "cf.other_financing": "0",
+    "cf.cff": "-479000",
+    "cf.net_change_in_cash": "268000",
+    "sup.cash_interest_paid": "322000",
+    "sup.cash_taxes_paid": "466000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "9878000",
+    "cash.beginning_of_year": "2587000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "69205000",
+    "is.cogs": "54294000",
+    "is.gross_profit": "14911000",
+    "is.sga": "10381000",
+    "is.depreciation_amortization": "616000",
+    "is.other_operating_expense": "207000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3707000",
+    "is.interest_expense": "487000",
+    "is.other_income_net": "41000",
+    "is.pretax_income": "3261000",
+    "is.income_tax_expense": "815000",
+    "is.net_income": "2446000",
+    "bs.cash": "2881000",
+    "bs.accounts_receivable": "10921000",
+    "bs.inventory": "10731000",
+    "bs.other_current_assets": "1153000",
+    "bs.total_current_assets": "25686000",
+    "bs.net_ppe": "6305000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "36391000",
+    "bs.accounts_payable": "7635000",
+    "bs.accrued_liabilities": "1643000",
+    "bs.revolver": "9255000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1630000",
+    "bs.total_current_liabilities": "20163000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1432000",
+    "bs.total_liabilities": "21595000",
+    "bs.total_equity": "14796000",
+    "bs.total_liabilities_and_equity": "36391000",
+    "cf.net_income": "2446000",
+    "cf.depreciation_amortization": "616000",
+    "cf.change_in_working_capital": "-1224000",
+    "cf.other_operating": "48000",
+    "cf.cfo": "1886000",
+    "cf.capex": "692000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-692000",
+    "cf.revolver_net": "935000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1835000",
+    "cf.other_financing": "0",
+    "cf.cff": "-900000",
+    "cf.net_change_in_cash": "294000",
+    "sup.cash_interest_paid": "489000",
+    "sup.cash_taxes_paid": "768000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "10092000",
+    "cash.beginning_of_year": "2587000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "91679000",
+    "is.cogs": "72004000",
+    "is.gross_profit": "19675000",
+    "is.sga": "13752000",
+    "is.depreciation_amortization": "823000",
+    "is.other_operating_expense": "274000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4826000",
+    "is.interest_expense": "666000",
+    "is.other_income_net": "54000",
+    "is.pretax_income": "4214000",
+    "is.income_tax_expense": "1053000",
+    "is.net_income": "3161000",
+    "bs.cash": "2697000",
+    "bs.accounts_receivable": "10123000",
+    "bs.inventory": "10092000",
+    "bs.other_current_assets": "1079000",
+    "bs.total_current_assets": "23991000",
+    "bs.net_ppe": "6323000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "34714000",
+    "bs.accounts_payable": "7181000",
+    "bs.accrued_liabilities": "1543000",
+    "bs.revolver": "8070000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1497000",
+    "bs.total_current_liabilities": "18291000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1448000",
+    "bs.total_liabilities": "19739000",
+    "bs.total_equity": "14975000",
+    "bs.total_liabilities_and_equity": "34714000",
+    "cf.net_income": "3161000",
+    "cf.depreciation_amortization": "823000",
+    "cf.change_in_working_capital": "-400000",
+    "cf.other_operating": "64000",
+    "cf.cfo": "3648000",
+    "cf.capex": "917000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-917000",
+    "cf.revolver_net": "-250000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "2371000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2621000",
+    "cf.net_change_in_cash": "110000",
+    "sup.cash_interest_paid": "666000",
+    "sup.cash_taxes_paid": "1053000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "10271000",
+    "cash.beginning_of_year": "2587000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "22440000",
+    "is.cogs": "17611000",
+    "is.gross_profit": "4829000",
+    "is.sga": "3366000",
+    "is.depreciation_amortization": "208000",
+    "is.other_operating_expense": "67000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1188000",
+    "is.interest_expense": "156000",
+    "is.other_income_net": "13000",
+    "is.pretax_income": "1045000",
+    "is.income_tax_expense": "261000",
+    "is.net_income": "784000",
+    "bs.cash": "2693000",
+    "bs.accounts_receivable": "9984000",
+    "bs.inventory": "10036000",
+    "bs.other_current_assets": "1077000",
+    "bs.total_current_assets": "23790000",
+    "bs.net_ppe": "6339000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "34529000",
+    "bs.accounts_payable": "7141000",
+    "bs.accrued_liabilities": "1533000",
+    "bs.revolver": "7702000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1518000",
+    "bs.total_current_liabilities": "17894000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1464000",
+    "bs.total_liabilities": "19358000",
+    "bs.total_equity": "15171000",
+    "bs.total_liabilities_and_equity": "34529000",
+    "cf.net_income": "784000",
+    "cf.depreciation_amortization": "208000",
+    "cf.change_in_working_capital": "168000",
+    "cf.other_operating": "16000",
+    "cf.cfo": "1176000",
+    "cf.capex": "224000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-224000",
+    "cf.revolver_net": "-368000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "588000",
+    "cf.other_financing": "0",
+    "cf.cff": "-956000",
+    "cf.net_change_in_cash": "-4000",
+    "sup.cash_interest_paid": "164000",
+    "sup.cash_taxes_paid": "238000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "10467000",
+    "cash.beginning_of_year": "2697000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "47249000",
+    "is.cogs": "37054000",
+    "is.gross_profit": "10195000",
+    "is.sga": "7087000",
+    "is.depreciation_amortization": "416000",
+    "is.other_operating_expense": "141000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2551000",
+    "is.interest_expense": "305000",
+    "is.other_income_net": "28000",
+    "is.pretax_income": "2274000",
+    "is.income_tax_expense": "568000",
+    "is.net_income": "1706000",
+    "bs.cash": "2977000",
+    "bs.accounts_receivable": "11256000",
+    "bs.inventory": "11080000",
+    "bs.other_current_assets": "1191000",
+    "bs.total_current_assets": "26504000",
+    "bs.net_ppe": "6379000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "37283000",
+    "bs.accounts_payable": "7884000",
+    "bs.accrued_liabilities": "1687000",
+    "bs.revolver": "9135000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1696000",
+    "bs.total_current_liabilities": "20402000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1480000",
+    "bs.total_liabilities": "21882000",
+    "bs.total_equity": "15401000",
+    "bs.total_liabilities_and_equity": "37283000",
+    "cf.net_income": "1706000",
+    "cf.depreciation_amortization": "416000",
+    "cf.change_in_working_capital": "-1187000",
+    "cf.other_operating": "32000",
+    "cf.cfo": "967000",
+    "cf.capex": "472000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-472000",
+    "cf.revolver_net": "1065000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1280000",
+    "cf.other_financing": "0",
+    "cf.cff": "-215000",
+    "cf.net_change_in_cash": "280000",
+    "sup.cash_interest_paid": "315000",
+    "sup.cash_taxes_paid": "499000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "10697000",
+    "cash.beginning_of_year": "2697000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "72166000",
+    "is.cogs": "56694000",
+    "is.gross_profit": "15472000",
+    "is.sga": "10825000",
+    "is.depreciation_amortization": "626000",
+    "is.other_operating_expense": "216000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3805000",
+    "is.interest_expense": "482000",
+    "is.other_income_net": "43000",
+    "is.pretax_income": "3366000",
+    "is.income_tax_expense": "841000",
+    "is.net_income": "2525000",
+    "bs.cash": "2990000",
+    "bs.accounts_receivable": "11441000",
+    "bs.inventory": "11192000",
+    "bs.other_current_assets": "1196000",
+    "bs.total_current_assets": "26819000",
+    "bs.net_ppe": "6418000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "37637000",
+    "bs.accounts_payable": "7964000",
+    "bs.accrued_liabilities": "1704000",
+    "bs.revolver": "9199000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1668000",
+    "bs.total_current_liabilities": "20535000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1496000",
+    "bs.total_liabilities": "22031000",
+    "bs.total_equity": "15606000",
+    "bs.total_liabilities_and_equity": "37637000",
+    "cf.net_income": "2525000",
+    "cf.depreciation_amortization": "626000",
+    "cf.change_in_working_capital": "-1420000",
+    "cf.other_operating": "48000",
+    "cf.cfo": "1779000",
+    "cf.capex": "721000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-721000",
+    "cf.revolver_net": "1129000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1894000",
+    "cf.other_financing": "0",
+    "cf.cff": "-765000",
+    "cf.net_change_in_cash": "293000",
+    "sup.cash_interest_paid": "483000",
+    "sup.cash_taxes_paid": "806000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "10902000",
+    "cash.beginning_of_year": "2697000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "95809000",
+    "is.cogs": "75329000",
+    "is.gross_profit": "20480000",
+    "is.sga": "14371000",
+    "is.depreciation_amortization": "837000",
+    "is.other_operating_expense": "287000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4985000",
+    "is.interest_expense": "660000",
+    "is.other_income_net": "57000",
+    "is.pretax_income": "4382000",
+    "is.income_tax_expense": "1095000",
+    "is.net_income": "3287000",
+    "bs.cash": "2837000",
+    "bs.accounts_receivable": "10830000",
+    "bs.inventory": "10619000",
+    "bs.other_current_assets": "1135000",
+    "bs.total_current_assets": "25421000",
+    "bs.net_ppe": "6443000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "36264000",
+    "bs.accounts_payable": "7556000",
+    "bs.accrued_liabilities": "1619000",
+    "bs.revolver": "8203000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1578000",
+    "bs.total_current_liabilities": "18956000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1512000",
+    "bs.total_liabilities": "20468000",
+    "bs.total_equity": "15796000",
+    "bs.total_liabilities_and_equity": "36264000",
+    "cf.net_income": "3287000",
+    "cf.depreciation_amortization": "837000",
+    "cf.change_in_working_capital": "-758000",
+    "cf.other_operating": "64000",
+    "cf.cfo": "3430000",
+    "cf.capex": "957000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-957000",
+    "cf.revolver_net": "133000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "2466000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2333000",
+    "cf.net_change_in_cash": "140000",
+    "sup.cash_interest_paid": "661000",
+    "sup.cash_taxes_paid": "1079000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "11092000",
+    "cash.beginning_of_year": "2697000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "23239000",
+    "is.cogs": "18226000",
+    "is.gross_profit": "5013000",
+    "is.sga": "3486000",
+    "is.depreciation_amortization": "212000",
+    "is.other_operating_expense": "70000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1245000",
+    "is.interest_expense": "159000",
+    "is.other_income_net": "14000",
+    "is.pretax_income": "1100000",
+    "is.income_tax_expense": "275000",
+    "is.net_income": "825000",
+    "bs.cash": "2789000",
+    "bs.accounts_receivable": "10594000",
+    "bs.inventory": "10386000",
+    "bs.other_current_assets": "1115000",
+    "bs.total_current_assets": "24884000",
+    "bs.net_ppe": "6463000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "35747000",
+    "bs.accounts_payable": "7390000",
+    "bs.accrued_liabilities": "1587000",
+    "bs.revolver": "7664000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1576000",
+    "bs.total_current_liabilities": "18217000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1528000",
+    "bs.total_liabilities": "19745000",
+    "bs.total_equity": "16002000",
+    "bs.total_liabilities_and_equity": "35747000",
+    "cf.net_income": "825000",
+    "cf.depreciation_amortization": "212000",
+    "cf.change_in_working_capital": "289000",
+    "cf.other_operating": "16000",
+    "cf.cfo": "1342000",
+    "cf.capex": "232000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-232000",
+    "cf.revolver_net": "-539000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "619000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1158000",
+    "cf.net_change_in_cash": "-48000",
+    "sup.cash_interest_paid": "165000",
+    "sup.cash_taxes_paid": "254000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "11298000",
+    "cash.beginning_of_year": "2837000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "49457000",
+    "is.cogs": "38878000",
+    "is.gross_profit": "10579000",
+    "is.sga": "7419000",
+    "is.depreciation_amortization": "424000",
+    "is.other_operating_expense": "149000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2587000",
+    "is.interest_expense": "307000",
+    "is.other_income_net": "30000",
+    "is.pretax_income": "2310000",
+    "is.income_tax_expense": "578000",
+    "is.net_income": "1732000",
+    "bs.cash": "3146000",
+    "bs.accounts_receivable": "11780000",
+    "bs.inventory": "11769000",
+    "bs.other_current_assets": "1258000",
+    "bs.total_current_assets": "27953000",
+    "bs.net_ppe": "6513000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "38866000",
+    "bs.accounts_payable": "8374000",
+    "bs.accrued_liabilities": "1780000",
+    "bs.revolver": "9168000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1771000",
+    "bs.total_current_liabilities": "21093000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1544000",
+    "bs.total_liabilities": "22637000",
+    "bs.total_equity": "16229000",
+    "bs.total_liabilities_and_equity": "38866000",
+    "cf.net_income": "1732000",
+    "cf.depreciation_amortization": "424000",
+    "cf.change_in_working_capital": "-1051000",
+    "cf.other_operating": "32000",
+    "cf.cfo": "1137000",
+    "cf.capex": "494000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-494000",
+    "cf.revolver_net": "965000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1299000",
+    "cf.other_financing": "0",
+    "cf.cff": "-334000",
+    "cf.net_change_in_cash": "309000",
+    "sup.cash_interest_paid": "317000",
+    "sup.cash_taxes_paid": "529000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "11525000",
+    "cash.beginning_of_year": "2837000",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "75540000",
+    "is.cogs": "59411000",
+    "is.gross_profit": "16129000",
+    "is.sga": "11331000",
+    "is.depreciation_amortization": "638000",
+    "is.other_operating_expense": "227000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3933000",
+    "is.interest_expense": "485000",
+    "is.other_income_net": "46000",
+    "is.pretax_income": "3494000",
+    "is.income_tax_expense": "874000",
+    "is.net_income": "2620000",
+    "bs.cash": "3130000",
+    "bs.accounts_receivable": "11319000",
+    "bs.inventory": "11701000",
+    "bs.other_current_assets": "1252000",
+    "bs.total_current_assets": "27402000",
+    "bs.net_ppe": "6560000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "38362000",
+    "bs.accounts_payable": "8326000",
+    "bs.accrued_liabilities": "1780000",
+    "bs.revolver": "8488000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1757000",
+    "bs.total_current_liabilities": "20351000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1560000",
+    "bs.total_liabilities": "21911000",
+    "bs.total_equity": "16451000",
+    "bs.total_liabilities_and_equity": "38362000",
+    "cf.net_income": "2620000",
+    "cf.depreciation_amortization": "638000",
+    "cf.change_in_working_capital": "-578000",
+    "cf.other_operating": "48000",
+    "cf.cfo": "2728000",
+    "cf.capex": "755000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-755000",
+    "cf.revolver_net": "285000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1965000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1680000",
+    "cf.net_change_in_cash": "293000",
+    "sup.cash_interest_paid": "485000",
+    "sup.cash_taxes_paid": "832000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "11747000",
+    "cash.beginning_of_year": "2837000",
+    "debt.term_total": "0"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "88000000",
+    "is.cogs": "69102000",
+    "is.gross_profit": "18898000",
+    "is.sga": "13200000",
+    "is.depreciation_amortization": "812000",
+    "is.other_operating_expense": "264000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4622000",
+    "is.interest_expense": "694000",
+    "is.other_income_net": "53000",
+    "is.pretax_income": "3981000",
+    "is.income_tax_expense": "996000",
+    "is.net_income": "2985000",
+    "bs.cash": "2587000",
+    "bs.accounts_receivable": "9782000",
+    "bs.inventory": "9652000",
+    "bs.other_current_assets": "1035000",
+    "bs.total_current_assets": "23056000",
+    "bs.net_ppe": "6229000",
+    "bs.intangibles": "3520000",
+    "bs.other_noncurrent_assets": "880000",
+    "bs.total_assets": "33685000",
+    "bs.accounts_payable": "6868000",
+    "bs.accrued_liabilities": "1483000",
+    "bs.revolver": "8320000",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1445000",
+    "bs.total_current_liabilities": "18116000",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1384000",
+    "bs.total_liabilities": "19500000",
+    "bs.total_equity": "14185000",
+    "bs.total_liabilities_and_equity": "33685000",
+    "cf.net_income": "2985000",
+    "cf.depreciation_amortization": "812000",
+    "cf.change_in_working_capital": "126000",
+    "cf.other_operating": "64000",
+    "cf.cfo": "3987000",
+    "cf.capex": "881000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-881000",
+    "cf.revolver_net": "-920000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "2239000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3159000",
+    "cf.net_change_in_cash": "-53000",
+    "sup.cash_interest_paid": "694000",
+    "sup.cash_taxes_paid": "995000",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4704000",
+    "equity.retained_earnings": "9481000",
+    "cash.beginning_of_year": "2640000",
+    "debt.term_total": "0"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.83",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3261000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "661000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1086000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "826000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5834000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5834000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "661000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "661000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.66",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "19358000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "11651000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.89",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3277000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "659000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1091000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "829000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5856000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5856000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "659000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "659000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.84",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "21882000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "11881000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.79",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3240000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "661000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1079000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "833000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5813000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5813000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "661000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "661000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.82",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "22031000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "12086000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.91",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3287000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "660000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1095000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "837000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5879000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5879000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "660000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "660000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.67",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "20468000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "12276000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.96",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3328000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "663000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1109000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "841000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5941000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5941000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "663000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "663000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.58",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "19745000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "12482000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.95",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3313000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "662000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1105000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "845000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5925000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5925000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "662000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "662000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.78",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "22637000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "12709000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Bertrand Skaggs",
+   "reported": {
+    "interest_coverage": {
+     "value": "9.08",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3382000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "663000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1128000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "849000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "6022000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6022000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "663000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "663000"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.69",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "21911000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "12931000"
+      }
+     ]
+    }
+   },
+   "document_id": "northgale-electrical.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Ashdown Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "266400",
+      "31_60": "87200",
+      "61_90": "26400",
+      "over_90": "0"
+     },
+     "total": "380000"
+    },
+    {
+     "customer": "Bexley Markets Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "202800",
+      "31_60": "76400",
+      "61_90": "27600",
+      "over_90": "0"
+     },
+     "total": "306800"
+    },
+    {
+     "customer": "Birchfield Stores, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "378400",
+      "31_60": "92000",
+      "61_90": "14400",
+      "over_90": "0"
+     },
+     "total": "484800"
+    },
+    {
+     "customer": "Corbin Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "561600",
+      "31_60": "142000",
+      "61_90": "63200",
+      "over_90": "23600"
+     },
+     "total": "790400"
+    },
+    {
+     "customer": "Elmhurst Hardware, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "638400",
+      "31_60": "355600",
+      "61_90": "52000",
+      "over_90": "0"
+     },
+     "total": "1046000"
+    },
+    {
+     "customer": "Ironbridge Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "637200",
+      "31_60": "218400",
+      "61_90": "36400",
+      "over_90": "18000"
+     },
+     "total": "910000"
+    },
+    {
+     "customer": "Lowell Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "762000",
+      "31_60": "257600",
+      "61_90": "78400",
+      "over_90": "22400"
+     },
+     "total": "1120400"
+    },
+    {
+     "customer": "Maplecrest Markets, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "983200",
+      "31_60": "232800",
+      "61_90": "77600",
+      "over_90": "0"
+     },
+     "total": "1293600"
+    },
+    {
+     "customer": "Northgale Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "357600",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "357600"
+    },
+    {
+     "customer": "Norwood Wholesale, LLC",
+     "category": "trade",
+     "contra": "51600",
+     "buckets": {
+      "0_30": "561200",
+      "31_60": "241200",
+      "61_90": "60000",
+      "over_90": "0"
+     },
+     "total": "862400"
+    },
+    {
+     "customer": "Prescott Contractors, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "761200",
+      "31_60": "238400",
+      "61_90": "102000",
+      "over_90": "34000"
+     },
+     "total": "1135600"
+    },
+    {
+     "customer": "Redfern Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "845200",
+      "31_60": "210800",
+      "61_90": "33200",
+      "over_90": "22000"
+     },
+     "total": "1111200"
+    },
+    {
+     "customer": "Valemount Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "524800",
+      "31_60": "136000",
+      "61_90": "20400",
+      "over_90": "0"
+     },
+     "total": "681200"
+    },
+    {
+     "customer": "Yarrow Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "711200",
+      "31_60": "343600",
+      "61_90": "80000",
+      "over_90": "11200"
+     },
+     "total": "1146000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "10688800"
+    },
+    {
+     "category": "consigned",
+     "amount": "1057200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "664400",
+    "ineligible_over_age": "131200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "51600",
+    "ineligible_concentration": "0",
+    "gross_ar": "11626000",
+    "total_ineligible_ar": "847200",
+    "eligible_ar": "10778800",
+    "ar_availability": "9161980",
+    "gross_inventory": "11746000",
+    "ineligible_inventory": "1057200",
+    "eligible_inventory": "10688800",
+    "inventory_availability_before_sublimit": "5344400",
+    "inventory_availability": "5000000",
+    "reserves": "150000",
+    "borrowing_base": "14011980",
+    "commitment": "13000000",
+    "lesser_of_base_and_commitment": "13000000",
+    "outstanding": "9067000",
+    "letters_of_credit": "0",
+    "availability": "3933000"
+   },
+   "outstanding": "9067000",
+   "letters_of_credit": "0",
+   "document_id": "northgale-electrical.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Ashdown Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "262800",
+      "31_60": "82400",
+      "61_90": "29600",
+      "over_90": "0"
+     },
+     "total": "374800"
+    },
+    {
+     "customer": "Bexley Markets Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "200400",
+      "31_60": "72400",
+      "61_90": "30000",
+      "over_90": "0"
+     },
+     "total": "302800"
+    },
+    {
+     "customer": "Birchfield Stores, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "373600",
+      "31_60": "86000",
+      "61_90": "18800",
+      "over_90": "0"
+     },
+     "total": "478400"
+    },
+    {
+     "customer": "Corbin Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "554400",
+      "31_60": "132400",
+      "61_90": "70000",
+      "over_90": "23200"
+     },
+     "total": "780000"
+    },
+    {
+     "customer": "Elmhurst Hardware, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "578400",
+      "31_60": "103200",
+      "61_90": "350800",
+      "over_90": "0"
+     },
+     "total": "1032400"
+    },
+    {
+     "customer": "Ironbridge Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "629200",
+      "31_60": "206400",
+      "61_90": "44800",
+      "over_90": "17600"
+     },
+     "total": "898000"
+    },
+    {
+     "customer": "Lowell Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "752000",
+      "31_60": "243200",
+      "61_90": "88400",
+      "over_90": "22000"
+     },
+     "total": "1105600"
+    },
+    {
+     "customer": "Maplecrest Markets, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "970800",
+      "31_60": "216800",
+      "61_90": "89200",
+      "over_90": "0"
+     },
+     "total": "1276800"
+    },
+    {
+     "customer": "Northgale Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "352200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "352200"
+    },
+    {
+     "customer": "Norwood Wholesale, LLC",
+     "category": "trade",
+     "contra": "50800",
+     "buckets": {
+      "0_30": "553600",
+      "31_60": "229600",
+      "61_90": "68000",
+      "over_90": "0"
+     },
+     "total": "851200"
+    },
+    {
+     "customer": "Prescott Contractors, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "751200",
+      "31_60": "224000",
+      "61_90": "112000",
+      "over_90": "33600"
+     },
+     "total": "1120800"
+    },
+    {
+     "customer": "Redfern Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "834400",
+      "31_60": "197200",
+      "61_90": "43600",
+      "over_90": "21600"
+     },
+     "total": "1096800"
+    },
+    {
+     "customer": "Valemount Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "517600",
+      "31_60": "127600",
+      "61_90": "26800",
+      "over_90": "0"
+     },
+     "total": "672000"
+    },
+    {
+     "customer": "Yarrow Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "701600",
+      "31_60": "328000",
+      "61_90": "90400",
+      "over_90": "11200"
+     },
+     "total": "1131200"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "10668800"
+    },
+    {
+     "category": "consigned",
+     "amount": "1055200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "655000",
+    "ineligible_over_age": "129200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "50800",
+    "ineligible_concentration": "0",
+    "gross_ar": "11473000",
+    "total_ineligible_ar": "835000",
+    "eligible_ar": "10638000",
+    "ar_availability": "9042300",
+    "gross_inventory": "11724000",
+    "ineligible_inventory": "1055200",
+    "eligible_inventory": "10668800",
+    "inventory_availability_before_sublimit": "5334400",
+    "inventory_availability": "5000000",
+    "reserves": "150000",
+    "borrowing_base": "13892300",
+    "commitment": "13000000",
+    "lesser_of_base_and_commitment": "13000000",
+    "outstanding": "8750000",
+    "letters_of_credit": "0",
+    "availability": "4250000"
+   },
+   "outstanding": "8750000",
+   "letters_of_credit": "0",
+   "document_id": "northgale-electrical.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Ashdown Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "259200",
+      "31_60": "77600",
+      "61_90": "33200",
+      "over_90": "0"
+     },
+     "total": "370000"
+    },
+    {
+     "customer": "Bexley Markets Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "197600",
+      "31_60": "68400",
+      "61_90": "32800",
+      "over_90": "0"
+     },
+     "total": "298800"
+    },
+    {
+     "customer": "Birchfield Stores, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "368400",
+      "31_60": "80000",
+      "61_90": "23600",
+      "over_90": "0"
+     },
+     "total": "472000"
+    },
+    {
+     "customer": "Corbin Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "547200",
+      "31_60": "122800",
+      "61_90": "76800",
+      "over_90": "22800"
+     },
+     "total": "769600"
+    },
+    {
+     "customer": "Elmhurst Hardware, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "520000",
+      "31_60": "101600",
+      "61_90": "50800",
+      "over_90": "346000"
+     },
+     "total": "1018400"
+    },
+    {
+     "customer": "Ironbridge Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "620800",
+      "31_60": "194800",
+      "61_90": "52800",
+      "over_90": "17600"
+     },
+     "total": "886000"
+    },
+    {
+     "customer": "Lowell Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "742400",
+      "31_60": "228800",
+      "61_90": "98000",
+      "over_90": "21600"
+     },
+     "total": "1090800"
+    },
+    {
+     "customer": "Maplecrest Markets, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "958000",
+      "31_60": "201200",
+      "61_90": "100400",
+      "over_90": "0"
+     },
+     "total": "1259600"
+    },
+    {
+     "customer": "Northgale Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "347400",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "347400"
+    },
+    {
+     "customer": "Norwood Wholesale, LLC",
+     "category": "trade",
+     "contra": "50000",
+     "buckets": {
+      "0_30": "546400",
+      "31_60": "218000",
+      "61_90": "75200",
+      "over_90": "0"
+     },
+     "total": "839600"
+    },
+    {
+     "customer": "Prescott Contractors, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "741200",
+      "31_60": "210000",
+      "61_90": "121600",
+      "over_90": "32800"
+     },
+     "total": "1105600"
+    },
+    {
+     "customer": "Redfern Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "822800",
+      "31_60": "183600",
+      "61_90": "54000",
+      "over_90": "21600"
+     },
+     "total": "1082000"
+    },
+    {
+     "customer": "Valemount Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "511200",
+      "31_60": "119200",
+      "61_90": "32800",
+      "over_90": "0"
+     },
+     "total": "663200"
+    },
+    {
+     "customer": "Yarrow Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "692400",
+      "31_60": "312400",
+      "61_90": "100400",
+      "over_90": "10800"
+     },
+     "total": "1116000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "10647600"
+    },
+    {
+     "category": "consigned",
+     "amount": "1053400"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "646200",
+    "ineligible_over_age": "127200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "50000",
+    "ineligible_concentration": "0",
+    "gross_ar": "11319000",
+    "total_ineligible_ar": "823400",
+    "eligible_ar": "10495600",
+    "ar_availability": "8921260",
+    "gross_inventory": "11701000",
+    "ineligible_inventory": "1053400",
+    "eligible_inventory": "10647600",
+    "inventory_availability_before_sublimit": "5323800",
+    "inventory_availability": "5000000",
+    "reserves": "150000",
+    "borrowing_base": "13771260",
+    "commitment": "13000000",
+    "lesser_of_base_and_commitment": "13000000",
+    "outstanding": "8488000",
+    "letters_of_credit": "0",
+    "availability": "4512000"
+   },
+   "outstanding": "8488000",
+   "letters_of_credit": "0",
+   "document_id": "northgale-electrical.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "8255000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "7977000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "7806000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "8199000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "8668000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "9034000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "9199000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "9227000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "9255000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "8984000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "8575000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "8070000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "8059000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "7879000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "7702000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "8196000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "8614000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "9135000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "9083000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "9315000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "9199000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "8947000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "8450000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "8203000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "7919000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "7906000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "7664000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "8051000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "8684000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "9168000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "9067000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "8750000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "8488000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "8463000",
+   "commitment": "13000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  }
+ ],
+ "documents": [
+  {
+   "id": "northgale-electrical.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/northgale-electrical/credit-agreement.pdf",
+   "pages": 13,
+   "title": "Credit Agreement between Northgale Electrical Wholesale, Inc. and Bank of Stoic",
+   "received_date": "2022-12-09",
+   "document_date": "2022-12-09"
+  },
+  {
+   "id": "northgale-electrical.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/northgale-electrical/afs-2024.pdf",
+   "pages": 7,
+   "title": "Northgale Electrical Wholesale, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-09",
+   "document_date": "2025-03-31",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,697"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "10,123"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "10,092"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,079"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "23,991"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "6,323"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "34,714"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "7,181"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,543"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "8,070"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,497"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "18,291"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,448"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "19,739"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "14,975"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "34,714"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "91,679"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "72,004"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "19,675"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "13,752"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "823"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "274"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "4,826"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "666"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "54"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "4,214"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,053"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,161"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,161"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "823"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(400)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "64"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,648"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(917)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(917)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(250)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(2,371)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,621)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "110"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "666"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,053"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,587",
+    "bs.accounts_receivable": "9,782",
+    "bs.inventory": "9,652",
+    "bs.other_current_assets": "1,035",
+    "bs.total_current_assets": "23,056",
+    "bs.net_ppe": "6,229",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "33,685",
+    "bs.accounts_payable": "6,868",
+    "bs.accrued_liabilities": "1,483",
+    "bs.revolver": "8,320",
+    "bs.other_current_liabilities": "1,445",
+    "bs.total_current_liabilities": "18,116",
+    "bs.other_noncurrent_liabilities": "1,384",
+    "bs.total_liabilities": "19,500",
+    "bs.total_equity": "14,185",
+    "bs.total_liabilities_and_equity": "33,685",
+    "is.revenue": "88,000",
+    "is.cogs": "69,102",
+    "is.gross_profit": "18,898",
+    "is.sga": "13,200",
+    "is.depreciation_amortization": "812",
+    "is.other_operating_expense": "264",
+    "is.operating_income": "4,622",
+    "is.interest_expense": "694",
+    "is.other_income_net": "53",
+    "is.pretax_income": "3,981",
+    "is.income_tax_expense": "996",
+    "is.net_income": "2,985",
+    "cf.net_income": "2,985",
+    "cf.depreciation_amortization": "812",
+    "cf.change_in_working_capital": "126",
+    "cf.other_operating": "64",
+    "cf.cfo": "3,987",
+    "cf.capex": "(881)",
+    "cf.cfi": "(881)",
+    "cf.revolver_net": "(920)",
+    "cf.distributions": "(2,239)",
+    "cf.cff": "(3,159)",
+    "cf.net_change_in_cash": "(53)",
+    "sup.cash_interest_paid": "694",
+    "sup.cash_taxes_paid": "995",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/northgale-electrical/afs-2025.pdf",
+   "pages": 7,
+   "title": "Northgale Electrical Wholesale, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-03",
+   "document_date": "2026-03-25",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,837"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "10,830"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "10,619"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,135"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "25,421"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "6,443"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "36,264"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "7,556"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,619"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "8,203"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,578"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "18,956"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,512"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "20,468"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "15,796"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "36,264"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "95,809"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "75,329"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "20,480"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "14,371"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "837"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "287"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "4,985"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "660"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "57"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "4,382"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,095"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,287"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,287"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "837"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(758)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "64"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,430"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(957)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(957)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "133"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(2,466)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,333)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "140"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "661"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,079"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,697",
+    "bs.accounts_receivable": "10,123",
+    "bs.inventory": "10,092",
+    "bs.other_current_assets": "1,079",
+    "bs.total_current_assets": "23,991",
+    "bs.net_ppe": "6,323",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "34,714",
+    "bs.accounts_payable": "7,181",
+    "bs.accrued_liabilities": "1,543",
+    "bs.revolver": "8,070",
+    "bs.other_current_liabilities": "1,497",
+    "bs.total_current_liabilities": "18,291",
+    "bs.other_noncurrent_liabilities": "1,448",
+    "bs.total_liabilities": "19,739",
+    "bs.total_equity": "14,975",
+    "bs.total_liabilities_and_equity": "34,714",
+    "is.revenue": "91,679",
+    "is.cogs": "72,004",
+    "is.gross_profit": "19,675",
+    "is.sga": "13,752",
+    "is.depreciation_amortization": "823",
+    "is.other_operating_expense": "274",
+    "is.operating_income": "4,826",
+    "is.interest_expense": "666",
+    "is.other_income_net": "54",
+    "is.pretax_income": "4,214",
+    "is.income_tax_expense": "1,053",
+    "is.net_income": "3,161",
+    "cf.net_income": "3,161",
+    "cf.depreciation_amortization": "823",
+    "cf.change_in_working_capital": "(400)",
+    "cf.other_operating": "64",
+    "cf.cfo": "3,648",
+    "cf.capex": "(917)",
+    "cf.cfi": "(917)",
+    "cf.revolver_net": "(250)",
+    "cf.distributions": "(2,371)",
+    "cf.cff": "(2,621)",
+    "cf.net_change_in_cash": "110",
+    "sup.cash_interest_paid": "666",
+    "sup.cash_taxes_paid": "1,053",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/northgale-electrical/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Northgale Electrical Wholesale, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-06",
+   "document_date": "2025-05-02",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,693"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,984"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,036"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,077"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,790"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,339"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "34,529"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,141"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,533"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "7,702"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,518"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "17,894"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,464"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "19,358"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "15,171"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "34,529"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "22,440"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "17,611"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,829"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,366"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "208"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "67"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,188"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "156"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "13"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,045"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "261"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "784"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "784"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "208"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "168"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "16"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,176"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(224)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(224)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(368)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(588)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(956)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(4)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "164"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "238"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,568",
+    "bs.accounts_receivable": "9,450",
+    "bs.inventory": "9,607",
+    "bs.other_current_assets": "1,027",
+    "bs.total_current_assets": "22,652",
+    "bs.net_ppe": "6,238",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "33,290",
+    "bs.accounts_payable": "6,836",
+    "bs.accrued_liabilities": "1,466",
+    "bs.revolver": "7,806",
+    "bs.other_current_liabilities": "1,426",
+    "bs.total_current_liabilities": "17,534",
+    "bs.other_noncurrent_liabilities": "1,400",
+    "bs.total_liabilities": "18,934",
+    "bs.total_equity": "14,356",
+    "bs.total_liabilities_and_equity": "33,290",
+    "is.revenue": "21,398",
+    "is.cogs": "16,859",
+    "is.gross_profit": "4,539",
+    "is.sga": "3,210",
+    "is.depreciation_amortization": "205",
+    "is.other_operating_expense": "64",
+    "is.operating_income": "1,060",
+    "is.interest_expense": "161",
+    "is.other_income_net": "13",
+    "is.pretax_income": "912",
+    "is.income_tax_expense": "228",
+    "is.net_income": "684",
+    "cf.net_income": "684",
+    "cf.depreciation_amortization": "205",
+    "cf.change_in_working_capital": "317",
+    "cf.other_operating": "16",
+    "cf.cfo": "1,222",
+    "cf.capex": "(214)",
+    "cf.cfi": "(214)",
+    "cf.revolver_net": "(514)",
+    "cf.distributions": "(513)",
+    "cf.cff": "(1,027)",
+    "cf.net_change_in_cash": "(19)",
+    "sup.cash_interest_paid": "167",
+    "sup.cash_taxes_paid": "238",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/northgale-electrical/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Northgale Electrical Wholesale, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-08-11",
+   "document_date": "2025-08-07",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,977"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,256"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,080"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,191"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "26,504"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,379"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "37,283"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,884"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,687"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,135"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,696"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "20,402"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,480"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "21,882"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "15,401"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "37,283"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "47,249"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "37,054"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "10,195"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,087"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "416"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "141"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,551"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "305"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "28"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,274"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "568"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,706"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,706"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "416"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,187)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "32"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "967"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(472)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(472)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,065"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,280)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(215)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "280"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "315"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "499"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,855",
+    "bs.accounts_receivable": "10,561",
+    "bs.inventory": "10,602",
+    "bs.other_current_assets": "1,142",
+    "bs.total_current_assets": "25,160",
+    "bs.net_ppe": "6,271",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "35,831",
+    "bs.accounts_payable": "7,544",
+    "bs.accrued_liabilities": "1,620",
+    "bs.revolver": "9,034",
+    "bs.other_current_liabilities": "1,635",
+    "bs.total_current_liabilities": "19,833",
+    "bs.other_noncurrent_liabilities": "1,416",
+    "bs.total_liabilities": "21,249",
+    "bs.total_equity": "14,582",
+    "bs.total_liabilities_and_equity": "35,831",
+    "is.revenue": "45,193",
+    "is.cogs": "35,464",
+    "is.gross_profit": "9,729",
+    "is.sga": "6,779",
+    "is.depreciation_amortization": "410",
+    "is.other_operating_expense": "135",
+    "is.operating_income": "2,405",
+    "is.interest_expense": "312",
+    "is.other_income_net": "27",
+    "is.pretax_income": "2,120",
+    "is.income_tax_expense": "530",
+    "is.net_income": "1,590",
+    "cf.net_income": "1,590",
+    "cf.depreciation_amortization": "410",
+    "cf.change_in_working_capital": "(833)",
+    "cf.other_operating": "32",
+    "cf.cfo": "1,199",
+    "cf.capex": "(452)",
+    "cf.cfi": "(452)",
+    "cf.revolver_net": "714",
+    "cf.distributions": "(1,193)",
+    "cf.cff": "(479)",
+    "cf.net_change_in_cash": "268",
+    "sup.cash_interest_paid": "322",
+    "sup.cash_taxes_paid": "466",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/northgale-electrical/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Northgale Electrical Wholesale, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-10-28",
+   "document_date": "2025-10-24",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,990"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,441"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,192"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,196"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "26,819"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,418"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "37,637"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,964"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,704"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,199"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,668"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "20,535"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,496"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "22,031"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "15,606"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "37,637"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "72,166"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "56,694"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "15,472"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,825"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "626"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "216"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,805"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "482"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "43"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,366"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "841"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,525"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,525"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "626"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,420)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "48"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,779"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(721)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(721)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,129"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,894)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(765)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "293"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "483"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "806"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,881",
+    "bs.accounts_receivable": "10,921",
+    "bs.inventory": "10,731",
+    "bs.other_current_assets": "1,153",
+    "bs.total_current_assets": "25,686",
+    "bs.net_ppe": "6,305",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "36,391",
+    "bs.accounts_payable": "7,635",
+    "bs.accrued_liabilities": "1,643",
+    "bs.revolver": "9,255",
+    "bs.other_current_liabilities": "1,630",
+    "bs.total_current_liabilities": "20,163",
+    "bs.other_noncurrent_liabilities": "1,432",
+    "bs.total_liabilities": "21,595",
+    "bs.total_equity": "14,796",
+    "bs.total_liabilities_and_equity": "36,391",
+    "is.revenue": "69,205",
+    "is.cogs": "54,294",
+    "is.gross_profit": "14,911",
+    "is.sga": "10,381",
+    "is.depreciation_amortization": "616",
+    "is.other_operating_expense": "207",
+    "is.operating_income": "3,707",
+    "is.interest_expense": "487",
+    "is.other_income_net": "41",
+    "is.pretax_income": "3,261",
+    "is.income_tax_expense": "815",
+    "is.net_income": "2,446",
+    "cf.net_income": "2,446",
+    "cf.depreciation_amortization": "616",
+    "cf.change_in_working_capital": "(1,224)",
+    "cf.other_operating": "48",
+    "cf.cfo": "1,886",
+    "cf.capex": "(692)",
+    "cf.cfi": "(692)",
+    "cf.revolver_net": "935",
+    "cf.distributions": "(1,835)",
+    "cf.cff": "(900)",
+    "cf.net_change_in_cash": "294",
+    "sup.cash_interest_paid": "489",
+    "sup.cash_taxes_paid": "768",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/northgale-electrical/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Northgale Electrical Wholesale, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-05-09",
+   "document_date": "2026-05-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,789"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "10,594"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,386"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,115"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "24,884"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,463"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "35,747"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,390"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,587"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "7,664"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,576"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "18,217"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,528"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "19,745"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "16,002"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "35,747"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "23,239"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "18,226"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,013"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,486"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "212"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "70"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,245"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "159"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "14"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,100"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "275"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "825"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "825"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "212"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "289"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "16"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,342"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(232)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(232)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(539)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(619)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,158)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(48)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "165"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "254"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,693",
+    "bs.accounts_receivable": "9,984",
+    "bs.inventory": "10,036",
+    "bs.other_current_assets": "1,077",
+    "bs.total_current_assets": "23,790",
+    "bs.net_ppe": "6,339",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "34,529",
+    "bs.accounts_payable": "7,141",
+    "bs.accrued_liabilities": "1,533",
+    "bs.revolver": "7,702",
+    "bs.other_current_liabilities": "1,518",
+    "bs.total_current_liabilities": "17,894",
+    "bs.other_noncurrent_liabilities": "1,464",
+    "bs.total_liabilities": "19,358",
+    "bs.total_equity": "15,171",
+    "bs.total_liabilities_and_equity": "34,529",
+    "is.revenue": "22,440",
+    "is.cogs": "17,611",
+    "is.gross_profit": "4,829",
+    "is.sga": "3,366",
+    "is.depreciation_amortization": "208",
+    "is.other_operating_expense": "67",
+    "is.operating_income": "1,188",
+    "is.interest_expense": "156",
+    "is.other_income_net": "13",
+    "is.pretax_income": "1,045",
+    "is.income_tax_expense": "261",
+    "is.net_income": "784",
+    "cf.net_income": "784",
+    "cf.depreciation_amortization": "208",
+    "cf.change_in_working_capital": "168",
+    "cf.other_operating": "16",
+    "cf.cfo": "1,176",
+    "cf.capex": "(224)",
+    "cf.cfi": "(224)",
+    "cf.revolver_net": "(368)",
+    "cf.distributions": "(588)",
+    "cf.cff": "(956)",
+    "cf.net_change_in_cash": "(4)",
+    "sup.cash_interest_paid": "164",
+    "sup.cash_taxes_paid": "238",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/northgale-electrical/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Northgale Electrical Wholesale, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-07-28",
+   "document_date": "2026-07-24",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,146"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,780"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,769"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,258"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "27,953"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,513"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "38,866"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,374"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,780"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,168"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,771"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "21,093"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,544"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "22,637"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "16,229"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "38,866"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "49,457"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "38,878"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "10,579"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,419"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "424"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "149"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,587"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "307"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "30"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,310"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "578"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,732"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,732"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "424"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,051)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "32"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,137"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(494)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(494)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "965"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,299)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(334)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "309"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "317"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "529"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,977",
+    "bs.accounts_receivable": "11,256",
+    "bs.inventory": "11,080",
+    "bs.other_current_assets": "1,191",
+    "bs.total_current_assets": "26,504",
+    "bs.net_ppe": "6,379",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "37,283",
+    "bs.accounts_payable": "7,884",
+    "bs.accrued_liabilities": "1,687",
+    "bs.revolver": "9,135",
+    "bs.other_current_liabilities": "1,696",
+    "bs.total_current_liabilities": "20,402",
+    "bs.other_noncurrent_liabilities": "1,480",
+    "bs.total_liabilities": "21,882",
+    "bs.total_equity": "15,401",
+    "bs.total_liabilities_and_equity": "37,283",
+    "is.revenue": "47,249",
+    "is.cogs": "37,054",
+    "is.gross_profit": "10,195",
+    "is.sga": "7,087",
+    "is.depreciation_amortization": "416",
+    "is.other_operating_expense": "141",
+    "is.operating_income": "2,551",
+    "is.interest_expense": "305",
+    "is.other_income_net": "28",
+    "is.pretax_income": "2,274",
+    "is.income_tax_expense": "568",
+    "is.net_income": "1,706",
+    "cf.net_income": "1,706",
+    "cf.depreciation_amortization": "416",
+    "cf.change_in_working_capital": "(1,187)",
+    "cf.other_operating": "32",
+    "cf.cfo": "967",
+    "cf.capex": "(472)",
+    "cf.cfi": "(472)",
+    "cf.revolver_net": "1,065",
+    "cf.distributions": "(1,280)",
+    "cf.cff": "(215)",
+    "cf.net_change_in_cash": "280",
+    "sup.cash_interest_paid": "315",
+    "sup.cash_taxes_paid": "499",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/northgale-electrical/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Northgale Electrical Wholesale, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-11-10",
+   "document_date": "2026-11-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,130"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,319"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,701"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,252"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "27,402"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,560"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "3,520"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "880"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "38,362"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,326"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,780"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "8,488"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,757"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "20,351"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,560"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "21,911"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "16,451"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "38,362"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "75,540"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "59,411"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "16,129"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "11,331"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "638"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "227"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,933"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "485"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "46"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,494"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "874"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,620"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,620"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "638"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(578)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "48"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,728"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(755)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(755)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "285"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,965)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,680)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "293"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "485"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "832"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,990",
+    "bs.accounts_receivable": "11,441",
+    "bs.inventory": "11,192",
+    "bs.other_current_assets": "1,196",
+    "bs.total_current_assets": "26,819",
+    "bs.net_ppe": "6,418",
+    "bs.intangibles": "3,520",
+    "bs.other_noncurrent_assets": "880",
+    "bs.total_assets": "37,637",
+    "bs.accounts_payable": "7,964",
+    "bs.accrued_liabilities": "1,704",
+    "bs.revolver": "9,199",
+    "bs.other_current_liabilities": "1,668",
+    "bs.total_current_liabilities": "20,535",
+    "bs.other_noncurrent_liabilities": "1,496",
+    "bs.total_liabilities": "22,031",
+    "bs.total_equity": "15,606",
+    "bs.total_liabilities_and_equity": "37,637",
+    "is.revenue": "72,166",
+    "is.cogs": "56,694",
+    "is.gross_profit": "15,472",
+    "is.sga": "10,825",
+    "is.depreciation_amortization": "626",
+    "is.other_operating_expense": "216",
+    "is.operating_income": "3,805",
+    "is.interest_expense": "482",
+    "is.other_income_net": "43",
+    "is.pretax_income": "3,366",
+    "is.income_tax_expense": "841",
+    "is.net_income": "2,525",
+    "cf.net_income": "2,525",
+    "cf.depreciation_amortization": "626",
+    "cf.change_in_working_capital": "(1,420)",
+    "cf.other_operating": "48",
+    "cf.cfo": "1,779",
+    "cf.capex": "(721)",
+    "cf.cfi": "(721)",
+    "cf.revolver_net": "1,129",
+    "cf.distributions": "(1,894)",
+    "cf.cff": "(765)",
+    "cf.net_change_in_cash": "293",
+    "sup.cash_interest_paid": "483",
+    "sup.cash_taxes_paid": "806",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "northgale-electrical.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/northgale-electrical/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-06",
+   "document_date": "2025-05-04",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/northgale-electrical/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-08-11",
+   "document_date": "2025-08-09",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/northgale-electrical/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-10-28",
+   "document_date": "2025-10-26",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/northgale-electrical/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-09",
+   "document_date": "2026-02-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/northgale-electrical/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-05-09",
+   "document_date": "2026-05-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/northgale-electrical/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-07-28",
+   "document_date": "2026-07-26",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/northgale-electrical/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Northgale Electrical Wholesale, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-11-10",
+   "document_date": "2026-11-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "northgale-electrical.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/northgale-electrical/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Northgale Electrical Wholesale, Inc. borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-17",
+   "document_date": "2026-08-15",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "northgale-electrical.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/northgale-electrical/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Northgale Electrical Wholesale, Inc. borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-16",
+   "document_date": "2026-09-14",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "northgale-electrical.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/northgale-electrical/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Northgale Electrical Wholesale, Inc. borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-12",
+   "document_date": "2026-10-10",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "miscounted_ineligible",
+  "description": "Miscounted ineligible receivable: the borrowing base certificate counts one customer's invoices aged over 90 days as eligible.",
+  "details": {
+   "document_id": "northgale-electrical.bbc-2026-09-30",
+   "over_90_counted_as_eligible": "346000"
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.83",
+    "pass": true,
+    "headroom": "1.9433",
+    "reported_value": "8.83",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3261000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "661000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1086000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "826000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5834000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5834000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "661000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "661000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.66",
+    "pass": true,
+    "headroom": "0.3360",
+    "reported_value": "1.66",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "19358000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "11651000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.89",
+    "pass": true,
+    "headroom": "1.9633",
+    "reported_value": "8.89",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3277000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "659000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1091000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "829000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5856000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5856000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "659000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "659000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.84",
+    "pass": true,
+    "headroom": "0.2640",
+    "reported_value": "1.84",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "21882000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "11881000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.79",
+    "pass": true,
+    "headroom": "1.9300",
+    "reported_value": "8.79",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3240000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "661000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1079000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "833000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5813000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5813000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "661000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "661000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.82",
+    "pass": true,
+    "headroom": "0.2720",
+    "reported_value": "1.82",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "22031000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "12086000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.91",
+    "pass": true,
+    "headroom": "1.9700",
+    "reported_value": "8.91",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3287000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "660000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1095000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "837000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5879000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5879000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "660000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "660000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.67",
+    "pass": true,
+    "headroom": "0.3320",
+    "reported_value": "1.67",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "20468000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "12276000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.96",
+    "pass": true,
+    "headroom": "1.9867",
+    "reported_value": "8.96",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3328000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "663000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1109000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "841000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5941000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5941000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "663000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "663000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.58",
+    "pass": true,
+    "headroom": "0.3680",
+    "reported_value": "1.58",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "19745000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "12482000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.95",
+    "pass": true,
+    "headroom": "1.9833",
+    "reported_value": "8.95",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3313000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "662000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1105000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "845000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5925000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5925000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "662000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "662000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.78",
+    "pass": true,
+    "headroom": "0.2880",
+    "reported_value": "1.78",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "22637000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "12709000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "9.08",
+    "pass": true,
+    "headroom": "2.0267",
+    "reported_value": "9.08",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3382000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "663000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1128000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "849000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "6022000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6022000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "663000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "663000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "northgale-electrical-rlc",
+    "terms_version_id": "tv-northgale-electrical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.69",
+    "pass": true,
+    "headroom": "0.3240",
+    "reported_value": "1.69",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "21911000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "12931000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "northgale-electrical-rlc",
+    "calculated": {
+     "ineligible_excluded": "664400",
+     "ineligible_over_age": "131200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "51600",
+     "ineligible_concentration": "0",
+     "gross_ar": "11626000",
+     "total_ineligible_ar": "847200",
+     "eligible_ar": "10778800",
+     "ar_availability": "9161980",
+     "gross_inventory": "11746000",
+     "ineligible_inventory": "1057200",
+     "eligible_inventory": "10688800",
+     "inventory_availability_before_sublimit": "5344400",
+     "inventory_availability": "5000000",
+     "reserves": "150000",
+     "borrowing_base": "14011980",
+     "commitment": "13000000",
+     "lesser_of_base_and_commitment": "13000000",
+     "outstanding": "9067000",
+     "letters_of_credit": "0",
+     "availability": "3933000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "3933000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "northgale-electrical-rlc",
+    "calculated": {
+     "ineligible_excluded": "655000",
+     "ineligible_over_age": "129200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "50800",
+     "ineligible_concentration": "0",
+     "gross_ar": "11473000",
+     "total_ineligible_ar": "835000",
+     "eligible_ar": "10638000",
+     "ar_availability": "9042300",
+     "gross_inventory": "11724000",
+     "ineligible_inventory": "1055200",
+     "eligible_inventory": "10668800",
+     "inventory_availability_before_sublimit": "5334400",
+     "inventory_availability": "5000000",
+     "reserves": "150000",
+     "borrowing_base": "13892300",
+     "commitment": "13000000",
+     "lesser_of_base_and_commitment": "13000000",
+     "outstanding": "8750000",
+     "letters_of_credit": "0",
+     "availability": "4250000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "4250000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "northgale-electrical-rlc",
+    "calculated": {
+     "ineligible_excluded": "646200",
+     "ineligible_over_age": "473200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "50000",
+     "ineligible_concentration": "0",
+     "gross_ar": "11319000",
+     "total_ineligible_ar": "1169400",
+     "eligible_ar": "10149600",
+     "ar_availability": "8627160",
+     "gross_inventory": "11701000",
+     "ineligible_inventory": "1053400",
+     "eligible_inventory": "10647600",
+     "inventory_availability_before_sublimit": "5323800",
+     "inventory_availability": "5000000",
+     "reserves": "150000",
+     "borrowing_base": "13477160",
+     "commitment": "13000000",
+     "lesser_of_base_and_commitment": "13000000",
+     "outstanding": "8488000",
+     "letters_of_credit": "0",
+     "availability": "4512000"
+    },
+    "differences": [
+     {
+      "line": "ineligible_over_age",
+      "calculated": "473200",
+      "certificate": "127200"
+     },
+     {
+      "line": "total_ineligible_ar",
+      "calculated": "1169400",
+      "certificate": "823400"
+     },
+     {
+      "line": "eligible_ar",
+      "calculated": "10149600",
+      "certificate": "10495600"
+     },
+     {
+      "line": "ar_availability",
+      "calculated": "8627160",
+      "certificate": "8921260"
+     },
+     {
+      "line": "borrowing_base",
+      "calculated": "13477160",
+      "certificate": "13771260"
+     }
+    ],
+    "certificate_matches": false,
+    "over_advance": false,
+    "availability": "4512000"
+   }
+  ],
+  "signals": [],
+  "exceptions": [
+   {
+    "type": "bb.certificate_mismatch",
+    "severity": "medium",
+    "period_end": "2026-09-30",
+    "subject": "borrowing_base:2026-09-30",
+    "summary": "The certificate differs from the recalculated borrowing base."
+   }
+  ]
+ }
+}

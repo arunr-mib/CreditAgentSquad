@@ -1,0 +1,6691 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "harrowgate-precision",
+  "name": "Harrowgate Precision Components, Inc.",
+  "legal_form": "corporation",
+  "industry": "manufacturing",
+  "city": "Rockford",
+  "state": "IL",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Dana Whitcombe",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 4,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Elise Trommler",
+  "auditor": "Wexley Arnault LLP"
+ },
+ "facilities": [
+  {
+   "id": "harrowgate-precision-rlc",
+   "borrower_id": "harrowgate-precision",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "8500000",
+   "original_amount": "8500000",
+   "closing_date": "2022-03-18",
+   "maturity_date": "2028-03-18",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  },
+  {
+   "id": "harrowgate-precision-tl",
+   "borrower_id": "harrowgate-precision",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "28380000",
+   "original_amount": "28380000",
+   "closing_date": "2022-03-18",
+   "maturity_date": "2029-03-18",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "645000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-harrowgate-precision-1",
+   "facility_id": "harrowgate-precision-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-03-18",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2022-03-24",
+   "warnings": [],
+   "source_documents": [
+    "harrowgate-precision.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.05",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "harrowgate-precision.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.05 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "harrowgate-precision.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "harrowgate-precision.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "harrowgate-precision.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "min_tnw",
+      "name": "Minimum Tangible Net Worth",
+      "archetype": "min_tangible_net_worth",
+      "params": {
+       "step_up_pct_of_net_income": null
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "13000000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "harrowgate-precision.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall maintain Tangible Net Worth, measured as of the last day of each fiscal quarter, of not less than $13,000,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "harrowgate-precision.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Tangible Net Worth\" means, as of any date, total equity of the Borrower minus goodwill and intangibles as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "harrowgate-precision.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "harrowgate-precision.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "harrowgate-precision.credit-agreement",
+       "section": "5.1(c)",
+       "page": 8,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "harrowgate-precision.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "8500000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "3250000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "100000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "harrowgate-precision.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $3,250,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $100,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $8,500,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $28,380,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "harrowgate-precision.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $645,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "21449000",
+    "is.cogs": "15321000",
+    "is.gross_profit": "6128000",
+    "is.sga": "3539000",
+    "is.depreciation_amortization": "678000",
+    "is.other_operating_expense": "86000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1825000",
+    "is.interest_expense": "503000",
+    "is.other_income_net": "13000",
+    "is.pretax_income": "1335000",
+    "is.income_tax_expense": "334000",
+    "is.net_income": "1001000",
+    "bs.cash": "2574000",
+    "bs.accounts_receivable": "10954000",
+    "bs.inventory": "10410000",
+    "bs.other_current_assets": "1030000",
+    "bs.total_current_assets": "24968000",
+    "bs.net_ppe": "26078000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "57066000",
+    "bs.accounts_payable": "6884000",
+    "bs.accrued_liabilities": "1725000",
+    "bs.revolver": "4738000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1535000",
+    "bs.total_current_liabilities": "17462000",
+    "bs.long_term_debt": "19995000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1365000",
+    "bs.total_liabilities": "38822000",
+    "bs.total_equity": "18244000",
+    "bs.total_liabilities_and_equity": "57066000",
+    "cf.net_income": "1001000",
+    "cf.depreciation_amortization": "678000",
+    "cf.change_in_working_capital": "-255000",
+    "cf.other_operating": "15000",
+    "cf.cfo": "1439000",
+    "cf.capex": "729000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-729000",
+    "cf.revolver_net": "55000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "645000",
+    "cf.distributions": "100000",
+    "cf.other_financing": "0",
+    "cf.cff": "-690000",
+    "cf.net_change_in_cash": "20000",
+    "sup.cash_interest_paid": "512000",
+    "sup.cash_taxes_paid": "308000",
+    "sup.scheduled_principal": "645000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "13034000",
+    "cash.beginning_of_year": "2554000",
+    "debt.term_total": "22575000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "44247000",
+    "is.cogs": "31685000",
+    "is.gross_profit": "12562000",
+    "is.sga": "7301000",
+    "is.depreciation_amortization": "1358000",
+    "is.other_operating_expense": "177000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3726000",
+    "is.interest_expense": "996000",
+    "is.other_income_net": "27000",
+    "is.pretax_income": "2757000",
+    "is.income_tax_expense": "690000",
+    "is.net_income": "2067000",
+    "bs.cash": "2736000",
+    "bs.accounts_receivable": "12017000",
+    "bs.inventory": "11119000",
+    "bs.other_current_assets": "1094000",
+    "bs.total_current_assets": "26966000",
+    "bs.net_ppe": "26173000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "59159000",
+    "bs.accounts_payable": "7353000",
+    "bs.accrued_liabilities": "1819000",
+    "bs.revolver": "5841000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1633000",
+    "bs.total_current_liabilities": "19226000",
+    "bs.long_term_debt": "19350000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1380000",
+    "bs.total_liabilities": "39956000",
+    "bs.total_equity": "19203000",
+    "bs.total_liabilities_and_equity": "59159000",
+    "cf.net_income": "2067000",
+    "cf.depreciation_amortization": "1358000",
+    "cf.change_in_working_capital": "-1430000",
+    "cf.other_operating": "30000",
+    "cf.cfo": "2025000",
+    "cf.capex": "1504000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1504000",
+    "cf.revolver_net": "1158000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1290000",
+    "cf.distributions": "207000",
+    "cf.other_financing": "0",
+    "cf.cff": "-339000",
+    "cf.net_change_in_cash": "182000",
+    "sup.cash_interest_paid": "1009000",
+    "sup.cash_taxes_paid": "642000",
+    "sup.scheduled_principal": "1290000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "13993000",
+    "cash.beginning_of_year": "2554000",
+    "debt.term_total": "21930000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "67641000",
+    "is.cogs": "48449000",
+    "is.gross_profit": "19192000",
+    "is.sga": "11161000",
+    "is.depreciation_amortization": "2040000",
+    "is.other_operating_expense": "271000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5720000",
+    "is.interest_expense": "1498000",
+    "is.other_income_net": "41000",
+    "is.pretax_income": "4263000",
+    "is.income_tax_expense": "1067000",
+    "is.net_income": "3196000",
+    "bs.cash": "2807000",
+    "bs.accounts_receivable": "12024000",
+    "bs.inventory": "11390000",
+    "bs.other_current_assets": "1123000",
+    "bs.total_current_assets": "27344000",
+    "bs.net_ppe": "26286000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "59650000",
+    "bs.accounts_payable": "7532000",
+    "bs.accrued_liabilities": "1865000",
+    "bs.revolver": "5667000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1687000",
+    "bs.total_current_liabilities": "19331000",
+    "bs.long_term_debt": "18705000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1395000",
+    "bs.total_liabilities": "39431000",
+    "bs.total_equity": "20219000",
+    "bs.total_liabilities_and_equity": "59650000",
+    "cf.net_income": "3196000",
+    "cf.depreciation_amortization": "2040000",
+    "cf.change_in_working_capital": "-1458000",
+    "cf.other_operating": "45000",
+    "cf.cfo": "3823000",
+    "cf.capex": "2299000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2299000",
+    "cf.revolver_net": "984000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1935000",
+    "cf.distributions": "320000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1271000",
+    "cf.net_change_in_cash": "253000",
+    "sup.cash_interest_paid": "1508000",
+    "sup.cash_taxes_paid": "998000",
+    "sup.scheduled_principal": "1935000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "15009000",
+    "cash.beginning_of_year": "2554000",
+    "debt.term_total": "21285000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "90007000",
+    "is.cogs": "64380000",
+    "is.gross_profit": "25627000",
+    "is.sga": "14851000",
+    "is.depreciation_amortization": "2725000",
+    "is.other_operating_expense": "360000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7691000",
+    "is.interest_expense": "1986000",
+    "is.other_income_net": "54000",
+    "is.pretax_income": "5759000",
+    "is.income_tax_expense": "1441000",
+    "is.net_income": "4318000",
+    "bs.cash": "2684000",
+    "bs.accounts_receivable": "11422000",
+    "bs.inventory": "10824000",
+    "bs.other_current_assets": "1074000",
+    "bs.total_current_assets": "26004000",
+    "bs.net_ppe": "26361000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "58385000",
+    "bs.accounts_payable": "7158000",
+    "bs.accrued_liabilities": "1787000",
+    "bs.revolver": "4921000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1626000",
+    "bs.total_current_liabilities": "18072000",
+    "bs.long_term_debt": "18060000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1410000",
+    "bs.total_liabilities": "37542000",
+    "bs.total_equity": "20843000",
+    "bs.total_liabilities_and_equity": "58385000",
+    "cf.net_income": "4318000",
+    "cf.depreciation_amortization": "2725000",
+    "cf.change_in_working_capital": "-754000",
+    "cf.other_operating": "60000",
+    "cf.cfo": "6349000",
+    "cf.capex": "3059000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3059000",
+    "cf.revolver_net": "238000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2580000",
+    "cf.distributions": "818000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3160000",
+    "cf.net_change_in_cash": "130000",
+    "sup.cash_interest_paid": "2000000",
+    "sup.cash_taxes_paid": "1375000",
+    "sup.scheduled_principal": "2580000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "15633000",
+    "cash.beginning_of_year": "2554000",
+    "debt.term_total": "20640000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "22481000",
+    "is.cogs": "16009000",
+    "is.gross_profit": "6472000",
+    "is.sga": "3709000",
+    "is.depreciation_amortization": "687000",
+    "is.other_operating_expense": "90000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1986000",
+    "is.interest_expense": "462000",
+    "is.other_income_net": "13000",
+    "is.pretax_income": "1537000",
+    "is.income_tax_expense": "384000",
+    "is.net_income": "1153000",
+    "bs.cash": "2698000",
+    "bs.accounts_receivable": "11481000",
+    "bs.inventory": "10877000",
+    "bs.other_current_assets": "1079000",
+    "bs.total_current_assets": "26135000",
+    "bs.net_ppe": "26438000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "58593000",
+    "bs.accounts_payable": "7193000",
+    "bs.accrued_liabilities": "1786000",
+    "bs.revolver": "4946000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1643000",
+    "bs.total_current_liabilities": "18148000",
+    "bs.long_term_debt": "17415000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1425000",
+    "bs.total_liabilities": "36988000",
+    "bs.total_equity": "21605000",
+    "bs.total_liabilities_and_equity": "58593000",
+    "cf.net_income": "1153000",
+    "cf.depreciation_amortization": "687000",
+    "cf.change_in_working_capital": "-66000",
+    "cf.other_operating": "15000",
+    "cf.cfo": "1789000",
+    "cf.capex": "764000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-764000",
+    "cf.revolver_net": "25000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "645000",
+    "cf.distributions": "391000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1011000",
+    "cf.net_change_in_cash": "14000",
+    "sup.cash_interest_paid": "471000",
+    "sup.cash_taxes_paid": "374000",
+    "sup.scheduled_principal": "645000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "16395000",
+    "cash.beginning_of_year": "2684000",
+    "debt.term_total": "19995000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "46471000",
+    "is.cogs": "33217000",
+    "is.gross_profit": "13254000",
+    "is.sga": "7667000",
+    "is.depreciation_amortization": "1376000",
+    "is.other_operating_expense": "186000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4025000",
+    "is.interest_expense": "913000",
+    "is.other_income_net": "27000",
+    "is.pretax_income": "3139000",
+    "is.income_tax_expense": "785000",
+    "is.net_income": "2354000",
+    "bs.cash": "2879000",
+    "bs.accounts_receivable": "12646000",
+    "bs.inventory": "11692000",
+    "bs.other_current_assets": "1152000",
+    "bs.total_current_assets": "28369000",
+    "bs.net_ppe": "26565000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "60954000",
+    "bs.accounts_payable": "7732000",
+    "bs.accrued_liabilities": "1892000",
+    "bs.revolver": "6110000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1744000",
+    "bs.total_current_liabilities": "20058000",
+    "bs.long_term_debt": "16770000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1440000",
+    "bs.total_liabilities": "38268000",
+    "bs.total_equity": "22686000",
+    "bs.total_liabilities_and_equity": "60954000",
+    "cf.net_income": "2354000",
+    "cf.depreciation_amortization": "1376000",
+    "cf.change_in_working_capital": "-1373000",
+    "cf.other_operating": "30000",
+    "cf.cfo": "2387000",
+    "cf.capex": "1580000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1580000",
+    "cf.revolver_net": "1189000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1290000",
+    "cf.distributions": "511000",
+    "cf.other_financing": "0",
+    "cf.cff": "-612000",
+    "cf.net_change_in_cash": "195000",
+    "sup.cash_interest_paid": "926000",
+    "sup.cash_taxes_paid": "758000",
+    "sup.scheduled_principal": "1290000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "17476000",
+    "cash.beginning_of_year": "2684000",
+    "debt.term_total": "19350000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "70670000",
+    "is.cogs": "50444000",
+    "is.gross_profit": "20226000",
+    "is.sga": "11660000",
+    "is.depreciation_amortization": "2068000",
+    "is.other_operating_expense": "283000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6215000",
+    "is.interest_expense": "1375000",
+    "is.other_income_net": "42000",
+    "is.pretax_income": "4882000",
+    "is.income_tax_expense": "1221000",
+    "is.net_income": "3661000",
+    "bs.cash": "2904000",
+    "bs.accounts_receivable": "12703000",
+    "bs.inventory": "11705000",
+    "bs.other_current_assets": "1162000",
+    "bs.total_current_assets": "28474000",
+    "bs.net_ppe": "26696000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "61190000",
+    "bs.accounts_payable": "7740000",
+    "bs.accrued_liabilities": "1911000",
+    "bs.revolver": "5726000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1791000",
+    "bs.total_current_liabilities": "19748000",
+    "bs.long_term_debt": "16125000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1455000",
+    "bs.total_liabilities": "37328000",
+    "bs.total_equity": "23862000",
+    "bs.total_liabilities_and_equity": "61190000",
+    "cf.net_income": "3661000",
+    "cf.depreciation_amortization": "2068000",
+    "cf.change_in_working_capital": "-1379000",
+    "cf.other_operating": "45000",
+    "cf.cfo": "4395000",
+    "cf.capex": "2403000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2403000",
+    "cf.revolver_net": "805000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1935000",
+    "cf.distributions": "642000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1772000",
+    "cf.net_change_in_cash": "220000",
+    "sup.cash_interest_paid": "1384000",
+    "sup.cash_taxes_paid": "1159000",
+    "sup.scheduled_principal": "1935000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "18652000",
+    "cash.beginning_of_year": "2684000",
+    "debt.term_total": "18705000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "94000000",
+    "is.cogs": "67151000",
+    "is.gross_profit": "26849000",
+    "is.sga": "15509000",
+    "is.depreciation_amortization": "2764000",
+    "is.other_operating_expense": "376000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8200000",
+    "is.interest_expense": "1818000",
+    "is.other_income_net": "56000",
+    "is.pretax_income": "6438000",
+    "is.income_tax_expense": "1610000",
+    "is.net_income": "4828000",
+    "bs.cash": "2800000",
+    "bs.accounts_receivable": "11965000",
+    "bs.inventory": "11352000",
+    "bs.other_current_assets": "1120000",
+    "bs.total_current_assets": "27237000",
+    "bs.net_ppe": "26793000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "60050000",
+    "bs.accounts_payable": "7507000",
+    "bs.accrued_liabilities": "1842000",
+    "bs.revolver": "5133000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1695000",
+    "bs.total_current_liabilities": "18757000",
+    "bs.long_term_debt": "15480000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1470000",
+    "bs.total_liabilities": "35707000",
+    "bs.total_equity": "24343000",
+    "bs.total_liabilities_and_equity": "60050000",
+    "cf.net_income": "4828000",
+    "cf.depreciation_amortization": "2764000",
+    "cf.change_in_working_capital": "-644000",
+    "cf.other_operating": "60000",
+    "cf.cfo": "7008000",
+    "cf.capex": "3196000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3196000",
+    "cf.revolver_net": "212000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2580000",
+    "cf.distributions": "1328000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3696000",
+    "cf.net_change_in_cash": "116000",
+    "sup.cash_interest_paid": "1833000",
+    "sup.cash_taxes_paid": "1595000",
+    "sup.scheduled_principal": "2580000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "19133000",
+    "cash.beginning_of_year": "2684000",
+    "debt.term_total": "18060000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "23720000",
+    "is.cogs": "16943000",
+    "is.gross_profit": "6777000",
+    "is.sga": "3914000",
+    "is.depreciation_amortization": "698000",
+    "is.other_operating_expense": "95000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2070000",
+    "is.interest_expense": "420000",
+    "is.other_income_net": "14000",
+    "is.pretax_income": "1664000",
+    "is.income_tax_expense": "416000",
+    "is.net_income": "1248000",
+    "bs.cash": "2846000",
+    "bs.accounts_receivable": "12191000",
+    "bs.inventory": "11512000",
+    "bs.other_current_assets": "1139000",
+    "bs.total_current_assets": "27688000",
+    "bs.net_ppe": "26901000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "60609000",
+    "bs.accounts_payable": "7613000",
+    "bs.accrued_liabilities": "1862000",
+    "bs.revolver": "5218000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1744000",
+    "bs.total_current_liabilities": "19017000",
+    "bs.long_term_debt": "14835000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1485000",
+    "bs.total_liabilities": "35337000",
+    "bs.total_equity": "25272000",
+    "bs.total_liabilities_and_equity": "60609000",
+    "cf.net_income": "1248000",
+    "cf.depreciation_amortization": "698000",
+    "cf.change_in_working_capital": "-230000",
+    "cf.other_operating": "15000",
+    "cf.cfo": "1731000",
+    "cf.capex": "806000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-806000",
+    "cf.revolver_net": "85000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "645000",
+    "cf.distributions": "319000",
+    "cf.other_financing": "0",
+    "cf.cff": "-879000",
+    "cf.net_change_in_cash": "46000",
+    "sup.cash_interest_paid": "428000",
+    "sup.cash_taxes_paid": "389000",
+    "sup.scheduled_principal": "645000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "20062000",
+    "cash.beginning_of_year": "2800000",
+    "debt.term_total": "17415000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "48895000",
+    "is.cogs": "34913000",
+    "is.gross_profit": "13982000",
+    "is.sga": "8068000",
+    "is.depreciation_amortization": "1399000",
+    "is.other_operating_expense": "196000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4319000",
+    "is.interest_expense": "830000",
+    "is.other_income_net": "29000",
+    "is.pretax_income": "3518000",
+    "is.income_tax_expense": "880000",
+    "is.net_income": "2638000",
+    "bs.cash": "3021000",
+    "bs.accounts_receivable": "12581000",
+    "bs.inventory": "12210000",
+    "bs.other_current_assets": "1208000",
+    "bs.total_current_assets": "29020000",
+    "bs.net_ppe": "27056000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "62096000",
+    "bs.accounts_payable": "8074000",
+    "bs.accrued_liabilities": "1965000",
+    "bs.revolver": "5539000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1874000",
+    "bs.total_current_liabilities": "20032000",
+    "bs.long_term_debt": "14190000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1500000",
+    "bs.total_liabilities": "35722000",
+    "bs.total_equity": "26374000",
+    "bs.total_liabilities_and_equity": "62096000",
+    "cf.net_income": "2638000",
+    "cf.depreciation_amortization": "1399000",
+    "cf.change_in_working_capital": "-693000",
+    "cf.other_operating": "30000",
+    "cf.cfo": "3374000",
+    "cf.capex": "1662000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1662000",
+    "cf.revolver_net": "406000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1290000",
+    "cf.distributions": "607000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1491000",
+    "cf.net_change_in_cash": "221000",
+    "sup.cash_interest_paid": "841000",
+    "sup.cash_taxes_paid": "805000",
+    "sup.scheduled_principal": "1290000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "21164000",
+    "cash.beginning_of_year": "2800000",
+    "debt.term_total": "16770000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "74118000",
+    "is.cogs": "52867000",
+    "is.gross_profit": "21251000",
+    "is.sga": "12230000",
+    "is.depreciation_amortization": "2104000",
+    "is.other_operating_expense": "297000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6620000",
+    "is.interest_expense": "1235000",
+    "is.other_income_net": "44000",
+    "is.pretax_income": "5429000",
+    "is.income_tax_expense": "1358000",
+    "is.net_income": "4071000",
+    "bs.cash": "3027000",
+    "bs.accounts_receivable": "12743000",
+    "bs.inventory": "12199000",
+    "bs.other_current_assets": "1211000",
+    "bs.total_current_assets": "29180000",
+    "bs.net_ppe": "27209000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "62409000",
+    "bs.accounts_payable": "8067000",
+    "bs.accrued_liabilities": "1966000",
+    "bs.revolver": "5549000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1890000",
+    "bs.total_current_liabilities": "20052000",
+    "bs.long_term_debt": "13545000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1515000",
+    "bs.total_liabilities": "35112000",
+    "bs.total_equity": "27297000",
+    "bs.total_liabilities_and_equity": "62409000",
+    "cf.net_income": "4071000",
+    "cf.depreciation_amortization": "2104000",
+    "cf.change_in_working_capital": "-837000",
+    "cf.other_operating": "45000",
+    "cf.cfo": "5383000",
+    "cf.capex": "2520000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2520000",
+    "cf.revolver_net": "416000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1935000",
+    "cf.distributions": "1117000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2636000",
+    "cf.net_change_in_cash": "227000",
+    "sup.cash_interest_paid": "1248000",
+    "sup.cash_taxes_paid": "1269000",
+    "sup.scheduled_principal": "1935000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "22087000",
+    "cash.beginning_of_year": "2800000",
+    "debt.term_total": "16125000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "86000000",
+    "is.cogs": "61539000",
+    "is.gross_profit": "24461000",
+    "is.sga": "14190000",
+    "is.depreciation_amortization": "2698000",
+    "is.other_operating_expense": "345000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7228000",
+    "is.interest_expense": "2150000",
+    "is.other_income_net": "51000",
+    "is.pretax_income": "5129000",
+    "is.income_tax_expense": "1283000",
+    "is.net_income": "3846000",
+    "bs.cash": "2554000",
+    "bs.accounts_receivable": "10683000",
+    "bs.inventory": "10370000",
+    "bs.other_current_assets": "1022000",
+    "bs.total_current_assets": "24629000",
+    "bs.net_ppe": "26027000",
+    "bs.intangibles": "5160000",
+    "bs.other_noncurrent_assets": "860000",
+    "bs.total_assets": "56676000",
+    "bs.accounts_payable": "6858000",
+    "bs.accrued_liabilities": "1722000",
+    "bs.revolver": "4683000",
+    "bs.cpltd": "2580000",
+    "bs.other_current_liabilities": "1500000",
+    "bs.total_current_liabilities": "17343000",
+    "bs.long_term_debt": "20640000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1350000",
+    "bs.total_liabilities": "39333000",
+    "bs.total_equity": "17343000",
+    "bs.total_liabilities_and_equity": "56676000",
+    "cf.net_income": "3846000",
+    "cf.depreciation_amortization": "2698000",
+    "cf.change_in_working_capital": "312000",
+    "cf.other_operating": "60000",
+    "cf.cfo": "6916000",
+    "cf.capex": "2925000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2925000",
+    "cf.revolver_net": "-47000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2580000",
+    "cf.distributions": "1390000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4017000",
+    "cf.net_change_in_cash": "-26000",
+    "sup.cash_interest_paid": "2156000",
+    "sup.cash_taxes_paid": "1364000",
+    "sup.scheduled_principal": "2580000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "5210000",
+    "equity.retained_earnings": "12133000",
+    "cash.beginning_of_year": "2580000",
+    "debt.term_total": "23220000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.35",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4470000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1945000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1491000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2734000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10640000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3094000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1441000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6105000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1959000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4539000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.34",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "24941000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4470000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1945000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1491000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2734000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10640000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "16445000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "21605000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "16445000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.37",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4605000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1903000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1536000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2743000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10787000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3135000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1491000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6161000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1917000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4497000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.36",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "25460000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4605000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1903000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1536000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2743000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10787000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "17526000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "22686000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "17526000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.41",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4783000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1863000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1595000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2753000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10994000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3163000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1536000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6295000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1876000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4456000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.22",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "24431000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4783000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1863000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1595000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2753000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "10994000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "18702000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "23862000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "18702000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.41",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4828000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1818000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1610000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2764000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11020000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3196000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1595000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6229000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1833000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4413000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.10",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "23193000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4828000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1818000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1610000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2764000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11020000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "19183000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "24343000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "19183000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.43",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "4923000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1776000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1642000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2775000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11116000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3238000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1610000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6268000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1790000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4370000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.04",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "22633000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4923000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1776000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1642000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2775000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11116000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "20112000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "25272000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "20112000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.48",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "5112000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1735000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1705000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2787000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11339000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3278000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1642000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6419000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1748000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4328000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.97",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "22309000"
+      },
+      {
+       "label": "Net income",
+       "amount": "5112000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1735000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1705000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2787000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11339000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "21214000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "26374000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "21214000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Elise Trommler",
+   "reported": {
+    "fccr": {
+     "value": "1.51",
+     "threshold": "1.05",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "5238000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1678000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1747000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2800000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11463000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "3313000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "1705000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "6445000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1697000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2580000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "4277000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.89",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "21674000"
+      },
+      {
+       "label": "Net income",
+       "amount": "5238000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1678000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1747000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2800000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "11463000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "22137000",
+     "threshold": "13000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "27297000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "5160000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "22137000"
+      }
+     ]
+    }
+   },
+   "document_id": "harrowgate-precision.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Machine Works, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "536400",
+      "31_60": "272400",
+      "61_90": "81600",
+      "over_90": "18000"
+     },
+     "total": "908400"
+    },
+    {
+     "customer": "Dovetail Assembly, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "964000",
+      "31_60": "320800",
+      "61_90": "97600",
+      "over_90": "13600"
+     },
+     "total": "1396000"
+    },
+    {
+     "customer": "Dunleith Industries, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "355200",
+      "31_60": "114800",
+      "61_90": "30000",
+      "over_90": "0"
+     },
+     "total": "500000"
+    },
+    {
+     "customer": "Fenwick Industries, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "598000",
+      "31_60": "289200",
+      "61_90": "76800",
+      "over_90": "0"
+     },
+     "total": "964000"
+    },
+    {
+     "customer": "Foxhollow Equipment, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "300800",
+      "31_60": "110400",
+      "61_90": "26400",
+      "over_90": "4400"
+     },
+     "total": "442000"
+    },
+    {
+     "customer": "Harrowgate Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "389400",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "389400"
+    },
+    {
+     "customer": "Hartsfield Systems, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "939600",
+      "31_60": "289600",
+      "61_90": "124000",
+      "over_90": "27600"
+     },
+     "total": "1380800"
+    },
+    {
+     "customer": "Ironbridge Fabrication, LLC",
+     "category": "trade",
+     "contra": "74000",
+     "buckets": {
+      "0_30": "756000",
+      "31_60": "358800",
+      "61_90": "86400",
+      "over_90": "36800"
+     },
+     "total": "1238000"
+    },
+    {
+     "customer": "Juniper Industries, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "698400",
+      "31_60": "235600",
+      "61_90": "39200",
+      "over_90": "9600"
+     },
+     "total": "982800"
+    },
+    {
+     "customer": "Maplecrest Industries, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "358000",
+      "31_60": "98000",
+      "61_90": "19600",
+      "over_90": "14400"
+     },
+     "total": "490000"
+    },
+    {
+     "customer": "Norwood Assembly, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "838000",
+      "31_60": "259600",
+      "61_90": "82400",
+      "over_90": "0"
+     },
+     "total": "1180000"
+    },
+    {
+     "customer": "Redfern Machine Works Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "250400",
+      "31_60": "112000",
+      "61_90": "11200",
+      "over_90": "0"
+     },
+     "total": "373600"
+    },
+    {
+     "customer": "Tamarack Systems, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "670000",
+      "31_60": "313600",
+      "61_90": "41600",
+      "over_90": "20800"
+     },
+     "total": "1046000"
+    },
+    {
+     "customer": "Valemount Fabrication, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "968000",
+      "31_60": "322400",
+      "61_90": "53600",
+      "over_90": "0"
+     },
+     "total": "1344000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "4150000"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "6102800"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "1953200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "763000",
+    "ineligible_over_age": "145200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "74000",
+    "ineligible_concentration": "0",
+    "gross_ar": "12635000",
+    "total_ineligible_ar": "982200",
+    "eligible_ar": "11652800",
+    "ar_availability": "9904880",
+    "gross_inventory": "12206000",
+    "ineligible_inventory": "1953200",
+    "eligible_inventory": "10252800",
+    "inventory_availability_before_sublimit": "5126400",
+    "inventory_availability": "3250000",
+    "reserves": "100000",
+    "borrowing_base": "13054880",
+    "commitment": "8500000",
+    "lesser_of_base_and_commitment": "8500000",
+    "outstanding": "5476000",
+    "letters_of_credit": "0",
+    "availability": "3024000"
+   },
+   "outstanding": "5476000",
+   "letters_of_credit": "0",
+   "document_id": "harrowgate-precision.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Machine Works, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "538400",
+      "31_60": "264400",
+      "61_90": "91200",
+      "over_90": "18000"
+     },
+     "total": "912000"
+    },
+    {
+     "customer": "Dovetail Assembly, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "967600",
+      "31_60": "308400",
+      "61_90": "112000",
+      "over_90": "14000"
+     },
+     "total": "1402000"
+    },
+    {
+     "customer": "Dunleith Industries, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "357200",
+      "31_60": "110400",
+      "61_90": "34800",
+      "over_90": "0"
+     },
+     "total": "502400"
+    },
+    {
+     "customer": "Fenwick Industries, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "600800",
+      "31_60": "280400",
+      "61_90": "86800",
+      "over_90": "0"
+     },
+     "total": "968000"
+    },
+    {
+     "customer": "Foxhollow Equipment, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "302400",
+      "31_60": "106400",
+      "61_90": "30800",
+      "over_90": "4400"
+     },
+     "total": "444000"
+    },
+    {
+     "customer": "Harrowgate Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "391000",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "391000"
+    },
+    {
+     "customer": "Hartsfield Systems, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "943600",
+      "31_60": "277200",
+      "61_90": "138400",
+      "over_90": "27600"
+     },
+     "total": "1386800"
+    },
+    {
+     "customer": "Ironbridge Fabrication, LLC",
+     "category": "trade",
+     "contra": "74400",
+     "buckets": {
+      "0_30": "758800",
+      "31_60": "348000",
+      "61_90": "99200",
+      "over_90": "37200"
+     },
+     "total": "1243200"
+    },
+    {
+     "customer": "Juniper Industries, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "701600",
+      "31_60": "226800",
+      "61_90": "49200",
+      "over_90": "9600"
+     },
+     "total": "987200"
+    },
+    {
+     "customer": "Maplecrest Industries, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "360000",
+      "31_60": "93200",
+      "61_90": "24400",
+      "over_90": "14400"
+     },
+     "total": "492000"
+    },
+    {
+     "customer": "Norwood Assembly, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "841600",
+      "31_60": "248800",
+      "61_90": "94400",
+      "over_90": "0"
+     },
+     "total": "1184800"
+    },
+    {
+     "customer": "Redfern Machine Works Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "251600",
+      "31_60": "108800",
+      "61_90": "14800",
+      "over_90": "0"
+     },
+     "total": "375200"
+    },
+    {
+     "customer": "Tamarack Systems, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "672800",
+      "31_60": "304400",
+      "61_90": "52400",
+      "over_90": "20800"
+     },
+     "total": "1050400"
+    },
+    {
+     "customer": "Valemount Fabrication, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "972400",
+      "31_60": "310400",
+      "61_90": "67200",
+      "over_90": "0"
+     },
+     "total": "1350000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "4148800"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "6101200"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "1953000"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "766200",
+    "ineligible_over_age": "146000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "74400",
+    "ineligible_concentration": "0",
+    "gross_ar": "12689000",
+    "total_ineligible_ar": "986600",
+    "eligible_ar": "11702400",
+    "ar_availability": "9947040",
+    "gross_inventory": "12203000",
+    "ineligible_inventory": "1953000",
+    "eligible_inventory": "10250000",
+    "inventory_availability_before_sublimit": "5125000",
+    "inventory_availability": "3250000",
+    "reserves": "100000",
+    "borrowing_base": "13097040",
+    "commitment": "8500000",
+    "lesser_of_base_and_commitment": "8500000",
+    "outstanding": "5579000",
+    "letters_of_credit": "0",
+    "availability": "2921000"
+   },
+   "outstanding": "5579000",
+   "letters_of_credit": "0",
+   "document_id": "harrowgate-precision.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Alder Machine Works, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "541200",
+      "31_60": "256400",
+      "61_90": "100400",
+      "over_90": "18000"
+     },
+     "total": "916000"
+    },
+    {
+     "customer": "Dovetail Assembly, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "972000",
+      "31_60": "295600",
+      "61_90": "126400",
+      "over_90": "14000"
+     },
+     "total": "1408000"
+    },
+    {
+     "customer": "Dunleith Industries, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "358800",
+      "31_60": "105600",
+      "61_90": "40000",
+      "over_90": "0"
+     },
+     "total": "504400"
+    },
+    {
+     "customer": "Fenwick Industries, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "602800",
+      "31_60": "272000",
+      "61_90": "97200",
+      "over_90": "0"
+     },
+     "total": "972000"
+    },
+    {
+     "customer": "Foxhollow Equipment, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "303600",
+      "31_60": "102400",
+      "61_90": "35600",
+      "over_90": "4400"
+     },
+     "total": "446000"
+    },
+    {
+     "customer": "Harrowgate Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "392200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "392200"
+    },
+    {
+     "customer": "Hartsfield Systems, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "947600",
+      "31_60": "264400",
+      "61_90": "153200",
+      "over_90": "27600"
+     },
+     "total": "1392800"
+    },
+    {
+     "customer": "Ironbridge Fabrication, LLC",
+     "category": "trade",
+     "contra": "74800",
+     "buckets": {
+      "0_30": "762800",
+      "31_60": "336800",
+      "61_90": "112000",
+      "over_90": "37200"
+     },
+     "total": "1248800"
+    },
+    {
+     "customer": "Juniper Industries, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "704400",
+      "31_60": "218000",
+      "61_90": "59200",
+      "over_90": "9600"
+     },
+     "total": "991200"
+    },
+    {
+     "customer": "Maplecrest Industries, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "361200",
+      "31_60": "88800",
+      "61_90": "29600",
+      "over_90": "14800"
+     },
+     "total": "494400"
+    },
+    {
+     "customer": "Norwood Assembly, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "845200",
+      "31_60": "238000",
+      "61_90": "106800",
+      "over_90": "0"
+     },
+     "total": "1190000"
+    },
+    {
+     "customer": "Redfern Machine Works Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "252800",
+      "31_60": "105200",
+      "61_90": "18800",
+      "over_90": "0"
+     },
+     "total": "376800"
+    },
+    {
+     "customer": "Tamarack Systems, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "675600",
+      "31_60": "295200",
+      "61_90": "63200",
+      "over_90": "20800"
+     },
+     "total": "1054800"
+    },
+    {
+     "customer": "Valemount Fabrication, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "976400",
+      "31_60": "298000",
+      "61_90": "81200",
+      "over_90": "0"
+     },
+     "total": "1355600"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "raw_materials",
+     "amount": "4147600"
+    },
+    {
+     "category": "finished_goods",
+     "amount": "6099200"
+    },
+    {
+     "category": "work_in_process",
+     "amount": "1952200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "769000",
+    "ineligible_over_age": "146400",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "74800",
+    "ineligible_concentration": "0",
+    "gross_ar": "12743000",
+    "total_ineligible_ar": "990200",
+    "eligible_ar": "11752800",
+    "ar_availability": "9989880",
+    "gross_inventory": "12199000",
+    "ineligible_inventory": "1952200",
+    "eligible_inventory": "10246800",
+    "inventory_availability_before_sublimit": "5123400",
+    "inventory_availability": "3250000",
+    "reserves": "100000",
+    "borrowing_base": "13139880",
+    "commitment": "8500000",
+    "lesser_of_base_and_commitment": "8500000",
+    "outstanding": "5549000",
+    "letters_of_credit": "0",
+    "availability": "2951000"
+   },
+   "outstanding": "5549000",
+   "letters_of_credit": "0",
+   "document_id": "harrowgate-precision.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "4772000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23220000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "4701000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23220000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "4738000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22575000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "5116000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22575000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "5413000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22575000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "5841000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21930000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "5725000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21930000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "5708000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21930000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "5667000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21285000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "5424000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21285000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "5139000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21285000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "4921000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20640000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "4875000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20640000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "5007000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20640000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "4946000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19995000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "5329000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19995000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "5756000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19995000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "6110000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19350000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "5976000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19350000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "5836000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19350000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "5726000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18705000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "5584000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18705000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "5352000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18705000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "5133000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18060000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "5146000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18060000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "5117000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18060000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "5218000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17415000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "5277000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17415000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "5475000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17415000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "5539000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16770000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "5476000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16770000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "5579000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16770000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "5549000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16125000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "5604000",
+   "commitment": "8500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16125000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "harrowgate-precision.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/harrowgate-precision/credit-agreement.pdf",
+   "pages": 14,
+   "title": "Credit Agreement between Harrowgate Precision Components, Inc. and Bank of Stoic",
+   "received_date": "2022-03-18",
+   "document_date": "2022-03-18"
+  },
+  {
+   "id": "harrowgate-precision.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/harrowgate-precision/afs-2024.pdf",
+   "pages": 7,
+   "title": "Harrowgate Precision Components, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-20",
+   "document_date": "2025-03-11",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,684"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "11,422"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "10,824"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,074"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "26,004"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "26,361"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "58,385"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "7,158"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,787"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "4,921"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,626"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "18,072"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "18,060"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,410"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "37,542"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "20,843"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "58,385"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "90,007"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "64,380"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "25,627"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "14,851"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,725"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "360"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "7,691"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,986"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "54"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "5,759"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,441"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,318"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "4,318"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,725"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(754)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "60"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "6,349"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,059)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(3,059)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "238"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,580)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(818)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,160)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "130"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,000"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,375"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,580"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,554",
+    "bs.accounts_receivable": "10,683",
+    "bs.inventory": "10,370",
+    "bs.other_current_assets": "1,022",
+    "bs.total_current_assets": "24,629",
+    "bs.net_ppe": "26,027",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "56,676",
+    "bs.accounts_payable": "6,858",
+    "bs.accrued_liabilities": "1,722",
+    "bs.revolver": "4,683",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,500",
+    "bs.total_current_liabilities": "17,343",
+    "bs.long_term_debt": "20,640",
+    "bs.other_noncurrent_liabilities": "1,350",
+    "bs.total_liabilities": "39,333",
+    "bs.total_equity": "17,343",
+    "bs.total_liabilities_and_equity": "56,676",
+    "is.revenue": "86,000",
+    "is.cogs": "61,539",
+    "is.gross_profit": "24,461",
+    "is.sga": "14,190",
+    "is.depreciation_amortization": "2,698",
+    "is.other_operating_expense": "345",
+    "is.operating_income": "7,228",
+    "is.interest_expense": "2,150",
+    "is.other_income_net": "51",
+    "is.pretax_income": "5,129",
+    "is.income_tax_expense": "1,283",
+    "is.net_income": "3,846",
+    "cf.net_income": "3,846",
+    "cf.depreciation_amortization": "2,698",
+    "cf.change_in_working_capital": "312",
+    "cf.other_operating": "60",
+    "cf.cfo": "6,916",
+    "cf.capex": "(2,925)",
+    "cf.cfi": "(2,925)",
+    "cf.revolver_net": "(47)",
+    "cf.term_debt_repayments": "(2,580)",
+    "cf.distributions": "(1,390)",
+    "cf.cff": "(4,017)",
+    "cf.net_change_in_cash": "(26)",
+    "sup.cash_interest_paid": "2,156",
+    "sup.cash_taxes_paid": "1,364",
+    "sup.scheduled_principal": "2,580",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/harrowgate-precision/afs-2025.pdf",
+   "pages": 7,
+   "title": "Harrowgate Precision Components, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-18",
+   "document_date": "2026-04-09",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,800"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "11,965"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "11,352"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,120"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "27,237"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "26,793"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "60,050"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "7,507"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,842"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "5,133"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,695"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "18,757"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "15,480"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,470"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "35,707"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "24,343"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "60,050"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "94,000"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "67,151"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "26,849"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "15,509"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,764"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "376"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "8,200"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,818"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "56"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "6,438"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,610"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,828"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "4,828"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,764"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(644)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "60"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "7,008"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,196)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(3,196)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "212"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,580)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,328)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,696)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "116"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,833"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,595"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,580"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,684",
+    "bs.accounts_receivable": "11,422",
+    "bs.inventory": "10,824",
+    "bs.other_current_assets": "1,074",
+    "bs.total_current_assets": "26,004",
+    "bs.net_ppe": "26,361",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "58,385",
+    "bs.accounts_payable": "7,158",
+    "bs.accrued_liabilities": "1,787",
+    "bs.revolver": "4,921",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,626",
+    "bs.total_current_liabilities": "18,072",
+    "bs.long_term_debt": "18,060",
+    "bs.other_noncurrent_liabilities": "1,410",
+    "bs.total_liabilities": "37,542",
+    "bs.total_equity": "20,843",
+    "bs.total_liabilities_and_equity": "58,385",
+    "is.revenue": "90,007",
+    "is.cogs": "64,380",
+    "is.gross_profit": "25,627",
+    "is.sga": "14,851",
+    "is.depreciation_amortization": "2,725",
+    "is.other_operating_expense": "360",
+    "is.operating_income": "7,691",
+    "is.interest_expense": "1,986",
+    "is.other_income_net": "54",
+    "is.pretax_income": "5,759",
+    "is.income_tax_expense": "1,441",
+    "is.net_income": "4,318",
+    "cf.net_income": "4,318",
+    "cf.depreciation_amortization": "2,725",
+    "cf.change_in_working_capital": "(754)",
+    "cf.other_operating": "60",
+    "cf.cfo": "6,349",
+    "cf.capex": "(3,059)",
+    "cf.cfi": "(3,059)",
+    "cf.revolver_net": "238",
+    "cf.term_debt_repayments": "(2,580)",
+    "cf.distributions": "(818)",
+    "cf.cff": "(3,160)",
+    "cf.net_change_in_cash": "130",
+    "sup.cash_interest_paid": "2,000",
+    "sup.cash_taxes_paid": "1,375",
+    "sup.scheduled_principal": "2,580",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/harrowgate-precision/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Harrowgate Precision Components, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-04-28",
+   "document_date": "2025-04-24",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,698"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "11,481"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "10,877"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,079"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "26,135"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "26,438"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "58,593"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,193"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,786"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "4,946"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,643"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "18,148"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "17,415"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,425"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "36,988"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "21,605"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "58,593"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "22,481"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "16,009"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,472"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,709"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "687"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "90"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,986"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "462"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "13"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,537"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "384"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,153"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,153"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "687"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(66)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "15"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,789"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(764)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(764)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "25"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(645)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(391)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,011)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "14"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "471"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "374"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "645"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,574",
+    "bs.accounts_receivable": "10,954",
+    "bs.inventory": "10,410",
+    "bs.other_current_assets": "1,030",
+    "bs.total_current_assets": "24,968",
+    "bs.net_ppe": "26,078",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "57,066",
+    "bs.accounts_payable": "6,884",
+    "bs.accrued_liabilities": "1,725",
+    "bs.revolver": "4,738",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,535",
+    "bs.total_current_liabilities": "17,462",
+    "bs.long_term_debt": "19,995",
+    "bs.other_noncurrent_liabilities": "1,365",
+    "bs.total_liabilities": "38,822",
+    "bs.total_equity": "18,244",
+    "bs.total_liabilities_and_equity": "57,066",
+    "is.revenue": "21,449",
+    "is.cogs": "15,321",
+    "is.gross_profit": "6,128",
+    "is.sga": "3,539",
+    "is.depreciation_amortization": "678",
+    "is.other_operating_expense": "86",
+    "is.operating_income": "1,825",
+    "is.interest_expense": "503",
+    "is.other_income_net": "13",
+    "is.pretax_income": "1,335",
+    "is.income_tax_expense": "334",
+    "is.net_income": "1,001",
+    "cf.net_income": "1,001",
+    "cf.depreciation_amortization": "678",
+    "cf.change_in_working_capital": "(255)",
+    "cf.other_operating": "15",
+    "cf.cfo": "1,439",
+    "cf.capex": "(729)",
+    "cf.cfi": "(729)",
+    "cf.revolver_net": "55",
+    "cf.term_debt_repayments": "(645)",
+    "cf.distributions": "(100)",
+    "cf.cff": "(690)",
+    "cf.net_change_in_cash": "20",
+    "sup.cash_interest_paid": "512",
+    "sup.cash_taxes_paid": "308",
+    "sup.scheduled_principal": "645",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/harrowgate-precision/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Harrowgate Precision Components, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-08-08",
+   "document_date": "2025-08-04",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,879"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,646"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,692"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,152"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "28,369"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "26,565"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "60,954"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,732"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,892"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,110"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,744"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "20,058"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "16,770"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,440"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "38,268"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "22,686"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "60,954"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "46,471"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "33,217"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "13,254"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,667"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,376"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "186"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,025"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "913"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "27"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,139"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "785"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,354"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,354"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,376"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,373)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "30"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,387"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,580)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,580)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,189"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,290)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(511)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(612)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "195"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "926"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "758"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,290"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,736",
+    "bs.accounts_receivable": "12,017",
+    "bs.inventory": "11,119",
+    "bs.other_current_assets": "1,094",
+    "bs.total_current_assets": "26,966",
+    "bs.net_ppe": "26,173",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "59,159",
+    "bs.accounts_payable": "7,353",
+    "bs.accrued_liabilities": "1,819",
+    "bs.revolver": "5,841",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,633",
+    "bs.total_current_liabilities": "19,226",
+    "bs.long_term_debt": "19,350",
+    "bs.other_noncurrent_liabilities": "1,380",
+    "bs.total_liabilities": "39,956",
+    "bs.total_equity": "19,203",
+    "bs.total_liabilities_and_equity": "59,159",
+    "is.revenue": "44,247",
+    "is.cogs": "31,685",
+    "is.gross_profit": "12,562",
+    "is.sga": "7,301",
+    "is.depreciation_amortization": "1,358",
+    "is.other_operating_expense": "177",
+    "is.operating_income": "3,726",
+    "is.interest_expense": "996",
+    "is.other_income_net": "27",
+    "is.pretax_income": "2,757",
+    "is.income_tax_expense": "690",
+    "is.net_income": "2,067",
+    "cf.net_income": "2,067",
+    "cf.depreciation_amortization": "1,358",
+    "cf.change_in_working_capital": "(1,430)",
+    "cf.other_operating": "30",
+    "cf.cfo": "2,025",
+    "cf.capex": "(1,504)",
+    "cf.cfi": "(1,504)",
+    "cf.revolver_net": "1,158",
+    "cf.term_debt_repayments": "(1,290)",
+    "cf.distributions": "(207)",
+    "cf.cff": "(339)",
+    "cf.net_change_in_cash": "182",
+    "sup.cash_interest_paid": "1,009",
+    "sup.cash_taxes_paid": "642",
+    "sup.scheduled_principal": "1,290",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/harrowgate-precision/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Harrowgate Precision Components, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-10-26",
+   "document_date": "2025-10-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,904"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,703"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,705"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,162"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "28,474"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "26,696"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "61,190"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,740"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,911"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,726"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,791"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "19,748"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "16,125"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,455"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "37,328"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "23,862"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "61,190"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "70,670"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "50,444"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "20,226"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "11,660"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,068"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "283"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,215"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,375"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "42"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,882"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,221"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,661"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,661"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,068"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,379)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "45"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,395"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,403)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,403)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "805"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,935)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(642)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,772)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "220"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,384"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,159"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,935"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,807",
+    "bs.accounts_receivable": "12,024",
+    "bs.inventory": "11,390",
+    "bs.other_current_assets": "1,123",
+    "bs.total_current_assets": "27,344",
+    "bs.net_ppe": "26,286",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "59,650",
+    "bs.accounts_payable": "7,532",
+    "bs.accrued_liabilities": "1,865",
+    "bs.revolver": "5,667",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,687",
+    "bs.total_current_liabilities": "19,331",
+    "bs.long_term_debt": "18,705",
+    "bs.other_noncurrent_liabilities": "1,395",
+    "bs.total_liabilities": "39,431",
+    "bs.total_equity": "20,219",
+    "bs.total_liabilities_and_equity": "59,650",
+    "is.revenue": "67,641",
+    "is.cogs": "48,449",
+    "is.gross_profit": "19,192",
+    "is.sga": "11,161",
+    "is.depreciation_amortization": "2,040",
+    "is.other_operating_expense": "271",
+    "is.operating_income": "5,720",
+    "is.interest_expense": "1,498",
+    "is.other_income_net": "41",
+    "is.pretax_income": "4,263",
+    "is.income_tax_expense": "1,067",
+    "is.net_income": "3,196",
+    "cf.net_income": "3,196",
+    "cf.depreciation_amortization": "2,040",
+    "cf.change_in_working_capital": "(1,458)",
+    "cf.other_operating": "45",
+    "cf.cfo": "3,823",
+    "cf.capex": "(2,299)",
+    "cf.cfi": "(2,299)",
+    "cf.revolver_net": "984",
+    "cf.term_debt_repayments": "(1,935)",
+    "cf.distributions": "(320)",
+    "cf.cff": "(1,271)",
+    "cf.net_change_in_cash": "253",
+    "sup.cash_interest_paid": "1,508",
+    "sup.cash_taxes_paid": "998",
+    "sup.scheduled_principal": "1,935",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/harrowgate-precision/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Harrowgate Precision Components, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-05-02",
+   "document_date": "2026-04-28",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,846"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,191"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "11,512"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,139"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "27,688"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "26,901"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "60,609"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "7,613"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,862"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,218"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,744"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "19,017"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,835"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,485"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "35,337"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "25,272"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "60,609"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "23,720"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "16,943"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,777"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,914"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "698"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "95"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,070"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "420"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "14"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,664"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "416"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,248"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,248"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "698"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(230)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "15"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,731"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(806)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(806)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "85"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(645)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(319)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(879)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "46"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "428"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "389"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "645"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,698",
+    "bs.accounts_receivable": "11,481",
+    "bs.inventory": "10,877",
+    "bs.other_current_assets": "1,079",
+    "bs.total_current_assets": "26,135",
+    "bs.net_ppe": "26,438",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "58,593",
+    "bs.accounts_payable": "7,193",
+    "bs.accrued_liabilities": "1,786",
+    "bs.revolver": "4,946",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,643",
+    "bs.total_current_liabilities": "18,148",
+    "bs.long_term_debt": "17,415",
+    "bs.other_noncurrent_liabilities": "1,425",
+    "bs.total_liabilities": "36,988",
+    "bs.total_equity": "21,605",
+    "bs.total_liabilities_and_equity": "58,593",
+    "is.revenue": "22,481",
+    "is.cogs": "16,009",
+    "is.gross_profit": "6,472",
+    "is.sga": "3,709",
+    "is.depreciation_amortization": "687",
+    "is.other_operating_expense": "90",
+    "is.operating_income": "1,986",
+    "is.interest_expense": "462",
+    "is.other_income_net": "13",
+    "is.pretax_income": "1,537",
+    "is.income_tax_expense": "384",
+    "is.net_income": "1,153",
+    "cf.net_income": "1,153",
+    "cf.depreciation_amortization": "687",
+    "cf.change_in_working_capital": "(66)",
+    "cf.other_operating": "15",
+    "cf.cfo": "1,789",
+    "cf.capex": "(764)",
+    "cf.cfi": "(764)",
+    "cf.revolver_net": "25",
+    "cf.term_debt_repayments": "(645)",
+    "cf.distributions": "(391)",
+    "cf.cff": "(1,011)",
+    "cf.net_change_in_cash": "14",
+    "sup.cash_interest_paid": "471",
+    "sup.cash_taxes_paid": "374",
+    "sup.scheduled_principal": "645",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/harrowgate-precision/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Harrowgate Precision Components, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-07-30",
+   "document_date": "2026-07-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,021"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,581"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "12,210"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,208"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "29,020"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "27,056"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "62,096"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,074"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,965"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,539"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,874"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "20,032"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,190"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,500"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "35,722"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "26,374"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "62,096"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "48,895"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "34,913"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "13,982"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,068"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,399"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "196"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,319"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "830"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "29"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,518"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "880"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,638"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,638"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,399"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(693)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "30"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,374"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,662)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,662)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "406"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,290)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(607)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,491)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "221"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "841"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "805"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,290"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,879",
+    "bs.accounts_receivable": "12,646",
+    "bs.inventory": "11,692",
+    "bs.other_current_assets": "1,152",
+    "bs.total_current_assets": "28,369",
+    "bs.net_ppe": "26,565",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "60,954",
+    "bs.accounts_payable": "7,732",
+    "bs.accrued_liabilities": "1,892",
+    "bs.revolver": "6,110",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,744",
+    "bs.total_current_liabilities": "20,058",
+    "bs.long_term_debt": "16,770",
+    "bs.other_noncurrent_liabilities": "1,440",
+    "bs.total_liabilities": "38,268",
+    "bs.total_equity": "22,686",
+    "bs.total_liabilities_and_equity": "60,954",
+    "is.revenue": "46,471",
+    "is.cogs": "33,217",
+    "is.gross_profit": "13,254",
+    "is.sga": "7,667",
+    "is.depreciation_amortization": "1,376",
+    "is.other_operating_expense": "186",
+    "is.operating_income": "4,025",
+    "is.interest_expense": "913",
+    "is.other_income_net": "27",
+    "is.pretax_income": "3,139",
+    "is.income_tax_expense": "785",
+    "is.net_income": "2,354",
+    "cf.net_income": "2,354",
+    "cf.depreciation_amortization": "1,376",
+    "cf.change_in_working_capital": "(1,373)",
+    "cf.other_operating": "30",
+    "cf.cfo": "2,387",
+    "cf.capex": "(1,580)",
+    "cf.cfi": "(1,580)",
+    "cf.revolver_net": "1,189",
+    "cf.term_debt_repayments": "(1,290)",
+    "cf.distributions": "(511)",
+    "cf.cff": "(612)",
+    "cf.net_change_in_cash": "195",
+    "sup.cash_interest_paid": "926",
+    "sup.cash_taxes_paid": "758",
+    "sup.scheduled_principal": "1,290",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/harrowgate-precision/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Harrowgate Precision Components, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-11-09",
+   "document_date": "2026-11-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,027"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "12,743"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "12,199"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,211"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "29,180"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "27,209"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,160"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "860"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "62,409"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,067"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,966"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,549"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,580"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,890"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "20,052"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "13,545"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,515"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "35,112"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "27,297"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "62,409"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "74,118"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "52,867"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "21,251"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "12,230"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,104"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "297"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,620"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,235"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "44"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "5,429"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,358"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "4,071"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,071"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,104"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(837)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "45"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,383"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,520)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,520)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "416"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,935)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,117)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,636)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "227"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,248"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,269"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,935"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,904",
+    "bs.accounts_receivable": "12,703",
+    "bs.inventory": "11,705",
+    "bs.other_current_assets": "1,162",
+    "bs.total_current_assets": "28,474",
+    "bs.net_ppe": "26,696",
+    "bs.intangibles": "5,160",
+    "bs.other_noncurrent_assets": "860",
+    "bs.total_assets": "61,190",
+    "bs.accounts_payable": "7,740",
+    "bs.accrued_liabilities": "1,911",
+    "bs.revolver": "5,726",
+    "bs.cpltd": "2,580",
+    "bs.other_current_liabilities": "1,791",
+    "bs.total_current_liabilities": "19,748",
+    "bs.long_term_debt": "16,125",
+    "bs.other_noncurrent_liabilities": "1,455",
+    "bs.total_liabilities": "37,328",
+    "bs.total_equity": "23,862",
+    "bs.total_liabilities_and_equity": "61,190",
+    "is.revenue": "70,670",
+    "is.cogs": "50,444",
+    "is.gross_profit": "20,226",
+    "is.sga": "11,660",
+    "is.depreciation_amortization": "2,068",
+    "is.other_operating_expense": "283",
+    "is.operating_income": "6,215",
+    "is.interest_expense": "1,375",
+    "is.other_income_net": "42",
+    "is.pretax_income": "4,882",
+    "is.income_tax_expense": "1,221",
+    "is.net_income": "3,661",
+    "cf.net_income": "3,661",
+    "cf.depreciation_amortization": "2,068",
+    "cf.change_in_working_capital": "(1,379)",
+    "cf.other_operating": "45",
+    "cf.cfo": "4,395",
+    "cf.capex": "(2,403)",
+    "cf.cfi": "(2,403)",
+    "cf.revolver_net": "805",
+    "cf.term_debt_repayments": "(1,935)",
+    "cf.distributions": "(642)",
+    "cf.cff": "(1,772)",
+    "cf.net_change_in_cash": "220",
+    "sup.cash_interest_paid": "1,384",
+    "sup.cash_taxes_paid": "1,159",
+    "sup.scheduled_principal": "1,935",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/harrowgate-precision/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-04-28",
+   "document_date": "2025-04-26",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/harrowgate-precision/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-08-08",
+   "document_date": "2025-08-06",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/harrowgate-precision/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-10-26",
+   "document_date": "2025-10-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/harrowgate-precision/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-09",
+   "document_date": "2026-02-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/harrowgate-precision/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-05-02",
+   "document_date": "2026-04-30",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/harrowgate-precision/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-07-30",
+   "document_date": "2026-07-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/harrowgate-precision/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Harrowgate Precision Components, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-11-09",
+   "document_date": "2026-11-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "harrowgate-precision.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/harrowgate-precision/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Harrowgate Precision Components, Inc. borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-14",
+   "document_date": "2026-08-12",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "harrowgate-precision.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/harrowgate-precision/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Harrowgate Precision Components, Inc. borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-13",
+   "document_date": "2026-09-11",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "harrowgate-precision.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/harrowgate-precision/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Harrowgate Precision Components, Inc. borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-12",
+   "document_date": "2026-10-10",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.35",
+    "pass": true,
+    "headroom": "0.2857",
+    "reported_value": "1.35",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4470000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1945000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1491000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2734000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10640000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3094000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1441000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6105000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1959000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4539000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.34",
+    "pass": true,
+    "headroom": "0.2200",
+    "reported_value": "2.34",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "24941000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4470000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1945000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1491000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2734000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10640000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "16445000",
+    "pass": true,
+    "headroom": "0.2650",
+    "reported_value": "16445000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "21605000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "16445000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.37",
+    "pass": true,
+    "headroom": "0.3048",
+    "reported_value": "1.37",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4605000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1903000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1536000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2743000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10787000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3135000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1491000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6161000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1917000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4497000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.36",
+    "pass": true,
+    "headroom": "0.2133",
+    "reported_value": "2.36",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "25460000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4605000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1903000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1536000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2743000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10787000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "17526000",
+    "pass": true,
+    "headroom": "0.3482",
+    "reported_value": "17526000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "22686000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "17526000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.41",
+    "pass": true,
+    "headroom": "0.3429",
+    "reported_value": "1.41",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4783000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1863000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1595000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2753000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10994000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3163000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1536000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6295000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1876000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4456000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.22",
+    "pass": true,
+    "headroom": "0.2600",
+    "reported_value": "2.22",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "24431000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4783000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1863000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1595000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2753000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "10994000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "18702000",
+    "pass": true,
+    "headroom": "0.4386",
+    "reported_value": "18702000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "23862000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "18702000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.41",
+    "pass": true,
+    "headroom": "0.3429",
+    "reported_value": "1.41",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4828000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1818000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1610000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2764000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11020000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3196000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1595000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6229000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1833000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4413000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.10",
+    "pass": true,
+    "headroom": "0.3000",
+    "reported_value": "2.10",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "23193000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4828000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1818000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1610000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2764000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11020000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "19183000",
+    "pass": true,
+    "headroom": "0.4756",
+    "reported_value": "19183000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "24343000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "19183000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.43",
+    "pass": true,
+    "headroom": "0.3619",
+    "reported_value": "1.43",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "4923000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1776000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1642000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2775000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11116000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3238000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1610000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6268000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1790000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4370000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.04",
+    "pass": true,
+    "headroom": "0.3200",
+    "reported_value": "2.04",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "22633000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4923000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1776000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1642000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2775000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11116000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "20112000",
+    "pass": true,
+    "headroom": "0.5471",
+    "reported_value": "20112000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "25272000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "20112000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.48",
+    "pass": true,
+    "headroom": "0.4095",
+    "reported_value": "1.48",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "5112000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1735000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1705000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2787000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11339000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3278000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1642000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6419000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1748000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4328000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "1.97",
+    "pass": true,
+    "headroom": "0.3433",
+    "reported_value": "1.97",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "22309000"
+     },
+     {
+      "label": "Net income",
+      "amount": "5112000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1735000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1705000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2787000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11339000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "21214000",
+    "pass": true,
+    "headroom": "0.6318",
+    "reported_value": "21214000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "26374000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "21214000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.05",
+    "value": "1.51",
+    "pass": true,
+    "headroom": "0.4381",
+    "reported_value": "1.51",
+    "reported_threshold": "1.05",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "5238000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1678000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1747000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2800000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11463000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "3313000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "1705000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "6445000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1697000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2580000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "4277000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "1.89",
+    "pass": true,
+    "headroom": "0.3700",
+    "reported_value": "1.89",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "21674000"
+     },
+     {
+      "label": "Net income",
+      "amount": "5238000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1678000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1747000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2800000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "11463000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "harrowgate-precision-rlc",
+    "terms_version_id": "tv-harrowgate-precision-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "13000000",
+    "value": "22137000",
+    "pass": true,
+    "headroom": "0.7028",
+    "reported_value": "22137000",
+    "reported_threshold": "13000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "27297000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "5160000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "22137000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "harrowgate-precision-rlc",
+    "calculated": {
+     "ineligible_excluded": "763000",
+     "ineligible_over_age": "145200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "74000",
+     "ineligible_concentration": "0",
+     "gross_ar": "12635000",
+     "total_ineligible_ar": "982200",
+     "eligible_ar": "11652800",
+     "ar_availability": "9904880",
+     "gross_inventory": "12206000",
+     "ineligible_inventory": "1953200",
+     "eligible_inventory": "10252800",
+     "inventory_availability_before_sublimit": "5126400",
+     "inventory_availability": "3250000",
+     "reserves": "100000",
+     "borrowing_base": "13054880",
+     "commitment": "8500000",
+     "lesser_of_base_and_commitment": "8500000",
+     "outstanding": "5476000",
+     "letters_of_credit": "0",
+     "availability": "3024000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "3024000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "harrowgate-precision-rlc",
+    "calculated": {
+     "ineligible_excluded": "766200",
+     "ineligible_over_age": "146000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "74400",
+     "ineligible_concentration": "0",
+     "gross_ar": "12689000",
+     "total_ineligible_ar": "986600",
+     "eligible_ar": "11702400",
+     "ar_availability": "9947040",
+     "gross_inventory": "12203000",
+     "ineligible_inventory": "1953000",
+     "eligible_inventory": "10250000",
+     "inventory_availability_before_sublimit": "5125000",
+     "inventory_availability": "3250000",
+     "reserves": "100000",
+     "borrowing_base": "13097040",
+     "commitment": "8500000",
+     "lesser_of_base_and_commitment": "8500000",
+     "outstanding": "5579000",
+     "letters_of_credit": "0",
+     "availability": "2921000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "2921000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "harrowgate-precision-rlc",
+    "calculated": {
+     "ineligible_excluded": "769000",
+     "ineligible_over_age": "146400",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "74800",
+     "ineligible_concentration": "0",
+     "gross_ar": "12743000",
+     "total_ineligible_ar": "990200",
+     "eligible_ar": "11752800",
+     "ar_availability": "9989880",
+     "gross_inventory": "12199000",
+     "ineligible_inventory": "1952200",
+     "eligible_inventory": "10246800",
+     "inventory_availability_before_sublimit": "5123400",
+     "inventory_availability": "3250000",
+     "reserves": "100000",
+     "borrowing_base": "13139880",
+     "commitment": "8500000",
+     "lesser_of_base_and_commitment": "8500000",
+     "outstanding": "5549000",
+     "letters_of_credit": "0",
+     "availability": "2951000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "2951000"
+   }
+  ],
+  "signals": [],
+  "exceptions": []
+ }
+}

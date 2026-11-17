@@ -1,0 +1,4975 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "eastmere-building",
+  "name": "Eastmere Building Products, LLC",
+  "legal_form": "llc",
+  "industry": "distribution",
+  "city": "Spokane",
+  "state": "WA",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Dana Whitcombe",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 5,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Felicity Okonjo",
+  "auditor": "Wexley Arnault LLP"
+ },
+ "facilities": [
+  {
+   "id": "eastmere-building-rlc",
+   "borrower_id": "eastmere-building",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "17000000",
+   "original_amount": "17000000",
+   "closing_date": "2022-07-22",
+   "maturity_date": "2028-07-22",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "eastmere-building-tl",
+   "borrower_id": "eastmere-building",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "14176000",
+   "original_amount": "14176000",
+   "closing_date": "2022-07-22",
+   "maturity_date": "2029-07-22",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "338000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-eastmere-building-1",
+   "facility_id": "eastmere-building-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-07-22",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2022-07-28",
+   "warnings": [],
+   "source_documents": [
+    "eastmere-building.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "eastmere-building.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "eastmere-building.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "3.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "eastmere-building.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 3.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "eastmere-building.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "eastmere-building.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 30,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "eastmere-building.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 30 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 30,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "eastmere-building.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 30 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "eastmere-building.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "eastmere-building.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "eastmere-building.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $17,000,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "eastmere-building.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $14,176,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "eastmere-building.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $338,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "33146000",
+    "is.cogs": "25914000",
+    "is.gross_profit": "7232000",
+    "is.sga": "4972000",
+    "is.depreciation_amortization": "314000",
+    "is.other_operating_expense": "99000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1847000",
+    "is.interest_expense": "398000",
+    "is.other_income_net": "20000",
+    "is.pretax_income": "1469000",
+    "is.income_tax_expense": "29000",
+    "is.net_income": "1440000",
+    "bs.cash": "3978000",
+    "bs.accounts_receivable": "14966000",
+    "bs.inventory": "14767000",
+    "bs.other_current_assets": "1591000",
+    "bs.total_current_assets": "35302000",
+    "bs.net_ppe": "9570000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "51622000",
+    "bs.accounts_payable": "10508000",
+    "bs.accrued_liabilities": "2321000",
+    "bs.revolver": "9533000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "1885000",
+    "bs.total_current_liabilities": "25599000",
+    "bs.long_term_debt": "10458000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2145000",
+    "bs.total_liabilities": "38202000",
+    "bs.total_equity": "13420000",
+    "bs.total_liabilities_and_equity": "51622000",
+    "cf.net_income": "1440000",
+    "cf.depreciation_amortization": "314000",
+    "cf.change_in_working_capital": "0",
+    "cf.other_operating": "24000",
+    "cf.cfo": "1778000",
+    "cf.capex": "331000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-331000",
+    "cf.revolver_net": "124000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "338000",
+    "cf.distributions": "1224000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1438000",
+    "cf.net_change_in_cash": "9000",
+    "sup.cash_interest_paid": "408000",
+    "sup.cash_taxes_paid": "28000",
+    "sup.scheduled_principal": "338000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "9413000",
+    "cash.beginning_of_year": "3969000",
+    "debt.term_total": "11810000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "69612000",
+    "is.cogs": "54496000",
+    "is.gross_profit": "15116000",
+    "is.sga": "10442000",
+    "is.depreciation_amortization": "628000",
+    "is.other_operating_expense": "208000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3838000",
+    "is.interest_expense": "792000",
+    "is.other_income_net": "42000",
+    "is.pretax_income": "3088000",
+    "is.income_tax_expense": "61000",
+    "is.net_income": "3027000",
+    "bs.cash": "4376000",
+    "bs.accounts_receivable": "15985000",
+    "bs.inventory": "16288000",
+    "bs.other_current_assets": "1750000",
+    "bs.total_current_assets": "38399000",
+    "bs.net_ppe": "9621000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "54770000",
+    "bs.accounts_payable": "11589000",
+    "bs.accrued_liabilities": "2538000",
+    "bs.revolver": "10940000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2074000",
+    "bs.total_current_liabilities": "28493000",
+    "bs.long_term_debt": "10120000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2169000",
+    "bs.total_liabilities": "40782000",
+    "bs.total_equity": "13988000",
+    "bs.total_liabilities_and_equity": "54770000",
+    "cf.net_income": "3027000",
+    "cf.depreciation_amortization": "628000",
+    "cf.change_in_working_capital": "-1212000",
+    "cf.other_operating": "48000",
+    "cf.cfo": "2491000",
+    "cf.capex": "696000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-696000",
+    "cf.revolver_net": "1531000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "676000",
+    "cf.distributions": "2243000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1388000",
+    "cf.net_change_in_cash": "407000",
+    "sup.cash_interest_paid": "804000",
+    "sup.cash_taxes_paid": "57000",
+    "sup.scheduled_principal": "676000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "9981000",
+    "cash.beginning_of_year": "3969000",
+    "debt.term_total": "11472000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "106577000",
+    "is.cogs": "83617000",
+    "is.gross_profit": "22960000",
+    "is.sga": "15987000",
+    "is.depreciation_amortization": "944000",
+    "is.other_operating_expense": "319000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5710000",
+    "is.interest_expense": "1208000",
+    "is.other_income_net": "64000",
+    "is.pretax_income": "4566000",
+    "is.income_tax_expense": "91000",
+    "is.net_income": "4475000",
+    "bs.cash": "4436000",
+    "bs.accounts_receivable": "16892000",
+    "bs.inventory": "16595000",
+    "bs.other_current_assets": "1774000",
+    "bs.total_current_assets": "39697000",
+    "bs.net_ppe": "9675000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "56122000",
+    "bs.accounts_payable": "11808000",
+    "bs.accrued_liabilities": "2579000",
+    "bs.revolver": "11306000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2100000",
+    "bs.total_current_liabilities": "29145000",
+    "bs.long_term_debt": "9782000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2193000",
+    "bs.total_liabilities": "41120000",
+    "bs.total_equity": "15002000",
+    "bs.total_liabilities_and_equity": "56122000",
+    "cf.net_income": "4475000",
+    "cf.depreciation_amortization": "944000",
+    "cf.change_in_working_capital": "-2164000",
+    "cf.other_operating": "72000",
+    "cf.cfo": "3327000",
+    "cf.capex": "1066000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1066000",
+    "cf.revolver_net": "1897000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1014000",
+    "cf.distributions": "2677000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1794000",
+    "cf.net_change_in_cash": "467000",
+    "sup.cash_interest_paid": "1212000",
+    "sup.cash_taxes_paid": "89000",
+    "sup.scheduled_principal": "1014000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "10995000",
+    "cash.beginning_of_year": "3969000",
+    "debt.term_total": "11134000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "141319000",
+    "is.cogs": "110973000",
+    "is.gross_profit": "30346000",
+    "is.sga": "21198000",
+    "is.depreciation_amortization": "1262000",
+    "is.other_operating_expense": "423000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7463000",
+    "is.interest_expense": "1625000",
+    "is.other_income_net": "85000",
+    "is.pretax_income": "5923000",
+    "is.income_tax_expense": "118000",
+    "is.net_income": "5805000",
+    "bs.cash": "4169000",
+    "bs.accounts_receivable": "15229000",
+    "bs.inventory": "15589000",
+    "bs.other_current_assets": "1668000",
+    "bs.total_current_assets": "36655000",
+    "bs.net_ppe": "9704000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "53109000",
+    "bs.accounts_payable": "11092000",
+    "bs.accrued_liabilities": "2432000",
+    "bs.revolver": "9398000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "1973000",
+    "bs.total_current_liabilities": "26247000",
+    "bs.long_term_debt": "9444000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2217000",
+    "bs.total_liabilities": "37908000",
+    "bs.total_equity": "15201000",
+    "bs.total_liabilities_and_equity": "53109000",
+    "cf.net_income": "5805000",
+    "cf.depreciation_amortization": "1262000",
+    "cf.change_in_working_capital": "-379000",
+    "cf.other_operating": "96000",
+    "cf.cfo": "6784000",
+    "cf.capex": "1413000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1413000",
+    "cf.revolver_net": "-11000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1352000",
+    "cf.distributions": "3808000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5171000",
+    "cf.net_change_in_cash": "200000",
+    "sup.cash_interest_paid": "1629000",
+    "sup.cash_taxes_paid": "119000",
+    "sup.scheduled_principal": "1352000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "11194000",
+    "cash.beginning_of_year": "3969000",
+    "debt.term_total": "10796000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "34674000",
+    "is.cogs": "27337000",
+    "is.gross_profit": "7337000",
+    "is.sga": "5201000",
+    "is.depreciation_amortization": "319000",
+    "is.other_operating_expense": "104000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1713000",
+    "is.interest_expense": "374000",
+    "is.other_income_net": "21000",
+    "is.pretax_income": "1360000",
+    "is.income_tax_expense": "27000",
+    "is.net_income": "1333000",
+    "bs.cash": "4161000",
+    "bs.accounts_receivable": "16036000",
+    "bs.inventory": "15578000",
+    "bs.other_current_assets": "1664000",
+    "bs.total_current_assets": "37439000",
+    "bs.net_ppe": "9732000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "53921000",
+    "bs.accounts_payable": "11085000",
+    "bs.accrued_liabilities": "2413000",
+    "bs.revolver": "10354000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "1969000",
+    "bs.total_current_liabilities": "27173000",
+    "bs.long_term_debt": "9106000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2241000",
+    "bs.total_liabilities": "38520000",
+    "bs.total_equity": "15401000",
+    "bs.total_liabilities_and_equity": "53921000",
+    "cf.net_income": "1333000",
+    "cf.depreciation_amortization": "319000",
+    "cf.change_in_working_capital": "-822000",
+    "cf.other_operating": "24000",
+    "cf.cfo": "854000",
+    "cf.capex": "347000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-347000",
+    "cf.revolver_net": "956000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "338000",
+    "cf.distributions": "1133000",
+    "cf.other_financing": "0",
+    "cf.cff": "-515000",
+    "cf.net_change_in_cash": "-8000",
+    "sup.cash_interest_paid": "388000",
+    "sup.cash_taxes_paid": "27000",
+    "sup.scheduled_principal": "338000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "11394000",
+    "cash.beginning_of_year": "4169000",
+    "debt.term_total": "10458000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "73164000",
+    "is.cogs": "57475000",
+    "is.gross_profit": "15689000",
+    "is.sga": "10975000",
+    "is.depreciation_amortization": "639000",
+    "is.other_operating_expense": "219000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3856000",
+    "is.interest_expense": "760000",
+    "is.other_income_net": "44000",
+    "is.pretax_income": "3140000",
+    "is.income_tax_expense": "63000",
+    "is.net_income": "3077000",
+    "bs.cash": "4619000",
+    "bs.accounts_receivable": "17674000",
+    "bs.inventory": "17175000",
+    "bs.other_current_assets": "1848000",
+    "bs.total_current_assets": "41316000",
+    "bs.net_ppe": "9797000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "57863000",
+    "bs.accounts_payable": "12220000",
+    "bs.accrued_liabilities": "2670000",
+    "bs.revolver": "11775000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2191000",
+    "bs.total_current_liabilities": "30208000",
+    "bs.long_term_debt": "8768000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2265000",
+    "bs.total_liabilities": "41241000",
+    "bs.total_equity": "16622000",
+    "bs.total_liabilities_and_equity": "57863000",
+    "cf.net_income": "3077000",
+    "cf.depreciation_amortization": "639000",
+    "cf.change_in_working_capital": "-2627000",
+    "cf.other_operating": "48000",
+    "cf.cfo": "1137000",
+    "cf.capex": "732000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-732000",
+    "cf.revolver_net": "2377000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "676000",
+    "cf.distributions": "1656000",
+    "cf.other_financing": "0",
+    "cf.cff": "45000",
+    "cf.net_change_in_cash": "450000",
+    "sup.cash_interest_paid": "770000",
+    "sup.cash_taxes_paid": "54000",
+    "sup.scheduled_principal": "676000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "12615000",
+    "cash.beginning_of_year": "4169000",
+    "debt.term_total": "10120000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "111430000",
+    "is.cogs": "87552000",
+    "is.gross_profit": "23878000",
+    "is.sga": "16715000",
+    "is.depreciation_amortization": "961000",
+    "is.other_operating_expense": "334000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5868000",
+    "is.interest_expense": "1168000",
+    "is.other_income_net": "67000",
+    "is.pretax_income": "4767000",
+    "is.income_tax_expense": "96000",
+    "is.net_income": "4671000",
+    "bs.cash": "4592000",
+    "bs.accounts_receivable": "17571000",
+    "bs.inventory": "17140000",
+    "bs.other_current_assets": "1837000",
+    "bs.total_current_assets": "41140000",
+    "bs.net_ppe": "9858000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "57748000",
+    "bs.accounts_payable": "12196000",
+    "bs.accrued_liabilities": "2662000",
+    "bs.revolver": "11480000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2176000",
+    "bs.total_current_liabilities": "29866000",
+    "bs.long_term_debt": "8430000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2289000",
+    "bs.total_liabilities": "40585000",
+    "bs.total_equity": "17163000",
+    "bs.total_liabilities_and_equity": "57748000",
+    "cf.net_income": "4671000",
+    "cf.depreciation_amortization": "961000",
+    "cf.change_in_working_capital": "-2525000",
+    "cf.other_operating": "72000",
+    "cf.cfo": "3179000",
+    "cf.capex": "1115000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1115000",
+    "cf.revolver_net": "2082000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1014000",
+    "cf.distributions": "2709000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1641000",
+    "cf.net_change_in_cash": "423000",
+    "sup.cash_interest_paid": "1171000",
+    "sup.cash_taxes_paid": "90000",
+    "sup.scheduled_principal": "1014000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "13156000",
+    "cash.beginning_of_year": "4169000",
+    "debt.term_total": "9782000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "148093000",
+    "is.cogs": "116237000",
+    "is.gross_profit": "31856000",
+    "is.sga": "22214000",
+    "is.depreciation_amortization": "1285000",
+    "is.other_operating_expense": "444000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7913000",
+    "is.interest_expense": "1564000",
+    "is.other_income_net": "89000",
+    "is.pretax_income": "6438000",
+    "is.income_tax_expense": "129000",
+    "is.net_income": "6309000",
+    "bs.cash": "4400000",
+    "bs.accounts_receivable": "16232000",
+    "bs.inventory": "16347000",
+    "bs.other_current_assets": "1760000",
+    "bs.total_current_assets": "38739000",
+    "bs.net_ppe": "9901000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "55390000",
+    "bs.accounts_payable": "11631000",
+    "bs.accrued_liabilities": "2552000",
+    "bs.revolver": "9955000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2086000",
+    "bs.total_current_liabilities": "27576000",
+    "bs.long_term_debt": "8092000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2313000",
+    "bs.total_liabilities": "37981000",
+    "bs.total_equity": "17409000",
+    "bs.total_liabilities_and_equity": "55390000",
+    "cf.net_income": "6309000",
+    "cf.depreciation_amortization": "1285000",
+    "cf.change_in_working_capital": "-1081000",
+    "cf.other_operating": "96000",
+    "cf.cfo": "6609000",
+    "cf.capex": "1482000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1482000",
+    "cf.revolver_net": "557000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1352000",
+    "cf.distributions": "4101000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4896000",
+    "cf.net_change_in_cash": "231000",
+    "sup.cash_interest_paid": "1571000",
+    "sup.cash_taxes_paid": "123000",
+    "sup.scheduled_principal": "1352000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "13402000",
+    "cash.beginning_of_year": "4169000",
+    "debt.term_total": "9444000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "35829000",
+    "is.cogs": "28237000",
+    "is.gross_profit": "7592000",
+    "is.sga": "5374000",
+    "is.depreciation_amortization": "325000",
+    "is.other_operating_expense": "107000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1786000",
+    "is.interest_expense": "361000",
+    "is.other_income_net": "21000",
+    "is.pretax_income": "1446000",
+    "is.income_tax_expense": "29000",
+    "is.net_income": "1417000",
+    "bs.cash": "4299000",
+    "bs.accounts_receivable": "15863000",
+    "bs.inventory": "16091000",
+    "bs.other_current_assets": "1720000",
+    "bs.total_current_assets": "37973000",
+    "bs.net_ppe": "9934000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "54657000",
+    "bs.accounts_payable": "11450000",
+    "bs.accrued_liabilities": "2485000",
+    "bs.revolver": "9622000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2035000",
+    "bs.total_current_liabilities": "26944000",
+    "bs.long_term_debt": "7754000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2337000",
+    "bs.total_liabilities": "37035000",
+    "bs.total_equity": "17622000",
+    "bs.total_liabilities_and_equity": "54657000",
+    "cf.net_income": "1417000",
+    "cf.depreciation_amortization": "325000",
+    "cf.change_in_working_capital": "366000",
+    "cf.other_operating": "24000",
+    "cf.cfo": "2132000",
+    "cf.capex": "358000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-358000",
+    "cf.revolver_net": "-333000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "338000",
+    "cf.distributions": "1204000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1875000",
+    "cf.net_change_in_cash": "-101000",
+    "sup.cash_interest_paid": "373000",
+    "sup.cash_taxes_paid": "33000",
+    "sup.scheduled_principal": "338000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "13615000",
+    "cash.beginning_of_year": "4400000",
+    "debt.term_total": "9106000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "75670000",
+    "is.cogs": "59425000",
+    "is.gross_profit": "16245000",
+    "is.sga": "11350000",
+    "is.depreciation_amortization": "651000",
+    "is.other_operating_expense": "227000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4017000",
+    "is.interest_expense": "709000",
+    "is.other_income_net": "45000",
+    "is.pretax_income": "3353000",
+    "is.income_tax_expense": "67000",
+    "is.net_income": "3286000",
+    "bs.cash": "4781000",
+    "bs.accounts_receivable": "18119000",
+    "bs.inventory": "17773000",
+    "bs.other_current_assets": "1912000",
+    "bs.total_current_assets": "42585000",
+    "bs.net_ppe": "10006000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "59341000",
+    "bs.accounts_payable": "12646000",
+    "bs.accrued_liabilities": "2745000",
+    "bs.revolver": "11952000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2269000",
+    "bs.total_current_liabilities": "30964000",
+    "bs.long_term_debt": "7416000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2361000",
+    "bs.total_liabilities": "40741000",
+    "bs.total_equity": "18600000",
+    "bs.total_liabilities_and_equity": "59341000",
+    "cf.net_income": "3286000",
+    "cf.depreciation_amortization": "651000",
+    "cf.change_in_working_capital": "-2074000",
+    "cf.other_operating": "48000",
+    "cf.cfo": "1911000",
+    "cf.capex": "756000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-756000",
+    "cf.revolver_net": "1997000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "676000",
+    "cf.distributions": "2095000",
+    "cf.other_financing": "0",
+    "cf.cff": "-774000",
+    "cf.net_change_in_cash": "381000",
+    "sup.cash_interest_paid": "725000",
+    "sup.cash_taxes_paid": "62000",
+    "sup.scheduled_principal": "676000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "14593000",
+    "cash.beginning_of_year": "4400000",
+    "debt.term_total": "8768000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "115382000",
+    "is.cogs": "90599000",
+    "is.gross_profit": "24783000",
+    "is.sga": "17307000",
+    "is.depreciation_amortization": "980000",
+    "is.other_operating_expense": "346000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6150000",
+    "is.interest_expense": "1096000",
+    "is.other_income_net": "69000",
+    "is.pretax_income": "5123000",
+    "is.income_tax_expense": "102000",
+    "is.net_income": "5021000",
+    "bs.cash": "4765000",
+    "bs.accounts_receivable": "18061000",
+    "bs.inventory": "17765000",
+    "bs.other_current_assets": "1906000",
+    "bs.total_current_assets": "42497000",
+    "bs.net_ppe": "10074000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "59321000",
+    "bs.accounts_payable": "12640000",
+    "bs.accrued_liabilities": "2750000",
+    "bs.revolver": "11914000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "2259000",
+    "bs.total_current_liabilities": "30915000",
+    "bs.long_term_debt": "7078000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2385000",
+    "bs.total_liabilities": "40378000",
+    "bs.total_equity": "18943000",
+    "bs.total_liabilities_and_equity": "59321000",
+    "cf.net_income": "5021000",
+    "cf.depreciation_amortization": "980000",
+    "cf.change_in_working_capital": "-2013000",
+    "cf.other_operating": "72000",
+    "cf.cfo": "4060000",
+    "cf.capex": "1153000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1153000",
+    "cf.revolver_net": "1959000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1014000",
+    "cf.distributions": "3487000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2542000",
+    "cf.net_change_in_cash": "365000",
+    "sup.cash_interest_paid": "1099000",
+    "sup.cash_taxes_paid": "100000",
+    "sup.scheduled_principal": "1014000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "14936000",
+    "cash.beginning_of_year": "4400000",
+    "debt.term_total": "8430000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "135001000",
+    "is.cogs": "106079000",
+    "is.gross_profit": "28922000",
+    "is.sga": "20250000",
+    "is.depreciation_amortization": "1247000",
+    "is.other_operating_expense": "404000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7021000",
+    "is.interest_expense": "1715000",
+    "is.other_income_net": "81000",
+    "is.pretax_income": "5387000",
+    "is.income_tax_expense": "108000",
+    "is.net_income": "5279000",
+    "bs.cash": "3969000",
+    "bs.accounts_receivable": "14970000",
+    "bs.inventory": "14762000",
+    "bs.other_current_assets": "1588000",
+    "bs.total_current_assets": "35289000",
+    "bs.net_ppe": "9553000",
+    "bs.intangibles": "5400000",
+    "bs.other_noncurrent_assets": "1350000",
+    "bs.total_assets": "51592000",
+    "bs.accounts_payable": "10504000",
+    "bs.accrued_liabilities": "2326000",
+    "bs.revolver": "9409000",
+    "bs.cpltd": "1352000",
+    "bs.other_current_liabilities": "1880000",
+    "bs.total_current_liabilities": "25471000",
+    "bs.long_term_debt": "10796000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2121000",
+    "bs.total_liabilities": "38388000",
+    "bs.total_equity": "13204000",
+    "bs.total_liabilities_and_equity": "51592000",
+    "cf.net_income": "5279000",
+    "cf.depreciation_amortization": "1247000",
+    "cf.change_in_working_capital": "239000",
+    "cf.other_operating": "96000",
+    "cf.cfo": "6861000",
+    "cf.capex": "1350000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1350000",
+    "cf.revolver_net": "-716000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1352000",
+    "cf.distributions": "3524000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5592000",
+    "cf.net_change_in_cash": "-81000",
+    "sup.cash_interest_paid": "1717000",
+    "sup.cash_taxes_paid": "107000",
+    "sup.scheduled_principal": "1352000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4007000",
+    "equity.retained_earnings": "9197000",
+    "cash.beginning_of_year": "4050000",
+    "debt.term_total": "12148000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Felicity Okonjo",
+   "reported": {
+    "fccr": {
+     "value": "2.41",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "5698000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1601000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "116000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1267000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8682000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1429000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "118000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "7135000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1609000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1352000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2961000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.40",
+     "threshold": "3.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20812000"
+      },
+      {
+       "label": "Net income",
+       "amount": "5698000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1601000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "116000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1267000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8682000"
+      }
+     ]
+    }
+   },
+   "document_id": "eastmere-building.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Felicity Okonjo",
+   "reported": {
+    "fccr": {
+     "value": "2.47",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "5855000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1593000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "120000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1273000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8841000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1449000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "116000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "7276000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1595000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1352000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2947000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.48",
+     "threshold": "3.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "21895000"
+      },
+      {
+       "label": "Net income",
+       "amount": "5855000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1593000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "120000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1273000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8841000"
+      }
+     ]
+    }
+   },
+   "document_id": "eastmere-building.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Felicity Okonjo",
+   "reported": {
+    "fccr": {
+     "value": "2.52",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6001000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1585000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "123000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1279000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8988000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1462000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "120000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "7406000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1588000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1352000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2940000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.37",
+     "threshold": "3.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "21262000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6001000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1585000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "123000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1279000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "8988000"
+      }
+     ]
+    }
+   },
+   "document_id": "eastmere-building.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Felicity Okonjo",
+   "reported": {
+    "fccr": {
+     "value": "2.63",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6309000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1564000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "129000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1285000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9287000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1482000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "123000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "7682000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1571000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1352000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2923000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.09",
+     "threshold": "3.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "19399000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6309000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1564000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "129000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1285000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9287000"
+      }
+     ]
+    }
+   },
+   "document_id": "eastmere-building.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Felicity Okonjo",
+   "reported": {
+    "fccr": {
+     "value": "2.66",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6393000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1551000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "131000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1291000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9366000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1493000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "129000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "7744000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1556000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1352000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2908000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.00",
+     "threshold": "3.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "18728000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6393000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1551000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "131000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1291000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9366000"
+      }
+     ]
+    }
+   },
+   "document_id": "eastmere-building.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Felicity Okonjo",
+   "reported": {
+    "fccr": {
+     "value": "2.72",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6518000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1513000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "133000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1297000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9461000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "1506000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "131000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "7824000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "1526000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1352000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "2878000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.19",
+     "threshold": "3.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "20720000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6518000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1513000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "133000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1297000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "9461000"
+      }
+     ]
+    }
+   },
+   "document_id": "eastmere-building.cc-2026-06-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "9479000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12148000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "9530000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12148000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "9533000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11810000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "10042000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11810000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "10628000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11810000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "10940000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11472000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "10940000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11472000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "11285000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11472000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "11306000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11134000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "10702000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11134000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "10164000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11134000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "9398000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10796000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "9862000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10796000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "10106000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10796000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "10354000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10458000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "10947000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10458000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "11313000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10458000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "11775000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10120000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "11537000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10120000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "11544000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10120000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "11480000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9782000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "10851000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9782000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "10380000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9782000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "9955000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9444000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "9893000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9444000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "9606000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9444000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "9622000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9106000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "10274000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9106000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "11164000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9106000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "11952000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8768000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "12118000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8768000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "11915000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8768000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "11914000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8430000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "11902000",
+   "commitment": "17000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8430000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "eastmere-building.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/eastmere-building/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Eastmere Building Products, LLC and Bank of Stoic",
+   "received_date": "2022-07-22",
+   "document_date": "2022-07-22"
+  },
+  {
+   "id": "eastmere-building.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/eastmere-building/afs-2024.pdf",
+   "pages": 7,
+   "title": "Eastmere Building Products, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-24",
+   "document_date": "2025-03-15",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "4,169"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "15,229"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "15,589"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,668"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "36,655"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "9,704"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "53,109"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "11,092"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,432"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "9,398"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,973"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "26,247"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,444"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,217"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "37,908"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "15,201"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "53,109"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "141,319"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "110,973"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "30,346"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "21,198"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,262"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "423"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "7,463"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,625"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "85"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "5,923"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "118"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,805"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "5,805"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,262"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(379)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "96"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "6,784"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,413)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,413)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(11)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,352)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(3,808)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(5,171)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "200"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,629"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "119"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,352"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,969",
+    "bs.accounts_receivable": "14,970",
+    "bs.inventory": "14,762",
+    "bs.other_current_assets": "1,588",
+    "bs.total_current_assets": "35,289",
+    "bs.net_ppe": "9,553",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "51,592",
+    "bs.accounts_payable": "10,504",
+    "bs.accrued_liabilities": "2,326",
+    "bs.revolver": "9,409",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "1,880",
+    "bs.total_current_liabilities": "25,471",
+    "bs.long_term_debt": "10,796",
+    "bs.other_noncurrent_liabilities": "2,121",
+    "bs.total_liabilities": "38,388",
+    "bs.total_equity": "13,204",
+    "bs.total_liabilities_and_equity": "51,592",
+    "is.revenue": "135,001",
+    "is.cogs": "106,079",
+    "is.gross_profit": "28,922",
+    "is.sga": "20,250",
+    "is.depreciation_amortization": "1,247",
+    "is.other_operating_expense": "404",
+    "is.operating_income": "7,021",
+    "is.interest_expense": "1,715",
+    "is.other_income_net": "81",
+    "is.pretax_income": "5,387",
+    "is.income_tax_expense": "108",
+    "is.net_income": "5,279",
+    "cf.net_income": "5,279",
+    "cf.depreciation_amortization": "1,247",
+    "cf.change_in_working_capital": "239",
+    "cf.other_operating": "96",
+    "cf.cfo": "6,861",
+    "cf.capex": "(1,350)",
+    "cf.cfi": "(1,350)",
+    "cf.revolver_net": "(716)",
+    "cf.term_debt_repayments": "(1,352)",
+    "cf.distributions": "(3,524)",
+    "cf.cff": "(5,592)",
+    "cf.net_change_in_cash": "(81)",
+    "sup.cash_interest_paid": "1,717",
+    "sup.cash_taxes_paid": "107",
+    "sup.scheduled_principal": "1,352",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/eastmere-building/afs-2025.pdf",
+   "pages": 7,
+   "title": "Eastmere Building Products, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-20",
+   "document_date": "2026-03-11",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "4,400"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "16,232"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "16,347"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,760"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "38,739"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "9,901"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "55,390"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "11,631"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,552"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "9,955"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "2,086"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "27,576"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,092"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,313"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "37,981"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "17,409"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "55,390"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "148,093"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "116,237"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "31,856"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "22,214"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,285"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "444"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "7,913"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,564"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "89"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "6,438"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "129"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,309"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,309"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,285"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(1,081)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "96"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "6,609"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,482)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,482)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "557"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,352)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(4,101)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(4,896)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "231"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,571"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "123"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,352"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,169",
+    "bs.accounts_receivable": "15,229",
+    "bs.inventory": "15,589",
+    "bs.other_current_assets": "1,668",
+    "bs.total_current_assets": "36,655",
+    "bs.net_ppe": "9,704",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "53,109",
+    "bs.accounts_payable": "11,092",
+    "bs.accrued_liabilities": "2,432",
+    "bs.revolver": "9,398",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "1,973",
+    "bs.total_current_liabilities": "26,247",
+    "bs.long_term_debt": "9,444",
+    "bs.other_noncurrent_liabilities": "2,217",
+    "bs.total_liabilities": "37,908",
+    "bs.total_equity": "15,201",
+    "bs.total_liabilities_and_equity": "53,109",
+    "is.revenue": "141,319",
+    "is.cogs": "110,973",
+    "is.gross_profit": "30,346",
+    "is.sga": "21,198",
+    "is.depreciation_amortization": "1,262",
+    "is.other_operating_expense": "423",
+    "is.operating_income": "7,463",
+    "is.interest_expense": "1,625",
+    "is.other_income_net": "85",
+    "is.pretax_income": "5,923",
+    "is.income_tax_expense": "118",
+    "is.net_income": "5,805",
+    "cf.net_income": "5,805",
+    "cf.depreciation_amortization": "1,262",
+    "cf.change_in_working_capital": "(379)",
+    "cf.other_operating": "96",
+    "cf.cfo": "6,784",
+    "cf.capex": "(1,413)",
+    "cf.cfi": "(1,413)",
+    "cf.revolver_net": "(11)",
+    "cf.term_debt_repayments": "(1,352)",
+    "cf.distributions": "(3,808)",
+    "cf.cff": "(5,171)",
+    "cf.net_change_in_cash": "200",
+    "sup.cash_interest_paid": "1,629",
+    "sup.cash_taxes_paid": "119",
+    "sup.scheduled_principal": "1,352",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/eastmere-building/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Eastmere Building Products, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-04-19",
+   "document_date": "2025-04-15",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,161"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,036"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,578"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,664"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "37,439"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "9,732"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "53,921"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "11,085"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,413"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "10,354"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,969"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "27,173"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,106"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,241"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "38,520"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "15,401"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "53,921"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "34,674"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "27,337"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,337"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,201"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "319"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "104"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,713"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "374"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "21"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,360"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "27"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,333"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,333"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "319"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(822)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "24"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "854"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(347)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(347)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "956"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(338)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,133)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(515)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(8)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "388"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "27"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "338"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,978",
+    "bs.accounts_receivable": "14,966",
+    "bs.inventory": "14,767",
+    "bs.other_current_assets": "1,591",
+    "bs.total_current_assets": "35,302",
+    "bs.net_ppe": "9,570",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "51,622",
+    "bs.accounts_payable": "10,508",
+    "bs.accrued_liabilities": "2,321",
+    "bs.revolver": "9,533",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "1,885",
+    "bs.total_current_liabilities": "25,599",
+    "bs.long_term_debt": "10,458",
+    "bs.other_noncurrent_liabilities": "2,145",
+    "bs.total_liabilities": "38,202",
+    "bs.total_equity": "13,420",
+    "bs.total_liabilities_and_equity": "51,622",
+    "is.revenue": "33,146",
+    "is.cogs": "25,914",
+    "is.gross_profit": "7,232",
+    "is.sga": "4,972",
+    "is.depreciation_amortization": "314",
+    "is.other_operating_expense": "99",
+    "is.operating_income": "1,847",
+    "is.interest_expense": "398",
+    "is.other_income_net": "20",
+    "is.pretax_income": "1,469",
+    "is.income_tax_expense": "29",
+    "is.net_income": "1,440",
+    "cf.net_income": "1,440",
+    "cf.depreciation_amortization": "314",
+    "cf.change_in_working_capital": "-",
+    "cf.other_operating": "24",
+    "cf.cfo": "1,778",
+    "cf.capex": "(331)",
+    "cf.cfi": "(331)",
+    "cf.revolver_net": "124",
+    "cf.term_debt_repayments": "(338)",
+    "cf.distributions": "(1,224)",
+    "cf.cff": "(1,438)",
+    "cf.net_change_in_cash": "9",
+    "sup.cash_interest_paid": "408",
+    "sup.cash_taxes_paid": "28",
+    "sup.scheduled_principal": "338",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/eastmere-building/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Eastmere Building Products, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-07-14",
+   "document_date": "2025-07-10",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,619"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,674"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "17,175"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,848"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "41,316"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "9,797"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "57,863"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,220"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,670"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "11,775"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,191"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "30,208"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,768"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,265"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "41,241"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "16,622"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "57,863"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "73,164"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "57,475"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "15,689"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,975"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "639"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "219"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,856"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "760"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "44"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,140"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "63"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,077"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,077"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "639"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(2,627)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "48"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,137"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(732)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(732)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "2,377"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(676)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,656)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "45"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "450"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "770"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "54"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "676"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,376",
+    "bs.accounts_receivable": "15,985",
+    "bs.inventory": "16,288",
+    "bs.other_current_assets": "1,750",
+    "bs.total_current_assets": "38,399",
+    "bs.net_ppe": "9,621",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "54,770",
+    "bs.accounts_payable": "11,589",
+    "bs.accrued_liabilities": "2,538",
+    "bs.revolver": "10,940",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "2,074",
+    "bs.total_current_liabilities": "28,493",
+    "bs.long_term_debt": "10,120",
+    "bs.other_noncurrent_liabilities": "2,169",
+    "bs.total_liabilities": "40,782",
+    "bs.total_equity": "13,988",
+    "bs.total_liabilities_and_equity": "54,770",
+    "is.revenue": "69,612",
+    "is.cogs": "54,496",
+    "is.gross_profit": "15,116",
+    "is.sga": "10,442",
+    "is.depreciation_amortization": "628",
+    "is.other_operating_expense": "208",
+    "is.operating_income": "3,838",
+    "is.interest_expense": "792",
+    "is.other_income_net": "42",
+    "is.pretax_income": "3,088",
+    "is.income_tax_expense": "61",
+    "is.net_income": "3,027",
+    "cf.net_income": "3,027",
+    "cf.depreciation_amortization": "628",
+    "cf.change_in_working_capital": "(1,212)",
+    "cf.other_operating": "48",
+    "cf.cfo": "2,491",
+    "cf.capex": "(696)",
+    "cf.cfi": "(696)",
+    "cf.revolver_net": "1,531",
+    "cf.term_debt_repayments": "(676)",
+    "cf.distributions": "(2,243)",
+    "cf.cff": "(1,388)",
+    "cf.net_change_in_cash": "407",
+    "sup.cash_interest_paid": "804",
+    "sup.cash_taxes_paid": "57",
+    "sup.scheduled_principal": "676",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/eastmere-building/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Eastmere Building Products, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-10-18",
+   "document_date": "2025-10-14",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,592"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,571"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "17,140"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,837"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "41,140"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "9,858"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "57,748"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,196"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,662"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "11,480"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,176"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "29,866"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,430"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,289"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "40,585"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "17,163"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "57,748"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "111,430"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "87,552"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "23,878"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "16,715"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "961"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "334"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,868"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,168"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "67"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,767"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "96"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "4,671"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,671"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "961"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(2,525)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "72"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,179"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,115)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,115)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "2,082"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,014)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(2,709)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,641)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "423"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,171"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "90"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,014"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,436",
+    "bs.accounts_receivable": "16,892",
+    "bs.inventory": "16,595",
+    "bs.other_current_assets": "1,774",
+    "bs.total_current_assets": "39,697",
+    "bs.net_ppe": "9,675",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "56,122",
+    "bs.accounts_payable": "11,808",
+    "bs.accrued_liabilities": "2,579",
+    "bs.revolver": "11,306",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "2,100",
+    "bs.total_current_liabilities": "29,145",
+    "bs.long_term_debt": "9,782",
+    "bs.other_noncurrent_liabilities": "2,193",
+    "bs.total_liabilities": "41,120",
+    "bs.total_equity": "15,002",
+    "bs.total_liabilities_and_equity": "56,122",
+    "is.revenue": "106,577",
+    "is.cogs": "83,617",
+    "is.gross_profit": "22,960",
+    "is.sga": "15,987",
+    "is.depreciation_amortization": "944",
+    "is.other_operating_expense": "319",
+    "is.operating_income": "5,710",
+    "is.interest_expense": "1,208",
+    "is.other_income_net": "64",
+    "is.pretax_income": "4,566",
+    "is.income_tax_expense": "91",
+    "is.net_income": "4,475",
+    "cf.net_income": "4,475",
+    "cf.depreciation_amortization": "944",
+    "cf.change_in_working_capital": "(2,164)",
+    "cf.other_operating": "72",
+    "cf.cfo": "3,327",
+    "cf.capex": "(1,066)",
+    "cf.cfi": "(1,066)",
+    "cf.revolver_net": "1,897",
+    "cf.term_debt_repayments": "(1,014)",
+    "cf.distributions": "(2,677)",
+    "cf.cff": "(1,794)",
+    "cf.net_change_in_cash": "467",
+    "sup.cash_interest_paid": "1,212",
+    "sup.cash_taxes_paid": "89",
+    "sup.scheduled_principal": "1,014",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/eastmere-building/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Eastmere Building Products, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-04-19",
+   "document_date": "2026-04-15",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,299"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "15,863"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "16,091"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,720"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "37,973"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "9,934"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "54,657"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "11,450"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,485"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "9,622"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,035"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "26,944"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,754"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,337"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "37,035"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "17,622"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "54,657"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "35,829"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "28,237"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,592"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,374"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "325"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "107"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,786"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "361"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "21"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,446"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "29"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,417"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,417"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "325"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "366"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "24"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,132"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(358)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(358)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(333)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(338)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,204)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,875)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(101)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "373"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "33"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "338"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,161",
+    "bs.accounts_receivable": "16,036",
+    "bs.inventory": "15,578",
+    "bs.other_current_assets": "1,664",
+    "bs.total_current_assets": "37,439",
+    "bs.net_ppe": "9,732",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "53,921",
+    "bs.accounts_payable": "11,085",
+    "bs.accrued_liabilities": "2,413",
+    "bs.revolver": "10,354",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "1,969",
+    "bs.total_current_liabilities": "27,173",
+    "bs.long_term_debt": "9,106",
+    "bs.other_noncurrent_liabilities": "2,241",
+    "bs.total_liabilities": "38,520",
+    "bs.total_equity": "15,401",
+    "bs.total_liabilities_and_equity": "53,921",
+    "is.revenue": "34,674",
+    "is.cogs": "27,337",
+    "is.gross_profit": "7,337",
+    "is.sga": "5,201",
+    "is.depreciation_amortization": "319",
+    "is.other_operating_expense": "104",
+    "is.operating_income": "1,713",
+    "is.interest_expense": "374",
+    "is.other_income_net": "21",
+    "is.pretax_income": "1,360",
+    "is.income_tax_expense": "27",
+    "is.net_income": "1,333",
+    "cf.net_income": "1,333",
+    "cf.depreciation_amortization": "319",
+    "cf.change_in_working_capital": "(822)",
+    "cf.other_operating": "24",
+    "cf.cfo": "854",
+    "cf.capex": "(347)",
+    "cf.cfi": "(347)",
+    "cf.revolver_net": "956",
+    "cf.term_debt_repayments": "(338)",
+    "cf.distributions": "(1,133)",
+    "cf.cff": "(515)",
+    "cf.net_change_in_cash": "(8)",
+    "sup.cash_interest_paid": "388",
+    "sup.cash_taxes_paid": "27",
+    "sup.scheduled_principal": "338",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/eastmere-building/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Eastmere Building Products, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-07-15",
+   "document_date": "2026-07-11",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,781"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "18,119"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "17,773"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,912"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "42,585"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,006"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "5,400"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,350"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "59,341"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,646"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,745"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "11,952"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,352"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,269"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "30,964"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,416"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,361"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "40,741"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "18,600"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "59,341"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "75,670"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "59,425"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "16,245"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "11,350"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "651"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "227"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,017"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "709"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "45"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,353"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "67"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,286"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,286"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "651"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(2,074)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "48"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,911"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(756)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(756)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,997"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(676)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(2,095)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(774)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "381"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "725"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "62"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "676"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,619",
+    "bs.accounts_receivable": "17,674",
+    "bs.inventory": "17,175",
+    "bs.other_current_assets": "1,848",
+    "bs.total_current_assets": "41,316",
+    "bs.net_ppe": "9,797",
+    "bs.intangibles": "5,400",
+    "bs.other_noncurrent_assets": "1,350",
+    "bs.total_assets": "57,863",
+    "bs.accounts_payable": "12,220",
+    "bs.accrued_liabilities": "2,670",
+    "bs.revolver": "11,775",
+    "bs.cpltd": "1,352",
+    "bs.other_current_liabilities": "2,191",
+    "bs.total_current_liabilities": "30,208",
+    "bs.long_term_debt": "8,768",
+    "bs.other_noncurrent_liabilities": "2,265",
+    "bs.total_liabilities": "41,241",
+    "bs.total_equity": "16,622",
+    "bs.total_liabilities_and_equity": "57,863",
+    "is.revenue": "73,164",
+    "is.cogs": "57,475",
+    "is.gross_profit": "15,689",
+    "is.sga": "10,975",
+    "is.depreciation_amortization": "639",
+    "is.other_operating_expense": "219",
+    "is.operating_income": "3,856",
+    "is.interest_expense": "760",
+    "is.other_income_net": "44",
+    "is.pretax_income": "3,140",
+    "is.income_tax_expense": "63",
+    "is.net_income": "3,077",
+    "cf.net_income": "3,077",
+    "cf.depreciation_amortization": "639",
+    "cf.change_in_working_capital": "(2,627)",
+    "cf.other_operating": "48",
+    "cf.cfo": "1,137",
+    "cf.capex": "(732)",
+    "cf.cfi": "(732)",
+    "cf.revolver_net": "2,377",
+    "cf.term_debt_repayments": "(676)",
+    "cf.distributions": "(1,656)",
+    "cf.cff": "45",
+    "cf.net_change_in_cash": "450",
+    "sup.cash_interest_paid": "770",
+    "sup.cash_taxes_paid": "54",
+    "sup.scheduled_principal": "676",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "eastmere-building.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/eastmere-building/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Eastmere Building Products, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-04-19",
+   "document_date": "2025-04-17",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "eastmere-building.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/eastmere-building/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Eastmere Building Products, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-07-14",
+   "document_date": "2025-07-12",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "eastmere-building.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/eastmere-building/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Eastmere Building Products, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-10-18",
+   "document_date": "2025-10-16",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "eastmere-building.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/eastmere-building/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Eastmere Building Products, LLC compliance certificate, FY2025",
+   "received_date": "2026-01-18",
+   "document_date": "2026-01-16",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "eastmere-building.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/eastmere-building/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Eastmere Building Products, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-04-19",
+   "document_date": "2026-04-17",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "eastmere-building.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/eastmere-building/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Eastmere Building Products, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-07-15",
+   "document_date": "2026-07-13",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "late_reporting",
+  "description": "Late reporting: the package for the current quarter has not been received and is more than 15 days past its due date.",
+  "details": {
+   "missing_requirements": [
+    "quarterly_statements",
+    "compliance_certificate"
+   ],
+   "days_late": 18
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.41",
+    "pass": true,
+    "headroom": "0.9280",
+    "reported_value": "2.41",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "5698000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1601000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "116000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1267000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8682000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1429000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "118000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "7135000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1609000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1352000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2961000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": "2.40",
+    "pass": true,
+    "headroom": "0.2615",
+    "reported_value": "2.40",
+    "reported_threshold": "3.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20812000"
+     },
+     {
+      "label": "Net income",
+      "amount": "5698000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1601000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "116000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1267000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8682000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.47",
+    "pass": true,
+    "headroom": "0.9760",
+    "reported_value": "2.47",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "5855000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1593000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "120000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1273000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8841000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1449000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "116000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "7276000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1595000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1352000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2947000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": "2.48",
+    "pass": true,
+    "headroom": "0.2369",
+    "reported_value": "2.48",
+    "reported_threshold": "3.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "21895000"
+     },
+     {
+      "label": "Net income",
+      "amount": "5855000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1593000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "120000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1273000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8841000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.52",
+    "pass": true,
+    "headroom": "1.0160",
+    "reported_value": "2.52",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6001000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1585000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "123000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1279000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8988000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1462000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "120000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "7406000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1588000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1352000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2940000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": "2.37",
+    "pass": true,
+    "headroom": "0.2708",
+    "reported_value": "2.37",
+    "reported_threshold": "3.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "21262000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6001000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1585000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "123000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1279000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "8988000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.63",
+    "pass": true,
+    "headroom": "1.1040",
+    "reported_value": "2.63",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6309000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1564000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "129000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1285000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9287000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1482000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "123000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "7682000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1571000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1352000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2923000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": "2.09",
+    "pass": true,
+    "headroom": "0.3569",
+    "reported_value": "2.09",
+    "reported_threshold": "3.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "19399000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6309000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1564000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "129000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1285000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9287000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.66",
+    "pass": true,
+    "headroom": "1.1280",
+    "reported_value": "2.66",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6393000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1551000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "131000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1291000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9366000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1493000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "129000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "7744000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1556000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1352000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2908000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": "2.00",
+    "pass": true,
+    "headroom": "0.3846",
+    "reported_value": "2.00",
+    "reported_threshold": "3.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "18728000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6393000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1551000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "131000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1291000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9366000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.72",
+    "pass": true,
+    "headroom": "1.1760",
+    "reported_value": "2.72",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6518000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1513000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "133000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1297000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9461000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "1506000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "131000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "7824000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "1526000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1352000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "2878000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": "2.19",
+    "pass": true,
+    "headroom": "0.3262",
+    "reported_value": "2.19",
+    "reported_threshold": "3.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "20720000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6518000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1513000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "133000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1297000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "9461000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "2.78",
+     "pass": true,
+     "headroom": "1.2240",
+     "outcome": "compliant"
+    },
+    "missing": "package_not_received"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "eastmere-building-rlc",
+    "terms_version_id": "tv-eastmere-building-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.25",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "2.12",
+     "pass": true,
+     "headroom": "0.3477",
+     "outcome": "compliant"
+    },
+    "missing": "package_not_received"
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "reporting_late",
+    "period_end": "2026-09-30",
+    "severity": "high",
+    "value": "18",
+    "trigger": "15",
+    "detail": {}
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "intake.missing_document",
+    "severity": "medium",
+    "period_end": "2026-09-30",
+    "subject": "requirement:quarterly_statements",
+    "summary": "interim_financial_statements for 2026-09-30 was due 2026-10-30 and has not been received."
+   },
+   {
+    "type": "intake.missing_document",
+    "severity": "medium",
+    "period_end": "2026-09-30",
+    "subject": "requirement:compliance_certificate",
+    "summary": "compliance_certificate for 2026-09-30 was due 2026-10-30 and has not been received."
+   },
+   {
+    "type": "signal.high",
+    "severity": "high",
+    "period_end": "2026-09-30",
+    "subject": "signal:reporting_late",
+    "summary": "High-severity signal reporting_late."
+   }
+  ]
+ }
+}

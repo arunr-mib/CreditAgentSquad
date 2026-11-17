@@ -1,0 +1,5677 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "wrenfield-diagnostics",
+  "name": "Wrenfield Diagnostic Laboratories, Inc.",
+  "legal_form": "corporation",
+  "industry": "healthcare services",
+  "city": "Madison",
+  "state": "WI",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Colin Abernathy",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 4,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Cordelia Naismith",
+  "auditor": "Hobart Lindgren & Co. LLP"
+ },
+ "facilities": [
+  {
+   "id": "wrenfield-diagnostics-rlc",
+   "borrower_id": "wrenfield-diagnostics",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "4000000",
+   "original_amount": "4000000",
+   "closing_date": "2022-04-29",
+   "maturity_date": "2028-04-29",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "wrenfield-diagnostics-tl",
+   "borrower_id": "wrenfield-diagnostics",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "16393000",
+   "original_amount": "16393000",
+   "closing_date": "2022-04-29",
+   "maturity_date": "2029-04-29",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "381000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-wrenfield-diagnostics-1",
+   "facility_id": "wrenfield-diagnostics-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-04-29",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2022-05-05",
+   "warnings": [],
+   "source_documents": [
+    "wrenfield-diagnostics.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.75",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.75 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "min_tnw",
+      "name": "Minimum Tangible Net Worth",
+      "archetype": "min_tangible_net_worth",
+      "params": {
+       "step_up_pct_of_net_income": null
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "830000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall maintain Tangible Net Worth, measured as of the last day of each fiscal quarter, of not less than $830,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Tangible Net Worth\" means, as of any date, total equity of the Borrower minus goodwill and intangibles as of such date."
+       }
+      ]
+     },
+     {
+      "id": "max_capex",
+      "name": "Maximum Capital Expenditures",
+      "archetype": "max_capex",
+      "params": {},
+      "test": {
+       "operator": "<=",
+       "threshold": "2300000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "6.3",
+        "page": 7,
+        "quote": "The Borrower shall not make Capital Expenditures in an aggregate amount exceeding $2,300,000 in any period of four consecutive fiscal quarters, measured as of the last day of each fiscal quarter."
+       },
+       {
+        "field": "definition",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Capital Expenditures\" means, for any period, purchases of property and equipment by the Borrower during such period."
+       }
+      ]
+     },
+     {
+      "id": "min_liquidity",
+      "name": "Minimum Liquidity",
+      "archetype": "min_liquidity",
+      "params": {
+       "include_availability": false
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1500000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "6.4",
+        "page": 7,
+        "quote": "The Borrower shall maintain Liquidity, measured as of the last day of each fiscal quarter, of not less than $1,500,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "wrenfield-diagnostics.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Liquidity\" means, as of any date, unrestricted cash and equivalents of the Borrower as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "wrenfield-diagnostics.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "wrenfield-diagnostics.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "wrenfield-diagnostics.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "wrenfield-diagnostics.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "wrenfield-diagnostics.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "wrenfield-diagnostics.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $4,000,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "wrenfield-diagnostics.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $16,393,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "wrenfield-diagnostics.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $381,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "15797000",
+    "is.cogs": "9663000",
+    "is.gross_profit": "6134000",
+    "is.sga": "4265000",
+    "is.depreciation_amortization": "369000",
+    "is.other_operating_expense": "79000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1421000",
+    "is.interest_expense": "292000",
+    "is.other_income_net": "9000",
+    "is.pretax_income": "1138000",
+    "is.income_tax_expense": "285000",
+    "is.net_income": "853000",
+    "bs.cash": "1896000",
+    "bs.accounts_receivable": "8587000",
+    "bs.inventory": "529000",
+    "bs.other_current_assets": "758000",
+    "bs.total_current_assets": "11770000",
+    "bs.net_ppe": "9923000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "29623000",
+    "bs.accounts_payable": "3177000",
+    "bs.accrued_liabilities": "1974000",
+    "bs.revolver": "2528000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1170000",
+    "bs.total_current_liabilities": "10373000",
+    "bs.long_term_debt": "11821000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "970000",
+    "bs.total_liabilities": "23164000",
+    "bs.total_equity": "6459000",
+    "bs.total_liabilities_and_equity": "29623000",
+    "cf.net_income": "853000",
+    "cf.depreciation_amortization": "369000",
+    "cf.change_in_working_capital": "101000",
+    "cf.other_operating": "11000",
+    "cf.cfo": "1334000",
+    "cf.capex": "411000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-411000",
+    "cf.revolver_net": "39000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "381000",
+    "cf.distributions": "552000",
+    "cf.other_financing": "0",
+    "cf.cff": "-894000",
+    "cf.net_change_in_cash": "29000",
+    "sup.cash_interest_paid": "294000",
+    "sup.cash_taxes_paid": "270000",
+    "sup.scheduled_principal": "381000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "4981000",
+    "cash.beginning_of_year": "1867000",
+    "debt.term_total": "13345000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "31849000",
+    "is.cogs": "19522000",
+    "is.gross_profit": "12327000",
+    "is.sga": "8599000",
+    "is.depreciation_amortization": "740000",
+    "is.other_operating_expense": "159000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2829000",
+    "is.interest_expense": "578000",
+    "is.other_income_net": "19000",
+    "is.pretax_income": "2270000",
+    "is.income_tax_expense": "568000",
+    "is.net_income": "1702000",
+    "bs.cash": "1926000",
+    "bs.accounts_receivable": "8409000",
+    "bs.inventory": "540000",
+    "bs.other_current_assets": "770000",
+    "bs.total_current_assets": "11645000",
+    "bs.net_ppe": "9969000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "29544000",
+    "bs.accounts_payable": "3241000",
+    "bs.accrued_liabilities": "2002000",
+    "bs.revolver": "2503000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1182000",
+    "bs.total_current_liabilities": "10452000",
+    "bs.long_term_debt": "11440000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "981000",
+    "bs.total_liabilities": "22873000",
+    "bs.total_equity": "6671000",
+    "bs.total_liabilities_and_equity": "29544000",
+    "cf.net_income": "1702000",
+    "cf.depreciation_amortization": "740000",
+    "cf.change_in_working_capital": "360000",
+    "cf.other_operating": "22000",
+    "cf.cfo": "2824000",
+    "cf.capex": "828000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-828000",
+    "cf.revolver_net": "14000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "762000",
+    "cf.distributions": "1189000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1937000",
+    "cf.net_change_in_cash": "59000",
+    "sup.cash_interest_paid": "582000",
+    "sup.cash_taxes_paid": "555000",
+    "sup.scheduled_principal": "762000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "5193000",
+    "cash.beginning_of_year": "1867000",
+    "debt.term_total": "12964000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "47446000",
+    "is.cogs": "29139000",
+    "is.gross_profit": "18307000",
+    "is.sga": "12810000",
+    "is.depreciation_amortization": "1113000",
+    "is.other_operating_expense": "237000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4147000",
+    "is.interest_expense": "857000",
+    "is.other_income_net": "28000",
+    "is.pretax_income": "3318000",
+    "is.income_tax_expense": "830000",
+    "is.net_income": "2488000",
+    "bs.cash": "1872000",
+    "bs.accounts_receivable": "8153000",
+    "bs.inventory": "527000",
+    "bs.other_current_assets": "749000",
+    "bs.total_current_assets": "11301000",
+    "bs.net_ppe": "10002000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "29233000",
+    "bs.accounts_payable": "3162000",
+    "bs.accrued_liabilities": "1946000",
+    "bs.revolver": "2496000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1135000",
+    "bs.total_current_liabilities": "10263000",
+    "bs.long_term_debt": "11059000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "992000",
+    "bs.total_liabilities": "22314000",
+    "bs.total_equity": "6919000",
+    "bs.total_liabilities_and_equity": "29233000",
+    "cf.net_income": "2488000",
+    "cf.depreciation_amortization": "1113000",
+    "cf.change_in_working_capital": "468000",
+    "cf.other_operating": "33000",
+    "cf.cfo": "4102000",
+    "cf.capex": "1234000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1234000",
+    "cf.revolver_net": "7000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1143000",
+    "cf.distributions": "1727000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2863000",
+    "cf.net_change_in_cash": "5000",
+    "sup.cash_interest_paid": "863000",
+    "sup.cash_taxes_paid": "838000",
+    "sup.scheduled_principal": "1143000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "5441000",
+    "cash.beginning_of_year": "1867000",
+    "debt.term_total": "12583000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "63657000",
+    "is.cogs": "39055000",
+    "is.gross_profit": "24602000",
+    "is.sga": "17187000",
+    "is.depreciation_amortization": "1487000",
+    "is.other_operating_expense": "318000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5610000",
+    "is.interest_expense": "1129000",
+    "is.other_income_net": "38000",
+    "is.pretax_income": "4519000",
+    "is.income_tax_expense": "1130000",
+    "is.net_income": "3389000",
+    "bs.cash": "1945000",
+    "bs.accounts_receivable": "8794000",
+    "bs.inventory": "543000",
+    "bs.other_current_assets": "778000",
+    "bs.total_current_assets": "12060000",
+    "bs.net_ppe": "10049000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "30039000",
+    "bs.accounts_payable": "3260000",
+    "bs.accrued_liabilities": "2017000",
+    "bs.revolver": "2619000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1208000",
+    "bs.total_current_liabilities": "10628000",
+    "bs.long_term_debt": "10678000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1003000",
+    "bs.total_liabilities": "22309000",
+    "bs.total_equity": "7730000",
+    "bs.total_liabilities_and_equity": "30039000",
+    "cf.net_income": "3389000",
+    "cf.depreciation_amortization": "1487000",
+    "cf.change_in_working_capital": "24000",
+    "cf.other_operating": "44000",
+    "cf.cfo": "4944000",
+    "cf.capex": "1655000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1655000",
+    "cf.revolver_net": "130000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1524000",
+    "cf.distributions": "1817000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3211000",
+    "cf.net_change_in_cash": "78000",
+    "sup.cash_interest_paid": "1137000",
+    "sup.cash_taxes_paid": "1100000",
+    "sup.scheduled_principal": "1524000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "6252000",
+    "cash.beginning_of_year": "1867000",
+    "debt.term_total": "12202000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "16361000",
+    "is.cogs": "10049000",
+    "is.gross_profit": "6312000",
+    "is.sga": "4417000",
+    "is.depreciation_amortization": "376000",
+    "is.other_operating_expense": "82000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1437000",
+    "is.interest_expense": "267000",
+    "is.other_income_net": "10000",
+    "is.pretax_income": "1180000",
+    "is.income_tax_expense": "295000",
+    "is.net_income": "885000",
+    "bs.cash": "1963000",
+    "bs.accounts_receivable": "9037000",
+    "bs.inventory": "551000",
+    "bs.other_current_assets": "785000",
+    "bs.total_current_assets": "12336000",
+    "bs.net_ppe": "10098000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "30364000",
+    "bs.accounts_payable": "3304000",
+    "bs.accrued_liabilities": "2032000",
+    "bs.revolver": "2618000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1211000",
+    "bs.total_current_liabilities": "10689000",
+    "bs.long_term_debt": "10297000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1014000",
+    "bs.total_liabilities": "22000000",
+    "bs.total_equity": "8364000",
+    "bs.total_liabilities_and_equity": "30364000",
+    "cf.net_income": "885000",
+    "cf.depreciation_amortization": "376000",
+    "cf.change_in_working_capital": "-196000",
+    "cf.other_operating": "11000",
+    "cf.cfo": "1076000",
+    "cf.capex": "425000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-425000",
+    "cf.revolver_net": "-1000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "381000",
+    "cf.distributions": "251000",
+    "cf.other_financing": "0",
+    "cf.cff": "-633000",
+    "cf.net_change_in_cash": "18000",
+    "sup.cash_interest_paid": "269000",
+    "sup.cash_taxes_paid": "300000",
+    "sup.scheduled_principal": "381000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "6886000",
+    "cash.beginning_of_year": "1945000",
+    "debt.term_total": "11821000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "32989000",
+    "is.cogs": "20289000",
+    "is.gross_profit": "12700000",
+    "is.sga": "8907000",
+    "is.depreciation_amortization": "753000",
+    "is.other_operating_expense": "165000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2875000",
+    "is.interest_expense": "528000",
+    "is.other_income_net": "20000",
+    "is.pretax_income": "2367000",
+    "is.income_tax_expense": "592000",
+    "is.net_income": "1775000",
+    "bs.cash": "1995000",
+    "bs.accounts_receivable": "9166000",
+    "bs.inventory": "561000",
+    "bs.other_current_assets": "798000",
+    "bs.total_current_assets": "12520000",
+    "bs.net_ppe": "10153000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "30603000",
+    "bs.accounts_payable": "3367000",
+    "bs.accrued_liabilities": "2063000",
+    "bs.revolver": "2660000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1228000",
+    "bs.total_current_liabilities": "10842000",
+    "bs.long_term_debt": "9916000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1025000",
+    "bs.total_liabilities": "21783000",
+    "bs.total_equity": "8820000",
+    "bs.total_liabilities_and_equity": "30603000",
+    "cf.net_income": "1775000",
+    "cf.depreciation_amortization": "753000",
+    "cf.change_in_working_capital": "-237000",
+    "cf.other_operating": "22000",
+    "cf.cfo": "2313000",
+    "cf.capex": "857000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-857000",
+    "cf.revolver_net": "41000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "762000",
+    "cf.distributions": "685000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1406000",
+    "cf.net_change_in_cash": "50000",
+    "sup.cash_interest_paid": "532000",
+    "sup.cash_taxes_paid": "595000",
+    "sup.scheduled_principal": "762000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "7342000",
+    "cash.beginning_of_year": "1945000",
+    "debt.term_total": "11440000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "49216000",
+    "is.cogs": "30308000",
+    "is.gross_profit": "18908000",
+    "is.sga": "13288000",
+    "is.depreciation_amortization": "1132000",
+    "is.other_operating_expense": "246000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4242000",
+    "is.interest_expense": "783000",
+    "is.other_income_net": "30000",
+    "is.pretax_income": "3489000",
+    "is.income_tax_expense": "873000",
+    "is.net_income": "2616000",
+    "bs.cash": "1947000",
+    "bs.accounts_receivable": "8945000",
+    "bs.inventory": "549000",
+    "bs.other_current_assets": "779000",
+    "bs.total_current_assets": "12220000",
+    "bs.net_ppe": "10196000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "30346000",
+    "bs.accounts_payable": "3294000",
+    "bs.accrued_liabilities": "2013000",
+    "bs.revolver": "2596000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1190000",
+    "bs.total_current_liabilities": "10617000",
+    "bs.long_term_debt": "9535000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1036000",
+    "bs.total_liabilities": "21188000",
+    "bs.total_equity": "9158000",
+    "bs.total_liabilities_and_equity": "30346000",
+    "cf.net_income": "2616000",
+    "cf.depreciation_amortization": "1132000",
+    "cf.change_in_working_capital": "-146000",
+    "cf.other_operating": "33000",
+    "cf.cfo": "3635000",
+    "cf.capex": "1279000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1279000",
+    "cf.revolver_net": "-23000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1143000",
+    "cf.distributions": "1188000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2354000",
+    "cf.net_change_in_cash": "2000",
+    "sup.cash_interest_paid": "789000",
+    "sup.cash_taxes_paid": "892000",
+    "sup.scheduled_principal": "1143000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "7680000",
+    "cash.beginning_of_year": "1945000",
+    "debt.term_total": "11059000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "66080000",
+    "is.cogs": "40689000",
+    "is.gross_profit": "25391000",
+    "is.sga": "17841000",
+    "is.depreciation_amortization": "1513000",
+    "is.other_operating_expense": "330000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5707000",
+    "is.interest_expense": "1030000",
+    "is.other_income_net": "40000",
+    "is.pretax_income": "4717000",
+    "is.income_tax_expense": "1180000",
+    "is.net_income": "3537000",
+    "bs.cash": "2024000",
+    "bs.accounts_receivable": "8926000",
+    "bs.inventory": "569000",
+    "bs.other_current_assets": "809000",
+    "bs.total_current_assets": "12328000",
+    "bs.net_ppe": "10253000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "30511000",
+    "bs.accounts_payable": "3413000",
+    "bs.accrued_liabilities": "2085000",
+    "bs.revolver": "2649000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1251000",
+    "bs.total_current_liabilities": "10922000",
+    "bs.long_term_debt": "9154000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1047000",
+    "bs.total_liabilities": "21123000",
+    "bs.total_equity": "9388000",
+    "bs.total_liabilities_and_equity": "30511000",
+    "cf.net_income": "3537000",
+    "cf.depreciation_amortization": "1513000",
+    "cf.change_in_working_capital": "75000",
+    "cf.other_operating": "44000",
+    "cf.cfo": "5169000",
+    "cf.capex": "1717000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1717000",
+    "cf.revolver_net": "30000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1524000",
+    "cf.distributions": "1879000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3373000",
+    "cf.net_change_in_cash": "79000",
+    "sup.cash_interest_paid": "1039000",
+    "sup.cash_taxes_paid": "1173000",
+    "sup.scheduled_principal": "1524000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "7910000",
+    "cash.beginning_of_year": "1945000",
+    "debt.term_total": "10678000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "17208000",
+    "is.cogs": "10600000",
+    "is.gross_profit": "6608000",
+    "is.sga": "4646000",
+    "is.depreciation_amortization": "383000",
+    "is.other_operating_expense": "86000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1493000",
+    "is.interest_expense": "241000",
+    "is.other_income_net": "10000",
+    "is.pretax_income": "1262000",
+    "is.income_tax_expense": "316000",
+    "is.net_income": "946000",
+    "bs.cash": "2065000",
+    "bs.accounts_receivable": "8958000",
+    "bs.inventory": "581000",
+    "bs.other_current_assets": "826000",
+    "bs.total_current_assets": "12430000",
+    "bs.net_ppe": "10317000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "30677000",
+    "bs.accounts_payable": "3485000",
+    "bs.accrued_liabilities": "2124000",
+    "bs.revolver": "2753000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1280000",
+    "bs.total_current_liabilities": "11166000",
+    "bs.long_term_debt": "8773000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1058000",
+    "bs.total_liabilities": "20997000",
+    "bs.total_equity": "9680000",
+    "bs.total_liabilities_and_equity": "30677000",
+    "cf.net_income": "946000",
+    "cf.depreciation_amortization": "383000",
+    "cf.change_in_working_capital": "79000",
+    "cf.other_operating": "11000",
+    "cf.cfo": "1419000",
+    "cf.capex": "447000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-447000",
+    "cf.revolver_net": "104000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "381000",
+    "cf.distributions": "654000",
+    "cf.other_financing": "0",
+    "cf.cff": "-931000",
+    "cf.net_change_in_cash": "41000",
+    "sup.cash_interest_paid": "243000",
+    "sup.cash_taxes_paid": "307000",
+    "sup.scheduled_principal": "381000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "8202000",
+    "cash.beginning_of_year": "2024000",
+    "debt.term_total": "10297000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "34571000",
+    "is.cogs": "21264000",
+    "is.gross_profit": "13307000",
+    "is.sga": "9334000",
+    "is.depreciation_amortization": "769000",
+    "is.other_operating_expense": "173000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3031000",
+    "is.interest_expense": "477000",
+    "is.other_income_net": "20000",
+    "is.pretax_income": "2574000",
+    "is.income_tax_expense": "644000",
+    "is.net_income": "1930000",
+    "bs.cash": "2084000",
+    "bs.accounts_receivable": "9210000",
+    "bs.inventory": "584000",
+    "bs.other_current_assets": "833000",
+    "bs.total_current_assets": "12711000",
+    "bs.net_ppe": "10382000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "31023000",
+    "bs.accounts_payable": "3506000",
+    "bs.accrued_liabilities": "2142000",
+    "bs.revolver": "2778000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1300000",
+    "bs.total_current_liabilities": "11250000",
+    "bs.long_term_debt": "8392000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1069000",
+    "bs.total_liabilities": "20711000",
+    "bs.total_equity": "10312000",
+    "bs.total_liabilities_and_equity": "31023000",
+    "cf.net_income": "1930000",
+    "cf.depreciation_amortization": "769000",
+    "cf.change_in_working_capital": "-124000",
+    "cf.other_operating": "22000",
+    "cf.cfo": "2597000",
+    "cf.capex": "898000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-898000",
+    "cf.revolver_net": "129000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "762000",
+    "cf.distributions": "1006000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1639000",
+    "cf.net_change_in_cash": "60000",
+    "sup.cash_interest_paid": "480000",
+    "sup.cash_taxes_paid": "623000",
+    "sup.scheduled_principal": "762000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "8834000",
+    "cash.beginning_of_year": "2024000",
+    "debt.term_total": "9916000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "51343000",
+    "is.cogs": "31527000",
+    "is.gross_profit": "19816000",
+    "is.sga": "13862000",
+    "is.depreciation_amortization": "1157000",
+    "is.other_operating_expense": "257000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "4540000",
+    "is.interest_expense": "707000",
+    "is.other_income_net": "30000",
+    "is.pretax_income": "3863000",
+    "is.income_tax_expense": "966000",
+    "is.net_income": "2897000",
+    "bs.cash": "2013000",
+    "bs.accounts_receivable": "9282000",
+    "bs.inventory": "562000",
+    "bs.other_current_assets": "805000",
+    "bs.total_current_assets": "12662000",
+    "bs.net_ppe": "10430000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "31022000",
+    "bs.accounts_payable": "3374000",
+    "bs.accrued_liabilities": "2069000",
+    "bs.revolver": "2684000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1261000",
+    "bs.total_current_liabilities": "10912000",
+    "bs.long_term_debt": "8011000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1080000",
+    "bs.total_liabilities": "20003000",
+    "bs.total_equity": "11019000",
+    "bs.total_liabilities_and_equity": "31022000",
+    "cf.net_income": "2897000",
+    "cf.depreciation_amortization": "1157000",
+    "cf.change_in_working_capital": "-390000",
+    "cf.other_operating": "33000",
+    "cf.cfo": "3697000",
+    "cf.capex": "1334000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1334000",
+    "cf.revolver_net": "35000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1143000",
+    "cf.distributions": "1266000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2374000",
+    "cf.net_change_in_cash": "-11000",
+    "sup.cash_interest_paid": "712000",
+    "sup.cash_taxes_paid": "951000",
+    "sup.scheduled_principal": "1143000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "9541000",
+    "cash.beginning_of_year": "2024000",
+    "debt.term_total": "9535000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "61000000",
+    "is.cogs": "37433000",
+    "is.gross_profit": "23567000",
+    "is.sga": "16471000",
+    "is.depreciation_amortization": "1466000",
+    "is.other_operating_expense": "305000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5325000",
+    "is.interest_expense": "1230000",
+    "is.other_income_net": "36000",
+    "is.pretax_income": "4131000",
+    "is.income_tax_expense": "1033000",
+    "is.net_income": "3098000",
+    "bs.cash": "1867000",
+    "bs.accounts_receivable": "8609000",
+    "bs.inventory": "523000",
+    "bs.other_current_assets": "747000",
+    "bs.total_current_assets": "11746000",
+    "bs.net_ppe": "9881000",
+    "bs.intangibles": "7320000",
+    "bs.other_noncurrent_assets": "610000",
+    "bs.total_assets": "29557000",
+    "bs.accounts_payable": "3137000",
+    "bs.accrued_liabilities": "1947000",
+    "bs.revolver": "2489000",
+    "bs.cpltd": "1524000",
+    "bs.other_current_liabilities": "1141000",
+    "bs.total_current_liabilities": "10238000",
+    "bs.long_term_debt": "12202000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "959000",
+    "bs.total_liabilities": "23399000",
+    "bs.total_equity": "6158000",
+    "bs.total_liabilities_and_equity": "29557000",
+    "cf.net_income": "3098000",
+    "cf.depreciation_amortization": "1466000",
+    "cf.change_in_working_capital": "-346000",
+    "cf.other_operating": "44000",
+    "cf.cfo": "4262000",
+    "cf.capex": "1587000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1587000",
+    "cf.revolver_net": "49000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1524000",
+    "cf.distributions": "1163000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2638000",
+    "cf.net_change_in_cash": "37000",
+    "sup.cash_interest_paid": "1237000",
+    "sup.cash_taxes_paid": "1035000",
+    "sup.scheduled_principal": "1524000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1478000",
+    "equity.retained_earnings": "4680000",
+    "cash.beginning_of_year": "1830000",
+    "debt.term_total": "13726000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "2.02",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "14439000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3421000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1104000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1140000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1494000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7159000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1044000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "8364000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1044000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1669000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1669000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "1963000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1963000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "1963000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "1.96",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "14100000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3462000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1079000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1154000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1500000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7195000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1500000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "8820000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1500000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1684000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1684000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "1995000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1995000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "1995000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "1.88",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "13655000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3517000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1055000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1173000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1506000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7251000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1838000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "9158000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1838000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1700000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1700000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "1947000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1947000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "1947000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "1.84",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "13327000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3537000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1030000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1180000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1513000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7260000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "2068000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "9388000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "2068000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1717000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1717000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2024000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "2024000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2024000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "1.78",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "13050000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3598000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "1004000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1201000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1520000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7323000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "2360000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "9680000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "2360000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1739000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1739000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2065000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "2065000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2065000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "1.71",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "12694000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3692000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "979000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1232000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1529000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7432000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "2992000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "10312000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "2992000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1758000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1758000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2084000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "2084000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2084000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Cordelia Naismith",
+   "reported": {
+    "total_leverage": {
+     "value": "1.61",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "12219000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3818000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "954000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1273000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1538000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "7583000"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "3699000",
+     "threshold": "830000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "11019000"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "7320000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "3699000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "1772000",
+     "threshold": "2300000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "1772000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2013000",
+     "threshold": "1500000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "2013000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2013000"
+      }
+     ]
+    }
+   },
+   "document_id": "wrenfield-diagnostics.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "2464000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13726000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "2515000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13726000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "2528000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13345000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "2527000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13345000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "2484000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13345000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "2503000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12964000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "2538000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12964000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "2481000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12964000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "2496000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12583000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "2501000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12583000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "2606000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12583000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "2619000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12202000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "2647000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12202000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "2597000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "12202000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "2618000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11821000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "2635000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11821000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "2614000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11821000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "2660000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11440000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "2670000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11440000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "2620000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11440000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "2596000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11059000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "2595000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11059000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "2660000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "11059000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "2649000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10678000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "2660000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10678000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "2746000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10678000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "2753000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10297000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "2778000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10297000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "2797000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "10297000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "2778000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9916000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "2714000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9916000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "2734000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9916000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "2684000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9535000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "2657000",
+   "commitment": "4000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9535000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "wrenfield-diagnostics.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/wrenfield-diagnostics/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Wrenfield Diagnostic Laboratories, Inc. and Bank of Stoic",
+   "received_date": "2022-04-29",
+   "document_date": "2022-04-29"
+  },
+  {
+   "id": "wrenfield-diagnostics.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/wrenfield-diagnostics/afs-2024.pdf",
+   "pages": 7,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-30",
+   "document_date": "2025-03-21",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,945"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "8,794"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "543"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "778"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "12,060"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "10,049"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "30,039"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "3,260"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,017"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "2,619"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,208"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "10,628"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "10,678"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,003"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "22,309"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "7,730"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "30,039"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "63,657"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "39,055"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "24,602"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "17,187"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,487"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "318"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "5,610"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,129"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "38"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "4,519"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,130"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,389"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,389"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,487"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "24"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "44"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "4,944"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,655)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,655)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "130"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,524)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,817)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,211)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "78"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,137"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,100"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,524"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,867",
+    "bs.accounts_receivable": "8,609",
+    "bs.inventory": "523",
+    "bs.other_current_assets": "747",
+    "bs.total_current_assets": "11,746",
+    "bs.net_ppe": "9,881",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "29,557",
+    "bs.accounts_payable": "3,137",
+    "bs.accrued_liabilities": "1,947",
+    "bs.revolver": "2,489",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,141",
+    "bs.total_current_liabilities": "10,238",
+    "bs.long_term_debt": "12,202",
+    "bs.other_noncurrent_liabilities": "959",
+    "bs.total_liabilities": "23,399",
+    "bs.total_equity": "6,158",
+    "bs.total_liabilities_and_equity": "29,557",
+    "is.revenue": "61,000",
+    "is.cogs": "37,433",
+    "is.gross_profit": "23,567",
+    "is.sga": "16,471",
+    "is.depreciation_amortization": "1,466",
+    "is.other_operating_expense": "305",
+    "is.operating_income": "5,325",
+    "is.interest_expense": "1,230",
+    "is.other_income_net": "36",
+    "is.pretax_income": "4,131",
+    "is.income_tax_expense": "1,033",
+    "is.net_income": "3,098",
+    "cf.net_income": "3,098",
+    "cf.depreciation_amortization": "1,466",
+    "cf.change_in_working_capital": "(346)",
+    "cf.other_operating": "44",
+    "cf.cfo": "4,262",
+    "cf.capex": "(1,587)",
+    "cf.cfi": "(1,587)",
+    "cf.revolver_net": "49",
+    "cf.term_debt_repayments": "(1,524)",
+    "cf.distributions": "(1,163)",
+    "cf.cff": "(2,638)",
+    "cf.net_change_in_cash": "37",
+    "sup.cash_interest_paid": "1,237",
+    "sup.cash_taxes_paid": "1,035",
+    "sup.scheduled_principal": "1,524",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/wrenfield-diagnostics/afs-2025.pdf",
+   "pages": 7,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-26",
+   "document_date": "2026-03-17",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,024"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "8,926"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "569"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "809"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "12,328"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "10,253"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "30,511"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "3,413"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,085"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "2,649"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,251"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "10,922"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,154"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,047"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "21,123"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "9,388"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "30,511"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "66,080"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "40,689"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "25,391"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "17,841"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,513"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "330"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "5,707"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "1,030"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "40"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "4,717"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "1,180"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,537"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,537"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,513"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "75"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "44"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "5,169"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,717)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,717)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "30"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,524)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,879)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(3,373)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "79"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "1,039"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,173"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,524"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,945",
+    "bs.accounts_receivable": "8,794",
+    "bs.inventory": "543",
+    "bs.other_current_assets": "778",
+    "bs.total_current_assets": "12,060",
+    "bs.net_ppe": "10,049",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "30,039",
+    "bs.accounts_payable": "3,260",
+    "bs.accrued_liabilities": "2,017",
+    "bs.revolver": "2,619",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,208",
+    "bs.total_current_liabilities": "10,628",
+    "bs.long_term_debt": "10,678",
+    "bs.other_noncurrent_liabilities": "1,003",
+    "bs.total_liabilities": "22,309",
+    "bs.total_equity": "7,730",
+    "bs.total_liabilities_and_equity": "30,039",
+    "is.revenue": "63,657",
+    "is.cogs": "39,055",
+    "is.gross_profit": "24,602",
+    "is.sga": "17,187",
+    "is.depreciation_amortization": "1,487",
+    "is.other_operating_expense": "318",
+    "is.operating_income": "5,610",
+    "is.interest_expense": "1,129",
+    "is.other_income_net": "38",
+    "is.pretax_income": "4,519",
+    "is.income_tax_expense": "1,130",
+    "is.net_income": "3,389",
+    "cf.net_income": "3,389",
+    "cf.depreciation_amortization": "1,487",
+    "cf.change_in_working_capital": "24",
+    "cf.other_operating": "44",
+    "cf.cfo": "4,944",
+    "cf.capex": "(1,655)",
+    "cf.cfi": "(1,655)",
+    "cf.revolver_net": "130",
+    "cf.term_debt_repayments": "(1,524)",
+    "cf.distributions": "(1,817)",
+    "cf.cff": "(3,211)",
+    "cf.net_change_in_cash": "78",
+    "sup.cash_interest_paid": "1,137",
+    "sup.cash_taxes_paid": "1,100",
+    "sup.scheduled_principal": "1,524",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/wrenfield-diagnostics/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-04-26",
+   "document_date": "2025-04-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,963"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,037"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "551"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "785"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,336"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,098"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "30,364"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,304"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,032"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,618"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,211"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,689"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "10,297"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,014"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "22,000"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "8,364"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "30,364"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "16,361"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "10,049"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,312"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,417"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "376"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "82"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,437"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "267"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "10"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,180"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "295"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "885"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "885"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "376"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(196)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,076"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(425)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(425)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(1)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(381)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(251)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(633)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "18"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "269"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "300"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "381"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,896",
+    "bs.accounts_receivable": "8,587",
+    "bs.inventory": "529",
+    "bs.other_current_assets": "758",
+    "bs.total_current_assets": "11,770",
+    "bs.net_ppe": "9,923",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "29,623",
+    "bs.accounts_payable": "3,177",
+    "bs.accrued_liabilities": "1,974",
+    "bs.revolver": "2,528",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,170",
+    "bs.total_current_liabilities": "10,373",
+    "bs.long_term_debt": "11,821",
+    "bs.other_noncurrent_liabilities": "970",
+    "bs.total_liabilities": "23,164",
+    "bs.total_equity": "6,459",
+    "bs.total_liabilities_and_equity": "29,623",
+    "is.revenue": "15,797",
+    "is.cogs": "9,663",
+    "is.gross_profit": "6,134",
+    "is.sga": "4,265",
+    "is.depreciation_amortization": "369",
+    "is.other_operating_expense": "79",
+    "is.operating_income": "1,421",
+    "is.interest_expense": "292",
+    "is.other_income_net": "9",
+    "is.pretax_income": "1,138",
+    "is.income_tax_expense": "285",
+    "is.net_income": "853",
+    "cf.net_income": "853",
+    "cf.depreciation_amortization": "369",
+    "cf.change_in_working_capital": "101",
+    "cf.other_operating": "11",
+    "cf.cfo": "1,334",
+    "cf.capex": "(411)",
+    "cf.cfi": "(411)",
+    "cf.revolver_net": "39",
+    "cf.term_debt_repayments": "(381)",
+    "cf.distributions": "(552)",
+    "cf.cff": "(894)",
+    "cf.net_change_in_cash": "29",
+    "sup.cash_interest_paid": "294",
+    "sup.cash_taxes_paid": "270",
+    "sup.scheduled_principal": "381",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/wrenfield-diagnostics/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-07-30",
+   "document_date": "2025-07-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,995"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,166"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "561"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "798"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,520"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,153"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "30,603"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,367"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,063"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,660"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,228"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,842"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,916"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,025"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "21,783"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "8,820"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "30,603"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "32,989"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "20,289"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "12,700"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,907"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "753"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "165"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,875"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "528"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "20"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,367"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "592"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,775"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,775"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "753"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(237)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "22"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,313"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(857)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(857)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "41"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(762)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(685)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,406)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "50"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "532"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "595"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "762"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,926",
+    "bs.accounts_receivable": "8,409",
+    "bs.inventory": "540",
+    "bs.other_current_assets": "770",
+    "bs.total_current_assets": "11,645",
+    "bs.net_ppe": "9,969",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "29,544",
+    "bs.accounts_payable": "3,241",
+    "bs.accrued_liabilities": "2,002",
+    "bs.revolver": "2,503",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,182",
+    "bs.total_current_liabilities": "10,452",
+    "bs.long_term_debt": "11,440",
+    "bs.other_noncurrent_liabilities": "981",
+    "bs.total_liabilities": "22,873",
+    "bs.total_equity": "6,671",
+    "bs.total_liabilities_and_equity": "29,544",
+    "is.revenue": "31,849",
+    "is.cogs": "19,522",
+    "is.gross_profit": "12,327",
+    "is.sga": "8,599",
+    "is.depreciation_amortization": "740",
+    "is.other_operating_expense": "159",
+    "is.operating_income": "2,829",
+    "is.interest_expense": "578",
+    "is.other_income_net": "19",
+    "is.pretax_income": "2,270",
+    "is.income_tax_expense": "568",
+    "is.net_income": "1,702",
+    "cf.net_income": "1,702",
+    "cf.depreciation_amortization": "740",
+    "cf.change_in_working_capital": "360",
+    "cf.other_operating": "22",
+    "cf.cfo": "2,824",
+    "cf.capex": "(828)",
+    "cf.cfi": "(828)",
+    "cf.revolver_net": "14",
+    "cf.term_debt_repayments": "(762)",
+    "cf.distributions": "(1,189)",
+    "cf.cff": "(1,937)",
+    "cf.net_change_in_cash": "59",
+    "sup.cash_interest_paid": "582",
+    "sup.cash_taxes_paid": "555",
+    "sup.scheduled_principal": "762",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/wrenfield-diagnostics/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-10-28",
+   "document_date": "2025-10-24",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,947"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,945"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "549"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "779"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,220"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,196"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "30,346"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,294"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,013"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,596"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,190"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,617"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "9,535"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,036"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "21,188"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "9,158"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "30,346"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "49,216"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "30,308"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "18,908"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "13,288"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,132"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "246"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,242"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "783"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "30"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,489"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "873"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,616"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,616"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,132"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(146)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "33"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,635"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,279)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,279)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(23)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,143)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,188)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,354)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "2"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "789"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "892"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,143"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,872",
+    "bs.accounts_receivable": "8,153",
+    "bs.inventory": "527",
+    "bs.other_current_assets": "749",
+    "bs.total_current_assets": "11,301",
+    "bs.net_ppe": "10,002",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "29,233",
+    "bs.accounts_payable": "3,162",
+    "bs.accrued_liabilities": "1,946",
+    "bs.revolver": "2,496",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,135",
+    "bs.total_current_liabilities": "10,263",
+    "bs.long_term_debt": "11,059",
+    "bs.other_noncurrent_liabilities": "992",
+    "bs.total_liabilities": "22,314",
+    "bs.total_equity": "6,919",
+    "bs.total_liabilities_and_equity": "29,233",
+    "is.revenue": "47,446",
+    "is.cogs": "29,139",
+    "is.gross_profit": "18,307",
+    "is.sga": "12,810",
+    "is.depreciation_amortization": "1,113",
+    "is.other_operating_expense": "237",
+    "is.operating_income": "4,147",
+    "is.interest_expense": "857",
+    "is.other_income_net": "28",
+    "is.pretax_income": "3,318",
+    "is.income_tax_expense": "830",
+    "is.net_income": "2,488",
+    "cf.net_income": "2,488",
+    "cf.depreciation_amortization": "1,113",
+    "cf.change_in_working_capital": "468",
+    "cf.other_operating": "33",
+    "cf.cfo": "4,102",
+    "cf.capex": "(1,234)",
+    "cf.cfi": "(1,234)",
+    "cf.revolver_net": "7",
+    "cf.term_debt_repayments": "(1,143)",
+    "cf.distributions": "(1,727)",
+    "cf.cff": "(2,863)",
+    "cf.net_change_in_cash": "5",
+    "sup.cash_interest_paid": "863",
+    "sup.cash_taxes_paid": "838",
+    "sup.scheduled_principal": "1,143",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/wrenfield-diagnostics/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-04-30",
+   "document_date": "2026-04-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,065"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,958"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "581"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "826"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,430"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,317"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "30,677"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,485"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,124"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,753"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,280"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "11,166"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,773"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,058"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,997"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "9,680"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "30,677"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "17,208"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "10,600"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,608"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,646"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "383"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "86"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,493"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "241"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "10"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,262"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "316"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "946"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "946"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "383"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "79"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,419"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(447)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(447)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "104"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(381)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(654)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(931)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "41"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "243"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "307"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "381"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,963",
+    "bs.accounts_receivable": "9,037",
+    "bs.inventory": "551",
+    "bs.other_current_assets": "785",
+    "bs.total_current_assets": "12,336",
+    "bs.net_ppe": "10,098",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "30,364",
+    "bs.accounts_payable": "3,304",
+    "bs.accrued_liabilities": "2,032",
+    "bs.revolver": "2,618",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,211",
+    "bs.total_current_liabilities": "10,689",
+    "bs.long_term_debt": "10,297",
+    "bs.other_noncurrent_liabilities": "1,014",
+    "bs.total_liabilities": "22,000",
+    "bs.total_equity": "8,364",
+    "bs.total_liabilities_and_equity": "30,364",
+    "is.revenue": "16,361",
+    "is.cogs": "10,049",
+    "is.gross_profit": "6,312",
+    "is.sga": "4,417",
+    "is.depreciation_amortization": "376",
+    "is.other_operating_expense": "82",
+    "is.operating_income": "1,437",
+    "is.interest_expense": "267",
+    "is.other_income_net": "10",
+    "is.pretax_income": "1,180",
+    "is.income_tax_expense": "295",
+    "is.net_income": "885",
+    "cf.net_income": "885",
+    "cf.depreciation_amortization": "376",
+    "cf.change_in_working_capital": "(196)",
+    "cf.other_operating": "11",
+    "cf.cfo": "1,076",
+    "cf.capex": "(425)",
+    "cf.cfi": "(425)",
+    "cf.revolver_net": "(1)",
+    "cf.term_debt_repayments": "(381)",
+    "cf.distributions": "(251)",
+    "cf.cff": "(633)",
+    "cf.net_change_in_cash": "18",
+    "sup.cash_interest_paid": "269",
+    "sup.cash_taxes_paid": "300",
+    "sup.scheduled_principal": "381",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/wrenfield-diagnostics/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-08-07",
+   "document_date": "2026-08-03",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,084"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,210"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "584"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "833"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,711"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,382"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "31,023"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,506"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,142"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,778"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,300"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "11,250"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,392"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,069"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,711"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "10,312"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "31,023"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "34,571"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "21,264"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "13,307"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "9,334"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "769"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "173"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,031"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "477"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "20"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,574"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "644"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,930"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,930"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "769"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(124)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "22"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,597"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(898)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(898)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "129"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(762)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,006)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,639)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "60"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "480"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "623"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "762"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,995",
+    "bs.accounts_receivable": "9,166",
+    "bs.inventory": "561",
+    "bs.other_current_assets": "798",
+    "bs.total_current_assets": "12,520",
+    "bs.net_ppe": "10,153",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "30,603",
+    "bs.accounts_payable": "3,367",
+    "bs.accrued_liabilities": "2,063",
+    "bs.revolver": "2,660",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,228",
+    "bs.total_current_liabilities": "10,842",
+    "bs.long_term_debt": "9,916",
+    "bs.other_noncurrent_liabilities": "1,025",
+    "bs.total_liabilities": "21,783",
+    "bs.total_equity": "8,820",
+    "bs.total_liabilities_and_equity": "30,603",
+    "is.revenue": "32,989",
+    "is.cogs": "20,289",
+    "is.gross_profit": "12,700",
+    "is.sga": "8,907",
+    "is.depreciation_amortization": "753",
+    "is.other_operating_expense": "165",
+    "is.operating_income": "2,875",
+    "is.interest_expense": "528",
+    "is.other_income_net": "20",
+    "is.pretax_income": "2,367",
+    "is.income_tax_expense": "592",
+    "is.net_income": "1,775",
+    "cf.net_income": "1,775",
+    "cf.depreciation_amortization": "753",
+    "cf.change_in_working_capital": "(237)",
+    "cf.other_operating": "22",
+    "cf.cfo": "2,313",
+    "cf.capex": "(857)",
+    "cf.cfi": "(857)",
+    "cf.revolver_net": "41",
+    "cf.term_debt_repayments": "(762)",
+    "cf.distributions": "(685)",
+    "cf.cff": "(1,406)",
+    "cf.net_change_in_cash": "50",
+    "sup.cash_interest_paid": "532",
+    "sup.cash_taxes_paid": "595",
+    "sup.scheduled_principal": "762",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/wrenfield-diagnostics/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-11-09",
+   "document_date": "2026-11-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,013"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "9,282"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "562"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "805"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "12,662"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "10,430"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,320"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "610"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "31,022"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "3,374"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,069"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "2,684"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,524"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,261"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "10,912"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "8,011"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,080"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "20,003"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,019"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "31,022"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "51,343"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "31,527"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "19,816"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "13,862"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,157"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "257"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "4,540"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "707"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "30"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "3,863"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "966"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,897"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,897"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,157"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(390)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "33"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,697"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,334)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,334)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "35"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,143)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,266)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,374)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(11)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "712"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "951"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,143"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,947",
+    "bs.accounts_receivable": "8,945",
+    "bs.inventory": "549",
+    "bs.other_current_assets": "779",
+    "bs.total_current_assets": "12,220",
+    "bs.net_ppe": "10,196",
+    "bs.intangibles": "7,320",
+    "bs.other_noncurrent_assets": "610",
+    "bs.total_assets": "30,346",
+    "bs.accounts_payable": "3,294",
+    "bs.accrued_liabilities": "2,013",
+    "bs.revolver": "2,596",
+    "bs.cpltd": "1,524",
+    "bs.other_current_liabilities": "1,190",
+    "bs.total_current_liabilities": "10,617",
+    "bs.long_term_debt": "9,535",
+    "bs.other_noncurrent_liabilities": "1,036",
+    "bs.total_liabilities": "21,188",
+    "bs.total_equity": "9,158",
+    "bs.total_liabilities_and_equity": "30,346",
+    "is.revenue": "49,216",
+    "is.cogs": "30,308",
+    "is.gross_profit": "18,908",
+    "is.sga": "13,288",
+    "is.depreciation_amortization": "1,132",
+    "is.other_operating_expense": "246",
+    "is.operating_income": "4,242",
+    "is.interest_expense": "783",
+    "is.other_income_net": "30",
+    "is.pretax_income": "3,489",
+    "is.income_tax_expense": "873",
+    "is.net_income": "2,616",
+    "cf.net_income": "2,616",
+    "cf.depreciation_amortization": "1,132",
+    "cf.change_in_working_capital": "(146)",
+    "cf.other_operating": "33",
+    "cf.cfo": "3,635",
+    "cf.capex": "(1,279)",
+    "cf.cfi": "(1,279)",
+    "cf.revolver_net": "(23)",
+    "cf.term_debt_repayments": "(1,143)",
+    "cf.distributions": "(1,188)",
+    "cf.cff": "(2,354)",
+    "cf.net_change_in_cash": "2",
+    "sup.cash_interest_paid": "789",
+    "sup.cash_taxes_paid": "892",
+    "sup.scheduled_principal": "1,143",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/wrenfield-diagnostics/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-04-26",
+   "document_date": "2025-04-24",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/wrenfield-diagnostics/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-07-30",
+   "document_date": "2025-07-28",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/wrenfield-diagnostics/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-10-28",
+   "document_date": "2025-10-26",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/wrenfield-diagnostics/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-06",
+   "document_date": "2026-02-04",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/wrenfield-diagnostics/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-04-30",
+   "document_date": "2026-04-28",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/wrenfield-diagnostics/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-08-07",
+   "document_date": "2026-08-05",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "wrenfield-diagnostics.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/wrenfield-diagnostics/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Wrenfield Diagnostic Laboratories, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-11-09",
+   "document_date": "2026-11-07",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "scale_trap",
+  "description": "Scale trap: the financial statements are presented in thousands while the compliance certificate is presented in whole dollars. The figures agree once scale is applied.",
+  "details": {
+   "statement_scale": 1000,
+   "certificate_scale": 1
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.02",
+    "pass": true,
+    "headroom": "0.2655",
+    "reported_value": "2.02",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "14439000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3421000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1104000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1140000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1494000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7159000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "1044000",
+    "pass": true,
+    "headroom": "0.2578",
+    "reported_value": "1044000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "8364000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "1044000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1669000",
+    "pass": true,
+    "headroom": "0.2743",
+    "reported_value": "1669000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1669000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "1963000",
+    "pass": true,
+    "headroom": "0.3087",
+    "reported_value": "1963000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1963000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "1963000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.96",
+    "pass": true,
+    "headroom": "0.2873",
+    "reported_value": "1.96",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "14100000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3462000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1079000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1154000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1500000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7195000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "1500000",
+    "pass": true,
+    "headroom": "0.8072",
+    "reported_value": "1500000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "8820000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "1500000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1684000",
+    "pass": true,
+    "headroom": "0.2678",
+    "reported_value": "1684000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1684000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "1995000",
+    "pass": true,
+    "headroom": "0.3300",
+    "reported_value": "1995000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1995000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "1995000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.88",
+    "pass": true,
+    "headroom": "0.3164",
+    "reported_value": "1.88",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "13655000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3517000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1055000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1173000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1506000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7251000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "1838000",
+    "pass": true,
+    "headroom": "1.2145",
+    "reported_value": "1838000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "9158000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "1838000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1700000",
+    "pass": true,
+    "headroom": "0.2609",
+    "reported_value": "1700000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1700000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "1947000",
+    "pass": true,
+    "headroom": "0.2980",
+    "reported_value": "1947000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1947000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "1947000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.84",
+    "pass": true,
+    "headroom": "0.3309",
+    "reported_value": "1.84",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "13327000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3537000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1030000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1180000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1513000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7260000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "2068000",
+    "pass": true,
+    "headroom": "1.4916",
+    "reported_value": "2068000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "9388000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "2068000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1717000",
+    "pass": true,
+    "headroom": "0.2535",
+    "reported_value": "1717000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1717000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "2024000",
+    "pass": true,
+    "headroom": "0.3493",
+    "reported_value": "2024000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "2024000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2024000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.78",
+    "pass": true,
+    "headroom": "0.3527",
+    "reported_value": "1.78",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "13050000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3598000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "1004000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1201000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1520000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7323000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "2360000",
+    "pass": true,
+    "headroom": "1.8434",
+    "reported_value": "2360000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "9680000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "2360000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1739000",
+    "pass": true,
+    "headroom": "0.2439",
+    "reported_value": "1739000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1739000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "2065000",
+    "pass": true,
+    "headroom": "0.3767",
+    "reported_value": "2065000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "2065000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2065000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.71",
+    "pass": true,
+    "headroom": "0.3782",
+    "reported_value": "1.71",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "12694000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3692000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "979000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1232000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1529000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7432000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "2992000",
+    "pass": true,
+    "headroom": "2.6048",
+    "reported_value": "2992000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "10312000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "2992000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1758000",
+    "pass": true,
+    "headroom": "0.2357",
+    "reported_value": "1758000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1758000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "2084000",
+    "pass": true,
+    "headroom": "0.3893",
+    "reported_value": "2084000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "2084000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2084000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.61",
+    "pass": true,
+    "headroom": "0.4145",
+    "reported_value": "1.61",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "12219000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3818000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "954000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1273000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1538000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "7583000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "830000",
+    "value": "3699000",
+    "pass": true,
+    "headroom": "3.4566",
+    "reported_value": "3699000",
+    "reported_threshold": "830000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "11019000"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "7320000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "3699000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "2300000",
+    "value": "1772000",
+    "pass": true,
+    "headroom": "0.2296",
+    "reported_value": "1772000",
+    "reported_threshold": "2300000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "1772000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "wrenfield-diagnostics-rlc",
+    "terms_version_id": "tv-wrenfield-diagnostics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1500000",
+    "value": "2013000",
+    "pass": true,
+    "headroom": "0.3420",
+    "reported_value": "2013000",
+    "reported_threshold": "1500000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "2013000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2013000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.2609",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2743",
+     "prior_period": "0.2678"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.2535",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2678",
+     "prior_period": "0.2609"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.2439",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2609",
+     "prior_period": "0.2535"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.2357",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2535",
+     "prior_period": "0.2439"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.2296",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2439",
+     "prior_period": "0.2357"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}
