@@ -247,15 +247,15 @@ class CitedChangeInput(ToolInput):
     quote: str
 
 
-_SENTENCE_END = re.compile(r"(?<=\d)\.(?=\s|$)")
+_PUNCTUATION_AFTER_FIGURE = re.compile(r"(?<=\d)[.,;:](?=\s|$)")
 
 
 def clause_figures(quote: str) -> list[Figure]:
     """The figures a quoted clause states. In a covenant clause "3.25 to 1.00" states one ratio,
-    3.25, so every "N to 1" is read as N. A full stop that ends a sentence is set apart from the
-    figure before it first, because the number guardrail does not recognise "to 1.00." at the end
-    of a sentence."""
-    text = _SENTENCE_END.sub(" .", quote)
+    3.25, so every "N to 1" is read as N. Punctuation that closes a phrase is set apart from the
+    figure before it first, because the number guardrail does not recognise "to 1.00." or
+    "to 1.00," when the ratio ends a sentence or a phrase."""
+    text = _PUNCTUATION_AFTER_FIGURE.sub(lambda m: " " + m.group(0), quote)
     candidates = [f.value for f in extract_figures(text)]
     return extract_figures(text, known_ratios=candidates)
 
@@ -342,6 +342,15 @@ def _recalculate_with_cited_change(ctx: ToolContext, args: CitedChangeInput) -> 
         raise Refusal("the governing terms no longer contain this covenant")
     doc, _page = _cited_page(ctx, case, args)
     figure = read_single_figure(args.quote)
+    # the clause must be about the thing it is said to change: a threshold clause names the
+    # covenant, a cap clause names the add-back. Code cannot read meaning, but it can refuse a
+    # figure taken from a clause about something else.
+    said = " ".join(args.quote.lower().split())
+    if args.change == "threshold" and " ".join(covenant.name.lower().split()) not in said:
+        raise Refusal(f"the quoted clause does not name the {covenant.name}; quote the clause that sets its threshold")
+    name_words = re.findall(r"[a-z]{4,}", (args.addback_name or "").lower())
+    if args.change == "addback_cap" and name_words and not any(word in said for word in name_words):
+        raise Refusal(f"the quoted clause does not mention the {args.addback_name} add-back")
     terms_json = copy.deepcopy(case.version_row.terms)
     if args.change == "addback_cap":
         change = _apply_cap(terms_json, args.addback_name, figure)

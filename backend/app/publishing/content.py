@@ -228,6 +228,14 @@ class Registry:
         return segments
 
 
+def _tidy(value: Any) -> str:
+    """A stored input value without padding zeros."""
+    try:
+        return plain_decimal(Decimal(str(value)))
+    except ArithmeticError:
+        return str(value)
+
+
 def describe_source(record: dict[str, Any], facts: dict[str, dict[str, Any]] | None = None) -> dict[str, str]:
     """How a figure's source is written in a Sources list. A pure function of the frozen record,
     so the verifier can rebuild the text and compare it with what a file says."""
@@ -257,7 +265,7 @@ def describe_source(record: dict[str, Any], facts: dict[str, dict[str, Any]] | N
             shown = "; ".join(
                 f"{i.get('key') or i.get('name')}"
                 + (f" at {i['period_end']}" if i.get("period_end") else "")
-                + f" = {i.get('value')}" + (f" [{i['fact_id']}]" if i.get("fact_id") else "")
+                + f" = {_tidy(i.get('value'))}" + (f" [fact {str(i['fact_id'])[:8]}]" if i.get("fact_id") else "")
                 for i in inputs[:MAX_INPUTS_SHOWN])
             more = f"; and {len(inputs) - MAX_INPUTS_SHOWN} more, on the calculation record" \
                 if len(inputs) > MAX_INPUTS_SHOWN else ""

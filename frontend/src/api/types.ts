@@ -5,7 +5,8 @@
 
 export type Unit = 'usd' | 'ratio' | 'days' | 'pct' | 'count';
 export type FactStatus = 'proposed' | 'verified' | 'confirmed' | 'rejected' | 'superseded';
-export type ProvenanceKind = 'extracted' | 'calculated' | 'system' | 'manual';
+/** `seeded` marks a fact loaded from the synthetic book's ground truth: demonstration data only, never extracted. */
+export type ProvenanceKind = 'extracted' | 'calculated' | 'system' | 'manual' | 'seeded';
 
 export interface ExtractedProvenance {
   kind: 'extracted';
@@ -52,7 +53,12 @@ export interface ManualProvenance {
   reason: string;
 }
 
-export type Provenance = ExtractedProvenance | CalculatedProvenance | SystemProvenance | ManualProvenance;
+export interface SeededProvenance {
+  kind: 'seeded';
+  note: string;
+}
+
+export type Provenance = ExtractedProvenance | CalculatedProvenance | SystemProvenance | ManualProvenance | SeededProvenance;
 
 export interface Fact {
   id: string;

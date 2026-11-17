@@ -1,0 +1,125 @@
+"""The stand-in suite over the whole book: every borrower through the live monitoring cycle,
+graded against the truth, with the gate asserted.
+
+About two minutes (21 borrowers at five to seven seconds each, most of it loading history).
+Deselect with: -m "not slow".
+
+A stand-in run proves the pipeline, the workflow and the grader. It is not model performance.
+"""
+import json
+
+import pytest
+from app.domain.governance import EvalRun
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from evals.grade import FAILURES, GATED, STAGES, load_known_findings
+from evals.run import STANDIN_LABEL, save_eval_run, write_results
+from evals.scorecard import render_markdown
+from evals.standin import STANDIN_MODEL
+
+pytestmark = pytest.mark.slow
+
+
+def differences(results):
+    found = set()
+    for code, graded in results["borrowers"].items():
+        found |= {(code, f["name"], f["item"]) for f in graded["failures"]}
+        found |= {(code, d["kind"], d["item"]) for d in graded["disagreements"]}
+    return found
+
+
+def test_the_gate_passes(suite):
+    assert suite["gate"]["passed"], suite["gate"]["reasons"] + suite["gate"]["unexplained"]
+
+
+def test_no_invented_number_and_no_false_compliant_in_any_pass(suite):
+    for n, one_pass in enumerate(suite["passes"], start=1):
+        for name in GATED:
+            assert one_pass["failure_counts"][name] == 0, f"pass {n}: {name}"
+    assert set(suite["failure_counts"]) == set(FAILURES)
+
+
+def test_all_21_borrowers_ran_without_a_crash(suite):
+    assert suite["meta"]["borrowers"] == len(suite["borrowers"]) == 21
+    assert [c for c, g in suite["borrowers"].items() if g["error"]] == []
+    assert all(g["ledger_ok"] for g in suite["borrowers"].values())
+
+
+def test_every_cycle_reaches_signals_or_rests_on_an_item_its_scenario_expects(suite):
+    problems = []
+    for code, graded in suite["borrowers"].items():
+        if STAGES.index(graded["stage_reached"]) >= STAGES.index("signals"):
+            continue
+        open_items = {i["type"] for i in graded["stops"][-1]["open_items"] if i["blocks_stage"]}
+        if graded["stage_status"] != "needs_person" or not open_items or not open_items <= set(graded["expected_exceptions"]):
+            problems.append((code, graded["stage_reached"], graded["stage_status"], sorted(open_items)))
+    assert problems == []
+
+
+def test_the_only_differences_from_the_truth_are_the_listed_known_findings(suite):
+    known = {(k["borrower"], k["name"], k["item"]) for k in load_known_findings()}
+    assert differences(suite) == known
+
+
+def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none(suite):
+    known = {(k["borrower"], k["item"]) for k in load_known_findings() if k["name"].endswith("-exception")}
+    problems = []
+    for code, graded in suite["borrowers"].items():
+        expected, raised = set(graded["expected_exceptions"]), set(graded["raised_exceptions"])
+        unexplained = {kind for kind in expected ^ raised if (code, kind) not in known}
+        if unexplained:
+            problems.append((code, graded["scenario"], sorted(unexplained)))
+    assert problems == []
+    clean = [g for g in suite["borrowers"].values() if g["scenario"] == "clean"]
+    assert len(clean) == 8
+
+
+def test_every_expected_fact_was_extracted_and_equals_the_truth(suite):
+    known = {k["borrower"] for k in load_known_findings() if k["name"] == "extraction-incomplete"}
+    for code, graded in suite["borrowers"].items():
+        extraction = graded["extraction"]
+        if code not in known:
+            assert extraction["correct"] == extraction["expected"], (code, extraction)
+    assert suite["metrics"]["extraction_facts_expected"] > 2500
+
+
+def test_everything_the_stand_in_produced_is_labelled_as_stand_in(suite):
+    assert suite["meta"]["mode"] == "standin" and suite["meta"]["standin"] is True
+    assert suite["meta"]["label"] == STANDIN_LABEL
+    runs = [r for g in suite["borrowers"].values() for r in g["agent_runs"]]
+    assert len(runs) > 60
+    assert {r["llm_mode"] for r in runs} == {"standin"} and {r["served_model"] for r in runs} == {STANDIN_MODEL}
+    # the stand-in read every document as printed: print and truth never disagreed
+    assert suite["meta"]["standin_print_vs_truth_disagreements"] == []
+
+
+def test_unmeasured_metrics_are_null_never_zero(suite):
+    # no model was called, so there are no tokens to report
+    assert suite["metrics"]["input_tokens"] is None and suite["metrics"]["output_tokens"] is None
+    assert all(g["tokens"] is None for g in suite["borrowers"].values())
+    # the late package has no document to extract from
+    late = suite["borrowers"]["eastmere-building"]["extraction"]
+    assert late["expected"] == 0 and late["accuracy"] is None
+
+
+def test_scorecard_says_in_its_first_lines_that_it_is_a_stand_in(suite, tmp_path):
+    json_path, md_path = write_results(suite, tmp_path)
+    head = "\n".join(md_path.read_text().splitlines()[:4])
+    assert "(standin)" in head and "STAND-IN RUN. NOT MODEL PERFORMANCE." in head
+    document = json.loads(json_path.read_text())
+    assert document["meta"]["mode"] == "standin" and "recordings" not in document
+    body = render_markdown(document)
+    for code, graded in suite["borrowers"].items():
+        assert f"`{code}`" in body and graded["scenario"] in body
+
+
+def test_the_run_is_stored_as_an_eval_run_row(suite, engine):
+    run_id = save_eval_run(engine, suite)
+    with Session(engine) as db:
+        row = db.execute(select(EvalRun).where(EvalRun.suite == "monitoring-cycle")
+                         .order_by(EvalRun.created_at.desc())).scalars().first()
+        assert str(row.id) == run_id and row.mode == "standin" and row.gate_passed == suite["gate"]["passed"]
+        assert row.results["meta"]["standin"] is True and "recordings" not in row.results
+        db.delete(row)
+        db.commit()

@@ -322,6 +322,53 @@ def _clause(db: Session, borrower_id: uuid.UUID, citation: dict[str, Any] | None
     return out
 
 
+@router.get("/ui/documents/{document_id}/pages/{page_number}/figures")
+def page_figures(document_id: uuid.UUID, page_number: int, db: Session = Depends(get_db),
+                 _: User = Depends(current_user)) -> dict:
+    """Every stored figure printed on one page: facts that cite the page, and facts loaded
+    without a page that code locates on it. Each comes with its box, for the document viewer."""
+    doc = db.get(Document, document_id)
+    page = db.execute(select(DocumentPage).where(
+        DocumentPage.document_id == document_id, DocumentPage.page_number == page_number)).scalar_one_or_none()
+    if doc is None or page is None:
+        raise HTTPException(404, "Page not found.")
+    labels = _Labels(db)
+    figures = []
+    for fact in db.execute(select(Fact).where(Fact.document_id == doc.id, Fact.page == page_number)
+                           .order_by(Fact.created_at)).scalars():
+        figures.append({"fact": _summary(fact, labels), "boxes": [fact.bbox] if fact.bbox else [], "quote": fact.quote,
+                        "label_text": fact.label_text, "method": "cited"})
+    if doc.period_end is not None and doc.doc_type in (*STATEMENT_TYPES, "compliance_certificate"):
+        prefixes = ("cert.",) if doc.doc_type == "compliance_certificate" else ("is.", "bs.", "cf.", "sup.", "stated.")
+        candidates = db.execute(select(Fact).where(
+            Fact.borrower_id == doc.borrower_id, Fact.period_end == doc.period_end, Fact.document_id.is_(None),
+            Fact.kind.in_(("seeded", "manual")), Fact.status.in_(("verified", "confirmed", "proposed")))
+            .order_by(Fact.key)).scalars()
+        for fact in candidates:
+            if not fact.key.startswith(prefixes):
+                continue
+            found = locate_fact(db, fact, labels)
+            if found and found["document_id"] == str(doc.id) and found["page"] == page_number:
+                figures.append({"fact": _summary(fact, labels), "boxes": found["boxes"], "quote": found["quote"],
+                                "label_text": found["label_text"], "method": "located"})
+    figures.sort(key=lambda f: (f["boxes"][0][1], f["boxes"][0][0]) if f["boxes"] else (1e9, 0))
+    return {"document_id": str(doc.id), "page_number": page_number, "width": page.width, "height": page.height,
+            "has_text": page.has_text, "figures": figures}
+
+
+@router.get("/ui/documents/{document_id}/pages/{page_number}/locate")
+def locate_quote(document_id: uuid.UUID, page_number: int, quote: str, db: Session = Depends(get_db),
+                 _: User = Depends(current_user)) -> dict:
+    """Where a quoted passage sits on a page, one box per printed line. Empty when it is not there."""
+    page = db.execute(select(DocumentPage).where(
+        DocumentPage.document_id == document_id, DocumentPage.page_number == page_number)).scalar_one_or_none()
+    if page is None:
+        raise HTTPException(404, "Page not found.")
+    runs = _find_runs(page.words, quote)
+    return {"document_id": str(document_id), "page_number": page_number, "width": page.width, "height": page.height,
+            "found": bool(runs), "boxes": _line_boxes(page.words, *runs[0]) if runs else []}
+
+
 # ── calculations in plain words ──────────────────────────────────────────
 
 _BASIS = {"ttm": "trailing twelve months", "point": "at the period end", "ytd": "year to date", "quarter": "quarter"}

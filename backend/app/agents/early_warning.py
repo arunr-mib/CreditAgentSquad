@@ -141,13 +141,16 @@ class _Gatherer:
                              inputs=[i.to_dict() for i in measured.traces[metric].inputs])
 
     def facts(self, signal: Signal) -> list[tuple[str, Fact]]:
+        """(description, fact) for each figure behind the signal. A fact id the signals service
+        put in the basis is used as it is; anything else is looked up or derived here."""
         basis, out = signal.basis or {}, []
         rule = RULES.get(signal.rule_id)
         covenant_id, metric = basis.get("covenant_id"), basis.get("metric")
         if covenant_id:
             for point in basis.get("values") or [basis.get("current")]:
                 end = date.fromisoformat(point["period_end"])
-                fact = current_fact(self.db, self.borrower.id, f"cov.{covenant_id}.headroom_pct", end, 0)
+                fact = self._own(point["fact_id"]) if point.get("fact_id") else current_fact(
+                    self.db, self.borrower.id, f"cov.{covenant_id}.headroom_pct", end, 0)
                 if fact is not None and same_number(fact.value, Decimal(str(point["value"]))):
                     out.append((f"{covenant_id} headroom at {end.isoformat()}", fact))
             for name in ("value", "threshold"):
@@ -155,25 +158,34 @@ class _Gatherer:
                 if fact is not None:
                     out.append((f"{covenant_id} {name} at {signal.period_end.isoformat()}", fact))
         elif metric:
-            points = [(name, basis[name]) for name in ("current", "prior") if isinstance(basis.get(name), dict)]
-            found = [(name, point, self._metric(metric, point)) for name, point in points]
-            for _name, point, fact in found:
+            given = basis.get("metric_fact_ids") or {}
+            found: list[Fact | None] = []
+            for name, given_as in (("current", "current"), ("prior", "year_earlier")):
+                point = basis.get(name)
+                if given.get(given_as):
+                    fact = self._own(given[given_as])
+                elif isinstance(point, dict):
+                    fact = self._metric(metric, point)
+                else:
+                    continue
+                found.append(fact)
                 if fact is not None:
-                    out.append((f"{METRIC_WORDS.get(metric, metric)} at {point['period_end']}", fact))
-            if basis.get("change") is not None and len(found) == 2 and all(f is not None for _, _, f in found):
+                    out.append((f"{METRIC_WORDS.get(metric, metric)} at {fact.period_end.isoformat()}", fact))
+            if basis.get("change") is not None and len(found) == 2 and all(f is not None for f in found):
                 unit = "pct" if rule is not None and rule.kind == "pct_decrease" else METRIC_UNITS.get(metric, "count")
                 change = self._derived(
                     key=f"signal.{signal.rule_id}.change", end=signal.period_end, value=Decimal(str(basis["change"])),
                     unit=unit, formula_key=f"signal.{signal.rule_id}",
                     inputs=[{"key": f.key, "period_end": f.period_end.isoformat(), "months": f.months,
-                             "value": str(f.value), "fact_id": str(f.id)} for _, _, f in found])
+                             "value": str(f.value), "fact_id": str(f.id)} for f in found])
                 out.append((f"change in {METRIC_WORDS.get(metric, metric)} on a year earlier", change))
         if basis.get("date"):
             day, system = date.fromisoformat(str(basis["date"])), []
+            given = basis.get("system_fact_ids") or {}
             for name, (key, words) in SYSTEM_KEYS.items():
                 if basis.get(name) is None:
                     continue
-                fact = current_fact(self.db, self.borrower.id, key, day, 0)
+                fact = self._own(given[key]) if given.get(key) else current_fact(self.db, self.borrower.id, key, day, 0)
                 if fact is not None and same_number(fact.value, Decimal(str(basis[name]))):
                     system.append(fact)
                     out.append((f"{words} at {day.isoformat()}", fact))

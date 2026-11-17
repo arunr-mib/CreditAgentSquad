@@ -261,6 +261,8 @@ export function FactSource({ fact, bare, besidePage }: FactSourceProps) {
         </dl>
       ) : null}
 
+      {source.kind === 'seeded' ? <p className="text-body text-ink-700">{source.note}</p> : null}
+
       {source.kind === 'manual' ? (
         <div className="space-y-2.5">
           <Quote text={source.reason} />

@@ -1,4 +1,4 @@
-import { Database, FileText, Sigma, UserRound, type LucideIcon } from 'lucide-react';
+import { Database, FileText, Sigma, Sprout, UserRound, type LucideIcon } from 'lucide-react';
 import type { ProvenanceKind } from '@/api/types';
 import { cx } from '@/lib/cx';
 
@@ -8,6 +8,8 @@ export const provenance: Record<ProvenanceKind, { icon: LucideIcon; label: strin
   calculated: { icon: Sigma, label: 'Calculation', phrase: 'Calculated by code' },
   system: { icon: Database, label: 'System of record', phrase: 'From a system of record' },
   manual: { icon: UserRound, label: 'Person', phrase: 'Entered by a person' },
+  // Demonstration data only: loaded from the synthetic book, not read from a page by an agent.
+  seeded: { icon: Sprout, label: 'Synthetic book', phrase: 'Loaded from the synthetic book' },
 };
 
 export interface ProvenanceGlyphProps {

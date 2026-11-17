@@ -236,7 +236,7 @@ def test_a_cited_change_needs_exactly_one_figure_in_the_quote(vantry, book):
                                                     "quote": TWO_FIGURE_QUOTE}),
         # a bare figure lifted from the page is not a clause
         tool_call("recalculate_with_cited_change", what_if_call(amendment, details, quote="exceed $3,500,000")),
-        # "... to exceed 2.00 to 1.00." states one ratio, which is not a cap
+        # the leverage clause states one ratio, but it is not a clause about the add-back
         tool_call("recalculate_with_cited_change", {"change": "addback_cap", "addback_name": "restructuring", **cited}),
         # the same clause read as this covenant's threshold
         tool_call("recalculate_with_cited_change", {"change": "threshold", "addback_name": None, **cited}),
@@ -248,11 +248,29 @@ def test_a_cited_change_needs_exactly_one_figure_in_the_quote(vantry, book):
     assert "exactly one figure; it states 0" in steps[0].detail["output"]["error"]
     assert "exactly one figure; it states 2" in steps[1].detail["output"]["error"]
     assert "whole clause" in steps[2].detail["output"]["error"]
-    assert "not a cap" in steps[3].detail["output"]["error"]
+    assert "does not mention the restructuring add-back" in steps[3].detail["output"]["error"]
     assert D(steps[4].detail["output"]["threshold"]) == D("2.00") and steps[4].detail["output"]["passed"] is False
     # only the call that was not refused logged a calculation, and it left the breach standing
     assert len(run_calcs(db, result.run_id)) == 1 and result.recommendation == "escalate"
     assert "terms_differ_from_approved" not in checks(result)  # the cited threshold is the approved one
+
+
+def test_a_threshold_cannot_be_taken_from_another_covenants_clause(vantry, book):
+    db, item, amendment, details = vantry
+    coverage = book[1]["vantry-freight"]["terms_versions"][0]["terms"]["covenants"][1]["citations"][0]
+    assert "3.00 to 1.00" in coverage["quote"]  # a limit under which the leverage test would pass
+    llm = FlowClient([
+        tool_call("recalculate_with_cited_change", {"change": "threshold", "addback_name": None,
+                                                    "document_id": coverage["document_id"], "page": coverage["page"],
+                                                    "quote": coverage["quote"]}),
+        tool_call("recalculate_with_cited_change", what_if_call(amendment, details, quote=UNRELATED_AMENDMENT_QUOTE.replace(
+            "remain in full force and effect", "remain in full force and effect and are ratified and confirmed"))),
+        lambda request: answer({"recommendation": "escalate", "explanation": "No explanation was found.",
+                                "claims": [], "calc_ids": [], "missing_evidence": [], "suggested_tag": "other"})])
+    result = investigate(db, item, llm)
+    steps = tool_steps(db, result.run_id)
+    assert steps[0].refused and "does not name the Total Leverage Ratio" in steps[0].detail["output"]["error"]
+    assert steps[1].refused and run_calcs(db, result.run_id) == []
 
 
 def test_tool_inputs_carrying_a_borrower_or_period_are_refused(vantry, book):

@@ -198,6 +198,33 @@ def test_source_of_a_certificate_figure_and_a_threshold_clause(client, db, world
     assert client.get(f"{API}/ui/facts/00000000-0000-4000-8000-000000000000/source").status_code == 404
 
 
+def test_page_figures_and_quote_location(client, db, world):
+    borrower = world[BREACH]
+    sign_in(client)
+    docs = client.get(f"{API}/borrowers/{borrower.id}/documents").json()
+    interim = next(d for d in docs if d["doc_type"] == "interim_statements" and d["period_end"] == "2026-09-30")
+    body = client.get(f"{API}/ui/documents/{interim['id']}/pages/3/figures").json()
+    keys = [f["fact"]["key"] for f in body["figures"]]
+    assert "is.revenue" in keys and "is.net_income" in keys and all(k.startswith("is.") for k in keys)
+    assert all(f["method"] == "located" and f["boxes"] for f in body["figures"])
+    tops = [f["boxes"][0][1] for f in body["figures"]]
+    assert tops == sorted(tops), "figures come in reading order"
+    balance = client.get(f"{API}/ui/documents/{interim['id']}/pages/2/figures").json()
+    assert {f["fact"]["key"].split(".")[0] for f in balance["figures"]} == {"bs"}
+    assert client.get(f"{API}/ui/documents/{interim['id']}/pages/99/figures").status_code == 404
+    agreement = next(d for d in docs if d["doc_type"] == "credit_agreement")
+    loans = client.get(f"{API}/ui/borrowers/{borrower.id}/terms").json()
+    citation = next(c for loan in loans for v in loan["terms_versions"] for c in v["covenants"]
+                    if c["id"] == "total_leverage")["citations"][0]
+    assert citation["document_id"] == agreement["id"]
+    found = client.get(f"{API}/ui/documents/{agreement['id']}/pages/{citation['page']}/locate",
+                       params={"quote": citation["quote"]}).json()
+    assert found["found"] and len(found["boxes"]) >= 1
+    missing = client.get(f"{API}/ui/documents/{agreement['id']}/pages/{citation['page']}/locate",
+                         params={"quote": "This sentence is not in the agreement."}).json()
+    assert missing == {**missing, "found": False, "boxes": []}
+
+
 def test_history_runs_in_both_directions(client, db, world):
     borrower = world[BREACH]
     sign_in(client)

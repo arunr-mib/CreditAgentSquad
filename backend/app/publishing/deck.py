@@ -20,7 +20,7 @@ from app.publishing.style import OUTCOME_WORDS, display, table_format
 
 SOURCES_TITLE = "Sources"
 SOURCE_COLUMNS = ("Ref", "Item", "Fact", "Source")
-SOURCE_ROWS = 17
+SOURCE_ROWS = 16
 CHART_SERIES = (("revenue_ttm", "Revenue"), ("ebitda", "EBITDA"))
 CHART_TITLE = "Revenue and EBITDA, trailing twelve months"
 W, H, MARGIN = 13.333, 7.5, 0.6
@@ -327,7 +327,7 @@ class _Deck:
         chart.has_title = False
         plot = chart.plots[0]
         plot.gap_width, plot.overlap = 60, -10
-        for s, colour in zip(plot.series, (style.INK_700, style.HAIRLINE_STRONG), strict=False):
+        for s, colour in zip(plot.series, (style.INK_700, style.INK_400), strict=False):
             s.format.fill.solid()
             s.format.fill.fore_color.rgb = _rgb(colour)
         value_axis = chart.value_axis

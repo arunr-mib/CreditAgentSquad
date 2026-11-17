@@ -57,7 +57,7 @@ def _borders(cell: Any, **edges: str) -> None:
 def _field(paragraph: Any, code: str) -> None:
     """A field (PAGE, NUMPAGES) that Word fills in; it carries no stored text."""
     run = paragraph.add_run()
-    for kind, text in (("begin", None), (None, code), ("end", None)):
+    for kind in ("begin", None, "end"):
         if kind:
             el = OxmlElement("w:fldChar")
             el.set(qn("w:fldCharType"), kind)
@@ -109,6 +109,7 @@ class _Memo:
         for part, left, right in ((section.header, f"{who}. {period}", style.LENDER),
                                   (section.footer, style.SYNTHETIC, None)):
             p = part.paragraphs[0]
+            p.style = self.doc.styles["Normal"]  # the header style brings its own tab stops
             p.paragraph_format.tab_stops.add_tab_stop(PAGE_WIDTH, WD_TAB_ALIGNMENT.RIGHT)
             run = p.add_run(left + "\t" + (right or ""))
             run.font.size, run.font.color.rgb = Pt(8), _rgb(style.INK_500)
@@ -158,6 +159,7 @@ class _Memo:
         table = self.doc.add_table(rows=1, cols=len(headers))
         table.alignment, table.autofit = WD_TABLE_ALIGNMENT.CENTER, False
         for i, text in enumerate(headers):
+            table.columns[i].width = Inches(widths[i])
             cell = table.rows[0].cells[i]
             cell.width = Inches(widths[i])
             _shade(cell, style.SUNKEN)
@@ -205,6 +207,8 @@ class _Memo:
                 ["Commentary", _commentary_state(b), "", ""]]
         table = self.doc.add_table(rows=0, cols=4)
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for i, width in enumerate((1.2, 2.25, 1.5, 1.95)):
+            table.columns[i].width = Inches(width)
         for row in rows:
             cells = table.add_row().cells
             for i, value in enumerate(row):
@@ -372,7 +376,7 @@ class _Memo:
                   size=9, colour=style.INK_700)
         rows = [[str(n), d["id"], d["item"], d["document"], d["page"], d["detail"]]
                 for n, _record, d in self.refs.listing()]
-        self.table(list(SOURCE_COLUMNS), rows, [0.35, 1.25, 1.5, 1.15, 0.4, 2.25], numeric_from=9, size=7)
+        self.table(list(SOURCE_COLUMNS), rows, [0.35, 1.0, 1.35, 1.0, 0.4, 2.8], numeric_from=9, size=7)
 
     def build(self) -> tuple[bytes, set[str]]:
         borrowers = self.content["borrowers"]

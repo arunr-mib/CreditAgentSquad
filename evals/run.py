@@ -21,7 +21,7 @@ import tempfile
 import time
 import uuid
 from collections.abc import Callable
-from datetime import UTC, date, datetime
+from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -146,41 +146,88 @@ def _settle(db: Session, cycle, rounds: int = 12) -> None:
         before = now
 
 
-def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Callable[[], Any], *,
-                 decide: bool = False) -> dict[str, Any]:
-    """Load one borrower in live mode, run its current cycle, and return a recording of what the
-    product did. Everything is rolled back."""
-    from app.core import ledger
-    from app.domain import hooks, stages, workflow  # noqa: F401  (registers handlers and hooks)
-    from app.domain.agents import AgentRun
-    from app.domain.credit import Borrower as BorrowerRow
-    from app.domain.documents import Document
-    from app.domain.facts import Fact
-    from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Signal, WorkItem
-    from app.domain.reviews import Commentary, ReviewSheet
-    from app.domain.terms import TermsVersion
-    from app.seed_book import seed_book
+class LoadedBorrower:
+    """One borrower loaded in live mode inside a transaction that is never committed. The cycle
+    can be run any number of times from the same loaded state (each run is rolled back), which
+    is what the mutation checks use; closing rolls the load back too."""
 
-    started = time.monotonic()
-    conn = engine.connect()
-    outer = conn.begin()
-    db = Session(bind=conn, join_transaction_mode="create_savepoint", expire_on_commit=False)
-    previous_factory = stages.LLM_FACTORY
-    recording: dict[str, Any] = {"borrower": borrower.code, "scenario": borrower.scenario,
-                                 "period_end": borrower.current_period.isoformat()}
-    try:
-        if db.execute(select(BorrowerRow.id).where(BorrowerRow.code == borrower.code)).first():
-            raise RunRefused(f"{borrower.code} is already loaded in this database; the evaluation needs a database "
-                             "without the book in it (the test database, not the demo database)")
-        seed_book(db, root=book.root, current="live", only=[borrower.code])
+    def __init__(self, engine: Engine, book: Book, borrower: Borrower):
+        from app.domain import hooks  # noqa: F401  (registers stage handlers and decision hooks)
+        from app.domain.credit import Borrower as BorrowerRow
+        from app.seed_book import seed_book
+
+        self.book, self.borrower = book, borrower
+        started = time.monotonic()
+        self.conn = engine.connect()
+        self.outer = self.conn.begin()
+        try:
+            db = Session(bind=self.conn, join_transaction_mode="create_savepoint", expire_on_commit=False)
+            if db.execute(select(BorrowerRow.id).where(BorrowerRow.code == borrower.code)).first():
+                raise RunRefused(
+                    f"{borrower.code} is already loaded in this database; the evaluation needs a database without "
+                    "the book in it (the test database, not the demo database)")
+            seed_book(db, root=book.root, current="live", only=[borrower.code])
+            db.commit()  # into the outer transaction only
+            db.close()
+        except BaseException:
+            self.close()
+            raise
+        self.seed_seconds = round(time.monotonic() - started, 2)
+
+    def __enter__(self) -> "LoadedBorrower":
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self.close()
+
+    def close(self) -> None:
+        if self.outer.is_active:
+            self.outer.rollback()
+        self.conn.close()
+
+    def run(self, llm_factory: Callable[[], Any], *, decide: bool = False) -> dict[str, Any]:
+        """Run the current cycle and return a recording of what the product did."""
+        from app.domain import stages
+
+        started = time.monotonic()
+        borrower = self.borrower
+        recording: dict[str, Any] = {"borrower": borrower.code, "scenario": borrower.scenario,
+                                     "period_end": borrower.current_period.isoformat(),
+                                     "seed_seconds": self.seed_seconds}
+        savepoint = self.conn.begin_nested()
+        db = Session(bind=self.conn, join_transaction_mode="create_savepoint", expire_on_commit=False)
+        previous_factory = stages.LLM_FACTORY
+        stages.LLM_FACTORY = llm_factory
+        try:
+            self._cycle(db, recording, decide)
+        except Exception as exc:  # noqa: BLE001 - a crash is part of the result, never a silent pass
+            recording["error"] = f"{type(exc).__name__}: {exc}"[:1000]
+        finally:
+            stages.LLM_FACTORY = previous_factory
+            db.close()
+            if savepoint.is_active:
+                savepoint.rollback()
+        recording["seconds"] = round(time.monotonic() - started + self.seed_seconds, 2)
+        return recording
+
+    def _cycle(self, db: Session, recording: dict[str, Any], decide: bool) -> None:
+        from app.core import ledger
+        from app.domain import workflow
+        from app.domain.agents import AgentRun
+        from app.domain.credit import Borrower as BorrowerRow
+        from app.domain.documents import Document
+        from app.domain.facts import Fact
+        from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Signal, WorkItem
+        from app.domain.reviews import Commentary, ReviewSheet
+        from app.domain.terms import TermsVersion
+
+        borrower = self.borrower
         row = db.execute(select(BorrowerRow).where(BorrowerRow.code == borrower.code)).scalar_one()
         cycle = db.execute(select(Cycle).where(Cycle.borrower_id == row.id, Cycle.status == "open",
                                                Cycle.period_end == borrower.current_period)).scalar_one()
         seeded_facts = set(db.execute(select(Fact.id).where(Fact.borrower_id == row.id)).scalars())
         seeded_items = set(db.execute(select(WorkItem.id).where(WorkItem.borrower_id == row.id)).scalars())
-        recording["seed_seconds"] = round(time.monotonic() - started, 2)
 
-        stages.LLM_FACTORY = llm_factory
         deciders: dict[str, Any] = {}
         stops: list[dict[str, Any]] = []
         for _ in range(20):
@@ -214,7 +261,6 @@ def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Ca
                 break
         db.flush()
 
-        # ---- the recording ----
         stage_rows = workflow.stages(db, cycle)
         done = [s.stage for s in stage_rows if s.status in ("done", "skipped")]
         recording["cycle"] = {
@@ -225,10 +271,11 @@ def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Ca
 
         documents = {d.id: d for d in db.execute(select(Document).where(Document.borrower_id == row.id)).scalars()}
         versions = {v.id: v for v in db.execute(select(TermsVersion)).scalars()}
+        # the documents of the current period: the ones the live cycle had to file itself
         recording["documents"] = [
             {"file_name": d.file_name, "external_id": d.meta.get("external_id"), "doc_type": d.doc_type,
              "doc_type_source": d.doc_type_source, "period_end": plain(d.period_end), "status": d.status,
-             "image_only_pages": d.meta.get("image_only_pages", [])}
+             "quality": d.meta.get("quality"), "image_only_pages": d.meta.get("image_only_pages", [])}
             for d in documents.values() if d.doc_type_source != "system"]
         recording["work_items"] = [
             {"id": str(w.id), "type": w.item_type, "severity": w.severity, "stage": w.stage, "status": w.status,
@@ -283,17 +330,22 @@ def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Ca
                                                .order_by(Commentary.section, Commentary.version)).scalars()]}
         ok, events, problem = ledger.verify_chain(db)
         recording["ledger"] = {"ok": ok, "events": events, "problem": problem}
+
+
+def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Callable[[], Any], *,
+                 decide: bool = False) -> dict[str, Any]:
+    """Load one borrower in live mode, run its current cycle, and return a recording of what the
+    product did. Everything is rolled back."""
+    started = time.monotonic()
+    try:
+        with LoadedBorrower(engine, book, borrower) as loaded:
+            return loaded.run(llm_factory, decide=decide)
     except RunRefused:
         raise
-    except Exception as exc:  # noqa: BLE001 - a crash is part of the result, never a silent pass
-        recording["error"] = f"{type(exc).__name__}: {exc}"[:1000]
-    finally:
-        stages.LLM_FACTORY = previous_factory
-        db.close()
-        outer.rollback()
-        conn.close()
-    recording["seconds"] = round(time.monotonic() - started, 2)
-    return recording
+    except Exception as exc:  # noqa: BLE001 - a load that crashes is part of the result
+        return {"borrower": borrower.code, "scenario": borrower.scenario,
+                "period_end": borrower.current_period.isoformat(), "error": f"{type(exc).__name__}: {exc}"[:1000],
+                "seconds": round(time.monotonic() - started, 2)}
 
 
 # ---- the suite ------------------------------------------------------------------------------------
