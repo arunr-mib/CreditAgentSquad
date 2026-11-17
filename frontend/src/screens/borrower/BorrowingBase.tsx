@@ -15,6 +15,7 @@ const OUTCOME: Record<BorrowingBaseReview['outcome'], { tone: StatusTone; label:
   over_advance: { tone: 'attention', label: 'Over-advanced', emphasis: true },
   cannot_compute: { tone: 'attention', label: 'Could not be recalculated' },
 };
+const SHORT: Record<BorrowingBaseReview['outcome'], string> = { agrees: 'Agrees', mismatch: 'Certificate differs', over_advance: 'Over-advanced', cannot_compute: 'Not recalculated' };
 const STRONG = new Set(['ar_eligible', 'inventory_eligible', 'borrowing_base', 'borrowing_limit', 'availability', 'over_advance', 'ar_ineligible_total']);
 const TOTAL = new Set(['availability']);
 
@@ -154,10 +155,10 @@ export function BorrowingBase() {
                     label="Review"
                     hideLabel
                     size="sm"
-                    className="w-72"
+                    className="w-64"
                     value={selected.id}
                     onValueChange={(value) => void navigate({ search: { review: value }, replace: true, resetScroll: false })}
-                    options={rows.map((row) => ({ value: row.id, label: `${formatDate(row.period_end)} · ${OUTCOME[row.outcome].label}` }))}
+                    options={rows.map((row) => ({ value: row.id, label: `${formatDate(row.period_end)} · ${SHORT[row.outcome]}` }))}
                   />
                 </>
               }

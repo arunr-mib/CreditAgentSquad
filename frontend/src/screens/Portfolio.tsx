@@ -76,6 +76,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
         id: 'name',
         header: 'Borrower',
         rowHeader: true,
+        wrap: true,
         sortValue: (row) => row.name,
         cell: (row) => (
           <Link to="/borrowers/$code" params={{ code: row.code }} onClick={(event) => event.stopPropagation()} className="font-medium text-ink hover:text-cobalt-strong hover:underline">

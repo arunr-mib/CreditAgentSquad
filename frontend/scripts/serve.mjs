@@ -73,6 +73,7 @@ export const PAGES = [
   },
   { name: 'borrowing-base', path: '/borrowers/briarstone-beverage/borrowing-base' },
   { name: 'signals', path: '/borrowers/thornbury-metal/signals' },
+  { name: 'packages', path: '/borrowers/sablewood-dental/packages' },
   { name: 'timeline', path: `/borrowers/${BREACH}/timeline` },
   { name: 'calendar', path: '/calendar' },
   { name: 'review-room', path: '/review-room' },

@@ -98,7 +98,7 @@ function Ledger() {
         },
       },
       { id: 'action', header: 'Action', rowHeader: true, cell: (event) => <span className="font-medium text-ink">{actionLabel(event.action)}</span> },
-      { id: 'detail', header: 'Detail', wrap: true, width: '34%', cell: (event) => <span className="text-ink-700">{describeEvent(event)}</span> },
+      { id: 'detail', header: 'Detail', wrap: true, width: '30%', cell: (event) => <span className="text-ink-700 [overflow-wrap:anywhere]">{describeEvent(event)}</span> },
       {
         id: 'entity',
         header: 'Record',

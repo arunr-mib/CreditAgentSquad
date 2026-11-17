@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useActions, useReviewSheets } from '@/api/hooks';
 import { Button, Card, CardHeader, formatDate, StatusDot } from '@/design';
 import { humanize, quarterLabel } from '@/domain/labels';
-import { EmptyCard, Load, Notice } from '../parts';
+import { Load } from '../parts';
 import { useCurrentBorrower } from './BorrowerLayout';
 
 export function Reviews() {
@@ -65,23 +65,6 @@ export function Reviews() {
           }
         </Load>
       </Card>
-    </div>
-  );
-}
-
-/** Placeholder: the publishing routes are still being written. This tab calls nothing. */
-export function Packages() {
-  const borrower = useCurrentBorrower();
-  return (
-    <div data-ready className="space-y-4">
-      <Notice title="Packages are not built yet">
-        Publishing to Word, Excel and PowerPoint, and the snapshot that freezes every fact behind a released package, arrive with the publishing milestone. This tab is a placeholder: it
-        requests nothing and shows no data.
-      </Notice>
-      <EmptyCard
-        title={`No package for ${borrower.name}`}
-        description="When publishing is built, a released package will list its files here, each figure in them carrying the id of the fact it came from."
-      />
     </div>
   );
 }

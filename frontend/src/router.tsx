@@ -130,7 +130,7 @@ export const borrowingBaseRoute = createRoute({
 });
 const signalsRoute = borrowerChild('/signals', () => import('@/screens/borrower/Signals'), 'Signals');
 const reviewsRoute = borrowerChild('/reviews', () => import('@/screens/borrower/Reviews'), 'Reviews');
-const packagesRoute = borrowerChild('/packages', () => import('@/screens/borrower/Reviews'), 'Packages');
+const packagesRoute = borrowerChild('/packages', () => import('@/screens/borrower/Packages'), 'Packages');
 const timelineRoute = borrowerChild('/timeline', () => import('@/screens/borrower/Timeline'), 'Timeline');
 
 const calendarRoute = createRoute({

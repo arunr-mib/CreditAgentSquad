@@ -6,7 +6,7 @@ import { useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkI
 import type { ApiRecommendation, WorkItemDetail } from '@/api/schema';
 import type { ProvenanceKind } from '@/api/types';
 import { useAuth } from '@/auth/context';
-import { AgentNote, Button, Card, formatDate, formatDue, GuardrailNotes, ProvenanceGlyph, Skeleton, StatusDot, useToast } from '@/design';
+import { AgentNote, Button, Card, formatDate, formatDue, GuardrailNotes, ProvenanceGlyph, Quote, Skeleton, StatusDot, useToast } from '@/design';
 import {
   decisionHint,
   decisionLabel,
@@ -226,16 +226,40 @@ const HEADLINE: Record<string, string> = {
   draft: 'Drafted for approval',
 };
 
-function Recommendation({ recommendation, item, headingLevel }: { recommendation: ApiRecommendation; item: WorkItemDetail; headingLevel: 'h3' | 'h4' }) {
+function Recommendation({ recommendation, item, headingLevel, code }: { recommendation: ApiRecommendation; item: WorkItemDetail; headingLevel: 'h3' | 'h4'; code: string | undefined }) {
   const kind = text(recommendation.recommendation) ?? text(recommendation.kind) ?? '';
   const body = text(recommendation.explanation) ?? text(recommendation.body) ?? text(recommendation.text) ?? '';
   const agent = text(recommendation.agent) ?? text(recommendation.agent_name) ?? 'Covenant Agent';
   const runId = text(recommendation.run_id) ?? item.agent_run_id;
+  const source = useSource();
+  const claims = Array.isArray(recommendation.claims) ? recommendation.claims : [];
   const missing = Array.isArray(recommendation.missing_evidence) ? recommendation.missing_evidence.filter((entry): entry is string => typeof entry === 'string') : [];
   return (
     <>
       <AgentNote agent={agent} headline={text(recommendation.headline) ?? HEADLINE[kind] ?? humanize(kind)} state="draft" runId={runId ? runId.slice(0, 8) : undefined}>
         {body ? <AgentBody text={body} /> : null}
+        {claims.length > 0 ? (
+          <div className="mt-3">
+            <p className="eyebrow mb-1">Quoted from documents, found on the page by code</p>
+            <ul className="space-y-1.5">
+              {claims.map((claim, index) => (
+                <li key={index}>
+                  {claim.text ? <p className="text-body text-ink">{claim.text}</p> : null}
+                  {claim.quote ? <Quote text={claim.quote} /> : null}
+                  {claim.document_id && claim.page ? (
+                    <button
+                      type="button"
+                      className="link mt-0.5 text-caption font-medium"
+                      onClick={() => source.open({ type: 'document', documentId: claim.document_id as string, page: claim.page as number, quote: claim.quote, title: 'Cited document', borrowerCode: code })}
+                    >
+                      Open page {claim.page}
+                    </button>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {missing.length > 0 ? (
           <div className="mt-2">
             <p className="eyebrow">Evidence the agent says is missing</p>
@@ -462,7 +486,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
       <div className="mt-3.5 space-y-4 px-4 pb-4">
         <Evidence item={item} code={borrower?.code} headingLevel={SubHeading} />
         {item.recommendation ? (
-          <Recommendation recommendation={item.recommendation} item={item} headingLevel={SubHeading} />
+          <Recommendation recommendation={item.recommendation} item={item} headingLevel={SubHeading} code={borrower?.code} />
         ) : item.status === 'open' ? (
           <p className="rounded-md border border-hairline bg-canvas px-3 py-2 text-body text-pretty text-ink-700">
             No agent recommendation is attached. The evidence above was produced by code; the decision is yours.
