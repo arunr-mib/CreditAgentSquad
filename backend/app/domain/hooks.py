@@ -28,11 +28,14 @@ def _document(db, item) -> Document | None:
     return db.get(Document, uuid.UUID(reference)) if reference else None
 
 
-def _back_to_pending(db, item, stage: str, user, **detail) -> None:
+def _back_to_pending(db, item, stage: str, user, *, required: bool = True, **detail) -> None:
     """Queue a stage to run again. The change goes through the workflow, so it is on the ledger
-    under the name of the person whose decision caused it."""
+    under the name of the person whose decision caused it. A decision whose whole effect is the
+    re-run is refused when there is no open cycle to run it in."""
     cycle = _cycle(db, item)
-    if cycle is None:
+    if cycle is None or cycle.status == "closed":
+        if required:
+            raise ValueError("this item is not part of an open monitoring cycle, so there is no stage to run again")
         return
     for st in workflow.stages(db, cycle):
         if st.stage == stage:
@@ -143,7 +146,7 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
     document = _document(db, item)
     if decision in ("request_new_document", "wrong_document"):
         _set_aside(db, document, user, reason or decision)
-        _back_to_pending(db, item, "spreading", user)
+        _back_to_pending(db, item, "spreading", user, required=False)
         return
     if decision in ("in_thousands", "in_dollars", "retry"):
         override = {"in_thousands": 1000, "in_dollars": 1}.get(decision)
@@ -233,7 +236,7 @@ def on_borrowing_base_decision(db, item, user, decision: str, reason: str) -> No
         _back_to_pending(db, item, "borrowing_base", user)
     elif decision == "borrower_to_resubmit" and unread:
         _set_aside(db, _document(db, item), user, reason or decision)
-        _back_to_pending(db, item, "borrowing_base", user)
+        _back_to_pending(db, item, "borrowing_base", user, required=False)
 
 
 workflow.DECISION_HOOKS["terms.approval_needed"] = terms_service.on_decision

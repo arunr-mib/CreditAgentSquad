@@ -11,8 +11,9 @@ from app.agents.llm import LLMClient
 from app.agents.review import draft_commentary
 from app.calc.periods import same_period_prior_year
 from app.core import ledger
+from app.core.roles import require_second_person
 from app.domain.credit import Borrower, Facility
-from app.domain.facts import Fact
+from app.domain.facts import USABLE_STATUSES, Fact
 from app.domain.metrics_service import store_metrics
 from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Signal, WorkItem
 from app.domain.org import User
@@ -144,28 +145,66 @@ def prepare_review(db: Session, *, cycle: Cycle, llm: LLMClient) -> ReviewSheet:
     return row
 
 
-def facts_for(db: Session, fact_ids: list[str]) -> dict[str, FactView]:
+def facts_for(db: Session, fact_ids: list[str], borrower_id: uuid.UUID | None = None) -> dict[str, FactView]:
+    """The facts behind references. With `borrower_id`, a fact of any other borrower is left out,
+    so a reference to it reads as a fact that is not in scope."""
     out = {}
     for fid in fact_ids:
         fact = db.get(Fact, uuid.UUID(fid))
-        if fact is not None:
+        if fact is not None and (borrower_id is None or fact.borrower_id == borrower_id):
             out[fid.lower()] = _view(fact)
     return out
 
 
+# What `check_narrative` finds in text a person wrote falls into two groups. A quantity typed or
+# spelt out is the person's to stand behind, so the text is saved, but it cannot be approved
+# unless the figure is one of the borrower's stored facts. Everything else, including a check
+# this code has not seen before, is a broken reference and the text is not saved.
+TYPED_QUANTITY_CHECKS = frozenset({"figure_untraceable", "number_in_words"})
+BLOCKS_APPROVAL = "this blocks approval until it is replaced by a fact reference or removed"
+
+
+def _stored_values(db: Session, borrower_id: uuid.UUID) -> tuple[list[Any], list[Any]]:
+    """Every figure in use for the borrower, and the ratios among them."""
+    rows = db.execute(select(Fact.value, Fact.unit).where(
+        Fact.borrower_id == borrower_id, Fact.status.in_(USABLE_STATUSES))).all()
+    return [value for value, _ in rows], [value for value, unit in rows if unit == "ratio"]
+
+
+def commentary_findings(db: Session, borrower_id: uuid.UUID, body: str) -> tuple[list[str], list[str], list[str]]:
+    """Check text a person wrote. Returns (broken references, typed quantities, and the typed
+    quantities that match no stored fact of this borrower and so block approval)."""
+    facts = facts_for(db, referenced_fact_ids(body), borrower_id)
+    notes = check_narrative(body, facts)
+    broken = [_say(n) for n in notes if n.check not in TYPED_QUANTITY_CHECKS]
+    typed = [_say(n) for n in notes if n.check in TYPED_QUANTITY_CHECKS]
+    values, ratios = _stored_values(db, borrower_id)
+    # a quantity spelt out in words cannot be matched to a fact, so it stays in this list
+    unmatched = [_say(n) for n in check_narrative(body, facts, allowed_figures=values, known_ratios=ratios)
+                 if n.check in TYPED_QUANTITY_CHECKS]
+    return broken, typed, unmatched
+
+
+def _say(note: Any) -> str:
+    """A finding in words. The guardrail's note may name the offending text in `subject`, apart
+    from the explanation in `detail`; an older note carries it inside `detail`."""
+    subject = getattr(note, "subject", None)
+    return f"{subject}: {note.detail}" if subject else note.detail
+
+
 def write_section(db: Session, sheet_row: ReviewSheet, *, section: str, body: str, user: User) -> tuple[Commentary, list[str]]:
-    """A person writes or edits a section. Typed figures are the person's own responsibility, so
-    they are reported back as warnings, not refused; a reference to an unknown fact is refused."""
+    """A person writes or edits a section. A reference to a fact that is unknown, or belongs to
+    another borrower, is refused. A typed figure is the person's own responsibility: it is
+    reported back as a warning, and one that matches no stored fact of this borrower blocks
+    approval until it is replaced by a fact reference or removed."""
     if sheet_row.status == "released":
         raise ValueError("a released review sheet cannot be edited")
-    facts = facts_for(db, referenced_fact_ids(body))
-    notes = check_narrative(body, facts)
-    typed = ("figure_untraceable", "number_in_words")  # the person's own quantities: warned, not refused
-    broken = [n.detail for n in notes if n.check not in typed]
+    broken, typed, unmatched = commentary_findings(db, sheet_row.borrower_id, body)
     if broken:
         raise ValueError("; ".join(broken))
     row = _store_commentary(db, sheet_row, section, body, author=("user", str(user.id)))
-    return row, [f"{n.subject}: {n.detail}" if n.subject else n.detail for n in notes]
+    blocking = set(unmatched)
+    return row, [f"{detail}; {BLOCKS_APPROVAL}" if detail in blocking else detail for detail in typed]
 
 
 def current_commentary(db: Session, sheet_row: ReviewSheet) -> list[Commentary]:
@@ -195,6 +234,19 @@ def on_decision(db: Session, item: WorkItem, user: User, decision: str, reason: 
     sections = current_commentary(db, sheet_row)
     if not sections:
         raise ValueError("there is no commentary to approve; write at least a summary first")
+    written = [c for c in sections if c.author_type == "user"]
+    for c in written:
+        # four eyes: whoever last edited a section prepared it, and cannot be the one who approves it
+        require_second_person(c.author_id, user.id,
+                              f"You last edited the {c.section} section, so a different person must approve "
+                              "this review.")
+    problems = []
+    for c in written:
+        broken, _, unmatched = commentary_findings(db, sheet_row.borrower_id, c.body)
+        problems += [f"{c.section}: {detail}" for detail in broken + unmatched]
+    if problems:
+        raise ValueError("commentary written by a person has a figure that matches no stored fact for this "
+                         "borrower; replace it with a fact reference or remove it. " + "; ".join(problems))
     for c in sections:
         c.status = "approved"
         c.approved_by = user.id

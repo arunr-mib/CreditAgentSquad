@@ -451,6 +451,17 @@ def test_an_unread_certificate_is_read_again_or_set_aside_for_a_new_one(db, worl
     assert ran == ["borrowing_base"] and doc.status == document_status and cycle.stage == "borrowing_base"
 
 
+def test_retry_is_refused_when_there_is_no_open_cycle_to_run_the_stage_in(db, world):
+    borrower, facility = world
+    _, cycle, item = unread_certificate(db, borrower, facility)
+    cycle.status = "closed"
+    db.flush()
+    analyst = person(db, "analyst")
+    with pytest.raises(ValueError, match="no stage to run again"):
+        workflow.decide_work_item(db, item, user_id=analyst.id, user_role=analyst.role, decision="retry")
+    assert item.status == "open" and stage_status(db, cycle, "borrowing_base") == "needs_person"
+
+
 def terms_item(db, borrower, facility):
     """The item the Terms Agent raises when it cannot build terms: here the agreement is a scan."""
     blank = pymupdf.open()
