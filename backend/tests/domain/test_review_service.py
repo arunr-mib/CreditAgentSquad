@@ -114,6 +114,14 @@ def test_draft_is_checked_stored_as_agent_written_and_needs_a_person(db, world, 
     with pytest.raises(ValueError, match="not in scope"):
         review_service.write_section(db, sheet_row, section="risks", user=analyst,
                                      body="See {{fact:00000000-0000-4000-8000-000000000009}}.")
+    # 1.20 is not a figure on file for this borrower, so the typed minimum blocks approval
+    with pytest.raises(ValueError, match="matches no stored fact"):
+        workflow.decide_work_item(db, item, user_id=manager.id, user_role=manager.role, decision="approve")
+    _, warnings = review_service.write_section(
+        db, sheet_row, section="covenants", user=analyst,
+        body=f"{covenant['covenant']} calculated to {{{{fact:{covenant['value']}}}}}, above the "
+             f"{{{{fact:{covenant['threshold']}}}}} minimum.")
+    assert warnings == []
     workflow.decide_work_item(db, item, user_id=manager.id, user_role=manager.role, decision="approve")
     workflow.drain(db)
     assert sheet_row.status == "reviewed" and sheet_row.approved_by == manager.id

@@ -64,7 +64,9 @@ class SecondPersonRequired(Exception):
     """Raised when the approver is the same person who prepared the work."""
 
 
-def require_second_person(preparer_id, approver_id) -> None:
-    """Four-eyes rule: an approval must come from a different authenticated user."""
-    if preparer_id is None or approver_id is None or str(preparer_id) == str(approver_id):
-        raise SecondPersonRequired("This approval must come from a different person than the preparer.")
+def require_second_person(preparer_id, approver_id, message: str | None = None) -> None:
+    """Four-eyes rule: an approval must come from a different authenticated user. The preparer is
+    whoever last prepared or edited what is being approved. Ids are compared as text without
+    regard to case, so the same person is recognised however the id was stored."""
+    if preparer_id is None or approver_id is None or str(preparer_id).lower() == str(approver_id).lower():
+        raise SecondPersonRequired(message or "This approval must come from a different person than the preparer.")
