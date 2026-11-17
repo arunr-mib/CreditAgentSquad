@@ -1,10 +1,17 @@
 """Append-only, hash-chained ledger of every action taken by a person, an agent or the system.
 
 Each event stores the hash of the previous event, so any edit or removal breaks the chain.
-A database trigger (see `install_guards`) also refuses UPDATE and DELETE on the table.
+A database trigger (see `install_guards`) also refuses UPDATE and DELETE on the table, and the
+application runs as a role that cannot switch the trigger off (see `runtime_role_sql`).
+
+What this does not do: a database user with owner or superuser rights can still disable the
+trigger, rewrite events and recompute every hash, and the rewritten chain verifies against
+itself. That is detectable only by comparing with a copy of the chain's head kept outside the
+database (`head`, `check_head`, and `verify-ledger --expect-head`).
 """
 import hashlib
 import json
+import re
 import uuid
 from datetime import UTC, date, datetime
 from decimal import Decimal
@@ -145,3 +152,76 @@ CREATE TRIGGER ledger_events_no_truncate BEFORE TRUNCATE ON ledger_events
 def install_guards(connection) -> None:
     """Create the triggers that refuse UPDATE, DELETE and TRUNCATE on the ledger."""
     connection.execute(text(GUARD_SQL))
+
+
+# The triggers stop an honest mistake. They do not stop the table's owner, who can disable them.
+# So the application must not connect as the owner: it runs as a login that is a member of this
+# role, which may read and append to the ledger and nothing else, and owns no table.
+RUNTIME_ROLE = "squad_runtime"
+
+
+def runtime_role_sql(role: str = RUNTIME_ROLE) -> str:
+    """Grants for the role the application runs as. Run by the owner (migration `0003`, or
+    `app.cli grant-runtime-role`); safe to run again."""
+    if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", role):
+        raise ValueError(f"not a plain role name: {role!r}")
+    return f"""
+GRANT USAGE ON SCHEMA public TO {role};
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {role};
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {role};
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {role};
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO {role};
+REVOKE ALL ON ledger_events FROM {role};
+GRANT SELECT, INSERT ON ledger_events TO {role};
+DO $$
+BEGIN
+  IF to_regclass('public.alembic_version') IS NOT NULL THEN
+    EXECUTE 'REVOKE INSERT, UPDATE, DELETE ON alembic_version FROM {role}';
+  END IF;
+END $$;
+"""
+
+
+def guard_status(db: Session) -> dict[str, Any]:
+    """Who this session is connected as, and whether that role could switch the guard off."""
+    row = db.execute(text(
+        "SELECT current_user AS role, pg_get_userbyid(c.relowner) AS owner, "
+        "       pg_has_role(current_user, c.relowner, 'USAGE') AS acts_as_owner, "
+        "       (SELECT rolsuper FROM pg_roles WHERE rolname = current_user) AS superuser, "
+        "       has_table_privilege(current_user, c.oid, 'UPDATE') AS may_update, "
+        "       has_table_privilege(current_user, c.oid, 'DELETE') AS may_delete, "
+        "       has_table_privilege(current_user, c.oid, 'TRUNCATE') AS may_truncate "
+        "FROM pg_class c WHERE c.oid = to_regclass('ledger_events')")).mappings().first()
+    status = dict(row) if row else {"role": None}
+    status["append_only_for_this_role"] = bool(row) and not any(
+        row[k] for k in ("acts_as_owner", "superuser", "may_update", "may_delete", "may_truncate"))
+    return status
+
+
+def head(db: Session) -> tuple[int, str] | None:
+    """The newest event's sequence number and hash: the value to copy somewhere the database's
+    owner cannot reach."""
+    last = db.execute(select(LedgerEvent.seq, LedgerEvent.hash).order_by(LedgerEvent.seq.desc()).limit(1)).first()
+    return (last.seq, last.hash) if last else None
+
+
+def parse_head(value: str) -> tuple[int, str]:
+    """`<seq>:<hash>` as printed by `verify-ledger`."""
+    seq, _, digest = value.strip().partition(":")
+    if not seq.isdigit() or not re.fullmatch(r"[0-9a-f]{64}", digest):
+        raise ValueError("a ledger head is written <sequence number>:<64 hexadecimal characters>")
+    return int(seq), digest
+
+
+def check_head(db: Session, expected: tuple[int, str]) -> str | None:
+    """Compare the chain with a head recorded earlier and kept outside the database. A chain that
+    was rewritten and rehashed verifies against itself, but its event at that sequence number no
+    longer carries the recorded hash. Returns the problem, or None when the head is still there."""
+    seq, digest = expected
+    found = db.execute(select(LedgerEvent.hash).where(LedgerEvent.seq == seq)).scalar_one_or_none()
+    if found is None:
+        return f"the ledger has no event {seq}: events recorded before the stored head have been removed"
+    if found != digest:
+        return (f"event {seq} no longer has the stored hash: history at or before it has been rewritten "
+                f"(stored {digest[:12]}..., found {found[:12]}...)")
+    return None
