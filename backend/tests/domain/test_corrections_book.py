@@ -67,6 +67,16 @@ def test_a_reclassification_withholds_results_until_the_statements_foot_then_ret
     actions = {e.action for e in db.execute(select(LedgerEvent).where(
         LedgerEvent.action.in_(("fact.results_retired", "fact.results_recalculated")))).scalars()}
     assert actions == {"fact.results_retired", "fact.results_recalculated"}
+    # early warning signals for the period were computed from the old figures: closed and run again
+    from app.domain.monitoring import Signal
+    signals = list(db.execute(select(Signal).where(Signal.borrower_id == borrower.id,
+                                                   Signal.period_end == period)).scalars())
+    assert second["signals"] and any(s.status == "closed" for s in signals)
+    for signal in signals:
+        if signal.status != "closed":
+            for value in signal.basis.values():
+                if isinstance(value, dict) and value.get("fact_id"):
+                    assert db.get(Fact, value["fact_id"]).status in ("verified", "confirmed"), signal.rule_id
     # nothing still in use was calculated from a figure that is not
     runs = {r.id: r for r in db.execute(select(CalcRun).where(CalcRun.borrower_id == borrower.id)).scalars()}
     for fact in db.execute(select(Fact).where(Fact.borrower_id == borrower.id,

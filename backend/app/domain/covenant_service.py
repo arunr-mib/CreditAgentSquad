@@ -180,6 +180,19 @@ def run_covenant_tests(
     return tests
 
 
+def _reported_as_failing(test: CovenantTest) -> bool:
+    """True when the borrower's own certificate shows the covenant failing: it says so, or the
+    value it reports does not meet the threshold in force. The second matters because a flag can
+    be misread, or left out, while the reported value sits on the page."""
+    if test.reported_in_compliance is False:
+        return True
+    if test.reported_value is None or test.threshold is None or test.operator is None:
+        return False
+    value, threshold = test.reported_value, test.threshold
+    return not {">=": value >= threshold, ">": value > threshold,
+                "<=": value <= threshold, "<": value < threshold}[test.operator]
+
+
 def _raise_for(db, borrower, facility, cycle, test: CovenantTest, outcome, actor) -> WorkItem | None:
     common = dict(borrower_id=borrower.id, facility_id=facility.id, cycle_id=cycle.id if cycle else None,
                   stage="covenant_testing", actor=actor,
@@ -210,15 +223,16 @@ def _raise_for(db, borrower, facility, cycle, test: CovenantTest, outcome, actor
             question=f"The test needs {missing}, which is not available for this period. Provide it, or record why the test does not apply?",
             allowed_decisions=["input_provided", "not_applicable"], required_permission="confirm_spread",
             dedupe_key=f"covenant.cannot_test:{key}", **common)
-    if test.outcome == "compliant_variance" and test.reported_in_compliance is False:
-        # the borrower itself reports a breach and the bank's calculation passes: one of the two
-        # is wrong, and a pass computed from a misread figure is the dangerous one
+    if test.outcome in ("compliant", "compliant_variance") and _reported_as_failing(test):
+        # the borrower's own certificate shows a breach and the bank's calculation passes: one of
+        # the two is wrong, and a pass computed from a misread figure is the dangerous one
         return raise_item(
             db, item_type="covenant.reported_breach_unconfirmed", severity="high",
-            title=f"{borrower.name}: the certificate reports {test.covenant_name} as not in compliance, "
+            title=f"{borrower.name}: the certificate shows {test.covenant_name} failing, "
                   "but the calculation passes",
-            question="The borrower certified non-compliance while the bank's calculation passes. Which is in "
-                     "error, the figures the bank spread or the certificate?",
+            question="The borrower's certificate shows this covenant failing, by its own statement or by the value "
+                     "it reports, while the bank's calculation passes. Which is in error, the figures the bank "
+                     "spread or the certificate?",
             allowed_decisions=["spread_in_error", "certificate_in_error", "escalate_to_committee"],
             required_permission="decide_breach", dedupe_key=f"covenant.reported_breach_unconfirmed:{key}", **common)
     return None  # compliant, or a variance that passes either way: recorded on the ledger only

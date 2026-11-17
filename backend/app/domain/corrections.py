@@ -161,6 +161,40 @@ def _tell_a_person(db: Session, borrower: Borrower, period_end: date, changed: l
         item.evidence = {**item.evidence, "changes": [*item.evidence.get("changes", []), *changed]}
 
 
+def _refresh_signals(db: Session, borrower: Borrower, from_period: date) -> list[dict[str, Any]]:
+    """Early warning signals from this period on were computed from figures that have changed.
+    Each is closed, with any open question it raised, and the rules are run again on the figures
+    now on file."""
+    from app.core import clock
+    from app.domain.monitoring import Signal, WorkItem
+    from app.domain.signals_service import run_signals
+
+    stale = list(db.execute(select(Signal).where(
+        Signal.borrower_id == borrower.id, Signal.period_end >= from_period, Signal.status != "closed")).scalars())
+    if not stale:
+        return []
+    closed = {str(s.id) for s in stale}
+    for signal in stale:
+        signal.status = "closed"
+    for item in db.execute(select(WorkItem).where(
+            WorkItem.borrower_id == borrower.id, WorkItem.item_type == "signal.high", WorkItem.status == "open")).scalars():
+        if item.evidence.get("signal_id") in closed:
+            item.status = "dismissed"
+            ledger.record(db, actor_type="system", actor_id="corrections", action="work_item.dismissed",
+                          entity_type="work_item", entity_id=item.id,
+                          payload={"reason": "the signal was computed from a figure that has since been corrected"})
+    out = []
+    for period_end in sorted({s.period_end for s in stale}):
+        fired = run_signals(db, borrower=borrower, period_end=period_end, as_of=clock.today(db),
+                            cycle=_cycle(db, borrower.id, period_end))
+        out.append({"period_end": period_end.isoformat(),
+                    "closed": sorted(s.rule_id for s in stale if s.period_end == period_end),
+                    "fired": sorted(s.rule_id for s in fired)})
+    ledger.record(db, actor_type="system", actor_id="corrections", action="signals.refreshed", entity_type="borrower",
+                  entity_id=borrower.id, payload={"periods": out})
+    return out
+
+
 def recalculate(db: Session, old: Fact, new: Fact | None, user_id: uuid.UUID) -> dict[str, Any]:
     """Bring every result that used `old` back in line after it was replaced by `new` (or
     rejected, when `new` is None). Returns a summary for the caller and the ledger."""
@@ -170,7 +204,7 @@ def recalculate(db: Session, old: Fact, new: Fact | None, user_id: uuid.UUID) ->
     stale = {f.id: f for f in totals + dependents(db, [old, *totals])}
     refoot = bool(totals) or _totals_were_stored(db, old)
     summary: dict[str, Any] = {"retired": len(stale), "totals": None, "metrics": [], "covenants": []}
-    if not stale and not refoot:
+    if not stale and not refoot and not old.key.startswith("cert."):
         return summary
     runs = {r.id: r for r in db.execute(select(CalcRun).where(
         CalcRun.id.in_({f.calc_run_id for f in stale.values() if f.calc_run_id}))).scalars()}
@@ -178,6 +212,12 @@ def recalculate(db: Session, old: Fact, new: Fact | None, user_id: uuid.UUID) ->
     borrower = db.get(Borrower, old.borrower_id)
     pairs = {(f.facility_id, f.period_end) for f in stale.values() if f.key.startswith("cov.") and f.facility_id}
     pairs |= _withheld_tests(db, borrower.id, old.period_end)
+    if old.key.startswith("cert."):
+        # what the borrower reported is compared with the calculation at test time, so a
+        # corrected certificate figure means the period's covenants are tested again
+        pairs |= {(t.facility_id, t.period_end) for t in db.execute(select(CovenantTest).where(
+            CovenantTest.borrower_id == borrower.id, CovenantTest.period_end == old.period_end,
+            CovenantTest.superseded.is_(False), CovenantTest.covenant_id != "*")).scalars()}
     before = {pair: _current_tests(db, *pair) for pair in pairs}
 
     if stale:
@@ -226,6 +266,7 @@ def recalculate(db: Session, old: Fact, new: Fact | None, user_id: uuid.UUID) ->
     if changed and footed:
         _tell_a_person(db, borrower, old.period_end, changed,
                        {"corrected_fact_id": str(old.id), "replacement_fact_id": str(new.id) if new else None})
+    summary["signals"] = _refresh_signals(db, borrower, old.period_end) if footed and (stale or refoot) else []
     ledger.record(db, actor_type="system", actor_id="corrections", action="fact.results_recalculated",
                   entity_type="fact", entity_id=new.id if new else old.id, payload=summary)
     db.flush()
@@ -241,7 +282,8 @@ def refresh_after_repair(db: Session, borrower: Borrower, period_end: date) -> d
     summary["covenants"], changed = _retest(db, borrower, pairs, before, raise_items=True)
     if changed:
         _tell_a_person(db, borrower, period_end, changed, {})
-    if summary["metrics"] or summary["covenants"]:
+    summary["signals"] = _refresh_signals(db, borrower, period_end)
+    if summary["metrics"] or summary["covenants"] or summary["signals"]:
         ledger.record(db, actor_type="system", actor_id="corrections", action="fact.results_recalculated",
                       entity_type="borrower", entity_id=borrower.id, payload=summary)
         db.flush()

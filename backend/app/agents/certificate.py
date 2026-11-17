@@ -57,9 +57,19 @@ class CertificateResult:
     unverified: list[dict[str, Any]] = field(default_factory=list)
 
 
-def _on_row(page, label: str, text: str) -> bool:
-    labels = locate(page.words, label)
-    return any(same_row(hit.bbox, lab.bbox) for hit in locate(page.words, text) for lab in labels)
+def _on_row(page, anchor, text: str) -> bool:
+    """True when `text` is printed on the same row as `anchor`, the place where code found the
+    covenant's reported figure. The row is never chosen by a label the reader reported: a label
+    fragment such as "Ratio" sits on every row."""
+    return any(same_row(hit.bbox, anchor) for hit in locate(page.words, text))
+
+
+def _flag_on_row(page, anchor) -> str | None:
+    """The yes or no printed on the figure's row, read by code; None unless there is exactly one."""
+    found = [str(w[4]) for w in page.words
+             if same_row((float(w[0]), float(w[1]), float(w[2]), float(w[3])), anchor)
+             and str(w[4]).strip(".,;:()").lower() in ("yes", "no")]
+    return found[0].strip(".,;:()") if len(found) == 1 else None
 
 
 def _words(text: str) -> list[str]:
@@ -143,20 +153,27 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
             continue
         result.stored.append(covenant.id)
         common = dict(borrower_id=borrower.id, period_end=period_end, months=0, kind="extracted", status="verified",
-                      document_id=document.id, page=row.page, label_text=row.printed_label,
+                      document_id=document.id, page=row.page, label_text=check.row_label or row.printed_label,
                       agent_run_id=outcome.run.id, actor=("agent", "certificate_reader"))
         # the requirement and the compliance entry must sit on the covenant's own row
         figures = extract_figures(row.required_printed)
-        if len(figures) == 1 and _on_row(page, row.printed_label, row.required_printed):
+        if len(figures) == 1 and _on_row(page, check.bbox, row.required_printed):
             value = figures[0].value * (Decimal(scale) if unit == "usd" else Decimal(1))
             add_fact(db, key=f"cert.{covenant.id}.threshold", value=value, unit=unit, quote=row.required_printed, **common)
         else:
             result.unverified.append({"covenant_id": covenant.id, "reason": "requirement_unverified",
                                       "detail": "the printed requirement was not found on the covenant's row"})
-        flag = _YES_NO.get(row.compliance_printed.strip().lower())
-        if flag is not None and _on_row(page, row.printed_label, row.compliance_printed):
-            add_fact(db, key=f"cert.{covenant.id}.in_compliance", value=Decimal(flag), unit="count",
-                     quote=row.compliance_printed, **common)
+        # the compliance entry is read from the figure's own row by code; what the reader
+        # reported counts only if it is what that row prints
+        printed = _flag_on_row(page, check.bbox)
+        reported = row.compliance_printed.strip()
+        if reported and _YES_NO.get(reported.lower()) is not None and _on_row(page, check.bbox, reported) \
+                and (printed is None or _YES_NO[printed.lower()] == _YES_NO[reported.lower()]):
+            add_fact(db, key=f"cert.{covenant.id}.in_compliance", value=Decimal(_YES_NO[reported.lower()]),
+                     unit="count", quote=reported, **common)
+        elif not reported and printed is not None:
+            add_fact(db, key=f"cert.{covenant.id}.in_compliance", value=Decimal(_YES_NO[printed.lower()]),
+                     unit="count", quote=printed, **common)
         else:
             result.unverified.append({"covenant_id": covenant.id, "reason": "compliance_unverified",
                                       "detail": "the compliance entry was not found on the covenant's row"})

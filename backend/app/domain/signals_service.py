@@ -88,11 +88,13 @@ def run_signals(
     for fired in _one_per_period(evaluation.signals):
         basis = ledger._jsonable({**fired.basis, "subject": fired.subject,
                                   **_source_facts(db, borrower, period_end, fired)})
+        # a signal closed because a correction changed its figures no longer stands in for a new one
         existing = db.execute(select(Signal).where(
             Signal.borrower_id == borrower.id, Signal.period_end == period_end, Signal.rule_id == fired.rule_id,
-            Signal.basis["subject"].astext == (fired.subject or ""))).scalar_one_or_none() if fired.subject else \
+            Signal.status != "closed",
+            Signal.basis["subject"].astext == (fired.subject or ""))).scalars().first() if fired.subject else \
             db.execute(select(Signal).where(
-                Signal.borrower_id == borrower.id, Signal.period_end == period_end,
+                Signal.borrower_id == borrower.id, Signal.period_end == period_end, Signal.status != "closed",
                 Signal.rule_id == fired.rule_id)).scalars().first()
         if existing is not None:
             stored.append(existing)
