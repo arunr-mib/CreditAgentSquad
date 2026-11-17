@@ -59,8 +59,9 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     response = await fetch(withQuery(`${API}${path}`, options.query), {
       method: options.method ?? 'GET',
       credentials: 'same-origin',
-      headers: options.body === undefined ? { Accept: 'application/json' } : { Accept: 'application/json', 'Content-Type': 'application/json' },
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      // A form (a file upload) carries its own content type and boundary; everything else is JSON.
+      headers: options.body === undefined || options.body instanceof FormData ? { Accept: 'application/json' } : { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: options.body === undefined ? undefined : options.body instanceof FormData ? options.body : JSON.stringify(options.body),
       signal: options.signal,
     });
   } catch {
@@ -83,6 +84,8 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
 
 export const get = <T>(path: string, query?: Query, signal?: AbortSignal) => request<T>(path, { query, signal });
 export const post = <T>(path: string, body?: unknown) => request<T>(path, { method: 'POST', body: body ?? {} });
+/** A multipart upload: the fields and files of `form`, as the route names them. */
+export const upload = <T>(path: string, form: FormData) => request<T>(path, { method: 'POST', body: form });
 
 /** What to tell a person when a request fails. */
 export function errorMessage(error: unknown): string {

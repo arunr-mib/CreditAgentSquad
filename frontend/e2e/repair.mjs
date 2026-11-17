@@ -305,6 +305,50 @@ const journeys = [
       await summary.getByText(/Summary, version \d+ · Priya Raman/).waitFor();
     },
   },
+  {
+    name: 'an analyst files a PDF on the borrower’s documents tab; a file that is not a PDF is refused in the server’s words',
+    async run(page) {
+      await signIn(page, ANALYST);
+      await page.goto(`${BASE}/borrowers/larkspur-environmental/documents`);
+      await page.waitForSelector('[data-ready]');
+      const rows = page.locator('table tbody tr[data-row]');
+      const before = await rows.count();
+      await page.getByRole('button', { name: 'File a document' }).click();
+      const form = page.getByRole('form', { name: 'File a document' });
+      const file = form.getByLabel('PDF file');
+      await expectKeyboardReachable(page, form);
+      await expectFocusRing(page, file, 'the file field');
+
+      // Nothing is sent without a file, and the field says why.
+      await form.getByRole('button', { name: 'File the document' }).click();
+      await form.getByText('Choose a PDF file first.').waitFor();
+      assert((await file.getAttribute('aria-invalid')) === 'true', 'the empty file field is marked invalid');
+
+      // The server is the judge of what a PDF is.
+      await file.setInputFiles({ name: 'meeting-notes.pdf', mimeType: 'application/pdf', buffer: Buffer.from('These are notes typed into a text file, not a PDF.') });
+      await form.getByRole('button', { name: 'File the document' }).click();
+      await form.getByRole('alert').getByText('The server said: “Only PDF files are accepted.”').waitFor();
+      assert((await rows.count()) === before, 'nothing was filed');
+
+      const title = `Compliance certificate, resent ${new Date().toISOString().slice(0, 19)}`;
+      await file.setInputFiles(resolve(here, '..', '..', 'synthetic', 'out', 'documents', 'larkspur-environmental', 'cc-2026-06-30.pdf'));
+      await form.getByLabel('Title (optional)').fill(title);
+      await form.getByRole('button', { name: 'File the document' }).click();
+      const result = form.locator('[data-upload-result]');
+      await result.getByText(`Filed: ${title}`).waitFor();
+      await result.getByText(/pages?, read page by page, received \d{1,2} \w{3} \d{4}\. Unclassified until intake reads it\./).waitFor();
+      assert((await form.getByRole('alert').count()) === 0, 'the earlier refusal is gone');
+      // The list was read again: the document is on file, unclassified.
+      const row = rows.filter({ hasText: title });
+      await row.waitFor();
+      await row.getByText('Unclassified').waitFor();
+      await page.waitForFunction((expected) => document.querySelectorAll('table tbody tr[data-row]').length === expected, before + 1);
+      await shot(page, 'repair-11-document-upload');
+      await result.getByRole('link', { name: /Open it/ }).click();
+      await page.waitForURL(/\/documents\/[0-9a-f-]+/);
+      await page.locator('main [data-pdf-page="ready"]').waitFor({ timeout: 30000 });
+    },
+  },
 ];
 
 const onlyIndex = process.argv.indexOf('--only');

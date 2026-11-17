@@ -38,19 +38,20 @@ function shiftPercent(value: string): string {
 }
 
 /** The server's refusal, named by what it means. The words that follow are the server's own. */
-export function refusalTitle(error: unknown): string {
+export function refusalTitle(error: unknown, outcome = 'Not recorded'): string {
   if (error instanceof ApiError) {
-    if (error.status === 403) return 'Not recorded: your role cannot do this';
-    if (error.status === 422) return 'Not recorded: the server refused this';
-    if (error.status === 404) return 'Not recorded: it no longer exists';
+    if (error.status === 403) return `${outcome}: your role cannot do this`;
+    if (error.status === 409 || error.status === 422) return `${outcome}: the server refused this`;
+    if (error.status === 404) return `${outcome}: it no longer exists`;
   }
-  return 'Not recorded';
+  return outcome;
 }
 
-export function Refusal({ error, className }: { error: unknown; className?: string }) {
+/** A refusal shown beside the control that caused it, announced, with the server's own words quoted. `outcome` says what did not happen. */
+export function Refusal({ error, outcome, className }: { error: unknown; outcome?: string; className?: string }) {
   return (
     <p role="alert" data-refusal className={cx('text-body text-pretty text-amber', className)}>
-      <span className="font-medium">{refusalTitle(error)}.</span> The server said: “{errorMessage(error)}”
+      <span className="font-medium">{refusalTitle(error, outcome)}.</span> The server said: “{errorMessage(error)}”
     </p>
   );
 }

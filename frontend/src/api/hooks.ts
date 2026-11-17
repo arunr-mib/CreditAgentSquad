@@ -3,7 +3,7 @@
  * Query keys start with the resource name so a decision can invalidate what it changes.
  */
 import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { get, post, type Query } from './client';
+import { get, post, upload, type Query } from './client';
 import type {
   ActionRow,
   AgentRunDetail,
@@ -77,6 +77,21 @@ export const useTimeline = (id?: string, includeRoutine = false) =>
 
 export const useDocuments = (borrowerId?: string) =>
   useQuery({ queryKey: ['borrower', borrowerId, 'documents'], queryFn: () => get<DocumentRow[]>(`/borrowers/${borrowerId}/documents`), enabled: enabled(borrowerId) });
+/** Files a PDF for the borrower. The route takes the file and an optional title; nothing else. */
+export function useUploadDocument(borrowerId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ file, title }: { file: File; title: string }) => {
+      const form = new FormData();
+      form.append('file', file);
+      if (title.trim()) form.append('title', title.trim());
+      return upload<DocumentRow>(`/borrowers/${borrowerId}/documents`, form);
+    },
+    onSuccess: () => {
+      for (const key of ['borrower', 'ledger', 'portfolio']) void client.invalidateQueries({ queryKey: [key] });
+    },
+  });
+}
 export const useDocument = (id?: string | null) =>
   useQuery({ queryKey: ['document', id], queryFn: () => get<DocumentDetail>(`/documents/${id}`), enabled: enabled(id), staleTime: 10 * 60_000 });
 export const usePageFigures = (documentId?: string | null, page?: number | null) =>
