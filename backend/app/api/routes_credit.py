@@ -2,19 +2,21 @@
 import uuid
 from datetime import date
 from decimal import Decimal, InvalidOperation
+from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.api.deps import current_user, require
+from app.api.deps import PageNumber, current_user, require
 from app.api.serialize import plain, row
 from app.calc import template
 from app.core.clock import today
+from app.core.config import MAX_UPLOAD_BYTES
 from app.core.db import get_db
 from app.core.roles import Permission
-from app.domain import corrections, facts_service
+from app.domain import corrections, facts_service, terms_service
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
@@ -89,7 +91,11 @@ async def upload_document(
     db: Session = Depends(get_db), user: User = Depends(require(Permission.UPLOAD_DOCUMENT)),
 ) -> dict:
     _borrower_or_404(db, borrower_id)
-    data = await file.read()
+    # read no more than the limit plus one byte: enough to know the file is too large
+    data = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, f"The file is larger than the {MAX_UPLOAD_BYTES // (1024 * 1024)} MB limit "
+                                 "for an upload.")
     try:
         doc = ingest_pdf(db, borrower_id=borrower_id, data=data, file_name=file.filename or "upload.pdf",
                          title=title, received_date=today(db), uploaded_by=user.id, actor=("user", str(user.id)))
@@ -118,7 +124,7 @@ def get_document_file(document_id: uuid.UUID, db: Session = Depends(get_db), _: 
 
 
 @router.get("/documents/{document_id}/pages/{page_number}")
-def get_document_page(document_id: uuid.UUID, page_number: int, db: Session = Depends(get_db),
+def get_document_page(document_id: uuid.UUID, page_number: PageNumber, db: Session = Depends(get_db),
                       _: User = Depends(current_user)) -> dict:
     page = db.execute(select(DocumentPage).where(
         DocumentPage.document_id == document_id, DocumentPage.page_number == page_number)).scalar_one_or_none()
@@ -211,6 +217,35 @@ def get_covenant_test(test_id: uuid.UUID, db: Session = Depends(get_db), _: User
     return out
 
 
+class TermsIn(BaseModel):
+    terms: dict[str, Any]
+    effective_from: date
+    source_document_ids: list[str] = Field(default_factory=list)
+
+
+@router.post("/facilities/{facility_id}/terms", status_code=201)
+def board_terms(facility_id: uuid.UUID, body: TermsIn, db: Session = Depends(get_db),
+                user: User = Depends(require(Permission.PREPARE_TERMS))) -> dict:
+    """A person boards a loan's terms by hand. They are stored as a proposed version, checked
+    like any other, and govern a test only after a different person approves them."""
+    facility = db.get(Facility, facility_id)
+    if facility is None:
+        raise HTTPException(404, "Loan not found.")
+    # a cycle waiting on the question "board the terms by hand?" also waits for their approval
+    waiting = db.execute(select(WorkItem).where(
+        WorkItem.facility_id == facility.id, WorkItem.status == "open", WorkItem.cycle_id.is_not(None),
+        WorkItem.evidence["dedupe_key"].astext == f"terms.extraction:{facility.id}")).scalars().first()
+    try:
+        version, item = terms_service.propose_terms(
+            db, facility=facility, terms=body.terms, effective_from=body.effective_from,
+            source_document_ids=body.source_document_ids, prepared_by=("user", str(user.id)),
+            cycle_id=waiting.cycle_id if waiting is not None else None)
+    except terms_service.TermsRefused as exc:
+        raise HTTPException(422, str(exc)) from exc
+    db.commit()
+    return {**row(version), "approval_item_id": str(item.id)}
+
+
 class FactReasonIn(BaseModel):
     reason: str = ""
 
@@ -228,11 +263,22 @@ class ManualFactIn(BaseModel):
     reason: str
 
 
+_LARGEST_FIGURE = Decimal(10) ** 18  # figures are stored with 18 digits before the point and 6 after
+
+
 def _decimal(text: str) -> Decimal:
+    """A figure typed by a person: a plain finite number that can be stored exactly as typed."""
     try:
-        return Decimal(text.replace(",", ""))
+        value = Decimal(text.replace(",", "").strip())
     except (InvalidOperation, AttributeError) as exc:
         raise HTTPException(422, "The value is not a number.") from exc
+    if not value.is_finite():
+        raise HTTPException(422, "The value must be a finite number; NaN and Infinity are not figures.")
+    if abs(value) >= _LARGEST_FIGURE:
+        raise HTTPException(422, "The value is too large to store.")
+    if value != value.quantize(Decimal("0.000001")):
+        raise HTTPException(422, "The value has more than six decimal places.")
+    return value
 
 
 def _fact_or_404(db: Session, fact_id: uuid.UUID) -> Fact:

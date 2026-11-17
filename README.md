@@ -44,7 +44,22 @@ PYTHONPATH=backend uv run python -m app.worker              # background worker
 
 Sign in as `priya.raman@bankofstoic.example` (analyst), `helen.strand@bankofstoic.example` (credit officer) or `admin@bankofstoic.example`.
 
-`docker compose up --build` starts the same stack in containers; it has not been run yet (see the handoff).
+Copy `.env.example` to `.env` first. `SQUAD_ENV=local` in it is what allows a sign-in cookie over plain HTTP and serves `/docs`; with it unset the app behaves as a deployment (HTTPS-only cookie, no `/docs` or `/openapi.json`). An account is locked for 15 minutes after 5 failed sign-ins, and an upload over 25 MB is refused.
+
+`docker compose up --build` starts the same stack in containers; it has not been run yet (see the handoff). It needs `RUNTIME_DATABASE_PASSWORD` in `.env`.
+
+### Two database roles
+
+The application must not connect as the owner of its tables: an owner can switch off the ledger's append-only trigger, rewrite an event and recompute the hash chain.
+
+- **Migrations run as the owner** (`MIGRATION_DATABASE_URL`, or `alembic -x url=...`). Migration `0003` creates the role `squad_runtime` and grants it the working tables, and only SELECT and INSERT on `ledger_events`. It owns nothing, so it cannot alter the table or its triggers.
+- **The API and the worker run as a login that is a member of `squad_runtime`** (`DATABASE_URL`). Create it as the owner: `RUNTIME_DATABASE_PASSWORD=... PYTHONPATH=backend uv run python -m app.cli runtime-login squad_app`. `docker-compose.yml` does both steps in its `migrate` service.
+- The local commands above use one role for both, which is fine for development. Creating a role needs CREATEROLE; where the owner lacks it, the migration warns and skips the role. Then a superuser runs `CREATE ROLE squad_runtime NOLOGIN` and the owner runs `python -m app.cli grant-runtime-role`.
+- `python -m app.cli verify-ledger` warns when it is connected as a role that could change ledger rows.
+
+### Keep the ledger's head outside the database
+
+`verify-ledger` prints the chain's head as `<sequence number>:<hash>`. Store it where no database administrator can change it (a ticket, a write-once bucket, another system), then check later with `verify-ledger --expect-head <seq>:<hash>`. Without that outside copy, a user with owner or superuser rights on the database can still rewrite history and recompute the chain so that it verifies; that is true of any log held in a database.
 
 ## Check it
 
@@ -52,7 +67,7 @@ Sign in as `priya.raman@bankofstoic.example` (analyst), `helen.strand@bankofstoi
 uv run pytest                                # everything, about fifteen minutes
 uv run pytest -m "not slow"                  # skips the full-book and tampering suites
 uv run python -m evals.run --mode standin    # all 21 borrowers through the live cycle; writes evals/results/latest.md
-PYTHONPATH=backend uv run python -m app.cli verify-ledger
+PYTHONPATH=backend uv run python -m app.cli verify-ledger   # prints the head; add --expect-head <seq>:<hash> to compare
 (cd frontend && pnpm typecheck && pnpm lint && pnpm test && pnpm build)
 ```
 

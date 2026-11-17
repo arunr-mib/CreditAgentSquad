@@ -10,6 +10,21 @@ from app.domain.monitoring import WorkItem
 
 SEVERITIES = ("low", "medium", "high", "critical")
 
+# Decisions an item type may not offer, because nothing in the product can carry them out: a
+# person has no way to edit a collateral listing, and prior-period figures cannot yet be restated
+# in one step. They are taken off here, whoever raises the item, so no offered decision does
+# nothing. Remove an entry only together with the code that gives the decision its effect.
+WITHDRAWN: dict[str, frozenset[str]] = {
+    "bb.certificate_mismatch": frozenset({"listing_corrected"}),
+    "spread.restatement": frozenset({"restated_update_prior"}),
+}
+
+
+def offered(item_type: str, decisions: list[str]) -> list[str]:
+    """The decisions a person may take on an item of this type."""
+    withdrawn = WITHDRAWN.get(item_type, frozenset())
+    return [d for d in decisions if d not in withdrawn]
+
 
 def raise_item(
     db: Session, *, borrower_id: uuid.UUID, item_type: str, title: str, question: str,
@@ -26,6 +41,7 @@ def raise_item(
         raise ValueError(f"unknown severity {severity!r}")
     if not question.strip().endswith("?"):
         raise ValueError("a work item asks one specific question")
+    allowed_decisions = offered(item_type, allowed_decisions)
     if not allowed_decisions:
         raise ValueError("a work item needs at least one allowed decision")
     evidence = dict(evidence or {})

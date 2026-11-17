@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.api.deps import current_user
+from app.api.deps import PageNumber, current_user
 from app.api.serialize import plain, row
 from app.calc import template
 from app.core import clock
@@ -323,7 +323,7 @@ def _clause(db: Session, borrower_id: uuid.UUID, citation: dict[str, Any] | None
 
 
 @router.get("/ui/documents/{document_id}/pages/{page_number}/figures")
-def page_figures(document_id: uuid.UUID, page_number: int, db: Session = Depends(get_db),
+def page_figures(document_id: uuid.UUID, page_number: PageNumber, db: Session = Depends(get_db),
                  _: User = Depends(current_user)) -> dict:
     """Every stored figure printed on one page: facts that cite the page, and facts loaded
     without a page that code locates on it. Each comes with its box, for the document viewer."""
@@ -357,7 +357,7 @@ def page_figures(document_id: uuid.UUID, page_number: int, db: Session = Depends
 
 
 @router.get("/ui/documents/{document_id}/pages/{page_number}/locate")
-def locate_quote(document_id: uuid.UUID, page_number: int, quote: str, db: Session = Depends(get_db),
+def locate_quote(document_id: uuid.UUID, page_number: PageNumber, quote: str, db: Session = Depends(get_db),
                  _: User = Depends(current_user)) -> dict:
     """Where a quoted passage sits on a page, one box per printed line. Empty when it is not there."""
     page = db.execute(select(DocumentPage).where(
@@ -823,7 +823,7 @@ def borrower_timeline(borrower_id: uuid.UUID, limit: int = 300, include_routine:
     if facility_ids:
         ids.update(str(i) for (i,) in db.execute(
             select(TermsVersion.id).where(TermsVersion.facility_id.in_(facility_ids))).all())
-    query = select(LedgerEvent).where(LedgerEvent.entity_id.in_(ids)).order_by(LedgerEvent.seq.desc()).limit(min(limit, 1000))
+    query = select(LedgerEvent).where(LedgerEvent.entity_id.in_(ids)).order_by(LedgerEvent.seq.desc()).limit(max(1, min(limit, 1000)))
     if not include_routine:
         query = query.where(LedgerEvent.action.notin_(_QUIET_ACTIONS))
     users = {str(u.id): u.name for u in db.execute(select(User)).scalars()}

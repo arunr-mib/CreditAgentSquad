@@ -1,5 +1,7 @@
 """Test database setup. Each test runs inside a transaction that is rolled back at the end,
 so service code may commit freely without leaking between tests."""
+import os
+
 import pytest
 from app import models
 from app.core.config import get_settings
@@ -9,6 +11,12 @@ from app.main import create_app
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
+
+# Tests talk to the app over plain HTTP, as a developer's machine does. Without this the app
+# takes the deployment defaults: an HTTPS-only session cookie, which the test client would not
+# send back, and no /docs.
+os.environ.setdefault("SQUAD_ENV", "local")
+get_settings.cache_clear()
 
 
 @pytest.fixture(scope="session")

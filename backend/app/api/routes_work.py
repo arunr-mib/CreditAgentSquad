@@ -2,7 +2,7 @@
 import uuid
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -20,6 +20,7 @@ from app.domain.monitoring import Cycle, Signal, WorkItem
 from app.domain.org import User
 from app.domain.terms import ReportingObligation
 from app.domain.terms_service import TermsRefused
+from app.domain.work_items import offered
 
 router = APIRouter(tags=["work"])
 _SEVERITY = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -45,8 +46,13 @@ def list_work_items(
     names = _names(db)
     items = sorted(db.execute(query).scalars(),
                    key=lambda w: (_SEVERITY.get(w.severity, 9), w.due_date or date.max, w.created_at))
-    return [{**row(w, exclude=("evidence", "recommendation", "guardrail_notes")),
+    return [{**_item(w, exclude=("evidence", "recommendation", "guardrail_notes")),
              "borrower_name": names.get(w.borrower_id)} for w in items]
+
+
+def _item(item: WorkItem, exclude: tuple[str, ...] = ()) -> dict:
+    """A work item as shown to a person: only the decisions that can still be taken."""
+    return {**row(item, exclude=exclude), "allowed_decisions": offered(item.item_type, item.allowed_decisions)}
 
 
 @router.get("/work-items/{item_id}")
@@ -54,7 +60,7 @@ def get_work_item(item_id: uuid.UUID, db: Session = Depends(get_db), _: User = D
     item = db.get(WorkItem, item_id)
     if item is None:
         raise HTTPException(404, "Work item not found.")
-    return {**row(item), "borrower_name": _names(db).get(item.borrower_id)}
+    return {**_item(item), "borrower_name": _names(db).get(item.borrower_id)}
 
 
 class DecisionIn(BaseModel):
@@ -78,7 +84,7 @@ def decide(item_id: uuid.UUID, body: DecisionIn, db: Session = Depends(get_db),
     except (ValueError, TermsRefused) as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()
-    return row(item)
+    return _item(item)
 
 
 @router.get("/cycles")
@@ -142,7 +148,7 @@ def list_signals(status: str = "open", borrower_id: uuid.UUID | None = None, db:
 @router.get("/agent-runs")
 def list_agent_runs(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | None = None, limit: int = 100,
                     db: Session = Depends(get_db), _: User = Depends(current_user)) -> list[dict]:
-    query = select(AgentRun).order_by(AgentRun.created_at.desc()).limit(min(limit, 500))
+    query = select(AgentRun).order_by(AgentRun.created_at.desc()).limit(max(1, min(limit, 500)))
     if borrower_id:
         query = query.where(AgentRun.borrower_id == borrower_id)
     if cycle_id:
@@ -171,9 +177,10 @@ def list_agents(db: Session = Depends(get_db), _: User = Depends(current_user)) 
 
 @router.get("/ledger")
 def list_ledger(entity_type: str | None = None, entity_id: str | None = None, action: str | None = None,
-                before_seq: int | None = None, limit: int = 100, db: Session = Depends(get_db),
+                before_seq: int | None = Query(default=None, ge=1, le=2**63 - 1), limit: int = 100,
+                db: Session = Depends(get_db),
                 _: User = Depends(current_user)) -> list[dict]:
-    query = select(LedgerEvent).order_by(LedgerEvent.seq.desc()).limit(min(limit, 500))
+    query = select(LedgerEvent).order_by(LedgerEvent.seq.desc()).limit(max(1, min(limit, 500)))
     if entity_type:
         query = query.where(LedgerEvent.entity_type == entity_type)
     if entity_id:
@@ -187,8 +194,13 @@ def list_ledger(entity_type: str | None = None, entity_id: str | None = None, ac
 
 @router.get("/ledger/verify")
 def verify_ledger(db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
+    """Recompute the chain. `head` is the value to keep outside the database: a chain rewritten
+    by a database owner verifies against itself, and only a stored head shows the change."""
     ok, count, problem = ledger.verify_chain(db)
-    return {"ok": ok, "events_checked": count, "problem": problem}
+    head = ledger.head(db)
+    return {"ok": ok, "events_checked": count, "problem": problem,
+            "head": {"seq": head[0], "hash": head[1]} if head else None,
+            "append_only_for_this_role": ledger.guard_status(db)["append_only_for_this_role"]}
 
 
 class ClockIn(BaseModel):
