@@ -207,6 +207,8 @@ export const ROLES_WITH: Record<string, string[]> = {
   upload_document: ['analyst', 'portfolio_manager', 'credit_admin'],
   decide_work_item: ['analyst', 'portfolio_manager', 'credit_officer', 'credit_admin'],
   approve_commentary: ['portfolio_manager', 'credit_officer'],
+  edit_commentary: ['analyst', 'portfolio_manager'],
+  release_package: ['portfolio_manager', 'credit_officer'],
   manage_actions: ['analyst', 'portfolio_manager', 'credit_officer', 'credit_admin'],
   advance_clock: ['admin'],
 };

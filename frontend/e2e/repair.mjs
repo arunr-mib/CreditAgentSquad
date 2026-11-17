@@ -244,6 +244,67 @@ const journeys = [
       await shot(page, 'repair-08-drawer-calculated-figure');
     },
   },
+  {
+    name: 'an analyst edits a section of commentary in place, inserts a figure by picking it from the review sheet, saves, and reads the server’s warnings; an unknown reference is refused',
+    async run(page) {
+      await signIn(page, ANALYST);
+      await page.goto(`${BASE}/review-room`);
+      await page.waitForSelector('[data-ready]');
+      await page.getByRole('button', { name: /Larkspur Environmental Services/ }).first().click();
+      const sheet = page.locator('[data-review-sheet]');
+      const summary = sheet.locator('[data-commentary-section="summary"]');
+      await summary.getByRole('button', { name: 'Edit summary' }).click();
+      const editor = summary.getByRole('form', { name: 'Edit summary' });
+      const area = editor.getByRole('textbox');
+      assert((await area.inputValue()).length > 0, 'the editor starts from the section as it stands');
+      await expectKeyboardReachable(page, editor);
+      await expectFocusRing(page, area, 'the commentary field');
+      await area.fill('Leverage held steady over the period: total debt to EBITDA was ');
+
+      // The figure is picked from the sheet, from the keyboard, not typed.
+      await editor.getByRole('button', { name: 'Insert a figure' }).press('Enter');
+      const find = page.getByRole('combobox', { name: 'Find a figure on this sheet' });
+      await find.waitFor();
+      assert(await find.evaluate((element) => element === document.activeElement), 'the picker’s search field takes focus');
+      await find.pressSequentially('total debt ebitda 2026');
+      const options = page.getByRole('option');
+      assert((await options.count()) === 1, `one figure matches, got ${await options.count()}`);
+      const picked = ((await options.first().locator('.tnum').textContent()) ?? '').trim();
+      await shot(page, 'repair-09-commentary-insert-figure');
+      await find.press('Enter');
+      await page.getByRole('combobox', { name: 'Find a figure on this sheet' }).waitFor({ state: 'detached' });
+      assert(/was \{\{fact:[0-9a-f-]{36}\}\}$/.test(await area.inputValue()), `a reference was inserted at the caret, got: ${await area.inputValue()}`);
+      assert(await area.evaluate((element) => element === document.activeElement), 'focus returns to the text after the figure is inserted');
+      // The preview shows the stored figure, and it opens its source like any other.
+      await editor.locator('[data-commentary-preview]').getByRole('button', { name: new RegExp(`^${picked.replace(/[.$]/g, '\\$&')}, `) }).waitFor();
+
+      // A number typed by hand is allowed, and the server says so.
+      await area.press('End');
+      await area.pressSequentially(', against 2.5 times allowed.');
+      await editor.getByRole('button', { name: 'Save as a draft' }).click();
+      const saved = summary.locator('[data-commentary-saved="summary"]');
+      await saved.getByText(/Summary saved as a draft, with \d+ warnings? from the server/).waitFor();
+      assert((await saved.getByRole('listitem').count()) >= 1, 'the server’s warnings are listed');
+      await summary.getByText(/Summary, version \d+ · Priya Raman/).waitFor();
+      await summary.getByText('Draft, not yet approved').waitFor();
+      await summary.getByRole('button', { name: new RegExp(`^${picked.replace(/[.$]/g, '\\$&')}, `) }).waitFor();
+      // Approval stays where it was: the question for a second person is still beside the sheet.
+      await page.locator('[data-work-item]').getByText('Commentary awaiting approval').waitFor();
+      assert((await page.locator('[data-work-item]').getAttribute('data-item-status')) === 'open', 'saving does not approve the commentary');
+      await shot(page, 'repair-10-commentary-saved-with-warnings');
+
+      // A reference to a fact that does not exist is refused, in the server's words, and nothing is saved.
+      await summary.getByRole('button', { name: 'Edit summary' }).click();
+      const again = summary.getByRole('form', { name: 'Edit summary' });
+      await again.getByRole('textbox').press('End');
+      await again.getByRole('textbox').pressSequentially(' {{fact:00000000-0000-0000-0000-000000000000}}');
+      await again.getByText(/unresolved 00000000/).waitFor();
+      await again.getByRole('button', { name: 'Save as a draft' }).click();
+      await again.getByRole('alert').getByText(/The server said: “/).waitFor();
+      await again.getByRole('button', { name: 'Cancel' }).click();
+      await summary.getByText(/Summary, version \d+ · Priya Raman/).waitFor();
+    },
+  },
 ];
 
 const onlyIndex = process.argv.indexOf('--only');

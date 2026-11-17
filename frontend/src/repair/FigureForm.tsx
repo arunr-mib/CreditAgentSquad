@@ -40,9 +40,9 @@ function shiftPercent(value: string): string {
 /** The server's refusal, named by what it means. The words that follow are the server's own. */
 export function refusalTitle(error: unknown): string {
   if (error instanceof ApiError) {
-    if (error.status === 403) return 'Not recorded: your role cannot change figures';
+    if (error.status === 403) return 'Not recorded: your role cannot do this';
     if (error.status === 422) return 'Not recorded: the server refused this';
-    if (error.status === 404) return 'Not recorded: the figure no longer exists';
+    if (error.status === 404) return 'Not recorded: it no longer exists';
   }
   return 'Not recorded';
 }
