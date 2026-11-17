@@ -23,6 +23,7 @@ import json
 import re
 from collections.abc import Callable
 from datetime import date
+from decimal import Decimal
 from typing import Any
 
 import pymupdf
@@ -189,14 +190,17 @@ class StandInReader:
             page, label, printed = figure["page"], figure["label"], figure["printed"]
             name = f"stated.{key}" if key in TOTALS else key
             lines = pages.get(page, [])
-            # a careful reader reports a figure only when the row is really there
-            if label not in lines or printed not in lines or squash(current) not in flat.get(page, ""):
+            # a careful reader reports a figure only when the row is really there: the label,
+            # then the figure for the period, then the comparative figure
+            at = next((i for i in range(len(lines) - 1) if lines[i] == label and lines[i + 1] == printed), None)
+            if at is None or squash(current) not in flat.get(page, ""):
                 unread.append(key)
                 continue
             cells.append({"key": name, "page": page, "printed_figure": printed, "printed_label": label,
                           "column_header": current})
             prior = (meta.get("comparative_printed") or {}).get(key)
-            if prior is not None and comparative and prior in lines and squash(comparative) in flat.get(page, ""):
+            on_row = at + 2 < len(lines) and lines[at + 2] == prior
+            if prior is not None and comparative and on_row and squash(comparative) in flat.get(page, ""):
                 comparative_cells.append({"key": name, "page": page, "printed_figure": prior,
                                           "printed_label": label, "column_header": comparative})
         notes = []
@@ -365,7 +369,5 @@ class StandInReader:
         return {"sections": sections}
 
 
-def _dec(value: Any):
-    from decimal import Decimal
-
+def _dec(value: Any) -> Decimal:
     return Decimal(str(value))
