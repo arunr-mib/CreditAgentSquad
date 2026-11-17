@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { useConfirmFact, useCorrectFact, useCycles, useDocuments, useEnterFact, useFactsById, useSpread } from '@/api/hooks';
 import type { FactChange, FactSummary, FootingProblem, HeldCell, SpreadContext, SpreadLineApi, WorkItemDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
-import { Button, formatFigure, ProvenanceGlyph, Select, StatusDot } from '@/design';
+import { Button, formatDate, formatFigure, ProvenanceGlyph, Select, StatusDot } from '@/design';
 import { humanize, periodLabel, roleLabel, ROLES_WITH } from '@/domain/labels';
 import { FigureForm, Refusal } from '@/repair/FigureForm';
 import { RecalculationNote } from '@/repair/RecalculationNote';
@@ -67,7 +67,15 @@ export interface LineDescription {
   qualifier: string | null;
   /** True when a person may key this line: an input line of the template, for the period itself. */
   input: boolean;
+  /** True for a line measured over the period (income and cash flow); false for a balance at the period end. */
+  flow: boolean;
 }
+
+/** "at 30 Sep 2026" for a balance, "9 months to 30 Sep 2026" for a flow: the period a keyed figure is for. */
+const periodPhrase = (line: LineDescription, context: SpreadContext) => {
+  const label = periodLabel(context.period_end, line.flow ? context.months : 0);
+  return label.charAt(0).toLowerCase() + label.slice(1);
+};
 
 export function describeLine(key: string, lines: SpreadLineApi[]): LineDescription {
   const stated = key.startsWith(STATED);
@@ -81,6 +89,7 @@ export function describeLine(key: string, lines: SpreadLineApi[]): LineDescripti
     statement: STATEMENT_LABEL[line?.statement ?? prefix] ?? humanize(prefix),
     qualifier: stated ? 'printed total' : comparative ? 'comparative column' : null,
     input: !stated && !comparative && (line ? !line.computed : true),
+    flow: (line?.statement ?? prefix) !== 'bs',
   };
 }
 
@@ -226,7 +235,7 @@ function Repair({ borrowerId, line, held, heldId, current, context, canAct }: Re
       ) : null}
       {mode === 'key' && context ? (
         <FigureForm
-          title={`Key ${name}, ${periodLabel(context.period_end, context.months).toLowerCase()}`}
+          title={`Key ${name}, ${periodPhrase(line, context)}`}
           unit="usd"
           scale={context.scale}
           submitLabel="Record the figure"
@@ -275,10 +284,10 @@ function PrintedFigure({ cell, line, documentId, documentTitle, code }: { cell: 
 
 /* ── Correct or key any line of the statement ─────────────────────────── */
 
-function AnyLine({ borrowerId, lines, context, currentOf, suggested }: { borrowerId: string; lines: SpreadLineApi[]; context: SpreadContext; currentOf: (base: string) => FactSummary | undefined; suggested?: string }) {
+function AnyLine({ borrowerId, lines, context, currentOf, suggested }: { borrowerId: string; lines: SpreadLineApi[]; context: SpreadContext; currentOf: (base: string) => FactSummary | undefined; suggested: string[] }) {
   const inputs = lines.filter((line) => !line.computed);
   const [open, setOpen] = useState(false);
-  const [key, setKey] = useState(suggested && inputs.some((line) => line.key === suggested) ? suggested : (inputs[0]?.key ?? ''));
+  const [picked, setKey] = useState('');
   if (inputs.length === 0) return null;
   if (!open) {
     return (
@@ -287,11 +296,14 @@ function AnyLine({ borrowerId, lines, context, currentOf, suggested }: { borrowe
       </Button>
     );
   }
+  // The lines arrive after the item does: until the person picks one, start from the first line a check named.
+  const has = (candidate: string) => inputs.some((entry) => entry.key === candidate);
+  const key = has(picked) ? picked : (suggested.find(has) ?? inputs[0]?.key ?? '');
   const line = describeLine(key, lines);
   return (
     <div className="space-y-2 rounded-md border border-hairline bg-canvas px-3 py-2.5" data-any-line>
       <Select
-        label={`Line of the statement, ${periodLabel(context.period_end, context.months).toLowerCase()}`}
+        label={`Line of the statement, period ended ${formatDate(context.period_end)}`}
         value={key}
         onValueChange={setKey}
         options={inputs.map((entry) => ({ value: entry.key, label: `${STATEMENT_LABEL[entry.statement] ?? humanize(entry.statement)} · ${entry.label}` }))}
@@ -495,7 +507,7 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item
         <p className="text-body text-pretty text-ink-700">This item does not list the figures or checks behind it. A line can still be corrected or keyed for the period below.</p>
       ) : null}
       {doesNotFoot && canAct && context ? (
-        <AnyLine borrowerId={item.borrower_id} lines={lines} context={context} currentOf={(base) => currentOf(base)} suggested={problems.find((problem) => problem.key)?.key ?? undefined} />
+        <AnyLine borrowerId={item.borrower_id} lines={lines} context={context} currentOf={(base) => currentOf(base)} suggested={problems.flatMap((problem) => (problem.key ? [problem.key] : []))} />
       ) : null}
       {!permitted && item.status === 'open' && user ? (
         <p className="text-caption text-pretty text-ink-700">

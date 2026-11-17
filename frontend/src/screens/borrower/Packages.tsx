@@ -8,6 +8,7 @@ import { formatTimestamp, humanize, quarterLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { EmptyCard, Load, Notice } from '../parts';
 import { useCurrentBorrower } from './BorrowerLayout';
+import { PackageSchedules } from './PackageSchedules';
 
 interface PackageFile {
   format: string;
@@ -232,6 +233,9 @@ export function Packages() {
           </Button>
         </form>
       </Card>
+      <div className="mt-3 min-w-0 xl:col-span-2">
+        <PackageSchedules borrowerId={borrower.id} borrowerName={borrower.name} />
+      </div>
     </div>
   );
 }

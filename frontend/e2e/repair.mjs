@@ -1,13 +1,13 @@
 // Repair journeys against the running stack, with screenshots at device scale factor 2 in frontend/screenshots/repair-*.png.
 //
 // These need a database loaded by frontend/e2e/seed_repair.py (see its header): the normal seed holds no
-// spread with figures waiting for a person. The first journey records real corrections and a decision, so
-// it needs a fresh load each time; the others can be repeated.
+// spread with figures waiting for a person. Journeys 1 and 2 record real corrections (1 also a decision)
+// and assert what a first correction does, so they need a fresh load each time; 3, 4 and 5 can be repeated.
 //
 // Usage: node e2e/repair.mjs [--only 1,3]     (BASE_URL=http://localhost:5173 by default; HEADED=1 to watch)
-// Uses the globally installed Playwright; nothing is downloaded.
+// Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
 import { createRequire } from 'node:module';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,6 +17,7 @@ const { chromium } = require('playwright');
 const BASE = process.env.BASE_URL ?? 'http://localhost:5173';
 const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 const ANALYST = 'priya.raman@bankofstoic.example';
+const MANAGER = 'dana.whitfield@bankofstoic.example';
 const here = dirname(fileURLToPath(import.meta.url));
 const shotsDir = resolve(here, '..', 'screenshots');
 const failuresDir = resolve(here, 'failures');
@@ -41,6 +42,18 @@ async function shot(page, name) {
   const file = resolve(shotsDir, `${name}.png`);
   await page.screenshot({ path: file });
   console.log(`      wrote ${file}`);
+}
+
+const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
+
+/** axe-core (WCAG 2.1 A and AA, best practices) on one region: nothing critical or serious, contrast included. */
+async function expectAccessible(page, selector, what) {
+  await page.evaluate(axeSource);
+  const result = await page.evaluate((target) => window.axe.run(target, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } }), selector);
+  const bad = result.violations.filter((violation) => violation.impact === 'critical' || violation.impact === 'serious');
+  const lesser = result.violations.length - bad.length;
+  console.log(`      axe on ${what}: ${result.passes.length} rules passed, ${bad.length} critical or serious, ${lesser} lesser`);
+  assert(bad.length === 0, `${what} has accessibility violations: ${bad.map((violation) => `${violation.id} (${violation.nodes.length}): ${violation.nodes[0]?.html.slice(0, 120)}`).join('; ')}`);
 }
 
 /** "8,067" printed in thousands → "8067000" in whole dollars. */
@@ -132,6 +145,7 @@ const journeys = [
       const described = await value.getAttribute('aria-describedby');
       assert(described && (await page.locator(`[id="${described}"]`).textContent())?.startsWith('This is not a number'), 'the error is tied to its field');
       await shot(page, 'repair-03-correction-form-errors');
+      await expectAccessible(page, '[data-held-figures]', 'the held figures with a correction form open');
       await value.fill(dollars(accruedPrinted));
       await form.getByText(`shown on a statement in thousands as ${accruedPrinted}.`).waitFor();
       await form.getByLabel('Reason (required)').fill('Page 2: this is the accounts payable row. Accrued liabilities is the row beneath it.');
@@ -210,6 +224,7 @@ const journeys = [
       // A reason is required before anything is sent.
       await form.getByRole('button', { name: 'Record the correction' }).click();
       await form.getByText('A reason is required. It is recorded in the ledger with your name.').waitFor();
+      await expectAccessible(page, '[data-source-drawer]', 'the source drawer with a correction form open');
       const corrected = String(Number(onFile) * 4);
       await value.fill(corrected);
       await form.getByLabel('Reason (required)').fill('Journey: the notes page reports cash taxes paid for the nine months, not the quarter.');
@@ -271,6 +286,8 @@ const journeys = [
       assert((await options.count()) === 1, `one figure matches, got ${await options.count()}`);
       const picked = ((await options.first().locator('.tnum').textContent()) ?? '').trim();
       await shot(page, 'repair-09-commentary-insert-figure');
+      await expectAccessible(page, '[data-commentary-editor]', 'the commentary editor');
+      await expectAccessible(page, '[role="dialog"][aria-label="Figures on this review sheet"]', 'the figure picker');
       await find.press('Enter');
       await page.getByRole('combobox', { name: 'Find a figure on this sheet' }).waitFor({ state: 'detached' });
       assert(/was \{\{fact:[0-9a-f-]{36}\}\}$/.test(await area.inputValue()), `a reference was inserted at the caret, got: ${await area.inputValue()}`);
@@ -344,9 +361,70 @@ const journeys = [
       await row.getByText('Unclassified').waitFor();
       await page.waitForFunction((expected) => document.querySelectorAll('table tbody tr[data-row]').length === expected, before + 1);
       await shot(page, 'repair-11-document-upload');
+      await expectAccessible(page, '[data-upload-document]', 'the upload form with its result');
       await result.getByRole('link', { name: /Open it/ }).click();
       await page.waitForURL(/\/documents\/[0-9a-f-]+/);
       await page.locator('main [data-pdf-page="ready"]').waitFor({ timeout: 30000 });
+    },
+  },
+  {
+    name: 'a portfolio manager creates a package schedule where packages are listed and runs what is due; an analyst can read schedules but not create or run them',
+    async run(page) {
+      await signIn(page, MANAGER);
+      await page.goto(`${BASE}/borrowers/larkspur-environmental/packages`);
+      await page.waitForSelector('[data-ready]');
+      const area = page.locator('[data-package-schedules]');
+      const form = area.getByRole('form', { name: 'New package schedule' });
+      await expectKeyboardReachable(page, area);
+      await expectFocusRing(page, form.getByLabel('Title'), 'the schedule title field');
+
+      // A schedule needs a title; the field says so and nothing is sent.
+      await form.getByRole('button', { name: 'Create the schedule' }).click();
+      await form.getByText('Give the schedule a title.').waitFor();
+      assert((await form.getByLabel('Title').getAttribute('aria-invalid')) === 'true', 'the empty title is marked invalid');
+
+      const title = `Quarterly review package ${new Date().toISOString().slice(11, 19)}`;
+      await form.getByLabel('Title').fill(title);
+      await form.getByLabel('Days after period end').fill('45');
+      // 45 days after 30 Sep 2026: already due on the workspace's date, so running now prepares it.
+      await form.getByLabel('First run (optional)').fill('2026-11-14');
+      await form.getByRole('button', { name: 'Create the schedule' }).click();
+      await form.locator('[data-schedule-created]').getByText(`Created: ${title}, first run 14 Nov 2026. It is in the ledger.`).waitFor();
+      const row = area.locator('table tbody tr').filter({ hasText: title });
+      await row.waitFor();
+      const cells = (await row.locator('th, td').allTextContents()).map((text) => text.trim());
+      assert(cells.join(' | ') === `${title} | This borrower | Quarterly | 45 days after period end | Word, Excel, PowerPoint | 14 Nov 2026`, `the schedule is listed as created, got: ${cells.join(' | ')}`);
+
+      const packagesBefore = await page.locator('[data-package]').count();
+      await area.getByRole('button', { name: 'Run schedules that are due' }).click();
+      const report = area.locator('[data-schedule-run]');
+      await report.getByText(new RegExp(`^${title}, Q3 2026: (a package was prepared, not released\\.|not generated\\. The server said: “)`)).waitFor({ timeout: 60000 });
+      const said = ((await report.textContent()) ?? '').trim();
+      console.log(`      the run reported: ${said}`);
+      if (said.includes('a package was prepared')) {
+        // The package appears in the list above, generated and not released; the schedule moved on to the next period.
+        await page.waitForFunction((expected) => document.querySelectorAll('[data-package]').length === expected, packagesBefore + 1);
+        await page.locator('[data-package]').first().getByText(/Generated, not released|Not released: commentary is a draft/).waitFor();
+        await row.getByText('14 Feb 2027').waitFor();
+      }
+      await shot(page, 'repair-12-package-schedules');
+      await expectAccessible(page, '[data-package-schedules]', 'the package schedules');
+
+      // Running again on the same day generates nothing, and says so.
+      await area.getByRole('button', { name: 'Run schedules that are due' }).click();
+      if (said.includes('a package was prepared')) await report.getByText('No schedule was due on 17 Nov 2026. Nothing was generated.').waitFor();
+
+      // An analyst can read the schedules but is offered neither control.
+      await page.getByRole('button', { name: /Account menu/ }).click();
+      await page.getByRole('menuitem', { name: 'Sign out' }).click();
+      await page.waitForURL('**/sign-in**');
+      await signIn(page, ANALYST);
+      await page.goto(`${BASE}/borrowers/larkspur-environmental/packages`);
+      await page.waitForSelector('[data-ready]');
+      await area.locator('table tbody tr').filter({ hasText: title }).waitFor();
+      assert((await area.getByRole('button', { name: 'Run schedules that are due' }).count()) === 0, 'an analyst is not offered the run');
+      assert((await area.getByRole('form', { name: 'New package schedule' }).count()) === 0, 'an analyst is not offered the form');
+      await area.getByText(/Creating and running schedules needs a portfolio manager or a credit officer\. Your role, Credit analyst, can read them\./).waitFor();
     },
   },
 ];

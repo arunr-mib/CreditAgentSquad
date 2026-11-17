@@ -232,7 +232,7 @@ describe('reading a held spread’s evidence', () => {
   });
 
   it('names a line, and knows which keys a person may key', () => {
-    expect(describeLine('bs.accrued_liabilities', SPREAD.lines)).toEqual({ base: 'bs.accrued_liabilities', label: 'Accrued liabilities', statement: 'Balance sheet', qualifier: null, input: true });
+    expect(describeLine('bs.accrued_liabilities', SPREAD.lines)).toEqual({ base: 'bs.accrued_liabilities', label: 'Accrued liabilities', statement: 'Balance sheet', qualifier: null, input: true, flow: false });
     expect(describeLine('stated.bs.total_assets', SPREAD.lines)).toMatchObject({ base: 'bs.total_assets', label: 'Total assets', qualifier: 'printed total', input: false });
     expect(describeLine('is.interest_expense@comparative', SPREAD.lines)).toMatchObject({ base: 'is.interest_expense', qualifier: 'comparative column', input: false });
     expect(describeLine('cf.capex', [])).toMatchObject({ label: 'Capex', statement: 'Cash flow statement', input: true });
@@ -361,7 +361,7 @@ describe('the held-figure table', () => {
     });
     renderHeld(item());
     await userEvent.click(await screen.findByRole('button', { name: 'Key a figure for Interest expense' }));
-    const form = screen.getByRole('form', { name: 'Key Interest expense, 9 months to 30 sep 2026' });
+    const form = screen.getByRole('form', { name: 'Key Interest expense, 9 months to 30 Sep 2026' });
     await userEvent.type(within(form).getByLabelText('Value, in whole US dollars'), '1235000');
     await userEvent.type(within(form).getByLabelText('Reason (required)'), 'Read from page 3 by hand.');
     await userEvent.click(within(form).getByRole('button', { name: 'Record the figure' }));
@@ -396,8 +396,13 @@ describe('the held-figure table', () => {
 
     const payable = within(document.querySelector('[data-check-row="bs.accounts_payable"]') as HTMLElement);
     expect(payable.getByText('No figure is on file for this line')).toBeInTheDocument();
-    expect(payable.getByRole('button', { name: 'Key a figure for Accounts payable' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Correct or key another line' })).toBeInTheDocument();
+    // A balance is keyed for the period end, not for the months of the period.
+    await userEvent.click(payable.getByRole('button', { name: 'Key a figure for Accounts payable' }));
+    expect(screen.getByRole('form', { name: 'Key Accounts payable, at 30 Sep 2026' })).toBeInTheDocument();
+
+    // Any other input line can be corrected or keyed; the picker starts on the first line a check named.
+    await userEvent.click(screen.getByRole('button', { name: 'Correct or key another line' }));
+    expect(screen.getByRole('combobox', { name: 'Line of the statement, period ended 30 Sep 2026' })).toHaveTextContent('Balance sheet · Accounts payable');
   });
 });
 

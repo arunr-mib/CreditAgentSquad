@@ -124,6 +124,15 @@ Left navigation (Command centre, Portfolio, Borrowers, Calendar, Review room, Ag
 | `AgentBody` | Agent text on real data | `{{fact:<id>}}` becomes a figure that opens the drawer; an unresolved reference is shown as unresolved |
 | `WorkItemPanel` | One question for a person | Evidence rows open their sources; the decision is a choice, a reason and one primary button; a refusal from the server is named and quoted |
 | `Load`, `Notice`, `EmptyCard` | Loading, error and empty states | Every screen goes through `Load`; a notice has a hairline on all four sides and a dot plus a word |
+| `work/HeldFigures` | Repair of a held spread, on the work item | Each held figure: the line, the row label code read from the page, the figure as printed (it opens its page), why it was held. Confirm and Correct only where a value was stored; Key a figure only where none was. The decision that finishes the spread stays with the person, below |
+| `repair/FigureForm`, `Refusal` | The value and the reason for changing a figure; a refusal beside the control that caused it | The value is entered as it is stored (whole dollars) and read back before it is sent. A reason is always required. A refusal is announced and quotes the server |
+| `repair/RecalculationNote` | What code did after a figure changed, in words | Results retired, totals recalculated or the statements no longer foot, metrics, and each covenant whose outcome changed, before and after. Announced (`aria-live`). It restates the API's summary and claims nothing else |
+| `source/ChangeFigure` | Correct or reject the figure in the source drawer | Only for a role that may confirm a spread. A calculated figure offers neither and says where the correction belongs |
+| `review/Commentary`, `CommentaryEditor` | Write or edit a section of commentary in place | Figures are picked from the review sheet and stored as `{{fact:<id>}}`, never typed as references; the text is shown as it will read. The server's warnings are shown as given. Saving never approves |
+| `borrower/UploadDocument` | File a PDF for the borrower | Only the fields the route takes (file, title). The answer is shown as the server gives it |
+| `borrower/PackageSchedules` | Schedules where packages are listed: list, create, run what is due | "Prepared, not released": a run never releases. Creating and running need a role that may release |
+
+After a figure is confirmed, corrected, rejected or keyed, every query is read again, so each screen shows the figures on file.
 
 A fact loaded from the synthetic book carries no page of its own. The source drawer and the document viewer show where **code located** the stored value on the period's document, and say so; this is never presented as an extraction.
 
@@ -134,6 +143,7 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm build
 pnpm e2e                              # five journeys against the running seeded stack (API on 8000, workspace on 5173)
 node scripts/screenshots.mjs          # the real screens, signed in, 1440 x 900 at scale 2, into screenshots/ (--full adds full-page captures)
 node scripts/a11y.mjs                 # axe-core on the same screens plus a keyboard focus-ring pass
+pnpm e2e:repair                       # five repair journeys, with axe-core and focus checks; needs a database loaded by e2e/seed_repair.py
 ```
 
 The last three need the seeded stack (see `docs/HANDOFF.md`). The officer journey records a real decision, so each `pnpm e2e` run takes one open covenant breach out of the queue; a fresh seed has four.
