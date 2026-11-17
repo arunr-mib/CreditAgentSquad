@@ -129,7 +129,7 @@ def test_a_format_that_does_not_fit_the_unit_is_refused_and_never_applied(fid, f
 @pytest.mark.parametrize("text", [
     f"Total leverage was {{{{fact:{_RATIO}}}}} at September 30, 2026, against the maximum in Section 7.11(a).",
     f"Revenue of {{{{fact:{_USD}|usd_m}}}} for the nine months ended 2026-09-30 was below the prior year.",
-    f"Revenue ({{{{fact:{_USD}}}}}) fell; leverage rose to {{{{fact:{_RATIO}}}}}, and the trend continued in Q3 2026.",
+    f"Revenue of {{{{fact:{_USD}}}}} fell; leverage rose to {{{{fact:{_RATIO}}}}}, and the trend continued in Q3 2026.",
     "The borrower has two facilities and one open exception; the amendment (Amendment No. 2) is not yet approved.",
     "Results for the first half of the year were stronger than the second half.",
     "Statements were delivered late for the quarter and the certificate was received on October 30, 2026.",
@@ -138,3 +138,59 @@ def test_a_format_that_does_not_fit_the_unit_is_refused_and_never_applied(fid, f
 ])
 def test_ordinary_commentary_is_not_refused(text):
     assert check_narrative(text, _FACTS) == [], [n.detail for n in check_narrative(text, _FACTS)]
+
+
+# ---- second independent review: every kind of "allowed" digit was used to carry an amount -------
+
+@pytest.mark.parametrize("text", [
+    "Leverage above 4 may trigger a default under the agreement.",          # "4 may" read as a date
+    "Total leverage reached 5 Mar quarter-end, against a limit of 3 Dec onward.",
+    "Total leverage (4) is above the covenant maximum (3).",                # list markers
+    "Revenue is up-12 percent and EBITDA down-30 percent year over year.",  # identifiers
+    "Leverage closed the quarter sub-4 and coverage near-1.",
+    "Trailing EBITDA (ebitda_4500000) covers interest (ratio_3_2).",
+    "Leverage stood at Note 4.25 against a maximum in Item 3.5.",           # references
+    "The borrower reports leverage on Page 5 and coverage on Page 1.",
+    "EBITDA came in 2040 and capex ended 1995, both in thousands.",         # years
+    "Leverage v4 exceeds covenant v3.", "Leverage ratio No. 4 against limit No. 3.", "Leverage sits in the 4th turn.",
+    "Leverage rose to four and a half times.", "Leverage is now four turns against a limit of three.",
+    "Availability fell to zero and EBITDA was nil for the quarter.",
+    "Revenue fell by nearly a quarter and margin by two-thirds.",
+    "EBITDA is in the tens of millions and debt in the hundreds of millions.",
+    "The borrower drew a dozen times; losses reached seven figures.",
+    "Coverage fell below one. Leverage is above four.",
+    "Revenue quintupled; costs rose sixfold; debt rose a hundredfold.",
+    "EBITDA fell by a half and debt rose by a third.", "Leverage is 4½ turns.", "Leverage is IV times.",
+    "Leverage is ٤٫٢.", "EBITDA of ④ million.", "EBITDA of 4.5 MM", "USD 4.5mn",
+])
+def test_no_class_of_allowed_digits_or_words_carries_an_amount(text):
+    assert check_narrative(text, _FACTS), text
+
+
+@pytest.mark.parametrize("text", [
+    f"Net loss was ({{{{fact:{_USD}}}}}).",                     # brackets read as a negative
+    f"Cash on hand is {{{{fact:{_USD}}}}} K.", f"Cash on hand is {{{{fact:{_USD}}}}} (in thousands).",
+    f"Cash on hand is {{{{fact:{_USD}}}}} in millions.", f"Count {{{{fact:{_USD}}}}}{{{{fact:{_USD}}}}} breaches.",
+    f"Leverage improved by {{{{fact:{_RATIO}}}}} turns.", f"EBITDA fell minus {{{{fact:{_USD}}}}}.",
+    f"Revenue was double {{{{fact:{_USD}}}}}.", f"Margin moved {{{{fact:{_RATIO}}}}} percentage points.",
+])
+def test_words_and_marks_around_a_reference_that_change_what_it_shows_are_refused(text):
+    assert check_narrative(text, _FACTS), text
+
+
+@pytest.mark.parametrize("text", [
+    f"Net revenue for the nine months ended September 30, 2026 was {{{{fact:{_USD}|usd_m}}}}, up from the prior-year period.",
+    f"Total leverage of {{{{fact:{_RATIO}}}}} exceeds the maximum permitted under Section 6.12(a) of the Credit Agreement.",
+    "The borrower has breached the fixed charge coverage covenant for the second consecutive quarter.",
+    "EBITDA margin compressed as two of the borrower's three largest customers reduced orders.",
+    f"Receivables more than 90 days past due rose to {{{{fact:{_USD}}}}} and are excluded from the borrowing base.",
+    "Collections slowed, consistent with the trend noted in Q2 2026.",
+    "The FY2025 audited statements were received on March 14, 2026, inside the 120-day reporting requirement.",
+    "Management attributes the decline to a one-time inventory write-down and expects margins to recover in the second half.",
+    "We recommend a waiver of the Q3 breach, conditional on delivery of a 13-week cash flow forecast.",
+    f"Liquidity is adequate: cash of {{{{fact:{_USD}}}}} covers the next twelve months of scheduled principal.",
+    "Amendment No. 2, effective July 1, 2026, reset the fixed charge coverage minimum; see Section 6.12(b).",
+    f"Revenue of {{{{fact:{_USD}}}}} is down, the first decline since 2023, driven by the loss of the top-10 customer noted in the 10-K.",
+])
+def test_what_a_credit_analyst_would_honestly_write_is_let_through(text):
+    assert check_narrative(text, _FACTS) == [], [n.subject for n in check_narrative(text, _FACTS)]

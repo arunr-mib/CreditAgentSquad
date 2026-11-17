@@ -112,3 +112,14 @@ def test_a_header_spanning_two_columns_does_not_place_a_figure_in_the_current_on
     assert anchored.status == "column_unconfirmed"
     assert verify_cell(PAGE, printed_figure="48,250", printed_label="Net revenue", column_header=wide,
                        column_anchor="September 30, 2026").ok
+
+
+def test_a_quote_may_not_begin_or_end_inside_a_number_or_a_word():
+    page = "The Borrower shall not permit the ratio to be less than 1.20 to 1.00. Reserves of $12,000,000 apply."
+    assert quote_on_page(page, "to be less than 1.20 to 1.00")
+    assert quote_on_page(page, "less than 1.20 to 1.00.")
+    assert not quote_on_page(page, "0 to 1.00")          # inside 1.20
+    assert not quote_on_page(page, "2,000,000")          # inside 12,000,000
+    assert not quote_on_page(page, "less than 1.2")      # stops inside 1.20
+    assert not quote_on_page(page, "orrower shall not")  # starts inside a word
+    assert quote_on_page(page, "$12,000,000") and quote_on_page(page, "12,000,000 apply")

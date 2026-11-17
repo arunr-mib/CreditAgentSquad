@@ -62,6 +62,16 @@ def terms(threshold="1.20", due_days=45, quote=None, external="AGR-1"):
     }
 
 
+def _as_ceiling(body):
+    body["covenants"][0]["test"]["operator"] = "<="
+    return body
+
+
+def _renamed(body, name):
+    body["covenants"][0]["name"] = name
+    return body
+
+
 @pytest.fixture()
 def world(db, tmp_path, monkeypatch):
     monkeypatch.setenv("FILE_STORE_DIR", str(tmp_path))
@@ -104,6 +114,12 @@ def test_clean_terms_have_no_warnings_and_do_not_govern_until_approved(db, world
     (terms(quote="to be less than 1.25 to 1.00"), "quote_not_on_page:covenants.fccr"),
     (terms(due_days=30), "number_not_in_quote:reporting_requirements.quarterly_statements"),
     (terms(external="AGR-9"), "document_not_on_file:covenants.fccr"),
+    # second independent review: a quote that starts inside the printed number ("1.20 to 1.00")
+    (terms(threshold="0", quote="0 to 1.00"), "quote_not_on_page:covenants.fccr"),
+    # a floor filed as a ceiling: the clause says "to be less than"
+    (_as_ceiling(terms()), "direction_contradicts_clause:covenants.fccr"),
+    # the clause the threshold is quoted from does not name this covenant
+    (_renamed(terms(), "Total Leverage Ratio"), "covenant_not_named_in_clause:covenants.fccr"),
 ])
 def test_a_number_that_is_not_in_its_quoted_clause_is_flagged(db, world, body, warning):
     facility, people = world

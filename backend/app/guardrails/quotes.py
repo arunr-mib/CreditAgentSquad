@@ -375,8 +375,27 @@ def _prose(text: str) -> str:
 def quote_on_page(page_text: str, quote: str) -> bool:
     """True when the quote appears verbatim on the page, ignoring line breaks, case and
     typographic variants of quotes and dashes. An empty quote is never verified."""
-    q = _prose(quote)
-    return bool(q) and q in _prose(page_text)
+    q, text = _prose(quote), _prose(page_text)
+    if not q:
+        return False
+    start = text.find(q)
+    while start != -1:
+        if _whole(text, start, start + len(q)):
+            return True
+        start = text.find(q, start + 1)
+    return False
+
+
+def _whole(text: str, start: int, end: int) -> bool:
+    """The match does not begin or end inside a word or a number: "0 to 1.00" is not a quote of
+    "1.20 to 1.00", and "2,000,000" is not a quote of "12,000,000"."""
+    before, after = text[start - 1] if start else " ", text[end] if end < len(text) else " "
+    first, last = text[start], text[end - 1]
+    if first.isalnum() and (before.isalnum() or (first.isdigit() and before in ".," and start >= 2 and text[start - 2].isdigit())):
+        return False
+    if last.isalnum() and (after.isalnum() or (last.isdigit() and after in ".," and end + 1 < len(text) and text[end + 1].isdigit())):
+        return False
+    return True
 
 
 def number_in_quote(value: Decimal, quote: str, known_ratios: Sequence[Decimal] = ()) -> bool:

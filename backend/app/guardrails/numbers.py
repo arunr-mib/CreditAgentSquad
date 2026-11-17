@@ -54,7 +54,43 @@ _NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
     ("year", re.compile(
         r"\b(?:in|during|since|throughout|until|through|ended|ending|fiscal(?:\s+year)?|calendar(?:\s+year)?|"
         rf"year|early|late|mid|and(?:\s+again)?(?:\s+in)?)[\s-]+{_YEAR}\b"
-        r"(?![\d,%]|\.\d|x\b|\s?(?:thousand|million|billion)\b)", re.I)),
+        r"(?!\d|[,.]\d|%|x\b|\s?(?:thousand|million|billion)\b)", re.I)),
+]
+
+# The same idea for text an agent writes, where there is no reason to be generous: only a fully
+# formed date, a period label, a year after a word of time, a capitalised legal reference, a
+# filing name or a hyphenated length of time may contain digits. No identifiers, versions,
+# ordinals, list markers, page or note numbers: each of those has been used to carry an amount
+# ("up-12 percent", "Leverage v4", "the 4th turn", "(4) against (3)", "Note 4.25", "4 may").
+_MONTH_CAP = (
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|"
+    r"Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?"
+)
+_STRICT_NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
+    ("fact_ref", re.compile(r"\{\{fact:[^}]*\}\}")),
+    ("iso_date", re.compile(rf"(?<![\w.,$-]){_YEAR}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])\b(?![\w,.-]*\d)")),
+    ("month_day_year", re.compile(rf"\b{_MONTH_CAP}\s+{_DAY}(?:st|nd|rd|th)?,?\s+{_YEAR}\b(?![,.]?\d)")),
+    ("day_month_year", re.compile(rf"(?<![\w.,$-]){_DAY}(?:st|nd|rd|th)?\s+{_MONTH_CAP}\s+{_YEAR}\b(?![,.]?\d)")),
+    ("month_day", re.compile(rf"\b(?:on|by|of|before|after|until|through|dated|ended|ending|since|from)\s+{_MONTH_CAP}\s+{_DAY}(?:st|nd|rd|th)?\b(?![,.]?\d|\s*(?:percent|%|x\b|times|million|thousand|billion))")),
+    ("month_year", re.compile(rf"\b{_MONTH_CAP}\s+{_YEAR}\b(?![,.]?\d)")),
+    ("quarter", re.compile(rf"\b(?:Q[1-4]|[1-4]Q)(?:\s?-?\s?(?:FY)?\s?{_YEAR}|-?'?\d{{2}})\b(?![,.]?\d)")),
+    ("fiscal_year", re.compile(rf"\bFY\s?'?(?:{_YEAR}|\d{{2}})\b(?![,.]?\d)")),
+    ("section_sign", re.compile(rf"§+\s*{_SECTION_NO}")),
+    ("reference", re.compile(
+        rf"\b(?:Sections?|Articles?|Clauses?|Exhibits?|Schedules?|Annex(?:es)?|Appendi(?:x|ces))\s+(?:{_SECTION_NO}|[IVXLC]+\b)")),
+    ("amendment", re.compile(r"\b(?:Amendments?|Waivers?|Forbearance Agreements?)\s+(?:No\.?\s*)?\d{1,2}\b(?![\w,.%]*\d|\s*(?:percent|%|x\b))")),
+    ("filing", re.compile(r"\b(?:Form\s+)?(?:10-K|10-Q|8-K|K-1|S-1)\b")),
+    ("length_of_time", re.compile(r"(?<![\w.,$-])\d{1,3}-(?:day|week|month|year)\b")),
+    ("quarter_alone", re.compile(r"(?<![\w.,$-])Q[1-4]\b(?![,.]?\d|\s*(?:percent|%|x\b|times|million|thousand|billion))")),
+    # the names of the standard aging buckets and customer rankings, which are not measurements
+    ("aging_bucket", re.compile(r"(?<![\w.,$-])(?:30|60|90|120|150|180)\+?\s+days\s+(?:or\s+more\s+)?(?:past\s+due|delinquent|overdue)\b")),
+    ("ranking", re.compile(r"\btop[- ](?:5|10|20|25|50|100)\b(?![,.]?\d|\s*(?:percent|%))", re.I)),
+    # a year: only close to the present, only after a word of time. A four-digit amount that
+    # happens to look like a nearby year after "in" is the one thing this cannot tell apart.
+    ("year", re.compile(
+        r"\b(?:in|during|since|throughout|until|through|fiscal(?:\s+year)?|calendar(?:\s+year)?|"
+        r"year|early|late|mid)[\s-]+(?:201\d|202\d|203[0-5])\b"
+        r"(?!\d|[,.]\d|%|x\b|\s?(?:thousand|million|billion|percent)\b)", re.I)),
 ]
 
 _FIGURE = re.compile(
@@ -97,18 +133,19 @@ def same_number(a: Decimal, b: Decimal) -> bool:
     return abs(a - b) <= Decimal("0.000001") * scale
 
 
-def blank_non_figures(text: str) -> str:
-    """Replace dates, identifiers, references and similar with spaces, keeping positions."""
-    for _name, pattern in _NOT_FIGURES:
+def blank_non_figures(text: str, strict: bool = False) -> str:
+    """Replace dates, identifiers, references and similar with spaces, keeping positions.
+    `strict` is for text an agent wrote: far fewer things are let through."""
+    for _name, pattern in (_STRICT_NOT_FIGURES if strict else _NOT_FIGURES):
         text = pattern.sub(lambda m: " " * len(m.group(0)), text)
     return text
 
 
-def stray_digits(text: str, known_ratios: Iterable[Decimal] = ()) -> list[str]:
+def stray_digits(text: str, known_ratios: Iterable[Decimal] = (), strict: bool = False) -> list[str]:
     """Words that still hold a digit once dates, references and well-formed figures are set
     aside: digits glued to letters or punctuation, where no figure can be read and so none can
     be traced ("USD4,500,000", "approx.3.10", "EUR12.5m"). Agent-written text may contain none."""
-    cleaned = list(_drop_to_one(blank_non_figures(text), known_ratios))
+    cleaned = list(_drop_to_one(blank_non_figures(text, strict), known_ratios))
     for m in _FIGURE.finditer("".join(cleaned)):
         for i in range(m.start(), m.end()):
             cleaned[i] = " "
@@ -130,9 +167,9 @@ def _drop_to_one(text: str, known_ratios: Iterable[Decimal]) -> str:
     return _N_TO_ONE.sub(repl, text)
 
 
-def extract_figures(text: str, known_ratios: Iterable[Decimal] = ()) -> list[Figure]:
+def extract_figures(text: str, known_ratios: Iterable[Decimal] = (), strict: bool = False) -> list[Figure]:
     """Every figure in the text after non-figures are blanked. Never raises."""
-    cleaned = _drop_to_one(blank_non_figures(text), known_ratios)
+    cleaned = _drop_to_one(blank_non_figures(text, strict), known_ratios)
     figures: list[Figure] = []
     for m in _FIGURE.finditer(cleaned):
         value = to_decimal(m.group("num"))
@@ -165,7 +202,7 @@ class Untraceable:
 
 
 def untraceable_figures(
-    text: str, allowed: Iterable[Decimal], known_ratios: Iterable[Decimal] = ()
+    text: str, allowed: Iterable[Decimal], known_ratios: Iterable[Decimal] = (), strict: bool = False
 ) -> list[Untraceable]:
     """Figures in the text that match nothing in `allowed`.
 
@@ -175,7 +212,7 @@ def untraceable_figures(
     allowed_list = list(allowed)
     ratios = list(known_ratios)
     problems: list[Untraceable] = []
-    for fig in extract_figures(text, ratios):
+    for fig in extract_figures(text, ratios, strict):
         candidates = [fig.value]
         if fig.kind == "percent":
             candidates.append(fig.value / Decimal(100))

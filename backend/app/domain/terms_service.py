@@ -3,6 +3,7 @@
 Terms govern a test only after a second person approves them. Approval never rewrites an
 earlier version: the old version is closed the day before the new one takes effect.
 """
+import re
 import uuid
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
@@ -61,6 +62,40 @@ def _check_citation(db, borrower_id, citation: Citation | None, field: str, numb
             return
 
 
+_FLOOR = re.compile(r"\b(?:less\s+than|below|minimum|at\s+least|fall\s+below)\b", re.I)
+_CEILING = re.compile(r"\b(?:exceed|exceeds|greater\s+than|more\s+than|maximum|above|in\s+excess\s+of)\b", re.I)
+_GENERIC = {"ratio", "total", "minimum", "maximum", "the", "of", "and", "to", "consolidated", "covenant", "test"}
+
+
+def _tokens(text: str) -> set[str]:
+    return set(re.findall(r"[a-z]+", text.lower()))
+
+
+def _distinctive(name: str) -> set[str]:
+    """The words of a covenant's name that tell it from another ("fixed charge coverage",
+    "leverage", "tangible net worth")."""
+    return _tokens(name) - _GENERIC
+
+
+def _clause_around(db, borrower_id, citation: Citation) -> str:
+    """The sentence on the page that contains the quote, found by code: from the end of the
+    sentence before it to the end of its own. A quote may be a fragment; what it is a fragment of
+    is read from the page, not taken from the reader."""
+    doc = resolve_document(db, borrower_id, citation.document_id)
+    page = None if doc is None or citation.page is None else db.execute(select(DocumentPage).where(
+        DocumentPage.document_id == doc.id, DocumentPage.page_number == citation.page)).scalar_one_or_none()
+    if page is None:
+        return ""
+    text, quote = " ".join(page.text.split()), " ".join(citation.quote.split())
+    at = text.lower().find(quote.lower())
+    if at == -1:
+        return ""
+    stops = [m.end() for m in re.finditer(r"(?<!\bNo)(?<!\bU\.S)\.\s+(?=[A-Z])", text)]
+    start = max((stop for stop in stops if stop <= at), default=0)
+    end = min((stop for stop in stops if stop >= at + len(quote)), default=len(text))
+    return text[start:end]
+
+
 def check_provenance(db: Session, borrower_id: uuid.UUID, terms: Terms) -> list[str]:
     """Every number in the terms must appear in its quoted clause, on the cited page of a
     document on file. Returns warning codes; an empty list means the checks ran clean."""
@@ -82,6 +117,19 @@ def check_provenance(db: Session, borrower_id: uuid.UUID, terms: Terms) -> list[
             warnings.extend(sorted(set(found)))
         elif len(stated) != len(numbers):
             warnings.append(f"number_not_in_quote:covenants.{covenant.id}.threshold")
+        # the clause that states the threshold must be about this covenant: a number lifted from
+        # another covenant's clause is on the page too
+        distinctive = _distinctive(covenant.name)
+        clauses = [_clause_around(db, borrower_id, c) for c in citations if c is not None and c.quote]
+        clauses = [c for c in clauses if c]
+        if distinctive and clauses and not any(distinctive <= _tokens(c) for c in clauses):
+            warnings.append(f"covenant_not_named_in_clause:covenants.{covenant.id}")
+        # a floor must be worded as a floor and a ceiling as a ceiling
+        floor = covenant.test.operator in (">=", ">")
+        says_floor = any(_FLOOR.search(c) for c in clauses)
+        says_ceiling = any(_CEILING.search(c) for c in clauses)
+        if clauses and ((floor and says_ceiling and not says_floor) or (not floor and says_floor and not says_ceiling)):
+            warnings.append(f"direction_contradicts_clause:covenants.{covenant.id}")
     for name, definition in terms.definitions.items():
         for addback in definition.addbacks:
             cap_numbers = [addback.cap.value] if addback.cap is not None else []

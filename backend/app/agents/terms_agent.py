@@ -31,7 +31,7 @@ from app.calc.terms import Terms
 from app.core import ledger
 from app.core.roles import Permission
 from app.domain.credit import Borrower, Facility
-from app.domain.documents import Document
+from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import get_page, read_file
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.terms import TermsVersion
@@ -162,6 +162,7 @@ _AR_EXCLUSIONS = ("intercompany", "foreign", "government", "contra")
 _INVENTORY_EXCLUSIONS = ("work_in_process", "consigned")
 _RATIO_TEXT = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*(?:x|x?\s*(?:to|:)\s*1(?:\.0+)?x?)\s*$", re.I)
 _RATIO_IN_QUOTE = re.compile(r"(?<![\w.,])(\d+(?:\.\d+)?)x?\s*(?:to|:)\s*1(?:\.0+)?x?(?![\d,]|\.\d|\w)", re.I)
+_EFFECTIVE = re.compile(r"\beffective\s+(?:date\s+(?:of|is|shall\s+be)\s+|as\s+of\s+|on\s+|from\s+)?(?=[A-Z0-9])", re.I)
 _DATE_MARKER = re.compile(r"\b(?:dated|effective|entered\s+into|made)\s+(?:as\s+of|on|from)\s+", re.I)
 _SLUG = re.compile(r"^[a-z][a-z0-9_]{1,39}$")
 _FIGURE_KIND = {"ratio": "ratio", "pct": "percent", "usd": "amount", "count": "amount"}
@@ -259,6 +260,18 @@ class _Reader:
         self.order = {reference(d): i for i, d in enumerate(documents)}
         self.readings: list[_Reading] = []
         self._checked: dict[tuple[str, int, str], str | None] = {}
+
+    def effective_dates(self, ref: str) -> set[date]:
+        """Dates the document itself calls effective, read by code from every page."""
+        document = self.documents.get(ref)
+        if document is None:
+            return set()
+        found: set[date] = set()
+        for page in self.db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)).scalars():
+            text = " ".join(page.text.split())
+            for match in _EFFECTIVE.finditer(text):
+                found.update(dates_in(text[match.end():match.end() + 40])[:1])
+        return found
 
     def clause(self, document_id: str, page: int, section: str, quote: str) -> _Clause:
         ref = document_id.strip()
@@ -556,6 +569,12 @@ class _Draft:
             clause = self.reader.clause(row.document_id, row.page, "", row.quote)
             if clause.ref in found and found[clause.ref] is None:
                 found[clause.ref] = self.reader.day(clause, row.printed_date, marked=True)
+        # a document that states when it takes effect is taken at its word: a date read from its
+        # signing line ("entered into as of") does not stand when another date is called effective
+        for ref, chosen in found.items():
+            stated = self.reader.effective_dates(ref)
+            if chosen is not None and stated and chosen not in stated:
+                found[ref] = None
         return found
 
     def build(self) -> tuple[dict[str, Any] | None, date | None, list[str]]:
