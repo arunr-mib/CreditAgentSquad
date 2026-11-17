@@ -206,12 +206,13 @@ def spread_document(
     cycle: Cycle | None, llm: LLMClient, prior_fye_cash: Decimal | None = None,
 ) -> SpreadResult:
     result = SpreadResult(status="spread")
-    if document.status == "image_only":
+    if document.status == "image_only" or document.meta.get("image_only_pages"):
         _item(db, result, borrower, cycle, document, item_type="spread.image_only", severity="medium",
-              title=f"{document.title} has no readable text",
-              question="This document is a scanned image and cannot be read. Request a text PDF, or key the figures by hand?",
+              title=f"{document.title} has pages with no readable text",
+              question="One or more pages of this document are scanned images and cannot be read. Request a text PDF, or key the figures by hand?",
               allowed_decisions=["request_new_document", "key_by_hand"], required_permission="confirm_spread",
-              evidence={"document_id": str(document.id)})
+              evidence={"document_id": str(document.id),
+                        "image_only_pages": document.meta.get("image_only_pages", [])})
         return result
 
     content = [
@@ -311,6 +312,7 @@ def spread_document(
     current_unverified = [u for u in result.unverified if "@comparative" not in u["key"]]
     if not report.errors and not current_unverified:
         _store_computed(db, borrower, period_end, months, report, result)
+        _store_absent(db, borrower, period_end, months, absent, result)
     outcome.run.guardrail_notes = result.notes
     ledger.record(db, actor_type="agent", actor_id="spreading@1", action="spread.finished",
                   entity_type="document", entity_id=document.id,
@@ -335,3 +337,24 @@ def _store_computed(db, borrower, period_end, months, report, result) -> None:
         result.facts[key] = add_fact(
             db, borrower_id=borrower.id, key=key, period_end=period_end, months=_months_for(key, months),
             value=value, kind="calculated", calc_run_id=calc.id, actor=("system", "spreading"))
+
+
+def _store_absent(db, borrower, period_end, months, absent, result) -> None:
+    """A template line the statement does not print is zero only because the footing checks
+    passed without it. That conclusion is stored as a calculated fact naming the printed totals
+    that prove it, so a covenant reading the line finds a sourced zero instead of a gap."""
+    if not absent:
+        return
+    proof = [(k, f) for k, f in sorted(result.facts.items()) if k.startswith(template.STATED_PREFIX)]
+    calc = CalcRun(
+        borrower_id=borrower.id, formula_key="absent_lines_verified_by_footing", formula_version=template.TEMPLATE_ID,
+        period_end=period_end, engine_version=ENGINE_VERSION,
+        inputs=[{"key": k, "fact_id": str(f.id), "value": str(f.value)} for k, f in proof],
+        outputs={key: "0" for key in sorted(absent)}, created_by_type="system", created_by_id="spreading")
+    db.add(calc)
+    db.flush()
+    for key in sorted(absent):
+        result.facts[key] = add_fact(
+            db, borrower_id=borrower.id, key=key, period_end=period_end, months=_months_for(key, months),
+            value=Decimal(0), kind="calculated", calc_run_id=calc.id, actor=("system", "spreading"),
+            note="not printed on the statement; zero because every total foots without it")

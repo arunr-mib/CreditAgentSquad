@@ -58,6 +58,8 @@ def awaiting_package(db: Session, cycle: Cycle, st: CycleStage) -> str:
     today = clock.today(db)
     calendar.refresh_statuses(db, today)
     if intake.chase_missing(db, borrower=_borrower(db, cycle), cycle=cycle, today=today) is not None:
+        # the cycle stops here, but lateness is itself an early warning: fire it now
+        run_signals(db, borrower=_borrower(db, cycle), period_end=cycle.period_end, as_of=today, cycle=cycle)
         return "needs_person"
     return "waiting"
 

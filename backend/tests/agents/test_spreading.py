@@ -66,6 +66,10 @@ def test_clean_statement_is_spread_with_citations_and_no_person(db, setup):
     assert current_fact(db, setup.id, "is.net_income", PERIOD, 9).value == D("2340000")
     # the printed total is kept too, as its own extracted fact
     assert current_fact(db, setup.id, "stated.bs.total_assets", PERIOD, 0).kind == "extracted"
+    # a line the statement does not print is a sourced zero, proved by the totals that foot without it
+    absent = current_fact(db, setup.id, "bs.subordinated_debt", PERIOD, 0)
+    assert absent.value == D("0") and absent.kind == "calculated" and absent.calc_run_id is not None
+    assert current_fact(db, setup.id, "cf.other_investing", PERIOD, 9).value == D("0")
     # no fact was ever stored from a number typed by the model
     assert db.execute(select(Fact).where(Fact.kind == "extracted", Fact.quote.is_(None))).first() is None
 
@@ -104,6 +108,29 @@ def test_a_missed_line_fails_footing(db, setup):
     codes = {e["code"] for e in result.failed_checks}
     assert "does_not_foot" in codes and "absent_not_verified" in codes
     assert current_fact(db, setup.id, "bs.total_assets", PERIOD, 0) is None
+
+
+def test_an_absent_line_is_not_stored_when_the_statement_does_not_foot(db, setup):
+    answer = perfect_answer()
+    answer["cells"] = [c for c in answer["cells"] if c["key"] != "bs.inventory"]
+    spread(db, setup, answer)
+    assert current_fact(db, setup.id, "bs.subordinated_debt", PERIOD, 0) is None
+
+
+def test_one_image_only_page_sends_the_whole_document_to_a_person(db, setup):
+    import io
+
+    import pymupdf
+    pdf = pymupdf.open(stream=build_pdf(), filetype="pdf")
+    pdf.new_page()  # a page with no text stands in for a scanned page
+    buf = io.BytesIO()
+    pdf.save(buf)
+    doc = ingest_pdf(db, borrower_id=setup.id, data=buf.getvalue(), file_name="mixed.pdf",
+                     doc_type="interim_statements", doc_type_source="system", period_end=PERIOD)
+    assert doc.status == "indexed" and doc.meta["image_only_pages"] == [4]
+    llm = ScriptedClient([])
+    result = spread_document(db, borrower=setup, document=doc, period_end=PERIOD, months=9, cycle=None, llm=llm)
+    assert result.status == "needs_person" and llm.requests == [] and items(db) == [("spread.image_only", "medium")]
 
 
 def test_units_phrase_not_reported_is_caught_by_code(db, setup):

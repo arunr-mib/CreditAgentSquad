@@ -39,8 +39,9 @@ LINE_HELP = {
     "inventory_availability": "inventory availability", "reserves": "reserves", "borrowing_base": "borrowing base",
     "commitment": "revolving commitment", "borrowing_limit": "lesser of borrowing base and commitment",
     "outstanding": "revolving loans outstanding", "letters_of_credit": "letters of credit outstanding",
-    "availability": "availability (excess or deficit)",
+    "availability": "availability (excess or deficit)", "over_advance": "over-advance, if stated separately",
 }
+assert set(LINE_HELP) == set(LINE_NAMES), "every borrowing base line needs a description for the reader"
 
 
 class CertLine(BaseModel):
