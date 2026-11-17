@@ -14,6 +14,7 @@ from app.calc.signals import (
     SystemRow,
     compute_signal_inputs,
     evaluate_signals,
+    reporting_due_date,
 )
 
 Q4_23, Q1_24, Q2_24, Q3_24, Q4_24 = (date(2023, 12, 31), date(2024, 3, 31), date(2024, 6, 30),
@@ -65,11 +66,17 @@ def only(evaluation, rule_id):
 def test_rule_table_is_signals_1():
     assert SIGNALS_VERSION == "signals-1"
     assert [r.id for r in RULES] == [
-        "covenant_headroom_low", "covenant_headroom_falling", "revenue_decline", "ebitda_margin_decline",
+        "covenant_headroom_low", "covenant_headroom_falling", "revenue_ttm_decline", "ebitda_margin_decline",
         "dso_increase", "dpo_increase", "leverage_increase", "net_loss", "cash_decline", "line_usage_high",
         "availability_low", "reporting_late", "payment_past_due", "auditor_opinion",
     ]
-    assert {r.severity for r in RULES} <= {"low", "medium", "high"}
+    assert {r.id: r.severity for r in RULES} == {
+        "covenant_headroom_low": "medium", "covenant_headroom_falling": "low", "revenue_ttm_decline": "medium",
+        "ebitda_margin_decline": "medium", "dso_increase": "low", "dpo_increase": "low",
+        "leverage_increase": "medium", "net_loss": "high", "cash_decline": "medium", "line_usage_high": "medium",
+        "availability_low": "medium", "reporting_late": "high", "payment_past_due": "high",
+        "auditor_opinion": "high",
+    }
 
 
 def test_a_healthy_borrower_fires_nothing():
@@ -119,23 +126,40 @@ def test_headroom_rules_skip_unmeasured_periods_and_say_so():
 
 
 def test_revenue_down_more_than_ten_percent_year_on_year():
-    signal = only(run(series(current={"revenue_ttm": "3599999"})), "revenue_decline")
+    signal = only(run(series(current={"revenue_ttm": "3599000"})), "revenue_ttm_decline")
     assert signal.basis["metric"] == "revenue_ttm" and signal.basis["compare"] == "yoy"
-    assert signal.basis["current"] == {"period_end": PE, "months": 12, "value": D("3599999"), "fact_id": None}
+    assert signal.basis["current"] == {"period_end": PE, "months": 12, "value": D("3599000"), "fact_id": None}
     assert signal.basis["prior"]["period_end"] == Q4_23 and signal.basis["prior"]["value"] == D("4000000")
-    assert signal.basis["change"] == D("-0.1000") and signal.basis["threshold"] == D("0.10")
-    assert "revenue_decline" not in fired(run(series(current={"revenue_ttm": "3600000"})))  # exactly 10%
+    # (3,599,000 - 4,000,000) / 4,000,000 = -0.10025, which rounds half-up to -0.1003
+    assert signal.basis["change"] == D("-0.1003") and signal.basis["threshold"] == D("0.10")
+    assert "revenue_ttm_decline" not in fired(run(series(current={"revenue_ttm": "3600000"})))  # exactly 10%
+    # -0.1000025 rounds to -10.00%, which is not more than 10%: the figure shown is the figure tested.
+    assert "revenue_ttm_decline" not in fired(run(series(current={"revenue_ttm": "3599990"})))
 
 
 def test_ebitda_margin_down_more_than_three_points():
     signal = only(run(series(current={"ebitda_margin": "0.1199"})), "ebitda_margin_decline")
     assert signal.basis["change"] == D("-0.0301") and signal.basis["threshold"] == D("0.03")
     assert "ebitda_margin_decline" not in fired(run(series(current={"ebitda_margin": "0.1200"})))
+    assert "ebitda_margin_decline" not in fired(run(series(current={"ebitda_margin": "0.11996"})))  # -0.0300
+
+
+def test_changes_are_rounded_once_from_unrounded_metrics():
+    # Leverage 3.2753664 against 2.2344398 a year earlier is up 1.0409 -> 1.04.
+    # Differencing the rounded ratios (3.28 - 2.23) would wrongly give 1.05.
+    data = series(prior_year={"leverage": "2.2344398"}, current={"leverage": "3.2753664"})
+    signal = only(run(data), "leverage_increase")
+    assert signal.basis["change"] == D("1.04")
+    assert signal.basis["current"]["value"] == D("3.2753664") and signal.basis["prior"]["value"] == D("2.2344398")
+    # 2.996 - 2.50 = 0.496 -> 0.50, which is not more than 0.5 even though both ratios round apart by 0.50.
+    assert "leverage_increase" not in fired(run(series(current={"leverage": "2.996"})))
+    assert "leverage_increase" in fired(run(series(current={"leverage": "3.005"})))  # 0.505 -> 0.51
 
 
 def test_dso_and_dpo_increases():
     assert only(run(series(current={"dso": "55.1"})), "dso_increase").basis["change"] == D("10.1")
     assert "dso_increase" not in fired(run(series(current={"dso": "55.0"})))
+    assert "dso_increase" not in fired(run(series(current={"dso": "55.04"})))  # 10.04 -> 10.0
     assert only(run(series(current={"dpo": "55.1"})), "dpo_increase").basis["change"] == D("15.1")
     assert "dpo_increase" not in fired(run(series(current={"dpo": "55.0"})))
 
@@ -146,8 +170,8 @@ def test_leverage_up_more_than_half_a_turn():
 
 
 def test_cash_down_more_than_thirty_percent():
-    signal = only(run(series(current={"cash": "349999"})), "cash_decline")
-    assert signal.basis["prior"]["value"] == D("500000") and signal.basis["change"] == D("-0.3000")
+    signal = only(run(series(current={"cash": "349000"})), "cash_decline")
+    assert signal.basis["prior"]["value"] == D("500000") and signal.basis["change"] == D("-0.3020")
     assert "cash_decline" not in fired(run(series(current={"cash": "350000"})))
 
 
@@ -162,13 +186,13 @@ def test_unmeasured_metrics_are_reported_not_treated_as_zero():
     evaluation = run(series(current={"revenue_ttm": None, "net_income_ttm": None}))
     assert evaluation.signals == []
     assert {(n.rule_id, n.reason) for n in evaluation.not_evaluated} == {
-        ("revenue_decline", "missing_value"), ("net_loss", "missing_value")}
+        ("revenue_ttm_decline", "missing_value"), ("net_loss", "missing_value")}
 
 
 def test_no_prior_year_period_and_non_positive_base():
     evaluation = run(series()[1:])  # Q4 2023 is not in the series
     reasons = {(n.rule_id, n.reason) for n in evaluation.not_evaluated}
-    assert ("revenue_decline", "no_comparison_period") in reasons and ("cash_decline", "no_comparison_period") in reasons
+    assert ("revenue_ttm_decline", "no_comparison_period") in reasons and ("cash_decline", "no_comparison_period") in reasons
     evaluation = run(series(prior_year={"cash": "0"}, current={"cash": "0"}))
     assert ("cash_decline", "non_positive_base") in {(n.rule_id, n.reason) for n in evaluation.not_evaluated}
 
@@ -183,12 +207,14 @@ def test_fact_ids_travel_into_the_basis():
 
 
 def test_line_usage_above_ninety_percent():
-    row = SystemRow(date(2024, 12, 31), D("4500001"), D("5000000"), 0)
+    row = SystemRow(date(2024, 12, 31), D("4516500"), D("5000000"), 0)
     signal = only(run(system_rows=[row]), "line_usage_high")
-    assert signal.basis == {"date": date(2024, 12, 31), "revolver_outstanding": D("4500001"),
-                            "commitment": D("5000000"), "usage": D("0.9000"), "threshold": D("0.90")}
+    assert signal.basis == {"date": date(2024, 12, 31), "revolver_outstanding": D("4516500"),
+                            "commitment": D("5000000"), "usage": D("0.9033"), "threshold": D("0.90")}
     exact = SystemRow(date(2024, 12, 31), D("4500000"), D("5000000"), 0)
     assert "line_usage_high" not in fired(run(system_rows=[exact]))
+    hair = SystemRow(date(2024, 12, 31), D("4500001"), D("5000000"), 0)  # 0.9000002 -> 90.00%
+    assert "line_usage_high" not in fired(run(system_rows=[hair]))
 
 
 def test_latest_system_row_on_or_before_the_period_end_is_used():
@@ -198,11 +224,19 @@ def test_latest_system_row_on_or_before_the_period_end_is_used():
 
 
 def test_availability_below_ten_percent_of_commitment():
-    signal = only(run(series(current={"availability": "499999"})), "availability_low")
-    assert signal.severity == "high"
-    assert signal.basis["availability"]["value"] == D("499999") and signal.basis["commitment"] == D("5000000")
-    assert signal.basis["threshold"] == D("0.10")
+    signal = only(run(series(current={"availability": "499000"})), "availability_low")
+    assert signal.severity == "medium"
+    assert signal.basis["availability"]["value"] == D("499000") and signal.basis["commitment"] == D("5000000")
+    assert signal.basis["ratio"] == D("0.0998") and signal.basis["threshold"] == D("0.10")
     assert "availability_low" not in fired(run(series(current={"availability": "500000"})))
+    over_advanced = only(run(series(current={"availability": "-81949"})), "availability_low")
+    assert over_advanced.basis["ratio"] == D("-0.0164")  # -81,949 / 5,000,000 = -0.01639
+
+
+def test_availability_left_unmeasured_is_not_evaluated():
+    evaluation = run(series(current={"availability": None}))
+    assert evaluation.signals == []
+    assert [(n.rule_id, n.reason) for n in evaluation.not_evaluated] == [("availability_low", "missing_value")]
 
 
 def test_payment_past_due_more_than_ten_days():
@@ -226,7 +260,7 @@ def test_reporting_more_than_fifteen_days_late():
     due = date(2025, 4, 30)
     late = ReportingItem("annual_fs", PE, due, date(2025, 5, 16))
     signal = only(run(reporting=[late]), "reporting_late")
-    assert signal.subject == "annual_fs"
+    assert signal.subject == "annual_fs" and signal.severity == "high"
     assert signal.basis == {"requirement_id": "annual_fs", "period_end": PE, "due_date": due,
                             "received_date": date(2025, 5, 16), "as_of": None, "days_late": 16, "threshold": 15}
     on_time = ReportingItem("annual_fs", PE, due, date(2025, 5, 15))
@@ -283,11 +317,23 @@ def test_compute_signal_inputs_reads_the_library():
         ("bs.long_term_debt", PE, 12): D("500000"), ("bs.subordinated_debt", PE, 12): D("0"),
     }
     inputs = compute_signal_inputs(PE, provider_from_facts(facts))
-    assert {k: (None if v is None else str(v)) for k, v in inputs.values.items()} == {
-        "revenue_ttm": "4000000", "net_income_ttm": "300000", "cash": "500000",
-        "ebitda_margin": "0.1500",  # 600,000 / 4,000,000
-        "dso": "36.5",  # 400,000 x 365 / 4,000,000
+    assert inputs.values == {
+        "revenue_ttm": D("4000000"), "net_income_ttm": D("300000"), "cash": D("500000"),
+        "ebitda_margin": D("0.15"),  # 600,000 / 4,000,000
+        "dso": D("36.5"),  # 400,000 x 365 / 4,000,000
         "dpo": None,  # accounts payable is missing: unmeasured, not zero
-        "leverage": "2.00",  # 1,200,000 / 600,000
+        "leverage": D("2"),  # 1,200,000 / 600,000
     }
     assert list(inputs.errors) == ["dpo"] and inputs.errors["dpo"][0].key == "bs.accounts_payable"
+    assert [i.key for i in inputs.traces["cash"].inputs] == ["bs.cash"]
+
+
+def test_inputs_are_unrounded_so_the_rules_round_only_once():
+    facts = {("is.revenue", PE, 12): D("3000000"), ("bs.accounts_receivable", PE, 12): D("400000")}
+    dso = compute_signal_inputs(PE, provider_from_facts(facts)).values["dso"]
+    assert dso != D("48.7") and abs(dso - D("48.6666666667")) < D("1e-9")  # 146,000,000 / 3,000,000
+
+
+def test_reporting_due_date():
+    assert reporting_due_date(date(2026, 9, 30), 30) == date(2026, 10, 30)
+    assert reporting_due_date(date(2025, 12, 31), 120) == date(2026, 4, 30)

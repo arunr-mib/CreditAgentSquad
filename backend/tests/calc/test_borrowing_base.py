@@ -3,7 +3,13 @@ from decimal import Decimal as D
 
 import pytest
 from app.calc import errors as E
-from app.calc.borrowing_base import ArRow, InventoryRow, compute_borrowing_base, reconcile
+from app.calc.borrowing_base import (
+    ArRow,
+    InventoryRow,
+    compute_borrowing_base,
+    reconcile,
+    unused_availability,
+)
 from app.calc.terms import BorrowingBase
 
 TERMS = {
@@ -20,8 +26,8 @@ TERMS = {
 }
 
 
-def ar(customer, current="0", d1_30="0", d31_60="0", d61_90="0", over_90="0", flags=()):
-    return ArRow(customer, D(current), D(d1_30), D(d31_60), D(d61_90), D(over_90), frozenset(flags))
+def ar(customer, current="0", d1_30="0", d31_60="0", d61_90="0", over_90="0", flags=(), contra="0"):
+    return ArRow(customer, D(current), D(d1_30), D(d31_60), D(d61_90), D(over_90), frozenset(flags), D(contra))
 
 
 # customer            current   1-30    31-60   61-90   over 90     total
@@ -60,6 +66,7 @@ EXPECTED = {
     "ar_ineligible_excluded": "220000",
     "ar_ineligible_age": "160000",
     "ar_ineligible_cross_aging": "30000",
+    "ar_ineligible_contra": "0",
     "ar_ineligible_concentration": "387500",
     "ar_ineligible_total": "797500",
     "ar_eligible": "1662500",
@@ -108,14 +115,14 @@ def test_no_double_counting_per_customer():
     result = compute()
     by_customer = {c.customer: c for c in result.customers}
     gamma = by_customer["Gamma"]
-    assert (gamma.total, gamma.excluded, gamma.age, gamma.cross_aging, gamma.concentration, gamma.eligible) == (
-        D("100000"), D("0"), D("70000"), D("30000"), D("0"), D("0"))
+    assert (gamma.total, gamma.excluded, gamma.age, gamma.cross_aging, gamma.contra, gamma.concentration,
+            gamma.eligible) == (D("100000"), D("0"), D("70000"), D("30000"), D("0"), D("0"), D("0"))
     delta = by_customer["Delta"]  # excluded as a whole: its over-90 balance is not also counted as aged
     assert (delta.excluded, delta.age, delta.eligible, delta.excluded_flag) == (D("160000"), D("0"), D("0"), "intercompany")
     zeta = by_customer["Zeta"]
     assert (zeta.concentration, zeta.eligible) == (D("387500"), D("512500"))
     for c in result.customers:
-        assert c.excluded + c.age + c.cross_aging + c.concentration + c.eligible == c.total
+        assert c.excluded + c.age + c.cross_aging + c.contra + c.concentration + c.eligible == c.total
     assert sum(c.eligible for c in result.customers) == D("1662500")
 
 
@@ -163,13 +170,58 @@ def test_concentration_edge_cases():
 
 
 def test_exclusion_flags():
-    aging = [ar("A", "100", flags=["government"]), ar("B", "200", flags=["contra", "foreign"]),
-             ar("C", "300", flags=["bill_and_hold"]), ar("D", "400")]
+    aging = [ar("A", "100", flags=["government"]), ar("B", "200", flags=["intercompany", "foreign"]),
+             ar("C", "300", flags=["bill_and_hold"]), ar("D", "400"), ar("E", "500", flags=["contra"])]
     result = compute(aging, [], terms=changed(concentration_limit_pct=None))
     # B carries two excluded flags but is counted once, under the first one listed in the terms.
-    assert result.excluded_by_flag == {"foreign": D("200"), "government": D("100")}
+    assert result.excluded_by_flag == {"intercompany": D("200"), "government": D("100")}
     assert result.lines["ar_ineligible_excluded"] == D("300")
-    assert result.lines["ar_eligible"] == D("700")  # bill_and_hold is not excluded by these terms
+    # bill_and_hold is not excluded by these terms, and "contra" never excludes a whole customer.
+    assert result.lines["ar_eligible"] == D("1200")
+
+
+def test_contra_amount_is_ineligible_after_age_and_before_concentration():
+    aging = [
+        ar("A", "300000", over_90="100000", contra="50000"),  # 100,000 aged (25%), then 50,000 contra
+        ar("B", "400000"), ar("C", "400000"), ar("D", "400000"),
+    ]
+    result = compute(aging, [])
+    a = result.customers[0]
+    assert (a.age, a.cross_aging, a.contra, a.concentration, a.eligible) == (
+        D("100000"), D("0"), D("50000"), D("0"), D("250000"))
+    assert result.lines["ar_ineligible_contra"] == D("50000")
+    # Concentration is measured after contra: 25% x (250,000 + 3 x 400,000) = 362,500; each of B, C, D loses 37,500.
+    assert result.lines["ar_ineligible_concentration"] == D("112500")
+    assert result.lines["ar_ineligible_total"] == D("262500")  # 100,000 + 50,000 + 112,500
+    assert result.lines["ar_eligible"] == D("1337500")
+
+
+def test_contra_is_capped_at_what_is_left_of_the_balance():
+    aging = [ar("A", "60000", over_90="40000", contra="75000"), ar("B", "500000")]
+    a = compute(aging, [], terms=changed(concentration_limit_pct=None)).customers[0]
+    # 40,000 is aged (40%, not cross-aged); only 60,000 is left for a 75,000 contra.
+    assert (a.age, a.cross_aging, a.contra, a.eligible) == (D("40000"), D("0"), D("60000"), D("0"))
+
+
+def test_contra_is_ignored_when_the_terms_do_not_exclude_it():
+    aging = [ar("A", "300000", contra="50000"), ar("B", "500000")]
+    terms = changed(concentration_limit_pct=None, exclude=["intercompany", "foreign", "government"])
+    result = compute(aging, [], terms=terms)
+    assert result.customers[0].contra == D("0") and result.lines["ar_ineligible_contra"] == D("0")
+    assert result.lines["ar_eligible"] == D("800000")
+
+
+def test_contra_never_applies_to_an_excluded_or_fully_cross_aged_customer():
+    aging = [
+        ar("Affiliate", "200000", flags=["intercompany"], contra="30000"),
+        ar("Slow", "40000", over_90="60000", contra="30000"),  # 60% aged: the whole balance is already out
+        ar("Good", "500000"),
+    ]
+    result = compute(aging, [], terms=changed(concentration_limit_pct=None))
+    affiliate, slow, _ = result.customers
+    assert (affiliate.excluded, affiliate.contra) == (D("200000"), D("0"))
+    assert (slow.age, slow.cross_aging, slow.contra, slow.eligible) == (D("60000"), D("40000"), D("0"), D("0"))
+    assert result.lines["ar_ineligible_contra"] == D("0")
 
 
 def test_inventory_sublimit_binds():
@@ -222,6 +274,8 @@ def test_receivables_only_terms_leave_inventory_lines_empty():
 def test_refusals():
     negative = compute([ar("A", "100", d1_30="-5")], [])
     assert negative.availability is None and [e.code for e in negative.errors] == [E.NEGATIVE_AMOUNT]
+    negative_contra = compute([ar("A", "100", contra="-5")], [])
+    assert [e.code for e in negative_contra.errors] == [E.NEGATIVE_AMOUNT]
     duplicate = compute([ar("A", "100"), ar("A", "50")], [])
     assert [e.code for e in duplicate.errors] == [E.DUPLICATE_ROW] and duplicate.lines["borrowing_base"] is None
     no_terms = compute(terms=None)
@@ -240,11 +294,25 @@ def test_rows_from_mappings_and_validated_terms_model():
     row = ArRow.from_mapping({"customer": "A", "current": "100", "days_1_30": "0", "days_31_60": "0",
                               "days_61_90": "0", "over_90": "25", "flags": ["foreign"]})
     assert row == ar("A", "100", over_90="25", flags=["foreign"]) and row.total == D("125")
+    with_contra = ArRow.from_mapping({"customer": "A", "current": "100", "days_1_30": "0", "days_31_60": "0",
+                                      "days_61_90": "0", "over_90": "25", "contra": "40"})
+    assert with_contra.contra == D("40") and with_contra.flags == frozenset()
     with pytest.raises(ValueError):
         ArRow.from_mapping({"customer": "A", "current": "100"})
     assert InventoryRow.from_mapping({"category": "consigned", "amount": "5"}) == InventoryRow("consigned", D("5"))
     model = BorrowingBase.model_validate(TERMS)
     assert compute(terms=model).lines == compute().lines
+
+
+def test_unused_availability_for_a_line_without_a_borrowing_base():
+    # 2,750,000 commitment - 1,807,000 drawn - 0 letters of credit
+    assert unused_availability(D("2750000"), D("1807000")) == D("943000")
+    assert unused_availability(D("2750000"), D("1807000"), D("100000")) == D("843000")
+    assert unused_availability(D("1000000"), D("1200000")) == D("-200000")  # over the commitment
+    with pytest.raises(TypeError):
+        unused_availability(2750000.0, D("1807000"))
+    with pytest.raises(ValueError):
+        unused_availability(D("2750000"), D("-1"))
 
 
 # ---- reconciliation with the certificate ---------------------------------------------------------

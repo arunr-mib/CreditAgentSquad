@@ -91,9 +91,9 @@ def check_provenance(db: Session, borrower_id: uuid.UUID, terms: Terms) -> list[
         _check_citation(db, borrower_id, req.citation, f"reporting_requirements.{req.id}",
                         [Decimal(req.due_days_after_period_end)], [], warnings)
     if terms.borrowing_base is not None:
-        bb = terms.borrowing_base
-        numbers = [bb.commitment] + [c.advance_rate for c in bb.components]
-        _check_citation(db, borrower_id, bb.citation, "borrowing_base", numbers, [], warnings)
+        # advance rates, limits and the commitment sit in several clauses, while the terms carry one
+        # citation for the block, so only the quote itself is checked here (see docs/HANDOFF.md)
+        _check_citation(db, borrower_id, terms.borrowing_base.citation, "borrowing_base", [], [], warnings)
     return warnings
 
 
@@ -199,3 +199,33 @@ def on_decision(db: Session, item: WorkItem, user: User, decision: str, reason: 
         approve_terms(db, version, user, reason=reason)
     else:
         reject_terms(db, version, user, reason=reason)
+
+
+def unapproved_amendments(db: Session, facility: Facility) -> list[Document]:
+    """Amendments on file for the borrower that no approved or superseded terms version names
+    as a source. Such an amendment may change a test, so a person must decide what to do."""
+    named: set[str] = set()
+    for version in db.execute(select(TermsVersion).where(
+            TermsVersion.facility_id == facility.id,
+            TermsVersion.status.in_(("approved", "superseded")))).scalars():
+        named.update(str(ref) for ref in version.source_document_ids or [])
+    amendments = db.execute(select(Document).where(
+        Document.borrower_id == facility.borrower_id, Document.doc_type == "amendment")
+        .order_by(Document.effective_date.nulls_last(), Document.created_at)).scalars()
+    return [d for d in amendments if str(d.id) not in named and d.meta.get("external_id") not in named]
+
+
+def raise_unapproved_amendments(db: Session, facility: Facility, *, cycle_id: uuid.UUID | None = None,
+                                actor: tuple[str, str] = ("system", "terms")) -> list[WorkItem]:
+    items = []
+    for doc in unapproved_amendments(db, facility):
+        items.append(raise_item(
+            db, borrower_id=facility.borrower_id, facility_id=facility.id, cycle_id=cycle_id,
+            stage="covenant_testing" if cycle_id else None, item_type="terms.unapproved_amendment",
+            severity="high", title=f"{doc.title} is on file but not in the approved terms",
+            question="A signed amendment is on file but is not reflected in the approved terms. Should the terms be updated before covenants are tested?",
+            allowed_decisions=["terms_update_requested", "amendment_not_applicable"],
+            required_permission=Permission.PREPARE_TERMS.value,
+            evidence={"document_id": str(doc.id), "effective_date": doc.effective_date.isoformat() if doc.effective_date else None},
+            actor=actor, dedupe_key=f"terms.unapproved_amendment:{doc.id}"))
+    return items

@@ -12,7 +12,13 @@ from app.domain.credit import Borrower, Facility
 from app.domain.documents_service import ingest_pdf
 from app.domain.org import User
 from app.domain.terms import ReportingObligation, TermsVersion
-from app.domain.terms_service import TermsRefused, approve_terms, propose_terms
+from app.domain.terms_service import (
+    TermsRefused,
+    approve_terms,
+    propose_terms,
+    raise_unapproved_amendments,
+    unapproved_amendments,
+)
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from sqlalchemy import select
@@ -161,3 +167,27 @@ def test_rejecting_needs_a_reason(db, world):
     workflow.decide_work_item(db, item, user_id=officer.id, user_role=officer.role, decision="reject",
                               reason="Threshold misread; see section 7.11.")
     assert version.status == "rejected" and governing_terms(db, facility, date(2025, 12, 31))[0] is None
+
+
+def test_amendment_on_file_but_not_in_approved_terms_is_raised_once(db, world):
+    facility, people = world
+    officer = people["credit_officer"]
+    v1, _ = propose(db, facility, terms())
+    approve_terms(db, v1, officer)
+    assert unapproved_amendments(db, facility) == []
+    amendment = ingest_pdf(db, borrower_id=facility.borrower_id, data=agreement_pdf(), file_name="amendment-1.pdf",
+                           doc_type="amendment", doc_type_source="system", effective_date=date(2026, 7, 1))
+    amendment.meta = {**amendment.meta, "external_id": "AMD-1"}
+    db.flush()
+    assert [d.id for d in unapproved_amendments(db, facility)] == [amendment.id]
+    first = raise_unapproved_amendments(db, facility)
+    again = raise_unapproved_amendments(db, facility)
+    assert [i.id for i in first] == [i.id for i in again] and first[0].item_type == "terms.unapproved_amendment"
+
+    # a proposed version that names the amendment does not clear it; approval does
+    body = terms()
+    v2, _ = propose_terms(db, facility=facility, terms=body, effective_from=date(2026, 7, 1),
+                          source_document_ids=["AGR-1", "AMD-1"], prepared_by=("agent", "terms@1"))
+    assert len(unapproved_amendments(db, facility)) == 1
+    approve_terms(db, v2, officer)
+    assert unapproved_amendments(db, facility) == []

@@ -34,6 +34,7 @@ from decimal import Decimal as D
 from app.calc import covenants as cov
 from app.calc import errors as E
 from app.calc.covenants import determine_outcome
+from app.calc.decimal_utils import round_half_up
 from app.calc.periods import FactValue, provider_from_facts
 from app.calc.signals import PeriodMetrics, compute_signal_inputs, evaluate_signals
 from app.calc.template import check_statement, compute_statement
@@ -304,7 +305,8 @@ def test_signals_from_the_june_2025_results():
     # EBITDA margin 500,000 / 3,900,000 = 0.1282; DSO 700,000 x 365 / 3,900,000 = 65.5;
     # DPO 300,000 x 365 / (1,160,000 + 2,400,000 - 1,200,000) = 109,500,000 / 2,360,000 = 46.4;
     # leverage (plain EBITDA) 1,800,000 / 500,000 = 3.60.
-    assert {k: str(v) for k, v in series[1].metrics.items() if v is not None} == {
+    places = {"revenue_ttm": 0, "net_income_ttm": 0, "cash": 0, "ebitda_margin": 4, "dso": 1, "dpo": 1, "leverage": 2}
+    assert {k: str(round_half_up(v, places[k])) for k, v in series[1].metrics.items()} == {
         "revenue_ttm": "3900000", "net_income_ttm": "150000", "cash": "200000",
         "ebitda_margin": "0.1282", "dso": "65.5", "dpo": "46.4", "leverage": "3.60"}
     evaluation = evaluate_signals(H1_25, series)

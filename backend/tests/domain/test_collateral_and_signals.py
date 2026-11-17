@@ -113,7 +113,8 @@ def test_signals_fire_from_facts_and_high_severity_asks_a_person(db, world):
     fired = {s.rule_id: s for s in signals}
     assert {"net_loss", "line_usage_high", "reporting_late"} <= set(fired)
     assert fired["net_loss"].severity == "high" and fired["net_loss"].rule_version == "signals-1"
-    assert items(db) == [("signal.high", "high")]
+    # a net loss and late reporting are both high severity, so each asks a person
+    assert items(db) == [("signal.high", "high")] * 2
     # running again does not duplicate signals or items
     again = run_signals(db, borrower=borrower, period_end=PERIOD, as_of=date(2026, 11, 17))
-    assert len(again) == len(signals) and items(db) == [("signal.high", "high")]
+    assert len(again) == len(signals) and items(db) == [("signal.high", "high")] * 2

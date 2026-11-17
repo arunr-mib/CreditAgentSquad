@@ -35,11 +35,15 @@ def quarter_ends(period_end: date, count: int) -> list[date]:
 def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.PeriodMetrics]:
     provider = fact_provider(db, borrower.id)
     fye = borrower.fiscal_year_end_month
+    has_base = db.execute(select(Facility.id).where(
+        Facility.borrower_id == borrower.id, Facility.has_borrowing_base.is_(True))).first() is not None
     series = []
     for end in quarter_ends(period_end, HISTORY_QUARTERS):
         inputs = sig.compute_signal_inputs(end, provider, fye_month=fye)
         metrics: dict[str, Any] = dict(inputs.values)
-        availability = current_fact(db, borrower.id, "bb.availability", end, 0)
+        # the availability rule is about borrowing-base lines only; a line without one is
+        # covered by the line-usage rule, so it gets no availability here
+        availability = current_fact(db, borrower.id, "bb.availability", end, 0) if has_base else None
         metrics["availability"] = FactValue(availability.value, str(availability.id)) if availability else None
         headroom = {}
         for test in db.execute(select(CovenantTest).where(

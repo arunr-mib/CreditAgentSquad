@@ -300,6 +300,7 @@ def spread_document(
         restated = [c for c in template.check_comparative(comparative, confirmed, scale=scale) if c.status == "fail"]
         if restated:
             _item(db, result, borrower, cycle, document, item_type="spread.restatement", severity="medium",
+                  blocks_stage=False,
                   title=f"{document.title}: prior-period figures differ from the confirmed spread",
                   question="The comparative column differs from what was confirmed last year. Has the borrower restated, and should the prior spread be updated?",
                   allowed_decisions=["restated_update_prior", "keep_prior", "ask_borrower"],

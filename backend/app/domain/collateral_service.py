@@ -12,7 +12,7 @@ from app.core import ledger
 from app.domain.covenant_service import governing_terms
 from app.domain.credit import Borrower, Facility
 from app.domain.facts import CalcRun
-from app.domain.facts_service import add_fact
+from app.domain.facts_service import add_fact, current_fact
 from app.domain.monitoring import BorrowingBaseReview, Cycle
 from app.domain.work_items import raise_item
 
@@ -112,3 +112,29 @@ def _raise_for(db, borrower, facility, cycle, review, mismatches, result, actor)
             allowed_decisions=["listing_corrected", "borrower_to_resubmit"],
             evidence={**evidence, "errors": [e.to_dict() for e in result.errors]},
             dedupe_key=f"bb.cannot_compute:{key}", **common)
+
+
+def store_line_availability(db: Session, *, borrower: Borrower, facility: Facility, period_end: date,
+                            actor: tuple[str, str] = ("system", "borrowing_base")):
+    """For a revolver with no borrowing base, availability is commitment less outstanding, both
+    taken from the system of record at the period end. Stored as a calculated fact that names
+    the two system facts. Returns None when either is missing: nothing is assumed."""
+    if facility.facility_type != "revolver" or facility.has_borrowing_base:
+        return None
+    commitment = current_fact(db, borrower.id, "sys.commitment", period_end, 0)
+    outstanding = current_fact(db, borrower.id, "sys.revolver_outstanding", period_end, 0)
+    if commitment is None or outstanding is None:
+        return None
+    existing = current_fact(db, borrower.id, "bb.availability", period_end, 0)
+    value = commitment.value - outstanding.value
+    if existing is not None and existing.value == value:
+        return existing
+    calc = CalcRun(
+        borrower_id=borrower.id, formula_key="line_availability", formula_version="1", period_end=period_end,
+        engine_version=ENGINE_VERSION,
+        inputs=[{"key": f.key, "fact_id": str(f.id), "value": str(f.value)} for f in (commitment, outstanding)],
+        outputs={"availability": str(value)}, created_by_type=actor[0], created_by_id=actor[1])
+    db.add(calc)
+    db.flush()
+    return add_fact(db, borrower_id=borrower.id, facility_id=facility.id, key="bb.availability",
+                    period_end=period_end, months=0, value=value, kind="calculated", calc_run_id=calc.id, actor=actor)
