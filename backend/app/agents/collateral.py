@@ -109,6 +109,18 @@ def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
 
 
+# Printed inventory categories -> the names used in terms. Eligibility turns on the category, so
+# code decides it from words that are hard to mistake; anything else keeps its own name.
+_CATEGORIES = ((r"consign", "consigned"), (r"work[\s-]*in[\s-]*(?:process|progress)|\bwip\b", "work_in_process"),
+               (r"raw", "raw_materials"), (r"finished", "finished_goods"), (r"obsolete|slow[\s-]*moving", "obsolete"),
+               (r"in[\s-]*transit", "in_transit"), (r"packag", "packaging"), (r"supplies", "supplies"))
+
+
+def inventory_category(printed: str) -> str:
+    lowered = printed.lower()
+    return next((name for pattern, name in _CATEGORIES if re.search(pattern, lowered)), _slug(printed))
+
+
 def read_collateral(db: Session, *, borrower: Borrower, document: Document, period_end: date,
                     cycle: Cycle | None, llm: LLMClient) -> CollateralResult:
     result = CollateralResult()
@@ -203,6 +215,7 @@ def read_collateral(db: Session, *, borrower: Borrower, document: Document, peri
     for n, item in enumerate(out.inventory_rows, start=1):
         value = cell(f"bbc.inventory.{n:03d}", item.page, item.amount_printed, item.category_printed, None)
         if value is not None:
-            result.inventory_rows.append({"category": _slug(item.category_printed), "amount": str(value)})
+            result.inventory_rows.append({"category": inventory_category(item.category_printed), "amount": str(value),
+                                          "printed_category": item.category_printed})
     db.flush()
     return result

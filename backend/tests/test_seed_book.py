@@ -120,10 +120,16 @@ def test_signals_match_the_generator(seeded):
     for code, truth in truths.items():
         b = borrower(db, code)
         current = _day(truth["current_period"])
-        ours = sorted({(s.rule_id, s.severity) for s in db.execute(select(Signal).where(
-            Signal.borrower_id == b.id, Signal.period_end == current)).scalars()})
-        book_signals = sorted({(s["rule"], s["severity"]) for s in truth["expected"]["signals"]
-                               if _day(s["period_end"]) == current})
+        # lists, not sets: a duplicate signal is a difference
+        rows = list(db.execute(select(Signal).where(Signal.borrower_id == b.id, Signal.period_end == current)).scalars())
+        ours = sorted((s.rule_id, s.severity, s.basis.get("covenant_id") or "") for s in rows)
+        book_signals = sorted((s["rule"], s["severity"], (s.get("detail") or {}).get("covenant_id") or "")
+                              for s in truth["expected"]["signals"] if _day(s["period_end"]) == current)
+        for s in rows:
+            linked = s.basis.get("metric_fact_ids") or s.basis.get("system_fact_ids") or s.rule_id == "reporting_late"
+            headroom = s.basis.get("metric") == "headroom_pct"
+            if not linked and not headroom:
+                problems.append(f"{code}: {s.rule_id} has no stored fact behind its figures")
         if ours != book_signals:
             problems.append(f"{code}: ours {ours}; book {book_signals}")
     assert problems == []

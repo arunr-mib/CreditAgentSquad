@@ -49,7 +49,11 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
         for test in db.execute(select(CovenantTest).where(
                 CovenantTest.borrower_id == borrower.id, CovenantTest.period_end == end,
                 CovenantTest.superseded.is_(False), CovenantTest.covenant_id != "*")).scalars():
-            headroom[test.covenant_id] = test.headroom_pct
+            # carry the stored fact, so the signal's basis links each figure to its source
+            stored = current_fact(db, borrower.id, f"cov.{test.covenant_id}.headroom_pct", end, 0)
+            headroom[test.covenant_id] = (FactValue(stored.value, str(stored.id))
+                                          if stored is not None and stored.value == test.headroom_pct
+                                          else test.headroom_pct)
         months = ((end.month - fye) % 12) or 12
         series.append(sig.PeriodMetrics(end, months, metrics, headroom))
     return series
@@ -81,8 +85,9 @@ def run_signals(
     evaluation = sig.evaluate_signals(period_end, _series(db, borrower, period_end),
                                       system_rows=_system_rows(db, borrower), reporting=reporting, as_of=as_of)
     stored: list[Signal] = []
-    for fired in evaluation.signals:
-        basis = ledger._jsonable({**fired.basis, "subject": fired.subject})
+    for fired in _one_per_period(evaluation.signals):
+        basis = ledger._jsonable({**fired.basis, "subject": fired.subject,
+                                  **_source_facts(db, borrower, period_end, fired)})
         existing = db.execute(select(Signal).where(
             Signal.borrower_id == borrower.id, Signal.period_end == period_end, Signal.rule_id == fired.rule_id,
             Signal.basis["subject"].astext == (fired.subject or ""))).scalar_one_or_none() if fired.subject else \
@@ -117,3 +122,53 @@ def run_signals(
 def facility_for_signals(db: Session, borrower_id: uuid.UUID) -> Facility | None:
     return db.execute(select(Facility).where(Facility.borrower_id == borrower_id)
                       .order_by(Facility.has_borrowing_base.desc())).scalars().first()
+
+
+def _one_per_period(fired: list[sig.Signal]) -> list[sig.Signal]:
+    """Late reporting is one signal per period: the most overdue item, with the others listed."""
+    late = [f for f in fired if f.rule_id == "reporting_late"]
+    if len(late) <= 1:
+        return fired
+    worst = max(late, key=lambda f: f.basis.get("days_late", 0))
+    merged = sig.Signal(worst.rule_id, worst.severity, worst.period_end, None, {
+        **worst.basis, "late_items": [{"requirement_id": f.basis.get("requirement_id"),
+                                       "days_late": f.basis.get("days_late"), "due_date": f.basis.get("due_date")}
+                                      for f in sorted(late, key=lambda f: -f.basis.get("days_late", 0))]})
+    out, placed = [], False
+    for f in fired:
+        if f.rule_id != "reporting_late":
+            out.append(f)
+        elif not placed:
+            out.append(merged)
+            placed = True
+    return out
+
+
+_RULES = {rule.id: rule for rule in sig.RULES}
+
+
+def _source_facts(db: Session, borrower: Borrower, period_end: date, fired: sig.Signal) -> dict[str, Any]:
+    """Stored facts behind a signal's figures: the metric at the period and a year earlier, or the
+    system-of-record balances on the row's date. A figure shown to a person must have a source."""
+    from app.calc import metrics as lib
+    from app.calc.periods import same_period_prior_year
+    from app.domain.metrics_service import EXTRA, store_metric
+
+    out: dict[str, Any] = {}
+    metric = _RULES[fired.rule_id].params.get("metric") if fired.rule_id in _RULES else None
+    if metric and (metric in EXTRA or metric in lib.METRICS):
+        ids = {}
+        for label, end in (("current", period_end), ("year_earlier", same_period_prior_year(period_end))):
+            fact = store_metric(db, borrower, metric, end)
+            if fact is not None:
+                ids[label] = str(fact.id)
+        out["metric_fact_ids"] = ids
+    row_date = fired.basis.get("date")
+    if row_date is not None:
+        ids = {}
+        for key in ("sys.revolver_outstanding", "sys.commitment", "sys.past_due_days"):
+            fact = current_fact(db, borrower.id, key, row_date, 0)
+            if fact is not None:
+                ids[key] = str(fact.id)
+        out["system_fact_ids"] = ids
+    return out

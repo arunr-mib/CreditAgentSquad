@@ -118,3 +118,13 @@ def test_signals_fire_from_facts_and_high_severity_asks_a_person(db, world):
     # running again does not duplicate signals or items
     again = run_signals(db, borrower=borrower, period_end=PERIOD, as_of=date(2026, 11, 17))
     assert len(again) == len(signals) and items(db) == [("signal.high", "high")] * 2
+
+
+def test_printed_inventory_categories_map_to_the_names_used_in_terms():
+    from app.agents.collateral import inventory_category
+    assert inventory_category("Inventory held on consignment") == "consigned"
+    assert inventory_category("Work in process") == "work_in_process"
+    assert inventory_category("Work-in-progress (WIP)") == "work_in_process"
+    assert inventory_category("Raw materials") == "raw_materials"
+    assert inventory_category("Finished goods") == "finished_goods"
+    assert inventory_category("Spare parts") == "spare_parts"  # unknown categories keep their own name
