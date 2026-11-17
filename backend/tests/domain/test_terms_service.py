@@ -191,3 +191,25 @@ def test_amendment_on_file_but_not_in_approved_terms_is_raised_once(db, world):
     assert len(unapproved_amendments(db, facility)) == 1
     approve_terms(db, v2, officer)
     assert unapproved_amendments(db, facility) == []
+
+
+def test_deciding_to_update_terms_sends_the_agreement_and_amendments_to_the_terms_agent(db, world, monkeypatch):
+    from app.agents import terms_agent
+    from app.domain import stages
+
+    facility, people = world
+    officer, admin = people["credit_officer"], people["credit_admin"]
+    approve_terms(db, propose(db, facility, terms())[0], officer)
+    amendment = ingest_pdf(db, borrower_id=facility.borrower_id, data=agreement_pdf(), file_name="amendment-1.pdf",
+                           doc_type="amendment", doc_type_source="system", effective_date=date(2026, 7, 1))
+    item = raise_unapproved_amendments(db, facility)[0]
+    seen = {}
+    monkeypatch.setattr(stages, "LLM_FACTORY", lambda: "llm")
+    monkeypatch.setattr(terms_agent, "extract_terms", lambda db, **kw: seen.update(kw))
+    with pytest.raises(ValueError, match="needs a reason"):
+        workflow.decide_work_item(db, item, user_id=admin.id, user_role=admin.role, decision="amendment_not_applicable")
+    assert seen == {} and item.status == "open"
+    workflow.decide_work_item(db, item, user_id=admin.id, user_role=admin.role, decision="terms_update_requested")
+    assert seen["facility"].id == facility.id and seen["llm"] == "llm"
+    assert [d.doc_type for d in seen["documents"]] == ["credit_agreement", "amendment"]
+    assert seen["documents"][1].id == amendment.id and item.status == "decided"

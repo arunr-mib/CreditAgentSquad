@@ -91,6 +91,14 @@ def test_to_one_is_dropped_only_for_a_known_ratio():
     assert values("not less than 1.40 to 1.00", known_ratios=[D("1.25")]) == [D("1.40"), D("1.00")]
 
 
+def test_to_one_at_the_end_of_a_sentence_is_dropped_but_a_decimal_is_not_cut():
+    # found by the Terms Agent: "...exceed 2.00 to 1.00." ends with a full stop
+    assert values("shall not exceed 2.00 to 1.00.", known_ratios=[D("2.00")]) == [D("2.00")]
+    assert values("a ratio of 2.00 to 1.00, tested quarterly", known_ratios=[D("2.00")]) == [D("2.00")]
+    # "1.5" is not "1" followed by a full stop: the figure is kept whole
+    assert values("moved from 2.00 to 1.5 over the year", known_ratios=[D("2.00")]) == [D("2.00"), D("1.5")]
+
+
 def test_to_one_does_not_create_a_phantom_from_a_range_of_amounts():
     assert values("fell from 2,400,000 to 1,900,000", known_ratios=[D("2400000")]) == [
         D("2400000"), D("1900000")]

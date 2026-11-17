@@ -57,7 +57,7 @@ _FIGURE = re.compile(
     re.X | re.I,
 )
 _N_TO_ONE = re.compile(
-    r"(?P<n>\d+(?:\.\d+)?)(?P<x>x)?(?P<tail>\s*(?:to|:)\s*1(?:\.0+)?(?:x)?)(?![\d,.]|\w)", re.I
+    r"(?P<n>\d+(?:\.\d+)?)(?P<x>x)?(?P<tail>\s*(?:to|:)\s*1(?:\.0+)?(?:x)?)(?!\d|[.,]\d|\w)", re.I
 )
 
 

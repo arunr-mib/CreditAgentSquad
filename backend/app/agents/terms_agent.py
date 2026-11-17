@@ -39,7 +39,7 @@ from app.domain.terms import TermsVersion
 from app.domain.terms_service import TermsRefused, propose_terms
 from app.domain.work_items import raise_item
 from app.guardrails.narrative import check_narrative
-from app.guardrails.numbers import extract_figures, same_number
+from app.guardrails.numbers import blank_non_figures, extract_figures, same_number
 from app.guardrails.quotes import quote_on_page
 
 PREPARED_BY = ("agent", "terms@1")
@@ -162,7 +162,7 @@ SPEC = AgentSpec(
 _AR_EXCLUSIONS = ("intercompany", "foreign", "government", "contra")
 _INVENTORY_EXCLUSIONS = ("work_in_process", "consigned")
 _RATIO_TEXT = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*(?:x|x?\s*(?:to|:)\s*1(?:\.0+)?x?)\s*$", re.I)
-_RATIO_IN_QUOTE = re.compile(r"(\d+(?:\.\d+)?)x?\s*(?:to|:)\s*1(?:\.0+)?x?(?![\d,.]|\w)", re.I)
+_RATIO_IN_QUOTE = re.compile(r"(?<![\w.,])(\d+(?:\.\d+)?)x?\s*(?:to|:)\s*1(?:\.0+)?x?(?![\d,]|\.\d|\w)", re.I)
 _DATE_MARKER = re.compile(r"\b(?:dated|effective|entered\s+into|made)\s+(?:as\s+of|on|from)\s+", re.I)
 _SLUG = re.compile(r"^[a-z][a-z0-9_]{1,39}$")
 _FIGURE_KIND = {"ratio": "ratio", "pct": "percent", "usd": "amount", "count": "amount"}
@@ -190,6 +190,13 @@ def _flat(text: str) -> str:
 
 def _plain(value: Decimal) -> str:
     return format(value, "f")
+
+
+def _ratios(quote: str) -> list[Decimal]:
+    """Every ratio a clause states, as "N to 1.00", "N:1" or "Nx". Read here because the number
+    guardrail keeps the 1.00 of "N to 1.00" when the sentence ends straight after it."""
+    stated = [Decimal(n) for n in _RATIO_IN_QUOTE.findall(blank_non_figures(quote))]
+    return stated + [f.value for f in extract_figures(quote) if f.kind == "ratio"]
 
 
 def reference(document: Document) -> str:
@@ -277,14 +284,13 @@ class _Reader:
         if not extract_figures(clause.quote):
             reading.problem = "no_figure_in_quote"
             return reading
-        known: list[Decimal] = []
         if kind == "ratio":
             match = _RATIO_TEXT.match(printed)
             if match is None:
                 reading.problem = "ambiguous_figure" if len(extract_figures(printed)) > 1 else "no_figure"
                 return reading
             target = Decimal(match.group(1))
-            known = [target]
+            stated = [value for value in _ratios(clause.quote) if same_number(value, target)]
         else:
             figures = extract_figures(printed)
             if len(figures) != 1:
@@ -294,12 +300,12 @@ class _Reader:
             if figures[0].kind != _FIGURE_KIND[kind] or target < 0 or (kind == "count" and target != int(target)):
                 reading.problem = "no_figure"
                 return reading
-        stated = [f for f in extract_figures(clause.quote, known)
-                  if f.kind == _FIGURE_KIND[kind] and same_number(f.value, target)]
+            stated = [f.value for f in extract_figures(clause.quote)
+                      if f.kind == _FIGURE_KIND[kind] and same_number(f.value, target)]
         if not stated or _flat(printed) not in _flat(clause.quote):
             reading.problem = "printed_disagrees_with_quote"
             return reading
-        reading.figure = stated[0].value
+        reading.figure = stated[0]
         reading.value = reading.figure.scaleb(-2) if kind == "pct" else reading.figure
         return reading
 
@@ -313,8 +319,8 @@ class _Reader:
                 groups.setdefault((reading.clause.key, _FIGURE_KIND[reading.kind]), []).append(reading)
         for (_key, figure_kind), readings in groups.items():
             quote = readings[0].clause.quote
-            ratios = [Decimal(n) for n in _RATIO_IN_QUOTE.findall(quote)] if figure_kind == "ratio" else []
-            stated = [f.value for f in extract_figures(quote, ratios) if f.kind == figure_kind]
+            stated = _ratios(quote) if figure_kind == "ratio" else [
+                f.value for f in extract_figures(quote) if f.kind == figure_kind]
             claimed = [r.figure for r in readings]
             if any(not any(same_number(value, c) for c in claimed) for value in stated):
                 for reading in readings:

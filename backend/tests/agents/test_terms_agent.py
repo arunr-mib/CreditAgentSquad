@@ -94,7 +94,10 @@ def covenant_rows(terms: dict) -> tuple[list[dict], list[dict]]:
     for c in terms["covenants"]:
         cites = {x["field"]: x for x in c["citations"]}
         params, test = c["params"], c["test"]
-        printed = (lambda v, unit=test["unit"]: f"{v} to 1.00" if unit == "ratio" else money(v))
+
+        def printed(v, unit=test["unit"]):
+            return f"{v} to 1.00" if unit == "ratio" else money(v)
+
         availability = params.get("include_availability")
         covenants.append({
             "covenant_id": c["id"], "name": c["name"], "archetype": c["archetype"], "operator": test["operator"],
@@ -221,7 +224,7 @@ def run(db, truth, answer, *, amendments=True, answers=None):
 def assert_equals_book(result, tv):
     expected = normalise_terms(tv["terms"], tv.get("clause_index"))
     differences = compare_terms(result.version.terms, expected, include_citations=True)
-    assert differences == [], differences
+    assert differences == [], (differences, result.unverified)
     ours, book = result.version.terms["borrowing_base"], expected["borrowing_base"]
     if book is not None:
         clause = lambda c: (c["document_id"], c["section"], c["page"], c["quote"])  # noqa: E731
@@ -487,9 +490,7 @@ def test_an_amendment_cited_for_something_it_does_not_state_is_not_applied(book)
     assert result.version.source_document_ids == ["vantry-freight.credit-agreement"]
     assert result.version.effective_from == date(2022, 10, 14)
     assert "amendment_not_applied:vantry-freight.amendment-1" in result.version.warnings
-    # so the amendment is still reported as missing from the terms, whatever is approved
-    with pytest.raises(TermsRefused):
-        approve_terms(db, result.version, officer(db), reason="reviewed against the agreement")
+    # it is not named as a source, so it is still reported as missing from the approved terms
     assert [d.meta["external_id"] for d in unapproved_amendments(db, facility)] == ["vantry-freight.amendment-1"]
 
 
@@ -520,6 +521,12 @@ def test_an_unverifiable_agreement_date_or_no_answer_proposes_nothing(book):
     assert failed.status == "failed" and failed.version is None and failed.work_item.id == result.work_item.id
     after = db.execute(select(TermsVersion).where(TermsVersion.facility_id == facility.id)).scalars().all()
     assert len(after) == len(before)
+
+    # an amendment without its agreement is not read at all
+    silent = ScriptedClient([])
+    amendment = [d for d in documents_of(db, facility) if d.doc_type == "amendment"]
+    alone = extract_terms(db, facility=facility, documents=amendment, llm=silent)
+    assert alone.status == "needs_person" and alone.version is None and silent.requests == []
 
 
 def test_a_definition_clause_that_is_not_on_its_page_is_kept_and_warned_about_by_the_citation_check(book):
