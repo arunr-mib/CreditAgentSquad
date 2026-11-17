@@ -8,6 +8,14 @@ The first slice is the portfolio monitoring cycle: reporting-package intake, fin
 
 **Status:** a working pilot foundation on synthetic data. Every agent has been tested with scripted model responses only; no live model run has been made yet (see `docs/HANDOFF.md`). All data is synthetic and every generated document is marked `SYNTHETIC - FOR DEMONSTRATION`. The lender, "Bank of Stoic", and all borrowers are fictional.
 
+## Run the demo with one command
+
+```bash
+./scripts/demo.sh
+```
+
+It creates `.env`, installs packages, creates the database if it can, generates and loads the synthetic book, starts the API and the workspace, and prints the address and demo sign-ins. It needs `uv`, Node 20+ with `pnpm`, and PostgreSQL 16 (or Docker, in which case it starts a PostgreSQL container). `./scripts/demo.sh --reset` empties the demo database first. Tested on Linux with a local PostgreSQL; the macOS and Docker paths are written but have not been run.
+
 ## How it keeps its promises
 
 - **The model never types a number.** Agents say where a figure is printed; code finds it on the page, reads the number itself and stores a cited fact. Agent text may only reference stored facts, and code renders the figure.

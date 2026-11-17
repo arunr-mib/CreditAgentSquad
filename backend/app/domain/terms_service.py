@@ -63,7 +63,7 @@ def _check_citation(db, borrower_id, citation: Citation | None, field: str, numb
 
 
 _FLOOR = re.compile(r"\b(?:less\s+than|below|minimum|at\s+least|fall\s+below)\b", re.I)
-_CEILING = re.compile(r"\b(?:exceed|exceeds|greater\s+than|more\s+than|maximum|above|in\s+excess\s+of)\b", re.I)
+_CEILING = re.compile(r"\b(?:exceed(?:s|ed|ing)?|greater\s+than|more\s+than|maximum|above|in\s+excess\s+of|up\s+to)\b", re.I)
 _GENERIC = {"ratio", "total", "minimum", "maximum", "the", "of", "and", "to", "consolidated", "covenant", "test"}
 
 
