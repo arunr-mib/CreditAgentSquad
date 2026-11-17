@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import type * as PdfJs from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { API } from '@/api/client';
 import type { Box } from '@/api/schema';
 import { cx } from '@/lib/cx';
 
-type PdfModule = typeof import('pdfjs-dist');
+type PdfModule = typeof PdfJs;
 type PdfDocument = Awaited<ReturnType<PdfModule['getDocument']>['promise']>;
 
 let pdfModule: Promise<PdfModule> | null = null;

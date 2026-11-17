@@ -1,10 +1,11 @@
-// Accessibility check: axe-core on the four pages, plus a keyboard pass that tabs through every
-// focusable control and fails if one takes focus without a visible focus ring.
+// Accessibility check on the real screens, signed in as a credit analyst: axe-core, plus a keyboard
+// pass that tabs through every focusable control and fails if one takes focus without a visible
+// focus ring. Needs the seeded stack running (API on port 8000).
 // Usage: node scripts/a11y.mjs [--no-build]
 // Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { BASE, PAGES, serve } from './serve.mjs';
+import { open, PAGES, serve, signIn } from './serve.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
@@ -18,10 +19,13 @@ try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const page = await context.newPage();
 
+  let signedIn = false;
   for (const target of PAGES) {
-    await page.goto(`${BASE}${target.path}`, { waitUntil: 'networkidle' });
-    await page.waitForSelector('[data-ready]');
-    await page.evaluate(() => document.fonts.ready);
+    if (!target.signedOut && !signedIn) {
+      await signIn(page);
+      signedIn = true;
+    }
+    target.path = `${target.name} (${await open(page, target)})`;
 
     // 1. axe-core, WCAG 2.1 A and AA plus best practices.
     await page.evaluate(axeSource);

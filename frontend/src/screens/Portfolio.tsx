@@ -9,8 +9,6 @@ import { humanize, OUTCOME, quarterLabel, STAGE_ORDER, stageLabel } from '@/doma
 import { FactFigure, ProvenanceLegend, SourcedFigure } from '@/source/figures';
 import { Load } from './parts';
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
 function Stat({ label, children, note }: { label: string; children: ReactNode; note?: ReactNode }) {
   return (
     <div className="min-w-0 px-5 py-3.5 first:pl-0 last:pr-0">
@@ -144,7 +142,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
       },
       {
         id: 'items',
-        header: 'Open items',
+        header: 'Items',
         align: 'right',
         sortValue: (row) => row.open_work_items,
         cell: (row) =>
@@ -158,9 +156,9 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
       },
       {
         id: 'stage',
-        header: 'Cycle stage',
+        header: 'Stage',
         sortValue: (row) => (row.latest_cycle ? STAGE_ORDER.indexOf(row.latest_cycle.stage) : 99),
-        cell: (row) => <span className="text-ink-700">{row.latest_cycle ? stageLabel(row.latest_cycle.stage) : 'No cycle'}</span>,
+        cell: (row) => <span className="text-ink-700">{row.latest_cycle ? (row.latest_cycle.stage === 'review_prep' ? 'Review prep' : stageLabel(row.latest_cycle.stage)) : 'No cycle'}</span>,
       },
     ];
   }, [summary]);
@@ -186,7 +184,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
         </p>
       </div>
       <DataTable
-        caption="Borrowers with rating, exposure in US dollars thousands, covenant status, open signals, open items and cycle stage"
+        caption="Borrowers with rating, exposure in US dollars thousands, covenant status, open signals, open work items and cycle stage"
         data={filtered}
         columns={columns}
         getRowId={(row) => row.id}
@@ -348,7 +346,6 @@ export function Borrowers() {
       { id: 'industry', header: 'Industry', sortValue: (row) => row.industry, cell: (row) => <span className="text-ink-700">{humanize(row.industry)}</span> },
       { id: 'rm', header: 'Relationship manager', sortValue: (row) => row.relationship_manager, cell: (row) => row.relationship_manager ?? <span className="text-ink-500">Not assigned</span> },
       { id: 'analyst', header: 'Credit analyst', sortValue: (row) => row.analyst, cell: (row) => row.analyst ?? <span className="text-ink-500">Not assigned</span> },
-      { id: 'fye', header: 'Fiscal year ends', sortValue: (row) => row.fiscal_year_end_month, cell: (row) => <span className="text-ink-700">{MONTHS[row.fiscal_year_end_month - 1] ?? 'Unknown'}</span> },
       {
         id: 'stage',
         header: 'Cycle stage',

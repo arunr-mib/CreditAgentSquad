@@ -279,12 +279,15 @@ class LoadedBorrower:
              "doc_type_source": d.doc_type_source, "period_end": plain(d.period_end), "status": d.status,
              "quality": d.meta.get("quality"), "image_only_pages": d.meta.get("image_only_pages", [])}
             for d in documents.values() if d.doc_type_source != "system"]
+        covenant_of = {str(t.id): t.covenant_id for t in db.execute(
+            select(CovenantTest).where(CovenantTest.cycle_id == cycle.id)).scalars()}
         recording["work_items"] = [
             {"id": str(w.id), "type": w.item_type, "severity": w.severity, "stage": w.stage, "status": w.status,
              "decision": w.decision, "blocks_stage": w.blocks_stage, "title": w.title, "question": w.question,
              "allowed_decisions": w.allowed_decisions, "required_permission": w.required_permission,
              "evidence": plain(w.evidence), "guardrail_notes": plain(w.guardrail_notes),
-             "agent_run_id": plain(w.agent_run_id)}
+             "recommendation": plain(w.recommendation), "covenant_id": covenant_of.get(
+                 str((w.evidence or {}).get("covenant_test_id"))), "agent_run_id": plain(w.agent_run_id)}
             for w in db.execute(select(WorkItem).where(WorkItem.borrower_id == row.id)
                                 .order_by(WorkItem.created_at, WorkItem.id)).scalars() if w.id not in seeded_items]
         recording["covenant_tests"] = [
@@ -532,9 +535,9 @@ def main(argv: list[str] | None = None) -> int:
         if slipped:
             results["gate"]["passed"] = False
             results["gate"]["reasons"].append("mutation(s) caught by neither the product nor the grader: " + ", ".join(slipped))
-    json_path, md_path = write_results(results, Path(args.out))
     if not args.no_eval_run:
         results["meta"]["eval_run_id"] = save_eval_run(engine, results)
+    json_path, md_path = write_results(results, Path(args.out))
     engine.dispose()
 
     from evals.scorecard import render_summary

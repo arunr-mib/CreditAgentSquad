@@ -10,7 +10,8 @@ Named failures (spec section 16):
                      a figure shown to a person that is not a stored fact (a covenant value with
                      no fact behind it, a reference to a fact that does not exist, a digit typed
                      in agent-written text)
-  false-compliant    a covenant recorded compliant where the truth says breach
+  false-compliant    a covenant recorded compliant where the truth says breach, or a
+                     recommendation to resolve a covenant exception where the truth is a breach
   false-breach       a covenant recorded in breach where the truth says it passes
   missed-exception   an exception the scenario expects that was not raised
   false-exception    an exception raised for a clean borrower, or beyond the scenario's expected ones
@@ -67,6 +68,8 @@ STAGES = ("awaiting_package", "intake", "spreading", "covenant_testing", "borrow
           "review_prep", "in_review", "actions_open", "closed")
 STAGE_OF_ITEM = {"intake": "awaiting_package", "spread": "spreading", "covenant": "covenant_testing",
                  "terms": "covenant_testing", "bb": "borrowing_base", "signal": "signals", "review": "review_prep"}
+# agents the stand-in reader does not answer; the product must fall back safely for each
+STANDIN_UNANSWERED = frozenset({"covenant", "early_warning", "terms"})
 PASSING = ("compliant", "compliant_variance")
 BREACHING = ("breach", "breach_reported_compliant")
 USABLE = ("verified", "confirmed")
@@ -456,7 +459,9 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
         for key in sorted(got_signals - want_signals):
             disagreements.append({"kind": "signal-unexpected", "item": " ".join(k for k in key if k),
                                   "detail": "fired, not expected by the truth"})
-    elif want_signals and not resting_as_expected:
+    elif want_signals and resting_as_expected:
+        not_reached.append("signals")  # unmeasured: the cycle correctly waits on a person before this stage
+    elif want_signals:
         disagreements.append({"kind": "signals-not-run", "item": f"signals @ {end}",
                               "detail": f"{sum(want_signals.values())} expected signal(s); the signals stage is "
                                         f"{status.get('signals')}"})
@@ -475,12 +480,29 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
                              "detail": f"{untraced} figure(s) in signal bases carry no fact id"})
 
     # ---- text written by an agent and shown to a person ----
+    unanswered: Counter = Counter()
     for run in rec["agent_runs"]:
         for note in run.get("guardrail_notes") or []:
             if isinstance(note, dict) and note.get("action") == "shown" and typed_figures(str(note.get("detail", ""))):
                 fail("invented-number", f"{run['agent']} note", f"a note shown to a person types a figure: {note['detail']!r}"[:300])
         if run["status"] != "completed":
-            fail("wrong-abstain", f"{run['agent']} run", f"the run {run['status']}: {run.get('error') or 'no answer'}"[:300])
+            if run["llm_mode"] == "standin" and run["agent"] in STANDIN_UNANSWERED:
+                unanswered[run["agent"]] += 1  # the stand-in has no reader for this agent; not the product's abstain
+            else:
+                fail("wrong-abstain", f"{run['agent']} run", f"the run {run['status']}: {run.get('error') or 'no answer'}"[:300])
+    for agent, count in sorted(unanswered.items()):
+        observations.append({"kind": "standin-unanswered", "item": agent,
+                             "detail": f"{count} {agent} call(s) were left unanswered by the stand-in; the product "
+                                       "fell back without a recommendation or explanation"})
+    # a recommendation to resolve a covenant exception where the truth is a true breach is the
+    # same failure as a false "compliant": it tells a person the breach is not one
+    for w in items:
+        advice = (w.get("recommendation") or {}).get("recommendation")
+        if w["type"] in ("covenant.breach", "covenant.reported_mismatch") and advice == "resolve":
+            want = truth.tests.get(w.get("covenant_id") or "")
+            if want is None or want["outcome"] in BREACHING:
+                fail("false-compliant", f"recommendation on {w['type']} ({w.get('covenant_id')})",
+                     "the Covenant Agent recommends resolve where the truth is a breach")
     for w in items:
         concern = str((w.get("evidence") or {}).get("agent_concern") or "")
         if typed_figures(concern):

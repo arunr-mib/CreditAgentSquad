@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
-import { Building2, CalendarClock, ChevronDown, LogOut, MessageSquareText, Palette, Search } from 'lucide-react';
+import { Building2, CalendarClock, ChevronDown, LogOut, Palette, Search } from 'lucide-react';
 import { DropdownMenu } from 'radix-ui';
 import { useCallback, useMemo, useState } from 'react';
 import { useBorrowers, usePortfolio } from '@/api/hooks';
@@ -8,6 +8,7 @@ import { CommandPalette, formatDate, Kbd, Popover, Tooltip, useCommandPaletteSho
 import { roleLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { useAsOf } from './AsOf';
+import { Copilot } from './Copilot';
 import { NAV } from './nav';
 import { Wordmark } from './Wordmark';
 
@@ -98,30 +99,6 @@ function AsOfControl() {
         ) : (
           'An administrator sets the date under Governance.'
         )}
-      </p>
-    </Popover>
-  );
-}
-
-/** Placeholder: the Copilot routes are not built. This panel calls nothing. */
-function CopilotPlaceholder() {
-  return (
-    <Popover
-      label="Copilot"
-      align="end"
-      className="w-[340px] p-4"
-      trigger={
-        <button type="button" className="inline-flex h-8 items-center gap-2 rounded-sm px-2 text-body text-ink-700 t-colors hover:bg-hover hover:text-ink">
-          <MessageSquareText size={15} strokeWidth={1.75} aria-hidden className="text-ink-500" />
-          Copilot
-        </button>
-      }
-    >
-      <p className="eyebrow">Copilot · not built yet</p>
-      <p className="mt-1 text-title font-semibold text-ink">Ask about a borrower, with every figure traced</p>
-      <p className="mt-1 text-body text-pretty text-ink-700">
-        The Copilot arrives in a later milestone. This panel is a placeholder: it sends nothing and calls no model. Until then, every figure in the workspace opens its own
-        source.
       </p>
     </Popover>
   );
@@ -237,7 +214,7 @@ export function AppShell() {
             </span>
           </button>
           <div className="flex items-center gap-2">
-            <CopilotPlaceholder />
+            <Copilot />
             <AsOfControl />
             <span aria-hidden className="mx-1 h-5 border-l border-hairline-strong" />
             <UserMenu />

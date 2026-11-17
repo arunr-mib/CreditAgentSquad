@@ -228,7 +228,8 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
             </Row>
           ) : null}
           <Row label="Stored value">
-            <span className="tnum">{fact.value}</span> {fact.unit === 'pct' ? '(a fraction, shown in per cent)' : fact.unit}
+            <span className="tnum">{fact.unit === 'usd' ? formatFigure(fact.value, 'usd', { unitMark: false, dp: fact.value.includes('.') ? 2 : 0 }).text : fact.value}</span>{' '}
+            {fact.unit === 'pct' ? 'as a fraction, shown in per cent' : fact.unit === 'usd' ? 'whole US dollars' : factFormat(fact.unit).text.toLowerCase()}
           </Row>
           {fact.note ? <Row label="Note">{fact.note}</Row> : null}
           <Row label="Fact">

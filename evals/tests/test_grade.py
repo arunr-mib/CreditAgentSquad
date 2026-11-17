@@ -254,3 +254,36 @@ def test_a_typed_figure_is_seen(text):
     "See Section 6.1 of the agreement dated 2022-03-18.", "No figures here."])
 def test_dates_quarters_references_and_fact_ids_are_not_figures(text):
     assert typed_figures(text) == []
+
+
+def test_a_recommendation_to_resolve_a_true_breach_is_a_false_compliant_and_fails_the_gate(small):
+    book, recordings = small
+
+    def resolve(rec):
+        item = next(w for w in rec["work_items"] if w["type"] == "covenant.reported_mismatch")
+        item["recommendation"] = {"recommendation": "resolve", "explanation": "explained by the amendment"}
+
+    graded = graded_after(small, "kestrel-bay-packaging", resolve)
+    assert [f["name"] for f in graded["failures"]] == ["false-compliant"]
+    tampered = copy.deepcopy(recordings)
+    resolve(tampered["kestrel-bay-packaging"])
+    assert not evaluate_gate([grade_pass(book, tampered)], mode="live")["passed"]
+
+    def escalate(rec):
+        item = next(w for w in rec["work_items"] if w["type"] == "covenant.reported_mismatch")
+        item["recommendation"] = {"recommendation": "escalate"}
+
+    assert graded_after(small, "kestrel-bay-packaging", escalate)["failures"] == []
+
+
+def test_an_agent_the_stand_in_does_not_answer_is_an_observation_but_a_models_failed_run_is_a_wrong_abstain(small):
+    def unanswered(mode):
+        def change(rec):
+            run = copy.deepcopy(rec["agent_runs"][0])
+            run.update({"agent": "covenant", "status": "failed", "llm_mode": mode, "error": "no answer"})
+            rec["agent_runs"].append(run)
+        return change
+
+    standin = graded_after(small, "kestrel-bay-packaging", unanswered("standin"))
+    assert standin["failures"] == [] and "standin-unanswered" in {o["kind"] for o in standin["observations"]}
+    assert names(graded_after(small, "kestrel-bay-packaging", unanswered("live"))) == {"wrong-abstain"}

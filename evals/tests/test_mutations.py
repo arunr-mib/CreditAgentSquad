@@ -1,6 +1,6 @@
 """Mutation checks with the product in the loop: tamper with the stand-in reader's answer, run
 the live cycle, and record who caught it. About one minute (three borrowers loaded once each,
-28 runs of the cycle). Deselect with: -m "not slow".
+32 runs of the cycle). Deselect with: -m "not slow".
 
 EXPECTED is what each mutation was seen to do on 2026-11-17. `product` means the product refused
 the tampered item into a work item or a guardrail note. `grader` means the product accepted it
@@ -44,6 +44,7 @@ EXPECTED = {
     "spread-rows-swapped-within-a-total": "grader",
     "spread-debt-mapped-to-payables": "grader",
     "spread-debt-mapped-to-payables-on-a-breach": "grader",
+    "spread-term-debt-mapped-to-other-liabilities-on-a-breach": "grader",
     "cert-units-omitted": "grader",
     "cert-rows-swapped": "grader",
     "intake-statements-called-audited": "grader",
@@ -92,3 +93,12 @@ def test_what_only_the_grader_catches_is_caught_by_name(outcomes):
         assert "invented-number" in outcomes[name]["grader_names"], name
         assert outcomes[name]["new_work_items"] == [], name
     assert outcomes["intake-statements-called-audited"]["grader_names"] == ["document-filing"]
+
+
+def test_a_mis_mapped_debt_row_can_hide_a_breach_from_the_product_and_the_gate_still_catches_it(outcomes):
+    """Long-term debt reported under 'other liabilities' (current column only) foots, verifies on
+    the page and lowers leverage below its limit: the product records compliant and raises
+    nothing. The grader names it, and the gate would fail the build."""
+    outcome = outcomes["spread-term-debt-mapped-to-other-liabilities-on-a-breach"]
+    assert outcome["new_work_items"] == [] and outcome["product"] is False
+    assert {"false-compliant", "invented-number", "missed-exception"} <= set(outcome["grader_names"])

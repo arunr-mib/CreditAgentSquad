@@ -113,6 +113,12 @@ def debt_row_mapped_to_a_payable(answer: Answer) -> Answer:
     return answer
 
 
+def term_debt_mapped_to_other_liabilities(answer: Answer) -> Answer:
+    a, b = _cell(answer, "bs.long_term_debt"), _cell(answer, "bs.other_noncurrent_liabilities")
+    a["key"], b["key"] = "bs.other_noncurrent_liabilities", "bs.long_term_debt"
+    return answer
+
+
 def note_types_a_figure(answer: Answer) -> Answer:
     answer["notes"] = [*answer["notes"], "Net sales rose to 74,118 for the period."]
     return answer
@@ -240,6 +246,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("spread-rows-swapped-within-a-total", "two rows of one subtotal mapped to each other's template lines", CLEAN_BB, "spreading", rows_mapped_to_each_others_lines),
     Mutation("spread-debt-mapped-to-payables", "the line of credit and accounts payable mapped to each other's lines", CLEAN_BB, "spreading", debt_row_mapped_to_a_payable),
     Mutation("spread-debt-mapped-to-payables-on-a-breach", "the same mis-mapping on a borrower whose leverage fails", HIDDEN_BREACH, "spreading", debt_row_mapped_to_a_payable),
+    Mutation("spread-term-debt-mapped-to-other-liabilities-on-a-breach", "long-term debt and other liabilities mapped to each other's lines, hiding debt on a borrower whose leverage fails", HIDDEN_BREACH, "spreading", term_debt_mapped_to_other_liabilities),
     Mutation("spread-note-types-a-figure", "a note that types a figure", CLEAN_BB, "spreading", note_types_a_figure),
     Mutation("cert-claims-compliance", "a certificate read as claiming compliance where it reports a breach", REPORTED_BREACH, "certificate", certificate_claims_compliance),
     Mutation("cert-breach-read-as-passing-value", "the breaching covenant's reported value read as a passing one", REPORTED_BREACH, "certificate", breach_reported_as_a_passing_value),

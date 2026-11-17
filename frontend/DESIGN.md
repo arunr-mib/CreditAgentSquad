@@ -9,8 +9,8 @@ The visual identity and component vocabulary of the workspace. Tokens live in `s
 - **One typeface.** Inter for everything. JetBrains Mono only for identifiers (fact ids, calculation ids, record references), through the `.ident` class.
 - **Figures** use tabular lining numerals (`.tnum`) and are never monospace. A quoted clause is prose.
 - **Colour carries meaning only.** Red = covenant breach. Amber = needs attention. Green = verified pass or recorded resolution, never a screen state. Iris = written by an agent. Cobalt = interactive. Everything else is ink and neutrals. A colour with none of these meanings is a defect.
-- **Provenance is a glyph, not a colour.** Document, calculation, system of record, person.
-- **Every figure reaches its source.** A number is rendered by `Figure` and nothing else. Counts of records (queue sizes) are not facts; they link to the list they count.
+- **Provenance is a glyph, not a colour.** Document, calculation, system of record, person. A fifth glyph, a seedling, marks a fact loaded from the synthetic book (demonstration data only): it is never shown as read from a document.
+- **Every figure reaches its source.** A number is rendered by `Figure` and nothing else, and in the product a figure opens the source drawer. Counts of records (queue sizes) are not facts; they link to the list they count.
 - **Banned:** coloured side stripes on cards or notices; pill-shaped status tags; more than two shadow steps; animation longer than 240 ms; gradients as decoration.
 - **Wording:** "Recommends resolve", never "Resolved". Never "AI thinks". Say "loan", not "facility". Plain words.
 - **Density:** table rows 34 px (32 px compact), header 32 px. One clear next action per card.
@@ -91,9 +91,9 @@ The ledger is the model. A table has a 1 px ink rule under its header and hairli
 | `StatusDot` | Status: a dot plus a word | Tones: breach, attention, pass, agent, neutral, muted. `emphasis` colours the word |
 | `Figure` | A number, its unit, its glyph, its source | Opens a popover with document, page and quoted text, or formula and inputs; or selects into a side panel |
 | `FactSource`, `Quote` | The source itself | A quote is prose with the printed figure highlighted in cobalt tint |
-| `ProvenanceGlyph` | Document, calculation, system, person | 12 px, ink-500, never coloured |
+| `ProvenanceGlyph` | Document, calculation, system, person, synthetic book | 12 px, ink-500, never coloured |
 | `AgentNote`, `AgentText` | Agent-written text | Iris ground with a hairline on all four sides and the agent mark. "Draft, not yet approved" until a person approves. `{{fact:<id>}}` renders as a `Figure`; an unknown reference is shown, not hidden |
-| `GuardrailNotes` | What the guardrails checked and changed | Passed is green (a verified pass); changed or blocked is amber |
+| `GuardrailNotes` | What the guardrails checked and changed | Passed is green (a verified pass); changed, blocked or refused is amber; an action the list does not know is shown in its own words |
 | `AgentMark` | The iris lozenge | Wherever an agent wrote something |
 | `WorkItemCard` | A question for a person | One question, evidence links, one primary decision that stays in view; other decisions behind a menu |
 | `Stepper` | Monitoring-cycle stages | Done is ink, not green. Amber marks the stage waiting for a person |
@@ -110,14 +110,32 @@ The ledger is the model. A table has a 1 px ink rule under its header and hairli
 
 ## Shell
 
-Left navigation (Command centre, Portfolio, Borrowers, Calendar, Review room, Agent activity, Governance), top bar with the command-palette trigger, the simulated "as of" date and the user menu with role. The current navigation item is an ink label on a sunken ground; there is no coloured indicator. A skip link leads to the content.
+Left navigation (Command centre, Portfolio, Borrowers, Calendar, Review room, Agent activity, Governance), top bar with the command-palette trigger, the Copilot, the simulated "as of" date read from the server's clock, and the user menu with the person's name, role and sign-out. The current navigation item is an ink label on a sunken ground; there is no coloured indicator. A skip link leads to the content. Signed out, only the sign-in screen is shown; a session that ends anywhere returns the person to it.
+
+## The product on real data (`src/api`, `src/source`, `src/screens`)
+
+| Piece | What it is for | Rule |
+|---|---|---|
+| `api/client.ts`, `api/hooks.ts` | The one way to `/api/v1`: cookie session, one TanStack Query hook per resource | Decimals stay strings. A refusal is shown in the server's own words |
+| `source/SourceDrawer` | Answers "where did this number come from?" for every figure | Shows the rendered PDF page with the figure outlined, or the calculation with each input a link, or the clause, the system record or the person; then the fact's history. Inputs open in the same drawer; Back returns |
+| `source/PdfPage` | One page of the stored PDF, drawn from the file, with citations outlined | The outline is cobalt (interactive context), never a status colour |
+| `FactFigure`, `SourcedFigure`, `StaticFigure` | A stored fact; a figure that is a field of a record, a line of a calculation or a total; a line shown inside its own source | All three carry a glyph. The first two open the drawer |
+| `CalculationBreakdown` | A calculation as code ran it | Lines built from several periods list those periods beneath them; named results carry a rule above; the result a double rule below |
+| `AgentBody` | Agent text on real data | `{{fact:<id>}}` becomes a figure that opens the drawer; an unresolved reference is shown as unresolved |
+| `WorkItemPanel` | One question for a person | Evidence rows open their sources; the decision is a choice, a reason and one primary button; a refusal from the server is named and quoted |
+| `Load`, `Notice`, `EmptyCard` | Loading, error and empty states | Every screen goes through `Load`; a notice has a hairline on all four sides and a dot plus a word |
+
+A fact loaded from the synthetic book carries no page of its own. The source drawer and the document viewer show where **code located** the stored value on the period's document, and say so; this is never presented as an extraction.
 
 ## Checks
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm test && pnpm build
-node scripts/screenshots.mjs          # four PNGs at 1440 x 900, scale 2, into screenshots/ (--full adds full-page captures)
-node scripts/a11y.mjs                 # axe-core on the four pages plus a keyboard focus-ring pass
+pnpm e2e                              # five journeys against the running seeded stack (API on 8000, workspace on 5173)
+node scripts/screenshots.mjs          # the real screens, signed in, 1440 x 900 at scale 2, into screenshots/ (--full adds full-page captures)
+node scripts/a11y.mjs                 # axe-core on the same screens plus a keyboard focus-ring pass
 ```
+
+The last three need the seeded stack (see `docs/HANDOFF.md`). The officer journey records a real decision, so each `pnpm e2e` run takes one open covenant breach out of the queue; a fresh seed has four.
 
 Before a screen ships, check it against: aligned figure columns; consistent row heights; no clipped or overlapping text; every figure has a glyph and a source; no banned pattern; colour only where it means something; one primary action per card; focus ring on every control.

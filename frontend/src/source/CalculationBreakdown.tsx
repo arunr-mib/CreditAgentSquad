@@ -96,7 +96,7 @@ export function CalculationBreakdown({ calc, resultLabel, resultUnit, selfContai
                       <span aria-hidden className="inline-block w-3 shrink-0 text-center">
                         {signMark(row.input.sign)}
                       </span>
-                      <span className="sr-only">{row.input.sign < 0 ? 'less' : 'plus'}</span>
+                      <span className="sr-only">{row.input.sign < 0 ? 'less' : 'plus'}</span>{' '}
                       {row.input.period_end ? periodLabel(row.input.period_end, row.input.months ?? 0) : row.input.name}
                     </span>
                   </th>

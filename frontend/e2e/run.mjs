@@ -97,7 +97,7 @@ const journeys = [
       await panel.waitFor();
       await panel.getByRole('heading', { level: 2 }).waitFor();
       assert((await panel.getByText('Evidence', { exact: true }).count()) === 1, 'the item shows its evidence');
-      await panel.getByText('The calculation').waitFor();
+      await panel.getByText('The calculation', { exact: true }).waitFor();
       const before = await rows.count();
       await panel.getByRole('radio').first().check();
       await panel.getByLabel(/Reason/).fill('Journey test: an analyst may not decide the response to a breach.');

@@ -13,7 +13,7 @@ from app.domain.governance import EvalRun
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from evals.grade import FAILURES, GATED, STAGES, load_known_findings
+from evals.grade import FAILURES, GATED, STAGES, STANDIN_UNANSWERED, load_known_findings
 from evals.run import STANDIN_LABEL, save_eval_run, write_results
 from evals.scorecard import render_markdown
 from evals.standin import STANDIN_MODEL
@@ -89,7 +89,13 @@ def test_everything_the_stand_in_produced_is_labelled_as_stand_in(suite):
     assert suite["meta"]["label"] == STANDIN_LABEL
     runs = [r for g in suite["borrowers"].values() for r in g["agent_runs"]]
     assert len(runs) > 60
-    assert {r["llm_mode"] for r in runs} == {"standin"} and {r["served_model"] for r in runs} == {STANDIN_MODEL}
+    assert {r["llm_mode"] for r in runs} == {"standin"}
+    answered = [r for r in runs if r["status"] == "completed"]
+    assert {r["served_model"] for r in answered} == {STANDIN_MODEL}
+    # the agents the stand-in does not answer fail safely and are reported, never passed off as answers
+    unanswered = [r for r in runs if r["status"] != "completed"]
+    assert {r["agent"] for r in unanswered} <= STANDIN_UNANSWERED and {r["served_model"] for r in unanswered} <= {None}
+    assert not any(w for g in suite["borrowers"].values() for w in g["failures"])
     # the stand-in read every document as printed: print and truth never disagreed
     assert suite["meta"]["standin_print_vs_truth_disagreements"] == []
 

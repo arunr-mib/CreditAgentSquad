@@ -463,11 +463,11 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
         <Evidence item={item} code={borrower?.code} headingLevel={SubHeading} />
         {item.recommendation ? (
           <Recommendation recommendation={item.recommendation} item={item} headingLevel={SubHeading} />
-        ) : (
+        ) : item.status === 'open' ? (
           <p className="rounded-md border border-hairline bg-canvas px-3 py-2 text-body text-pretty text-ink-700">
             No agent recommendation is attached. The evidence above was produced by code; the decision is yours.
           </p>
-        )}
+        ) : null}
       </div>
 
       {item.status === 'open' ? <DecisionForm key={item.id} item={item} /> : <RecordedDecision item={item} />}

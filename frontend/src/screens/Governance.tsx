@@ -5,7 +5,7 @@ import { useAgents, useLedger, useLedgerVerification, useSetClock, useUsers } fr
 import type { AgentSpec, LedgerEvent } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button, Card, DataTable, EmptyState, formatDate, Input, PageHeader, Select, StatusDot, tabClass, tabListClass, useToast, type DataColumn } from '@/design';
-import { actionLabel, decisionLabel, formatTimestamp, humanize, roleLabel } from '@/domain/labels';
+import { actionLabel, decisionLabel, docTypeLabel, formatTimestamp, humanize, roleLabel, signalLabel, STAGE_STATUS_LABEL, stageLabel } from '@/domain/labels';
 import { useAsOf } from '@/shell/AsOf';
 import { Load, Notice } from './parts';
 
@@ -31,19 +31,28 @@ const ACTION_FILTERS: Array<[string, string]> = [
 /** The payload in a few plain words: the decision and its reason first, then whatever else is there. */
 export function describeEvent(event: LedgerEvent): string {
   const payload = event.payload ?? {};
+  const text = (key: string) => (typeof payload[key] === 'string' && payload[key] ? (payload[key] as string) : null);
   const parts: string[] = [];
-  if (typeof payload.decision === 'string') parts.push(decisionLabel(payload.decision));
-  if (typeof payload.reason === 'string' && payload.reason) parts.push(`“${payload.reason}”`);
-  if (typeof payload.title === 'string') parts.push(payload.title);
-  if (typeof payload.key === 'string') parts.push(payload.key);
-  if (typeof payload.covenant_id === 'string') parts.push(humanize(payload.covenant_id));
-  if (typeof payload.outcome === 'string') parts.push(humanize(payload.outcome).toLowerCase());
-  if (typeof payload.rule_id === 'string') parts.push(humanize(payload.rule_id));
-  if (typeof payload.stage === 'string') parts.push(`${humanize(payload.stage)}: ${String(payload.from ?? '')} to ${String(payload.to ?? '')}`);
-  if (typeof payload.period_end === 'string') parts.push(`period ended ${formatDate(payload.period_end)}`);
-  if (typeof payload.today === 'string') parts.push(formatDate(payload.today));
-  if (typeof payload.email === 'string') parts.push(payload.email);
+  if (text('decision')) parts.push(decisionLabel(text('decision')));
+  if (text('reason')) parts.push(`“${text('reason')}”`);
+  if (text('title')) parts.push(text('title') as string);
+  if (text('key')) parts.push(text('key') as string);
+  const covenant = text('covenant') ?? text('covenant_id');
+  if (covenant) parts.push(humanize(covenant));
+  const rule = text('rule') ?? text('rule_id');
+  if (rule) parts.push(`${signalLabel(rule)}${text('subject') ? ` (${humanize(text('subject')).toLowerCase()})` : ''}`);
+  if (text('outcome')) parts.push(humanize(text('outcome')).toLowerCase());
+  if (text('stage')) {
+    const status = (value: unknown) => STAGE_STATUS_LABEL[String(value) as keyof typeof STAGE_STATUS_LABEL]?.toLowerCase() ?? String(value ?? '');
+    parts.push(`${stageLabel(text('stage'))}: ${status(payload.from)} to ${status(payload.to)}`);
+  }
+  if (text('document_type')) parts.push(docTypeLabel(text('document_type')));
+  if (text('period_end')) parts.push(`period ended ${formatDate(text('period_end') as string)}`);
+  if (event.action === 'clock.set' && text('to')) parts.push(`to ${formatDate(text('to') as string)}`);
+  if (text('received_date')) parts.push(`received ${formatDate(text('received_date') as string)}`);
+  if (text('email')) parts.push(`${text('email')}${text('role') ? `, ${roleLabel(text('role')).toLowerCase()}` : ''}`);
   if (event.document_title) parts.push(event.document_title);
+  else if (text('file_name')) parts.push(text('file_name') as string);
   if (parts.length === 0) {
     for (const [key, value] of Object.entries(payload).slice(0, 3)) {
       if (value !== null && typeof value !== 'object') parts.push(`${humanize(key).toLowerCase()} ${String(value)}`);

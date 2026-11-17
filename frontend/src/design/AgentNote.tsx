@@ -108,11 +108,22 @@ export function AgentNote({ agent, headline, body, children, state, approvedBy, 
   );
 }
 
-const actionDot: Record<GuardrailNote['action'], { tone: 'pass' | 'attention'; label: string }> = {
+const actionDot: Record<string, { tone: 'pass' | 'attention'; label: string }> = {
   passed: { tone: 'pass', label: 'Passed' },
+  pass: { tone: 'pass', label: 'Passed' },
   changed: { tone: 'attention', label: 'Changed' },
   blocked: { tone: 'attention', label: 'Blocked' },
+  refuse: { tone: 'attention', label: 'Refused' },
+  refused: { tone: 'attention', label: 'Refused' },
+  abstain: { tone: 'attention', label: 'Abstained' },
+  retry: { tone: 'attention', label: 'Retried' },
+  escalate: { tone: 'attention', label: 'Escalated' },
 };
+
+/** The API may record an action this list does not know yet: it is shown in its own words, as needing attention. */
+function actionOf(action: string): { tone: 'pass' | 'attention'; label: string } {
+  return actionDot[action] ?? { tone: 'attention', label: action.charAt(0).toUpperCase() + action.slice(1).replace(/_/g, ' ') };
+}
 
 /** What the guardrails checked after the agent answered, and anything they forced to change. */
 export function GuardrailNotes({ notes, className, as: Heading = 'h4' }: { notes: GuardrailNote[]; className?: string; as?: 'h3' | 'h4' }) {
@@ -120,10 +131,10 @@ export function GuardrailNotes({ notes, className, as: Heading = 'h4' }: { notes
     <div className={className}>
       <Heading className="eyebrow mb-1">Guardrail checks</Heading>
       <ul className="border-t border-ink">
-        {notes.map((note) => (
-          <li key={`${note.layer}-${note.check}`} className="grid grid-cols-[1fr_auto] gap-x-4 border-b border-hairline py-1.5 text-caption">
-            <span className="font-medium text-ink">{note.check}</span>
-            <StatusDot tone={actionDot[note.action].tone}>{actionDot[note.action].label}</StatusDot>
+        {notes.map((note, index) => (
+          <li key={`${note.layer}-${note.check}-${index}`} className="grid grid-cols-[1fr_auto] gap-x-4 border-b border-hairline py-1.5 text-caption">
+            <span className="font-medium text-ink">{note.check.charAt(0).toUpperCase() + note.check.slice(1).replace(/_/g, ' ')}</span>
+            <StatusDot tone={actionOf(note.action).tone}>{actionOf(note.action).label}</StatusDot>
             <span className="col-span-2 text-ink-700">{note.detail}</span>
           </li>
         ))}
