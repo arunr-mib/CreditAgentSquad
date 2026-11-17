@@ -134,6 +134,13 @@ def run_stage(db: Session, cycle: Cycle, stage: str) -> str:
         _set_stage(db, cycle, st, "failed", {"error": f"{type(exc).__name__}: {exc}"[:500]})
         db.flush()
         return "failed"
+    if result == "waiting":
+        # nothing to do yet (for example the package has not arrived): the stage goes back to
+        # pending and is tried again on the next tick
+        st.status = "pending"
+        st.detail = {**st.detail, "waiting_since": st.detail.get("waiting_since") or now().isoformat()}
+        db.flush()
+        return "waiting"
     if result not in ("done", "needs_person", "skipped"):
         raise ValueError(f"stage handler for {stage} returned {result!r}")
     if result == "done" and open_blocking_items(db, cycle, stage) > 0:
@@ -147,11 +154,22 @@ def _job_cycle_stage(db: Session, job: Job) -> None:
     cycle = db.get(Cycle, job.cycle_id)
     if cycle is None:
         raise ValueError("cycle not found")
-    run_stage(db, cycle, job.payload["stage"])
-    advance(db, cycle)
+    if run_stage(db, cycle, job.payload["stage"]) != "waiting":
+        advance(db, cycle)
 
 
 JOB_HANDLERS["cycle.stage"] = _job_cycle_stage
+
+
+def tick(db: Session) -> int:
+    """Try to move every open cycle. Called on a schedule, after an upload and when the clock moves."""
+    moved = 0
+    for cycle in db.execute(select(Cycle).where(Cycle.status == "open")).scalars():
+        queued = db.execute(select(Job.id).where(Job.cycle_id == cycle.id, Job.status.in_(("queued", "running")))).first()
+        if queued is None:
+            advance(db, cycle)
+            moved += 1
+    return moved
 
 
 def claim_job(db: Session) -> Job | None:

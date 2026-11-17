@@ -165,6 +165,23 @@ class ScriptedClient:
         return self._responses.pop(0)
 
 
+class KeyedScriptedClient:
+    """Scripted responses chosen by the start of the request's record key (one list per agent)."""
+
+    mode = "scripted"
+
+    def __init__(self, responses: dict[str, list[LLMResponse]]):
+        self._responses = {prefix: list(items) for prefix, items in responses.items()}
+        self.requests: list[LLMRequest] = []
+
+    def create(self, request: LLMRequest) -> LLMResponse:
+        self.requests.append(request)
+        for prefix, items in self._responses.items():
+            if request.record_key.startswith(prefix) and items:
+                return items.pop(0)
+        raise RecordingMissing(f"no scripted response for {request.record_key}")
+
+
 def client_for(settings: Settings | None = None) -> LLMClient:
     s = settings or get_settings()
     if s.squad_llm_mode == "live":
