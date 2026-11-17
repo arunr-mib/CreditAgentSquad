@@ -15,6 +15,9 @@ from app.domain.monitoring import STAGES, Cycle, CycleStage, Job, WorkItem
 StageHandler = Callable[[Session, Cycle, CycleStage], str]
 STAGE_HANDLERS: dict[str, StageHandler] = {}
 JOB_HANDLERS: dict[str, Callable[[Session, Job], None]] = {}
+# item type -> function(db, item, user, decision, reason) that carries out a decision. If it
+# raises, the decision is refused and nothing is recorded.
+DECISION_HOOKS: dict[str, Callable[..., None]] = {}
 
 
 def stage_handler(stage: str):
@@ -207,6 +210,12 @@ def decide_work_item(
         raise PermissionError(f"your role cannot decide this item ({item.required_permission})")
     if item.requires_second_person:
         require_second_person(item.prepared_by_id, user_id)
+    hook = DECISION_HOOKS.get(item.item_type)
+    if hook is not None:
+        from app.domain.org import User
+
+        with db.begin_nested():
+            hook(db, item, db.get(User, user_id), decision, reason)
     item.status = "decided"
     item.decision = decision
     item.decision_reason = reason

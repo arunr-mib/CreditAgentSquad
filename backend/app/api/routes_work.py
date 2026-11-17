@@ -19,6 +19,7 @@ from app.domain.credit import Borrower
 from app.domain.monitoring import Cycle, Signal, WorkItem
 from app.domain.org import User
 from app.domain.terms import ReportingObligation
+from app.domain.terms_service import TermsRefused
 
 router = APIRouter(tags=["work"])
 _SEVERITY = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -74,7 +75,7 @@ def decide(item_id: uuid.UUID, body: DecisionIn, db: Session = Depends(get_db),
         raise HTTPException(403, str(exc)) from exc
     except SecondPersonRequired as exc:
         raise HTTPException(409, str(exc)) from exc
-    except ValueError as exc:
+    except (ValueError, TermsRefused) as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()
     return row(item)

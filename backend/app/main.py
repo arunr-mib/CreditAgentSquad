@@ -2,6 +2,7 @@
 from fastapi import APIRouter, FastAPI
 
 from app.api import auth, routes_credit, routes_work
+from app.domain import hooks  # noqa: F401  (registers decision hooks)
 
 API_PREFIX = "/api/v1"
 
