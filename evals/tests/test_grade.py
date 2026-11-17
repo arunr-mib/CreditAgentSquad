@@ -23,7 +23,7 @@ def fact(recording, key):
     return next(f for f in recording["facts"] if f["key"] == key and f["status"] == "verified")
 
 
-def test_of(recording, covenant_id):
+def covenant_test(recording, covenant_id):
     return next(t for t in recording["covenant_tests"] if t["covenant_id"] == covenant_id)
 
 
@@ -48,7 +48,7 @@ def test_invented_number_a_stored_fact_that_differs_from_the_truth(small):
 
 def test_invented_number_a_covenant_value_with_no_fact_behind_it(small):
     def change(rec):
-        test_of(rec, "fccr")["value_fact_id"] = None
+        covenant_test(rec, "fccr")["value_fact_id"] = None
     assert "invented-number" in names(graded_after(small, "harrowgate-precision", change))
 
 
@@ -72,7 +72,7 @@ def test_invented_number_commentary_that_types_a_figure_or_cites_a_fact_that_doe
 
 def test_false_compliant(small):
     def change(rec):
-        test = test_of(rec, "total_leverage")
+        test = covenant_test(rec, "total_leverage")
         test["outcome"], test["passed"] = "compliant", True
     graded = graded_after(small, "kestrel-bay-packaging", change)
     assert "false-compliant" in names(graded)
@@ -80,7 +80,7 @@ def test_false_compliant(small):
 
 def test_false_breach(small):
     def change(rec):
-        test = test_of(rec, "fccr")
+        test = covenant_test(rec, "fccr")
         test["outcome"], test["passed"] = "breach", False
     assert "false-breach" in names(graded_after(small, "harrowgate-precision", change))
 
@@ -115,7 +115,7 @@ def test_wrong_citation(small):
 
 def test_wrong_abstain(small):
     def cannot(rec):
-        test = test_of(rec, "fccr")
+        test = covenant_test(rec, "fccr")
         test.update({"outcome": "cannot_test", "value": None, "passed": None, "error": "missing input"})
 
     def no_test(rec):
@@ -149,13 +149,13 @@ def test_missed_abstain(small):
 
 def test_stale_terms(small):
     def version(rec):
-        test_of(rec, "fccr")["terms_version"] = 2
+        covenant_test(rec, "fccr")["terms_version"] = 2
 
     def proposed(rec):
-        test_of(rec, "fccr")["terms_status"] = "proposed"
+        covenant_test(rec, "fccr")["terms_status"] = "proposed"
 
     def threshold(rec):
-        test_of(rec, "fccr")["threshold"] = "1.250000"
+        covenant_test(rec, "fccr")["threshold"] = "1.250000"
 
     for change in (version, proposed, threshold):
         assert "stale-terms" in names(graded_after(small, "harrowgate-precision", change))
@@ -188,7 +188,7 @@ def test_the_gate_checks_every_pass_separately(small):
     book, recordings = small
     clean = grade_pass(book, recordings)
     bad = copy.deepcopy(recordings)
-    test = test_of(bad["kestrel-bay-packaging"], "total_leverage")
+    test = covenant_test(bad["kestrel-bay-packaging"], "total_leverage")
     test["outcome"], test["passed"] = "compliant", True
     failing = grade_pass(book, bad)
     assert evaluate_gate([clean], mode="standin", complete_book=False)["passed"]
