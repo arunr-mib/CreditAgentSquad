@@ -188,6 +188,62 @@ const journeys = [
       await line.getByRole('button', { name: new RegExp(`^${accruedPrinted}, Accrued liabilities, .*Entered by a person`) }).waitFor();
     },
   },
+  {
+    name: 'an analyst corrects a figure from the source drawer, sees a covenant outcome change, and the screen beneath shows the new figure; a calculated figure offers no correction',
+    async run(page) {
+      await signIn(page, ANALYST);
+      await page.goto(`${BASE}/borrowers/halvorsen-plastics/spreads`);
+      await page.waitForSelector('[data-ready]');
+      const line = page.locator('table tbody tr').filter({ hasText: 'Cash paid for income taxes' }).first();
+      const cell = line.getByRole('button').last();
+      const before = ((await cell.getAttribute('aria-label')) ?? '').split(', Cash paid')[0];
+      await cell.click();
+      const drawer = page.locator('[data-source-drawer]');
+      await drawer.getByRole('heading', { name: 'Cash paid for income taxes' }).waitFor();
+      await drawer.getByRole('button', { name: 'Reject this figure' }).waitFor();
+      await expectFocusRing(page, drawer.getByRole('button', { name: 'Correct this figure' }), 'the Correct this figure button');
+      await drawer.getByRole('button', { name: 'Correct this figure' }).click();
+      const form = drawer.getByRole('form', { name: 'Correct Cash paid for income taxes' });
+      const value = form.getByLabel('Value, in whole US dollars');
+      const onFile = await value.inputValue();
+      assert(/^\d+$/.test(onFile), `the form starts from the stored value, got ${onFile}`);
+      // A reason is required before anything is sent.
+      await form.getByRole('button', { name: 'Record the correction' }).click();
+      await form.getByText('A reason is required. It is recorded in the ledger with your name.').waitFor();
+      const corrected = String(Number(onFile) * 4);
+      await value.fill(corrected);
+      await form.getByLabel('Reason (required)').fill('Journey: the notes page reports cash taxes paid for the nine months, not the quarter.');
+      await form.getByRole('button', { name: 'Record the correction' }).click();
+
+      const result = drawer.locator('[data-change-result="corrected"]');
+      await result.getByText('Corrected. On file now:').waitFor();
+      const note = result.locator('[data-recalculation]');
+      await note.getByText(/\d+ results calculated from the old figure were retired\./).waitFor();
+      await note.getByText('Statement totals were recalculated from the figures now on file, and the statements foot.').waitFor();
+      await note.getByRole('listitem', { name: /^Fixed Charge Coverage Ratio, Q3 2026: Compliant → Breach/ }).waitFor();
+      // The fact on show is now the superseded one, and it no longer offers a correction.
+      await drawer.getByText('Superseded', { exact: true }).first().waitFor();
+      assert((await drawer.getByRole('button', { name: 'Correct this figure' }).count()) === 0, 'a superseded figure offers no correction');
+      await shot(page, 'repair-07-drawer-correction');
+
+      // The grid beneath the drawer was read again: it shows the new figure, entered by a person.
+      await drawer.getByRole('button', { name: 'Close the source' }).click();
+      await drawer.waitFor({ state: 'detached' });
+      const after = Number(corrected) / 1000;
+      await line.getByRole('button', { name: new RegExp(`^${after.toLocaleString('en-US')}, Cash paid for income taxes, .*Entered by a person`) }).waitFor();
+      assert(before !== after.toLocaleString('en-US'), 'the figure in the grid changed');
+
+      // A calculated figure cannot be corrected; the drawer says where the correction belongs.
+      await page.goto(`${BASE}/borrowers/halvorsen-plastics/covenants`);
+      await page.waitForSelector('[data-ready]');
+      const test = page.locator('table tbody tr[data-row]').filter({ hasText: 'Fixed Charge Coverage Ratio' }).first();
+      await test.getByText(/Breach/).first().waitFor();
+      await test.getByRole('button', { name: /Fixed Charge Coverage Ratio, .*Calculated by code/ }).first().click();
+      await drawer.getByText('Calculated by code; correct the figure it was calculated from.', { exact: false }).waitFor();
+      assert((await drawer.getByRole('button', { name: /Correct this figure|Reject this figure/ }).count()) === 0, 'a calculated figure offers neither correction nor rejection');
+      await shot(page, 'repair-08-drawer-calculated-figure');
+    },
+  },
 ];
 
 const onlyIndex = process.argv.indexOf('--only');
