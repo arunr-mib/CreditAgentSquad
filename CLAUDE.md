@@ -9,6 +9,7 @@ A fleet of AI agents for commercial lending. Slice one is the portfolio monitori
 | Design spec (source of truth, owner-owned) | `docs/specs/2026-11-17-creditfleet-design.md` |
 | Milestone plans | `docs/plans/` |
 | Lessons | `docs/lessons/` |
+| Current state and next steps | `docs/HANDOFF.md` |
 
 ## Hard constraints
 

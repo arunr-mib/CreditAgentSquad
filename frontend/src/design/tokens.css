@@ -1,0 +1,197 @@
+/*
+ * Credit Agent Squad design tokens.
+ * The single source for colour, type, space, radius, shadow and motion.
+ * Every token and the rule behind it is documented in frontend/DESIGN.md.
+ * Contrast pairs are enforced by src/design/tokens.test.ts.
+ */
+
+:root {
+  /* ── Neutrals: ink on a warm off-white canvas ─────────────────────────── */
+  --canvas: #f6f4ee; /* page background */
+  --surface: #fffefc; /* cards, tables, menus */
+  --surface-sunken: #efece4; /* table header, subtotal rows, inset wells */
+  --surface-hover: #f3f0e9; /* row and menu-item hover */
+  --ink-900: #1b1a17; /* primary text, strong rules */
+  --ink-700: #45423b; /* secondary text */
+  --ink-500: #66625a; /* tertiary text, labels, glyphs (AA on every surface) */
+  --ink-400: #8c877c; /* control borders, neutral dots (3:1 non-text only) */
+  --hairline: #e3dfd5; /* row and card rules */
+  --hairline-strong: #cfc9bc; /* dividers that must hold against sunken surfaces */
+
+  /* ── Cobalt: interactive, and nothing else ────────────────────────────── */
+  --cobalt: #1f47c4; /* links, primary button, focus ring, selected cell */
+  --cobalt-strong: #183aa6; /* hover and pressed */
+  --cobalt-bg: #edf1fc; /* selected row, active option */
+  --cobalt-border: #b7c6f2;
+
+  /* ── Iris: written by an agent ────────────────────────────────────────── */
+  --iris: #5a3fa6; /* agent names and labels */
+  --iris-mark: #6b4fc0; /* the agent mark */
+  --iris-bg: #f3f0fa; /* agent note ground */
+  --iris-border: #cfc5ec;
+
+  /* ── Red: covenant breach ─────────────────────────────────────────────── */
+  --red: #ae2018;
+  --red-mark: #c8281e;
+  --red-bg: #fbedeb;
+  --red-border: #efc2bd;
+
+  /* ── Amber: needs attention ───────────────────────────────────────────── */
+  --amber: #855400;
+  --amber-mark: #b87a00;
+  --amber-bg: #faf1dc;
+  --amber-border: #e9d29a;
+
+  /* ── Green: verified pass or recorded resolution, never a screen state ── */
+  --green: #1d6b41;
+  --green-mark: #2a8553;
+  --green-bg: #e8f3ec;
+  --green-border: #b9dac6;
+
+  /* ── Type: Inter for everything, JetBrains Mono for identifiers only ──── */
+  --font-ui: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-id: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+
+  --type-micro: 11px; /* eyebrow labels, column heads; uppercase, +0.06em */
+  --type-micro-lh: 16px;
+  --type-caption: 12px; /* meta lines, identifiers, hints */
+  --type-caption-lh: 16px;
+  --type-body: 13px; /* tables and controls: the working size */
+  --type-body-lh: 20px;
+  --type-prose: 14px; /* running text, agent notes, questions */
+  --type-prose-lh: 22px;
+  --type-title: 16px; /* card and section titles */
+  --type-title-lh: 24px;
+  --type-heading: 20px; /* panel headings, large figures */
+  --type-heading-lh: 28px;
+  --type-page: 26px; /* page title */
+  --type-page-lh: 32px;
+  --type-display: 34px; /* one headline figure per view at most */
+  --type-display-lh: 40px;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* ── Space: 4 px scale ────────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Density ──────────────────────────────────────────────────────────── */
+  --row-h: 34px; /* table body row */
+  --row-head-h: 32px; /* table header row */
+  --control-h: 32px; /* buttons, inputs, selects */
+  --control-h-sm: 28px;
+  --topbar-h: 48px;
+  --nav-w: 208px;
+  --nav-w-rail: 56px;
+
+  /* ── Radius: small and square-shouldered; no pills ────────────────────── */
+  --radius-xs: 2px; /* marks, kbd, highlighted quote */
+  --radius-sm: 4px; /* controls */
+  --radius-md: 6px; /* cards, popovers, dialogs */
+
+  /* ── Shadow: two steps only ───────────────────────────────────────────── */
+  --shadow-raised: 0 1px 2px rgb(27 26 23 / 0.06), 0 4px 12px rgb(27 26 23 / 0.08); /* popover, menu, toast */
+  --shadow-overlay: 0 2px 4px rgb(27 26 23 / 0.06), 0 16px 40px rgb(27 26 23 / 0.16); /* dialog, command palette */
+
+  /* ── Motion: nothing longer than 240 ms ───────────────────────────────── */
+  --motion-instant: 80ms; /* hover, press */
+  --motion-fast: 140ms; /* popover, tooltip, menu */
+  --motion-base: 200ms; /* dialog, toast */
+  --motion-max: 240ms; /* ceiling; never exceeded */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ── Focus: one ring everywhere (applied in styles.css) ───────────────── */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* Tailwind 4 mapping. Default palettes are removed so only tokens can be used. */
+@theme inline {
+  --color-*: initial;
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--surface-sunken);
+  --color-hover: var(--surface-hover);
+  --color-ink: var(--ink-900);
+  --color-ink-700: var(--ink-700);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-cobalt: var(--cobalt);
+  --color-cobalt-strong: var(--cobalt-strong);
+  --color-cobalt-bg: var(--cobalt-bg);
+  --color-cobalt-border: var(--cobalt-border);
+  --color-iris: var(--iris);
+  --color-iris-mark: var(--iris-mark);
+  --color-iris-bg: var(--iris-bg);
+  --color-iris-border: var(--iris-border);
+  --color-red: var(--red);
+  --color-red-mark: var(--red-mark);
+  --color-red-bg: var(--red-bg);
+  --color-red-border: var(--red-border);
+  --color-amber: var(--amber);
+  --color-amber-mark: var(--amber-mark);
+  --color-amber-bg: var(--amber-bg);
+  --color-amber-border: var(--amber-border);
+  --color-green: var(--green);
+  --color-green-mark: var(--green-mark);
+  --color-green-bg: var(--green-bg);
+  --color-green-border: var(--green-border);
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-*: initial;
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-id);
+
+  --text-*: initial;
+  --text-micro: var(--type-micro);
+  --text-micro--line-height: var(--type-micro-lh);
+  --text-caption: var(--type-caption);
+  --text-caption--line-height: var(--type-caption-lh);
+  --text-body: var(--type-body);
+  --text-body--line-height: var(--type-body-lh);
+  --text-prose: var(--type-prose);
+  --text-prose--line-height: var(--type-prose-lh);
+  --text-title: var(--type-title);
+  --text-title--line-height: var(--type-title-lh);
+  --text-heading: var(--type-heading);
+  --text-heading--line-height: var(--type-heading-lh);
+  --text-page: var(--type-page);
+  --text-page--line-height: var(--type-page-lh);
+  --text-display: var(--type-display);
+  --text-display--line-height: var(--type-display-lh);
+
+  --font-weight-*: initial;
+  --font-weight-regular: var(--weight-regular);
+  --font-weight-medium: var(--weight-medium);
+  --font-weight-semibold: var(--weight-semibold);
+
+  --radius-*: initial;
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+
+  --shadow-*: initial;
+  --shadow-raised: var(--shadow-raised);
+  --shadow-overlay: var(--shadow-overlay);
+
+  --breakpoint-*: initial;
+  --breakpoint-md: 1024px; /* minimum usable */
+  --breakpoint-lg: 1200px; /* navigation expands from rail to full */
+  --breakpoint-xl: 1400px; /* two-column work layouts */
+
+  --spacing: 4px;
+}
