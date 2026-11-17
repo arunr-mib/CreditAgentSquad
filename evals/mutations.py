@@ -119,6 +119,44 @@ def term_debt_mapped_to_other_liabilities(answer: Answer) -> Answer:
     return answer
 
 
+# found by the independent review (2026-11-17): the reader chose the label it was checked against
+
+
+def term_debt_swapped_using_label_fragments(answer: Answer) -> Answer:
+    a, b = _cell(answer, "bs.long_term_debt"), _cell(answer, "bs.other_noncurrent_liabilities")
+    a["key"], b["key"] = "bs.other_noncurrent_liabilities", "bs.long_term_debt"
+    a["printed_label"], b["printed_label"] = "net of current portion", "liabilities"
+    return answer
+
+
+def term_debt_folded_into_other_liabilities(answer: Answer) -> Answer:
+    cell = _cell(answer, "bs.long_term_debt")
+    cell["key"], cell["printed_label"] = "bs.other_noncurrent_liabilities", "net of current portion"
+    answer["absent_keys"] = sorted({*answer["absent_keys"], "bs.long_term_debt"})
+    return answer
+
+
+def _from_financed_capex_row(key: str) -> Callable[[Answer], Answer]:
+    def change(answer: Answer) -> Answer:
+        source, cell = _cell(answer, "sup.financed_capex"), _cell(answer, key)
+        cell["printed_figure"], cell["page"], cell["printed_label"] = (
+            source["printed_figure"], source["page"], "purchase-money debt")
+        return answer
+    return change
+
+
+def prior_year_column_under_a_spanning_header(answer: Answer) -> Answer:
+    current, prior = answer["cells"][0]["column_header"], answer["comparative_cells"][0]["column_header"]
+    answer["cells"] = [dict(c, column_header=f"{current} {prior}") for c in copy.deepcopy(answer["comparative_cells"])]
+    answer["comparative_cells"] = []
+    return answer
+
+
+def printed_totals_not_read(answer: Answer) -> Answer:
+    answer["cells"] = [c for c in answer["cells"] if not c["key"].startswith("stated.")]
+    return answer
+
+
 def note_types_a_figure(answer: Answer) -> Answer:
     answer["notes"] = [*answer["notes"], "Net sales rose to 74,118 for the period."]
     return answer
@@ -247,6 +285,12 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("spread-debt-mapped-to-payables", "the line of credit and accounts payable mapped to each other's lines", CLEAN_BB, "spreading", debt_row_mapped_to_a_payable),
     Mutation("spread-debt-mapped-to-payables-on-a-breach", "the same mis-mapping on a borrower whose leverage fails", HIDDEN_BREACH, "spreading", debt_row_mapped_to_a_payable),
     Mutation("spread-term-debt-mapped-to-other-liabilities-on-a-breach", "long-term debt and other liabilities mapped to each other's lines, hiding debt on a borrower whose leverage fails", HIDDEN_BREACH, "spreading", term_debt_mapped_to_other_liabilities),
+    Mutation("spread-term-debt-swapped-with-label-fragments", "long-term debt and other liabilities swapped, reporting only fragments of each row label", HIDDEN_BREACH, "spreading", term_debt_swapped_using_label_fragments),
+    Mutation("spread-term-debt-folded-into-other-liabilities", "long-term debt filed as a second row of other liabilities and declared absent", HIDDEN_BREACH, "spreading", term_debt_folded_into_other_liabilities),
+    Mutation("spread-principal-read-from-another-supplemental-row", "scheduled principal read from the financed-capex row (no total covers supplemental lines)", REPORTED_BREACH, "spreading", _from_financed_capex_row("sup.scheduled_principal")),
+    Mutation("spread-cash-taxes-read-from-another-supplemental-row", "cash taxes read from the financed-capex row", REPORTED_BREACH, "spreading", _from_financed_capex_row("sup.cash_taxes_paid")),
+    Mutation("spread-prior-year-under-a-spanning-header", "the prior-year column read under a header naming both periods", CLEAN_BB, "spreading", prior_year_column_under_a_spanning_header),
+    Mutation("spread-printed-totals-not-read", "no printed total reported, so nothing could be footed", CLEAN_BB, "spreading", printed_totals_not_read),
     Mutation("spread-note-types-a-figure", "a note that types a figure", CLEAN_BB, "spreading", note_types_a_figure),
     Mutation("cert-claims-compliance", "a certificate read as claiming compliance where it reports a breach", REPORTED_BREACH, "certificate", certificate_claims_compliance),
     Mutation("cert-breach-read-as-passing-value", "the breaching covenant's reported value read as a passing one", REPORTED_BREACH, "certificate", breach_reported_as_a_passing_value),

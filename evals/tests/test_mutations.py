@@ -1,6 +1,6 @@
 """Mutation checks with the product in the loop: tamper with the stand-in reader's answer, run
 the live cycle, and record who caught it. About one minute (three borrowers loaded once each,
-32 runs of the cycle). Deselect with: -m "not slow".
+38 runs of the cycle). Deselect with: -m "not slow".
 
 EXPECTED is what each mutation was seen to do on 2026-11-17. `product` means the product refused
 the tampered item into a work item or a guardrail note. `grader` means the product accepted it
@@ -51,6 +51,16 @@ EXPECTED = {
     "cert-units-omitted": "product",
     "cert-rows-swapped": "product",
     "intake-statements-called-audited": "product",
+    # Found by the independent review on 2026-11-17: each of these was accepted, and the first
+    # four turned a real breach into a pass with nothing raised. The row label is now read from
+    # the page by code and must be a known name for the line; a column header must name one
+    # period; and a statement's printed totals must be read.
+    "spread-term-debt-swapped-with-label-fragments": "product and grader",
+    "spread-term-debt-folded-into-other-liabilities": "product and grader",
+    "spread-principal-read-from-another-supplemental-row": "product and grader",
+    "spread-cash-taxes-read-from-another-supplemental-row": "product and grader",
+    "spread-prior-year-under-a-spanning-header": "product",
+    "spread-printed-totals-not-read": "product",
 }
 
 
