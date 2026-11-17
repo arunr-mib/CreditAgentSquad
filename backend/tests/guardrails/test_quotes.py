@@ -1,6 +1,6 @@
 from decimal import Decimal as D
 
-from app.guardrails.quotes import locate, number_in_quote, quote_on_page, verify_cell
+from app.guardrails.quotes import locate, number_in_quote, quote_on_page, row_label, verify_cell
 
 
 def row(y, *cells):
@@ -84,3 +84,31 @@ def test_number_in_quote():
     assert number_in_quote(D("0.85"), quote) and number_in_quote(D("5000000"), quote)
     assert not number_in_quote(D("0.80"), quote)
     assert number_in_quote(D("1.20"), "less than 1.20 to 1.00", known_ratios=[D("1.20")])
+
+
+# --- the row label is read by code, and the column is fixed by the period's date ---------------
+
+def test_row_label_is_everything_left_of_the_first_figure_on_the_row():
+    check = verify_cell(PAGE, printed_figure="(33,775)", printed_label="goods sold",
+                        column_header="September 30, 2026")
+    assert check.ok and check.row_label == "Cost of goods sold"  # the fragment the reader chose is not the label
+    prior = verify_cell(PAGE, printed_figure="45,100", printed_label="Net revenue",
+                        column_header="September 30, 2025")
+    assert prior.ok and prior.row_label == "Net revenue"  # the current-year figure and the $ are not part of it
+
+
+def test_row_label_stops_at_a_dash_cell_and_skips_leader_dots():
+    page = row(40, (300, "September 30, 2026"), (460, "September 30, 2025")) + row(
+        60, (40, "Subordinated debt ......"), right(440, "—"), right(600, "1,250"))
+    figure = locate(page, "1,250")[0]
+    assert row_label(page, figure.bbox) == "Subordinated debt"
+
+
+def test_a_header_spanning_two_columns_does_not_place_a_figure_in_the_current_one():
+    wide = "September 30, 2026 September 30, 2025"
+    assert verify_cell(PAGE, printed_figure="45,100", printed_label="Net revenue", column_header=wide).ok
+    anchored = verify_cell(PAGE, printed_figure="45,100", printed_label="Net revenue", column_header=wide,
+                           column_anchor="September 30, 2026")
+    assert anchored.status == "column_unconfirmed"
+    assert verify_cell(PAGE, printed_figure="48,250", printed_label="Net revenue", column_header=wide,
+                       column_anchor="September 30, 2026").ok

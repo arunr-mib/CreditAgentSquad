@@ -118,6 +118,8 @@ const ITEM_TYPE_LABEL: Record<string, string> = {
   'terms.unapproved_amendment': 'Amendment not approved into terms',
   'covenant.breach': 'Covenant breach',
   'covenant.reported_mismatch': 'Covenant breach, certificate reports compliant',
+  'covenant.reported_breach_unconfirmed': 'Certificate reports a breach the calculation does not show',
+  'fact.correction_changed_outcome': 'Corrected figure changed a covenant outcome',
   'covenant.cannot_test': 'Covenant cannot be tested',
   'bb.over_advance': 'Over-advance',
   'bb.certificate_mismatch': 'Borrowing base certificate mismatch',

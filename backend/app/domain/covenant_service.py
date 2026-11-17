@@ -210,4 +210,15 @@ def _raise_for(db, borrower, facility, cycle, test: CovenantTest, outcome, actor
             question=f"The test needs {missing}, which is not available for this period. Provide it, or record why the test does not apply?",
             allowed_decisions=["input_provided", "not_applicable"], required_permission="confirm_spread",
             dedupe_key=f"covenant.cannot_test:{key}", **common)
+    if test.outcome == "compliant_variance" and test.reported_in_compliance is False:
+        # the borrower itself reports a breach and the bank's calculation passes: one of the two
+        # is wrong, and a pass computed from a misread figure is the dangerous one
+        return raise_item(
+            db, item_type="covenant.reported_breach_unconfirmed", severity="high",
+            title=f"{borrower.name}: the certificate reports {test.covenant_name} as not in compliance, "
+                  "but the calculation passes",
+            question="The borrower certified non-compliance while the bank's calculation passes. Which is in "
+                     "error, the figures the bank spread or the certificate?",
+            allowed_decisions=["spread_in_error", "certificate_in_error", "escalate_to_committee"],
+            required_permission="decide_breach", dedupe_key=f"covenant.reported_breach_unconfirmed:{key}", **common)
     return None  # compliant, or a variance that passes either way: recorded on the ledger only

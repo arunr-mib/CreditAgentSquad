@@ -136,6 +136,53 @@ LINES: tuple[TemplateLine, ...] = (
 
 LINE_BY_KEY: dict[str, TemplateLine] = {line.key: line for line in LINES}
 
+# Other names a line is commonly printed under. A row whose label is neither the template's own
+# nor listed here is put to a person once (see app/guardrails/labels.py); add to this list only
+# names that can mean nothing else.
+SYNONYMS: dict[str, tuple[str, ...]] = {
+    "is.revenue": ("Net sales", "Revenue", "Revenues", "Sales", "Total revenue", "Net revenues"),
+    "is.cogs": ("Cost of sales", "Cost of services", "Cost of revenue", "Cost of goods sold and services"),
+    "is.sga": ("Selling, general and administrative expenses", "General and administrative",
+               "Selling, general & administrative"),
+    "is.depreciation_amortization": ("Depreciation", "Depreciation and amortization expense"),
+    "is.interest_expense": ("Interest expense, net",),
+    "is.pretax_income": ("Income before income taxes", "Income before tax", "Pretax income"),
+    "is.income_tax_expense": ("Provision for income taxes", "Income taxes", "Income tax provision"),
+    "is.net_income": ("Net income (loss)", "Net earnings"),
+    "is.operating_income": ("Income from operations", "Operating income (loss)", "Operating profit"),
+    "bs.cash": ("Cash and cash equivalents", "Cash"),
+    "bs.accounts_receivable": ("Accounts receivable", "Trade receivables", "Trade accounts receivable, net"),
+    "bs.inventory": ("Inventories", "Inventory, net", "Inventories, net"),
+    "bs.net_ppe": ("Property, plant and equipment, net", "Property and equipment", "Net property and equipment"),
+    "bs.intangibles": ("Goodwill and intangible assets", "Goodwill and other intangibles", "Intangible assets, net"),
+    "bs.other_noncurrent_assets": ("Other noncurrent assets", "Other long-term assets"),
+    "bs.accounts_payable": ("Trade accounts payable", "Trade payables"),
+    "bs.accrued_liabilities": ("Accrued expenses", "Accrued expenses and other liabilities"),
+    "bs.revolver": ("Revolving line of credit", "Revolving credit facility", "Line of credit borrowings"),
+    "bs.cpltd": ("Current maturities of long-term debt", "Current portion of term debt"),
+    "bs.long_term_debt": ("Long-term debt", "Long-term debt, less current portion",
+                          "Long-term debt, less current maturities", "Term debt, net of current portion"),
+    "bs.subordinated_debt": ("Subordinated notes", "Subordinated notes payable"),
+    "bs.other_noncurrent_liabilities": ("Other noncurrent liabilities", "Other long-term liabilities"),
+    "bs.total_equity": ("Total stockholders' equity", "Total shareholders' equity", "Total members' equity",
+                        "Total partners' capital", "Total owners' equity"),
+    "bs.total_liabilities_and_equity": (
+        "Total liabilities and stockholders' equity", "Total liabilities and shareholders' equity",
+        "Total liabilities and members' equity", "Total liabilities and partners' capital"),
+    "cf.net_income": ("Net income (loss)", "Net earnings"),
+    "cf.distributions": ("Distributions to members", "Distributions to shareholders", "Dividends paid",
+                         "Distributions paid", "Dividends and distributions"),
+    "cf.capex": ("Capital expenditures", "Purchases of property and equipment",
+                 "Purchases of property, plant and equipment"),
+}
+
+
+def known_labels(key: str) -> tuple[str, ...]:
+    """Every name a line is known by: the template's label first, then its synonyms."""
+    return (LINE_BY_KEY[key].label, *SYNONYMS.get(key, ()))
+
+
+
 # Facts the expression engine may read that are not template lines. Availability is produced
 # by `borrowing_base` and stored by the caller as a calculated, point-in-time fact.
 EXTRA_LINES: dict[str, TemplateLine] = {

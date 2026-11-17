@@ -2,6 +2,7 @@
 item on its page and stores it as a cited fact. The certificate is evidence to reconcile
 against; it never decides a test."""
 import base64
+import re
 import uuid
 from dataclasses import dataclass, field
 from datetime import date
@@ -22,9 +23,8 @@ from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import get_page, read_file
 from app.domain.facts_service import add_fact, store_extracted_cell
 from app.domain.monitoring import Cycle
-from app.guardrails.labels import mapping_doubt
 from app.guardrails.numbers import extract_figures
-from app.guardrails.quotes import locate, quote_on_page, same_row
+from app.guardrails.quotes import locate, quote_on_page, same_row, verify_cell
 
 
 class CertRow(BaseModel):
@@ -60,6 +60,25 @@ class CertificateResult:
 def _on_row(page, label: str, text: str) -> bool:
     labels = locate(page.words, label)
     return any(same_row(hit.bbox, lab.bbox) for hit in locate(page.words, text) for lab in labels)
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _row_problem(row_label: str, covenant_id: str, names: dict[str, tuple[str, ...]]) -> str | None:
+    """A certificate row belongs to the covenant whose name its label starts with. Returns why
+    the row cannot be taken as this covenant's, or None."""
+    row = _words(row_label)
+    starts = {cid: max((len(_words(n)) for n in labels if _words(n) and row[:len(_words(n))] == _words(n)), default=0)
+              for cid, labels in names.items()}
+    best = max(starts.values(), default=0)
+    if best == 0:
+        return f"the row {row_label!r} does not start with the name of a covenant in the approved terms"
+    if starts.get(covenant_id, 0) < best:
+        other = next(cid for cid, n in starts.items() if n == best)
+        return f"the row {row_label!r} reads as {other}, not {covenant_id}"
+    return None
 
 
 def read_certificate(db: Session, *, borrower: Borrower, document: Document, period_end: date, terms: Terms,
@@ -102,8 +121,11 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
         elif page is None or not page.has_text:
             problem = "the cited page does not exist or has no text"
         else:
-            # the row's printed label must not clearly name a different covenant
-            problem = mapping_doubt(row.printed_label, row.covenant_id, names)
+            # the row the figure sits on must be this covenant's row. Code reads the row's label
+            # from the page; the label the reader reported is only used to find the row
+            located = verify_cell(page.words, printed_figure=row.actual_printed, printed_label=row.printed_label)
+            if located.value is not None:
+                problem = _row_problem(located.row_label, row.covenant_id, names)
             if problem is None and units_in_doubt and covenant.test.unit == "usd":
                 problem = "the certificate prints an 'in thousands' phrase that was not reported, so dollar amounts cannot be scaled"
         if problem:

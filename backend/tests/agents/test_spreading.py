@@ -184,3 +184,105 @@ def test_image_only_document_goes_to_a_person_without_a_model_call(db, setup):
     llm = ScriptedClient([])
     result = spread_document(db, borrower=setup, document=doc, period_end=PERIOD, months=9, cycle=None, llm=llm)
     assert result.status == "needs_person" and llm.requests == [] and items(db) == [("spread.image_only", "medium")]
+
+
+# ---- a reader that files a figure under the wrong line, however it words the label -------------
+# Found by the independent review: the reader chose the label text it was checked against.
+
+def cell(answer, key):
+    return next(c for c in answer["cells"] if c["key"] == key)
+
+
+def held(result, key):
+    return [u for u in result.unverified if u["key"] == key]
+
+
+def test_swapped_debt_rows_are_held_even_when_the_reader_reports_label_fragments(db, setup):
+    answer = perfect_answer()
+    debt, other = cell(answer, "bs.long_term_debt"), cell(answer, "bs.other_noncurrent_liabilities")
+    debt["key"], other["key"] = "bs.other_noncurrent_liabilities", "bs.long_term_debt"
+    debt["printed_label"], other["printed_label"] = "net of current portion", "liabilities"
+    result, _ = spread(db, setup, answer)
+    assert result.status == "needs_person" and items(db) == [("spread.value_unverified", "medium")]
+    assert "reads as bs.long_term_debt" in held(result, "bs.other_noncurrent_liabilities")[0]["detail"]
+    assert held(result, "bs.other_noncurrent_liabilities")[0]["row_label"] == "Long-term debt, net of current portion"
+    assert current_fact(db, setup.id, "bs.long_term_debt", PERIOD, 0) is None
+    assert current_fact(db, setup.id, "bs.total_liabilities", PERIOD, 0) is None  # no totals from held lines
+
+
+def test_debt_folded_into_other_liabilities_and_declared_absent_is_held(db, setup):
+    answer = perfect_answer()
+    debt = cell(answer, "bs.long_term_debt")
+    debt["key"], debt["printed_label"] = "bs.other_noncurrent_liabilities", "net of current portion"
+    answer["absent_keys"].append("bs.long_term_debt")
+    result, _ = spread(db, setup, answer)
+    assert result.status == "needs_person"
+    assert current_fact(db, setup.id, "bs.long_term_debt", PERIOD, 0) is None
+    assert current_fact(db, setup.id, "bs.total_liabilities", PERIOD, 0) is None
+
+
+def test_supplemental_lines_must_come_from_their_own_rows(db, setup):
+    # no total covers the supplemental lines, so the row label is the only check they have
+    answer = perfect_answer()
+    cell(answer, "sup.scheduled_principal").update(printed_figure="—", printed_label="purchase-money debt")
+    cell(answer, "sup.cash_interest_paid").update(page=1, printed_figure="1,200", printed_label="Interest expense")
+    cell(answer, "sup.cash_taxes_paid").update(page=1, printed_figure="740", printed_label="Income tax expense")
+    result, _ = spread(db, setup, answer)
+    assert result.status == "needs_person"
+    for key in ("sup.scheduled_principal", "sup.cash_interest_paid", "sup.cash_taxes_paid"):
+        assert held(result, key) and current_fact(db, setup.id, key, PERIOD, 9) is None, key
+
+
+def test_an_add_back_line_cannot_be_filled_from_another_expense_row(db, setup):
+    answer = perfect_answer()
+    sga, charges = cell(answer, "is.sga"), cell(answer, "is.nonrecurring_expense")
+    sga["key"], charges["key"] = "is.nonrecurring_expense", "is.sga"
+    sga["printed_label"], charges["printed_label"] = "general and administrative", "charges"
+    result, _ = spread(db, setup, answer)
+    assert result.status == "needs_person" and held(result, "is.nonrecurring_expense") and held(result, "is.sga")
+
+
+def test_a_header_naming_two_periods_is_refused_before_anything_is_stored(db, setup):
+    wide = f"{PERIOD:%B %-d, %Y} September 30, 2025"
+    answer = perfect_answer()
+    answer["cells"] = [dict(c, column_header=wide) for c in answer["comparative_cells"]]
+    answer["comparative_cells"] = []
+    result, _ = spread(db, setup, answer)
+    assert result.status == "needs_person" and items(db) == [("spread.value_unverified", "high")]
+    assert db.execute(select(Fact).where(Fact.borrower_id == setup.id)).first() is None  # nothing stored at all
+
+
+def test_a_spread_whose_printed_totals_were_not_read_is_not_accepted(db, setup):
+    answer = perfect_answer()
+    answer["cells"] = [c for c in answer["cells"] if not c["key"].startswith("stated.")]
+    answer["absent_keys"] = []
+    result, _ = spread(db, setup, answer)
+    assert result.status == "needs_person" and ("spread.does_not_foot", "high") in items(db)
+    assert {e["code"] for e in result.failed_checks} >= {"total_not_read"}
+    assert current_fact(db, setup.id, "bs.total_assets", PERIOD, 0) is None
+
+
+def test_a_borrowers_own_wording_is_confirmed_once_by_a_person_and_then_remembered(db, setup):
+    from app.domain.facts_service import confirm_fact
+    from app.domain.org import User
+
+    labels = {"bs.revolver": "Notes payable to bank"}
+    result, _ = spread(db, setup, perfect_answer(labels=labels), pdf=build_pdf(labels=labels))
+    assert result.status == "needs_person"
+    assert {u["key"] for u in result.unverified} == {"bs.revolver", "bs.revolver@comparative"}
+    entry = held(result, "bs.revolver")[0]
+    assert "not a known name" in entry["detail"] and entry["row_label"] == "Notes payable to bank"
+    analyst = User(email="an@x.example", name="Analyst", role="analyst", password_hash="x")
+    db.add(analyst)
+    db.flush()
+    confirm_fact(db, db.get(Fact, entry["fact_id"]), analyst.id)
+
+    # the next statement from the same borrower prints the same label: no person is needed
+    again, _ = spread(db, setup, perfect_answer(labels=labels), pdf=build_pdf(labels=labels))
+    assert again.status == "spread" and again.unverified == []
+    # another borrower gets no benefit from that confirmation
+    other = Borrower(code="OTH", name="Otherwise Metals, Inc.")
+    db.add(other)
+    db.flush()
+    elsewhere, _ = spread(db, other, perfect_answer(labels=labels), pdf=build_pdf(labels=labels))
+    assert elsewhere.status == "needs_person"

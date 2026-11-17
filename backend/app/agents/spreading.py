@@ -25,7 +25,7 @@ from app.domain.credit import Borrower
 from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import read_file
 from app.domain.facts import CalcRun, Fact
-from app.domain.facts_service import add_fact, current_fact, store_extracted_cell
+from app.domain.facts_service import add_fact, current_fact, label_confirmed, store_extracted_cell
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.work_items import raise_item
 from app.guardrails.labels import mapping_doubt
@@ -58,6 +58,8 @@ SPEC = AgentSpec(
     purpose="Locate template figures in financial statements; code verifies each on its page.",
     prompt_file="spreading.md", output_model=SpreadExtraction, tools=(), effort="high", max_tokens=32000)
 
+# the final printed total of each statement; a spread is not usable until each one foots
+REQUIRED_TOTALS = ("is.net_income", "bs.total_assets", "bs.total_liabilities_and_equity", "cf.net_change_in_cash")
 _MONTHS = {m: i for i, m in enumerate(
     ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
      "november", "december"], start=1)}
@@ -78,21 +80,23 @@ def dates_in(text: str) -> list[date]:
     return found
 
 
-def _line_labels(statement: str) -> dict[str, tuple[str, ...]]:
-    """Known labels for every line of one statement, totals included under their `stated.` key."""
+def _known_labels() -> dict[str, tuple[str, ...]]:
+    """Every name each line is known by, across all statements; a printed total is known under
+    its `stated.` key. A label is judged against all of them, so a row from another statement
+    is recognised for what it is."""
     out = {}
     for line in template.LINES:
-        if line.statement == statement:
-            out[(template.STATED_PREFIX + line.key) if line.computed else line.key] = (line.label,)
+        out[(template.STATED_PREFIX + line.key) if line.computed else line.key] = template.known_labels(line.key)
     return out
 
 
-_LABELS = {name: _line_labels(name) for name in template.STATEMENTS}
+_LABELS = _known_labels()
 
 
-def _mapping_doubt(key: str, printed_label: str) -> str | None:
-    base = key[len(template.STATED_PREFIX):] if key.startswith(template.STATED_PREFIX) else key
-    return mapping_doubt(printed_label, key, _LABELS[template.LINE_BY_KEY[base].statement])
+def _mapping_doubt(key: str, row_label: str, confirmed: bool = False) -> str | None:
+    """A reason to hold a cell: the row's label, as code read it from the page, is not a known
+    name for the line it was filed under, and no person has confirmed it for this borrower."""
+    return mapping_doubt(row_label, key, _LABELS, confirmed=confirmed)
 
 
 def _allowed_key(key: str) -> bool:
@@ -183,16 +187,23 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
     for cell in allowed:
         # one printed row is the line itself; several rows are stored as parts and added by code
         part = PART_SUFFIX if rows_per_key[cell.key] > 1 else ""
+
+        def doubt_for(row_label: str, key: str = cell.key) -> str | None:
+            names = [key, key + PART_SUFFIX, key + suffix, key + suffix + PART_SUFFIX]
+            return _mapping_doubt(key, row_label, label_confirmed(db, borrower.id, names, row_label))
+
+        dated = _DATE.search(cell.column_header or "")
         fact, check = store_extracted_cell(
             db, borrower_id=borrower.id, key=cell.key + suffix + part, period_end=period_end,
             months=_months_for(cell.key, months), document=document, page_number=cell.page,
             printed_figure=cell.printed_figure, printed_label=cell.printed_label,
             column_header=cell.column_header, scale=scale, presentation_sign=_sign(cell.key), agent_run_id=run_id,
-            doubt=_mapping_doubt(cell.key, cell.printed_label))
+            doubt_for=doubt_for, column_anchor=dated.group(0) if dated else None)
         if fact is None or not check.ok:
             result.unverified.append({
                 "key": cell.key + suffix, "page": cell.page, "printed_figure": cell.printed_figure,
-                "printed_label": cell.printed_label, "reason": check.status, "detail": check.detail,
+                "printed_label": cell.printed_label, "row_label": check.row_label, "reason": check.status,
+                "detail": check.detail,
                 "fact_id": str(fact.id) if fact else None})
             by_key.setdefault(cell.key, []).append((fact, False))
         else:
@@ -275,7 +286,9 @@ def spread_document(
 
     scale = scale_override or _derive_scale(db, document, out, result)
     headers = {c.column_header for c in out.cells}
-    period_ok = bool(out.cells) and all(period_end in dates_in(h) for h in headers)
+    # each column header must name the requested period and no other date: a header spanning two
+    # columns would let a prior-year figure pass as the current one
+    period_ok = bool(out.cells) and all(dates_in(h) == [period_end] for h in headers)
     if scale is None or not period_ok:
         reason = "units could not be confirmed" if scale is None else "the column read is not the requested period"
         _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="high",
@@ -297,6 +310,19 @@ def spread_document(
     result.context = {**result.context, "scale": scale, "absent": sorted(absent)}
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent)
     result.failed_checks = [e.to_dict() for e in report.errors]
+    # footing is the check that catches a misread line, so it may not be skipped: each statement
+    # that was read must have its final printed total read and agreeing with the lines
+    footed = {c.key for c in report.checks if c.check == "footing" and c.status == "pass"}
+    for total in REQUIRED_TOTALS:
+        statement = template.LINE_BY_KEY[total].statement
+        read = any(k in values for k, line in template.LINE_BY_KEY.items()
+                   if line.statement == statement and not line.computed)
+        failed = any(e.get("key") == total for e in result.failed_checks)
+        if read and total not in footed and not failed:
+            result.failed_checks.append({
+                "code": "total_not_read", "key": total,
+                "message": f"the printed {template.LINE_BY_KEY[total].label.lower()} was not read, so the "
+                           f"{statement} lines cannot be checked against it"})
 
     if result.unverified:
         _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="medium",
@@ -307,7 +333,7 @@ def spread_document(
               evidence={"document_id": str(document.id), "cells": result.unverified})
     # a line held for a person is missing from the totals, so footing fails for that reason
     # alone; the footing question is asked once the held figures are cleared
-    if report.errors and not result.unverified:
+    if result.failed_checks and not result.unverified:
         _item(db, result, borrower, cycle, document, item_type="spread.does_not_foot", severity="high",
               title=f"{document.title}: the statements do not foot or tie",
               question="One or more totals do not agree with their lines. Which figure is wrong?",
@@ -338,7 +364,7 @@ def spread_document(
                       {"key": c.key, "comparative": str(c.actual), "confirmed": str(c.expected)} for c in restated]})
 
     current_unverified = [u for u in result.unverified if "@comparative" not in u["key"]]
-    if not report.errors and not current_unverified:
+    if not result.failed_checks and not current_unverified:
         _store_computed(db, borrower, period_end, months, report, result)
         _store_absent(db, borrower, period_end, months, absent, result)
     outcome.run.guardrail_notes = result.notes

@@ -66,7 +66,9 @@ COMPUTED = {"is.gross_profit", "is.operating_income", "is.pretax_income", "is.ne
 PRIOR_FYE_CASH_THOUSANDS = 2100
 
 
-def build_pdf(*, scale_phrase: str = "(in thousands)") -> bytes:
+def build_pdf(*, scale_phrase: str = "(in thousands)", labels: dict[str, str] | None = None) -> bytes:
+    """`labels` prints a line under a different name, as a borrower's own wording would."""
+    labels = labels or {}
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=letter, invariant=1)
     for rows in PAGES.values():
@@ -78,8 +80,8 @@ def build_pdf(*, scale_phrase: str = "(in thousands)") -> bytes:
         c.drawRightString(440, 706, CUR)
         c.drawRightString(560, 706, PRIOR)
         y = 688
-        for _key, label, cur, prior in rows:
-            c.drawString(72, y, label)
+        for key, label, cur, prior in rows:
+            c.drawString(72, y, labels.get(key, label))
             c.drawRightString(440, y, cur)
             c.drawRightString(560, y, prior)
             y -= 15
@@ -89,19 +91,20 @@ def build_pdf(*, scale_phrase: str = "(in thousands)") -> bytes:
     return buf.getvalue()
 
 
-def perfect_cells(column: str = "current") -> list[dict]:
+def perfect_cells(column: str = "current", labels: dict[str, str] | None = None) -> list[dict]:
     cells = []
     for page, rows in PAGES.items():
         for key, label, cur, prior in rows:
             cells.append({
                 "key": ("stated." + key) if key in COMPUTED else key, "page": page,
-                "printed_figure": cur if column == "current" else prior, "printed_label": label,
+                "printed_figure": cur if column == "current" else prior,
+                "printed_label": (labels or {}).get(key, label),
                 "column_header": CUR if column == "current" else PRIOR})
     return cells
 
 
-def perfect_answer(**overrides) -> dict:
-    answer = {"scale_statement": "(in thousands)", "scale_page": 1, "cells": perfect_cells(),
-              "comparative_cells": perfect_cells("comparative"), "absent_keys": list(ABSENT), "notes": []}
+def perfect_answer(labels: dict[str, str] | None = None, **overrides) -> dict:
+    answer = {"scale_statement": "(in thousands)", "scale_page": 1, "cells": perfect_cells(labels=labels),
+              "comparative_cells": perfect_cells("comparative", labels), "absent_keys": list(ABSENT), "notes": []}
     answer.update(overrides)
     return answer

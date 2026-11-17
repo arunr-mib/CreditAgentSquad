@@ -129,6 +129,22 @@ def test_certificate_variance_that_passes_either_way_raises_nothing(db, world):
     assert tests["fccr"].outcome == "compliant_variance" and db.execute(select(WorkItem)).first() is None
 
 
+def test_a_pass_that_contradicts_a_certificate_reporting_a_breach_is_put_to_a_person(db, world):
+    # found by the independent review: a misread figure can turn a breach into a pass, and the
+    # borrower's own admission of the breach was only logged
+    borrower, facility, approver = world
+    approve(db, facility, approver, terms())
+    add_fact(db, borrower_id=borrower.id, key="cert.fccr.value", period_end=FY, months=0, value=D("1.10"),
+             unit="ratio", kind="seeded")
+    add_fact(db, borrower_id=borrower.id, key="cert.fccr.in_compliance", period_end=FY, months=0, value=D("0"),
+             unit="count", kind="seeded")
+    tests = by_id(run_covenant_tests(db, borrower=borrower, facility=facility, period_end=FY))
+    assert tests["fccr"].outcome == "compliant_variance" and tests["fccr"].reported_in_compliance is False
+    item = db.execute(select(WorkItem)).scalar_one()
+    assert item.item_type == "covenant.reported_breach_unconfirmed" and item.severity == "high"
+    assert item.blocks_stage and item.required_permission == "decide_breach"
+
+
 def test_missing_input_cannot_test_and_names_the_line(db, world):
     borrower, facility, approver = world
     approve(db, facility, approver, terms())

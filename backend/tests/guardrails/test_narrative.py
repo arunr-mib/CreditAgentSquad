@@ -68,3 +68,73 @@ def test_policy_only_makes_a_recommendation_more_cautious():
     assert apply_policy("request", text="ok", **{**base, "governing_headroom_pct": D("-0.20")}).recommendation == "escalate"
     assert apply_policy("abstain", text="contact the borrower", **base).recommendation == "abstain"
     assert apply_policy("escalate", text="ok", **base).recommendation == "escalate"
+
+
+# ---- found by the independent review: figures that slipped past as "not a figure" --------------
+
+_RATIO = "11111111-1111-4111-8111-111111111111"
+_USD = "22222222-2222-4222-8222-222222222222"
+_FACTS = {_RATIO: FactView(_RATIO, D("3.62"), "ratio"), _USD: FactView(_USD, D("48250000"), "usd")}
+
+
+@pytest.mark.parametrize("text", [
+    "EBITDA was USD4,500,000 for the period.",
+    "EBITDA was USD-4,500,000 for the period.",
+    "Leverage improved to x-3.25 against the covenant.",
+    "Leverage stood at ratio-3.1 for the quarter.",
+    "Leverage of approx.3.10 is compliant.",
+    "Revenue was EUR12.5m.",
+    "Revenue reached Item 4,500,000 in the period.",
+    "Total debt per Note 4500000 is unchanged.",
+    "Headroom per Schedule 2.75x is ample.",
+    "EBITDA of 2050 covers interest.",
+    "Capex was (12) and distributions (45).",
+    "Revenue grew ¹² percent.",
+    "Revenue grew ４５００ over the year.",
+    "Cash fell to Mar 4500 levels.",
+    "Leverage 3/25/100 basis.",
+    "Borrower paid 1st and 2nd 4500000th dollars.",
+    "Revenue of v48250 thousand.",
+    "Leverage was four point two times, well inside the covenant.",
+    "EBITDA fell to twelve million dollars.",
+    "Margin fell by fifteen percent.",
+    "Leverage is half of last year and EBITDA has doubled.",
+    "Revenue was several million higher.",
+])
+def test_a_typed_quantity_is_refused_however_it_is_dressed(text):
+    assert check_narrative(text, _FACTS), text
+
+
+@pytest.mark.parametrize("text", [
+    f"Revenue of {{{{fact:{_USD}}}}},000.",
+    f"Leverage of 1{{{{fact:{_RATIO}}}}}.",
+    f"Leverage of {{{{fact:{_RATIO}}}}}0 for the period.",
+    f"Leverage of {{{{fact:{_RATIO}}}}} million.",
+    f"Revenue {{{{fact:{_USD}|usd_k}}}} thousand thousand.",
+    f"Revenue of ${{{{fact:{_USD}}}}}.",
+    f"Margin of {{{{fact:{_RATIO}}}}}%.",
+])
+def test_text_joined_onto_a_reference_is_refused(text):
+    assert "reference_joined" in {n.check for n in check_narrative(text, _FACTS)}, text
+
+
+@pytest.mark.parametrize("fid,fmt", [(_RATIO, "pct"), (_RATIO, "usd_m"), (_USD, "ratio"), (_USD, "days"), (_USD, "pct")])
+def test_a_format_that_does_not_fit_the_unit_is_refused_and_never_applied(fid, fmt):
+    text = f"The figure was {{{{fact:{fid}|{fmt}}}}} for the period."
+    assert "format_wrong_for_unit" in {n.check for n in check_narrative(text, _FACTS)}
+    # even unchecked, the renderer falls back to the unit's own format
+    assert render(text, _FACTS) == f"The figure was {format_fact(_FACTS[fid])} for the period."
+
+
+@pytest.mark.parametrize("text", [
+    f"Total leverage was {{{{fact:{_RATIO}}}}} at September 30, 2026, against the maximum in Section 7.11(a).",
+    f"Revenue of {{{{fact:{_USD}|usd_m}}}} for the nine months ended 2026-09-30 was below the prior year.",
+    f"Revenue ({{{{fact:{_USD}}}}}) fell; leverage rose to {{{{fact:{_RATIO}}}}}, and the trend continued in Q3 2026.",
+    "The borrower has two facilities and one open exception; the amendment (Amendment No. 2) is not yet approved.",
+    "Results for the first half of the year were stronger than the second half.",
+    "Statements were delivered late for the quarter and the certificate was received on October 30, 2026.",
+    "Since 2024 the company has reported on a trailing twelve month basis under clauses (a) and (b).",
+    "Covenant headroom has narrowed for three quarters in a row.",
+])
+def test_ordinary_commentary_is_not_refused(text):
+    assert check_narrative(text, _FACTS) == [], [n.detail for n in check_narrative(text, _FACTS)]

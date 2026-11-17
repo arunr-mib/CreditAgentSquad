@@ -65,6 +65,11 @@ def same_row(a: Box, b: Box) -> bool:
     return overlap >= 0.5 * min(a[3] - a[1], b[3] - b[1])
 
 
+def _inside(inner: Box, outer: Box, slack: float = 1.0) -> bool:
+    return (inner[0] >= outer[0] - slack and inner[1] >= outer[1] - slack
+            and inner[2] <= outer[2] + slack and inner[3] <= outer[3] + slack)
+
+
 def column_aligned(figure: Box, header: Box, tolerance: float = 12.0) -> bool:
     """A figure belongs to a column when it sits under the header: boxes overlap sideways, or
     their right edges or centres line up within the tolerance."""
@@ -77,6 +82,30 @@ def column_aligned(figure: Box, header: Box, tolerance: float = 12.0) -> bool:
     return abs(figure[2] - header[2]) <= tolerance or abs(centre_f - centre_h) <= tolerance
 
 
+def row_label(words: Sequence[Word], figure: Box) -> str:
+    """The label of the row a figure sits on, read from the page by code: the words on the same
+    row to the left of the figure, up to the first word that is itself a figure. The reader's
+    own choice of label text is never used for this, because a reader can pick a fragment that
+    hides what the row is ("net of current portion" for long-term debt)."""
+    left = sorted((w for w in words
+                   if same_row((float(w[0]), float(w[1]), float(w[2]), float(w[3])), figure)
+                   and float(w[2]) <= figure[0] + 1.0), key=lambda w: float(w[0]))
+    label: list[str] = []
+    for word in left:
+        text = str(word[4]).strip()
+        if not text or not any(ch.isalnum() for ch in text):
+            if text in _DASH_CELLS:
+                break  # a dash is an empty cell of an earlier column, not part of the label
+            continue  # leader dots and other decoration
+        if parse_printed_figure(text) is not None:
+            break
+        label.append(text)
+    return " ".join(label)
+
+
+_DASH_CELLS = {"-", "—", "–", "−"}
+
+
 @dataclass(frozen=True)
 class CellCheck:
     status: str  # verified | unparseable | not_found | label_mismatch | column_unconfirmed | ambiguous
@@ -85,6 +114,7 @@ class CellCheck:
     bbox: Box | None = None
     occurrences: int = 0
     detail: str = ""
+    row_label: str = ""  # the row's label as code read it from the page
 
     @property
     def ok(self) -> bool:
@@ -97,10 +127,14 @@ def verify_cell(
     printed_figure: str,
     printed_label: str | None = None,
     column_header: str | None = None,
+    column_anchor: str | None = None,
 ) -> CellCheck:
     """Verify one statement cell: the figure as printed, on the row of its label, under its column.
 
     Returns the value parsed from the printed text. Anything unclear is refused with a reason.
+    `column_anchor` is the part of the header that fixes the column (the period's date); when
+    given, the figure must sit under that, not merely under a header wide enough to span two
+    columns.
     """
     parsed = parse_printed_figure(printed_figure)
     if parsed is None:
@@ -122,6 +156,9 @@ def verify_cell(
 
     if column_header is not None:
         headers = locate(words, column_header)
+        if column_anchor is not None and headers:
+            anchors = locate(words, column_anchor)
+            headers = [a for a in anchors if any(_inside(a.bbox, h.bbox) for h in headers)]
         in_column = [c for c in candidates if any(column_aligned(c.bbox, h.bbox) for h in headers)]
         if not in_column:
             return CellCheck("column_unconfirmed", value=parsed.value, unit=parsed.unit,
@@ -129,11 +166,12 @@ def verify_cell(
                              detail=f"cannot confirm {printed_figure!r} sits under {column_header!r}")
         candidates = in_column
 
+    label = row_label(words, candidates[0].bbox)
     if len(candidates) > 1 and printed_label is not None and column_header is not None:
         return CellCheck("ambiguous", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,
-                         occurrences=len(candidates), detail="more than one matching cell")
+                         occurrences=len(candidates), detail="more than one matching cell", row_label=label)
     return CellCheck("verified", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,
-                     occurrences=len(candidates))
+                     occurrences=len(candidates), row_label=label)
 
 
 def _prose(text: str) -> str:

@@ -33,6 +33,7 @@ from app.guardrails.quotes import quote_on_page
 CANNOT_ANSWER = "I cannot answer that from what is on file."
 MAX_FOLLOW_UPS = 3
 MAX_HISTORY_TURNS = 8
+_UNCHECKED = "The draft answer did not pass a check on its figures."
 MAX_TURN_CHARS = 2000
 MAX_QUESTION_CHARS = 4000
 MIN_QUOTE_WORDS = 4
@@ -43,6 +44,9 @@ _MISSING = {
     "fact_unknown": "The draft answer referred to a fact that none of the lookups for this question returned.",
     "reference_malformed": "The draft answer contained a fact reference that could not be read.",
     "format_unknown": "The draft answer asked for a figure in a format that does not exist.",
+    "format_wrong_for_unit": "The draft answer asked for a figure in a format that does not fit what it measures.",
+    "reference_joined": "The draft answer joined text onto a figure in a way that would have changed it.",
+    "number_in_words": "The draft answer stated a quantity in words rather than taking it from a stored fact.",
     "no_grounding": "None of the quotes offered could be found on the pages cited, and no stored fact was referenced.",
     "empty_answer": "No answer was written.",
     "step_cap": "The lookups needed went past the limit for one question; ask about one thing at a time.",
@@ -162,20 +166,22 @@ def _follow_ups(items: list[str], notes: list[dict[str, str]]) -> list[str]:
 
 
 def _guard(db: Session, output: CopilotAnswer, facts: dict[str, FactView], borrowers: set[uuid.UUID],
-           notes: list[dict[str, str]]) -> tuple[str | None, list[dict[str, Any]]]:
+           notes: list[dict[str, str]], question: str = "") -> tuple[str | None, list[dict[str, Any]]]:
     """Apply the guardrails. Returns (why the answer is withheld or None, surviving citations)."""
     citations = _verify_citations(db, output.citations, borrowers, notes)
     if not output.answer.strip():
         notes.append(_note("narrative", "empty_answer", "refuse", "the answer was empty"))
         return "empty_answer", citations
     allowed = [figure.value for c in citations for figure in extract_figures(c["quote"])]
-    problems = check_narrative(output.answer, facts, allowed_figures=allowed)
+    # a threshold the person stated in the question may be said back to them
+    allowed += [figure.value for figure in extract_figures(question)]
+    problems = check_narrative(output.answer, facts, allowed_figures=allowed, echo=question)
     if problems:
         for check in dict.fromkeys(p.check for p in problems):
             count = sum(1 for p in problems if p.check == check)
             # the model's own figure is never shown, not even in a note; the raw answer is on the run
             notes.append(_note("narrative", check, "refuse",
-                               f"{_MISSING[check]} ({'once' if count == 1 else 'more than once'})"))
+                               f"{_MISSING.get(check, _UNCHECKED)} ({'once' if count == 1 else 'more than once'})"))
         return problems[0].check, citations
     if output.citations and not citations and not referenced_fact_ids(output.answer):
         notes.append(_note("quotes", "no_grounding", "refuse", _MISSING["no_grounding"]))
@@ -230,7 +236,7 @@ def ask(
         withheld: str | None = reason
     else:
         output: CopilotAnswer = outcome.output  # type: ignore[assignment]
-        withheld, citations = _guard(db, output, facts, state["borrowers"], notes)
+        withheld, citations = _guard(db, output, facts, state["borrowers"], notes, question)
         if withheld is None:
             response.status = "answered"
             response.answer_with_references = output.answer.strip()
@@ -239,7 +245,7 @@ def ask(
             response.citations = citations
             response.follow_ups = _follow_ups(output.follow_ups, notes)
     if withheld is not None:
-        response.answer = response.answer_with_references = f"{CANNOT_ANSWER} {_MISSING[withheld]}"
+        response.answer = response.answer_with_references = f"{CANNOT_ANSWER} {_MISSING.get(withheld, _UNCHECKED)}"
     response.guardrail_notes = notes
 
     _trace(db, run, notes)

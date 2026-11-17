@@ -4,6 +4,7 @@ Pure code: no I/O. Every rule here has a test for what it must refuse and a test
 must still allow (see docs/lessons/number-normalisation-traps.md).
 """
 import re
+import unicodedata
 from collections.abc import Iterable
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
@@ -19,28 +20,41 @@ _MONTH = (
 )
 
 # Things that contain digits but are not figures. Each is blanked out before figures are read.
+# Every pattern is deliberately narrow: it must not be able to hide an amount. A reference takes
+# a short section number, never a number with a comma, a unit or seven digits ("Item 4,500,000",
+# "Schedule 2.75x"); a year is 1980-2049 and needs a word of time in front of it ("EBITDA of
+# 2050" is an amount); an identifier never ends in a decimal ("x-3.25").
+_YEAR = r"(?:19[89]\d|20[0-4]\d)"
+_DAY = r"(?:0?[1-9]|[12]\d|3[01])"
+_SECTION_NO = r"\d{1,3}(?:\.\d{1,3})*(?:\([A-Za-z0-9]{1,4}\))*(?:-\d{1,2})?(?![\w,%]|\.\d)"
 _NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
     ("fact_ref", re.compile(r"\{\{fact:[^}]*\}\}")),
     ("uuid", re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.I)),
-    # identifiers such as calc_3f9a2b, run-7, doc_12: letters, a separator, then a part with a digit
-    ("identifier", re.compile(r"\b[A-Za-z][A-Za-z]*[_-][0-9A-Za-z_-]*\d[0-9A-Za-z_-]*\b")),
-    ("iso_date", re.compile(r"\b\d{4}-\d{2}-\d{2}\b")),
-    ("slash_date", re.compile(r"\b\d{1,2}/\d{1,2}/\d{2,4}\b")),
-    ("month_day", re.compile(rf"\b{_MONTH}\s+\d{{1,2}}(?:st|nd|rd|th)?(?:,?\s+\d{{4}})?\b", re.I)),
-    ("day_month", re.compile(rf"\b\d{{1,2}}(?:st|nd|rd|th)?\s+{_MONTH}(?:,?\s+\d{{4}})?(?!\w)", re.I)),
-    ("month_year", re.compile(rf"\b{_MONTH}\s+\d{{4}}\b", re.I)),
-    ("quarter", re.compile(r"\b(?:Q[1-4]|[1-4]Q)\s?-?\s?(?:FY)?\s?'?\d{2,4}\b", re.I)),
-    ("fiscal_year", re.compile(r"\bFY\s?'?\d{2,4}\b", re.I)),
-    ("version", re.compile(r"\b(?:version\s+\d+|v\d+)\b", re.I)),
-    ("section_sign", re.compile(r"§+\s*\d[\w.()\-]*")),
+    # identifiers: calc_3f9a2b, doc_12 (snake case), run-7, B-2 (a word, a hyphen, up to three digits)
+    ("identifier", re.compile(r"\b[A-Za-z]+_[0-9A-Za-z_]*\d[0-9A-Za-z_]*\b(?![.,]\d)")),
+    ("hyphen_id", re.compile(r"\b(?!(?:USD|EUR|GBP|CAD|x|ratio)-)[A-Za-z]+-\d{1,3}\b(?![.,]\d|[x%])", re.I)),
+    ("iso_date", re.compile(rf"\b{_YEAR}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])\b")),
+    ("slash_date", re.compile(rf"\b(?:0?[1-9]|1[0-2])/{_DAY}/(?:{_YEAR}|\d{{2}})\b(?![/\d])")),
+    ("month_day", re.compile(rf"\b{_MONTH}\s+{_DAY}(?:st|nd|rd|th)?(?:,?\s+{_YEAR})?\b(?![,.]?\d)", re.I)),
+    ("day_month", re.compile(rf"\b{_DAY}(?:st|nd|rd|th)?\s+{_MONTH}(?:,?\s+{_YEAR})?(?!\w)", re.I)),
+    ("month_year", re.compile(rf"\b{_MONTH}\s+{_YEAR}\b", re.I)),
+    ("quarter", re.compile(rf"\b(?:Q[1-4]|[1-4]Q)(?:\s?-?\s?(?:FY)?\s?{_YEAR}|-?'?\d{{2}})\b", re.I)),
+    ("fiscal_year", re.compile(rf"\bFY\s?'?(?:{_YEAR}|\d{{2}})\b", re.I)),
+    ("version", re.compile(r"\b(?:version\s+\d{1,3}|v\d{1,3})\b(?![.,]\d)", re.I)),
+    ("section_sign", re.compile(rf"§+\s*{_SECTION_NO}")),
     ("reference", re.compile(
         r"\b(?:Sections?|Articles?|Clauses?|Exhibits?|Schedules?|Annex(?:es)?|Appendi(?:x|ces)|Amendments?|"
-        r"Paragraphs?|Pages?|Notes?|Items?)\s+(?:No\.?\s*)?(?:\d[\w.()\-]*|[IVXLC]+\b)", re.I)),
-    ("number_label", re.compile(r"\bNo\.\s*\d+\b")),
-    ("ordinal", re.compile(r"\b\d+(?:st|nd|rd|th)\b", re.I)),
-    ("enumeration", re.compile(r"(?<![\w$])\((?:\d{1,2}|[ivx]{1,4}|[a-z])\)(?!\s*[%x])", re.I)),
-    # a bare year: four digits 1900-2099 with no comma, currency sign, decimal part or unit attached
-    ("year", re.compile(r"(?<![\d,.$£€(-])\b(?:19|20)\d{2}\b(?![\d,%]|\.\d|x\b|\s?(?:thousand|million|billion)\b)")),
+        rf"Paragraphs?|Pages?|Notes?|Items?)\s+(?:No\.?\s*)?(?:{_SECTION_NO}|[IVXLC]+\b)", re.I)),
+    ("number_label", re.compile(r"\bNo\.\s*\d{1,3}\b(?![,.]\d)")),
+    ("ordinal", re.compile(r"\b\d{1,3}(?:st|nd|rd|th)\b", re.I)),
+    # a list marker is one digit or letters; "(12)" is twelve in brackets, a negative amount
+    ("enumeration", re.compile(
+        r"(?<![\w$])\((?:[1-9]|[ivx]{1,4}|[a-z])\)(?!\s*(?:[%x]|thousand|million|billion|mm\b|bn\b|k\b))", re.I)),
+    # a year: only after a word of time, with no comma, currency sign, decimal part or unit attached
+    ("year", re.compile(
+        r"\b(?:in|during|since|throughout|until|through|ended|ending|fiscal(?:\s+year)?|calendar(?:\s+year)?|"
+        rf"year|early|late|mid|and(?:\s+again)?(?:\s+in)?)[\s-]+{_YEAR}\b"
+        r"(?![\d,%]|\.\d|x\b|\s?(?:thousand|million|billion)\b)", re.I)),
 ]
 
 _FIGURE = re.compile(
@@ -88,6 +102,19 @@ def blank_non_figures(text: str) -> str:
     for _name, pattern in _NOT_FIGURES:
         text = pattern.sub(lambda m: " " * len(m.group(0)), text)
     return text
+
+
+def stray_digits(text: str, known_ratios: Iterable[Decimal] = ()) -> list[str]:
+    """Words that still hold a digit once dates, references and well-formed figures are set
+    aside: digits glued to letters or punctuation, where no figure can be read and so none can
+    be traced ("USD4,500,000", "approx.3.10", "EUR12.5m"). Agent-written text may contain none."""
+    cleaned = list(_drop_to_one(blank_non_figures(text), known_ratios))
+    for m in _FIGURE.finditer("".join(cleaned)):
+        for i in range(m.start(), m.end()):
+            cleaned[i] = " "
+    left = "".join(cleaned)
+    return [m.group(0) for m in re.finditer(r"\S+", text)
+            if any(ch.isdigit() or unicodedata.category(ch) == "No" for ch in left[m.start():m.end()])]
 
 
 def _drop_to_one(text: str, known_ratios: Iterable[Decimal]) -> str:

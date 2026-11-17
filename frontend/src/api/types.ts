@@ -153,6 +153,8 @@ export type WorkItemType =
   | 'terms.unapproved_amendment'
   | 'covenant.breach'
   | 'covenant.reported_mismatch'
+  | 'covenant.reported_breach_unconfirmed'
+  | 'fact.correction_changed_outcome'
   | 'covenant.cannot_test'
   | 'bb.over_advance'
   | 'bb.certificate_mismatch'
