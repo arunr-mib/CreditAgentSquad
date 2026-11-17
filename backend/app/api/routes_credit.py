@@ -1,8 +1,10 @@
 """Borrowers, loans, documents, facts and the spread grid."""
 import uuid
 from datetime import date
+from decimal import Decimal, InvalidOperation
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
+from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -12,6 +14,7 @@ from app.calc import template
 from app.core.clock import today
 from app.core.db import get_db
 from app.core.roles import Permission
+from app.domain import facts_service
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
@@ -206,3 +209,91 @@ def get_covenant_test(test_id: uuid.UUID, db: Session = Depends(get_db), _: User
         calc = db.get(CalcRun, test.calc_run_id)
         out["calculation"] = row(calc) if calc else None
     return out
+
+
+class FactReasonIn(BaseModel):
+    reason: str = ""
+
+
+class FactCorrectIn(BaseModel):
+    value: str
+    reason: str
+
+
+class ManualFactIn(BaseModel):
+    key: str
+    period_end: date
+    months: int
+    value: str
+    reason: str
+
+
+def _decimal(text: str) -> Decimal:
+    try:
+        return Decimal(text.replace(",", ""))
+    except (InvalidOperation, AttributeError) as exc:
+        raise HTTPException(422, "The value is not a number.") from exc
+
+
+def _fact_or_404(db: Session, fact_id: uuid.UUID) -> Fact:
+    fact = db.get(Fact, fact_id)
+    if fact is None:
+        raise HTTPException(404, "Fact not found.")
+    return fact
+
+
+@router.post("/facts/{fact_id}/confirm")
+def confirm_fact_route(fact_id: uuid.UUID, db: Session = Depends(get_db),
+                       user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
+    """A person accepts a figure held for review exactly as it was read."""
+    fact = _fact_or_404(db, fact_id)
+    try:
+        facts_service.confirm_fact(db, fact, user.id)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    db.commit()
+    return fact_out(db, fact)
+
+
+@router.post("/facts/{fact_id}/correct")
+def correct_fact_route(fact_id: uuid.UUID, body: FactCorrectIn, db: Session = Depends(get_db),
+                       user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
+    """A person replaces a figure. The old fact is kept and marked superseded."""
+    fact = _fact_or_404(db, fact_id)
+    try:
+        new = facts_service.correct_fact(db, fact, value=_decimal(body.value), user_id=user.id, reason=body.reason)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    db.commit()
+    return fact_out(db, new)
+
+
+@router.post("/facts/{fact_id}/reject")
+def reject_fact_route(fact_id: uuid.UUID, body: FactReasonIn, db: Session = Depends(get_db),
+                      user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
+    fact = _fact_or_404(db, fact_id)
+    if not body.reason.strip():
+        raise HTTPException(422, "Rejecting a figure needs a reason.")
+    facts_service.reject_fact(db, fact, user_id=user.id, reason=body.reason)
+    db.commit()
+    return fact_out(db, fact)
+
+
+@router.post("/borrowers/{borrower_id}/facts", status_code=201)
+def enter_fact(borrower_id: uuid.UUID, body: ManualFactIn, db: Session = Depends(get_db),
+               user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
+    """A person keys a statement figure by hand: a template input line, with a reason."""
+    _borrower_or_404(db, borrower_id)
+    line = template.LINE_BY_KEY.get(body.key)
+    if line is None or line.computed:
+        raise HTTPException(422, "Only input lines of the spreading template can be entered; totals are calculated.")
+    if not body.reason.strip():
+        raise HTTPException(422, "Entering a figure by hand needs a reason.")
+    if line.flow and body.months not in (3, 6, 9, 12):
+        raise HTTPException(422, "A flow line needs the number of months in the period: 3, 6, 9 or 12.")
+    fact = facts_service.add_fact(
+        db, borrower_id=borrower_id, key=body.key, period_end=body.period_end,
+        months=body.months if line.flow else 0, value=_decimal(body.value), kind="manual", entered_by=user.id,
+        reason=body.reason, actor=("user", str(user.id)))
+    db.commit()
+    return fact_out(db, fact)

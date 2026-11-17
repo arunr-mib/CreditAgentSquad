@@ -131,9 +131,11 @@ class SpreadResult:
     failed_checks: list[dict[str, Any]] = field(default_factory=list)
     work_items: list[WorkItem] = field(default_factory=list)
     notes: list[dict[str, Any]] = field(default_factory=list)  # guardrail notes
+    context: dict[str, Any] = field(default_factory=dict)  # what a later repair needs: units, absent lines
 
 
 def _item(db, result, borrower, cycle, document, **kw) -> None:
+    kw["evidence"] = {**kw.get("evidence", {}), "spread": result.context}
     result.work_items.append(raise_item(
         db, borrower_id=borrower.id, cycle_id=cycle.id if cycle else None, stage="spreading",
         actor=("agent", "spreading"), agent_run_id=result.run_id,
@@ -223,8 +225,11 @@ def _sum_fact(db: Session, borrower: Borrower, key: str, parts: list[Fact]) -> F
 def spread_document(
     db: Session, *, borrower: Borrower, document: Document, period_end: date, months: int,
     cycle: Cycle | None, llm: LLMClient, prior_fye_cash: Decimal | None = None,
+    scale_override: int | None = None,
 ) -> SpreadResult:
+    """`scale_override` is a person's answer to a units question; it replaces the units check."""
     result = SpreadResult(status="spread")
+    result.context = {"document_id": str(document.id), "period_end": period_end.isoformat(), "months": months}
     if document.status == "image_only" or document.meta.get("image_only_pages"):
         _item(db, result, borrower, cycle, document, item_type="spread.image_only", severity="medium",
               title=f"{document.title} has pages with no readable text",
@@ -267,7 +272,7 @@ def spread_document(
         else:
             result.notes.append({"layer": "agent", "check": "note", "action": "shown", "detail": note})
 
-    scale = _derive_scale(db, document, out, result)
+    scale = scale_override or _derive_scale(db, document, out, result)
     headers = {c.column_header for c in out.cells}
     period_ok = bool(out.cells) and all(period_end in dates_in(h) for h in headers)
     if scale is None or not period_ok:
@@ -288,6 +293,7 @@ def spread_document(
     values = _store_cells(db, cells=out.cells, borrower=borrower, document=document, period_end=period_end,
                           months=months, scale=scale, run_id=outcome.run.id, result=result)
     absent = [k for k in out.absent_keys if k in template.LINE_BY_KEY and k not in values]
+    result.context = {**result.context, "scale": scale, "absent": sorted(absent)}
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent)
     result.failed_checks = [e.to_dict() for e in report.errors]
 
@@ -379,3 +385,45 @@ def _store_absent(db, borrower, period_end, months, absent, result) -> None:
             db, borrower_id=borrower.id, key=key, period_end=period_end, months=_months_for(key, months),
             value=Decimal(0), kind="calculated", calc_run_id=calc.id, actor=("system", "spreading"),
             note="not printed on the statement; zero because every total foots without it")
+
+
+def finalize_spread(db: Session, *, borrower: Borrower, document: Document, period_end: date, months: int,
+                    scale: int, absent: list[str], cycle: Cycle | None) -> SpreadResult:
+    """Finish a spread after a person has confirmed, corrected or keyed figures: read the usable
+    facts for the period, run the footing and tie checks again, and store totals only if they
+    pass. This is the repair path for a spread that was held."""
+    from app.calc.periods import prior_fiscal_year_end
+    from app.domain.facts_service import current_fact
+
+    result = SpreadResult(status="spread")
+    result.context = {"document_id": str(document.id), "period_end": period_end.isoformat(), "months": months,
+                      "scale": scale, "absent": sorted(absent)}
+    values: dict[str, Decimal] = {}
+    for line in template.LINES:
+        keys = [template.STATED_PREFIX + line.key] if line.computed else [line.key]
+        for key in keys:
+            fact = current_fact(db, borrower.id, key, period_end, _months_for(key, months))
+            if fact is not None:
+                values[key] = fact.value
+                result.facts[key] = fact
+    still_absent = [k for k in absent if k not in values]
+    prior = current_fact(db, borrower.id, "bs.cash",
+                         prior_fiscal_year_end(period_end, borrower.fiscal_year_end_month), 0)
+    report = template.check_statement(values, scale=scale, prior_fye_cash=prior.value if prior else None,
+                                      absent=still_absent)
+    result.failed_checks = [e.to_dict() for e in report.errors]
+    if report.errors:
+        _item(db, result, borrower, cycle, document, item_type="spread.does_not_foot", severity="high",
+              title=f"{document.title}: the statements still do not foot or are incomplete",
+              question="After the changes, one or more totals still do not agree or a line is missing. Which figure is wrong?",
+              allowed_decisions=["values_corrected", "accept_as_reported", "request_new_document"],
+              required_permission="confirm_spread",
+              evidence={"document_id": str(document.id), "checks": result.failed_checks})
+        return result
+    if current_fact(db, borrower.id, "bs.total_assets", period_end, 0) is None:
+        _store_computed(db, borrower, period_end, months, report, result)
+        _store_absent(db, borrower, period_end, months, still_absent, result)
+    ledger.record(db, actor_type="system", actor_id="spreading", action="spread.finalized", entity_type="document",
+                  entity_id=document.id, payload={"lines": len(values), "scale": scale})
+    db.flush()
+    return result

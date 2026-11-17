@@ -6,7 +6,7 @@ A fleet of AI agents for commercial lending. Slice one is the portfolio monitori
 
 | | |
 |---|---|
-| Design spec (source of truth, owner-owned) | `docs/specs/2026-11-17-creditfleet-design.md` |
+| Design spec (source of truth, owner-owned) | `docs/specs/2026-11-17-credit-agent-squad-design.md` |
 | Milestone plans | `docs/plans/` |
 | Lessons | `docs/lessons/` |
 | Current state and next steps | `docs/HANDOFF.md` |
@@ -34,6 +34,8 @@ uv run pytest backend/tests/calc -q       # pure calculation tests
 uv run ruff check .                       # lint
 uv run python -m synthetic.generate       # build the synthetic book into synthetic/out/
 service postgresql start                  # local Postgres 16 in the cloud container
+uv run python -m evals.run --mode standin # all borrowers through the live cycle with a stand-in reader
+PYTHONPATH=backend uv run python -m app.worker   # background worker
 cd frontend && pnpm install && pnpm dev   # workspace
 ```
 

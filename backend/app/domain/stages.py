@@ -39,9 +39,10 @@ def _borrower(db: Session, cycle: Cycle) -> Borrower:
 
 
 def _documents(db: Session, cycle: Cycle, *types: str) -> list[Document]:
+    """Documents for the cycle's period. One a person set aside (rejected) is not used again."""
     return list(db.execute(select(Document).where(
         Document.borrower_id == cycle.borrower_id, Document.period_end == cycle.period_end,
-        Document.doc_type.in_(types)).order_by(Document.created_at)).scalars())
+        Document.doc_type.in_(types), Document.status != "rejected").order_by(Document.created_at)).scalars())
 
 
 def _unfiled(db: Session, cycle: Cycle) -> list[Document]:
@@ -90,7 +91,8 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     prior_cash = current_fact(db, borrower.id, "bs.cash", prior_end, 0)
     result = spreading.spread_document(
         db, borrower=borrower, document=documents[-1], period_end=cycle.period_end, months=cycle.months,
-        cycle=cycle, llm=_llm(), prior_fye_cash=prior_cash.value if prior_cash else None)
+        cycle=cycle, llm=_llm(), prior_fye_cash=prior_cash.value if prior_cash else None,
+        scale_override=st.detail.get("scale_override"))
     st.detail = {**st.detail, "status": result.status, "run_id": str(result.run_id) if result.run_id else None,
                  "unverified": len(result.unverified), "failed_checks": len(result.failed_checks)}
     return "done"

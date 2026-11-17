@@ -1,6 +1,6 @@
 # Credit Agent Squad: design system
 
-The visual identity and component vocabulary of the workspace. Tokens live in `src/design/tokens.css`, components in `src/design/`, live examples at `/design`. The design spec (`docs/specs/2026-11-17-creditfleet-design.md`, section 15) is the contract; this file records how it is met.
+The visual identity and component vocabulary of the workspace. Tokens live in `src/design/tokens.css`, components in `src/design/`, live examples at `/design`. The design spec (`docs/specs/2026-11-17-credit-agent-squad-design.md`, section 15) is the contract; this file records how it is met.
 
 **Direction.** The calm of an institutional research terminal: quiet warm surfaces, ink type, hairline rules, figures that scan in columns. Agents appear as a colleague's annotations. People decide.
 

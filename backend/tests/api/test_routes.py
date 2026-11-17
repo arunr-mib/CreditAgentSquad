@@ -120,3 +120,45 @@ def test_ledger_clock_and_verify(client, db, world):
     events = client.get("/api/v1/ledger", params={"action": "clock."}).json()
     assert events[0]["action"] == "clock.set" and events[0]["payload"]["to"] == "2026-11-17"
     assert client.get("/api/v1/ledger/verify").json()["ok"] is True
+
+
+def test_fact_confirm_correct_reject_and_manual_entry(client, db, world):
+    borrower, _ = world
+    proposed = add_fact(db, borrower_id=borrower.id, key="is.revenue", period_end=PERIOD, months=9,
+                        value=D("48250000"), kind="seeded", status="proposed")
+    sign_in(client, "ruth.calloway")  # credit review cannot change figures
+    assert client.post(f"/api/v1/facts/{proposed.id}/confirm").status_code == 403
+    sign_in(client, "priya.raman")
+    assert client.post(f"/api/v1/facts/{proposed.id}/confirm").json()["status"] == "confirmed"
+    assert client.post(f"/api/v1/facts/{proposed.id}/correct", json={"value": "abc", "reason": "x"}).status_code == 422
+    assert client.post(f"/api/v1/facts/{proposed.id}/correct", json={"value": "48,300,000", "reason": ""}).status_code == 422
+    fixed = client.post(f"/api/v1/facts/{proposed.id}/correct", json={"value": "48,300,000", "reason": "Reclass."}).json()
+    assert fixed["value"] == "48300000" and fixed["kind"] == "manual"
+    assert client.get(f"/api/v1/facts/{proposed.id}").json()["status"] == "superseded"
+    assert client.post(f"/api/v1/facts/{fixed['id']}/reject", json={"reason": ""}).status_code == 422
+    base = f"/api/v1/borrowers/{borrower.id}/facts"
+    entry = {"key": "bs.total_assets", "period_end": "2026-09-30", "months": 0, "value": "1", "reason": "x"}
+    assert client.post(base, json=entry).status_code == 422  # totals are calculated, never entered
+    entry.update(key="cf.capex", months=9, value="1,400,000", reason="Keyed from page 3.")
+    made = client.post(base, json=entry)
+    assert made.status_code == 201 and made.json()["value"] == "1400000" and made.json()["reason"] == "Keyed from page 3."
+
+
+def test_assign_a_work_item_and_acknowledge_a_signal(client, db, world):
+    from app.domain.monitoring import Signal
+
+    borrower, cycle = world
+    item = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="intake", item_type="intake.unclassified",
+                      title="Unfiled document", question="What is this document?",
+                      allowed_decisions=["classified_by_hand"], required_permission="upload_document")
+    signal = Signal(borrower_id=borrower.id, period_end=PERIOD, rule_id="net_loss", rule_version="signals-1",
+                    severity="high", basis={})
+    db.add(signal)
+    db.flush()
+    owner = db.query(User).filter(User.email == "tomas.keller@bankofstoic.example").one()
+    sign_in(client, "priya.raman")
+    done = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owner.id), "due_date": "2026-11-20"})
+    assert done.status_code == 200 and done.json()["due_date"] == "2026-11-20" and done.json()["assigned_to"] == str(owner.id)
+    ack = client.post(f"/api/v1/signals/{signal.id}/acknowledge", json={"note": "Discussed with the lender."})
+    assert ack.status_code == 200 and ack.json()["status"] == "acknowledged"
+    assert client.post(f"/api/v1/signals/{signal.id}/acknowledge", json={}).status_code == 422

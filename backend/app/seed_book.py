@@ -266,6 +266,14 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
     for doc in documents.values():
         calendar.match_document(db, doc)
     calendar.refresh_statuses(db, as_of)
+    # The book holds documents for some past periods only (for example three borrowing base
+    # certificates). An obligation from a past period with no document was never tracked here;
+    # showing it as overdue would be a false alarm.
+    from app.domain.terms import ReportingObligation
+    for ob in db.execute(select(ReportingObligation).where(
+            ReportingObligation.borrower_id == borrower.id, ReportingObligation.period_end < current_period,
+            ReportingObligation.status.in_(("due", "overdue")))).scalars():
+        ob.status = "untracked"
 
     # facts
     load_current = current == "seeded" and not halted(truth)

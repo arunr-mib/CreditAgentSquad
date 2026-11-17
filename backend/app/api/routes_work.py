@@ -207,3 +207,47 @@ def set_clock(body: ClockIn, db: Session = Depends(get_db),
     changed = calendar.refresh_statuses(db, body.today)
     db.commit()
     return {"today": body.today.isoformat(), "obligations_now_overdue": changed}
+
+
+class AssignIn(BaseModel):
+    assigned_to: uuid.UUID | None = None
+    due_date: date | None = None
+
+
+@router.post("/work-items/{item_id}/assign")
+def assign_work_item(item_id: uuid.UUID, body: AssignIn, db: Session = Depends(get_db),
+                     user: User = Depends(require(Permission.MANAGE_ACTIONS))) -> dict:
+    """Give an open item an owner and a due date."""
+    item = db.get(WorkItem, item_id)
+    if item is None:
+        raise HTTPException(404, "Work item not found.")
+    if item.status != "open":
+        raise HTTPException(422, "This item has already been decided.")
+    if body.assigned_to is not None and db.get(User, body.assigned_to) is None:
+        raise HTTPException(422, "No such person.")
+    item.assigned_to, item.due_date = body.assigned_to, body.due_date
+    ledger.record(db, actor_type="user", actor_id=user.id, action="work_item.assigned", entity_type="work_item",
+                  entity_id=item.id, payload={"assigned_to": body.assigned_to, "due_date": body.due_date})
+    db.commit()
+    return row(item)
+
+
+class AcknowledgeIn(BaseModel):
+    note: str = ""
+
+
+@router.post("/signals/{signal_id}/acknowledge")
+def acknowledge_signal(signal_id: uuid.UUID, body: AcknowledgeIn, db: Session = Depends(get_db),
+                       user: User = Depends(require(Permission.DECIDE_WORK_ITEM))) -> dict:
+    from datetime import UTC, datetime
+
+    signal = db.get(Signal, signal_id)
+    if signal is None:
+        raise HTTPException(404, "Signal not found.")
+    if signal.status != "open":
+        raise HTTPException(422, "This signal has already been acknowledged.")
+    signal.status, signal.acknowledged_by, signal.acknowledged_at = "acknowledged", user.id, datetime.now(UTC)
+    ledger.record(db, actor_type="user", actor_id=user.id, action="signal.acknowledged", entity_type="signal",
+                  entity_id=signal.id, payload={"rule": signal.rule_id, "note": body.note})
+    db.commit()
+    return row(signal)

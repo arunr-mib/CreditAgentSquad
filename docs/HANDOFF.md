@@ -8,36 +8,48 @@ Branch `slice-1/monitoring-cycle`. `main` holds only the README and licence.
 
 | Milestone | State | Evidence |
 |---|---|---|
-| 0 Foundation | Done | Schema (32 tables), hash-chained ledger with database guards, sign-in, roles, second-person rule, CI workflow |
-| 1 Synthetic bank | Done | 21 borrowers, 360 PDFs, 13 scenarios; `uv run pytest synthetic/tests` passes (32) |
-| 2 Calculation core | Done | `backend/app/calc`, 276 tests; agrees with the book on 378 covenant tests and 24 borrowing base reviews |
-| 3 Agent runtime and guardrails | Done | Tool loop, scope injection, step cap, live / recorded / scripted model clients, number / quote / narrative / policy guardrails |
-| 4 Agents and workflow | Mostly done | Built and tested with scripted model responses: Intake, Spreading, certificate reader, borrowing base reader and Review agents; covenant testing, terms approval, borrowing base review, signals, calendar, review sheet and commentary approval; stage handlers that run the live cycle; background worker. In progress (workers): Covenant Agent investigation and Early Warning explanation. Not started: Terms Agent, Copilot |
-| 5 Workspace | In progress | API routes for credit, work, reviews, meetings and actions are built and tested. `frontend/` has the design system, shell and three showcase screens; a worker is wiring it to the API |
-| 6 Publishing | In progress | A worker is building Word, Excel and PowerPoint output with snapshots and a verifier |
-| 7 Hardening | Started | Second-person rule and ledger guards are enforced and tested; `python -m app.cli verify-ledger`; `Dockerfile`, `frontend/Dockerfile` and `docker-compose.yml` are written but could not be run here (no Docker daemon) |
-
-Last full run: `uv run pytest` gave 458 passed, 1 failed; the one failure was a stale expectation, fixed in the next commit, after which the fast suites (420 tests) passed. The slow full-book test passed in the 458 run and has not been rerun since.
+| 0 Foundation | Done | Schema, hash-chained ledger with database guards, sign-in, roles, second-person rule |
+| 1 Synthetic bank | Done | 21 borrowers, 360 PDFs, 13 scenarios plus 8 clean |
+| 2 Calculation core | Done | Agrees with the book on 378 covenant tests and 24 borrowing base reviews |
+| 3 Agent runtime and guardrails | Done | Tool loop, scope from code, step cap, number / quote / narrative / label / policy guardrails |
+| 4 Agents and workflow | Done, scripted models only | Nine agents (see the README), stage handlers, background worker, repair paths for held spreads and unapproved amendments |
+| 5 Workspace | Done for the main journeys | Screens on the real API, source drawer for every figure, five browser journeys. Not built: document upload screen, commentary editing, package schedules, screens for the fact confirm / correct / key routes |
+| 6 Publishing | Done | Word, Excel, PowerPoint, snapshots, a verifier that every figure traces to a fact |
+| 7 Hardening | Partly done | Evaluation harness with 29 tampering checks (none caught by the grader alone); ledger verification command. Not done: independent check by a fresh reviewer, a guardrail on-versus-off comparison, running the container stack |
 
 ## Not yet verified
 
-- **No live model call has been made, and none can be made from this cloud session.** The credential form does not accept Anthropic keys and the session's own sign-in may not be used for product calls; both are deliberate limits. Live runs must happen on the owner's machine or a deployment with `ANTHROPIC_API_KEY` in `.env` and `SQUAD_LLM_MODE=live` (or `record` to save responses for replay). Every agent test so far uses a scripted model, so the strict output schema and request shape in `backend/app/agents/llm.py` are unproven against the real API.
-- The frontend's typecheck, 114 unit tests and build were rerun by the orchestrator and pass. Its accessibility run and its final screenshots were reported by the worker and not rechecked; it shows fixture data and is not wired to the API.
+- **No live model call has been made, and none can be made from this cloud session.** The credential form does not accept Anthropic keys and the session's own sign-in may not be used for product calls; both are deliberate limits. Live runs must happen on the owner's machine or a deployment with `ANTHROPIC_API_KEY` in `.env`: `uv run python -m evals.run --mode record --confirm-billable` (add `--allow-unsigned` only as a deliberate exception). Until then every agent result comes from scripted or stand-in answers, and the strict output schemas and request shape in `backend/app/agents/llm.py` are unproven against the real API.
+- The container stack (`docker-compose.yml`) has never been run: no Docker daemon here.
 - CI has not been observed running on GitHub.
+- The published Word, Excel and PowerPoint files were rendered with LibreOffice only, not opened in Microsoft Office.
+- In the workspace, an agent recommendation with claims, a review sheet with drafted commentary, signal explanations and a Copilot answer were each seen only with injected or failed responses, because the seeded book contains none.
+- The environment's setup script (`CreditAgentSquad` environment) has not run in a fresh session.
 
 ## Open decisions for the owner
 
 1. Sign the oracle (`synthetic/oracle.csv`, 76 rows, all `owner_signed_off=no`). The owner said they will review it later.
+2. A typed figure in agent text: the spec says one retry, then abstain; the Covenant Agent, Copilot and Review Agent currently abstain or drop the section with no retry. Decide which holds.
+3. Seeded history has no page citations, so the workspace has code locate the stored value on the period's document when a seeded figure is opened, labelled "Located by code, not extracted". Decide whether to keep that or show no page.
 
 Decided on 2026-11-17: receivable-days and payable-days signals are medium severity; the borrowing base block accepts several citations and each of its numbers is checked against a cited clause; no second independent extraction.
 
+## Known weaknesses
+
+- If a person corrects an extracted input after totals were stored, the stored totals and metrics are not recomputed (the publishing verifier reports the mismatch).
+- The row-label check only fires when a printed label clearly reads as another template line. A borrower's own wording that matches no known line is left to the footing checks, which cannot see a swap inside one total. Synonyms for common labels would widen it.
+- The memo's Sources section is long (13 of 16 pages in the example).
+- Borrowing base lines, risk rating and days late are not stored as facts everywhere, so the Copilot can describe some of them only in words.
+- Work item titles written by code contain typed figures ("3 days past due").
+
 ## Next steps, in order
 
-1. Collect and verify the four workers' results (covenant investigation and early warning; workspace wiring; publishing; evaluation harness), integrate them into the stage handlers, and commit each after its tests pass.
-2. Start the Terms Agent and the Copilot (briefs were written; their first runs stopped on a usage limit before writing anything).
-3. Run the evaluation harness's stand-in suite over all 21 borrowers and fix every product finding it reports.
-4. Independent check against the four success measures by a worker with fresh context.
-5. On the owner's machine: first live evaluation with a real key (billable; the oracle should be signed first).
+1. Independent check against the four success measures by a reviewer with fresh context.
+2. On the owner's machine: sign the oracle, then the first recorded live run, and fix what it shows (prompts, schema shape).
+3. Workspace: screens for confirming, correcting and keying figures; commentary editing; document upload; package schedules.
+4. Recompute totals and metrics when an input is corrected.
+5. Guardrail on-versus-off comparison in the evaluation harness.
+6. Slice two: underwriting.
 
 ## Running it
 
@@ -52,4 +64,4 @@ PYTHONPATH=backend uv run python -m app.worker              # background worker 
 PYTHONPATH=backend uv run python -m app.cli verify-ledger  # check the audit chain
 ```
 
-The local folder is still named `creditfleet` in this container; the repository is `arunr-mib/CreditAgentSquad`. The spec file keeps its old file name (`docs/specs/2026-11-17-creditfleet-design.md`); rename it when no worker is reading it.
+The local folder is still named `creditfleet` in this container; the repository is `arunr-mib/CreditAgentSquad`. The spec file keeps its old file name (`docs/specs/2026-11-17-credit-agent-squad-design.md`); rename it when no worker is reading it.
