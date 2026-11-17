@@ -7,7 +7,7 @@ import { useAuth } from '@/auth/context';
 import { Button, Card, DataTable, EmptyState, formatDate, Input, PageHeader, Select, StatusDot, tabClass, tabListClass, useToast, type DataColumn } from '@/design';
 import { actionLabel, decisionLabel, formatTimestamp, humanize, roleLabel } from '@/domain/labels';
 import { useAsOf } from '@/shell/AsOf';
-import { ErrorNotice, Load, Notice } from './parts';
+import { Load, Notice } from './parts';
 
 const ACTION_FILTERS: Array<[string, string]> = [
   ['all', 'All actions'],
@@ -314,5 +314,3 @@ export function Governance() {
     </div>
   );
 }
-
-export { ErrorNotice };
