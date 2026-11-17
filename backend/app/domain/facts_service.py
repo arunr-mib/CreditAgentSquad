@@ -24,7 +24,7 @@ def current_fact(db: Session, borrower_id: uuid.UUID, key: str, period_end: date
         select(Fact).where(
             Fact.borrower_id == borrower_id, Fact.key == key, Fact.period_end == period_end,
             Fact.months == months, Fact.status.in_(USABLE_STATUSES),
-        ).order_by(Fact.created_at.desc(), Fact.id.desc()).limit(1)
+        ).order_by(Fact.seq.desc()).limit(1)
     ).scalar_one_or_none()
 
 

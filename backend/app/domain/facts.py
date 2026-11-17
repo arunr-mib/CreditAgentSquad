@@ -1,5 +1,5 @@
 """Facts: every number the product shows, with where it came from. Facts are never edited."""
-from sqlalchemy import CheckConstraint, Index, Integer
+from sqlalchemy import BigInteger, CheckConstraint, Identity, Index, Integer
 
 from app.core.db import Base, CreatedMixin, IdMixin
 from app.domain.common import (
@@ -43,6 +43,9 @@ class Fact(Base, IdMixin, CreatedMixin):
         Index("ix_facts_lookup", "borrower_id", "key", "period_end", "months"),
     )
 
+    # the order facts were written in, assigned by the database. "The latest fact" is decided by
+    # this, never by a timestamp: see docs/lessons/latest-means-a-sequence-not-a-timestamp.md
+    seq: Mapped[int] = mapped_column(BigInteger, Identity(), unique=True)
     borrower_id: Mapped[uuid.UUID] = fk("borrowers.id")
     facility_id: Mapped[uuid.UUID | None] = fk("facilities.id", nullable=True)
     key: Mapped[str] = mapped_column(String(96))  # template line, metric, or reported item

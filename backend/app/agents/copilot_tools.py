@@ -159,7 +159,7 @@ def _system_fact(ctx: ToolContext, borrower_id: uuid.UUID, key: str) -> Fact | N
     """The latest system-of-record fact for a key."""
     return ctx.db.execute(select(Fact).where(
         Fact.borrower_id == borrower_id, Fact.key == key, Fact.status.in_(("verified", "confirmed")))
-        .order_by(Fact.period_end.desc(), Fact.created_at.desc()).limit(1)).scalar_one_or_none()
+        .order_by(Fact.period_end.desc(), Fact.seq.desc()).limit(1)).scalar_one_or_none()
 
 
 def _exposure(ctx: ToolContext, borrower_id: uuid.UUID) -> dict[str, Any]:

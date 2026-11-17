@@ -55,7 +55,7 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
     from app.domain.facts import Fact
     from app.domain.facts_service import add_fact, confirm_fact, current_fact
 
-    if item.stage != "spreading" or item.cycle_id is None:
+    if item.stage != "spreading":
         return  # the same item types are raised for certificates; those need no follow-up here
     context = item.evidence.get("spread") or {}
     document = db.get(Document, uuid.UUID(item.evidence["document_id"])) if item.evidence.get("document_id") else None
@@ -64,13 +64,15 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
             document.status = "rejected"
             ledger.record(db, actor_type="user", actor_id=user.id, action="document.set_aside",
                           entity_type="document", entity_id=document.id, payload={"reason": reason or decision})
-        _set_stage(db, item.cycle_id, "spreading", "pending")
+        if item.cycle_id is not None:
+            _set_stage(db, item.cycle_id, "spreading", "pending")
         return
     if decision in ("in_thousands", "in_dollars", "retry"):
         override = {"in_thousands": 1000, "in_dollars": 1}.get(decision)
-        _set_stage(db, item.cycle_id, "spreading", "pending", **({"scale_override": override} if override else {}))
+        if item.cycle_id is not None:
+            _set_stage(db, item.cycle_id, "spreading", "pending", **({"scale_override": override} if override else {}))
         return
-    if document is None or "scale" not in context:
+    if "scale" not in context:
         raise ValueError("this item does not carry what is needed to finish the spread; request a new document")
     borrower = db.get(Borrower, item.borrower_id)
     period_end, months = date.fromisoformat(context["period_end"]), context["months"]
@@ -96,9 +98,12 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
                          entered_by=user.id, reason=f"total accepted as reported: {reason}",
                          document_id=stated.document_id, page=stated.page, actor=("user", str(user.id)))
         return
-    spreading.finalize_spread(db, borrower=borrower, document=document, period_end=period_end, months=months,
-                              scale=context["scale"], absent=context.get("absent", []),
-                              cycle=db.get(workflow.Cycle, item.cycle_id))
+    result = spreading.finalize_spread(db, borrower=borrower, document=document, period_end=period_end, months=months,
+                                       scale=context["scale"], absent=context.get("absent", []),
+                                       cycle=db.get(workflow.Cycle, item.cycle_id) if item.cycle_id else None)
+    if result.status == "spread":
+        from app.domain import corrections
+        corrections.refresh_after_repair(db, borrower, period_end)
 
 
 workflow.DECISION_HOOKS["terms.approval_needed"] = terms_service.on_decision

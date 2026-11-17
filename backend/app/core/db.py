@@ -27,7 +27,9 @@ class IdMixin:
 
 
 class CreatedMixin:
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # clock_timestamp(), not now(): now() is the transaction's start time, so every row written in
+    # one transaction would carry the same instant and "the latest" would be a coin toss
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.clock_timestamp())
 
 
 _engine = None

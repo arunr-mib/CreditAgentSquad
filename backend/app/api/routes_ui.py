@@ -335,7 +335,7 @@ def page_figures(document_id: uuid.UUID, page_number: int, db: Session = Depends
     labels = _Labels(db)
     figures = []
     for fact in db.execute(select(Fact).where(Fact.document_id == doc.id, Fact.page == page_number)
-                           .order_by(Fact.created_at)).scalars():
+                           .order_by(Fact.seq)).scalars():
         figures.append({"fact": _summary(fact, labels), "boxes": [fact.bbox] if fact.bbox else [], "quote": fact.quote,
                         "label_text": fact.label_text, "method": "cited"})
     if doc.period_end is not None and doc.doc_type in (*STATEMENT_TYPES, "compliance_certificate"):
@@ -510,7 +510,7 @@ def fact_source(fact_id: uuid.UUID, db: Session = Depends(get_db), _: User = Dep
     later, cursor = [], fact
     while True:
         nxt = db.execute(select(Fact).where(Fact.supersedes_fact_id == cursor.id)
-                         .order_by(Fact.created_at).limit(1)).scalar_one_or_none()
+                         .order_by(Fact.seq).limit(1)).scalar_one_or_none()
         if nxt is None or nxt.id in seen:
             break
         seen.add(nxt.id)
@@ -534,7 +534,7 @@ def _latest_system_facts(db: Session, borrower_ids: list[uuid.UUID] | None = Non
     if borrower_ids is not None:
         query = query.where(Fact.borrower_id.in_(borrower_ids))
     latest: dict[uuid.UUID, dict[str, Fact]] = {}
-    for fact in db.execute(query.order_by(Fact.period_end, Fact.created_at)).scalars():
+    for fact in db.execute(query.order_by(Fact.period_end, Fact.seq)).scalars():
         latest.setdefault(fact.borrower_id, {})[fact.key] = fact
     return latest
 
@@ -637,7 +637,7 @@ def borrower_overview(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: 
     if cycle is not None:
         for fact in db.execute(select(Fact).where(
                 Fact.borrower_id == borrower.id, Fact.key.like("metric.%"), Fact.period_end == cycle.period_end,
-                Fact.status.in_(("verified", "confirmed"))).order_by(Fact.created_at)).scalars():
+                Fact.status.in_(("verified", "confirmed"))).order_by(Fact.seq)).scalars():
             metrics[fact.key.split(".", 1)[1]] = _summary(fact, labels)
     return {
         "exposure": {key.split(".", 1)[1]: _summary(fact, labels) for key, fact in facts.items()},
@@ -664,7 +664,7 @@ def borrower_covenants(borrower_id: uuid.UUID, db: Session = Depends(get_db), _:
     companions: dict[tuple[str, date], Fact] = {}
     for fact in db.execute(select(Fact).where(
             Fact.borrower_id == borrower.id, Fact.key.like("cov.%"), Fact.status.in_(("verified", "confirmed")))
-            .order_by(Fact.created_at)).scalars():
+            .order_by(Fact.seq)).scalars():
         companions[(fact.key, fact.period_end)] = fact
     items_by_test: dict[str, WorkItem] = {}
     for item in db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower.id)

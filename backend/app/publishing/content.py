@@ -292,7 +292,7 @@ def _own_fact(db: Session, borrower_id: uuid.UUID, key: str, period_end: date,
     query = select(Fact).where(Fact.borrower_id == borrower_id, Fact.key == key, Fact.period_end == period_end,
                                Fact.months == 0, Fact.status.in_(USABLE_STATUSES))
     query = query.where(Fact.facility_id == facility_id) if facility_id else query.where(Fact.facility_id.is_(None))
-    return db.execute(query.order_by(Fact.created_at.desc(), Fact.id.desc()).limit(1)).scalar_one_or_none()
+    return db.execute(query.order_by(Fact.seq.desc()).limit(1)).scalar_one_or_none()
 
 
 def record_fact(db: Session, borrower: Borrower, key: str, value: Decimal, unit: str, period_end: date, *,
@@ -428,7 +428,7 @@ def _spread(db: Session, reg: Registry, borrower: Borrower, end: date) -> dict[s
     periods: dict[str, int] = {}
     facts = db.execute(select(Fact).where(
         Fact.borrower_id == borrower.id, Fact.key.in_(list(template.LINE_BY_KEY)), Fact.period_end <= end,
-        Fact.status.in_(USABLE_STATUSES)).order_by(Fact.created_at, Fact.id)).scalars()
+        Fact.status.in_(USABLE_STATUSES)).order_by(Fact.seq)).scalars()
     for f in facts:
         line = template.LINE_BY_KEY[f.key]
         iso = f.period_end.isoformat()

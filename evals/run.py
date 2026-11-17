@@ -310,7 +310,7 @@ class LoadedBorrower:
             {"rule_id": s.rule_id, "severity": s.severity, "basis": plain(s.basis), "explanation": plain(s.explanation)}
             for s in db.execute(select(Signal).where(Signal.cycle_id == cycle.id).order_by(Signal.rule_id)).scalars()]
         facts = [f for f in db.execute(select(Fact).where(Fact.borrower_id == row.id)
-                                       .order_by(Fact.created_at, Fact.id)).scalars() if f.id not in seeded_facts]
+                                       .order_by(Fact.seq)).scalars() if f.id not in seeded_facts]
         recording["facts"] = [
             {"id": str(f.id), "key": f.key, "period_end": plain(f.period_end), "months": f.months,
              "value": plain(f.value), "unit": f.unit, "kind": f.kind, "status": f.status, "page": f.page,

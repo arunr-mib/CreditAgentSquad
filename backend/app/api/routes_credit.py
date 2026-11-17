@@ -14,7 +14,7 @@ from app.calc import template
 from app.core.clock import today
 from app.core.db import get_db
 from app.core.roles import Permission
-from app.domain import facts_service
+from app.domain import corrections, facts_service
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
@@ -167,7 +167,7 @@ def get_spread(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = 
     _borrower_or_404(db, borrower_id)
     facts = db.execute(select(Fact).where(
         Fact.borrower_id == borrower_id, Fact.status.in_(("verified", "confirmed", "proposed")))
-        .order_by(Fact.created_at)).scalars()
+        .order_by(Fact.seq)).scalars()
     cells: dict[str, dict[str, dict]] = {}
     periods: set[tuple[date, int]] = set()
     for f in facts:
@@ -261,11 +261,12 @@ def correct_fact_route(fact_id: uuid.UUID, body: FactCorrectIn, db: Session = De
     """A person replaces a figure. The old fact is kept and marked superseded."""
     fact = _fact_or_404(db, fact_id)
     try:
-        new = facts_service.correct_fact(db, fact, value=_decimal(body.value), user_id=user.id, reason=body.reason)
+        new, recalculation = corrections.correct(db, fact, value=_decimal(body.value), user_id=user.id,
+                                                 reason=body.reason)
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()
-    return fact_out(db, new)
+    return {**fact_out(db, new), "recalculation": recalculation}
 
 
 @router.post("/facts/{fact_id}/reject")
@@ -274,9 +275,12 @@ def reject_fact_route(fact_id: uuid.UUID, body: FactReasonIn, db: Session = Depe
     fact = _fact_or_404(db, fact_id)
     if not body.reason.strip():
         raise HTTPException(422, "Rejecting a figure needs a reason.")
-    facts_service.reject_fact(db, fact, user_id=user.id, reason=body.reason)
+    try:
+        recalculation = corrections.reject(db, fact, user_id=user.id, reason=body.reason)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
     db.commit()
-    return fact_out(db, fact)
+    return {**fact_out(db, fact), "recalculation": recalculation}
 
 
 @router.post("/borrowers/{borrower_id}/facts", status_code=201)
@@ -291,9 +295,11 @@ def enter_fact(borrower_id: uuid.UUID, body: ManualFactIn, db: Session = Depends
         raise HTTPException(422, "Entering a figure by hand needs a reason.")
     if line.flow and body.months not in (3, 6, 9, 12):
         raise HTTPException(422, "A flow line needs the number of months in the period: 3, 6, 9 or 12.")
-    fact = facts_service.add_fact(
-        db, borrower_id=borrower_id, key=body.key, period_end=body.period_end,
-        months=body.months if line.flow else 0, value=_decimal(body.value), kind="manual", entered_by=user.id,
-        reason=body.reason, actor=("user", str(user.id)))
+    try:
+        fact, recalculation = corrections.enter(
+            db, borrower_id=borrower_id, key=body.key, period_end=body.period_end,
+            months=body.months if line.flow else 0, value=_decimal(body.value), user_id=user.id, reason=body.reason)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
     db.commit()
-    return fact_out(db, fact)
+    return {**fact_out(db, fact), "recalculation": recalculation}

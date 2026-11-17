@@ -136,10 +136,11 @@ class SpreadResult:
 
 def _item(db, result, borrower, cycle, document, **kw) -> None:
     kw["evidence"] = {**kw.get("evidence", {}), "spread": result.context}
+    subject = document.id if document is not None else f"{borrower.id}:{result.context.get('period_end')}"
     result.work_items.append(raise_item(
         db, borrower_id=borrower.id, cycle_id=cycle.id if cycle else None, stage="spreading",
         actor=("agent", "spreading"), agent_run_id=result.run_id,
-        dedupe_key=f"{kw['item_type']}:{document.id}", **kw))
+        dedupe_key=f"{kw['item_type']}:{subject}", **kw))
     result.status = "needs_person"
 
 
@@ -387,17 +388,19 @@ def _store_absent(db, borrower, period_end, months, absent, result) -> None:
             note="not printed on the statement; zero because every total foots without it")
 
 
-def finalize_spread(db: Session, *, borrower: Borrower, document: Document, period_end: date, months: int,
+def finalize_spread(db: Session, *, borrower: Borrower, document: Document | None, period_end: date, months: int,
                     scale: int, absent: list[str], cycle: Cycle | None) -> SpreadResult:
     """Finish a spread after a person has confirmed, corrected or keyed figures: read the usable
     facts for the period, run the footing and tie checks again, and store totals only if they
-    pass. This is the repair path for a spread that was held."""
+    pass. This is the repair path for a spread that was held, and the way totals are calculated
+    again after a correction. `document` is None for history that came from a system of record."""
     from app.calc.periods import prior_fiscal_year_end
     from app.domain.facts_service import current_fact
 
     result = SpreadResult(status="spread")
-    result.context = {"document_id": str(document.id), "period_end": period_end.isoformat(), "months": months,
-                      "scale": scale, "absent": sorted(absent)}
+    title = document.title if document is not None else f"{borrower.name} statements for {period_end.isoformat()}"
+    result.context = {"document_id": str(document.id) if document is not None else None,
+                      "period_end": period_end.isoformat(), "months": months, "scale": scale, "absent": sorted(absent)}
     values: dict[str, Decimal] = {}
     for line in template.LINES:
         keys = [template.STATED_PREFIX + line.key] if line.computed else [line.key]
@@ -414,16 +417,18 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document, peri
     result.failed_checks = [e.to_dict() for e in report.errors]
     if report.errors:
         _item(db, result, borrower, cycle, document, item_type="spread.does_not_foot", severity="high",
-              title=f"{document.title}: the statements still do not foot or are incomplete",
+              title=f"{title}: the statements still do not foot or are incomplete",
               question="After the changes, one or more totals still do not agree or a line is missing. Which figure is wrong?",
               allowed_decisions=["values_corrected", "accept_as_reported", "request_new_document"],
               required_permission="confirm_spread",
-              evidence={"document_id": str(document.id), "checks": result.failed_checks})
+              evidence={"document_id": result.context["document_id"], "checks": result.failed_checks})
         return result
     if current_fact(db, borrower.id, "bs.total_assets", period_end, 0) is None:
         _store_computed(db, borrower, period_end, months, report, result)
         _store_absent(db, borrower, period_end, months, still_absent, result)
-    ledger.record(db, actor_type="system", actor_id="spreading", action="spread.finalized", entity_type="document",
-                  entity_id=document.id, payload={"lines": len(values), "scale": scale})
+    ledger.record(db, actor_type="system", actor_id="spreading", action="spread.finalized",
+                  entity_type="document" if document is not None else "borrower",
+                  entity_id=document.id if document is not None else borrower.id,
+                  payload={"lines": len(values), "scale": scale, "period_end": period_end})
     db.flush()
     return result
