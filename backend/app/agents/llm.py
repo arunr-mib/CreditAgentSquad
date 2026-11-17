@@ -1,0 +1,174 @@
+"""Model access for the product's agents: one interface, three ways to serve it.
+
+- LiveClient calls the Claude Messages API (billable).
+- RecordingClient wraps a live client and saves every response to disk.
+- RecordedClient replays saved responses, so tests and CI never call a model.
+- ScriptedClient returns responses given in code (unit tests).
+"""
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Protocol
+
+from app.core.config import Settings, get_settings
+
+FALLBACK_BETA = "server-side-fallback-2026-07-01"
+
+
+@dataclass
+class LLMRequest:
+    model: str
+    system: str
+    messages: list[dict[str, Any]]
+    tools: list[dict[str, Any]] = field(default_factory=list)
+    output_schema: dict[str, Any] | None = None
+    effort: str = "high"
+    max_tokens: int = 32000
+    record_key: str = ""  # where a recording of this exchange lives: "<agent>/<task key>/<step>"
+
+
+@dataclass
+class LLMResponse:
+    content: list[dict[str, Any]]  # content blocks as plain dicts
+    stop_reason: str
+    model: str = ""
+    usage: dict[str, int] = field(default_factory=dict)
+    request_id: str | None = None
+    stop_details: dict[str, Any] | None = None
+
+    def text(self) -> str:
+        return "".join(b.get("text", "") for b in self.content if b.get("type") == "text")
+
+    def tool_uses(self) -> list[dict[str, Any]]:
+        return [b for b in self.content if b.get("type") == "tool_use"]
+
+    def to_json(self) -> dict[str, Any]:
+        return {"content": self.content, "stop_reason": self.stop_reason, "model": self.model,
+                "usage": self.usage, "request_id": self.request_id, "stop_details": self.stop_details}
+
+    @classmethod
+    def from_json(cls, data: dict[str, Any]) -> "LLMResponse":
+        return cls(content=data["content"], stop_reason=data["stop_reason"], model=data.get("model", ""),
+                   usage=data.get("usage", {}), request_id=data.get("request_id"),
+                   stop_details=data.get("stop_details"))
+
+
+class LLMClient(Protocol):
+    mode: str
+
+    def create(self, request: LLMRequest) -> LLMResponse: ...
+
+
+class RecordingMissing(Exception):
+    """Raised in recorded mode when no saved response exists for a request."""
+
+
+class LiveClient:
+    """Calls the Claude Messages API. Streaming is used so long outputs do not time out."""
+
+    mode = "live"
+
+    def __init__(self, settings: Settings | None = None):
+        import anthropic  # imported here so tests never need network or a key
+
+        s = settings or get_settings()
+        if not s.anthropic_api_key:
+            raise RuntimeError("ANTHROPIC_API_KEY is not set; live model runs are not available.")
+        self._anthropic = anthropic
+        self._client = anthropic.Anthropic(api_key=s.anthropic_api_key, base_url=s.squad_anthropic_base_url)
+
+    def create(self, request: LLMRequest) -> LLMResponse:
+        output_config: dict[str, Any] = {"effort": request.effort}
+        if request.output_schema is not None:
+            output_config["format"] = {"type": "json_schema", "schema": request.output_schema}
+        kwargs: dict[str, Any] = {
+            "model": request.model,
+            "max_tokens": request.max_tokens,
+            "system": request.system,
+            "messages": request.messages,
+            "thinking": {"type": "adaptive"},
+            "output_config": output_config,
+            "cache_control": {"type": "ephemeral"},
+            # if the model declines for safety reasons, the API re-runs the request on its default
+            # fallback model inside the same call
+            "betas": [FALLBACK_BETA],
+            "fallbacks": "default",
+        }
+        if request.tools:
+            kwargs["tools"] = request.tools
+        with self._client.beta.messages.stream(**kwargs) as stream:
+            message = stream.get_final_message()
+        usage = message.usage
+        details = getattr(message, "stop_details", None)
+        return LLMResponse(
+            content=[block.model_dump(mode="json", exclude_none=True) for block in message.content],
+            stop_reason=message.stop_reason or "",
+            model=message.model,
+            usage={
+                "input_tokens": getattr(usage, "input_tokens", 0) or 0,
+                "output_tokens": getattr(usage, "output_tokens", 0) or 0,
+                "cache_read_input_tokens": getattr(usage, "cache_read_input_tokens", 0) or 0,
+                "cache_creation_input_tokens": getattr(usage, "cache_creation_input_tokens", 0) or 0,
+            },
+            request_id=getattr(message, "_request_id", None),
+            stop_details=details.model_dump(mode="json") if details is not None else None,
+        )
+
+
+def _recording_path(root: Path, record_key: str) -> Path:
+    if not record_key or ".." in record_key:
+        raise ValueError(f"bad record_key {record_key!r}")
+    return root / f"{record_key}.json"
+
+
+class RecordedClient:
+    mode = "recorded"
+
+    def __init__(self, root: str | Path | None = None):
+        self.root = Path(root or get_settings().squad_recordings_dir)
+
+    def create(self, request: LLMRequest) -> LLMResponse:
+        path = _recording_path(self.root, request.record_key)
+        if not path.exists():
+            raise RecordingMissing(f"no recorded model response at {path}")
+        return LLMResponse.from_json(json.loads(path.read_text()))
+
+
+class RecordingClient:
+    mode = "record"
+
+    def __init__(self, inner: LLMClient, root: str | Path | None = None):
+        self.inner = inner
+        self.root = Path(root or get_settings().squad_recordings_dir)
+
+    def create(self, request: LLMRequest) -> LLMResponse:
+        response = self.inner.create(request)
+        path = _recording_path(self.root, request.record_key)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(response.to_json(), indent=1, sort_keys=True))
+        return response
+
+
+class ScriptedClient:
+    """Returns the given responses in order and keeps the requests it saw."""
+
+    mode = "scripted"
+
+    def __init__(self, responses: list[LLMResponse]):
+        self._responses = list(responses)
+        self.requests: list[LLMRequest] = []
+
+    def create(self, request: LLMRequest) -> LLMResponse:
+        self.requests.append(request)
+        if not self._responses:
+            raise RecordingMissing("the scripted client has no more responses")
+        return self._responses.pop(0)
+
+
+def client_for(settings: Settings | None = None) -> LLMClient:
+    s = settings or get_settings()
+    if s.squad_llm_mode == "live":
+        return LiveClient(s)
+    if s.squad_llm_mode == "record":
+        return RecordingClient(LiveClient(s), s.squad_recordings_dir)
+    return RecordedClient(s.squad_recordings_dir)
