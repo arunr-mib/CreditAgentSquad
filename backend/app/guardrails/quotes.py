@@ -7,6 +7,7 @@ import re
 import unicodedata
 from collections.abc import Sequence
 from dataclasses import dataclass
+from datetime import date
 from decimal import Decimal
 
 from app.guardrails.numbers import extract_figures, parse_printed_figure, same_number
@@ -106,6 +107,188 @@ def row_label(words: Sequence[Word], figure: Box) -> str:
 _DASH_CELLS = {"-", "—", "–", "−"}
 
 
+# ---- which column is the period: decided from the page, never from what the reader reports ----
+
+_MONTH_NAMES = ("january", "february", "march", "april", "may", "june", "july", "august", "september",
+                "october", "november", "december")
+_LONG_DATE = re.compile(r"\b([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})\b")
+_SLASH_DATE = re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{4})\b")
+_MONTH_DAY = re.compile(r"\b([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b")
+_YEAR_TOKEN = re.compile(r"(?<![\d,.$])\b((?:19|20)\d{2})\b(?![\d,.%])")
+_DURATION = re.compile(
+    r"\b(three|six|nine|twelve|3|6|9|12)[\s-]+months?(?:\s+period)?\s+end(?:ed|ing)\b"
+    r"|\b(quarter|year)s?\s+end(?:ed|ing)\b", re.I)
+_DURATION_MONTHS = {"three": 3, "3": 3, "six": 6, "6": 6, "nine": 9, "9": 9, "twelve": 12, "12": 12,
+                    "quarter": 3, "year": 12}
+_ALIGN = 3.0       # points: right edges this close are one column
+_INDENT = 40.0     # points: a row starting this close to the label margin is a label row, not a header
+_RUN_GAP = 12.0    # points: a wider gap between words starts a new header phrase
+
+
+def _month(name: str) -> int | None:
+    key = name.lower()[:3]
+    return next((i for i, full in enumerate(_MONTH_NAMES, start=1) if full.startswith(key)), None) if len(key) == 3 else None
+
+
+def dates_in(text: str) -> list[date]:
+    """Dates written out in the text ("September 30, 2026", "Sept. 30, 2026", "9/30/2026")."""
+    found: list[date] = []
+    for name, day, year in _LONG_DATE.findall(text):
+        month = _month(name)
+        if month is not None:
+            try:
+                found.append(date(int(year), month, int(day)))
+            except ValueError:
+                pass
+    for month, day, year in _SLASH_DATE.findall(text):
+        try:
+            found.append(date(int(year), int(month), int(day)))
+        except ValueError:
+            pass
+    return found
+
+
+def durations_in(text: str) -> set[int]:
+    """Lengths of period the text states, in months ("nine months ended", "year ended")."""
+    return {_DURATION_MONTHS[(a or b).lower()] for a, b in _DURATION.findall(text)}
+
+
+def _box(word: Word) -> Box:
+    return float(word[0]), float(word[1]), float(word[2]), float(word[3])
+
+
+def _is_figure(text: str) -> bool:
+    return parse_printed_figure(text) is not None
+
+
+def _rows(words: Sequence[Word]) -> list[list[Word]]:
+    rows: list[list[Word]] = []
+    for word in sorted(words, key=lambda w: (float(w[1]), float(w[0]))):
+        for row in rows:
+            if same_row(_box(row[0]), _box(word)):
+                row.append(word)
+                break
+        else:
+            rows.append([word])
+    return [sorted(row, key=lambda w: float(w[0])) for row in rows]
+
+
+def column_for_period(words: Sequence[Word], figure: Box, period_end: date, months: int = 0) -> str | None:
+    """None when the figure sits in the one column whose own header names `period_end` (and, for
+    a flow, a period of `months`); otherwise the reason it cannot be placed.
+
+    The columns are the figures on the figure's own row. Each column's header is read from the
+    rows above the table that carry no row label: text standing over one column belongs to it,
+    text standing over several belongs to all of them, and titles are context. A column is the
+    period when its own header gives the date, or gives the year under a title or spanning
+    header that gives the month and day. Two columns for the same date ("three months ended",
+    "nine months ended") are told apart by the length of period, or not at all.
+    """
+    rows = _rows(words)
+    row = next((r for r in rows if any(same_row(_box(w), figure) for w in r)), None)
+    if row is None:
+        return "the figure's row could not be read"
+    margin = float(row[0][0])
+    columns = sorted({round(float(w[2]), 1) for w in row if _is_figure(str(w[4])) and float(w[0]) > margin + 1})
+    merged: list[float] = []
+    for edge in columns:
+        if not merged or edge - merged[-1] > _ALIGN:
+            merged.append(edge)
+    columns = merged
+    mine = next((i for i, edge in enumerate(columns) if abs(edge - figure[2]) <= _ALIGN), None)
+    if mine is None:
+        return "the figure is not in a column of figures"
+
+    def labelled(r: list[Word]) -> bool:
+        return float(r[0][0]) <= margin + _INDENT
+
+    def aligned(w: Word) -> int | None:
+        return next((i for i, edge in enumerate(columns) if abs(float(w[2]) - edge) <= _ALIGN), None)
+
+    lefts = {i: edge for i, edge in enumerate(columns)}
+    for r in rows:
+        if not labelled(r) or _is_figure(str(r[0][4])):
+            continue
+        for w in r[1:]:
+            i = aligned(w)
+            if i is not None and _is_figure(str(w[4])):
+                lefts[i] = min(lefts[i], float(w[0]))
+    bands = [(lefts[i] - 6.0, columns[i] + _ALIGN) for i in range(len(columns))]
+
+    own = ["" for _ in columns]
+    spanning = ["" for _ in columns]
+    context: list[str] = []
+    above = [r for r in rows if float(r[0][3]) <= figure[1] + 1.0 and not any(same_row(_box(w), figure) for w in r)]
+    collecting, done = False, False
+    for r in reversed(above):  # nearest row first
+        if labelled(r):
+            if collecting:
+                done = True  # the header block of this table has ended; everything further up is context
+            if not any(_is_figure(str(w[4])) and aligned(w) is not None for w in r[1:]):
+                context.append(" ".join(str(w[4]) for w in r))  # a title; rows of figures are not context
+            continue
+        if done:
+            context.append(" ".join(str(w[4]) for w in r))
+            continue
+        collecting = True
+        runs: list[list[Word]] = []
+        for w in r:
+            if runs and float(w[0]) - float(runs[-1][-1][2]) <= _RUN_GAP:
+                runs[-1].append(w)
+            else:
+                runs.append([w])
+        for run in runs:
+            x0, x1, text = float(run[0][0]), float(run[-1][2]), " ".join(str(w[4]) for w in run)
+            over = [i for i, (left, right) in enumerate(bands) if x1 > left and x0 < right]
+            if len(over) == 1:
+                own[over[0]] = f"{text} {own[over[0]]}".strip()  # rows are visited bottom-up
+            elif over:
+                for i in over:
+                    spanning[i] = f"{text} {spanning[i]}".strip()
+            else:
+                context.append(text)
+    title = " ".join(reversed(context))
+
+    def is_period(i: int) -> bool:
+        own_dates = dates_in(own[i])
+        if own_dates:
+            return set(own_dates) == {period_end}
+        around = f"{spanning[i]} {title}"
+        years = {int(y) for y in _YEAR_TOKEN.findall(own[i])}
+        if years:
+            month_days = {(_month(name), int(day)) for name, day in _MONTH_DAY.findall(around)}
+            return years == {period_end.year} and (period_end.month, period_end.day) in month_days
+        if own[i].strip():
+            return False  # a header that is neither a date nor a year: not understood
+        return len(columns) == 1 and period_end in dates_in(around)
+
+    def length_fits(i: int) -> bool | None:
+        """True or False when the column's header states a length of period; None when silent."""
+        stated = durations_in(f"{spanning[i]} {own[i]}")
+        return None if not stated else stated == {months}
+
+    dated = [i for i in range(len(columns)) if is_period(i)]
+    if months:
+        if any(length_fits(i) is False for i in dated if i == mine):
+            return "the column is for a different length of period than the one requested"
+        fitting = [i for i in dated if length_fits(i) is not False]
+        if len(fitting) > 1:
+            stated = [i for i in fitting if length_fits(i)]
+            fitting = stated if len(stated) == 1 else fitting
+        dated = fitting
+        if dated == [mine] and length_fits(mine) is None:
+            in_title = durations_in(title)
+            if in_title and months not in in_title:
+                return "the page is for a different length of period than the one requested"
+    if not dated:
+        return f"no column on the page is headed {period_end:%B %-d, %Y}"
+    if len(dated) > 1:
+        return f"more than one column is headed {period_end:%B %-d, %Y} and they cannot be told apart"
+    if dated != [mine]:
+        return f"the figure is not in the column headed {period_end:%B %-d, %Y}"
+    return None
+
+
 @dataclass(frozen=True)
 class CellCheck:
     status: str  # verified | unparseable | not_found | label_mismatch | column_unconfirmed | ambiguous
@@ -128,6 +311,8 @@ def verify_cell(
     printed_label: str | None = None,
     column_header: str | None = None,
     column_anchor: str | None = None,
+    period_end: date | None = None,
+    months: int = 0,
 ) -> CellCheck:
     """Verify one statement cell: the figure as printed, on the row of its label, under its column.
 
@@ -154,7 +339,15 @@ def verify_cell(
                              detail=f"{printed_figure!r} is not on the row labelled {printed_label!r}")
         candidates = on_row
 
-    if column_header is not None:
+    if period_end is not None:
+        # the column is decided from the page; the header the reader reported plays no part
+        reasons = {c.first: column_for_period(words, c.bbox, period_end, months) for c in candidates}
+        in_column = [c for c in candidates if reasons[c.first] is None]
+        if not in_column:
+            return CellCheck("column_unconfirmed", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,
+                             occurrences=len(candidates), detail=reasons[candidates[0].first] or "")
+        candidates = in_column
+    elif column_header is not None:
         headers = locate(words, column_header)
         if column_anchor is not None and headers:
             anchors = locate(words, column_anchor)
@@ -167,7 +360,7 @@ def verify_cell(
         candidates = in_column
 
     label = row_label(words, candidates[0].bbox)
-    if len(candidates) > 1 and printed_label is not None and column_header is not None:
+    if len(candidates) > 1 and printed_label is not None and (column_header is not None or period_end is not None):
         return CellCheck("ambiguous", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,
                          occurrences=len(candidates), detail="more than one matching cell", row_label=label)
     return CellCheck("verified", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,

@@ -50,15 +50,19 @@ def store_extracted_cell(
     db: Session, *, borrower_id: uuid.UUID, key: str, period_end: date, months: int, document: Document,
     page_number: int, printed_figure: str, printed_label: str | None, column_header: str | None,
     scale: int, presentation_sign: int, agent_run_id: uuid.UUID | None, unit: str = "usd",
-    actor: tuple[str, str] = ("agent", "spreading"), doubt_for: Callable[[str], str | None] | None = None,
-    column_anchor: str | None = None,
+    actor: tuple[str, str] = ("agent", "spreading"),
+    doubt_for: Callable[[CellCheck, Decimal], str | None] | None = None,
+    column_anchor: str | None = None, column_period: date | None = None, column_months: int = 0,
 ) -> tuple[Fact | None, CellCheck]:
     """Verify one cell on its page and store it. The value comes from the page, never the model.
 
     A verified cell is stored as `verified`. A cell whose figure was read but whose row or column
     could not be confirmed is stored as `proposed` for a person. Anything else stores nothing.
-    `doubt_for` is given the row's label as code read it from the page and returns a reason to
-    hold the cell for a person, or None; the label the reader reported is never what is judged.
+    `doubt_for` is given what code found on the page (the row's label, the figure's place) and
+    the value, and returns a reason to hold the cell for a person, or None; the label the reader
+    reported is never what is judged.
+    With `column_period`, the column is decided from the page's own headers (see
+    `guardrails.quotes.column_for_period`) and the header the reader reported is not used.
     """
     page = get_page(db, document.id, page_number)
     if page is None:
@@ -66,11 +70,12 @@ def store_extracted_cell(
     if not page.has_text:
         return None, CellCheck("not_found", detail=f"page {page_number} has no text layer")
     check = verify_cell(page.words, printed_figure=printed_figure, printed_label=printed_label,
-                        column_header=column_header, column_anchor=column_anchor)
+                        column_header=column_header, column_anchor=column_anchor, period_end=column_period,
+                        months=column_months)
     if check.value is None:
         return None, check
-    doubt = doubt_for(check.row_label) if doubt_for is not None and check.ok else None
     value = Decimal(presentation_sign) * check.value * Decimal(scale)
+    doubt = doubt_for(check, value) if doubt_for is not None and check.ok else None
     fact = add_fact(
         db, borrower_id=borrower_id, key=key, period_end=period_end, months=months, value=value, unit=unit,
         kind="extracted", status="verified" if check.ok and not doubt else "proposed", document_id=document.id,
@@ -84,13 +89,15 @@ def store_extracted_cell(
 
 
 def label_confirmed(db: Session, borrower_id: uuid.UUID, keys: Sequence[str], label: str) -> bool:
-    """True when a person has already confirmed a figure read from a row with this label for one
-    of these keys for this borrower: that is what makes an unfamiliar label a known one."""
+    """True when a person has confirmed a figure read from a row with this label for one of these
+    keys for this borrower, and that confirmation still stands: that is what makes an unfamiliar
+    label a known one. A figure that was later corrected or rejected no longer counts, because
+    the correction may have been of the mapping itself."""
     if not label.strip():
         return False
     return db.execute(select(Fact.id).where(
         Fact.borrower_id == borrower_id, Fact.key.in_(list(keys)), Fact.label_text == label,
-        Fact.confirmed_by.is_not(None), Fact.status.in_(("confirmed", "superseded"))).limit(1)).first() is not None
+        Fact.confirmed_by.is_not(None), Fact.status == "confirmed").limit(1)).first() is not None
 
 
 def confirm_fact(db: Session, fact: Fact, user_id: uuid.UUID) -> Fact:

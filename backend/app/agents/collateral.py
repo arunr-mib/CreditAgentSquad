@@ -14,7 +14,6 @@ from sqlalchemy.orm import Session
 
 from app.agents.llm import LLMClient
 from app.agents.runtime import AgentSpec, run_agent
-from app.agents.spreading import _THOUSANDS
 from app.agents.tools import Scope, ToolGateway
 from app.calc.borrowing_base import LINE_NAMES
 from app.domain.credit import Borrower
@@ -24,6 +23,7 @@ from app.domain.facts_service import store_extracted_cell
 from app.domain.monitoring import Cycle
 from app.guardrails.numbers import extract_figures
 from app.guardrails.quotes import locate, quote_on_page, same_row
+from app.guardrails.units import scale_of
 
 BUCKETS = ("current", "days_31_60", "days_61_90", "over_90")  # aged from invoice date
 _FLAGS = (("affiliate", "intercompany"), ("intercompany", "intercompany"), ("related", "intercompany"),
@@ -144,7 +144,10 @@ def read_collateral(db: Session, *, borrower: Borrower, document: Document, peri
     if out.scale_statement.strip() and (page is None or not quote_on_page(page.text, out.scale_statement)):
         result.unverified.append({"what": "units", "reason": "scale_quote"})
         return result
-    scale = 1000 if _THOUSANDS.search(out.scale_statement) or "thousand" in out.scale_statement.lower() else 1
+    scale = scale_of(out.scale_statement) if out.scale_statement.strip() else 1
+    if scale is None:  # a units phrase code cannot read as thousands or dollars: a person decides
+        result.unverified.append({"what": "units", "reason": "scale_not_understood"})
+        return result
 
     def cell(key: str, page_number: int, figure: str, label: str, header: str | None) -> Decimal | None:
         fact, check = store_extracted_cell(

@@ -177,6 +177,19 @@ SYNONYMS: dict[str, tuple[str, ...]] = {
 }
 
 
+# Lines that are never negative once stored (an expense or an outflow is stored as a positive
+# amount). A negative value here means the figure was printed in brackets where none are
+# expected, or the sign convention was misread: a person decides, code does not guess.
+NEVER_NEGATIVE = frozenset({
+    "is.revenue", "is.cogs", "is.sga", "is.depreciation_amortization", "is.interest_expense",
+    "bs.cash", "bs.accounts_receivable", "bs.inventory", "bs.net_ppe", "bs.intangibles",
+    "bs.accounts_payable", "bs.accrued_liabilities", "bs.revolver", "bs.cpltd", "bs.long_term_debt",
+    "bs.subordinated_debt", "cf.depreciation_amortization", "cf.capex", "cf.term_debt_proceeds",
+    "cf.term_debt_repayments", "cf.distributions", "sup.cash_interest_paid", "sup.cash_taxes_paid",
+    "sup.scheduled_principal", "sup.financed_capex",
+})
+
+
 def known_labels(key: str) -> tuple[str, ...]:
     """Every name a line is known by: the template's label first, then its synonyms."""
     return (LINE_BY_KEY[key].label, *SYNONYMS.get(key, ()))

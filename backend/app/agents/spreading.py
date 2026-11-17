@@ -23,14 +23,15 @@ from app.calc import template
 from app.core import ledger
 from app.domain.credit import Borrower
 from app.domain.documents import Document, DocumentPage
-from app.domain.documents_service import read_file
+from app.domain.documents_service import get_page, read_file
 from app.domain.facts import CalcRun, Fact
 from app.domain.facts_service import add_fact, current_fact, label_confirmed, store_extracted_cell
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.work_items import raise_item
 from app.guardrails.labels import mapping_doubt
 from app.guardrails.narrative import check_narrative
-from app.guardrails.quotes import quote_on_page
+from app.guardrails.quotes import dates_in, quote_on_page
+from app.guardrails.units import scale_of, units_in
 
 ENGINE_VERSION = f"template-{template.TEMPLATE_ID}"
 PART_SUFFIX = "~part"
@@ -60,24 +61,22 @@ SPEC = AgentSpec(
 
 # the final printed total of each statement; a spread is not usable until each one foots
 REQUIRED_TOTALS = ("is.net_income", "bs.total_assets", "bs.total_liabilities_and_equity", "cf.net_change_in_cash")
-_MONTHS = {m: i for i, m in enumerate(
-    ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
-     "november", "december"], start=1)}
-_DATE = re.compile(r"\b([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})\b")
-_THOUSANDS = re.compile(r"\bin\s+thousands\b|\(000s?\)|\$\s?000s?\b|\bthousands of (?:u\.s\. )?dollars\b", re.I)
 
 
-def dates_in(text: str) -> list[date]:
-    found = []
-    for name, day, year in _DATE.findall(text):
-        month = next((n for full, n in _MONTHS.items() if full.startswith(name.lower()[:3])), None)
-        if month is None:
-            continue
-        try:
-            found.append(date(int(year), month, int(day)))
-        except ValueError:
-            continue
-    return found
+def _mentions(text: str, period_end: date) -> bool:
+    return period_end in dates_in(text) or (
+        f"{period_end:%B} {period_end.day}" in text and str(period_end.year) in text)
+
+
+_ENTITY_SUFFIX = re.compile(r"\b(?:inc|incorporated|llc|l\.l\.c|corp|corporation|co|company|ltd|limited|lp|l\.p|plc)\b\.?", re.I)
+
+
+def _names(text: str, name: str) -> bool:
+    """True when the page prints the borrower's name (legal suffix and punctuation aside)."""
+    def squash(value: str) -> str:
+        return " ".join(re.findall(r"[a-z0-9]+", _ENTITY_SUFFIX.sub(" ", value.lower())))
+    core = squash(name)
+    return bool(core) and core in squash(text)
 
 
 def _known_labels() -> dict[str, tuple[str, ...]]:
@@ -149,23 +148,32 @@ def _item(db, result, borrower, cycle, document, **kw) -> None:
 
 
 def _derive_scale(db: Session, document: Document, out: SpreadExtraction, result: SpreadResult) -> int | None:
-    """Scale is decided by code from the printed phrase, and cross-checked against every page."""
+    """Units are decided by code: from the printed phrase the agent points to, read by code, and
+    cross-checked against every page. A phrase that is not understood, or millions, goes to a person."""
     pages = list(db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)
                             .order_by(DocumentPage.page_number)).scalars())
-    printed_thousands = any(_THOUSANDS.search(p.text) for p in pages)
+    printed = set().union(*(units_in(p.text) for p in pages)) if pages else set()
+
+    def refuse(check: str, detail: str) -> None:
+        result.notes.append({"layer": "spreading", "check": check, "action": "person", "detail": detail})
+
     phrase = out.scale_statement.strip()
     if phrase:
         page = next((p for p in pages if p.page_number == out.scale_page), None)
         if page is None or not quote_on_page(page.text, phrase):
-            result.notes.append({"layer": "spreading", "check": "scale_quote", "action": "person",
-                                 "detail": "the units phrase reported by the agent is not on the cited page"})
+            refuse("scale_quote", "the units phrase reported by the agent is not on the cited page")
             return None
-        scale = 1000 if _THOUSANDS.search(phrase) or "thousand" in phrase.lower() else 1
+        scale = scale_of(phrase)
+        if scale is None:
+            refuse("scale_not_understood", "the units phrase on the page is not one code can read as thousands or dollars")
+            return None
     else:
         scale = 1
-    if printed_thousands and scale == 1:
-        result.notes.append({"layer": "spreading", "check": "scale_conflict", "action": "person",
-                             "detail": "the document prints an 'in thousands' phrase but none was reported"})
+    if "millions" in printed:
+        refuse("scale_millions", "the document prints a 'millions' phrase; statements in millions are not taken")
+        return None
+    if "thousands" in printed and scale == 1:
+        refuse("scale_conflict", "the document prints an 'in thousands' phrase but none was reported")
         return None
     return scale
 
@@ -183,22 +191,35 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
     for cell in allowed:
         rows_per_key[cell.key] = rows_per_key.get(cell.key, 0) + 1
 
+    # pages of the document that name the borrower: when some do, a figure cited from one that
+    # does not may belong to another entity printed in the same file
+    named = {p.page_number: _names(p.text, borrower.name) for p in db.execute(
+        select(DocumentPage).where(DocumentPage.document_id == document.id)).scalars()}
+    used: dict[tuple, str] = {}  # a printed figure can be reported for one line only
     by_key: dict[str, list[tuple[Fact, bool]]] = {}
     for cell in allowed:
         # one printed row is the line itself; several rows are stored as parts and added by code
         part = PART_SUFFIX if rows_per_key[cell.key] > 1 else ""
 
-        def doubt_for(row_label: str, key: str = cell.key) -> str | None:
+        def doubt_for(check, value: Decimal, key: str = cell.key, page: int = cell.page) -> str | None:
+            place = (page, tuple(round(v) for v in check.bbox)) if check.bbox else None
+            if place is not None and place in used:
+                return f"the same printed figure was already reported for {used[place]}"
+            if place is not None:
+                used[place] = key
+            if any(named.values()) and not named.get(page, False):
+                return f"page {page} does not name {borrower.name}; it may belong to another entity"
+            if value < 0 and key in template.NEVER_NEGATIVE:
+                return f"{key} is negative as printed, where only a positive amount is expected"
             names = [key, key + PART_SUFFIX, key + suffix, key + suffix + PART_SUFFIX]
-            return _mapping_doubt(key, row_label, label_confirmed(db, borrower.id, names, row_label))
+            return _mapping_doubt(key, check.row_label, label_confirmed(db, borrower.id, names, check.row_label))
 
-        dated = _DATE.search(cell.column_header or "")
         fact, check = store_extracted_cell(
             db, borrower_id=borrower.id, key=cell.key + suffix + part, period_end=period_end,
             months=_months_for(cell.key, months), document=document, page_number=cell.page,
             printed_figure=cell.printed_figure, printed_label=cell.printed_label,
             column_header=cell.column_header, scale=scale, presentation_sign=_sign(cell.key), agent_run_id=run_id,
-            doubt_for=doubt_for, column_anchor=dated.group(0) if dated else None)
+            doubt_for=doubt_for, column_period=period_end, column_months=_months_for(cell.key, months))
         if fact is None or not check.ok:
             result.unverified.append({
                 "key": cell.key + suffix, "page": cell.page, "printed_figure": cell.printed_figure,
@@ -286,9 +307,10 @@ def spread_document(
 
     scale = scale_override or _derive_scale(db, document, out, result)
     headers = {c.column_header for c in out.cells}
-    # each column header must name the requested period and no other date: a header spanning two
-    # columns would let a prior-year figure pass as the current one
-    period_ok = bool(out.cells) and all(dates_in(h) == [period_end] for h in headers)
+    # which column each figure sits in is decided cell by cell from the page's own headers; here
+    # code only asks whether the pages the agent read mention the period at all
+    cited = [get_page(db, document.id, n) for n in sorted({c.page for c in out.cells})]
+    period_ok = bool(out.cells) and any(_mentions(p.text, period_end) for p in cited if p is not None)
     if scale is None or not period_ok:
         reason = "units could not be confirmed" if scale is None else "the column read is not the requested period"
         _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="high",
@@ -306,6 +328,22 @@ def spread_document(
 
     values = _store_cells(db, cells=out.cells, borrower=borrower, document=document, period_end=period_end,
                           months=months, scale=scale, run_id=outcome.run.id, result=result)
+    # when most of what was read sits outside the period's column, the reader took the wrong
+    # column or the wrong document: nothing read that way is kept for a person to wave through
+    off_column = [u for u in result.unverified if u["reason"] == "column_unconfirmed"]
+    if len(off_column) * 2 > len(out.cells):
+        for fact in db.execute(select(Fact).where(Fact.agent_run_id == outcome.run.id)).scalars():
+            fact.status = "rejected"  # the whole reading is set aside, including what happened to match
+        _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="high",
+              title=f"{document.title}: the figures read are not in the column for the period",
+              question=f"Most of the figures the reader took are not in a column headed {period_end:%B %-d, %Y}. "
+                       "Is this the right document for the period?",
+              allowed_decisions=["retry", "wrong_document", "request_new_document"],
+              required_permission="confirm_spread",
+              evidence={"document_id": str(document.id), "reasons": sorted({u["detail"] for u in off_column})},
+              guardrail_notes=result.notes)
+        outcome.run.guardrail_notes = result.notes
+        return result
     absent = [k for k in out.absent_keys if k in template.LINE_BY_KEY and k not in values]
     result.context = {**result.context, "scale": scale, "absent": sorted(absent)}
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent)
@@ -325,9 +363,22 @@ def spread_document(
                            f"{statement} lines cannot be checked against it"})
 
     if result.unverified:
+        # say what is being asked: confirming a figure held for its label accepts the line it was
+        # filed under, for this borrower, from now on
+        mapping = [u for u in result.unverified if u["reason"] == "mapping_doubt"]
+        if len(mapping) == len(result.unverified):
+            title = f"{document.title}: {len(mapping)} row(s) filed under a line their label does not name"
+            question = ("Each row listed was filed under a line that its printed label does not name. Confirming "
+                        "accepts that label for that line for this borrower. Is each one filed under the right line?")
+        elif mapping:
+            title = f"{document.title}: {len(result.unverified)} figure(s) could not be verified on the page"
+            question = ("Some figures could not be placed on the page as reported, and some rows were filed under a "
+                        "line their label does not name. Is each figure right and filed under the right line?")
+        else:
+            title = f"{document.title}: {len(result.unverified)} figure(s) could not be verified on the page"
+            question = "These figures could not be found on the cited page exactly as reported. Confirm or correct each one?"
         _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="medium",
-              title=f"{document.title}: {len(result.unverified)} figure(s) could not be verified on the page",
-              question="These figures could not be found on the cited page exactly as reported. Confirm or correct each one?",
+              title=title, question=question,
               allowed_decisions=["values_confirmed", "values_corrected", "request_new_document"],
               required_permission="confirm_spread",
               evidence={"document_id": str(document.id), "cells": result.unverified})

@@ -142,7 +142,9 @@ def test_units_phrase_not_reported_is_caught_by_code(db, setup):
 def test_wrong_period_document_stores_nothing(db, setup):
     answer = perfect_answer(cells=perfect_cells("comparative"), comparative_cells=[])
     result, _ = spread(db, setup, answer)
-    assert result.status == "needs_person" and db.execute(select(Fact)).first() is None
+    assert result.status == "needs_person" and items(db) == [("spread.value_unverified", "high")]
+    # nothing read from the wrong column is left where a person could wave it through
+    assert db.execute(select(Fact).where(Fact.status.in_(("verified", "confirmed", "proposed")))).first() is None
 
 
 def test_restated_comparative_raises_an_item(db, setup):
@@ -249,7 +251,8 @@ def test_a_header_naming_two_periods_is_refused_before_anything_is_stored(db, se
     answer["comparative_cells"] = []
     result, _ = spread(db, setup, answer)
     assert result.status == "needs_person" and items(db) == [("spread.value_unverified", "high")]
-    assert db.execute(select(Fact).where(Fact.borrower_id == setup.id)).first() is None  # nothing stored at all
+    assert db.execute(select(Fact).where(Fact.borrower_id == setup.id,
+                                         Fact.status.in_(("verified", "confirmed", "proposed")))).first() is None
 
 
 def test_a_spread_whose_printed_totals_were_not_read_is_not_accepted(db, setup):

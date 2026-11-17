@@ -15,7 +15,6 @@ from sqlalchemy.orm import Session
 
 from app.agents.llm import LLMClient
 from app.agents.runtime import AgentSpec, run_agent
-from app.agents.spreading import _THOUSANDS
 from app.agents.tools import Scope, ToolGateway
 from app.calc.terms import Terms
 from app.domain.credit import Borrower
@@ -25,6 +24,7 @@ from app.domain.facts_service import add_fact, store_extracted_cell
 from app.domain.monitoring import Cycle
 from app.guardrails.numbers import extract_figures
 from app.guardrails.quotes import locate, quote_on_page, same_row, verify_cell
+from app.guardrails.units import scale_of, units_in
 
 
 class CertRow(BaseModel):
@@ -105,9 +105,9 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
     if out.scale_statement.strip():
         page = get_page(db, document.id, out.scale_page)
         if page is not None and quote_on_page(page.text, out.scale_statement):
-            scale = 1000 if _THOUSANDS.search(out.scale_statement) or "thousand" in out.scale_statement.lower() else 1
+            scale = scale_of(out.scale_statement) or 1
     # code's own check of the units: a "thousands" phrase printed anywhere must have been reported
-    printed_thousands = any(_THOUSANDS.search(p.text) for p in db.execute(
+    printed_thousands = any(units_in(p.text) & {"thousands", "millions"} for p in db.execute(
         select(DocumentPage).where(DocumentPage.document_id == document.id)).scalars())
     units_in_doubt = printed_thousands and scale == 1
     names = {c.id: (c.name,) for c in terms.covenants}

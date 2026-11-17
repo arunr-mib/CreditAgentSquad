@@ -26,7 +26,6 @@ from sqlalchemy.orm import Session
 
 from app.agents.llm import LLMClient
 from app.agents.runtime import AgentSpec, run_agent
-from app.agents.spreading import dates_in
 from app.agents.tools import Scope, ToolGateway
 from app.calc.terms import Terms
 from app.core import ledger
@@ -40,7 +39,7 @@ from app.domain.terms_service import TermsRefused, propose_terms
 from app.domain.work_items import raise_item
 from app.guardrails.narrative import check_narrative
 from app.guardrails.numbers import blank_non_figures, extract_figures, same_number
-from app.guardrails.quotes import quote_on_page
+from app.guardrails.quotes import dates_in, quote_on_page
 
 PREPARED_BY = ("agent", "terms@1")
 # The agreements state rounding in words; the convention applied here is shown to the approver.
