@@ -2,8 +2,11 @@
 import importlib
 
 from fastapi import APIRouter, FastAPI
+from fastapi.responses import JSONResponse
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.api import auth, routes_credit, routes_work
+from app.core.config import MAX_UPLOAD_BYTES, get_settings
 from app.domain import hooks  # noqa: F401  (registers decision hooks)
 
 API_PREFIX = "/api/v1"
@@ -12,8 +15,36 @@ API_PREFIX = "/api/v1"
 OPTIONAL_ROUTERS = ("routes_ui", "routes_reviews", "routes_packages", "routes_copilot", "routes_evals")
 
 
+class RefuseOversizedUploads:
+    """Refuse a request whose declared body is larger than an upload may be, before any of it is
+    read. A body sent without a declared length is counted as it is read, in the upload route."""
+
+    def __init__(self, app: ASGIApp, limit: int):
+        self.app, self.limit = app, limit
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http" and scope["method"] in ("POST", "PUT", "PATCH"):
+            declared = dict(scope["headers"]).get(b"content-length", b"")
+            if declared.isdigit() and int(declared) > self.limit:
+                response = JSONResponse({"detail": too_large_message()}, status_code=413)
+                await response(scope, receive, send)
+                return
+        await self.app(scope, receive, send)
+
+
+def too_large_message() -> str:
+    return f"The file is larger than the {MAX_UPLOAD_BYTES // (1024 * 1024)} MB limit for an upload."
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(title="Credit Agent Squad", version="0.1.0", redirect_slashes=False)
+    settings = get_settings()
+    # the interactive documentation lists every route, so it is served only where a setting allows it
+    docs = settings.serve_api_docs
+    app = FastAPI(title="Credit Agent Squad", version="0.1.0", redirect_slashes=False,
+                  docs_url="/docs" if docs else None, redoc_url="/redoc" if docs else None,
+                  openapi_url="/openapi.json" if docs else None)
+    # a multipart body carries a little more than the file itself
+    app.add_middleware(RefuseOversizedUploads, limit=MAX_UPLOAD_BYTES + 64 * 1024)
     api = APIRouter(prefix=API_PREFIX)
 
     @api.get("/health", tags=["system"])
