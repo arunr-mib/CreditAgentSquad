@@ -8,7 +8,8 @@ from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.agents import certificate, collateral, intake, spreading
+from app.agents import certificate, collateral, early_warning, intake, spreading
+from app.agents import covenant as covenant_agent
 from app.agents.llm import LLMClient, client_for
 from app.calc.periods import prior_fiscal_year_end
 from app.core import clock
@@ -18,7 +19,7 @@ from app.domain.covenant_service import governing_terms, run_covenant_tests
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document
 from app.domain.facts_service import current_fact
-from app.domain.monitoring import BorrowingBaseReview, Cycle, CycleStage
+from app.domain.monitoring import BorrowingBaseReview, Cycle, CycleStage, WorkItem
 from app.domain.reviews import Action
 from app.domain.signals_service import run_signals
 from app.domain.terms_service import raise_unapproved_amendments
@@ -125,7 +126,16 @@ def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
                     dedupe_key=f"certificate.unverified:{certificates[-1].id}")
         tested += len(run_covenant_tests(db, borrower=borrower, facility=facility, period_end=cycle.period_end,
                                          cycle=cycle))
-    st.detail = {**st.detail, "tests": tested}
+    # each breach gets an investigation attached for the person who will decide it. The filter is
+    # in Python because the column holds JSON null, which SQL does not treat as NULL.
+    investigated = 0
+    for item in db.execute(select(WorkItem).where(
+            WorkItem.cycle_id == cycle.id, WorkItem.status == "open",
+            WorkItem.item_type.in_(covenant_agent.ITEM_TYPES))).scalars():
+        if item.recommendation is None:
+            covenant_agent.investigate(db, item, _llm())
+            investigated += 1
+    st.detail = {**st.detail, "tests": tested, "investigations": investigated}
     return "done"
 
 
@@ -175,6 +185,8 @@ def borrowing_base_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
 def signals_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     fired = run_signals(db, borrower=_borrower(db, cycle), period_end=cycle.period_end, as_of=clock.today(db),
                         cycle=cycle)
+    if fired:
+        early_warning.explain_signals(db, _borrower(db, cycle), cycle.period_end, _llm())
     st.detail = {**st.detail, "signals": len(fired)}
     return "done"
 
