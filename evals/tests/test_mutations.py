@@ -1,6 +1,6 @@
 """Mutation checks with the product in the loop: tamper with the stand-in reader's answer, run
 the live cycle, and record who caught it. About one minute (three borrowers loaded once each,
-38 runs of the cycle). Deselect with: -m "not slow".
+45 runs of the cycle). Deselect with: -m "not slow".
 
 EXPECTED is what each mutation was seen to do on 2026-11-17. `product` means the product refused
 the tampered item into a work item or a guardrail note. `grader` means the product accepted it
@@ -61,6 +61,15 @@ EXPECTED = {
     "spread-cash-taxes-read-from-another-supplemental-row": "product and grader",
     "spread-prior-year-under-a-spanning-header": "product",
     "spread-printed-totals-not-read": "product",
+    # Found by the second independent review on 2026-11-17 (the page-layout attacks from that
+    # review need their own PDFs and live in backend/tests/agents/test_spreading_layouts.py).
+    "spread-supplemental-row-reported-twice": "product",
+    "cert-flag-from-the-next-row": "product",
+    "review-figure-dressed-as-a-date": "product",
+    "review-figure-as-a-list-marker": "product",
+    "review-quantity-in-words": "product",
+    "review-figure-as-an-identifier": "product",
+    "review-figure-as-a-note-number": "product",
 }
 
 

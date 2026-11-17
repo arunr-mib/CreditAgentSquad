@@ -266,6 +266,27 @@ def commentary_cites_an_unknown_fact(answer: Answer) -> Answer:
     return answer
 
 
+# found by the second independent review (2026-11-17)
+
+
+def compliance_flag_from_the_next_row(answer: Answer) -> Answer:
+    row = next(r for r in answer["rows"] if r["compliance_printed"] == "No")
+    row["printed_label"], row["compliance_printed"] = "Ratio", "Yes"  # "Ratio" is on every row
+    return answer
+
+
+def _commentary_adds(sentence: str) -> Callable[[Answer], Answer]:
+    def change(answer: Answer) -> Answer:
+        next(s for s in answer["sections"] if s["section"] == "performance")["body"] += " " + sentence
+        return answer
+    return change
+
+
+def supplemental_row_reported_twice(answer: Answer) -> Answer:
+    answer["cells"] = [*answer["cells"], copy.deepcopy(_cell(answer, "sup.cash_interest_paid"))]
+    return answer
+
+
 CLEAN_BB = "harrowgate-precision"  # clean, statements in thousands, borrowing base, a dollar covenant
 REPORTED_BREACH = "pellham-grain"  # fixed charge coverage fails and the certificate says so
 DOLLARS = "sablewood-dental"  # clean, statements in whole dollars
@@ -291,9 +312,11 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("spread-cash-taxes-read-from-another-supplemental-row", "cash taxes read from the financed-capex row", REPORTED_BREACH, "spreading", _from_financed_capex_row("sup.cash_taxes_paid")),
     Mutation("spread-prior-year-under-a-spanning-header", "the prior-year column read under a header naming both periods", CLEAN_BB, "spreading", prior_year_column_under_a_spanning_header),
     Mutation("spread-printed-totals-not-read", "no printed total reported, so nothing could be footed", CLEAN_BB, "spreading", printed_totals_not_read),
+    Mutation("spread-supplemental-row-reported-twice", "one printed row reported twice, so its figure would be added twice", CLEAN_BB, "spreading", supplemental_row_reported_twice),
     Mutation("spread-note-types-a-figure", "a note that types a figure", CLEAN_BB, "spreading", note_types_a_figure),
     Mutation("cert-claims-compliance", "a certificate read as claiming compliance where it reports a breach", REPORTED_BREACH, "certificate", certificate_claims_compliance),
     Mutation("cert-breach-read-as-passing-value", "the breaching covenant's reported value read as a passing one", REPORTED_BREACH, "certificate", breach_reported_as_a_passing_value),
+    Mutation("cert-flag-from-the-next-row", "the compliance entry taken from a neighbouring row, with a label fragment found on every row", REPORTED_BREACH, "certificate", compliance_flag_from_the_next_row),
     Mutation("cert-misread-threshold", "a threshold misread (1.05x read as 1.50x)", CLEAN_BB, "certificate", misread_threshold),
     Mutation("cert-threshold-from-another-row", "a threshold taken from another covenant's row", CLEAN_BB, "certificate", threshold_from_another_row),
     Mutation("cert-units-omitted", "the certificate's 'in thousands' phrase not reported", CLEAN_BB, "certificate", certificate_units_omitted),
@@ -306,6 +329,11 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("intake-statements-called-audited", "management statements classified as audited", CLEAN_BB, "intake", statements_called_audited),
     Mutation("intake-wrong-period", "a certificate filed by its signing date instead of its period end", CLEAN_BB, "intake", certificate_dated_by_its_signing_date),
     Mutation("review-types-a-figure", "commentary that types a figure", CLEAN_BB, "review", commentary_types_a_figure),
+    Mutation("review-figure-dressed-as-a-date", "commentary with a figure placed so it reads as a date ('above 4 may')", CLEAN_BB, "review", _commentary_adds("Leverage above 4 may trigger a default under the agreement.")),
+    Mutation("review-figure-as-a-list-marker", "commentary with figures in brackets like list markers", CLEAN_BB, "review", _commentary_adds("Total leverage (4) is above the covenant maximum (3).")),
+    Mutation("review-quantity-in-words", "commentary stating a ratio in words", CLEAN_BB, "review", _commentary_adds("Leverage rose to four and a half times.")),
+    Mutation("review-figure-as-an-identifier", "commentary with a change written like an identifier ('up-12 percent')", CLEAN_BB, "review", _commentary_adds("Revenue is up-12 percent year over year.")),
+    Mutation("review-figure-as-a-note-number", "commentary with a ratio written as a note number", CLEAN_BB, "review", _commentary_adds("Leverage stood at Note 4.25 against the limit.")),
     Mutation("review-cites-unknown-fact", "commentary that references a fact that does not exist", CLEAN_BB, "review", commentary_cites_an_unknown_fact),
 )
 BY_NAME = {m.name: m for m in MUTATIONS}
