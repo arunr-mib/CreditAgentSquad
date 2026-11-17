@@ -191,7 +191,8 @@ def reject_terms(db: Session, version: TermsVersion, user: User, *, reason: str)
 
 def on_decision(db: Session, item: WorkItem, user: User, decision: str, reason: str) -> None:
     """Called when a person decides a terms approval item."""
-    version = db.get(TermsVersion, uuid.UUID(item.evidence["terms_version_id"]))
+    reference = item.evidence.get("terms_version_id")
+    version = db.get(TermsVersion, uuid.UUID(reference)) if reference else None
     if version is None:
         raise TermsRefused("the terms version no longer exists")
     if decision == "approve":

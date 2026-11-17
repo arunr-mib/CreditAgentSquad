@@ -78,8 +78,8 @@ def test_stage_waits_for_a_person_and_resumes_on_decision(db, borrower, handlers
 
 def test_second_person_rule_is_enforced_on_decisions(db, borrower):
     admin_a, admin_b = user(db, "credit_admin"), user(db, "credit_admin")
-    item = WorkItem(borrower_id=borrower.id, item_type="terms.approval_needed", title="Approve terms",
-                    question="Approve version 2?", allowed_decisions=["approve", "reject"],
+    item = WorkItem(borrower_id=borrower.id, item_type="review.commentary_approval", title="Approve commentary",
+                    question="Approve the commentary?", allowed_decisions=["approve", "reject"],
                     required_permission="approve_terms", requires_second_person=True,
                     prepared_by_id=str(admin_a.id))
     db.add(item)
