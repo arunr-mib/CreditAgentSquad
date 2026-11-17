@@ -87,6 +87,30 @@ def runtime_login(db: Session, name: str) -> int:
     return 0
 
 
+def restore_files(db: Session, root: str) -> int:
+    """Put back document files that are on record but missing from the file store, from a
+    freshly generated synthetic book. A hosted demo whose disk is replaced on each deploy keeps
+    its database and loses its files; the generator is deterministic, so each file is matched to
+    its record by content hash and nothing is restored that was not there before."""
+    import hashlib
+    from pathlib import Path
+
+    from app.domain.documents import Document
+
+    wanted = {d.sha256: d for d in db.execute(select(Document)).scalars() if not Path(d.storage_path).exists()}
+    restored = 0
+    for path in sorted(Path(root).rglob("*.pdf")):
+        data = path.read_bytes()
+        document = wanted.pop(hashlib.sha256(data).hexdigest(), None)
+        if document is not None:
+            target = Path(document.storage_path)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+            restored += 1
+    print(f"document files restored: {restored}; still missing: {len(wanted)}")
+    return 0 if not wanted else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m app.cli", description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -96,6 +120,7 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser("inventory")
     commands.add_parser("grant-runtime-role")
     commands.add_parser("runtime-login").add_argument("name")
+    commands.add_parser("restore-files").add_argument("--book", default="synthetic/out")
     try:
         args = parser.parse_args(argv)
     except SystemExit:
@@ -108,6 +133,8 @@ def main(argv: list[str] | None = None) -> int:
     else:
         engine = get_engine()
     with Session(engine) as db:
+        if args.command == "restore-files":
+            return restore_files(db, args.book)
         if args.command == "verify-ledger":
             try:
                 return verify_ledger(db, args.expect_head)
