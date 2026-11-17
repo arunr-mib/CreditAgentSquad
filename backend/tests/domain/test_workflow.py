@@ -48,7 +48,7 @@ def test_cycle_runs_to_close_when_no_stage_needs_a_person(db, borrower, handlers
 def test_stage_waits_for_a_person_and_resumes_on_decision(db, borrower, handlers):
     def spreading(db, cycle, st):
         db.add(WorkItem(borrower_id=cycle.borrower_id, cycle_id=cycle.id, stage="spreading",
-                        item_type="spread.does_not_foot", title="Balance sheet does not foot",
+                        item_type="test.blocking_item", title="Balance sheet does not foot",
                         question="Total assets differ from the stated total. Which is right?",
                         allowed_decisions=["accept_stated", "correct_line"], required_permission="confirm_spread"))
         db.flush()

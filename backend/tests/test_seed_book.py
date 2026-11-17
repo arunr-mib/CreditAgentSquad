@@ -20,6 +20,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 REPO = Path(__file__).resolve().parents[2]
+pytestmark = pytest.mark.slow
 
 
 @pytest.fixture(scope="module")

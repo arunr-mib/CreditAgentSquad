@@ -29,6 +29,7 @@ dev = ["pytest>=8.3", "ruff>=0.8"]
 pythonpath = ["backend", ".", "backend/tests"]
 testpaths = ["backend/tests", "synthetic/tests", "evals/tests"]
 addopts = "-q --import-mode=importlib"
+markers = ["slow: takes a minute or more (the full-book test, the stand-in suite, the tampering checks)"]
 
 [tool.ruff]
 line-length = 110
