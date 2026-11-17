@@ -122,17 +122,27 @@ no entry can excuse the two gated failures. It is empty today.
 
 ## Mutation checks
 
-`evals/mutations.py` tampers with the stand-in's answer in 29 ways a model could be wrong and
+`evals/mutations.py` tampers with the stand-in's answer in 35 ways a model could be wrong and
 records who caught each one (`evals/tests/test_mutations.py`):
 
 - **product**: refused into a work item or a guardrail note;
-- **grader**: accepted by the product and named only by the grader. These are findings about the
-  product: a row mapped to the wrong template line inside one subtotal, the line of credit mapped
-  to accounts payable, long-term debt mapped to other liabilities (on `kestrel-bay-packaging` this
-  hides the leverage breach: the product records compliant and raises nothing, and the grader
-  names `false-compliant`), a certificate whose "in thousands" phrase is not reported, two
-  certificate rows attributed to each other's covenants, management statements filed as audited;
+- **product and grader**: refused by the product, and the grader also names what followed (for
+  example, the cycle stopped before the exception its scenario expects);
+- **grader**: accepted by the product and named only by the grader. That is a finding about the
+  product. None today;
 - **SLIPPED**: caught by neither. None today; if one appears, report it, do not patch the grader.
+
+What this list does and does not show. It shows that these 35 specific mistakes are refused. It
+does not show that every mistake is: seven of the first 29 were accepted when the harness was
+first run, and an independent reviewer then found six more that the 29 did not cover (a reader
+reporting only a fragment of a row label, figures for lines that no total covers read from
+another row, a column header naming two periods, printed totals left unread). Each was fixed in
+the product and added here. Treat the list as a record of what has been tried, and expect a
+real model to find mistakes that are not on it.
+
+There is no switch that turns the guardrails off, on purpose, so there is no "guardrails off"
+run to compare with. The comparison this harness offers is per mistake: the tampered answer is
+what a model without guardrails would have stored, and the column shows what stopped it.
 
 `evals/tests/test_grade.py` tampers with recordings instead, and shows each of the nine named
 failures raised by name.
