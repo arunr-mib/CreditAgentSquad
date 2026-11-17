@@ -40,14 +40,17 @@ EXPECTED = {
     "intake-wrong-period": "product and grader",
     "review-types-a-figure": "product",
     "review-cites-unknown-fact": "product",
-    # accepted by the product, named only by the grader: findings about the product
-    "spread-rows-swapped-within-a-total": "grader",
-    "spread-debt-mapped-to-payables": "grader",
-    "spread-debt-mapped-to-payables-on-a-breach": "grader",
-    "spread-term-debt-mapped-to-other-liabilities-on-a-breach": "grader",
-    "cert-units-omitted": "grader",
-    "cert-rows-swapped": "grader",
-    "intake-statements-called-audited": "grader",
+    # These seven were accepted silently when the harness was first run (2026-11-17) and named only
+    # by the grader. The product now refuses each: a printed label that clearly reads as another
+    # line holds the figure for a person, the certificate reader cross-checks units and covenant
+    # names, and "audited" needs an auditor's report in the document.
+    "spread-rows-swapped-within-a-total": "product",
+    "spread-debt-mapped-to-payables": "product",
+    "spread-debt-mapped-to-payables-on-a-breach": "product and grader",
+    "spread-term-debt-mapped-to-other-liabilities-on-a-breach": "product and grader",
+    "cert-units-omitted": "product",
+    "cert-rows-swapped": "product",
+    "intake-statements-called-audited": "product",
 }
 
 
@@ -75,7 +78,7 @@ def test_mutation_is_caught_where_expected(outcomes, name):
 
 
 def test_the_six_named_in_the_brief_are_refused_by_the_product_itself(outcomes):
-    assert outcomes["spread-wrong-figure"]["new_work_items"] == ["spread.does_not_foot", "spread.value_unverified"]
+    assert outcomes["spread-wrong-figure"]["new_work_items"] == ["spread.value_unverified"]  # footing is asked once the held figure is cleared
     assert "spread.value_unverified" in outcomes["spread-prior-year-figure"]["new_work_items"]
     assert outcomes["spread-dropped-line"]["new_work_items"] == ["spread.does_not_foot"]
     assert ["spreading", "scale_conflict", "person"] in outcomes["spread-units-omitted"]["new_guardrail_notes"]
@@ -87,18 +90,18 @@ def test_the_six_named_in_the_brief_are_refused_by_the_product_itself(outcomes):
         assert "invented-number" not in outcomes[name]["grader_names"], name
 
 
-def test_what_only_the_grader_catches_is_caught_by_name(outcomes):
-    for name in ("spread-rows-swapped-within-a-total", "spread-debt-mapped-to-payables", "cert-units-omitted",
-                 "cert-rows-swapped"):
-        assert "invented-number" in outcomes[name]["grader_names"], name
-        assert outcomes[name]["new_work_items"] == [], name
-    assert outcomes["intake-statements-called-audited"]["grader_names"] == ["document-filing"]
+def test_nothing_is_left_for_the_grader_alone(outcomes):
+    """A tampering that only the grader names is a gap in the product. There are none today."""
+    assert [n for n, o in outcomes.items() if o["caught_by"] == "grader"] == []
 
 
-def test_a_mis_mapped_debt_row_can_hide_a_breach_from_the_product_and_the_gate_still_catches_it(outcomes):
-    """Long-term debt reported under 'other liabilities' (current column only) foots, verifies on
-    the page and lowers leverage below its limit: the product records compliant and raises
-    nothing. The grader names it, and the gate would fail the build."""
+def test_a_mis_mapped_debt_row_can_no_longer_hide_a_breach(outcomes):
+    """Long-term debt reported under 'other liabilities' foots and verifies on the page, and used
+    to lower leverage below its limit so the breach vanished. The label now reads as another
+    line, so the figure is held for a person, no total is computed and no covenant is recorded
+    compliant. The grader still notes that the expected breach item was not reached: the cycle
+    rests at spreading until a person clears the figure."""
     outcome = outcomes["spread-term-debt-mapped-to-other-liabilities-on-a-breach"]
-    assert outcome["new_work_items"] == [] and outcome["product"] is False
-    assert {"false-compliant", "invented-number", "missed-exception"} <= set(outcome["grader_names"])
+    assert "spread.value_unverified" in outcome["new_work_items"] and outcome["product"] is True
+    assert "false-compliant" not in outcome["grader_names"]
+    assert "invented-number" not in outcome["grader_names"]

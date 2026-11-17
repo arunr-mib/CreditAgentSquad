@@ -9,6 +9,7 @@ from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.agents.llm import LLMClient
@@ -17,10 +18,11 @@ from app.agents.spreading import _THOUSANDS
 from app.agents.tools import Scope, ToolGateway
 from app.calc.terms import Terms
 from app.domain.credit import Borrower
-from app.domain.documents import Document
+from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import get_page, read_file
 from app.domain.facts_service import add_fact, store_extracted_cell
 from app.domain.monitoring import Cycle
+from app.guardrails.labels import mapping_doubt
 from app.guardrails.numbers import extract_figures
 from app.guardrails.quotes import locate, quote_on_page, same_row
 
@@ -85,6 +87,11 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
         page = get_page(db, document.id, out.scale_page)
         if page is not None and quote_on_page(page.text, out.scale_statement):
             scale = 1000 if _THOUSANDS.search(out.scale_statement) or "thousand" in out.scale_statement.lower() else 1
+    # code's own check of the units: a "thousands" phrase printed anywhere must have been reported
+    printed_thousands = any(_THOUSANDS.search(p.text) for p in db.execute(
+        select(DocumentPage).where(DocumentPage.document_id == document.id)).scalars())
+    units_in_doubt = printed_thousands and scale == 1
+    names = {c.id: (c.name,) for c in terms.covenants}
     seen: set[str] = set()
     for row in out.rows:
         covenant = covenants.get(row.covenant_id)
@@ -94,6 +101,11 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
             problem = "the covenant is not in the approved terms, or was reported twice"
         elif page is None or not page.has_text:
             problem = "the cited page does not exist or has no text"
+        else:
+            # the row's printed label must not clearly name a different covenant
+            problem = mapping_doubt(row.printed_label, row.covenant_id, names)
+            if problem is None and units_in_doubt and covenant.test.unit == "usd":
+                problem = "the certificate prints an 'in thousands' phrase that was not reported, so dollar amounts cannot be scaled"
         if problem:
             result.unverified.append({"covenant_id": row.covenant_id, "reason": "refused", "detail": problem})
             continue

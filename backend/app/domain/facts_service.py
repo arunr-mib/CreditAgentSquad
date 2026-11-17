@@ -49,7 +49,7 @@ def store_extracted_cell(
     db: Session, *, borrower_id: uuid.UUID, key: str, period_end: date, months: int, document: Document,
     page_number: int, printed_figure: str, printed_label: str | None, column_header: str | None,
     scale: int, presentation_sign: int, agent_run_id: uuid.UUID | None, unit: str = "usd",
-    actor: tuple[str, str] = ("agent", "spreading"),
+    actor: tuple[str, str] = ("agent", "spreading"), doubt: str | None = None,
 ) -> tuple[Fact | None, CellCheck]:
     """Verify one cell on its page and store it. The value comes from the page, never the model.
 
@@ -68,10 +68,13 @@ def store_extracted_cell(
     value = Decimal(presentation_sign) * check.value * Decimal(scale)
     fact = add_fact(
         db, borrower_id=borrower_id, key=key, period_end=period_end, months=months, value=value, unit=unit,
-        kind="extracted", status="verified" if check.ok else "proposed", document_id=document.id,
+        kind="extracted", status="verified" if check.ok and not doubt else "proposed", document_id=document.id,
         page=page_number, bbox=list(check.bbox) if check.bbox else None, quote=printed_figure,
         label_text=printed_label, scale_as_reported=scale, agent_run_id=agent_run_id,
-        note=None if check.ok else f"{check.status}: {check.detail}", actor=actor)
+        note=doubt if check.ok and doubt else None if check.ok else f"{check.status}: {check.detail}", actor=actor)
+    if check.ok and doubt:
+        check = CellCheck("mapping_doubt", value=check.value, unit=check.unit, bbox=check.bbox,
+                          occurrences=check.occurrences, detail=doubt)
     return fact, check
 
 

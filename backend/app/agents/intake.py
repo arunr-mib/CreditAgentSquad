@@ -45,6 +45,15 @@ _RULES: list[tuple[str, re.Pattern[str]]] = [
 ]
 
 
+_AUDITOR = re.compile(r"independent auditor'?s'? report|report of independent (?:registered )?(?:public )?account", re.I)
+
+
+def has_auditors_report(db: Session, doc: Document) -> bool:
+    """Statements count as audited only when an independent auditor's report is in the document."""
+    return any(_AUDITOR.search(p.text) for p in db.execute(
+        select(DocumentPage).where(DocumentPage.document_id == doc.id)).scalars())
+
+
 def rule_type(text: str) -> str | None:
     head = text[:2500]
     for doc_type, pattern in _RULES:
@@ -157,11 +166,17 @@ def classify_documents(
                 agent_run_id=result.run_id, actor=("agent", "intake"), dedupe_key=f"intake.unclassified:{doc.id}"))
             continue
 
+        quality = answer.quality
+        if quality == "audited" and not has_auditors_report(db, doc):
+            quality = "internal" if answer.doc_type == "interim_statements" else "unverified"
+            result.notes.append({"layer": "intake", "check": "audited_without_report", "action": "quality_changed",
+                                 "detail": f"{doc.file_name}: reported as audited but no auditor's report is in "
+                                           f"the document; recorded as {quality}"})
         doc.doc_type = answer.doc_type
         doc.doc_type_source = "agent"
         doc.period_end = period_end
         doc.effective_date = effective
-        doc.meta = {**doc.meta, "quality": answer.quality, "title_as_printed": answer.title_as_printed,
+        doc.meta = {**doc.meta, "quality": quality, "title_as_printed": answer.title_as_printed,
                     "agent_concern": concern, "rule_type": by_rule}
         ledger.record(db, actor_type="agent", actor_id="intake@1", action="document.classified",
                       entity_type="document", entity_id=doc.id,

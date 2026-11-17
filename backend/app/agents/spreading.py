@@ -28,6 +28,7 @@ from app.domain.facts import CalcRun, Fact
 from app.domain.facts_service import add_fact, current_fact, store_extracted_cell
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.work_items import raise_item
+from app.guardrails.labels import mapping_doubt
 from app.guardrails.narrative import check_narrative
 from app.guardrails.quotes import quote_on_page
 
@@ -75,6 +76,23 @@ def dates_in(text: str) -> list[date]:
         except ValueError:
             continue
     return found
+
+
+def _line_labels(statement: str) -> dict[str, tuple[str, ...]]:
+    """Known labels for every line of one statement, totals included under their `stated.` key."""
+    out = {}
+    for line in template.LINES:
+        if line.statement == statement:
+            out[(template.STATED_PREFIX + line.key) if line.computed else line.key] = (line.label,)
+    return out
+
+
+_LABELS = {name: _line_labels(name) for name in template.STATEMENTS}
+
+
+def _mapping_doubt(key: str, printed_label: str) -> str | None:
+    base = key[len(template.STATED_PREFIX):] if key.startswith(template.STATED_PREFIX) else key
+    return mapping_doubt(printed_label, key, _LABELS[template.LINE_BY_KEY[base].statement])
 
 
 def _allowed_key(key: str) -> bool:
@@ -166,7 +184,8 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
             db, borrower_id=borrower.id, key=cell.key + suffix + part, period_end=period_end,
             months=_months_for(cell.key, months), document=document, page_number=cell.page,
             printed_figure=cell.printed_figure, printed_label=cell.printed_label,
-            column_header=cell.column_header, scale=scale, presentation_sign=_sign(cell.key), agent_run_id=run_id)
+            column_header=cell.column_header, scale=scale, presentation_sign=_sign(cell.key), agent_run_id=run_id,
+            doubt=_mapping_doubt(cell.key, cell.printed_label))
         if fact is None or not check.ok:
             result.unverified.append({
                 "key": cell.key + suffix, "page": cell.page, "printed_figure": cell.printed_figure,
@@ -279,7 +298,9 @@ def spread_document(
               allowed_decisions=["values_confirmed", "values_corrected", "request_new_document"],
               required_permission="confirm_spread",
               evidence={"document_id": str(document.id), "cells": result.unverified})
-    if report.errors:
+    # a line held for a person is missing from the totals, so footing fails for that reason
+    # alone; the footing question is asked once the held figures are cleared
+    if report.errors and not result.unverified:
         _item(db, result, borrower, cycle, document, item_type="spread.does_not_foot", severity="high",
               title=f"{document.title}: the statements do not foot or tie",
               question="One or more totals do not agree with their lines. Which figure is wrong?",
