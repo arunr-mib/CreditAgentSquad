@@ -1,0 +1,96 @@
+"""Receive a PDF, keep the file, and index it page by page with word positions.
+
+Word positions are what let code find a quoted figure on its page and draw the highlight.
+"""
+import hashlib
+import uuid
+from datetime import date
+from pathlib import Path
+
+import pymupdf
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.core import ledger
+from app.core.config import get_settings
+from app.domain.documents import DOCUMENT_TYPES, Document, DocumentPage
+
+MIN_TEXT_CHARS = 20  # a page with less text than this is treated as an image
+
+
+class DocumentRefused(Exception):
+    pass
+
+
+def _store(data: bytes, sha: str) -> str:
+    root = Path(get_settings().file_store_dir)
+    path = root / sha[:2] / f"{sha}.pdf"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.exists():
+        path.write_bytes(data)
+    return str(path)
+
+
+def ingest_pdf(
+    db: Session,
+    *,
+    borrower_id: uuid.UUID,
+    data: bytes,
+    file_name: str,
+    title: str | None = None,
+    facility_id: uuid.UUID | None = None,
+    doc_type: str | None = None,
+    doc_type_source: str = "unclassified",
+    period_end: date | None = None,
+    received_date: date | None = None,
+    effective_date: date | None = None,
+    source: str = "upload",
+    uploaded_by: uuid.UUID | None = None,
+    actor: tuple[str, str] = ("system", "intake"),
+) -> Document:
+    if not data.startswith(b"%PDF"):
+        raise DocumentRefused("Only PDF files are accepted.")
+    if doc_type is not None and doc_type not in DOCUMENT_TYPES:
+        raise DocumentRefused(f"Unknown document type {doc_type!r}.")
+    sha = hashlib.sha256(data).hexdigest()
+    try:
+        pdf = pymupdf.open(stream=data, filetype="pdf")
+    except Exception as exc:  # noqa: BLE001
+        raise DocumentRefused(f"The file could not be read as a PDF: {exc}") from exc
+
+    doc = Document(
+        borrower_id=borrower_id, facility_id=facility_id, title=title or file_name, file_name=file_name,
+        storage_path=_store(data, sha), sha256=sha, page_count=pdf.page_count, doc_type=doc_type,
+        doc_type_source=doc_type_source if doc_type else "unclassified", period_end=period_end,
+        received_date=received_date, effective_date=effective_date, source=source, uploaded_by=uploaded_by)
+    db.add(doc)
+    db.flush()
+
+    image_pages: list[int] = []
+    for index, page in enumerate(pdf, start=1):
+        text = page.get_text("text")
+        words = [[round(w[0], 2), round(w[1], 2), round(w[2], 2), round(w[3], 2), w[4]]
+                 for w in page.get_text("words")]
+        has_text = len(text.strip()) >= MIN_TEXT_CHARS
+        if not has_text:
+            image_pages.append(index)
+        db.add(DocumentPage(document_id=doc.id, page_number=index, text=text, words=words,
+                            width=float(page.rect.width), height=float(page.rect.height), has_text=has_text))
+    pdf.close()
+    doc.meta = {"image_only_pages": image_pages}
+    doc.status = "image_only" if image_pages and len(image_pages) == doc.page_count else "indexed"
+    ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="document.received",
+                  entity_type="document", entity_id=doc.id,
+                  payload={"borrower_id": borrower_id, "file_name": file_name, "sha256": sha,
+                           "pages": doc.page_count, "image_only_pages": image_pages, "source": source})
+    db.flush()
+    return doc
+
+
+def get_page(db: Session, document_id: uuid.UUID, page_number: int) -> DocumentPage | None:
+    return db.execute(select(DocumentPage).where(
+        DocumentPage.document_id == document_id, DocumentPage.page_number == page_number)).scalar_one_or_none()
+
+
+def read_file(doc: Document) -> bytes:
+    return Path(doc.storage_path).read_bytes()
