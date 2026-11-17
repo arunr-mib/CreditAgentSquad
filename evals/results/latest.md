@@ -2,7 +2,7 @@
 
 **STAND-IN RUN. NOT MODEL PERFORMANCE.** A perfect reader built from the synthetic book's ground truth answered in place of the model. This run proves the pipeline, the workflow and the grader end to end; it says nothing about how a model reads these documents.
 
-- Generated 2026-11-17T14:51:45+00:00; commit `0d21efad33187ff8f45f2cbbef06bd20199562e2`; 21 borrower(s) (whole book); 1 pass(es); run time 150.6 seconds.
+- Generated 2026-11-17T15:00:31+00:00; commit `b085049dc39b4d56130865adf6e36ecfb8f6bfbc`; 21 borrower(s) (whole book); 1 pass(es); run time 149.6 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 76.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
@@ -119,11 +119,11 @@ None. Every borrower's outcome agrees with the book.
 - `vantry-freight`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
 - `wrenfield-diagnostics`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
 - `briarstone-beverage`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `calder-finch-staffing`: guardrail note on covenant: error -> abstain: the run did not finish
 - `calder-finch-staffing`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `calder-finch-staffing`: guardrail note on covenant: error -> abstain: the run did not finish
 - `dunmore-industrial-supply`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `kestrel-bay-packaging`: guardrail note on covenant: error -> abstain: the run did not finish
 - `kestrel-bay-packaging`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `kestrel-bay-packaging`: guardrail note on covenant: error -> abstain: the run did not finish
 - `larkspur-environmental`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
 - `pellham-grain`: guardrail note on covenant: error -> abstain: the run did not finish
 - `pellham-grain`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
