@@ -51,12 +51,15 @@ class FactView:
 
 @dataclass(frozen=True)
 class Note:
-    """One guardrail finding. `action` is what the pipeline did or must do about it."""
+    """One guardrail finding. `action` is what the pipeline did or must do about it. `detail`
+    never repeats a figure the agent typed: notes are shown to people, and an untraced figure
+    must not reach them even inside a warning. The agent's own text stays on its run record."""
 
     layer: str
     check: str
     action: str
     detail: str
+    subject: str = ""  # the offending text itself; shown only to the person who wrote it
 
 
 def referenced_fact_ids(text: str) -> list[str]:
@@ -109,17 +112,19 @@ def check_narrative(
     for problem in untraceable_figures(outside, allowed_figures, ratios):
         notes.append(Note(
             "narrative", "figure_untraceable", "retry",
-            f"the figure {problem.figure.raw!r} was typed, not referenced, and matches no fact or cited quote",
+            "a figure was typed, not referenced, and matches no fact or cited quote", subject=problem.figure.raw,
         ))
     for word in stray_digits(outside, ratios):
         notes.append(Note("narrative", "figure_untraceable", "retry",
-                          f"{word!r} contains digits that are not a fact reference, a date or a section number"))
+                          "digits were typed that are not a fact reference, a date or a section number",
+                          subject=word))
     said = " ".join(echo.lower().split())
     for m in _NUMBER_WORDS.finditer(outside):
         if said and " ".join(m.group(0).lower().split()) in said:
             continue
         notes.append(Note("narrative", "number_in_words", "retry",
-                          f"{m.group(0)!r} states a quantity in words; quantities come from fact references"))
+                          "a quantity was stated in words; quantities come from fact references",
+                          subject=m.group(0)))
     return notes
 
 

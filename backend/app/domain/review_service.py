@@ -160,11 +160,12 @@ def write_section(db: Session, sheet_row: ReviewSheet, *, section: str, body: st
         raise ValueError("a released review sheet cannot be edited")
     facts = facts_for(db, referenced_fact_ids(body))
     notes = check_narrative(body, facts)
-    broken = [n.detail for n in notes if n.check != "figure_untraceable"]
+    typed = ("figure_untraceable", "number_in_words")  # the person's own quantities: warned, not refused
+    broken = [n.detail for n in notes if n.check not in typed]
     if broken:
         raise ValueError("; ".join(broken))
     row = _store_commentary(db, sheet_row, section, body, author=("user", str(user.id)))
-    return row, [n.detail for n in notes]
+    return row, [f"{n.subject}: {n.detail}" if n.subject else n.detail for n in notes]
 
 
 def current_commentary(db: Session, sheet_row: ReviewSheet) -> list[Commentary]:

@@ -24,6 +24,21 @@ const STATUS: Record<string, { tone: StatusTone; label: string }> = {
   superseded: { tone: 'muted', label: 'Superseded' },
 };
 
+/** "Verified" means different things by kind: only an extracted figure was checked against a page. */
+const VERIFIED_BY_KIND: Record<string, string> = {
+  extracted: 'Verified on the page by code',
+  calculated: 'Calculated by code',
+  system: 'From a system of record',
+  seeded: 'Loaded history, not extracted from a document',
+};
+
+function statusFor(status: string, kind?: string): { tone: StatusTone; label: string } {
+  if (status === 'verified' && kind && VERIFIED_BY_KIND[kind]) {
+    return { tone: kind === 'seeded' ? 'neutral' : 'pass', label: VERIFIED_BY_KIND[kind] };
+  }
+  return STATUS[status] ?? { tone: 'neutral', label: status };
+}
+
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-6 border-b border-hairline py-1.5 text-body last:border-b-0">
@@ -121,7 +136,7 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
   if (error || !data) return <ErrorBody message={errorMessage(error)} />;
   const { fact, page, calculation, clause } = data;
   const shown = toFact(fact);
-  const status = STATUS[fact.status] ?? { tone: 'neutral' as const, label: fact.status };
+  const status = statusFor(fact.status, fact.kind);
   const located = page?.method === 'located';
   const yesNo = fact.unit === 'count' && fact.key.endsWith('in_compliance');
 
