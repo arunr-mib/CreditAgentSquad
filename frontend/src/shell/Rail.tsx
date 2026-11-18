@@ -180,7 +180,10 @@ export function Rail({ pathname, rail }: { pathname: string; rail: RailState }) 
         </ul>
 
         <div className="flex h-14 min-w-0 flex-1 flex-col justify-center px-0.5 sm:block sm:h-auto sm:flex-none sm:space-y-0.5 sm:px-2 sm:pt-2 sm:pb-3">
-          <RailLink to="/design" label="Design system" icon={Palette} current={pathname.startsWith('/design')} labelled={labelled} onFollow={dismiss} />
+          {/* Not in the phone's bottom bar, which is for the daily work; there it is in the account menu. */}
+          <div className="max-sm:hidden">
+            <RailLink to="/design" label="Design system" icon={Palette} current={pathname.startsWith('/design')} labelled={labelled} onFollow={dismiss} />
+          </div>
           <Tooltip
             side="right"
             delay={150}

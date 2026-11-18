@@ -13,6 +13,23 @@ export function humanize(id: string | null | undefined): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+/** Abbreviations of legal forms, written the way they are written in an agreement. */
+const LEGAL_ABBREVIATIONS: Record<string, string> = { llc: 'LLC', lp: 'LP', llp: 'LLP', lllp: 'LLLP', pllc: 'PLLC', pc: 'PC', plc: 'PLC', inc: 'Inc.', corp: 'Corp.', co: 'Co.', ltd: 'Ltd.' };
+
+/** A borrower's legal form as stored ("llc", "s_corporation") in words ("LLC", "S corporation"). */
+export function legalFormLabel(form: string | null | undefined): string {
+  if (!form) return '';
+  const words = form.replace(/[_.-]+/g, ' ').trim().split(/\s+/);
+  return words
+    .map((word, index) => {
+      const known = LEGAL_ABBREVIATIONS[word.toLowerCase()];
+      if (known) return known;
+      if (word.length === 1) return word.toUpperCase();
+      return index === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase();
+    })
+    .join(' ');
+}
+
 /* ── Severity ─────────────────────────────────────────────────────────── */
 
 export const SEVERITY_LABEL: Record<Severity, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };

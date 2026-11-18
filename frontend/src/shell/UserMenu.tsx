@@ -1,4 +1,5 @@
-import { ChevronDown, LogOut } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { ChevronDown, LogOut, Palette } from 'lucide-react';
 import { DropdownMenu } from 'radix-ui';
 import { errorMessage } from '@/api/client';
 import { useAuth } from '@/auth/context';
@@ -127,6 +128,12 @@ export function UserMenu({ demoUsers = SHOW_DEMO_USERS ? DEMO_USERS : [] }: User
             </>
           ) : null}
           <DropdownMenu.Separator className="my-1 border-t border-hairline" />
+          <DropdownMenu.Item asChild className={cx(itemClass, 'h-8')}>
+            <Link to="/design">
+              <Palette size={14} aria-hidden className="text-ink-500" />
+              Design system
+            </Link>
+          </DropdownMenu.Item>
           <DropdownMenu.Item
             onSelect={() =>
               void signOut().catch(() =>

@@ -292,7 +292,9 @@ describe('user menu', () => {
     const menu = await screen.findByRole('menu');
     expect(within(menu).getByText('Switch demo user')).toBeInTheDocument();
     // Everyone but the person already signed in, each with a role.
-    expect(within(menu).getAllByRole('menuitem')).toHaveLength(DEMO_USERS.length - 1 + 1);
+    // ... then the design system (out of the phone's bottom bar) and signing out.
+    expect(within(menu).getAllByRole('menuitem')).toHaveLength(DEMO_USERS.length - 1 + 2);
+    expect(within(menu).getByRole('menuitem', { name: 'Design system' })).toHaveAttribute('href', '/design');
     expect(within(menu).queryByRole('menuitem', { name: /Priya Raman/ })).toBeNull();
     await userEvent.click(within(menu).getByRole('menuitem', { name: /^Dana Whitfield\s*Portfolio manager$/ }));
 
@@ -319,7 +321,7 @@ describe('user menu', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Account menu/ }));
     const menu = await screen.findByRole('menu');
     expect(within(menu).queryByText('Switch demo user')).toBeNull();
-    expect(within(menu).getAllByRole('menuitem')).toHaveLength(1);
+    expect(within(menu).getAllByRole('menuitem').map((item) => item.textContent)).toEqual(['Design system', 'Sign out']);
     await userEvent.click(within(menu).getByRole('menuitem', { name: 'Sign out' }));
     expect(signOut).toHaveBeenCalledTimes(1);
   });
