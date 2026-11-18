@@ -245,7 +245,7 @@ export function CommandCentre() {
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
           <section aria-label="Work queue" className="min-w-0">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <div className="relative -m-1 max-w-[calc(100%+8px)] overflow-x-auto p-1 max-sm:[&_button]:px-2">
+              <div className="flex max-sm:relative max-sm:-m-1 max-sm:max-w-[calc(100%+8px)] max-sm:overflow-x-auto max-sm:p-1 max-sm:[&_button]:px-2">
                 <Segmented
                   label="Severity"
                   value={severity}

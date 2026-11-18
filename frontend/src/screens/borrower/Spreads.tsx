@@ -99,7 +99,7 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
   const lastKey = sections[sections.length - 1]?.lines.at(-1)?.key;
 
   return (
-    <div className={cx('relative rounded-md border border-hairline-strong bg-surface', scroll ? 'overflow-x-auto' : 'max-md:overflow-x-auto')}>
+    <div className={cx('rounded-md border border-hairline-strong bg-surface', scroll ? 'relative overflow-x-auto' : 'max-md:relative max-md:overflow-x-auto')}>
       <table className="w-full border-separate border-spacing-0 text-body">
         <caption className="sr-only">Multi-period spread, US dollars in thousands. Each figure opens its source.</caption>
         <colgroup>
