@@ -165,7 +165,8 @@ def render_markdown(results: dict[str, Any]) -> str:
         out.append("Each check tampers with the stand-in's answer in one way a model could be wrong, runs the live "
                    "cycle, and records who caught it. `product`: refused into a work item or a guardrail note. "
                    "`grader`: accepted by the product and named only by the grader, which is a finding about the "
-                   "product. `SLIPPED`: caught by neither.")
+                   "product. `recovered`: code reads that part from the page itself, so the reader's mistake "
+                   "has no effect. `SLIPPED`: caught by neither.")
         out.append("")
         counts: dict[str, int] = {}
         for m in results["mutations"]:

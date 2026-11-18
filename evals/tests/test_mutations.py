@@ -32,7 +32,7 @@ EXPECTED = {
     "spread-note-types-a-figure": "product",
     "cert-breach-read-as-passing-value": "product",
     "cert-threshold-from-another-row": "product",
-    "bb-aging-note-dropped": "product and grader",
+    "bb-aging-note-dropped": "recovered",  # since 2026-11-18 code reads a row's note from the page itself
     "bb-aging-figure-misread": "product",
     "bb-aging-row-dropped": "product and grader",
     "bb-lines-misnamed": "product and grader",

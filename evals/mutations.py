@@ -9,6 +9,8 @@ get wrong, runs the live cycle, and records who caught it:
             run does not have, beyond the echo of the product's own refusal
   SLIPPED   neither. That is a real finding about the product and the grader; it is reported,
             never patched away here.
+  recovered only for a mutation marked `recovers`: code reads the tampered part from the page
+            itself, so the result is right whatever the reader said and there is nothing to catch
 
 `EXPECTED` records what each mutation was seen to do when this file was written, so the test
 suite notices when a guardrail stops catching something (or starts to).
@@ -35,6 +37,9 @@ class Mutation:
     borrower: str
     agent: str
     change: Callable[[Answer], Answer]
+    # True when code no longer depends on the tampered part of the answer (it reads it from the
+    # page itself), so the right result is reached anyway and there is nothing to catch
+    recovers: bool = False
 
 
 def _cell(answer: Answer, key: str, column: str = "cells") -> dict[str, Any]:
@@ -368,7 +373,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("cert-threshold-from-another-row", "a threshold taken from another covenant's row", CLEAN_BB, "certificate", threshold_from_another_row),
     Mutation("cert-units-omitted", "the certificate's 'in thousands' phrase not reported", CLEAN_BB, "certificate", certificate_units_omitted),
     Mutation("cert-rows-swapped", "two covenant rows attributed to each other's covenants", CLEAN_BB, "certificate", certificate_rows_swapped),
-    Mutation("bb-aging-note-dropped", "an affiliate customer's note not reported", CLEAN_BB, "collateral", aging_note_dropped),
+    Mutation("bb-aging-note-dropped", "an affiliate customer's note not reported", CLEAN_BB, "collateral", aging_note_dropped, recovers=True),
     Mutation("bb-aging-figure-misread", "an aging figure with one digit wrong", CLEAN_BB, "collateral", aging_figure_misread),
     Mutation("bb-aging-row-dropped", "a customer left out of the aging", CLEAN_BB, "collateral", aging_row_dropped),
     Mutation("bb-lines-misnamed", "commitment and loans outstanding attributed to each other's lines", CLEAN_BB, "collateral", certificate_line_misnamed),
@@ -455,6 +460,10 @@ def run_mutations(engine: Engine, book: Book, names: list[str] | None = None, *,
                 if not applied:
                     outcome["caught_by"] = "NOT APPLIED"
                     outcome["evidence"] = f"the {mutation.agent} agent was never asked, so nothing was tampered with"
+                elif outcome["caught_by"] == "SLIPPED" and mutation.recovers:
+                    outcome["caught_by"] = "recovered"
+                    outcome["evidence"] = ("nothing changed and nothing is wrong: code reads this from the page "
+                                           "itself, so the reader's omission has no effect")
                 outcomes.append(outcome)
                 if progress:
                     progress(f"{mutation.name:38s} {code:22s} {outcome['caught_by']:20s} {outcome['evidence'][:150]}")

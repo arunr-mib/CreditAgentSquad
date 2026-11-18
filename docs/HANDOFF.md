@@ -1,6 +1,6 @@
 # Handoff
 
-Current state of the build, for whoever (person or agent) continues it. Updated 2026-11-17.
+Current state of the build, for whoever (person or agent) continues it. Updated 2026-11-18.
 
 ## Where things stand
 
@@ -11,21 +11,29 @@ Branch `slice-1/monitoring-cycle`. `main` holds only the README and licence.
 | 0 Foundation | Done | Schema, hash-chained ledger with database guards, sign-in, roles, second-person rule |
 | 1 Synthetic bank | Done | 21 borrowers, 360 PDFs, 13 scenarios plus 8 clean |
 | 2 Calculation core | Done | Agrees with the book on 378 covenant tests and 24 borrowing base reviews |
-| 3 Agent runtime and guardrails | Done | Tool loop, scope from code, step cap, number / quote / narrative / label / policy guardrails |
-| 4 Agents and workflow | Done, scripted models only | Nine agents (see the README), stage handlers, background worker, repair paths for held spreads and unapproved amendments |
-| 5 Workspace | Done for the main journeys | Screens on the real API, source drawer for every figure, five browser journeys. Not built: document upload screen, commentary editing, package schedules, screens for the fact confirm / correct / key routes |
+| 3 Agent runtime and guardrails | Done | Tool loop, scope from code, step cap, number / quote / narrative / label / units / column guardrails |
+| 4 Agents and workflow | Done, scripted and stand-in readers only | Nine agents, stage handlers, background worker, a repair path for every held item, recalculation when a figure is corrected |
+| 5 Workspace | Done | Screens on the real API, source drawer for every figure, repair of held figures, commentary editing, document upload, package schedules; two sets of browser journeys |
 | 6 Publishing | Done | Word, Excel, PowerPoint, snapshots, a verifier that every figure traces to a fact |
-| 7 Hardening | Partly done | Evaluation harness with 29 tampering checks (none caught by the grader alone); ledger verification command. Not done: independent check by a fresh reviewer, a guardrail on-versus-off comparison, running the container stack |
+| 7 Hardening | Done, with the limits below | Three independent reviews; every hole they found is fixed and has a permanent test; 47 tampering checks; autonomy setting; hosting files |
 
-## Not yet verified
+## The number-safety promise: read this before relying on it
 
-- **No live model call has been made, and none can be made from this cloud session.** The credential form does not accept Anthropic keys and the session's own sign-in may not be used for product calls; both are deliberate limits. Live runs must happen on the owner's machine or a deployment with `ANTHROPIC_API_KEY` in `.env`: `uv run python -m evals.run --mode record --confirm-billable` (add `--allow-unsigned` only as a deliberate exception). Until then every agent result comes from scripted or stand-in answers, and the strict output schemas and request shape in `backend/app/agents/llm.py` are unproven against the real API.
-- The container stack (`docker-compose.yml`) has never been run: no Docker daemon here.
-- CI has not been observed running on GitHub.
-- The published Word, Excel and PowerPoint files were rendered with LibreOffice only, not opened in Microsoft Office.
-- In the workspace, an agent recommendation with claims, a review sheet with drafted commentary, signal explanations and a Copilot answer were each seen only with injected or failed responses, because the seeded book contains none.
-- The environment's setup script (`CreditAgentSquad` environment) has not run in a fresh session.
-- **The runtime database role has not been exercised end to end.** Migration `0003` and `app.cli runtime-login` need a database user that may create roles; the local user (`squad`) may not, and the cloud session was not permitted to act as the database superuser. What ran: migrations `0001` to `0003` on an empty database through the path that warns and skips the role; the same grants given to a non-owner test role, as which ALTER, DISABLE TRIGGER, UPDATE, DELETE and TRUNCATE on the ledger were each refused while append and read worked (`backend/tests/test_ledger_roles.py`); the operator commands' refusals. That test needs the role `squad_runtime_test` to exist with the test user as a member (it exists in this container); on a database where it does not, and the test user may not create roles, the test is **skipped** until a superuser runs `CREATE ROLE squad_runtime_test NOLOGIN; GRANT squad_runtime_test TO squad;`. Not run: the migration's own `CREATE ROLE squad_runtime`, `runtime-login`, the `migrate` service in `docker-compose.yml`, and the API and worker connected as `squad_app`.
+The promise is that no invented or wrong number reaches a person or a covenant test unnoticed.
+
+- **Three independent reviewers each broke it.** Each was given only the promise and told to break it. Review one found 10 holes, review two found 7, review three found 7. Every hole reported is fixed, each with a permanent test, and the tampering list in `evals/mutations.py` grew from 29 to 47.
+- **No fourth review has been run.** After reviews one and two I believed the holes were closed, and the next reviewer found more. Expect a fourth to find something.
+- **What changed in kind, not only in number.** The readers no longer trust anything the reader supplies to locate a figure: code reads the row label, the column, the units, the sign, the certificate's compliance entry, an inventory row's category and an aging row's note from the page itself. Agent text is refused unless every digit is inside a fact reference or a narrow list of date and reference forms.
+- **The default is now that a person confirms every document reading** (`EXTRACTION_AUTONOMY=assisted`). A reading that passes every check still raises one question per document. `automatic` uses a clean reading without a person; choose it only when accuracy measured on the bank's own documents justifies it. The test suite and the evaluation measure the automatic path.
+- **Nothing here has been measured with a real model.** Every figure in the scorecard comes from a stand-in reader built from the synthetic book's own ground truth.
+
+## Verified on 2026-11-18
+
+- Complete evaluation on the committed code (`evals/results/latest.md`): 21 borrowers, extraction 2,677 of 2,677 facts, covenant outcomes 100%, exception precision and recall 100%, 17 of 21 cycles closed, the other 4 resting on the exceptions their scenarios expect, 47.6% of cycles needing no person on the automatic path. Stand-in reader.
+- 47 tampering checks: 46 refused by the product, 1 recovered (code reads the dropped note from the page itself), none slipped.
+- Test suite: see the last entry in `docs/lessons/` and the commit history for the run at each stage; the complete suite takes about 17 minutes (`uv run pytest`), about 11 without the slow evaluation tests (`-m "not slow"`).
+- `scripts/demo.sh` run on Linux against an empty database: created the database, loaded the book, started the API and the workspace, sign-in worked.
+- `scripts/start-hosted.sh` run locally against an empty database: migrations, demo data, worker and API came up.
 
 ## Open decisions for the owner
 
@@ -37,11 +45,13 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 
 ## Known weaknesses
 
-- If a person corrects an extracted input after totals were stored, the stored totals and metrics are not recomputed (the publishing verifier reports the mismatch).
-- The row-label check only fires when a printed label clearly reads as another template line. A borrower's own wording that matches no known line is left to the footing checks, which cannot see a swap inside one total. Synonyms for common labels would widen it.
+- **Residual holes in the prose check that are understood and left open.** A four-digit amount that looks like a nearby year after a word of time ("EBITDA came in 2026"); a fact used with a meaning it does not have ("leverage is {{fact}} below the limit", where the fact is the leverage itself); small counts in words ("in three of the last four quarters"), which are allowed on purpose.
+- **Honest readings that are held.** A statement whose columns are headed "Actual" and "Budget" under one date, a row label wrapped onto two lines, a statement page that does not print the borrower's name, units in millions, and any label that is not the template's own or a listed synonym are all held for a person. That is the safe direction, but it will raise the number of touches on real documents.
+- **The layout rules are heuristics over word positions.** They were written against the synthetic book and the reviewers' layouts. Real statements will show layouts neither covered.
 - The memo's Sources section is long (13 of 16 pages in the example).
 - Borrowing base lines, risk rating and days late are not stored as facts everywhere, so the Copilot can describe some of them only in words.
 - Work item titles written by code contain typed figures ("3 days past due").
+- The workspace shows a recalculation's covenant changes and a held figure's reason, but has no screen for boarding terms by hand, and document upload cannot set the type or period (intake classifies it).
 - **The ledger can still be rewritten by a database owner or superuser.** The application's own role can no longer do it (it may only read and append, and owns nothing), but anyone with owner-level access can switch off the trigger, change events and recompute every hash, and the rewritten chain verifies. Without a copy of the chain's head kept outside the database this cannot be detected; that is true of any log held in a database. `verify-ledger` prints the head and `--expect-head <seq>:<hash>` checks a stored one. Nothing yet sends the head anywhere on a schedule, and events written after the stored head are not covered by it.
 - Local development and the tests still use one database role, the owner. `verify-ledger` warns when it is connected that way.
 - Sign-in lockout is per account (5 failures in 15 minutes): someone who knows an email address can keep that account locked, and the "too many attempts" answer shows the account exists. Failures for unknown addresses are not counted or recorded.
@@ -55,18 +65,17 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 
 ## Next steps, in order
 
-1. Independent check against the four success measures by a reviewer with fresh context.
-2. On the owner's machine: sign the oracle, then the first recorded live run, and fix what it shows (prompts, schema shape).
-3. Workspace: screens for confirming, correcting and keying figures; commentary editing; document upload; package schedules.
-4. Recompute totals and metrics when an input is corrected.
-5. Guardrail on-versus-off comparison in the evaluation harness.
-6. Slice two: underwriting.
+1. On the owner's machine: sign the oracle, then the first recorded live run (`uv run python -m evals.run --mode record --confirm-billable`), and fix what it shows. This is the first time a real model's reading meets these checks.
+2. A fourth independent review of number safety, after the live run, briefed with the promise and the list of what has already been found (`docs/lessons/`).
+3. Host a test deployment (`docs/DEPLOY.md`). Needs the owner's Vercel, Railway and Neon accounts.
+4. Remember a confirmed layout per borrower, so that in assisted mode a person confirms a borrower's first statements and later periods with the same layout go through; this is the planned way to earn `automatic`.
+5. Slice two: underwriting.
 
 ## Running it
 
 ```bash
 service postgresql start                                   # cloud container
-uv sync && uv run pytest                                   # all tests, about two minutes
+uv sync && uv run pytest                                   # all tests, about 17 minutes
 uv run python -m synthetic.generate                        # build the book into synthetic/out/
 cd backend && uv run alembic upgrade head && cd ..         # create the schema
 PYTHONPATH=backend uv run python -m app.seed_book          # load users and the book (demo password: squad-demo)

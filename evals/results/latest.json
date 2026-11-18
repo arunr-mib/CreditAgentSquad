@@ -4,16 +4,15 @@
   "mode": "standin",
   "standin": true,
   "label": "STAND-IN: a perfect reader built from the book's ground truth answered in place of the model. This proves the pipeline, the workflow and the grader. It is not model performance.",
-  "generated_at": "2026-11-17T15:00:31+00:00",
-  "commit": "b085049dc39b4d56130865adf6e36ecfb8f6bfbc",
+  "generated_at": "2026-11-18T02:10:23+00:00",
+  "commit": "bad7de29b7b0e266870ea663a2d8623cd81fa48f",
   "borrowers": 21,
   "scope": "whole book",
   "decide": true,
   "passes": 1,
-  "seconds": 149.6,
+  "seconds": 104.0,
   "unsigned_oracle_rows": 76,
-  "standin_print_vs_truth_disagreements": [],
-  "eval_run_id": "481ba688-a52a-453a-a0ef-a6dc345e2a66"
+  "standin_print_vs_truth_disagreements": []
  },
  "gate": {
   "passed": true,
@@ -132,7 +131,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.55
+   "seconds": 4.74
   },
   "briarstone-beverage": {
    "borrower": "briarstone-beverage",
@@ -183,8 +182,8 @@
      }
     },
     "ungraded_facts": {
-     "metric": 15,
-     "signal": 1
+     "signal": 1,
+     "metric": 15
     }
    },
    "covenants": {
@@ -235,6 +234,27 @@
    ],
    "agent_runs": [
     {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "borrowing_base_reader",
      "status": "completed",
      "llm_mode": "standin",
@@ -261,32 +281,11 @@
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 8.45
+   "seconds": 5.72
   },
   "brindlewood-home-health": {
    "borrower": "brindlewood-home-health",
@@ -355,7 +354,14 @@
    ],
    "agent_runs": [
     {
-     "agent": "review",
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -369,14 +375,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
+     "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -385,7 +384,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 9.18
+   "seconds": 4.46
   },
   "calder-finch-staffing": {
    "borrower": "calder-finch-staffing",
@@ -495,13 +494,6 @@
      "guardrail_notes": []
     },
     {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
@@ -509,18 +501,11 @@
      "guardrail_notes": []
     },
     {
-     "agent": "early_warning",
-     "status": "failed",
+     "agent": "certificate_reader",
+     "status": "completed",
      "llm_mode": "standin",
-     "served_model": null,
-     "guardrail_notes": [
-      {
-       "check": "error",
-       "layer": "runtime",
-       "action": "nothing_stored",
-       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
-      }
-     ]
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     },
     {
      "agent": "covenant",
@@ -537,6 +522,20 @@
      ]
     },
     {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
      "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
@@ -546,7 +545,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.33
+   "seconds": 4.51
   },
   "dunmore-industrial-supply": {
    "borrower": "dunmore-industrial-supply",
@@ -625,13 +624,6 @@
    ],
    "agent_runs": [
     {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "intake",
      "status": "completed",
      "llm_mode": "standin",
@@ -639,7 +631,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -647,6 +639,13 @@
     },
     {
      "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -667,7 +666,7 @@
      ]
     },
     {
-     "agent": "borrowing_base_reader",
+     "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -676,7 +675,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.52
+   "seconds": 5.14
   },
   "eastmere-building": {
    "borrower": "eastmere-building",
@@ -756,7 +755,7 @@
    "agent_runs": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.06
+   "seconds": 3.25
   },
   "halvorsen-plastics": {
    "borrower": "halvorsen-plastics",
@@ -881,7 +880,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.22
+   "seconds": 4.74
   },
   "harrowgate-precision": {
    "borrower": "harrowgate-precision",
@@ -961,6 +960,13 @@
      "guardrail_notes": []
     },
     {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
@@ -969,13 +975,6 @@
     },
     {
      "agent": "borrowing_base_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -991,7 +990,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 8.09
+   "seconds": 4.87
   },
   "kestrel-bay-packaging": {
    "borrower": "kestrel-bay-packaging",
@@ -1094,11 +1093,39 @@
    ],
    "agent_runs": [
     {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
     },
     {
      "agent": "early_warning",
@@ -1120,39 +1147,11 @@
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "covenant",
-     "status": "failed",
-     "llm_mode": "standin",
-     "served_model": null,
-     "guardrail_notes": [
-      {
-       "check": "error",
-       "layer": "runtime",
-       "action": "abstain",
-       "detail": "the run did not finish"
-      }
-     ]
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.52
+   "seconds": 4.97
   },
   "larkspur-environmental": {
    "borrower": "larkspur-environmental",
@@ -1227,13 +1226,6 @@
    ],
    "agent_runs": [
     {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "intake",
      "status": "completed",
      "llm_mode": "standin",
@@ -1248,7 +1240,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
+     "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1267,11 +1259,18 @@
        "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
       }
      ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.88
+   "seconds": 4.95
   },
   "marlowe-ridge-logistics": {
    "borrower": "marlowe-ridge-logistics",
@@ -1340,13 +1339,6 @@
    ],
    "agent_runs": [
     {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "intake",
      "status": "completed",
      "llm_mode": "standin",
@@ -1354,7 +1346,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1366,11 +1358,18 @@
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.79
+   "seconds": 5.13
   },
   "northgale-electrical": {
    "borrower": "northgale-electrical",
@@ -1466,7 +1465,7 @@
    ],
    "agent_runs": [
     {
-     "agent": "borrowing_base_reader",
+     "agent": "intake",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1480,13 +1479,6 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
@@ -1494,7 +1486,14 @@
      "guardrail_notes": []
     },
     {
-     "agent": "intake",
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1503,7 +1502,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.55
+   "seconds": 5.12
   },
   "ostrander-valley-foods": {
    "borrower": "ostrander-valley-foods",
@@ -1576,7 +1575,7 @@
    ],
    "agent_runs": [
     {
-     "agent": "certificate_reader",
+     "agent": "intake",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1590,7 +1589,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
+     "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1604,7 +1603,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "intake",
+     "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1613,7 +1612,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.28
+   "seconds": 5.68
   },
   "pellham-grain": {
    "borrower": "pellham-grain",
@@ -1720,18 +1719,11 @@
    ],
    "agent_runs": [
     {
-     "agent": "covenant",
-     "status": "failed",
+     "agent": "intake",
+     "status": "completed",
      "llm_mode": "standin",
-     "served_model": null,
-     "guardrail_notes": [
-      {
-       "check": "error",
-       "layer": "runtime",
-       "action": "abstain",
-       "detail": "the run did not finish"
-      }
-     ]
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     },
     {
      "agent": "spreading",
@@ -1746,6 +1738,20 @@
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
     },
     {
      "agent": "borrowing_base_reader",
@@ -1774,18 +1780,11 @@
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
-    },
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.35
+   "seconds": 5.64
   },
   "quillfeather-bakery": {
    "borrower": "quillfeather-bakery",
@@ -1867,13 +1866,6 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
@@ -1900,11 +1892,18 @@
        "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
       }
      ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.23
+   "seconds": 5.52
   },
   "sablewood-dental": {
    "borrower": "sablewood-dental",
@@ -1980,7 +1979,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "review",
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1994,7 +1993,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "spreading",
+     "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -2003,7 +2002,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.18
+   "seconds": 5.17
   },
   "stanmoor-mechanical": {
    "borrower": "stanmoor-mechanical",
@@ -2065,7 +2064,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 5.04
+   "seconds": 3.73
   },
   "tallwater-foodservice": {
    "borrower": "tallwater-foodservice",
@@ -2138,6 +2137,13 @@
    ],
    "agent_runs": [
     {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
@@ -2159,13 +2165,6 @@
      "guardrail_notes": []
     },
     {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
@@ -2175,7 +2174,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.19
+   "seconds": 5.43
   },
   "thornbury-metal": {
    "borrower": "thornbury-metal",
@@ -2274,7 +2273,21 @@
    ],
    "agent_runs": [
     {
-     "agent": "review",
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -2295,21 +2308,7 @@
      ]
     },
     {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "certificate_reader",
+     "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -2318,7 +2317,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.24
+   "seconds": 5.3
   },
   "vantry-freight": {
    "borrower": "vantry-freight",
@@ -2414,6 +2413,20 @@
    ],
    "agent_runs": [
     {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
@@ -2433,25 +2446,11 @@
        "detail": "the run did not finish"
       }
      ]
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
     }
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.09
+   "seconds": 4.47
   },
   "wrenfield-diagnostics": {
    "borrower": "wrenfield-diagnostics",
@@ -2526,6 +2525,27 @@
    ],
    "agent_runs": [
     {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "early_warning",
      "status": "failed",
      "llm_mode": "standin",
@@ -2540,27 +2560,6 @@
      ]
     },
     {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
      "agent": "review",
      "status": "completed",
      "llm_mode": "standin",
@@ -2570,7 +2569,7 @@
    ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.56
+   "seconds": 5.3
   }
  },
  "known_findings": [],
@@ -2618,12 +2617,11 @@
    "product": true,
    "grader": false,
    "new_work_items": [
-    "spread.does_not_foot",
     "spread.value_unverified"
    ],
    "new_guardrail_notes": [],
    "grader_names": [],
-   "evidence": "work item: spread.does_not_foot, spread.value_unverified",
+   "evidence": "work item: spread.value_unverified",
    "stage_reached": "spreading",
    "error": null
   },
@@ -2637,12 +2635,11 @@
    "product": true,
    "grader": false,
    "new_work_items": [
-    "spread.does_not_foot",
     "spread.value_unverified"
    ],
    "new_guardrail_notes": [],
    "grader_names": [],
-   "evidence": "work item: spread.does_not_foot, spread.value_unverified",
+   "evidence": "work item: spread.value_unverified",
    "stage_reached": "spreading",
    "error": null
   },
@@ -2656,12 +2653,11 @@
    "product": true,
    "grader": false,
    "new_work_items": [
-    "spread.does_not_foot",
     "spread.value_unverified"
    ],
    "new_guardrail_notes": [],
    "grader_names": [],
-   "evidence": "work item: spread.does_not_foot, spread.value_unverified",
+   "evidence": "work item: spread.value_unverified",
    "stage_reached": "spreading",
    "error": null
   },
@@ -2767,16 +2763,16 @@
    "borrower": "harrowgate-precision",
    "agent": "spreading",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
-   "grader": true,
-   "new_work_items": [],
-   "new_guardrail_notes": [],
-   "grader_names": [
-    "invented-number"
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
    ],
-   "evidence": "grader: invented-number [bs.accounts_payable @ 2026-09-30], invented-number [bs.accrued_liabilities @ 2026-09-30]",
-   "stage_reached": "closed",
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
    "error": null
   },
   {
@@ -2785,17 +2781,70 @@
    "borrower": "harrowgate-precision",
    "agent": "spreading",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
-   "grader": true,
-   "new_work_items": [],
-   "new_guardrail_notes": [],
-   "grader_names": [
-    "covenant-outcome",
-    "invented-number"
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
    ],
-   "evidence": "grader: covenant-outcome [total_leverage @ 2026-09-30], invented-number [bs.accounts_payable @ 2026-09-30], invented-number [bs.revolver @ 2026-09-30], invented-number [cov.total_leverage.headroom_pct @ 2026-09-30] and 2 more",
-   "stage_reached": "closed",
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-prior-year-under-a-spanning-header",
+   "what": "the prior-year column read under a header naming both periods",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-printed-totals-not-read",
+   "what": "no printed total reported, so nothing could be footed",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.does_not_foot"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.does_not_foot",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-supplemental-row-reported-twice",
+   "what": "one printed row reported twice, so its figure would be added twice",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
    "error": null
   },
   {
@@ -2862,16 +2911,15 @@
    "borrower": "harrowgate-precision",
    "agent": "certificate",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
-   "grader": true,
-   "new_work_items": [],
-   "new_guardrail_notes": [],
-   "grader_names": [
-    "covenant-outcome",
-    "invented-number"
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
    ],
-   "evidence": "grader: covenant-outcome [min_tnw @ 2026-09-30], invented-number [cert.min_tnw.threshold @ 2026-09-30], invented-number [cert.min_tnw.value @ 2026-09-30]",
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
    "stage_reached": "closed",
    "error": null
   },
@@ -2881,16 +2929,15 @@
    "borrower": "harrowgate-precision",
    "agent": "certificate",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
-   "grader": true,
-   "new_work_items": [],
-   "new_guardrail_notes": [],
-   "grader_names": [
-    "covenant-outcome",
-    "invented-number"
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
    ],
-   "evidence": "grader: covenant-outcome [fccr @ 2026-09-30], covenant-outcome [total_leverage @ 2026-09-30], invented-number [cert.fccr.threshold @ 2026-09-30], invented-number [cert.fccr.value @ 2026-09-30] and 2 more",
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
    "stage_reached": "closed",
    "error": null
   },
@@ -2900,17 +2947,13 @@
    "borrower": "harrowgate-precision",
    "agent": "collateral",
    "applied": true,
-   "caught_by": "product and grader",
-   "product": true,
-   "grader": true,
-   "new_work_items": [
-    "bb.certificate_mismatch"
-   ],
+   "caught_by": "recovered",
+   "product": false,
+   "grader": false,
+   "new_work_items": [],
    "new_guardrail_notes": [],
-   "grader_names": [
-    "borrowing-base-line"
-   ],
-   "evidence": "work item: bb.certificate_mismatch; grader: borrowing-base-line [ar_availability @ 2026-09-30], borrowing-base-line [ar_eligible @ 2026-09-30], borrowing-base-line [ar_ineligible_excluded @ 2026-09-30], borrowing-base-line [ar_ineligible_total @ 2026-09-30] and 1 more",
+   "grader_names": [],
+   "evidence": "nothing changed and nothing is wrong: code reads this from the page itself, so the reader's omission has no effect",
    "stage_reached": "closed",
    "error": null
   },
@@ -2946,11 +2989,10 @@
    ],
    "new_guardrail_notes": [],
    "grader_names": [
-    "borrowing-base-line",
     "invented-number"
    ],
-   "evidence": "work item: bb.certificate_mismatch; grader: borrowing-base-line [ar_availability @ 2026-09-30], borrowing-base-line [ar_eligible @ 2026-09-30], borrowing-base-line [ar_ineligible_age @ 2026-09-30], borrowing-base-line [ar_ineligible_total @ 2026-09-30] and 65 more",
-   "stage_reached": "closed",
+   "evidence": "work item: bb.certificate_mismatch; grader: invented-number [bbc.ar.001.current @ 2026-09-30], invented-number [bbc.ar.001.days_31_60 @ 2026-09-30], invented-number [bbc.ar.001.days_61_90 @ 2026-09-30], invented-number [bbc.ar.001.over_90 @ 2026-09-30] and 59 more",
+   "stage_reached": "borrowing_base",
    "error": null
   },
   {
@@ -2959,17 +3001,51 @@
    "borrower": "harrowgate-precision",
    "agent": "collateral",
    "applied": true,
-   "caught_by": "product and grader",
+   "caught_by": "product",
    "product": true,
-   "grader": true,
+   "grader": false,
    "new_work_items": [
     "bb.certificate_mismatch"
    ],
    "new_guardrail_notes": [],
-   "grader_names": [
-    "invented-number"
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "borrowing_base",
+   "error": null
+  },
+  {
+   "name": "bb-affiliate-note-and-lines-dropped",
+   "what": "an affiliate's note dropped and the certificate lines that would show it left out",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
    ],
-   "evidence": "work item: bb.certificate_mismatch; grader: invented-number [bbc.commitment @ 2026-09-30], invented-number [bbc.outstanding @ 2026-09-30]",
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-contra-note-and-lines-dropped",
+   "what": "a contra note dropped and the certificate lines that would show it left out",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
    "stage_reached": "closed",
    "error": null
   },
@@ -2998,15 +3074,19 @@
    "borrower": "harrowgate-precision",
    "agent": "intake",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
-   "grader": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
    "new_work_items": [],
-   "new_guardrail_notes": [],
-   "grader_names": [
-    "document-filing"
+   "new_guardrail_notes": [
+    [
+     "intake",
+     "audited_without_report",
+     "quality_changed"
+    ]
    ],
-   "evidence": "grader: document-filing [ifs-2026-09-30.pdf]",
+   "grader_names": [],
+   "evidence": "guardrail note: intake audited_without_report -> quality_changed",
    "stage_reached": "closed",
    "error": null
   },
@@ -3033,6 +3113,116 @@
   {
    "name": "review-types-a-figure",
    "what": "commentary that types a figure",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-dressed-as-a-date",
+   "what": "commentary with a figure placed so it reads as a date ('above 4 may')",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-as-a-list-marker",
+   "what": "commentary with figures in brackets like list markers",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-quantity-in-words",
+   "what": "commentary stating a ratio in words",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "number_in_words",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review number_in_words -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-as-an-identifier",
+   "what": "commentary with a change written like an identifier ('up-12 percent')",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-as-a-note-number",
+   "what": "commentary with a ratio written as a note number",
    "borrower": "harrowgate-precision",
    "agent": "review",
    "applied": true,
@@ -3104,16 +3294,19 @@
    "borrower": "kestrel-bay-packaging",
    "agent": "spreading",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
+   "caught_by": "product and grader",
+   "product": true,
    "grader": true,
-   "new_work_items": [],
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
    "new_guardrail_notes": [],
    "grader_names": [
-    "invented-number"
+    "missed-exception",
+    "signals-not-run"
    ],
-   "evidence": "grader: invented-number [bs.accounts_payable @ 2026-09-30], invented-number [bs.revolver @ 2026-09-30], invented-number [cov.total_leverage.headroom_pct @ 2026-09-30], invented-number [cov.total_leverage.value @ 2026-09-30] and 1 more",
-   "stage_reached": "closed",
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
    "error": null
   },
   {
@@ -3122,19 +3315,103 @@
    "borrower": "kestrel-bay-packaging",
    "agent": "spreading",
    "applied": true,
-   "caught_by": "grader",
-   "product": false,
+   "caught_by": "product and grader",
+   "product": true,
    "grader": true,
-   "new_work_items": [],
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
    "new_guardrail_notes": [],
    "grader_names": [
-    "false-compliant",
-    "invented-number",
     "missed-exception",
-    "signal-missing"
+    "signals-not-run"
    ],
-   "evidence": "grader: false-compliant [total_leverage @ 2026-09-30], invented-number [bs.long_term_debt @ 2026-09-30], invented-number [bs.other_noncurrent_liabilities @ 2026-09-30], invented-number [cov.total_leverage.headroom_pct @ 2026-09-30] and 4 more",
-   "stage_reached": "closed",
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-term-debt-swapped-with-label-fragments",
+   "what": "long-term debt and other liabilities swapped, reporting only fragments of each row label",
+   "borrower": "kestrel-bay-packaging",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-term-debt-folded-into-other-liabilities",
+   "what": "long-term debt filed as a second row of other liabilities and declared absent",
+   "borrower": "kestrel-bay-packaging",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-principal-read-from-another-supplemental-row",
+   "what": "scheduled principal read from the financed-capex row (no total covers supplemental lines)",
+   "borrower": "pellham-grain",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.breach], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-cash-taxes-read-from-another-supplemental-row",
+   "what": "cash taxes read from the financed-capex row",
+   "borrower": "pellham-grain",
+   "agent": "spreading",
+   "applied": true,
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.breach], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
    "error": null
   },
   {
@@ -3171,6 +3448,81 @@
    "grader_names": [],
    "evidence": "work item: spread.value_unverified",
    "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-flag-from-the-next-row",
+   "what": "the compliance entry taken from a neighbouring row, with a label fragment found on every row",
+   "borrower": "pellham-grain",
+   "agent": "certificate",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-ineligible-inventory-named-by-a-fragment",
+   "what": "work in process reported as 'process' with the inventory lines of the certificate left out, turning an over-advance into availability",
+   "borrower": "briarstone-beverage",
+   "agent": "collateral",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-receivable-filed-as-inventory",
+   "what": "a customer's receivable total added as an inventory row, certificate lines left out",
+   "borrower": "briarstone-beverage",
+   "agent": "collateral",
+   "applied": true,
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "borrowing-base-line",
+    "invented-number"
+   ],
+   "evidence": "work item: bb.certificate_mismatch; grader: borrowing-base-line [availability @ 2026-09-30], borrowing-base-line [borrowing_base @ 2026-09-30], borrowing-base-line [borrowing_limit @ 2026-09-30], borrowing-base-line [inventory_availability @ 2026-09-30] and 4 more",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-letters-of-credit-from-an-empty-row",
+   "what": "letters of credit read from another line's empty cell",
+   "borrower": "tallwater-foodservice",
+   "agent": "collateral",
+   "applied": true,
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "borrowing_base",
    "error": null
   }
  ]

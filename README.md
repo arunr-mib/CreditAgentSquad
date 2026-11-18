@@ -72,7 +72,7 @@ The application must not connect as the owner of its tables: an owner can switch
 ## Check it
 
 ```bash
-uv run pytest                                # everything, about fifteen minutes
+uv run pytest                                # everything, about 17 minutes
 uv run pytest -m "not slow"                  # skips the full-book and tampering suites
 uv run python -m evals.run --mode standin    # all 21 borrowers through the live cycle; writes evals/results/latest.md
 PYTHONPATH=backend uv run python -m app.cli verify-ledger   # prints the head; add --expect-head <seq>:<hash> to compare
