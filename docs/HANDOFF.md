@@ -82,7 +82,7 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 
 ## Next: the first live measurement (approved by the owner on 18 November 2026)
 
-Approved: three borrowers, estimated 3 to 7 US dollars in total (an estimate, not a measurement). The answer key is signed (75 rows). The owner is adding `ANTHROPIC_API_KEY` as an environment variable of the CreditAgentSquad cloud environment; a new session picks it up (a Claude API key cannot be a network secret). Then:
+Approved: three borrowers, estimated 3 to 7 US dollars in total (an estimate, not a measurement). The answer key is signed (75 rows). The key goes in the CreditAgentSquad cloud environment as the variable `SQUAD_ANTHROPIC_API_KEY` (a Claude API key cannot be a network secret, and a cloud session does not pass `ANTHROPIC_API_KEY` to its commands); a new session picks it up. Check first with `[ -n "$SQUAD_ANTHROPIC_API_KEY" ] && echo present || echo missing`. Then:
 
 ```bash
 service postgresql start

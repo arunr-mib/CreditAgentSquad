@@ -73,7 +73,7 @@ class LiveClient:
 
         s = settings or get_settings()
         if not s.anthropic_api_key:
-            raise RuntimeError("ANTHROPIC_API_KEY is not set; live model runs are not available.")
+            raise RuntimeError("No model key is set (SQUAD_ANTHROPIC_API_KEY or ANTHROPIC_API_KEY); live model runs are not available.")
         self._anthropic = anthropic
         self._client = anthropic.Anthropic(api_key=s.anthropic_api_key, base_url=s.squad_anthropic_base_url)
 

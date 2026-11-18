@@ -1,6 +1,7 @@
 """Application settings, read from environment variables (and `.env` when present)."""
 from functools import lru_cache
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # The largest document a person may upload. Larger files are refused before they are stored.
@@ -51,7 +52,10 @@ class Settings(BaseSettings):
 
     # Model access for the product's agents. The app never reads ANTHROPIC_BASE_URL from the
     # host environment: the base URL is set explicitly so a developer shell cannot redirect it.
-    anthropic_api_key: str = ""
+    # SQUAD_ANTHROPIC_API_KEY is read first: a cloud coding session keeps ANTHROPIC_API_KEY for its
+    # own use and does not pass it to commands, so the product's key goes under its own name there.
+    anthropic_api_key: str = Field(default="", validation_alias=AliasChoices("SQUAD_ANTHROPIC_API_KEY",
+                                                                              "ANTHROPIC_API_KEY"))
     squad_anthropic_base_url: str = "https://api.anthropic.com"
     squad_model: str = "claude-opus-5-5"
     squad_llm_mode: str = "recorded"  # recorded | live | record
