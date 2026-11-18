@@ -38,7 +38,7 @@ function Version({ version, code }: { version: TermsVersionRow; code: string }) 
   const panel = `terms-${version.id}`;
   return (
     <li className="border-b border-hairline last:border-b-0">
-      <div className="grid min-h-[38px] grid-cols-[88px_minmax(0,1.2fr)_minmax(0,1.4fr)_minmax(0,1.6fr)_auto] items-center gap-x-4 px-4 py-1.5 text-body">
+      <div className="flex min-h-[38px] flex-wrap items-center gap-x-4 gap-y-0.5 px-4 py-1.5 text-body md:grid md:grid-cols-[88px_minmax(0,1.2fr)_minmax(0,1.4fr)_minmax(0,1.6fr)_auto]">
         <span className="font-semibold text-ink">
           Version <span className="tnum">{version.version}</span>
         </span>
@@ -205,7 +205,7 @@ function LoanCard({ loan, code, outstanding }: { loan: LoanTerms; code: string; 
         title={loan.name}
         meta={loan.has_borrowing_base ? 'Advances are limited by a borrowing base' : undefined}
       />
-      <dl className="grid grid-cols-5 divide-x divide-hairline border-t border-hairline-strong">
+      <dl className="grid grid-cols-1 divide-y divide-hairline border-t border-hairline-strong md:grid-cols-5 md:divide-x md:divide-y-0">
         {[
           ['Commitment', <SourcedFigure key="c" value={loan.commitment} unit="usd" kind="system" label={`${loan.name}, commitment`} source={record('commitment', loan.commitment)} weight="semibold" />],
           ['Outstanding', outstanding],
@@ -213,9 +213,9 @@ function LoanCard({ loan, code, outstanding }: { loan: LoanTerms; code: string; 
           ['Originated', <span key="o" className="tnum">{loan.origination_date ? formatDate(loan.origination_date) : 'Not recorded'}</span>],
           ['Matures', <span key="m" className="tnum">{loan.maturity_date ? formatDate(loan.maturity_date) : 'Not recorded'}</span>],
         ].map(([label, value]) => (
-          <div key={label as string} className="px-4 py-2.5">
+          <div key={label as string} className="flex items-baseline justify-between gap-4 px-4 py-2 md:block md:py-2.5">
             <dt className="eyebrow">{label}</dt>
-            <dd className="mt-0.5 text-body text-ink">{value}</dd>
+            <dd className="text-right text-body text-ink md:mt-0.5 md:text-left">{value}</dd>
           </div>
         ))}
       </dl>

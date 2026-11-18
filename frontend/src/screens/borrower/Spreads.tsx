@@ -99,18 +99,18 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
   const lastKey = sections[sections.length - 1]?.lines.at(-1)?.key;
 
   return (
-    <div className={cx('rounded-md border border-hairline-strong bg-surface', scroll && 'overflow-x-auto')}>
+    <div className={cx('rounded-md border border-hairline-strong bg-surface', scroll ? 'relative overflow-x-auto' : 'max-md:relative max-md:overflow-x-auto')}>
       <table className="w-full border-separate border-spacing-0 text-body">
         <caption className="sr-only">Multi-period spread, US dollars in thousands. Each figure opens its source.</caption>
         <colgroup>
-          <col className="min-w-[260px]" />
+          <col className="min-w-[148px] md:min-w-[260px]" />
           {periods.map((period) => (
             <col key={period.period_end} className="w-[112px]" />
           ))}
         </colgroup>
         <thead>
           <tr>
-            <th scope="col" className={cx('eyebrow sticky left-0 z-20 rounded-tl-md border-b border-ink bg-surface px-4 text-left align-bottom', scroll ? 'top-0' : 'top-(--topbar-h)')}>
+            <th scope="col" className={cx('eyebrow sticky left-0 z-20 rounded-tl-md border-b border-ink bg-surface px-4 text-left align-bottom', scroll ? 'top-0' : 'top-0 md:top-(--topbar-h)')}>
               <span className="block pb-1.5">Line</span>
             </th>
             {periods.map((period, index) => {
@@ -119,7 +119,7 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
                 <th
                   key={period.period_end}
                   scope="col"
-                  className={cx('sticky z-10 border-b border-ink bg-surface pt-2 pr-[34px] pl-2 text-right align-bottom', scroll ? 'top-0' : 'top-(--topbar-h)', index === periods.length - 1 && 'rounded-tr-md')}
+                  className={cx('sticky z-10 border-b border-ink bg-surface pt-2 pr-[34px] pl-2 text-right align-bottom', scroll ? 'top-0' : 'top-0 md:top-(--topbar-h)', index === periods.length - 1 && 'rounded-tr-md')}
                 >
                   <span className="block text-body font-semibold whitespace-nowrap text-ink">{head.top}</span>
                   <span className="block text-micro font-medium whitespace-nowrap text-ink-500">{formatDate(period.period_end)}</span>
@@ -240,7 +240,7 @@ export function Spreads() {
                     label="Periods shown"
                     hideLabel
                     size="sm"
-                    className="w-44"
+                    className="w-44 max-w-full"
                     value={view}
                     onValueChange={(value) => void navigate({ search: value === 'recent' ? {} : { periods: value }, replace: true, resetScroll: false })}
                     options={[

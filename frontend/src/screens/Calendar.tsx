@@ -29,6 +29,8 @@ export function Calendar() {
         id: 'borrower',
         header: 'Borrower',
         rowHeader: true,
+        wrap: 'narrow',
+        minWidth: '150px',
         sortValue: (row) => row.borrower_name,
         cell: (row) => {
           const code = codes.get(row.borrower_id);
@@ -41,8 +43,8 @@ export function Calendar() {
           );
         },
       },
-      { id: 'type', header: 'Requirement', sortValue: (row) => docTypeLabel(row.document_type), cell: (row) => <span className="text-ink-700">{docTypeLabel(row.document_type)}</span> },
-      { id: 'period', header: 'For the period', sortValue: (row) => row.period_end, cell: (row) => <span className="tnum text-ink-700">{row.period_end.slice(5, 7) in { '03': 1, '06': 1, '09': 1, '12': 1 } ? `${quarterLabel(row.period_end)} · ` : ''}{formatDate(row.period_end)}</span> },
+      { id: 'type', header: 'Requirement', wrap: 'narrow', sortValue: (row) => docTypeLabel(row.document_type), cell: (row) => <span className="text-ink-700">{docTypeLabel(row.document_type)}</span> },
+      { id: 'period', header: 'For the period', wrap: 'narrow', sortValue: (row) => row.period_end, cell: (row) => <span className="tnum text-ink-700">{row.period_end.slice(5, 7) in { '03': 1, '06': 1, '09': 1, '12': 1 } ? `${quarterLabel(row.period_end)} · ` : ''}{formatDate(row.period_end)}</span> },
       {
         id: 'status',
         header: 'Status',
@@ -102,20 +104,22 @@ export function Calendar() {
           return (
             <section aria-label="Reporting requirements">
               <div className="mb-3 flex flex-wrap items-end gap-3">
-                <Segmented
-                  label="Status"
-                  value={status}
-                  onValueChange={setStatus}
-                  options={[
-                    { value: 'open', label: 'Outstanding', count: count('open') },
-                    { value: 'overdue', label: 'Overdue', count: count('overdue') },
-                    { value: 'due', label: 'Due', count: count('due') },
-                    { value: 'received', label: 'Received', count: count('received') },
-                    { value: 'all', label: 'All', count: all.length },
-                  ]}
-                />
-                <Select label="Requirement" hideLabel className="w-60" value={type} onValueChange={setType} options={[{ value: 'all', label: 'All requirements' }, ...types.map((id) => ({ value: id, label: docTypeLabel(id) }))]} />
-                <Input label="Borrower" hideLabel placeholder="Borrower" className="w-56" leading={<Search size={14} aria-hidden />} value={text} onChange={(event) => setText(event.target.value)} />
+                <div className="flex max-sm:relative max-sm:-m-1 max-sm:max-w-[calc(100%+8px)] max-sm:overflow-x-auto max-sm:p-1 max-sm:[&_button]:px-2">
+                  <Segmented
+                    label="Status"
+                    value={status}
+                    onValueChange={setStatus}
+                    options={[
+                      { value: 'open', label: 'Outstanding', count: count('open') },
+                      { value: 'overdue', label: 'Overdue', count: count('overdue') },
+                      { value: 'due', label: 'Due', count: count('due') },
+                      { value: 'received', label: 'Received', count: count('received') },
+                      { value: 'all', label: 'All', count: all.length },
+                    ]}
+                  />
+                </div>
+                <Select label="Requirement" hideLabel className="w-full sm:w-60" value={type} onValueChange={setType} options={[{ value: 'all', label: 'All requirements' }, ...types.map((id) => ({ value: id, label: docTypeLabel(id) }))]} />
+                <Input label="Borrower" hideLabel placeholder="Borrower" className="w-full sm:w-56" leading={<Search size={14} aria-hidden />} value={text} onChange={(event) => setText(event.target.value)} />
                 <p className="ml-auto text-caption text-ink-500" aria-live="polite">
                   {shown.length} of {all.length} requirements
                 </p>
@@ -128,6 +132,7 @@ export function Calendar() {
                 getRowId={(row) => row.id}
                 initialSort={{ id: 'due', desc: status !== 'due' }}
                 stickyTop="var(--topbar-h)"
+                narrow="stack"
                 empty={
                   <EmptyState
                     title="No requirement matches"

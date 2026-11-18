@@ -85,6 +85,7 @@ function Ledger() {
       {
         id: 'actor',
         header: 'By',
+        wrap: 'narrow',
         cell: (event) => {
           const user = names.get(event.actor_id);
           if (user) return <span className="text-ink">{user.name}</span>;
@@ -97,13 +98,14 @@ function Ledger() {
           );
         },
       },
-      { id: 'action', header: 'Action', rowHeader: true, cell: (event) => <span className="font-medium text-ink">{actionLabel(event.action)}</span> },
+      { id: 'action', header: 'Action', rowHeader: true, wrap: 'narrow', cell: (event) => <span className="font-medium text-ink">{actionLabel(event.action)}</span> },
       { id: 'detail', header: 'Detail', wrap: true, width: '30%', cell: (event) => <span className="text-ink-700 [overflow-wrap:anywhere]">{describeEvent(event)}</span> },
       {
         id: 'entity',
         header: 'Record',
+        wrap: 'narrow',
         cell: (event) => (
-          <button type="button" className="link text-caption" onClick={() => setFilter({ entity: event.entity_id })} aria-label={`Show every event for ${humanize(event.entity_type)} ${event.entity_id.slice(0, 8)}`}>
+          <button type="button" className="link text-left text-caption" onClick={() => setFilter({ entity: event.entity_id })} aria-label={`Show every event for ${humanize(event.entity_type)} ${event.entity_id.slice(0, 8)}`}>
             {humanize(event.entity_type)} <span className="ident">{event.entity_id.slice(0, 8)}</span>
           </button>
         ),
@@ -152,12 +154,12 @@ function Ledger() {
           <h2 id="ledger-heading" className="sr-only">
             Ledger events
           </h2>
-          <Select label="Action" hideLabel className="w-60" value={action} onValueChange={(value) => setFilter({ action: value === 'all' ? undefined : value })} options={ACTION_FILTERS.map(([value, label]) => ({ value, label }))} />
+          <Select label="Action" hideLabel className="w-full sm:w-60" value={action} onValueChange={(value) => setFilter({ action: value === 'all' ? undefined : value })} options={ACTION_FILTERS.map(([value, label]) => ({ value, label }))} />
           <Input
             label="Record identifier"
             hideLabel
             placeholder="Record identifier"
-            className="w-[340px]"
+            className="w-full sm:w-[340px]"
             value={entity}
             onChange={(event) => setFilter({ entity: event.target.value.trim() || undefined })}
           />
@@ -179,9 +181,10 @@ function Ledger() {
                 columns={columns}
                 getRowId={(event) => String(event.seq)}
                 stickyTop="var(--topbar-h)"
+                narrow="stack"
                 empty={<EmptyState title="No event matches" description="Nothing in the ledger fits this action and record." action={<Button onClick={() => setFilter({ entity: undefined, action: undefined })}>Clear filters</Button>} />}
               />
-              <div className="mt-3 flex items-center justify-between gap-3">
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-caption text-ink-500">The ledger is append-only. Choose a record to see everything that happened to it.</p>
                 <div className="flex gap-2">
                   <Button disabled={before.length === 0} onClick={() => setBefore((stack) => stack.slice(0, -1))}>
@@ -233,7 +236,7 @@ function AgentInventory() {
             />
           </Card>
         ) : (
-          <DataTable caption="Registered agent versions: the model inventory" data={specs} columns={columns} getRowId={(spec) => spec.id} stickyTop="var(--topbar-h)" />
+          <DataTable caption="Registered agent versions: the model inventory" data={specs} columns={columns} getRowId={(spec) => spec.id} stickyTop="var(--topbar-h)" narrow="stack" />
         )
       }
     </Load>
@@ -265,7 +268,7 @@ function Clock() {
         The demonstration runs on a date that a person sets. Due dates, overdue reporting and cycle stages follow it. Setting the date is recorded in the ledger.
       </p>
       {can('advance_clock') ? (
-        <form onSubmit={submit} className="mt-3 flex items-end gap-2">
+        <form onSubmit={submit} className="mt-3 flex flex-wrap items-end gap-2">
           <Input label="New date" type="date" className="w-48" value={date} onChange={(event) => setValue(event.target.value)} />
           <Button type="submit" variant="primary" disabled={setClock.isPending || !date || date === asOf}>
             {setClock.isPending ? 'Setting' : 'Set the date'}
@@ -299,7 +302,7 @@ export function Governance() {
     <div data-ready className="space-y-5">
       <div>
         <PageHeader eyebrow="Bank of Stoic · Commercial lending" title="Governance" meta={<span>What was done, by whom and when; which agent versions exist; and the date the demonstration runs on</span>} />
-        <div role="tablist" aria-label="Governance sections" className={`${tabListClass} mt-4`}>
+        <div role="tablist" aria-label="Governance sections" className={`${tabListClass} mt-4 flex-wrap gap-y-0`}>
           {TABS.map((entry) => (
             <button
               key={entry.id}

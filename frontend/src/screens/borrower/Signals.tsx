@@ -184,7 +184,7 @@ export function Signals() {
               {shown.length === 0 ? (
                 <EmptyCard title={rows.length === 0 ? 'No signal has fired for this borrower' : 'No open signal'} description="Signals are tested each period against the spread, the covenant tests, the loan system and the reporting calendar." />
               ) : (
-                <DataTable caption="Early warning signals for this borrower" data={shown} columns={columns} getRowId={(row) => row.id} stickyTop="var(--topbar-h)" />
+                <DataTable caption="Early warning signals for this borrower" data={shown} columns={columns} getRowId={(row) => row.id} stickyTop="var(--topbar-h)" narrow="stack" />
               )}
             </div>
             {explained.map((row) => (

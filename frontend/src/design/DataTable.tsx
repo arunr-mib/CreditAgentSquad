@@ -1,6 +1,6 @@
 import { createSortedRowModel, rowSortingFeature, tableFeatures, useTable, type ColumnDef, type RowData, type SortingState } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
-import { useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
 import { cx } from '@/lib/cx';
 
 const features = tableFeatures({ rowSortingFeature, sortedRowModel: createSortedRowModel() });
@@ -22,8 +22,13 @@ export interface DataColumn<T> {
   width?: string;
   /** The first column usually names the row: render it as a row header. */
   rowHeader?: boolean;
-  /** Let long text wrap onto a second line. Nothing is ever clipped; other columns do not wrap. */
-  wrap?: boolean;
+  /**
+   * Let long text wrap onto a second line. Nothing is ever clipped; other columns do not wrap.
+   * 'narrow' wraps only below 1280 px, where the table has less room, and leaves the wide layout as it is.
+   */
+  wrap?: boolean | 'narrow';
+  /** Below 1280 px, the narrowest a wrapping column may get before the table scrolls in its frame instead, for example "160px". */
+  minWidth?: string;
 }
 
 export interface DataTableProps<T> {
@@ -40,6 +45,13 @@ export interface DataTableProps<T> {
   stickyTop?: string;
   /** 34 px rows by default; 'compact' is 32 px. */
   density?: 'dense' | 'compact';
+  /**
+   * Below 1024 px a table too wide for the screen scrolls sideways inside its own frame, with the row header held in view.
+   * 'stack' also sets each row out as a labelled list on a phone (below 640 px): right for rows that are mostly words.
+   * Each value sits beside its column head; a head longer than 11 characters sits on its own line above the value.
+   * The column heads are not shown as controls in a stacked table, so it keeps the order it was given.
+   */
+  narrow?: 'scroll' | 'stack';
   empty?: ReactNode;
   className?: string;
 }
@@ -55,6 +67,7 @@ function compareValues(a: SortValue, b: SortValue): number {
 /**
  * Dense, sortable table. Sticky header, 34 px rows, right-aligned figures,
  * and keyboard row focus: Up, Down, Home and End move; Enter or Space activates.
+ * On a small screen it scrolls inside its frame or stacks (see `narrow`); the page never scrolls sideways and no text is clipped.
  */
 export function DataTable<T extends RowData>({
   caption,
@@ -66,6 +79,7 @@ export function DataTable<T extends RowData>({
   selectedRowId,
   stickyTop = '0px',
   density = 'dense',
+  narrow = 'scroll',
   empty,
   className,
 }: DataTableProps<T>) {
@@ -101,6 +115,9 @@ export function DataTable<T extends RowData>({
   const [focusIndex, setFocusIndex] = useState(0);
   const interactive = Boolean(onRowActivate);
   const rowHeight = density === 'dense' ? 'h-[34px]' : 'h-8';
+  const stack = narrow === 'stack';
+  /** While the frame scrolls sideways, the column that names the row stays in view. */
+  const pinFirst = Boolean(columns[0]?.rowHeader);
   const tabStop = Math.min(focusIndex, Math.max(rows.length - 1, 0));
 
   function focusRow(index: number) {
@@ -140,8 +157,8 @@ export function DataTable<T extends RowData>({
   }
 
   return (
-    <div className={cx('rounded-md border border-hairline-strong bg-surface', className)}>
-      <table className="w-full border-separate border-spacing-0 text-body">
+    <div className={cx('rounded-md border border-hairline-strong bg-surface max-md:relative max-md:overflow-x-auto', className)}>
+      <table className={cx('w-full border-separate border-spacing-0 text-body', stack && 'stack-narrow')}>
         <caption className="sr-only">{caption}</caption>
         <colgroup>
           {columns.map((column) => (
@@ -167,10 +184,11 @@ export function DataTable<T extends RowData>({
                     key={header.id}
                     scope="col"
                     aria-sort={canSort ? (sorted === 'asc' ? 'ascending' : sorted === 'desc' ? 'descending' : 'none') : undefined}
-                    style={{ top: stickyTop }}
+                    style={{ '--sticky-top': stickyTop } as CSSProperties}
                     className={cx(
-                      'eyebrow sticky z-10 h-8 border-b border-ink bg-surface px-2 whitespace-nowrap first:pl-4 last:pr-4',
+                      'eyebrow z-10 h-8 border-b border-ink bg-surface px-2 whitespace-nowrap first:pl-4 last:pr-4 md:sticky md:top-(--sticky-top)',
                       right ? 'text-right' : 'text-left',
+                      index === 0 && pinFirst && 'max-md:sticky max-md:left-0',
                       index === 0 && 'rounded-tl-md',
                       index === group.headers.length - 1 && 'rounded-tr-md',
                     )}
@@ -221,7 +239,7 @@ export function DataTable<T extends RowData>({
                 className={cx(
                   'group/row t-colors',
                   interactive && 'cursor-pointer focus-visible:-outline-offset-2',
-                  selected ? 'bg-cobalt-bg' : interactive && 'hover:bg-hover',
+                  selected ? 'bg-cobalt-bg' : cx('max-md:bg-surface', interactive && 'hover:bg-hover max-md:hover:bg-hover'),
                 )}
               >
                 {columns.map((column, columnIndex) => {
@@ -230,14 +248,21 @@ export function DataTable<T extends RowData>({
                     <Cell
                       key={column.id}
                       scope={column.rowHeader ? 'row' : undefined}
+                      data-label={stack ? column.header : undefined}
+                      data-label-pos={stack && column.header.length > 11 ? 'above' : undefined}
+                      style={column.minWidth ? ({ '--col-min': column.minWidth } as CSSProperties) : undefined}
                       className={cx(
                         rowHeight,
                         'px-2 font-regular first:pl-4 last:pr-4',
-                        column.wrap ? 'py-1.5 text-pretty' : 'py-0 whitespace-nowrap',
+                        column.wrap === true ? 'py-1.5 text-pretty' : 'py-0 whitespace-nowrap',
+                        // Below 1280 px, not 1200: the navigation widens at 1200 px, so the page is narrower just above it than just below.
+                        column.wrap === 'narrow' && 'max-[1279px]:py-1.5 max-[1279px]:text-pretty max-[1279px]:whitespace-normal',
+                        column.minWidth && 'max-[1279px]:min-w-(--col-min)',
                         column.align === 'right' ? 'text-right' : 'text-left',
                         !last && 'border-b border-hairline',
                         last && columnIndex === 0 && 'rounded-bl-md',
                         last && columnIndex === columns.length - 1 && 'rounded-br-md',
+                        columnIndex === 0 && pinFirst && 'max-md:sticky max-md:left-0 max-md:z-[1] max-md:bg-[inherit]',
                       )}
                     >
                       {column.cell(row.original)}

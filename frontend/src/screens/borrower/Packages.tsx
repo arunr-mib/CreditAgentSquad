@@ -93,10 +93,10 @@ function PackageCard({ item }: { item: PackageRow }) {
       />
       <ul className="border-t border-ink">
         {item.files.map((file) => (
-          <li key={file.name} className="grid min-h-[34px] grid-cols-[110px_minmax(0,1fr)_auto_auto] items-center gap-x-4 border-b border-hairline px-4 py-1.5 text-body">
+          <li key={file.name} className="grid min-h-[34px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-0.5 border-b border-hairline px-4 py-1.5 text-body sm:grid-cols-[110px_minmax(0,1fr)_auto_auto]">
             <span className="font-medium text-ink">{FORMAT_LABEL[file.format] ?? file.format}</span>
-            <span className="ident min-w-0 break-all text-ink-700">{file.name}</span>
-            <span className="text-caption text-ink-500">
+            <span className="ident min-w-0 break-all text-ink-700 max-sm:col-span-2 max-sm:row-start-2">{file.name}</span>
+            <span className="text-caption text-ink-500 max-sm:col-span-2 max-sm:row-start-3">
               <span className="tnum">{file.facts_used}</span> facts cited · <span className="ident">{file.sha256.slice(0, 10)}</span>
             </span>
             <a href={`${API}/packages/${item.id}/files/${encodeURIComponent(file.name)}`} className="link font-medium" download>
@@ -123,7 +123,7 @@ function PackageCard({ item }: { item: PackageRow }) {
             <span className="text-ink-500">Verification reopens every file and checks each figure against the snapshot.</span>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button disabled={verify.isPending} onClick={() => verify.mutate()}>
             Verify the files
           </Button>
@@ -209,7 +209,7 @@ export function Packages() {
           )}
           <fieldset>
             <legend className="mb-1 text-caption font-medium text-ink-700">Files</legend>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
               {FORMATS.map((format) => (
                 <label key={format.id} className="inline-flex items-center gap-1.5 text-body text-ink">
                   <input

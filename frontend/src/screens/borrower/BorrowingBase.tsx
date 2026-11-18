@@ -30,6 +30,7 @@ function ReviewCard({ review, code }: { review: BorrowingBaseReview; code: strin
     <Card className="min-w-0">
       <CardHeader
         as="h2"
+        className="max-sm:flex-wrap max-sm:gap-y-1"
         eyebrow="Borrowing base review"
         title={`As of ${formatDate(review.period_end)}`}
         meta={
@@ -51,64 +52,66 @@ function ReviewCard({ review, code }: { review: BorrowingBaseReview; code: strin
           </StatusDot>
         }
       />
-      <table className="w-full border-separate border-spacing-0 text-body">
-        <caption className="sr-only">Borrowing base as of {formatDate(review.period_end)}: each line as recalculated beside the certificate, US dollars in thousands</caption>
-        <thead>
-          <tr>
-            <th scope="col" className="eyebrow h-8 border-t border-b border-t-hairline-strong border-b-ink px-4 text-left">
-              Line
-            </th>
-            {['Recalculated', 'Certificate', 'Difference'].map((head) => (
-              <th key={head} scope="col" className="eyebrow h-8 w-[118px] border-t border-b border-t-hairline-strong border-b-ink px-3 text-right">
-                {head}
+      <div className="max-md:relative max-md:overflow-x-auto">
+        <table className="w-full border-separate border-spacing-0 text-body">
+          <caption className="sr-only">Borrowing base as of {formatDate(review.period_end)}: each line as recalculated beside the certificate, US dollars in thousands</caption>
+          <thead>
+            <tr>
+              <th scope="col" className="eyebrow h-8 border-t border-b border-t-hairline-strong border-b-ink px-4 text-left">
+                Line
               </th>
-            ))}
-            <th scope="col" className="eyebrow h-8 w-[104px] border-t border-b border-t-hairline-strong border-b-ink px-3 text-left">
-              Check
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {review.lines.map((line, index) => {
-            const strong = STRONG.has(line.line);
-            const total = TOTAL.has(line.line);
-            const last = index === review.lines.length - 1;
-            const cell = cx('px-3 py-1.5 text-right', !last && !total && 'border-b border-hairline', strong && 'border-t border-t-ink', total && 'border-b-[3px] border-double border-b-ink');
-            const differs = line.status === 'mismatch';
-            return (
-              <tr key={line.line} className={cx(strong && 'bg-canvas')}>
-                <th scope="row" className={cx('px-4 py-1.5 text-left', !last && 'border-b border-hairline', strong ? 'font-semibold text-ink' : 'font-regular text-ink-700')} style={{ paddingLeft: 16 + line.depth * 16 }}>
-                  {line.label}
+              {['Recalculated', 'Certificate', 'Difference'].map((head) => (
+                <th key={head} scope="col" className="eyebrow h-8 w-[118px] border-t border-b border-t-hairline-strong border-b-ink px-3 text-right">
+                  {head}
                 </th>
-                <td className={cell}>
-                  {calc ? (
-                    <SourcedFigure value={line.computed} unit="usd" kind="calculated" label={`${line.label}, recalculated`} context={`As of ${formatDate(review.period_end)}`} source={calc} scale={1000} unitMark={false} align="column" weight={strong ? 'semibold' : 'regular'} />
-                  ) : (
-                    <Absent align="column" reason="Not recalculated" />
-                  )}
-                </td>
-                <td className={cell}>
-                  {certificate ? (
-                    <SourcedFigure value={line.certificate} unit="usd" kind="extracted" label={`${line.label}, on the certificate`} context={`As of ${formatDate(review.period_end)}`} source={certificate} scale={1000} unitMark={false} align="column" />
-                  ) : (
-                    <Absent align="column" reason="No certificate on file" />
-                  )}
-                </td>
-                <td className={cell}>
-                  {differs && calc ? (
-                    <SourcedFigure value={line.difference} unit="usd" kind="calculated" label={`${line.label}, recalculated less certificate`} source={calc} scale={1000} unitMark={false} align="column" weight="medium" />
-                  ) : (
-                    <Absent align="column" reason={line.status === 'match' ? 'No difference' : 'Not on the certificate'} />
-                  )}
-                </td>
-                <td className={cx('px-3 py-1.5 text-left', !last && !total && 'border-b border-hairline', strong && 'border-t border-t-ink', total && 'border-b-[3px] border-double border-b-ink')}>
-                  {line.status === 'match' ? <StatusDot tone="pass">Agrees</StatusDot> : differs ? <StatusDot tone="attention" emphasis>Differs</StatusDot> : <span className="text-ink-500">Not compared</span>}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              ))}
+              <th scope="col" className="eyebrow h-8 w-[104px] border-t border-b border-t-hairline-strong border-b-ink px-3 text-left">
+                Check
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {review.lines.map((line, index) => {
+              const strong = STRONG.has(line.line);
+              const total = TOTAL.has(line.line);
+              const last = index === review.lines.length - 1;
+              const cell = cx('px-3 py-1.5 text-right', !last && !total && 'border-b border-hairline', strong && 'border-t border-t-ink', total && 'border-b-[3px] border-double border-b-ink');
+              const differs = line.status === 'mismatch';
+              return (
+                <tr key={line.line} className={cx(strong ? 'bg-canvas' : 'max-md:bg-surface')}>
+                  <th scope="row" className={cx('px-4 py-1.5 text-left max-md:sticky max-md:left-0 max-md:min-w-[148px] max-md:bg-[inherit]', !last && 'border-b border-hairline', strong ? 'font-semibold text-ink' : 'font-regular text-ink-700')} style={{ paddingLeft: 16 + line.depth * 16 }}>
+                    {line.label}
+                  </th>
+                  <td className={cell}>
+                    {calc ? (
+                      <SourcedFigure value={line.computed} unit="usd" kind="calculated" label={`${line.label}, recalculated`} context={`As of ${formatDate(review.period_end)}`} source={calc} scale={1000} unitMark={false} align="column" weight={strong ? 'semibold' : 'regular'} />
+                    ) : (
+                      <Absent align="column" reason="Not recalculated" />
+                    )}
+                  </td>
+                  <td className={cell}>
+                    {certificate ? (
+                      <SourcedFigure value={line.certificate} unit="usd" kind="extracted" label={`${line.label}, on the certificate`} context={`As of ${formatDate(review.period_end)}`} source={certificate} scale={1000} unitMark={false} align="column" />
+                    ) : (
+                      <Absent align="column" reason="No certificate on file" />
+                    )}
+                  </td>
+                  <td className={cell}>
+                    {differs && calc ? (
+                      <SourcedFigure value={line.difference} unit="usd" kind="calculated" label={`${line.label}, recalculated less certificate`} source={calc} scale={1000} unitMark={false} align="column" weight="medium" />
+                    ) : (
+                      <Absent align="column" reason={line.status === 'match' ? 'No difference' : 'Not on the certificate'} />
+                    )}
+                  </td>
+                  <td className={cx('px-3 py-1.5 text-left', !last && !total && 'border-b border-hairline', strong && 'border-t border-t-ink', total && 'border-b-[3px] border-double border-b-ink')}>
+                    {line.status === 'match' ? <StatusDot tone="pass">Agrees</StatusDot> : differs ? <StatusDot tone="attention" emphasis>Differs</StatusDot> : <span className="text-ink-500">Not compared</span>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       {review.availability_fact ? (
         <p className="border-t border-hairline-strong px-4 py-2.5 text-body text-ink-700">
           Availability is stored as a fact and feeds the signals: <FactFigure fact={review.availability_fact} weight="semibold" />
@@ -155,7 +158,7 @@ export function BorrowingBase() {
                     label="Review"
                     hideLabel
                     size="sm"
-                    className="w-64"
+                    className="w-64 max-w-full"
                     value={selected.id}
                     onValueChange={(value) => void navigate({ search: { review: value }, replace: true, resetScroll: false })}
                     options={rows.map((row) => ({ value: row.id, label: `${formatDate(row.period_end)} · ${SHORT[row.outcome]}` }))}
@@ -166,7 +169,7 @@ export function BorrowingBase() {
             <div className={cx('grid items-start gap-5', selected.work_item && 'xl:grid-cols-[minmax(0,1fr)_400px]')}>
               <ReviewCard key={selected.id} review={selected} code={borrower.code} />
               {selected.work_item ? (
-                <aside aria-label="Exception raised on this review" className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
+                <aside aria-label="Exception raised on this review" className="min-w-0 xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
                   <WorkItemPanel key={selected.work_item.id} itemId={selected.work_item.id} />
                 </aside>
               ) : null}

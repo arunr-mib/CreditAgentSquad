@@ -109,7 +109,7 @@ function RunDetail({ run }: { run: AgentRunDetail }) {
           <h3 className="eyebrow mb-1">Answer after the guardrails</h3>
           <dl className="border-t border-ink">
             {Object.entries(run.output).map(([key, value]) => (
-              <div key={key} className="grid grid-cols-[160px_minmax(0,1fr)] gap-x-4 border-b border-hairline py-1.5 text-body last:border-b-0">
+              <div key={key} className="grid grid-cols-[112px_minmax(0,1fr)] gap-x-4 border-b sm:grid-cols-[160px_minmax(0,1fr)] border-hairline py-1.5 text-body last:border-b-0">
                 <dt className="text-ink-500">{humanize(key)}</dt>
                 <dd className="text-pretty break-words whitespace-pre-line text-ink">{plainValue(value)}</dd>
               </div>
@@ -170,6 +170,7 @@ export function AgentActivity() {
                   selectedRowId={selectedId}
                   onRowActivate={(run) => void navigate({ search: { run: run.id }, replace: true, resetScroll: false })}
                   stickyTop="var(--topbar-h)"
+                  narrow="stack"
                   empty={<EmptyState title="No run" />}
                 />
                 <p className="mt-2 text-caption text-ink-500">Up and Down move between runs. Enter opens the run.</p>

@@ -44,7 +44,10 @@ export function SignIn() {
   }
 
   return (
-    <main data-ready className="mx-auto grid min-h-screen w-full max-w-[1120px] grid-cols-[minmax(0,5fr)_minmax(0,6fr)] items-center gap-16 px-10 py-12">
+    <main
+      data-ready
+      className="mx-auto grid min-h-screen w-full max-w-[1120px] grid-cols-1 content-center items-center gap-10 px-4 py-8 sm:px-10 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-16 md:py-12"
+    >
       <section aria-labelledby="sign-in-title">
         <div className="flex items-center gap-2.5">
           <Mark size={24} />
@@ -107,9 +110,9 @@ export function SignIn() {
                     setProblem(null);
                   }}
                   aria-pressed={email === user.email}
-                  className="group flex min-h-[38px] w-full items-center gap-4 px-4 py-1.5 text-left text-body t-colors hover:bg-hover aria-pressed:bg-cobalt-bg last:rounded-b-md"
+                  className="group flex min-h-[38px] w-full flex-wrap items-center gap-x-4 px-4 py-1.5 text-left text-body t-colors hover:bg-hover aria-pressed:bg-cobalt-bg last:rounded-b-md sm:flex-nowrap"
                 >
-                  <span className="w-44 shrink-0 font-medium text-ink">{user.name}</span>
+                  <span className="w-full shrink-0 font-medium text-ink sm:w-44">{user.name}</span>
                   <span className="min-w-0 flex-1 text-ink-700">{user.title}</span>
                   <span className="shrink-0 text-caption text-ink-500">{roleLabel(user.role)}</span>
                 </button>
