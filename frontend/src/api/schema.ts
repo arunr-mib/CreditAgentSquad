@@ -492,7 +492,8 @@ export interface Obligation {
   document_type: string;
   period_end: string;
   due_date: string;
-  status: 'due' | 'received' | 'overdue' | 'waived';
+  /** `untracked`: a past period the book holds no document for; it was never chased here, so it is not shown as overdue. */
+  status: 'due' | 'received' | 'overdue' | 'waived' | 'untracked';
   received_document_id: string | null;
   received_date: string | null;
   days_late: number | null;

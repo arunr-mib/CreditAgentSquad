@@ -19,7 +19,7 @@ import { Load } from './parts';
  * opens, so the room a table has does not follow the window: the table asks its own frame.
  * Null until measured (and where nothing can be measured), which callers read as "plenty of room".
  */
-function useWidth(): [(node: HTMLElement | null) => (() => void) | undefined, number | null] {
+export function useWidth(): [(node: HTMLElement | null) => (() => void) | undefined, number | null] {
   const [width, setWidth] = useState<number | null>(null);
   const ref = useCallback((node: HTMLElement | null) => {
     if (!node) return undefined;
@@ -44,7 +44,7 @@ function useMedia(query: string): boolean {
   return useSyncExternalStore(subscribe, () => window.matchMedia?.(query).matches ?? false);
 }
 /** On a phone the table is set out as a labelled list, so a column costs a line, not width. */
-const useIsPhone = () => useMedia('(width < 640px)');
+export const useIsPhone = () => useMedia('(width < 640px)');
 /** From 1200 px the open drawer stands beside the page and narrows it; below that it lies over the page. */
 function useDrawerBeside(): boolean {
   const wide = useMedia('(width >= 1200px)');
@@ -64,7 +64,7 @@ interface Layout {
   meter: 'wide' | 'slim' | 'under';
 }
 /** Null is "not measured": the layout with the most in it. */
-const layoutFor = (layouts: Layout[], width: number | null): Layout => layouts.find((layout) => width === null || width >= layout.min) ?? layouts[layouts.length - 1]!;
+export const layoutFor = <T extends { min: number }>(layouts: T[], width: number | null): T => layouts.find((layout) => width === null || width >= layout.min) ?? layouts[layouts.length - 1]!;
 
 /** A control inside a row acts for itself: a click on it does not also open the row. */
 function Own({ children, className }: { children: ReactNode; className?: string }) {
@@ -135,12 +135,11 @@ const stageColumn = (header: string): DataColumn<BorrowerRow> => ({
   cell: (row) => <span className="text-ink-700">{row.latest_cycle ? (row.latest_cycle.stage === 'review_prep' ? 'Review prep' : stageLabel(row.latest_cycle.stage)) : 'No cycle'}</span>,
 });
 
-/** The borrower whose tear-sheet is open, and the way to open one: the same on every borrower table. */
-function useTearSheetRows(rows: BorrowerRow[] | undefined, layout: Layout) {
-  const drawer = useWorkspaceDrawer();
-  const selected = drawer.open && drawer.borrowerCode ? (rows?.find((row) => row.code === drawer.borrowerCode)?.id ?? null) : null;
-  // The drawer narrows the page as it opens, so the table changes its layout and the rows move.
-  // The one just chosen is brought back into view, once on choosing it and again when the layout settles.
+/**
+ * The drawer narrows the page as it opens, so the table changes its layout and the rows move.
+ * The row just chosen is brought back into view: once on choosing it, and again when the layout settles.
+ */
+export function useKeepSelectedRowInView(selected: string | null, layout: unknown) {
   useEffect(() => {
     if (!selected) return undefined;
     const frame = requestAnimationFrame(() => {
@@ -154,6 +153,13 @@ function useTearSheetRows(rows: BorrowerRow[] | undefined, layout: Layout) {
     });
     return () => cancelAnimationFrame(frame);
   }, [selected, layout]);
+}
+
+/** The borrower whose tear-sheet is open, and the way to open one: the same on every borrower table. */
+function useTearSheetRows(rows: BorrowerRow[] | undefined, layout: Layout) {
+  const drawer = useWorkspaceDrawer();
+  const selected = drawer.open && drawer.borrowerCode ? (rows?.find((row) => row.code === drawer.borrowerCode)?.id ?? null) : null;
+  useKeepSelectedRowInView(selected, layout);
   return { selectedRowId: selected, onRowActivate: (row: BorrowerRow) => drawer.openBorrower(row.code) };
 }
 
