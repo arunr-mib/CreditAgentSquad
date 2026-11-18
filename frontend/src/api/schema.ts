@@ -57,6 +57,11 @@ export interface BorrowerRow {
   open_signals: number;
   latest_cycle: { id: string; period_end: string; stage: StageId; status: string } | null;
   covenant_status: CovenantOutcome | null;
+  /**
+   * The stored headroom fact with the lowest value among the covenant tests in force for the
+   * latest period. Chosen by the API, never worked out here. Null when nothing has been tested.
+   */
+  tightest_headroom: FactSummary | null;
 }
 
 export interface Loan {
@@ -72,7 +77,7 @@ export interface Loan {
   profile: { interest_rate?: string; original_amount?: string };
 }
 
-export interface BorrowerDetail extends Omit<BorrowerRow, 'total_commitment' | 'open_work_items' | 'open_signals' | 'latest_cycle' | 'covenant_status'> {
+export interface BorrowerDetail extends Omit<BorrowerRow, 'total_commitment' | 'open_work_items' | 'open_signals' | 'latest_cycle' | 'covenant_status' | 'tightest_headroom'> {
   profile: { city?: string; state?: string; auditor?: string; legal_form?: string; statement_scale?: number; chief_financial_officer?: string };
   facilities: Loan[];
 }
@@ -99,7 +104,8 @@ export interface CycleRow {
 }
 
 export interface BorrowerOverview {
-  exposure: Partial<Record<'revolver_outstanding' | 'commitment' | 'term_loan_outstanding' | 'past_due_days', FactSummary>>;
+  /** `availability` is there only for a borrower with a borrowing base review. */
+  exposure: Partial<Record<'revolver_outstanding' | 'commitment' | 'term_loan_outstanding' | 'past_due_days' | 'availability', FactSummary>>;
   cycle: (CycleRow & { stages: StageRow[] }) | null;
   metrics: Record<string, FactSummary>;
   open_work_items: number;
