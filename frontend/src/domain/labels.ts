@@ -117,6 +117,7 @@ const ITEM_TYPE_LABEL: Record<string, string> = {
   'terms.approval_needed': 'Terms awaiting approval',
   'terms.unapproved_amendment': 'Amendment not approved into terms',
   'covenant.breach': 'Covenant breach',
+  'reading.review': 'Reading to confirm',
   'covenant.reported_mismatch': 'Covenant breach, certificate reports compliant',
   'covenant.reported_breach_unconfirmed': 'Certificate reports a breach the calculation does not show',
   'fact.correction_changed_outcome': 'Corrected figure changed a covenant outcome',

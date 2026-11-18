@@ -13,6 +13,7 @@ from app.agents import covenant as covenant_agent
 from app.agents.llm import LLMClient, client_for
 from app.calc.periods import prior_fiscal_year_end
 from app.core import clock
+from app.core.config import get_settings
 from app.domain import calendar, workflow
 from app.domain.collateral_service import review_borrowing_base, store_line_availability
 from app.domain.covenant_service import governing_terms, run_covenant_tests
@@ -50,6 +51,28 @@ def _unfiled(db: Session, cycle: Cycle) -> list[Document]:
     return list(db.execute(select(Document).where(
         Document.borrower_id == cycle.borrower_id, Document.doc_type.is_(None),
         Document.status != "rejected").order_by(Document.created_at)).scalars())
+
+
+def _review_reading(db: Session, cycle: Cycle, borrower: Borrower, document: Document, stage: str, what: str,
+                    run_id) -> None:
+    """With autonomy set to assisted, a reading that passed every check still waits for a person.
+    Checks written by the people who wrote the reader have been wrong before: three independent
+    reviews each found readings that passed and were wrong. One question per document, once."""
+    if get_settings().extraction_autonomy.strip().lower() == "automatic":
+        return
+    key = f"reading.review:{document.id}"
+    if db.execute(select(WorkItem.id).where(
+            WorkItem.borrower_id == borrower.id, WorkItem.item_type == "reading.review",
+            WorkItem.evidence["dedupe_key"].astext == key)).first():
+        return  # already asked for this document, whatever was decided
+    raise_item(
+        db, borrower_id=borrower.id, cycle_id=cycle.id, stage=stage, item_type="reading.review", severity="medium",
+        title=f"{borrower.name}: confirm the reading of the {what}",
+        question=f"The {what} were read and passed every check. Readings are confirmed by a person before they "
+                 "are used. Do the figures agree with the document?",
+        allowed_decisions=["reading_confirmed", "request_new_document"], required_permission="confirm_spread",
+        evidence={"document_id": str(document.id), "what": what}, agent_run_id=run_id,
+        actor=("system", "autonomy"), dedupe_key=key)
 
 
 @workflow.stage_handler("awaiting_package")
@@ -96,6 +119,8 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
         scale_override=st.detail.get("scale_override"))
     st.detail = {**st.detail, "status": result.status, "run_id": str(result.run_id) if result.run_id else None,
                  "unverified": len(result.unverified), "failed_checks": len(result.failed_checks)}
+    if result.status == "spread":
+        _review_reading(db, cycle, borrower, documents[-1], "spreading", "financial statements", result.run_id)
     return "done"
 
 
@@ -136,6 +161,9 @@ def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
                     dedupe_key=f"certificate.unverified:{certificates[-1].id}")
         tested += len(run_covenant_tests(db, borrower=borrower, facility=facility, period_end=cycle.period_end,
                                          cycle=cycle))
+        if certificates and not already_read and reading.stored:
+            _review_reading(db, cycle, borrower, certificates[-1], "covenant_testing", "compliance certificate",
+                            reading.run_id)
     # each breach gets an investigation attached for the person who will decide it. The filter is
     # in Python because the column holds JSON null, which SQL does not treat as NULL.
     investigated = 0
@@ -214,6 +242,7 @@ def borrowing_base_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
         letters_of_credit=letters, cycle=cycle, require_all_lines=True,
         source={"document_id": str(documents[-1].id), "agent_run_id": str(reading.run_id), "fact_ids": reading.fact_ids})
     st.detail = {**st.detail, "outcome": review.outcome}
+    _review_reading(db, cycle, borrower, documents[-1], "borrowing_base", "borrowing base certificate", reading.run_id)
     return "done"
 
 

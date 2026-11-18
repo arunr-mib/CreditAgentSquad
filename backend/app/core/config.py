@@ -33,6 +33,14 @@ class Settings(BaseSettings):
     login_max_failures: int = 5
     login_lockout_minutes: int = 15
 
+    # How much a document reading is trusted before a person has looked at it.
+    #   assisted   every reading of statements, a compliance certificate or a borrowing base
+    #              certificate is confirmed by a person before the cycle goes on, even when it
+    #              passed every check. This is the default.
+    #   automatic  a reading that passes every check is used without a person. Choose this only
+    #              once measured accuracy on the bank's own documents justifies it.
+    extraction_autonomy: str = "assisted"
+
     # Model access for the product's agents. The app never reads ANTHROPIC_BASE_URL from the
     # host environment: the base URL is set explicitly so a developer shell cannot redirect it.
     anthropic_api_key: str = ""

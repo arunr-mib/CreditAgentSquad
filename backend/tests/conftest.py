@@ -16,6 +16,9 @@ from sqlalchemy.orm import Session
 # takes the deployment defaults: an HTTPS-only session cookie, which the test client would not
 # send back, and no /docs.
 os.environ.setdefault("SQUAD_ENV", "local")
+# The suite exercises the automatic path, where a reading that passes every check is used; the
+# default in a deployment is "assisted", tested in tests/domain/test_autonomy.py.
+os.environ.setdefault("EXTRACTION_AUTONOMY", "automatic")
 get_settings.cache_clear()
 
 

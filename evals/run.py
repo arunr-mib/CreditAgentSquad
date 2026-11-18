@@ -33,6 +33,10 @@ from sqlalchemy.orm import Session
 
 from evals.book import DEFAULT_BOOK, REPO, Book, Borrower, load_book, unsigned_oracle_rows
 
+# The evaluation measures the automatic path: what the product does with a reading when no
+# person looks at it. A deployment defaults to "assisted", where a person confirms every reading.
+os.environ.setdefault("EXTRACTION_AUTONOMY", "automatic")
+
 RESULTS_DIR = REPO / "evals" / "results"
 RECORDINGS_DIR = REPO / "evals" / "recordings"
 MODES = ("standin", "recorded", "live", "record")

@@ -239,6 +239,22 @@ def on_borrowing_base_decision(db, item, user, decision: str, reason: str) -> No
         _back_to_pending(db, item, "borrowing_base", user, required=False)
 
 
+def on_reading_review(db, item, user, decision: str, reason: str) -> None:
+    """A person looked at a reading that passed every check. Confirming is their judgement, kept
+    on the ledger against the document; asking for a new document sets this one aside and the
+    stage waits for it."""
+    document = _document(db, item)
+    if decision == "request_new_document":
+        _set_aside(db, document, user, reason or decision)
+        if item.stage:
+            _back_to_pending(db, item, item.stage, user)
+        return
+    ledger.record(db, actor_type="user", actor_id=user.id, action="reading.confirmed", entity_type="document",
+                  entity_id=document.id if document is not None else item.id,
+                  payload={"what": item.evidence.get("what"), "work_item_id": item.id, "confirmed_by": user.name})
+
+
+workflow.DECISION_HOOKS["reading.review"] = on_reading_review
 workflow.DECISION_HOOKS["terms.approval_needed"] = terms_service.on_decision
 workflow.DECISION_HOOKS["review.commentary_approval"] = review_service.on_decision
 workflow.DECISION_HOOKS["terms.unapproved_amendment"] = on_unapproved_amendment

@@ -152,6 +152,7 @@ export type WorkItemType =
   | 'terms.approval_needed'
   | 'terms.unapproved_amendment'
   | 'covenant.breach'
+  | 'reading.review'
   | 'covenant.reported_mismatch'
   | 'covenant.reported_breach_unconfirmed'
   | 'fact.correction_changed_outcome'
