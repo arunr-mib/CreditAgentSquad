@@ -11,6 +11,25 @@ from evals.run import COST_WARNING, RunRefused, check_may_start, make_client
 BOOK_BUILT = (DEFAULT_BOOK / "truth").exists()
 
 
+def _oracle(tmp_path, signed: str):
+    """A copy of the oracle with every row signed or unsigned, so these guards do not depend on
+    whether the owner has signed the real one."""
+    from evals.book import ORACLE
+
+    lines = ORACLE.read_text().splitlines()
+    body = [line.rsplit(",", 1)[0] + "," + signed for line in lines[1:]]
+    path = tmp_path / "oracle.csv"
+    path.write_text("\n".join([lines[0], *body]) + "\n")
+    return path
+
+
+@pytest.fixture(autouse=True)
+def unsigned_oracle(tmp_path, monkeypatch):
+    path = _oracle(tmp_path, "no")
+    monkeypatch.setattr(run, "unsigned_oracle_rows", lambda codes: unsigned_oracle_rows(codes, path))
+    return path
+
+
 def test_live_and_record_refuse_unsigned_oracle_rows_and_print_the_cost_warning():
     for mode in ("live", "record"):
         out = io.StringIO()
@@ -28,10 +47,19 @@ def test_allow_unsigned_is_a_stated_exception_and_still_needs_the_owners_go_ahea
     check_may_start("live", ["harrowgate-precision"], allow_unsigned=True, confirm_billable=True, out=io.StringIO())
 
 
-def test_every_oracle_row_is_unsigned_today_and_a_borrower_without_rows_counts_as_unsigned():
-    rows = unsigned_oracle_rows(["harrowgate-precision", "kestrel-bay-packaging"])
+def test_unsigned_rows_are_listed_and_a_borrower_without_rows_counts_as_unsigned(unsigned_oracle):
+    rows = unsigned_oracle_rows(["harrowgate-precision", "kestrel-bay-packaging"], unsigned_oracle)
     assert len(rows) >= 5 and {r["owner_signed_off"] for r in rows} == {"no"}
-    assert unsigned_oracle_rows(["not-a-borrower"])[0]["item"] == "no oracle row"
+    assert unsigned_oracle_rows(["not-a-borrower"], unsigned_oracle)[0]["item"] == "no oracle row"
+
+
+def test_signed_rows_let_a_billable_run_start_only_with_the_owners_go_ahead(tmp_path, monkeypatch):
+    signed = _oracle(tmp_path, "yes")
+    assert unsigned_oracle_rows(["harrowgate-precision"], signed) == []
+    monkeypatch.setattr(run, "unsigned_oracle_rows", lambda codes: unsigned_oracle_rows(codes, signed))
+    with pytest.raises(RunRefused, match="billable"):
+        check_may_start("live", ["harrowgate-precision"], out=io.StringIO())
+    check_may_start("live", ["harrowgate-precision"], confirm_billable=True, out=io.StringIO())
 
 
 def test_recorded_mode_refuses_when_there_are_no_recordings(tmp_path):

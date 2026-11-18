@@ -205,6 +205,19 @@ def _oracle_rows(book: BorrowerBook) -> list[dict]:
     return rows
 
 
+def _keep_sign_off(oracle: Path, rows: list[dict]) -> None:
+    """The owner's sign-off survives regeneration for a row whose expected values are unchanged.
+    A row whose values changed comes back unsigned, so the owner checks it again."""
+    if not oracle.exists():
+        return
+    with oracle.open(newline="", encoding="utf-8") as handle:
+        signed = {tuple(r.get(c, "") for c in ORACLE_COLUMNS if c != "owner_signed_off")
+                  for r in csv.DictReader(handle) if r.get("owner_signed_off", "").strip().lower() == "yes"}
+    for row in rows:
+        if tuple(str(row.get(c, "")) for c in ORACLE_COLUMNS if c != "owner_signed_off") in signed:
+            row["owner_signed_off"] = "yes"
+
+
 def generate(out: Path, seed: int = DEFAULT_SEED, oracle: Path | None = None) -> dict:
     """Generate the whole book under `out`. Returns the manifest."""
     out = Path(out)
@@ -260,6 +273,7 @@ def generate(out: Path, seed: int = DEFAULT_SEED, oracle: Path | None = None) ->
         "documents": manifest_docs,
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+    _keep_sign_off(oracle, oracle_rows)
     with oracle.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=ORACLE_COLUMNS, lineterminator="\n")
         writer.writeheader()
