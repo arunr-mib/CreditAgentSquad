@@ -201,7 +201,7 @@ export const useLedger = (filter: LedgerFilter) =>
 export const useLedgerVerification = (run: boolean) =>
   useQuery({ queryKey: ['ledger-verify'], queryFn: () => get<LedgerVerification>('/ledger/verify'), enabled: run, staleTime: 0, gcTime: 0 });
 export const useClock = (signedIn: boolean) =>
-  useQuery({ queryKey: ['clock'], queryFn: () => get<{ today: string }>('/clock'), enabled: signedIn, staleTime: 5 * 60_000 });
+  useQuery({ queryKey: ['clock'], queryFn: () => get<{ today: string; latest_document_received?: string | null; days_since_latest_document?: number | null }>('/clock'), enabled: signedIn, staleTime: 5 * 60_000 });
 
 export function useSetClock() {
   const client = useQueryClient();

@@ -37,7 +37,7 @@ export function useCommandPaletteShortcut(onToggle: () => void) {
   }, [onToggle]);
 }
 
-export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Search borrowers, loans and commands' }: CommandPaletteProps) {
+export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Search borrowers and commands' }: CommandPaletteProps) {
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
   const listId = useId();

@@ -17,8 +17,8 @@ export function humanize(id: string | null | undefined): string {
 
 export const SEVERITY_LABEL: Record<Severity, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
 export const SEVERITY_RANK: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3 };
-/** Severity never uses red: red is a covenant breach, marked where the breach is named. */
-export const SEVERITY_TONE: Record<Severity, StatusTone> = { critical: 'attention', high: 'attention', medium: 'neutral', low: 'muted' };
+/** One mark per level, the same on every screen: critical red, high amber, medium ink, low an outline. */
+export const SEVERITY_TONE: Record<Severity, StatusTone> = { critical: 'breach', high: 'attention', medium: 'neutral', low: 'muted' };
 
 /* ── Monitoring cycle ─────────────────────────────────────────────────── */
 

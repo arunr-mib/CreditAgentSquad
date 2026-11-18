@@ -3,7 +3,7 @@ import { cx } from '@/lib/cx';
 
 /**
  * Colour carries meaning only:
- * breach = covenant breach, attention = needs a person, pass = verified pass or recorded resolution,
+ * breach = covenant breach or a critical item, attention = needs a person or a high item, pass = verified pass or recorded resolution,
  * agent = written by an agent, neutral = informational state, muted = not started.
  */
 export type StatusTone = 'breach' | 'attention' | 'pass' | 'agent' | 'neutral' | 'muted';

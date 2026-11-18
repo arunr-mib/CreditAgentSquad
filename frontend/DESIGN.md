@@ -26,7 +26,7 @@ The visual identity and component vocabulary of the workspace. Tokens live in `s
 | | `--surface-hover` | `#f3f0e9` | Row and menu hover |
 | | `--ink-900` | `#1b1a17` | Text, strong rules, selected segment |
 | | `--ink-700` | `#45423b` | Secondary text |
-| | `--ink-500` | `#66625a` | Labels, glyphs (AA on every surface) |
+| | `--ink-500` | `#5a564e` | Labels, glyphs (6.5:1 or better on every surface) |
 | | `--ink-400` | `#8c877c` | Control borders, neutral dots (3:1, non-text only) |
 | | `--hairline` | `#e3dfd5` | Row rules |
 | | `--hairline-strong` | `#cfc9bc` | Card borders, dividers |
@@ -43,7 +43,7 @@ The visual identity and component vocabulary of the workspace. Tokens live in `s
 
 Text tokens meet 4.5:1 on canvas, surface, sunken and hover; marks and control borders meet 3:1. `src/design/__tests__/tokens.test.ts` enforces both, plus the two-shadow and 240 ms limits. Tailwind's default palette is removed in `@theme`, so only these tokens can be used as utilities.
 
-**Severity is not red.** Critical and high are amber, medium is ink, low is hollow; one severity always looks the same. A covenant breach is marked in red where the breach is named (the question, the outcome), not on the severity.
+**One mark per severity, the same on every screen.** Critical is red, high is amber, medium is ink, low is hollow. Critical and high used to share amber so that red meant only a covenant breach; the owner's review (18 November 2026) found that two levels with one colour cannot be told apart, so red now means a covenant breach or a critical item. A covenant breach is still named in red where it occurs (the question, the outcome).
 
 ## Type
 

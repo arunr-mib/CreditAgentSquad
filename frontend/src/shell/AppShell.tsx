@@ -7,7 +7,7 @@ import { useAuth } from '@/auth/context';
 import { CommandPalette, formatDate, Kbd, Popover, Tooltip, useCommandPaletteShortcut, useToast, type Command } from '@/design';
 import { roleLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
-import { useAsOf } from './AsOf';
+import { STALE_AFTER_DAYS, useAsOf } from './AsOf';
 import { Copilot } from './Copilot';
 import { NAV } from './nav';
 import { Wordmark } from './Wordmark';
@@ -67,8 +67,9 @@ function Navigation({ pathname }: { pathname: string }) {
 }
 
 function AsOfControl() {
-  const { asOf } = useAsOf();
+  const { asOf, latestDocument, daysSinceLatestDocument } = useAsOf();
   const { can } = useAuth();
+  const stale = daysSinceLatestDocument !== null && daysSinceLatestDocument > STALE_AFTER_DAYS;
   return (
     <Popover
       label="Simulated clock"
@@ -82,6 +83,12 @@ function AsOfControl() {
             {asOf ? formatDate(asOf) : 'reading the clock'}
           </span>
           <span className="sr-only">, simulated clock</span>
+          {stale ? (
+            <span data-stale className="inline-flex items-center gap-1 text-caption font-medium text-amber">
+              <span aria-hidden className="size-[7px] rounded-full bg-amber-mark" />
+              <span className="sr-only">Data may be out of date: </span>no document for {daysSinceLatestDocument} days
+            </span>
+          ) : null}
           <ChevronDown size={13} aria-hidden className="text-ink-500" />
         </button>
       }
@@ -90,6 +97,12 @@ function AsOfControl() {
       <p className="tnum mt-1 text-heading font-semibold text-ink">{asOf ? formatDate(asOf) : 'Not read yet'}</p>
       <p className="mt-1 text-body text-pretty text-ink-700">
         The demonstration runs on a clock that a person sets. Due dates, overdue items and cycle stages follow this date, not today’s.
+      </p>
+      <p className="eyebrow mt-3">How fresh the data is</p>
+      <p data-freshness className={cx('mt-1 text-body text-pretty', stale ? 'font-medium text-amber' : 'text-ink-700')}>
+        {latestDocument && daysSinceLatestDocument !== null
+          ? `The newest document on file was received ${formatDate(latestDocument)}, ${daysSinceLatestDocument === 0 ? 'the same day as' : `${daysSinceLatestDocument} ${daysSinceLatestDocument === 1 ? 'day' : 'days'} before`} this date.${stale ? ` Nothing has arrived for more than ${STALE_AFTER_DAYS} days, so figures may be out of date.` : ''}`
+          : 'No document has been received on or before this date.'}
       </p>
       <p className="mt-2 text-body text-ink-700">
         {can('advance_clock') ? (
@@ -146,7 +159,9 @@ function UserMenu() {
           <DropdownMenu.Separator className="my-1 border-t border-hairline" />
           <DropdownMenu.Item
             onSelect={() =>
-              void signOut().catch(() => toast({ title: 'Signed out on this device', description: 'The server could not be told; the session will expire by itself.' }))
+              void signOut().catch(() =>
+                toast({ title: 'Signed out on this device', description: 'The server could not be told; the session will expire by itself.' }),
+              )
             }
             className="flex h-8 cursor-pointer items-center gap-2 rounded-xs px-2 text-body text-ink outline-none select-none data-[highlighted]:bg-cobalt-bg"
           >
@@ -177,7 +192,14 @@ export function AppShell() {
         icon: <item.icon size={15} strokeWidth={1.75} />,
         run: go(item.to),
       })),
-      { id: 'nav-design', group: 'Go to', label: 'Design system', hint: 'Tokens and components', icon: <Palette size={15} strokeWidth={1.75} />, run: go('/design') },
+      {
+        id: 'nav-design',
+        group: 'Go to',
+        label: 'Design system',
+        hint: 'Tokens and components',
+        icon: <Palette size={15} strokeWidth={1.75} />,
+        run: go('/design'),
+      },
       ...(borrowers.data ?? []).map((borrower) => ({
         id: `borrower-${borrower.id}`,
         group: 'Borrowers',

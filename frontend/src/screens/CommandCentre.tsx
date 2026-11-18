@@ -4,8 +4,34 @@ import { usePortfolio, useWorkItems } from '@/api/hooks';
 import type { WorkItemRow } from '@/api/schema';
 import type { Severity } from '@/api/types';
 import { useAuth } from '@/auth/context';
-import { AgentMark, Button, DataTable, EmptyState, formatDate, formatDue, PageHeader, Segmented, Select, SkeletonRows, StatusDot, type DataColumn } from '@/design';
-import { isBreachItem, ITEM_GROUP_LABEL, itemGroup, itemTypeLabel, OUTCOME, quarterLabel, SEVERITY_LABEL, SEVERITY_RANK, STAGE_ORDER, stageLabel, type ItemGroup } from '@/domain/labels';
+import {
+  AgentMark,
+  Button,
+  DataTable,
+  EmptyState,
+  formatDate,
+  formatDue,
+  PageHeader,
+  Segmented,
+  Select,
+  SkeletonRows,
+  StatusDot,
+  type DataColumn,
+} from '@/design';
+import {
+  isBreachItem,
+  ITEM_GROUP_LABEL,
+  itemGroup,
+  itemTypeLabel,
+  OUTCOME,
+  quarterLabel,
+  roleLabel,
+  SEVERITY_LABEL,
+  SEVERITY_RANK,
+  STAGE_ORDER,
+  stageLabel,
+  type ItemGroup,
+} from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { useAsOf } from '@/shell/AsOf';
 import { EmptyCard, ErrorNotice, SeverityDot } from './parts';
@@ -133,8 +159,11 @@ export function CommandCentre() {
       meta={
         summary ? (
           <span>
-            {summary.period_end ? `Monitoring cycle for the quarter ended ${formatDate(summary.period_end)}` : 'No monitoring cycle is open'} · {summary.work_items.open} items need a
-            person{user ? `, ${mine} of them open to your role` : ''}
+            {summary.period_end ? `Monitoring cycle for the quarter ended ${formatDate(summary.period_end)}` : 'No monitoring cycle is open'} ·{' '}
+            {summary.work_items.open} items need a person.{' '}
+            {user
+              ? `Every total on this page covers the whole portfolio, whoever is signed in. Your role, ${roleLabel(user.role)}, may decide ${mine} of the ${items.length} open items; the other ${items.length - mine} need another role.`
+              : ''}
           </span>
         ) : undefined
       }
@@ -163,7 +192,10 @@ export function CommandCentre() {
       {header}
 
       {summary ? (
-        <section aria-label="Portfolio summary" className="grid grid-cols-4 divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong">
+        <section
+          aria-label="Portfolio summary"
+          className="grid grid-cols-4 divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong"
+        >
           <SummaryBlock label="Cycles in progress" value={summary.cycles.open} note={`of ${summary.borrowers} borrowers`}>
             {[...summary.cycles.by_stage]
               .sort((a, b) => STAGE_ORDER.indexOf(a.stage) - STAGE_ORDER.indexOf(b.stage))
@@ -178,8 +210,15 @@ export function CommandCentre() {
           <SummaryBlock label="Open exceptions" value={items.length} note="by type">
             {groupCounts.map(([key, count]) => (
               <li key={key}>
-                <button type="button" aria-pressed={group === key} onClick={() => setSearch({ type: group === key ? undefined : key, item: undefined })} className={countRowClass}>
-                  <span className="group-aria-pressed:underline group-aria-pressed:decoration-cobalt group-aria-pressed:underline-offset-4">{ITEM_GROUP_LABEL[key]}</span>
+                <button
+                  type="button"
+                  aria-pressed={group === key}
+                  onClick={() => setSearch({ type: group === key ? undefined : key, item: undefined })}
+                  className={countRowClass}
+                >
+                  <span className="group-aria-pressed:underline group-aria-pressed:decoration-cobalt group-aria-pressed:underline-offset-4">
+                    {ITEM_GROUP_LABEL[key]}
+                  </span>
                   <span className={countClass}>{count}</span>
                 </button>
               </li>
@@ -279,11 +318,17 @@ export function CommandCentre() {
                 />
               }
             />
-            <p className="mt-2 text-caption text-ink-500">Up and Down move between rows. Enter opens the item. {selected ? `Showing: ${itemTypeLabel(selected.item_type)}.` : ''}</p>
+            <p className="mt-2 text-caption text-ink-500">
+              Up and Down move between rows. Enter opens the item. {selected ? `Showing: ${itemTypeLabel(selected.item_type)}.` : ''}
+            </p>
           </section>
 
           <aside aria-label="Selected item" className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
-            {selected ? <WorkItemPanel key={selected.id} itemId={selected.id} /> : <EmptyCard title="No item selected" description="Choose a row in the queue to see its question, evidence and decision." />}
+            {selected ? (
+              <WorkItemPanel key={selected.id} itemId={selected.id} />
+            ) : (
+              <EmptyCard title="No item selected" description="Choose a row in the queue to see its question, evidence and decision." />
+            )}
           </aside>
         </div>
       )}

@@ -29,7 +29,7 @@ export function CycleStepper({ cycle }: { cycle: NonNullable<BorrowerOverview['c
           {cycle.status === 'closed' ? 'Closed' : 'Open'} · cycle <span className="ident">{cycle.id.slice(0, 8)}</span>
         </span>
       </div>
-      <Stepper label={`Stages of the ${quarterLabel(cycle.period_end)} monitoring cycle`} steps={steps} />
+      <Stepper label={`Stages of the ${quarterLabel(cycle.period_end)} monitoring cycle`} steps={steps} collapseLater />
     </section>
   );
 }

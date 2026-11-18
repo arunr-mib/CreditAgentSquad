@@ -74,16 +74,24 @@ export function Copilot() {
     ask.mutate(trimmed, {
       onSuccess: (reply) => setExchanges((list) => list.map((exchange, index) => (index === list.length - 1 ? { ...exchange, reply } : exchange))),
       onError: (error) =>
-        setExchanges((list) => list.map((exchange, index) => (index === list.length - 1 ? { ...exchange, error: errorMessage(error), status: error instanceof ApiError ? error.status : 0 } : exchange))),
+        setExchanges((list) =>
+          list.map((exchange, index) =>
+            index === list.length - 1 ? { ...exchange, error: errorMessage(error), status: error instanceof ApiError ? error.status : 0 } : exchange,
+          ),
+        ),
     });
   }
 
   return (
     <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger asChild>
-        <button type="button" className="inline-flex h-8 items-center gap-2 rounded-sm px-2 text-body text-ink-700 t-colors hover:bg-hover hover:text-ink">
+        <button
+          type="button"
+          title="Ask a question about a borrower or the portfolio. Answers cite stored facts and documents; nothing is changed. The log of what agents did is under Agent activity."
+          className="inline-flex h-8 items-center gap-2 rounded-sm px-2 text-body text-ink-700 t-colors hover:bg-hover hover:text-ink"
+        >
           <MessageSquareText size={15} strokeWidth={1.75} aria-hidden className="text-ink-500" />
-          Copilot
+          Ask Copilot
         </button>
       </RadixDialog.Trigger>
       <RadixDialog.Portal>
@@ -99,7 +107,10 @@ export function Copilot() {
               Copilot
               <span className="font-regular text-ink-500">· {borrower ? borrower.name : 'the portfolio'}</span>
             </RadixDialog.Title>
-            <RadixDialog.Close aria-label="Close the Copilot" className="inline-flex size-8 items-center justify-center rounded-sm text-ink-500 t-colors hover:bg-hover hover:text-ink">
+            <RadixDialog.Close
+              aria-label="Close the Copilot"
+              className="inline-flex size-8 items-center justify-center rounded-sm text-ink-500 t-colors hover:bg-hover hover:text-ink"
+            >
               <X size={16} aria-hidden />
             </RadixDialog.Close>
           </div>
@@ -108,8 +119,8 @@ export function Copilot() {
               <div className="text-body text-pretty text-ink-700">
                 <p className="text-title font-semibold text-ink">Ask about {borrower ? 'this borrower' : 'the portfolio'}</p>
                 <p className="mt-1">
-                  The Copilot reads stored facts and documents; it changes nothing. Every figure in an answer is a stored fact that opens its source, and every quotation is checked
-                  against its page by code. If an answer cannot be grounded, it is refused rather than guessed.
+                  The Copilot reads stored facts and documents; it changes nothing. Every figure in an answer is a stored fact that opens its source, and every
+                  quotation is checked against its page by code. If an answer cannot be grounded, it is refused rather than guessed.
                 </p>
               </div>
             ) : null}
@@ -128,13 +139,19 @@ export function Copilot() {
                     <AgentMark size={8} /> Reading the facts and documents
                   </p>
                 ) : (
-                  <section aria-label={`Written by the Copilot: ${exchange.reply.status}`} data-copilot-status={exchange.reply.status} className="rounded-md border border-iris-border bg-iris-bg">
+                  <section
+                    aria-label={`Written by the Copilot: ${exchange.reply.status}`}
+                    data-copilot-status={exchange.reply.status}
+                    className="rounded-md border border-iris-border bg-iris-bg"
+                  >
                     <header className="flex items-center justify-between gap-3 px-3.5 pt-2.5">
                       <span className="inline-flex items-center gap-1.5 text-caption font-semibold text-iris">
                         <AgentMark />
                         Copilot
                       </span>
-                      <span className="text-caption text-ink-700">{exchange.reply.status === 'answered' ? 'Answered from stored facts' : 'Refused, nothing was guessed'}</span>
+                      <span className="text-caption text-ink-700">
+                        {exchange.reply.status === 'answered' ? 'Answered from stored facts' : 'Refused, nothing was guessed'}
+                      </span>
                     </header>
                     <div className="px-3.5 pt-1.5 pb-3">
                       <AgentBody text={exchange.reply.answer_with_references ?? exchange.reply.answer} />
@@ -149,7 +166,14 @@ export function Copilot() {
                                   type="button"
                                   className="link mt-0.5 text-caption font-medium"
                                   onClick={() =>
-                                    source.open({ type: 'document', documentId: citation.document_id, page: citation.page, quote: citation.quote, title: citation.document_title ?? citation.title ?? 'Document', borrowerCode: borrower?.code })
+                                    source.open({
+                                      type: 'document',
+                                      documentId: citation.document_id,
+                                      page: citation.page,
+                                      quote: citation.quote,
+                                      title: citation.document_title ?? citation.title ?? 'Document',
+                                      borrowerCode: borrower?.code,
+                                    })
                                   }
                                 >
                                   Open page {citation.page}

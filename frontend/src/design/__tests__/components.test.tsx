@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { Fact } from '@/api/types';
+import { SEVERITY_TONE } from '@/domain/labels';
 import { AgentNote, AgentText, CommandPalette, DataTable, FactsProvider, Figure, StatusDot, Stepper, useCommandPaletteShortcut, WorkItemCard } from '..';
 
 const documentFact: Fact = {
@@ -136,6 +137,41 @@ describe('StatusDot and Stepper', () => {
     const current = screen.getAllByRole('listitem').find((item) => item.getAttribute('aria-current') === 'step');
     expect(current).toHaveTextContent('Covenant testing');
     expect(current).toHaveTextContent('Needs a person');
+  });
+
+  it('folds the stages after the next one into one item that opens', async () => {
+    const steps = [
+      { id: 'a', label: 'Intake', status: 'done' as const },
+      { id: 'b', label: 'Covenant testing', status: 'needs_person' as const },
+      { id: 'c', label: 'Borrowing base', status: 'pending' as const },
+      { id: 'd', label: 'Signals', status: 'pending' as const },
+      { id: 'e', label: 'Review preparation', status: 'pending' as const },
+      { id: 'f', label: 'Closed', status: 'pending' as const },
+    ];
+    render(<Stepper label="Cycle" steps={steps} collapseLater />);
+    // done, current and next stay; the three after that are one item
+    expect(screen.getByText('Borrowing base')).toBeVisible();
+    expect(screen.queryByText('Signals')).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: '3 later stages' }));
+    expect(screen.getByText('Signals')).toBeVisible();
+    expect(screen.getByText('Closed')).toBeVisible();
+    await userEvent.click(screen.getByRole('button', { name: 'Show fewer stages' }));
+    expect(screen.queryByText('Closed')).toBeNull();
+  });
+
+  it('shows every stage when asked not to fold, or when only one would be folded', () => {
+    const steps = [
+      { id: 'a', label: 'Intake', status: 'done' as const },
+      { id: 'b', label: 'Covenant testing', status: 'pending' as const },
+      { id: 'c', label: 'Signals', status: 'pending' as const },
+    ];
+    render(<Stepper label="Cycle" steps={steps} collapseLater />);
+    expect(screen.getByText('Signals')).toBeVisible();
+    expect(screen.queryByRole('button')).toBeNull();
+  });
+
+  it('gives each severity its own mark, the same everywhere', () => {
+    expect(SEVERITY_TONE).toEqual({ critical: 'breach', high: 'attention', medium: 'neutral', low: 'muted' });
   });
 });
 

@@ -454,7 +454,7 @@ export function DesignPage() {
               <IconButton label="Open document" size="sm" icon={<FileSearch size={14} aria-hidden />} />
             </div>
           </Story>
-          <Story name="Input and Select" rule="A label always. Validation is amber: red is kept for covenant breaches.">
+          <Story name="Input and Select" rule="A label always. Validation is amber: red is kept for covenant breaches and critical items.">
             <div className="grid max-w-[720px] grid-cols-3 gap-4">
               <Input label="Borrower" placeholder="Search by name" leading={<Search size={14} aria-hidden />} />
               <Input label="Reason for the decision" defaultValue="" error="A reason is required to decide otherwise." />
@@ -600,7 +600,7 @@ export function DesignPage() {
               <WorkItemCard
                 typeLabel={workItemTypeLabel[fccrWorkItem.type]}
                 itemId={fccrWorkItem.id}
-                severity={{ tone: 'attention', label: 'Critical' }}
+                severity={{ tone: 'breach', label: 'Critical' }}
                 breach
                 subject={fccrWorkItem.borrowerName}
                 context="Q3 2026 · Covenant testing"

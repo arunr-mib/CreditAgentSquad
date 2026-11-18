@@ -7,10 +7,12 @@ from app.core import clock
 from app.core.config import get_settings
 from app.domain import workflow
 from app.domain.credit import Borrower, Facility
+from app.domain.documents import Document
 from app.domain.facts_service import add_fact, correct_fact
 from app.domain.org import User
 from app.domain.work_items import raise_item
 from app.seed_users import seed_users
+from sqlalchemy import select
 from support.statement_pdf import build_pdf
 
 PERIOD = date(2026, 9, 30)
@@ -117,6 +119,16 @@ def test_ledger_clock_and_verify(client, db, world):
     assert client.post("/api/v1/clock", json={"today": "2026-11-17"}).json()["today"] == "2026-11-17"
     assert clock.today(db) == date(2026, 11, 17)
     assert client.get("/api/v1/calendar").json()["as_of"] == "2026-11-17"
+    # freshness: the newest document received on or before the working date, never one dated after it
+    assert client.get("/api/v1/clock").json() == {
+        "today": "2026-11-17", "latest_document_received": None, "days_since_latest_document": None}
+    borrower_id = db.execute(select(Borrower.id)).scalars().first()
+    for name, received in (("on-time.pdf", date(2026, 10, 30)), ("from-the-future.pdf", date(2026, 12, 1))):
+        db.add(Document(borrower_id=borrower_id, title=name, file_name=name, storage_path=name, sha256=name.ljust(64, "0"),
+                        received_date=received))
+    db.flush()
+    assert client.get("/api/v1/clock").json() == {
+        "today": "2026-11-17", "latest_document_received": "2026-10-30", "days_since_latest_document": 18}
     events = client.get("/api/v1/ledger", params={"action": "clock."}).json()
     assert events[0]["action"] == "clock.set" and events[0]["payload"]["to"] == "2026-11-17"
     assert client.get("/api/v1/ledger/verify").json()["ok"] is True

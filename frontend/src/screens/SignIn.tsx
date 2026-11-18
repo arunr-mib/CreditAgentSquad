@@ -16,6 +16,8 @@ const DEMO_USERS: Array<{ email: string; name: string; title: string; role: stri
   { email: 'admin@bankofstoic.example', name: 'Platform Administrator', title: 'Administrator', role: 'admin' },
 ];
 const DEMO_PASSWORD = 'squad-demo';
+/** Build with VITE_DEMO_USERS=off for a deployment with real accounts: the list is then not in the page at all. */
+const SHOW_DEMO_USERS = import.meta.env.VITE_DEMO_USERS !== 'off';
 
 export function SignIn() {
   const { signIn, status, retry } = useAuth();
@@ -84,36 +86,38 @@ export function SignIn() {
         <p className="mt-10 text-caption text-ink-500">Synthetic data, for demonstration. No real borrower appears in this workspace.</p>
       </section>
 
-      <section aria-labelledby="demo-title" className="rounded-md border border-hairline-strong bg-surface">
-        <div className="px-4 pt-3.5 pb-3">
-          <h2 id="demo-title" className="text-title font-semibold text-ink">
-            Demonstration users
-          </h2>
-          <p className="mt-0.5 text-caption text-pretty text-ink-500">
-            Choose a person to fill in the form. Each role may decide different things: a breach needs a credit officer, the clock needs an administrator.
-          </p>
-        </div>
-        <ul className="border-t border-ink">
-          {DEMO_USERS.map((user) => (
-            <li key={user.email} className="border-b border-hairline last:border-b-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail(user.email);
-                  setPassword(DEMO_PASSWORD);
-                  setProblem(null);
-                }}
-                aria-pressed={email === user.email}
-                className="group flex min-h-[38px] w-full items-center gap-4 px-4 py-1.5 text-left text-body t-colors hover:bg-hover aria-pressed:bg-cobalt-bg last:rounded-b-md"
-              >
-                <span className="w-44 shrink-0 font-medium text-ink">{user.name}</span>
-                <span className="min-w-0 flex-1 text-ink-700">{user.title}</span>
-                <span className="shrink-0 text-caption text-ink-500">{roleLabel(user.role)}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {SHOW_DEMO_USERS ? (
+        <section aria-labelledby="demo-title" className="rounded-md border border-hairline-strong bg-surface">
+          <div className="px-4 pt-3.5 pb-3">
+            <h2 id="demo-title" className="text-title font-semibold text-ink">
+              Demonstration users
+            </h2>
+            <p className="mt-0.5 text-caption text-pretty text-ink-500">
+              Choose a person to fill in the form. Each role may decide different things: a breach needs a credit officer, the clock needs an administrator.
+            </p>
+          </div>
+          <ul className="border-t border-ink">
+            {DEMO_USERS.map((user) => (
+              <li key={user.email} className="border-b border-hairline last:border-b-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail(user.email);
+                    setPassword(DEMO_PASSWORD);
+                    setProblem(null);
+                  }}
+                  aria-pressed={email === user.email}
+                  className="group flex min-h-[38px] w-full items-center gap-4 px-4 py-1.5 text-left text-body t-colors hover:bg-hover aria-pressed:bg-cobalt-bg last:rounded-b-md"
+                >
+                  <span className="w-44 shrink-0 font-medium text-ink">{user.name}</span>
+                  <span className="min-w-0 flex-1 text-ink-700">{user.title}</span>
+                  <span className="shrink-0 text-caption text-ink-500">{roleLabel(user.role)}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </main>
   );
 }

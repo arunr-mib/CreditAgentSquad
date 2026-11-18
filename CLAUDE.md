@@ -41,7 +41,7 @@ cd frontend && pnpm install && pnpm dev   # workspace
 
 ## Design rules for the workspace
 
-One typeface (Inter); JetBrains Mono only for identifiers; figures use tabular numerals. Colour carries meaning only: red breach, amber needs attention, green verified pass or recorded resolution, iris written by an agent, cobalt interactive. Provenance is a glyph, not a colour. Banned: coloured side stripes on cards, pill-shaped status tags, more than two shadow steps, animation over 240 ms, any figure without its source. Say "Recommends resolve", never "Resolved"; never "AI thinks".
+One typeface (Inter); JetBrains Mono only for identifiers; figures use tabular numerals. Colour carries meaning only: red breach or critical item, amber needs attention or high item, green verified pass or recorded resolution, iris written by an agent, cobalt interactive. Provenance is a glyph, not a colour. Banned: coloured side stripes on cards, pill-shaped status tags, more than two shadow steps, animation over 240 ms, any figure without its source. Say "Recommends resolve", never "Resolved"; never "AI thinks".
 
 ## Working with the owner
 

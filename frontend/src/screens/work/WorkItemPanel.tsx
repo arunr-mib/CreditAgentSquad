@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { ArrowUpRight, Users } from 'lucide-react';
-import { useId, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
 import { useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkItem } from '@/api/hooks';
 import type { ApiRecommendation, WorkItemDetail } from '@/api/schema';
@@ -37,7 +37,19 @@ const text = (value: unknown): string | null => (typeof value === 'string' && va
 
 /* ── Evidence ─────────────────────────────────────────────────────────── */
 
-function EvidenceRow({ kind, label, detail, reference, children }: { kind: ProvenanceKind; label: string; detail?: string | null; reference?: string | null; children: ReactNode }) {
+function EvidenceRow({
+  kind,
+  label,
+  detail,
+  reference,
+  children,
+}: {
+  kind: ProvenanceKind;
+  label: string;
+  detail?: string | null;
+  reference?: string | null;
+  children: ReactNode;
+}) {
   return (
     <li className="flex min-h-8 items-center gap-2 border-b border-hairline py-1 text-body">
       <ProvenanceGlyph kind={kind} />
@@ -66,7 +78,9 @@ function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail;
   const subjectDocument = subject?.startsWith('document:') ? subject.slice('document:'.length) : null;
   const signalId = text(evidence.signal_id);
   const missing = Array.isArray(evidence.missing) ? (evidence.missing as Array<{ document_type?: string; due_date?: string }>) : [];
-  const lines = Array.isArray(evidence.lines) ? (evidence.lines as Array<{ line: string; computed: string | null; certificate: string | null; difference: string | null }>) : [];
+  const lines = Array.isArray(evidence.lines)
+    ? (evidence.lines as Array<{ line: string; computed: string | null; certificate: string | null; difference: string | null }>)
+    : [];
   const basis = evidence.basis && typeof evidence.basis === 'object' ? (evidence.basis as Record<string, unknown>) : null;
 
   const facts = useFactsById([valueId, reportedId]);
@@ -125,7 +139,11 @@ function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail;
         detail={effective ? `effective ${formatDate(effective)}` : filed ? docTypeLabel(filed.doc_type).toLowerCase() : null}
       >
         {filed ? (
-          <button type="button" className={openClass} onClick={() => source.open({ type: 'document', documentId: filed.id, page: 1, title: filed.title, borrowerCode: code })}>
+          <button
+            type="button"
+            className={openClass}
+            onClick={() => source.open({ type: 'document', documentId: filed.id, page: 1, title: filed.title, borrowerCode: code })}
+          >
             Open
           </button>
         ) : documents.isPending ? (
@@ -138,7 +156,12 @@ function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail;
   }
   for (const [index, entry] of missing.entries()) {
     rows.push(
-      <EvidenceRow key={`missing-${index}`} kind="system" label={docTypeLabel(entry.document_type)} detail={entry.due_date ? `was due ${formatDate(entry.due_date)}` : 'not received'}>
+      <EvidenceRow
+        key={`missing-${index}`}
+        kind="system"
+        label={docTypeLabel(entry.document_type)}
+        detail={entry.due_date ? `was due ${formatDate(entry.due_date)}` : 'not received'}
+      >
         <Link to="/calendar" className={openClass}>
           Calendar <ArrowUpRight size={12} aria-hidden />
         </Link>
@@ -187,10 +210,28 @@ function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail;
                   {humanize(line.line)}
                 </th>
                 <td className="py-1 text-right">
-                  <SourcedFigure value={line.computed} unit="usd" kind="calculated" label={`${humanize(line.line)}, recalculated`} source={{ type: 'calculation', id: calcId }} scale={1000} unitMark={false} align="column" />
+                  <SourcedFigure
+                    value={line.computed}
+                    unit="usd"
+                    kind="calculated"
+                    label={`${humanize(line.line)}, recalculated`}
+                    source={{ type: 'calculation', id: calcId }}
+                    scale={1000}
+                    unitMark={false}
+                    align="column"
+                  />
                 </td>
                 <td className="py-1 text-right">
-                  <SourcedFigure value={line.certificate} unit="usd" kind="extracted" label={`${humanize(line.line)}, on the certificate`} source={{ type: 'calculation', id: calcId }} scale={1000} unitMark={false} align="column" />
+                  <SourcedFigure
+                    value={line.certificate}
+                    unit="usd"
+                    kind="extracted"
+                    label={`${humanize(line.line)}, on the certificate`}
+                    source={{ type: 'calculation', id: calcId }}
+                    scale={1000}
+                    unitMark={false}
+                    align="column"
+                  />
                 </td>
               </tr>
             ))}
@@ -199,7 +240,9 @@ function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail;
       ) : null}
       {error ? <p className="mt-2 text-body text-amber">{error}</p> : null}
       {note ? <p className="mt-2 text-caption text-pretty text-ink-500">{note}</p> : null}
-      {rows.length === 0 && lines.length === 0 && !note && !draft ? <p className="border-t border-ink pt-2 text-body text-ink-500">No evidence is attached to this item.</p> : null}
+      {rows.length === 0 && lines.length === 0 && !note && !draft ? (
+        <p className="border-t border-ink pt-2 text-body text-ink-500">No evidence is attached to this item.</p>
+      ) : null}
       {draft ? (
         <AgentNote agent="Intake Agent" headline="Drafted a chaser, not sent" state="draft" className="mt-3">
           <p className="text-body whitespace-pre-line text-ink">{draft}</p>
@@ -227,17 +270,34 @@ const HEADLINE: Record<string, string> = {
   draft: 'Drafted for approval',
 };
 
-function Recommendation({ recommendation, item, headingLevel, code }: { recommendation: ApiRecommendation; item: WorkItemDetail; headingLevel: 'h3' | 'h4'; code: string | undefined }) {
+function Recommendation({
+  recommendation,
+  item,
+  headingLevel,
+  code,
+}: {
+  recommendation: ApiRecommendation;
+  item: WorkItemDetail;
+  headingLevel: 'h3' | 'h4';
+  code: string | undefined;
+}) {
   const kind = text(recommendation.recommendation) ?? text(recommendation.kind) ?? '';
   const body = text(recommendation.explanation) ?? text(recommendation.body) ?? text(recommendation.text) ?? '';
   const agent = text(recommendation.agent) ?? text(recommendation.agent_name) ?? 'Covenant Agent';
   const runId = text(recommendation.run_id) ?? item.agent_run_id;
   const source = useSource();
   const claims = Array.isArray(recommendation.claims) ? recommendation.claims : [];
-  const missing = Array.isArray(recommendation.missing_evidence) ? recommendation.missing_evidence.filter((entry): entry is string => typeof entry === 'string') : [];
+  const missing = Array.isArray(recommendation.missing_evidence)
+    ? recommendation.missing_evidence.filter((entry): entry is string => typeof entry === 'string')
+    : [];
   return (
     <>
-      <AgentNote agent={agent} headline={text(recommendation.headline) ?? HEADLINE[kind] ?? humanize(kind)} state="draft" runId={runId ? runId.slice(0, 8) : undefined}>
+      <AgentNote
+        agent={agent}
+        headline={text(recommendation.headline) ?? HEADLINE[kind] ?? humanize(kind)}
+        state="draft"
+        runId={runId ? runId.slice(0, 8) : undefined}
+      >
         {body ? <AgentBody text={body} /> : null}
         {claims.length > 0 ? (
           <div className="mt-3">
@@ -251,7 +311,16 @@ function Recommendation({ recommendation, item, headingLevel, code }: { recommen
                     <button
                       type="button"
                       className="link mt-0.5 text-caption font-medium"
-                      onClick={() => source.open({ type: 'document', documentId: claim.document_id as string, page: claim.page as number, quote: claim.quote, title: 'Cited document', borrowerCode: code })}
+                      onClick={() =>
+                        source.open({
+                          type: 'document',
+                          documentId: claim.document_id as string,
+                          page: claim.page as number,
+                          quote: claim.quote,
+                          title: 'Cited document',
+                          borrowerCode: code,
+                        })
+                      }
                     >
                       Open page {claim.page}
                     </button>
@@ -321,7 +390,11 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
       { decision, reason: reason.trim() },
       {
         onSuccess: () =>
-          toast({ tone: 'pass', title: `Recorded: ${decisionLabel(decision)}`, description: `${item.borrower_name ?? 'The item'} leaves the queue. The decision is in the ledger.` }),
+          toast({
+            tone: 'pass',
+            title: `Recorded: ${decisionLabel(decision)}`,
+            description: `${item.borrower_name ?? 'The item'} leaves the queue. The decision is in the ledger.`,
+          }),
       },
     );
   }
@@ -335,7 +408,11 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
             const id = `${groupId}-${option}`;
             const checked = decision === option;
             return (
-              <label key={option} htmlFor={id} className={cx('flex cursor-pointer items-start gap-2.5 rounded-sm px-2 py-1.5 t-colors', checked ? 'bg-cobalt-bg' : 'hover:bg-hover')}>
+              <label
+                key={option}
+                htmlFor={id}
+                className={cx('flex cursor-pointer items-start gap-2.5 rounded-sm px-2 py-1.5 t-colors', checked ? 'bg-cobalt-bg' : 'hover:bg-hover')}
+              >
                 <input
                   id={id}
                   type="radio"
@@ -383,7 +460,9 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
         <p>
           Needs permission to {permissionLabel(item.required_permission)}
           {holders.length > 0 ? ` (${holders.join(', ')})` : ''}.
-          {!permitted && user ? <span className="font-medium text-amber"> Your role, {roleLabel(user.role)}, does not have it; the server will refuse.</span> : null}
+          {!permitted && user ? (
+            <span className="font-medium text-amber"> Your role, {roleLabel(user.role)}, does not have it; the server will refuse.</span>
+          ) : null}
         </p>
         {item.requires_second_person ? (
           <p className="flex items-center gap-1.5">
@@ -393,6 +472,50 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
         ) : null}
       </div>
     </form>
+  );
+}
+
+/**
+ * The decision form, and a cue fixed to the bottom of the window while the form is out of sight,
+ * so a long question or a short screen never hides that a decision is asked for below.
+ */
+function DecisionSection({ item }: { item: WorkItemDetail }) {
+  const formRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    const element = formRef.current;
+    if (!element || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry?.isIntersecting ?? true), { threshold: 0.05 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  const choices = item.allowed_decisions.length;
+  return (
+    <>
+      <div ref={formRef} tabIndex={-1} className="outline-none">
+        <DecisionForm item={item} />
+      </div>
+      {inView ? null : (
+        <div
+          data-decision-cue
+          className="fixed right-3 bottom-3 left-3 z-30 flex items-center justify-between gap-3 rounded-md border border-hairline-strong bg-surface px-4 py-2 shadow-raised xl:right-6 xl:left-auto xl:w-[400px]"
+        >
+          <p className="text-caption text-ink-700">
+            <span className="font-medium text-ink">Your decision is below.</span> {choices} {choices === 1 ? 'choice' : 'choices'}, with a reason.
+          </p>
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => {
+              formRef.current?.scrollIntoView({ block: 'start' });
+              formRef.current?.focus({ preventScroll: true });
+            }}
+          >
+            Go to the decision
+          </Button>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -408,7 +531,9 @@ function RecordedDecision({ item }: { item: WorkItemDetail }) {
       <p className="mt-0.5 text-body text-ink-700">
         {who ? `${who.name}, ${who.title}` : 'A person'} · {formatTimestamp(item.decided_at)}
       </p>
-      {item.decision_reason ? <blockquote className="mt-2 rounded-sm border border-hairline bg-canvas px-3 py-2 text-body text-ink-700">{item.decision_reason}</blockquote> : null}
+      {item.decision_reason ? (
+        <blockquote className="mt-2 rounded-sm border border-hairline bg-canvas px-3 py-2 text-body text-ink-700">{item.decision_reason}</blockquote>
+      ) : null}
       <Link to="/governance" search={{ tab: 'ledger', entity: item.id }} className="link mt-2 inline-flex items-center gap-0.5 text-body font-medium">
         See it in the ledger <ArrowUpRight size={12} aria-hidden />
       </Link>
@@ -459,11 +584,17 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
           <StatusDot tone={SEVERITY_TONE[item.severity]}>
             <span className="font-medium">{SEVERITY_LABEL[item.severity]}</span>
           </StatusDot>
-          <span className={cx('tnum', due?.overdue ? 'font-medium text-amber' : 'text-ink-500')}>{due ? due.sentence : item.status === 'open' ? 'No due date set' : 'Decided'}</span>
+          <span className={cx('tnum', due?.overdue ? 'font-medium text-amber' : 'text-ink-500')}>
+            {due ? due.sentence : item.status === 'open' ? 'No due date set' : 'Decided'}
+          </span>
         </div>
         <div className="mt-2 text-caption text-ink-500">
           {borrower ? (
-            <Link to="/borrowers/$code" params={{ code: borrower.code }} className="font-medium text-ink-700 underline decoration-hairline-strong underline-offset-2 hover:text-cobalt-strong">
+            <Link
+              to="/borrowers/$code"
+              params={{ code: borrower.code }}
+              className="font-medium text-ink-700 underline decoration-hairline-strong underline-offset-2 hover:text-cobalt-strong"
+            >
               {item.borrower_name}
             </Link>
           ) : (
@@ -486,7 +617,9 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
 
       <div className="mt-3.5 space-y-4 px-4 pb-4">
         <Evidence item={item} code={borrower?.code} headingLevel={SubHeading} />
-        {item.item_type === 'spread.value_unverified' || item.item_type === 'spread.does_not_foot' ? <HeldFigures item={item} code={borrower?.code} headingLevel={SubHeading} /> : null}
+        {item.item_type === 'spread.value_unverified' || item.item_type === 'spread.does_not_foot' ? (
+          <HeldFigures item={item} code={borrower?.code} headingLevel={SubHeading} />
+        ) : null}
         {item.recommendation ? (
           <Recommendation recommendation={item.recommendation} item={item} headingLevel={SubHeading} code={borrower?.code} />
         ) : item.status === 'open' ? (
@@ -496,7 +629,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
         ) : null}
       </div>
 
-      {item.status === 'open' ? <DecisionForm key={item.id} item={item} /> : <RecordedDecision item={item} />}
+      {item.status === 'open' ? <DecisionSection key={item.id} item={item} /> : <RecordedDecision item={item} />}
     </Card>
   );
 }

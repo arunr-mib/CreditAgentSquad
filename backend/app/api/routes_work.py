@@ -16,6 +16,7 @@ from app.core.roles import Permission, SecondPersonRequired
 from app.domain import calendar, workflow
 from app.domain.agents import AgentRun, AgentSpecRecord, AgentStep
 from app.domain.credit import Borrower
+from app.domain.documents import Document
 from app.domain.monitoring import Cycle, Signal, WorkItem
 from app.domain.org import User
 from app.domain.terms import ReportingObligation
@@ -209,7 +210,13 @@ class ClockIn(BaseModel):
 
 @router.get("/clock")
 def get_clock(db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
-    return {"today": clock.today(db).isoformat()}
+    """The working date, and how fresh the book is against it: the newest document received on or
+    before that date, and the days between the two."""
+    today = clock.today(db)
+    latest = db.execute(select(func.max(Document.received_date)).where(Document.received_date <= today)).scalar()
+    return {"today": today.isoformat(),
+            "latest_document_received": latest.isoformat() if latest else None,
+            "days_since_latest_document": (today - latest).days if latest else None}
 
 
 @router.post("/clock")
