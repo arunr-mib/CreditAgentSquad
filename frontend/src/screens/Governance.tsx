@@ -1,13 +1,14 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useMemo, useState, type FormEvent } from 'react';
 import { errorMessage } from '@/api/client';
-import { useAgents, useLedger, useLedgerVerification, useSetClock, useUsers } from '@/api/hooks';
-import type { AgentSpec, LedgerEvent } from '@/api/schema';
+import { useAgents, useLedger, useLedgerVerification, usePolicyRegister, useRolesAndPermissions, useSetClock, useUsers } from '@/api/hooks';
+import type { AgentSpec, LedgerEvent, PolicyAgent, PolicyRegister, PolicyRule, PolicySignalRule, RolesAndPermissions } from '@/api/schema';
 import { useAuth } from '@/auth/context';
-import { Button, Card, DataTable, EmptyState, formatDate, Input, PageHeader, Select, StatusDot, tabClass, tabListClass, useToast, type DataColumn } from '@/design';
+import { AgentMark, Button, Card, DataTable, EmptyState, formatDate, Input, PageHeader, Select, StatusDot, tabClass, tabListClass, Tag, useToast, type DataColumn } from '@/design';
 import { actionLabel, decisionLabel, docTypeLabel, formatTimestamp, humanize, roleLabel, signalLabel, STAGE_STATUS_LABEL, stageLabel } from '@/domain/labels';
+import { cx } from '@/lib/cx';
 import { useAsOf } from '@/shell/AsOf';
-import { Load, Notice } from './parts';
+import { Load, Notice, SectionHead, SeverityDot } from './parts';
 
 const ACTION_FILTERS: Array<[string, string]> = [
   ['all', 'All actions'],
@@ -288,7 +289,295 @@ function Clock() {
   );
 }
 
+/* ── Roles and permissions ────────────────────────────────────────────── */
+
+const sentence = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+const people = (n: number) => `${n.toLocaleString('en-US')} ${n === 1 ? 'person' : 'people'}`;
+
+type Grant = 'yes' | 'second' | 'no';
+const GRANT_WORDS: Record<Grant, string> = { yes: 'May', second: 'May, but never on their own work', no: 'May not' };
+
+/** Not a check mark: a grant is a fact about the table, not something code verified. */
+function GrantMark({ grant }: { grant: Grant }) {
+  if (grant === 'no') return <span aria-hidden className="inline-block h-px w-2.5 bg-hairline-strong align-middle" />;
+  if (grant === 'second') {
+    return (
+      <span aria-hidden className="inline-flex size-[15px] items-center justify-center rounded-full border-[1.5px] border-ink align-middle">
+        <span className="size-[5px] rounded-full bg-ink" />
+      </span>
+    );
+  }
+  return <span aria-hidden className="inline-block size-[9px] rounded-full bg-ink align-middle" />;
+}
+
+function groupsOf(table: RolesAndPermissions) {
+  const groups: Array<{ name: string; permissions: RolesAndPermissions['permissions'] }> = [];
+  for (const permission of table.permissions) {
+    const last = groups[groups.length - 1];
+    if (last && last.name === permission.group) last.permissions.push(permission);
+    else groups.push({ name: permission.group, permissions: [permission] });
+  }
+  return groups;
+}
+
+/**
+ * The six roles against every permission, exactly as `/governance/roles` returns them. From 1024 px a matrix;
+ * below that, each permission with the roles that hold it, so nothing has to scroll sideways.
+ */
+export function RolesMatrix({ table, ownRole }: { table: RolesAndPermissions; ownRole?: string | null }) {
+  const groups = groupsOf(table);
+  const grant = (role: string, permission: RolesAndPermissions['permissions'][number]): Grant =>
+    (table.grants[role] ?? []).includes(permission.id) ? (permission.second_person ? 'second' : 'yes') : 'no';
+  const second = table.permissions.some((permission) => permission.second_person);
+  const tint = (role: string) => (role === ownRole ? 'bg-hover' : undefined);
+
+  return (
+    <div>
+      <Card className="overflow-hidden max-md:hidden">
+        <table data-roles-matrix className="w-full table-fixed border-separate border-spacing-0 text-body">
+          <caption className="sr-only">Roles and what each may do</caption>
+          <thead>
+            <tr>
+              <th scope="col" className="eyebrow w-[30%] border-b border-ink px-4 pb-2 text-left align-bottom">
+                Permission
+              </th>
+              {table.roles.map((role) => (
+                <th key={role.id} scope="col" data-role={role.id} className={cx('border-b border-ink px-2 pt-3 pb-2 text-center align-bottom font-regular', tint(role.id))}>
+                  {role.id === ownRole ? <span className="eyebrow block">Your role</span> : null}
+                  <span className="block text-caption font-semibold text-pretty text-ink">{role.label}</span>
+                  <span className="tnum block text-caption text-ink-500">{people(role.people)}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {groups.map((group) => (
+            <tbody key={group.name}>
+              <tr>
+                <th scope="rowgroup" colSpan={table.roles.length + 1} className="eyebrow border-b border-hairline bg-canvas px-4 pt-3 pb-1 text-left">
+                  {group.name}
+                </th>
+              </tr>
+              {group.permissions.map((permission) => (
+                <tr key={permission.id} data-permission={permission.id} className="group/row">
+                  <th scope="row" className="border-b border-hairline px-4 py-1.5 text-left font-regular text-ink group-hover/row:bg-hover">
+                    {sentence(permission.label)}
+                    {permission.second_person ? <span className="block text-caption text-ink-500">A second person is required</span> : null}
+                  </th>
+                  {table.roles.map((role) => {
+                    const value = grant(role.id, permission);
+                    return (
+                      <td
+                        key={role.id}
+                        data-role={role.id}
+                        data-grant={value}
+                        className={cx('border-b border-hairline px-2 py-1.5 text-center group-hover/row:bg-hover', tint(role.id))}
+                      >
+                        <GrantMark grant={value} />
+                        <span className="sr-only">{GRANT_WORDS[value]}</span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          ))}
+        </table>
+      </Card>
+
+      <div data-roles-list className="space-y-4 md:hidden">
+        {groups.map((group) => (
+          <section key={group.name} aria-label={group.name}>
+            <h3 className="eyebrow mb-1 px-1">{group.name}</h3>
+            <Card>
+              <ul>
+                {group.permissions.map((permission) => {
+                  const holders = table.roles.filter((role) => grant(role.id, permission) !== 'no');
+                  return (
+                    <li key={permission.id} className="border-b border-hairline px-4 py-2.5 last:border-b-0">
+                      <p className="flex items-center gap-2 text-body font-medium text-ink">
+                        <GrantMark grant={permission.second_person ? 'second' : 'yes'} />
+                        {sentence(permission.label)}
+                      </p>
+                      <p className="mt-0.5 pl-[23px] text-body text-pretty text-ink-700">
+                        {holders.length === 0
+                          ? 'No role holds this.'
+                          : holders.map((role, index) => (
+                              <span key={role.id}>
+                                {index > 0 ? ' · ' : ''}
+                                <span className={role.id === ownRole ? 'font-medium text-ink' : undefined}>
+                                  {role.label}
+                                  {role.id === ownRole ? ' (your role)' : ''}
+                                </span>
+                              </span>
+                            ))}
+                      </p>
+                      {permission.second_person ? <p className="mt-0.5 pl-[23px] text-caption text-ink-500">A second person is required</p> : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+          </section>
+        ))}
+      </div>
+
+      <ul aria-label="Key" className="mt-3 flex flex-wrap gap-x-6 gap-y-1.5 px-1 text-caption text-ink-700">
+        <li className="inline-flex items-center gap-2">
+          <GrantMark grant="yes" /> {GRANT_WORDS.yes}
+        </li>
+        {second ? (
+          <li className="inline-flex items-center gap-2">
+            <GrantMark grant="second" /> {GRANT_WORDS.second}
+          </li>
+        ) : null}
+        <li className="inline-flex items-center gap-2 max-md:hidden">
+          <GrantMark grant="no" /> {GRANT_WORDS.no}
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+function Roles() {
+  const table = useRolesAndPermissions();
+  const { user } = useAuth();
+  return (
+    <Load query={table} what="The roles and permissions" rows={12}>
+      {(data) => (
+        <div className="space-y-6">
+          <section aria-labelledby="roles-heading">
+            <SectionHead
+              id="roles-heading"
+              title="Who may do what"
+              note={`${data.roles.length} roles, ${data.permissions.length} permissions, read from the permission table every check goes through`}
+            />
+            <RolesMatrix table={data} ownRole={user?.role} />
+          </section>
+
+          <section aria-labelledby="second-person-heading">
+            <SectionHead id="second-person-heading" title="A person cannot approve their own work" />
+            <Card>
+              <p className="flex items-start gap-2.5 px-4 pt-3.5 pb-3 text-prose text-pretty text-ink">
+                <span className="mt-1 shrink-0">
+                  <GrantMark grant="second" />
+                </span>
+                <span className="max-w-[78ch]">{data.second_person.rule}</span>
+              </p>
+              <ul className="border-t border-hairline">
+                {data.second_person.applies_to.map((entry) => (
+                  <li key={entry.permission} className="grid gap-x-6 gap-y-0.5 border-b border-hairline px-4 py-2.5 text-body last:border-b-0 md:grid-cols-[200px_minmax(0,1fr)_auto]">
+                    <span className="font-medium text-ink">{entry.what}</span>
+                    <span className="text-pretty text-ink-700">{entry.detail}</span>
+                    <span className="ident text-caption text-ink-500 md:text-right">{entry.source}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </section>
+        </div>
+      )}
+    </Load>
+  );
+}
+
+/* ── Policy rules ─────────────────────────────────────────────────────── */
+
+function Setting({ rule }: { rule: PolicyRule }) {
+  if (rule.state === 'attention') return <Tag tone="attention">{rule.setting}</Tag>;
+  if (rule.state === 'verified') {
+    return (
+      <StatusDot tone="pass" emphasis className="whitespace-normal!">
+        {rule.setting}
+      </StatusDot>
+    );
+  }
+  return <span className={rule.kind === 'ident' ? 'ident text-ink' : 'tnum font-medium text-ink'}>{rule.setting}</span>;
+}
+
+const RULE_COLUMNS: Array<DataColumn<PolicyRule>> = [
+  { id: 'rule', header: 'Rule', rowHeader: true, wrap: true, width: '24%', cell: (rule) => <span className="font-medium text-ink">{rule.rule}</span> },
+  { id: 'setting', header: 'In force', wrap: true, width: '18%', cell: (rule) => <Setting rule={rule} /> },
+  { id: 'effect', header: 'What code does', wrap: true, cell: (rule) => <span className="text-ink-700">{rule.effect}</span> },
+  { id: 'source', header: 'Enforced in', wrap: true, width: '236px', cell: (rule) => <span className="ident text-caption text-ink-500 [overflow-wrap:anywhere]">{rule.source}</span> },
+];
+
+const SIGNAL_COLUMNS: Array<DataColumn<PolicySignalRule>> = [
+  { id: 'name', header: 'Rule', rowHeader: true, wrap: true, width: '24%', cell: (rule) => <span className="font-medium text-ink">{rule.name}</span> },
+  { id: 'severity', header: 'Severity', width: '18%', cell: (rule) => <SeverityDot severity={rule.severity} /> },
+  { id: 'trigger', header: 'Fires when', wrap: true, cell: (rule) => <span className="tnum text-ink-700">{rule.trigger}</span> },
+];
+
+const AGENT_COLUMNS: Array<DataColumn<PolicyAgent>> = [
+  {
+    id: 'name',
+    header: 'Agent',
+    rowHeader: true,
+    cell: (agent) => (
+      <span className="inline-flex items-center gap-1.5 font-medium text-iris">
+        <AgentMark />
+        {humanize(agent.name)}
+      </span>
+    ),
+  },
+  { id: 'version', header: 'Version', cell: (agent) => <span className="ident">{agent.version}</span> },
+  { id: 'purpose', header: 'What it is for', wrap: true, cell: (agent) => <span className="text-ink-700">{agent.purpose}</span> },
+  { id: 'model', header: 'Model', cell: (agent) => <span className="ident">{agent.model}</span> },
+  { id: 'effort', header: 'Effort', cell: (agent) => <span className="text-ink-700">{humanize(agent.effort)}</span> },
+  { id: 'steps', header: 'Step cap', align: 'right', cell: (agent) => <span className="tnum">{agent.max_steps}</span> },
+  { id: 'tools', header: 'Tools', align: 'right', cell: (agent) => <span className="tnum">{agent.tools.length}</span> },
+  { id: 'prompt', header: 'Prompt hash', cell: (agent) => <span className="ident text-caption text-ink-500">{agent.prompt_sha256.slice(0, 12)}</span> },
+];
+
+/** The rules code applies without a model, as scannable tables. Every setting is the API's; nothing is typed here. */
+export function PolicyTables({ register }: { register: PolicyRegister }) {
+  return (
+    <div className="space-y-7">
+      {register.sections.map((section) => (
+        <section key={section.id} aria-labelledby={`policy-${section.id}`} data-policy-section={section.id}>
+          <SectionHead id={`policy-${section.id}`} title={section.title} note={section.summary} />
+          <DataTable caption={section.title} data={section.rules} columns={RULE_COLUMNS} getRowId={(rule) => rule.id} narrow="stack" />
+        </section>
+      ))}
+      <section aria-labelledby="policy-signals" data-policy-section="signals">
+        <SectionHead
+          id="policy-signals"
+          title="Early warning rules"
+          note={
+            <>
+              Rule table <span className="ident">{register.signal_rules.version}</span>. A rule never fires on a missing value.
+            </>
+          }
+        />
+        <DataTable caption="Early warning rules" data={register.signal_rules.rules} columns={SIGNAL_COLUMNS} getRowId={(rule) => rule.id} narrow="stack" />
+      </section>
+      <section aria-labelledby="policy-agents" data-policy-section="agents">
+        <SectionHead id="policy-agents" title="Agent versions in this build" note="What would run if an agent were asked now. The inventory tab lists the versions a run has registered." />
+        <DataTable caption="Agent versions in this build" data={register.agents} columns={AGENT_COLUMNS} getRowId={(agent) => `${agent.name}@${agent.version}`} narrow="stack" />
+      </section>
+    </div>
+  );
+}
+
+function Policy() {
+  const register = usePolicyRegister();
+  return (
+    <Load query={register} what="The policy rules" rows={12}>
+      {(data) => (
+        <div className="space-y-5">
+          <p className="max-w-[86ch] text-prose text-pretty text-ink-700">
+            These rules are applied by code, not by a model. Each setting is read from the constant or setting the enforcing code uses, and the last column
+            names the module to read to check it.
+          </p>
+          <PolicyTables register={data} />
+        </div>
+      )}
+    </Load>
+  );
+}
+
 const TABS = [
+  { id: 'roles', label: 'Roles and permissions' },
+  { id: 'policy', label: 'Policy rules' },
   { id: 'ledger', label: 'Ledger' },
   { id: 'agents', label: 'Agent inventory' },
   { id: 'clock', label: 'Clock' },
@@ -297,11 +586,15 @@ const TABS = [
 export function Governance() {
   const search = useSearch({ from: '/governance' });
   const navigate = useNavigate({ from: '/governance' });
-  const tab = TABS.some((entry) => entry.id === search.tab) ? search.tab : 'ledger';
+  const tab = TABS.find((entry) => entry.id === search.tab)?.id ?? 'roles';
   return (
     <div data-ready className="space-y-5">
       <div>
-        <PageHeader eyebrow="Bank of Stoic · Commercial lending" title="Governance" meta={<span>What was done, by whom and when; which agent versions exist; and the date the demonstration runs on</span>} />
+        <PageHeader
+          eyebrow="Bank of Stoic · Commercial lending"
+          title="Governance"
+          meta={<span>Who may do what; the rules code applies; what was done, by whom and when; which agent versions exist; and the date the demonstration runs on</span>}
+        />
         <div role="tablist" aria-label="Governance sections" className={`${tabListClass} mt-4 flex-wrap gap-y-0`}>
           {TABS.map((entry) => (
             <button
@@ -321,7 +614,7 @@ export function Governance() {
         </div>
       </div>
       <div role="tabpanel" id="governance-panel" aria-labelledby={`governance-tab-${tab}`}>
-        {tab === 'ledger' ? <Ledger /> : tab === 'agents' ? <AgentInventory /> : <Clock />}
+        {tab === 'roles' ? <Roles /> : tab === 'policy' ? <Policy /> : tab === 'ledger' ? <Ledger /> : tab === 'agents' ? <AgentInventory /> : <Clock />}
       </div>
     </div>
   );

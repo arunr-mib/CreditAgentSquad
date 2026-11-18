@@ -29,9 +29,11 @@ import type {
   LoanTerms,
   Meeting,
   PageFigures,
+  PolicyRegister,
   PortfolioSummary,
   ReviewSheetDetail,
   ReviewSheetRow,
+  RolesAndPermissions,
   SignalRow,
   Spread,
   StoredFact,
@@ -273,6 +275,11 @@ export const useLedger = (filter: LedgerFilter) =>
   useQuery({ queryKey: ['ledger', filter], queryFn: () => get<LedgerEvent[]>('/ledger', filter as Query), placeholderData: keepPreviousData });
 export const useLedgerVerification = (run: boolean) =>
   useQuery({ queryKey: ['ledger-verify'], queryFn: () => get<LedgerVerification>('/ledger/verify'), enabled: run, staleTime: 0, gcTime: 0 });
+/** The permission table and the policy register change only with a deployment, so they are not read again on every visit. */
+export const useRolesAndPermissions = () =>
+  useQuery({ queryKey: ['governance-roles'], queryFn: () => get<RolesAndPermissions>('/governance/roles'), staleTime: 10 * 60_000 });
+export const usePolicyRegister = () =>
+  useQuery({ queryKey: ['governance-policy'], queryFn: () => get<PolicyRegister>('/governance/policy'), staleTime: 60_000 });
 export const useClock = (signedIn: boolean) =>
   useQuery({
     queryKey: ['clock'],

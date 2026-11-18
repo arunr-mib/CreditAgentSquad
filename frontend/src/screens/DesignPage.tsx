@@ -1,13 +1,15 @@
-import { Bell, Download, FileSearch, Filter, MoreHorizontal, Search } from 'lucide-react';
+import { Bell, Download, FileSearch, Filter, MoreHorizontal, Search, ShieldCheck, X } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import type { CovenantTest, Fact } from '@/api/types';
 import {
   AgentMark,
   AgentNote,
+  barFill,
   Button,
   Card,
   CardBody,
   CardHeader,
+  ChoiceCards,
   CommandPalette,
   DataTable,
   Dialog,
@@ -20,6 +22,7 @@ import {
   Input,
   Kbd,
   MetaItem,
+  Meter,
   PageHeader,
   Popover,
   provenance,
@@ -28,16 +31,21 @@ import {
   Select,
   Skeleton,
   SkeletonRows,
+  StackedBar,
   StatusDot,
   Stepper,
   Tabs,
+  Tag,
   Tooltip,
   useToast,
   WorkItemCard,
+  type BarSegment,
   type DataColumn,
 } from '@/design';
+import { decisionHint, decisionLabel } from '@/domain/labels';
 import { covenants, cycle, facts, fccrRecommendation, fccrWorkItem, named } from '@/fixtures/brightwater';
 import { workItemTypeLabel } from '@/fixtures/workItems';
+import { cx } from '@/lib/cx';
 import { Mark } from '@/shell/Wordmark';
 
 function Section({ id, title, lead, children }: { id: string; title: string; lead?: string; children: ReactNode }) {
@@ -83,8 +91,20 @@ const COLOUR_ROLES: Array<{ role: string; meaning: string; tokens: Array<{ name:
     ],
   },
   {
+    role: 'Ink ramp',
+    meaning: 'Neutral quantity and progress in bars, light to dark. Never a status.',
+    tokens: [
+      { name: '--ramp-1', use: 'Lightest' },
+      { name: '--ramp-2', use: '' },
+      { name: '--ramp-3', use: '' },
+      { name: '--ramp-4', use: 'Neutral meter' },
+      { name: '--ramp-5', use: '' },
+      { name: '--ramp-6', use: 'Darkest' },
+    ],
+  },
+  {
     role: 'Cobalt',
-    meaning: 'Interactive: links, the primary action, focus, the current selection.',
+    meaning: 'Interactive: links, the primary action, focus, a chosen option, and the bar on the selected row.',
     tokens: [
       { name: '--cobalt', use: 'Text, fill' },
       { name: '--cobalt-strong', use: 'Hover' },
@@ -94,7 +114,7 @@ const COLOUR_ROLES: Array<{ role: string; meaning: string; tokens: Array<{ name:
   },
   {
     role: 'Iris',
-    meaning: 'Written by an agent.',
+    meaning: 'Written by an agent, and nothing else. An approval a person must give is never iris.',
     tokens: [
       { name: '--iris', use: 'Text' },
       { name: '--iris-mark', use: 'Agent mark' },
@@ -104,7 +124,7 @@ const COLOUR_ROLES: Array<{ role: string; meaning: string; tokens: Array<{ name:
   },
   {
     role: 'Red',
-    meaning: 'Covenant breach. Nothing else is red.',
+    meaning: 'A covenant breach or a critical item.',
     tokens: [
       { name: '--red', use: 'Text' },
       { name: '--red-mark', use: 'Dot' },
@@ -114,7 +134,7 @@ const COLOUR_ROLES: Array<{ role: string; meaning: string; tokens: Array<{ name:
   },
   {
     role: 'Amber',
-    meaning: 'Needs attention from a person.',
+    meaning: 'Needs attention: a high item, something overdue, a variance.',
     tokens: [
       { name: '--amber', use: 'Text' },
       { name: '--amber-mark', use: 'Dot' },
@@ -124,7 +144,7 @@ const COLOUR_ROLES: Array<{ role: string; meaning: string; tokens: Array<{ name:
   },
   {
     role: 'Green',
-    meaning: 'Verified pass or recorded resolution. Never a screen state.',
+    meaning: 'A pass that code verified, or a recorded resolution. Never a screen state.',
     tokens: [
       { name: '--green', use: 'Text' },
       { name: '--green-mark', use: 'Dot' },
@@ -145,8 +165,130 @@ const TYPE_SCALE: Array<{ token: string; className: string; spec: string; sample
   { token: 'micro', className: 'eyebrow', spec: '11 / 16 · 600 · caps', sample: 'Cycles in progress' },
 ];
 
+/* Specimen counts for the bars. In the product every count comes from the API; the text beside a bar is that same count. */
+const OUTCOME_BAR: BarSegment[] = [
+  { id: 'breach', label: 'Breach', count: 2, fill: 'breach' },
+  { id: 'variance', label: 'Compliant, variance', count: 3, fill: 'attention' },
+  { id: 'compliant', label: 'Compliant', count: 14, fill: 'pass' },
+];
+const STAGE_BAR: BarSegment[] = [
+  { id: 'spreading', label: 'Spreading', count: 3, fill: 2 },
+  { id: 'covenant_testing', label: 'Covenant testing', count: 5, fill: 3 },
+  { id: 'review_prep', label: 'Review preparation', count: 4, fill: 4 },
+  { id: 'in_review', label: 'In review', count: 2, fill: 5 },
+  { id: 'closed', label: 'Closed', count: 6, fill: 6 },
+];
+
+/** The words and counts beside a bar. A row is a button when the bar filters something. */
+function BarLegend({ segments, selectedId, onSelect }: { segments: BarSegment[]; selectedId?: string | null; onSelect?: (id: string) => void }) {
+  return (
+    <ul className="mt-2">
+      {segments.map((segment) => {
+        const row = (
+          <>
+            <span className="inline-flex min-w-0 items-center gap-2">
+              <span aria-hidden className="size-2 shrink-0 rounded-xs" style={{ background: barFill(segment.fill) }} />
+              {segment.label}
+            </span>
+            <span className="tnum text-ink">{segment.count}</span>
+          </>
+        );
+        const base = 'flex min-h-[26px] w-full items-center justify-between gap-3 border-b border-hairline text-left text-body text-ink-700';
+        return (
+          <li key={segment.id} className="last:[&>*]:border-b-0">
+            {onSelect ? (
+              <button type="button" aria-pressed={selectedId === segment.id} onClick={() => onSelect(segment.id)} className={cx(base, 't-colors hover:text-cobalt-strong aria-pressed:font-medium aria-pressed:text-cobalt-strong')}>
+                {row}
+              </button>
+            ) : (
+              <span className={base}>{row}</span>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+const COLOUR_RULES: Array<{ token: string; name: string; meaning: string; specimen: ReactNode }> = [
+  {
+    token: '--red-mark',
+    name: 'Red',
+    meaning: 'A covenant breach or a critical item.',
+    specimen: (
+      <>
+        <Tag tone="breach">Breach</Tag>
+        <Tag tone="breach">Critical</Tag>
+      </>
+    ),
+  },
+  {
+    token: '--amber-mark',
+    name: 'Amber',
+    meaning: 'Needs attention: a high item, something overdue, a variance.',
+    specimen: (
+      <>
+        <Tag tone="attention">Overdue</Tag>
+        <StatusDot tone="attention">Compliant, variance</StatusDot>
+      </>
+    ),
+  },
+  {
+    token: '--green-mark',
+    name: 'Green',
+    meaning: 'A pass that code verified, or a recorded resolution. Never “saved” or “loaded”.',
+    specimen: <StatusDot tone="pass">Compliant</StatusDot>,
+  },
+  {
+    token: '--iris-mark',
+    name: 'Iris',
+    meaning: 'Written by an agent. An approval a person must give is never iris.',
+    specimen: (
+      <span className="inline-flex items-center gap-1.5 text-body">
+        <AgentMark /> Recommends escalate
+      </span>
+    ),
+  },
+  {
+    token: '--cobalt',
+    name: 'Cobalt',
+    meaning: 'It can be acted on: a link, the primary action, focus. Also the bar on the selected row.',
+    specimen: (
+      <span className="link text-body" role="presentation">
+        Open the calculation
+      </span>
+    ),
+  },
+  {
+    token: '--ramp-4',
+    name: 'Ink ramp',
+    meaning: 'Neutral quantity and progress: how much, not how good.',
+    specimen: <StackedBar label="Cycles by stage, specimen" segments={STAGE_BAR} className="w-40" />,
+  },
+];
+
+const SHORTCUTS: Array<{ keys: string[]; does: string }> = [
+  { keys: ['Ctrl K'], does: 'Search borrowers and commands' },
+  { keys: ['Ctrl J'], does: 'Ask the Copilot' },
+  { keys: ['['], does: 'Collapse or expand the navigation rail' },
+  { keys: ['J', 'K'], does: 'Move down and up a queue or a timeline; the arrow keys do the same' },
+  { keys: ['Enter'], does: 'Open the selected row in the drawer' },
+  { keys: ['Esc'], does: 'Close the drawer' },
+];
+
+const SPECIMEN_ROWS = [
+  { id: 'a', what: 'Fixed charge coverage below the minimum', due: 'Due today' },
+  { id: 'b', what: 'Certificate differs from the calculation', due: 'Due in 3 days' },
+  { id: 'c', what: 'Borrowing base certificate not received', due: 'Due in 6 days' },
+];
+const SPECIMEN_DECISIONS = ['reservation_of_rights', 'waiver_requested', 'not_a_breach'];
+
 export function DesignPage() {
   const toast = useToast();
+  const [barStage, setBarStage] = useState<string | null>(null);
+  const [choice, setChoice] = useState(SPECIMEN_DECISIONS[0]!);
+  const [barRow, setBarRow] = useState('a');
+  const [drawerTab, setDrawerTab] = useState('item');
   const [segment, setSegment] = useState('all');
   const [stage, setStage] = useState('covenant_testing');
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -215,7 +357,7 @@ export function DesignPage() {
         <Section
           id="identity"
           title="Identity"
-          lead="A research terminal’s calm, not a dashboard’s noise. Quiet warm surfaces, ink type, hairline rules, and five colours that each mean one thing. Agents appear as a colleague’s annotations; people decide."
+          lead="A working cockpit on a warm stone base, with a bank’s authority. Quiet surfaces, ink type, hairline rules, and five colours that each mean one thing: every colour, tag and bar on a screen says something financial. Agents appear as a colleague’s annotations; people decide."
         >
           <Story name="Mark and wordmark" rule="Three units in formation. The wordmark is Inter semibold; there is no second typeface.">
             <div className="flex flex-wrap items-center gap-10">
@@ -242,9 +384,23 @@ export function DesignPage() {
           title="Colour"
           lead="Colour carries meaning only. If a colour appears and none of these meanings applies, it is a defect. Text, ground and border variants pass WCAG AA on every surface they are used on; a test enforces it."
         >
+          <Story name="The rules" rule="Six meanings and no others. Each is shown here the way it appears in the product.">
+            <ul className="border-t border-ink">
+              {COLOUR_RULES.map((entry) => (
+                <li key={entry.name} className="grid items-center gap-x-6 gap-y-1.5 border-b border-hairline py-2 text-body last:border-b-0 sm:grid-cols-[110px_minmax(0,1fr)_minmax(0,240px)]">
+                  <span className="inline-flex items-center gap-2 font-semibold text-ink">
+                    <span aria-hidden className="size-3 rounded-xs" style={{ background: `var(${entry.token})` }} />
+                    {entry.name}
+                  </span>
+                  <span className="text-pretty text-ink-700">{entry.meaning}</span>
+                  <span className="flex flex-wrap items-center gap-2">{entry.specimen}</span>
+                </li>
+              ))}
+            </ul>
+          </Story>
           {COLOUR_ROLES.map((group) => (
             <Story key={group.role} name={group.role} rule={group.meaning}>
-              <ul className="grid grid-cols-3 gap-x-6 gap-y-3 md:grid-cols-5">
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 md:grid-cols-5">
                 {group.tokens.map((token) => (
                   <li key={token.name} className="min-w-0">
                     <span
@@ -252,7 +408,7 @@ export function DesignPage() {
                       className={`block h-9 rounded-sm ${token.border ? 'border border-hairline-strong' : ''}`}
                       style={{ background: `var(${token.name})` }}
                     />
-                    <span className="ident mt-1.5 block truncate text-caption text-ink">{token.name}</span>
+                    <span className="ident mt-1.5 block text-caption text-ink [overflow-wrap:anywhere]">{token.name}</span>
                     <span className="block text-caption text-ink-500">{token.use}</span>
                   </li>
                 ))}
@@ -269,10 +425,10 @@ export function DesignPage() {
           <Story name="Scale" rule="Hierarchy comes from size and weight, not colour.">
             <ul>
               {TYPE_SCALE.map((row) => (
-                <li key={row.token} className="grid grid-cols-[88px_150px_minmax(0,1fr)] items-baseline gap-4 border-b border-hairline py-2 last:border-b-0">
+                <li key={row.token} className="grid grid-cols-[72px_minmax(0,1fr)] items-baseline gap-x-4 gap-y-1 border-b border-hairline py-2 last:border-b-0 sm:grid-cols-[88px_150px_minmax(0,1fr)]">
                   <span className="ident text-caption text-ink">{row.token}</span>
                   <span className="tnum text-caption text-ink-500">{row.spec}</span>
-                  <span className={`truncate ${row.className}`}>{row.sample}</span>
+                  <span className={`text-pretty max-sm:col-span-2 ${row.className}`}>{row.sample}</span>
                 </li>
               ))}
             </ul>
@@ -307,7 +463,7 @@ export function DesignPage() {
         <Section
           id="foundations"
           title="Space, shape, depth, motion"
-          lead="A 4 px grid. Small radii and no pills. Two shadow steps, both for things that float. Nothing moves for longer than 240 ms."
+          lead="A 4 px grid. Small radii; the one capsule shape is the status tag, kept for severity and actionable status. Two shadow steps, both for things that float. Nothing moves for longer than 240 ms."
         >
           <Story name="Spacing" rule="4 px scale: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64.">
             <div className="flex flex-wrap items-end gap-3">
@@ -319,7 +475,7 @@ export function DesignPage() {
               ))}
             </div>
           </Story>
-          <Story name="Radius and shadow" rule="2 px marks, 4 px controls, 6 px cards. Cards sit flat; only overlays cast a shadow.">
+          <Story name="Radius and shadow" rule="2 px marks, 4 px controls, 6 px cards. Fully round is for status dots, stage markers and the capsule tag. Cards sit flat; only overlays cast a shadow.">
             <div className="flex flex-wrap items-center gap-6 text-caption text-ink-700">
               <span className="flex h-14 w-24 items-center justify-center rounded-xs border border-hairline-strong bg-surface">2 px</span>
               <span className="flex h-14 w-24 items-center justify-center rounded-sm border border-hairline-strong bg-surface">4 px</span>
@@ -347,11 +503,11 @@ export function DesignPage() {
         <Section
           id="meaning"
           title="Status, figures and agents"
-          lead="The three devices that make the product legible: a dot and a word for status, a glyph and a source for every figure, and an iris mark for anything an agent wrote."
+          lead="The devices that make the product legible: a dot and a word for a state, a capsule tag where a state needs someone to act, a glyph and a source for every figure, and an iris mark for anything an agent wrote."
         >
           <Story
             name="StatusDot"
-            rule="A small dot plus a word. Never a pill, never colour alone. Emphasis colours the word for outcomes that must not be missed."
+            rule="A small dot plus a word, for a state that asks nothing of the reader. Never colour alone. Emphasis colours the word for outcomes that must not be missed."
           >
             <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-body">
               <StatusDot tone="breach" emphasis>
@@ -425,6 +581,198 @@ export function DesignPage() {
             <span className="inline-flex items-center gap-1.5 text-body">
               <AgentMark /> Recommends escalate
             </span>
+          </Story>
+        </Section>
+
+        <Section
+          id="cockpit"
+          title="Tags, bars and the drawer"
+          lead="The cockpit’s own parts. A tag says something needs a person; a bar shows how much; the selected row carries one cobalt bar; the drawer holds the decision while the queue stays in use."
+        >
+          <Story name="Tag" rule="A capsule, in six tones. Breach, attention, pass and agent carry the colour meanings; gate is an approval the reader cannot give (dark, with a shield, never iris); neutral is a status with no severity.">
+            <ul className="max-w-[640px] border-t border-ink text-body">
+              {(
+                [
+                  ['breach', <Tag key="t" tone="breach">Breach</Tag>, 'A covenant breach or a critical item'],
+                  ['attention', <Tag key="t" tone="attention">Overdue</Tag>, 'Needs attention: high, overdue, failed'],
+                  ['pass', <Tag key="t" tone="pass">Waiver recorded</Tag>, 'A resolution on record, where it must be seen'],
+                  ['agent', <Tag key="t" tone="agent">Recommends escalate</Tag>, 'An agent’s recommendation awaiting a person'],
+                  ['gate', <Tag key="t" tone="gate" icon={<ShieldCheck size={11} />}>Credit officer required</Tag>, 'An approval outside the reader’s authority'],
+                  ['neutral', <Tag key="t" tone="neutral">On hold</Tag>, 'An actionable status with no severity'],
+                ] as const
+              ).map(([tone, tag, meaning]) => (
+                <li key={tone} className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-x-3 gap-y-1 border-b border-hairline py-1.5 last:border-b-0 sm:grid-cols-[72px_200px_minmax(0,1fr)]">
+                  <span className="ident text-caption text-ink-500">{tone}</span>
+                  <span>{tag}</span>
+                  <span className="text-pretty text-ink-700 max-sm:col-span-2">{meaning}</span>
+                </li>
+              ))}
+            </ul>
+          </Story>
+          <Story name="When to use a tag" rule="Severity and actionable status only. Dates, identifiers, periods and routine roles are plain text or small mono. At most one coloured tag in a cell and two in a row.">
+            <div className="grid gap-5 lg:grid-cols-2">
+              <figure>
+                <figcaption className="eyebrow mb-1.5">Do</figcaption>
+                <Card className="px-4 py-3">
+                  <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body">
+                    <Tag tone="breach">Critical</Tag>
+                    <span className="font-medium text-ink">{fccrWorkItem.borrowerName}</span>
+                  </p>
+                  <p className="mt-1 text-body text-ink-700">
+                    Q3 2026 · Due 20 Nov 2026 · Credit officer · <span className="ident whitespace-nowrap">{fccrWorkItem.id}</span>
+                  </p>
+                </Card>
+                <p className="mt-1.5 text-caption text-pretty text-ink-500">One tag, for the one thing that needs a person. The rest reads as a sentence.</p>
+              </figure>
+              <figure>
+                <figcaption className="eyebrow mb-1.5 inline-flex items-center gap-1">
+                  <X size={12} strokeWidth={2.5} aria-hidden /> Do not
+                </figcaption>
+                <Card className="px-4 py-3">
+                  <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body">
+                    <Tag tone="breach">Critical</Tag>
+                    <span className="font-medium text-ink">{fccrWorkItem.borrowerName}</span>
+                  </p>
+                  <p className="mt-1 flex flex-wrap gap-1.5">
+                    <Tag tone="neutral">Q3 2026</Tag>
+                    <Tag tone="attention">Due 20 Nov 2026</Tag>
+                    <Tag tone="agent">Credit officer</Tag>
+                    <Tag tone="neutral">{fccrWorkItem.id}</Tag>
+                  </p>
+                </Card>
+                <p className="mt-1.5 text-caption text-pretty text-ink-500">
+                  A period, a date that is not overdue, a role and an identifier are not statuses. Tagged, they bury the one that is, and iris on a role claims an agent wrote it.
+                </p>
+              </figure>
+            </div>
+          </Story>
+          <Story name="StackedBar" rule="A proportional bar. Status fills where the parts are outcomes; the ink ramp where they are only quantities. The bar gives widths; every number is text beside it, counted by the API.">
+            <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+              <div>
+                <p className="eyebrow mb-2">Status fills: covenant outcomes</p>
+                <StackedBar label="Covenant outcomes, specimen" segments={OUTCOME_BAR} />
+                <BarLegend segments={OUTCOME_BAR} />
+              </div>
+              <div>
+                <p className="eyebrow mb-2">Ink ramp: cycles by stage, each part a filter</p>
+                <StackedBar label="Cycles by stage, specimen" segments={STAGE_BAR} selectedId={barStage} onSelect={(id) => setBarStage(id === barStage ? null : id)} />
+                <BarLegend segments={STAGE_BAR} selectedId={barStage} onSelect={(id) => setBarStage(id === barStage ? null : id)} />
+              </div>
+            </div>
+          </Story>
+          <Story name="Meter" rule="One quantity against its limit, as a short track. It plots a position only: the figure is always beside it, as a stored fact with its source.">
+            <dl className="grid max-w-[560px] grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-5 text-body">
+              {(
+                [
+                  ['Headroom against the minimum', <Figure key="f" fact={named.fccrHeadroom} />, <Meter key="m" position={0.06} tone="breach" label="Fixed charge coverage headroom: below the minimum" />],
+                  ['Close to the threshold', null, <Meter key="m" position={0.3} tone="attention" label="Specimen: close to the threshold" />],
+                  ['Clear of the threshold', null, <Meter key="m" position={0.78} tone="pass" label="Specimen: clear of the threshold" />],
+                  ['A quantity with no threshold', null, <Meter key="m" position={0.5} tone="neutral" label="Specimen: a neutral quantity" />],
+                ] as const
+              ).map(([label, figure, meter]) => (
+                <div key={label} className="col-span-3 grid grid-cols-subgrid items-center border-b border-hairline py-1.5 last:border-b-0">
+                  <dt className="text-ink-700">{label}</dt>
+                  <dd className="text-right">{figure}</dd>
+                  <dd>{meter}</dd>
+                </div>
+              ))}
+            </dl>
+          </Story>
+          <Story name="ChoiceCards" rule="A single choice set out as cards that can be pressed anywhere. Used for the decision on an exception; the chosen card is cobalt because it is the reader’s own selection.">
+            <div className="max-w-[440px]">
+              <ChoiceCards
+                label="Decision, specimen"
+                value={choice}
+                onValueChange={setChoice}
+                choices={SPECIMEN_DECISIONS.map((id) => ({ value: id, label: decisionLabel(id), hint: decisionHint(id) }))}
+              />
+            </div>
+          </Story>
+          <Story name="Selected row" rule="A 3 px cobalt bar on the row’s left edge and a soft warm tint. The one coloured edge the system allows; DataTable draws it on the selected row. Cards and notices never carry one.">
+            <Card className="max-w-[560px] overflow-hidden">
+              <ul>
+                {SPECIMEN_ROWS.map((row) => (
+                  <li key={row.id} className="border-b border-hairline last:border-b-0">
+                    <button
+                      type="button"
+                      aria-pressed={barRow === row.id}
+                      onClick={() => setBarRow(row.id)}
+                      className={cx(
+                        'relative flex min-h-[34px] w-full flex-wrap items-center justify-between gap-x-4 px-4 py-1.5 text-left text-body t-colors focus-visible:-outline-offset-2',
+                        barRow === row.id ? 'bg-hover before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-cobalt' : 'hover:bg-hover',
+                      )}
+                    >
+                      <span className="text-ink">{row.what}</span>
+                      <span className="text-ink-500">{row.due}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </Story>
+          <Story name="Drawer" rule="One drawer for the workspace, on the right edge: 520 px wide, not modal, so the queue behind stays in use. A full-screen sheet below 640 px. Esc closes it; it enters in 200 ms. A static specimen: the live one opens from the command centre.">
+            <div className="max-w-[520px] overflow-hidden rounded-md border border-hairline-strong bg-surface shadow-overlay">
+              <div className="flex min-h-12 items-center justify-between gap-3 border-b border-hairline px-3 py-2">
+                <Segmented
+                  label="Drawer view, specimen"
+                  value={drawerTab}
+                  onValueChange={setDrawerTab}
+                  options={[
+                    { value: 'item', label: 'Exception & decision' },
+                    { value: 'copilot', label: 'Copilot' },
+                  ]}
+                />
+                <span aria-hidden className="inline-flex size-8 shrink-0 items-center justify-center text-ink-500">
+                  <X size={16} />
+                </span>
+              </div>
+              {drawerTab === 'item' ? (
+                <div className="space-y-3 px-4 py-3.5">
+                  <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body">
+                    <Tag tone="breach">Critical</Tag>
+                    <span className="font-medium text-ink">{fccrWorkItem.borrowerName}</span>
+                    <span className="text-ink-500">Q3 2026 · Covenant testing</span>
+                  </p>
+                  <p className="text-title font-semibold text-pretty text-ink">{fccrWorkItem.question}</p>
+                  <div className="rounded-md border border-hairline-strong px-3 py-2.5">
+                    <p className="eyebrow">Authority gate</p>
+                    <p className="mt-1.5 flex flex-wrap items-center gap-2 text-body text-ink-700">
+                      <Tag tone="gate" icon={<ShieldCheck size={11} />}>
+                        Credit officer required
+                      </Tag>
+                      Your role cannot decide the response to a breach.
+                    </p>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      <Button size="sm">Route to credit officer for sign-off</Button>
+                      <Button size="sm" variant="primary" disabled>
+                        Record decision
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2 px-4 py-3.5 text-body">
+                  <p className="inline-flex items-center gap-1.5 text-caption font-semibold text-iris">
+                    <AgentMark /> Copilot
+                  </p>
+                  <p className="text-pretty text-ink-700">Read-only. Grounded in verified filings and stored facts. Unverifiable claims are refused.</p>
+                </div>
+              )}
+            </div>
+          </Story>
+          <Story name="Kbd" rule="Every shortcut is shown with the key it takes, beside the control it works.">
+            <ul className="max-w-[560px] border-t border-ink">
+              {SHORTCUTS.map((shortcut) => (
+                <li key={shortcut.does} className="grid grid-cols-[96px_minmax(0,1fr)] items-center gap-x-4 border-b border-hairline py-1.5 text-body last:border-b-0">
+                  <span className="inline-flex gap-1">
+                    {shortcut.keys.map((key) => (
+                      <Kbd key={key}>{key}</Kbd>
+                    ))}
+                  </span>
+                  <span className="text-pretty text-ink-700">{shortcut.does}</span>
+                </li>
+              ))}
+            </ul>
           </Story>
         </Section>
 

@@ -538,6 +538,8 @@ export interface AgentRunRow {
   task: string;
   borrower_id: string | null;
   borrower_name: string | null;
+  /** The borrower's code, for a link to its page. Null for a run about no one borrower. */
+  borrower_code?: string | null;
   cycle_id: string | null;
   period_end: string | null;
   status: 'running' | 'completed' | 'abstained' | 'failed' | 'refused';
@@ -550,6 +552,8 @@ export interface AgentRunRow {
   error: string | null;
   created_at: string;
   finished_at: string | null;
+  /** Start to finish, worked out by the server. Null until the run has finished. */
+  duration_ms?: number | null;
 }
 
 export interface AgentStepRow {
@@ -585,6 +589,55 @@ export interface AgentSpec {
   active: boolean;
   runs: number;
   created_at: string;
+}
+
+/* ── Governance ───────────────────────────────────────────────────────── */
+
+/** The permission table as the code holds it (`/governance/roles`). */
+export interface RolesAndPermissions {
+  roles: Array<{ id: string; label: string; people: number }>;
+  permissions: Array<{ id: string; label: string; group: string; second_person: boolean }>;
+  /** Role id to the permission ids it holds. */
+  grants: Record<string, string[]>;
+  second_person: { rule: string; applies_to: Array<{ permission: string; what: string; detail: string; source: string }> };
+}
+
+export interface PolicyRule {
+  id: string;
+  rule: string;
+  /** The value in force, already in words or with its unit. */
+  setting: string;
+  effect: string;
+  /** The module that enforces the rule. */
+  source: string;
+  kind: 'text' | 'ident';
+  /** "verified": code checked the rule just now and it holds. "attention": it checked and it does not. */
+  state: 'verified' | 'attention' | null;
+}
+
+export interface PolicySignalRule {
+  id: string;
+  name: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  trigger: string;
+}
+
+export interface PolicyAgent {
+  name: string;
+  version: string;
+  purpose: string;
+  model: string;
+  effort: string;
+  max_steps: number;
+  tools: string[];
+  prompt_sha256: string;
+}
+
+/** The rules code applies without a model (`/governance/policy`). */
+export interface PolicyRegister {
+  sections: Array<{ id: string; title: string; summary: string; rules: PolicyRule[] }>;
+  signal_rules: { version: string; rules: PolicySignalRule[] };
+  agents: PolicyAgent[];
 }
 
 /* ── Reviews ──────────────────────────────────────────────────────────── */
