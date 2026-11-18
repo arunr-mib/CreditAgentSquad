@@ -18,15 +18,16 @@ function Outcome({ outcome }: { outcome: string | null }) {
 
 /**
  * What code recalculated after a figure changed, in words, announced to assistive technology.
- * A covenant whose outcome changed is listed with the outcome before and after.
+ * A covenant whose outcome changed is listed with the outcome before and after. `title` says
+ * which change the note is about when one action made more than one.
  */
-export function RecalculationNote({ recalculation, borrowerId, subject, className }: { recalculation: Recalculation; borrowerId?: string; subject?: string; className?: string }) {
+export function RecalculationNote({ recalculation, borrowerId, subject, title = 'What code recalculated', className }: { recalculation: Recalculation; borrowerId?: string; subject?: string; title?: string; className?: string }) {
   const covenants = useBorrowerCovenants(recalculation.covenants?.length ? borrowerId : undefined);
   const names = useMemo(() => Object.fromEntries((covenants.data?.tests ?? []).map((test) => [test.covenant_id, test.covenant_name])), [covenants.data]);
   const summary = recalculationSummary(recalculation, names, subject);
   return (
     <div role="status" aria-live="polite" data-recalculation className={cx('rounded-md border border-hairline-strong bg-canvas px-3 py-2', className)}>
-      <p className="eyebrow">What code recalculated</p>
+      <p className="eyebrow">{title}</p>
       <ul className="mt-1 space-y-0.5 text-body text-pretty text-ink-700">
         {summary.sentences.map((sentence) => (
           <li key={sentence}>{sentence}</li>
