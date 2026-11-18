@@ -516,8 +516,10 @@ describe('calendar', () => {
     show('/calendar');
     const filter = await screen.findByRole('group', { name: 'Status' });
     expect(filter).toHaveClass('flex-wrap');
-    expect(within(filter).getAllByRole('button').map((button) => button.textContent)).toEqual(['Outstanding2', 'Overdue1', 'Due1', 'Received1', 'All4']);
+    expect(within(filter).getAllByRole('button').map((button) => button.textContent)).toEqual(['Outstanding2', 'Overdue1', 'Due1', 'Received1', 'Not tracked1', 'All4']);
     expect(within(filter).getByRole('button', { name: /^Outstanding/ })).toHaveAttribute('aria-pressed', 'true');
+    // a requirement from before the book was loaded has its own filter and a plain explanation
+    expect(screen.getByText(/^Not tracked: requirements for past periods/)).toBeInTheDocument();
     await userEvent.click(within(filter).getByRole('button', { name: /^Overdue/ }));
     expect(screen.getByText('1 of 4 requirements')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /^Quillfeather/ })).toBeNull();
