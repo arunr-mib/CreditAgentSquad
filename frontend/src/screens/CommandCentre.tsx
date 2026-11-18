@@ -483,6 +483,7 @@ export function CommandCentre() {
             getRowId={(item) => item.id}
             selectedRowId={selectedId}
             onRowActivate={(item) => drawer.openItem(item.id)}
+            pageKeys
             stickyTop="var(--topbar-h)"
             narrow="stack"
             empty={
