@@ -63,7 +63,7 @@ def grant_runtime_role(db: Session) -> int:
         print(f"role {ledger.RUNTIME_ROLE} does not exist; a superuser must create it first: "
               f"CREATE ROLE {ledger.RUNTIME_ROLE} NOLOGIN")
         return 1
-    db.execute(text(ledger.runtime_role_sql()))
+    db.execute(text(ledger.runtime_role_sql(schema=get_settings().db_schema.strip() or "public")))
     db.commit()
     print(f"{ledger.RUNTIME_ROLE}: granted the working tables, and SELECT and INSERT only on ledger_events")
     return 0

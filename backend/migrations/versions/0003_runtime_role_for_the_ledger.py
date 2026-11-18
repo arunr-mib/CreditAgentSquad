@@ -17,6 +17,7 @@ Revises: 0002
 import warnings
 
 from alembic import op
+from app.core.config import get_settings
 from app.core.ledger import RUNTIME_ROLE, runtime_role_sql
 from sqlalchemy import text
 
@@ -40,7 +41,7 @@ def upgrade() -> None:
                 "`python -m app.cli grant-runtime-role` as the owner.", stacklevel=1)
             return
         op.execute(f"CREATE ROLE {RUNTIME_ROLE} NOLOGIN")
-    op.execute(runtime_role_sql())
+    op.execute(runtime_role_sql(schema=get_settings().db_schema.strip() or "public"))
 
 
 def downgrade() -> None:

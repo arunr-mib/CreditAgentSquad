@@ -160,23 +160,24 @@ def install_guards(connection) -> None:
 RUNTIME_ROLE = "squad_runtime"
 
 
-def runtime_role_sql(role: str = RUNTIME_ROLE) -> str:
-    """Grants for the role the application runs as. Run by the owner (migration `0003`, or
-    `app.cli grant-runtime-role`); safe to run again."""
-    if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", role):
-        raise ValueError(f"not a plain role name: {role!r}")
+def runtime_role_sql(role: str = RUNTIME_ROLE, schema: str = "public") -> str:
+    """Grants for the role the application runs as, in the schema that holds the tables. Run by
+    the owner (migration `0003`, or `app.cli grant-runtime-role`); safe to run again."""
+    for name in (role, schema):
+        if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", name):
+            raise ValueError(f"not a plain role or schema name: {name!r}")
     return f"""
-GRANT USAGE ON SCHEMA public TO {role};
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {role};
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {role};
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {role};
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO {role};
-REVOKE ALL ON ledger_events FROM {role};
-GRANT SELECT, INSERT ON ledger_events TO {role};
+GRANT USAGE ON SCHEMA {schema} TO {role};
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA {schema} TO {role};
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA {schema} TO {role};
+ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {role};
+ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} GRANT USAGE, SELECT ON SEQUENCES TO {role};
+REVOKE ALL ON {schema}.ledger_events FROM {role};
+GRANT SELECT, INSERT ON {schema}.ledger_events TO {role};
 DO $$
 BEGIN
-  IF to_regclass('public.alembic_version') IS NOT NULL THEN
-    EXECUTE 'REVOKE INSERT, UPDATE, DELETE ON alembic_version FROM {role}';
+  IF to_regclass('{schema}.alembic_version') IS NOT NULL THEN
+    EXECUTE 'REVOKE INSERT, UPDATE, DELETE ON {schema}.alembic_version FROM {role}';
   END IF;
 END $$;
 """
