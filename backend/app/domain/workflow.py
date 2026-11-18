@@ -215,6 +215,10 @@ def run_next_job(db: Session) -> Job | None:
     job = claim_job(db)
     if job is None:
         return None
+    return _run_claimed(db, job)
+
+
+def _run_claimed(db: Session, job: Job) -> Job:
     handler = JOB_HANDLERS.get(job.kind)
     try:
         if handler is None:
@@ -241,6 +245,39 @@ def _fail_abandoned_stage(db: Session, job: Job) -> None:
     for st in stages(db, cycle):
         if st.stage == job.payload.get("stage") and st.status == "running":
             fail_stage(db, cycle, st, job.error or "the stage's job failed")
+
+
+def run_cycle_now(db: Session, cycle: Cycle, *, user_id: uuid.UUID, max_stages: int = 1) -> dict[str, Any]:
+    """A person asks for this cycle to move now. Does what the background worker would do, for
+    this cycle only and for at most `max_stages` stages, and says what happened. The request is
+    on the ledger in the person's name; the stages themselves are recorded as they always are."""
+    if cycle.status == "closed":
+        raise ValueError("The cycle is closed.")
+    ledger.record(db, actor_type="user", actor_id=user_id, action="cycle.run_requested", entity_type="cycle",
+                  entity_id=cycle.id, payload={"stage": cycle.stage})
+    advance(db, cycle)
+    ran: list[dict[str, Any]] = []
+    while len(ran) < max_stages:
+        row = db.execute(text(
+            "SELECT id FROM jobs WHERE status = 'queued' AND kind = 'cycle.stage' AND cycle_id = :cycle "
+            "AND (run_after IS NULL OR run_after <= now()) ORDER BY created_at, id LIMIT 1 "
+            "FOR UPDATE SKIP LOCKED"), {"cycle": cycle.id}).first()
+        if row is None:
+            break
+        job = db.get(Job, row.id)
+        job.status = "running"
+        job.attempts += 1
+        job.started_at = now()
+        db.flush()
+        _run_claimed(db, job)
+        stage = job.payload.get("stage")
+        st = next((s for s in stages(db, cycle) if s.stage == stage), None)
+        ran.append({"stage": stage, "result": st.status if st else None, "error": job.error if job.status != "done" else None})
+    db.flush()
+    current = next((s for s in stages(db, cycle) if s.stage == cycle.stage), None)
+    return {"ran": ran, "cycle_status": cycle.status, "stage": cycle.stage,
+            "stage_status": current.status if current else None,
+            "open_blocking_items": open_blocking_items(db, cycle, cycle.stage) if current else 0}
 
 
 def drain(db: Session, limit: int = 1000) -> int:

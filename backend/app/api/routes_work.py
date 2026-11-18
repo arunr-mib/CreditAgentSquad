@@ -7,13 +7,14 @@ from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.agents.llm import client_for, model_status
 from app.api.deps import current_user, require
 from app.api.serialize import plain, row
 from app.core import clock, ledger
 from app.core.db import get_db
 from app.core.ledger import LedgerEvent
 from app.core.roles import Permission, SecondPersonRequired
-from app.domain import calendar, workflow
+from app.domain import calendar, stages, workflow
 from app.domain.agents import AgentRun, AgentSpecRecord, AgentStep
 from app.domain.credit import Borrower
 from app.domain.documents import Document
@@ -123,6 +124,34 @@ def get_cycle(cycle_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depe
         WorkItem.cycle_id == cycle.id, WorkItem.status == "open").group_by(WorkItem.stage)).all())
     return {**row(cycle), "borrower_name": _names(db).get(cycle.borrower_id),
             "stages": [{**row(s), "open_work_items": open_by_stage.get(s.stage, 0)} for s in workflow.stages(db, cycle)]}
+
+
+@router.post("/cycles/{cycle_id}/run")
+def run_cycle(cycle_id: uuid.UUID, db: Session = Depends(get_db),
+              user: User = Depends(require(Permission.RUN_AGENTS))) -> dict:
+    """Run the cycle's next stage now, in this request. For a deployment with no background
+    worker, and for a person who wants to watch one stage at a time."""
+    cycle = db.get(Cycle, cycle_id)
+    if cycle is None:
+        raise HTTPException(404, "Cycle not found.")
+    if cycle.status == "closed":
+        raise HTTPException(409, "The cycle is closed.")
+    status = model_status()
+    if stages.LLM_FACTORY is client_for and not status["connected"]:
+        # every stage may call an agent; without a model the stage would fail and raise an item
+        raise HTTPException(409, f"Nothing was run. {status['reason']} The stages call agents, and an agent "
+                                 "needs a model to answer.")
+    result = workflow.run_cycle_now(db, cycle, user_id=user.id)
+    db.commit()
+    return result
+
+
+@router.get("/agents/status")
+def agents_status(_: User = Depends(current_user)) -> dict:
+    """Whether agents can run here: is a model connected, and in which mode."""
+    status = model_status()
+    return {"model_connected": status["connected"], "mode": status["mode"], "model": status["model"],
+            "reason": status["reason"]}
 
 
 @router.get("/calendar")

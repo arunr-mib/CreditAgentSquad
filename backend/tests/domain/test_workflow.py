@@ -110,3 +110,57 @@ def test_unknown_job_kind_fails_after_its_attempts(db):
     workflow.drain(db)
     job = db.execute(select(Job)).scalar_one()
     assert job.status == "failed" and job.attempts == 2 and "no handler" in job.error
+
+
+def test_a_person_can_move_one_cycle_one_stage_at_a_time(db, borrower, handlers):
+    from app.core.ledger import LedgerEvent
+
+    for s in STAGES:
+        handlers[s] = lambda db, cycle, st: "done"
+    other = Borrower(code="W-002", name="Another Borrower")
+    db.add(other)
+    db.flush()
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=date(2026, 9, 30), months=9)
+    untouched = workflow.open_cycle(db, borrower_id=other.id, period_end=date(2026, 9, 30), months=9)
+    workflow.advance(db, untouched)  # its first stage is queued and must stay queued
+    analyst = user(db, "analyst")
+
+    first = workflow.run_cycle_now(db, cycle, user_id=analyst.id)
+    assert first["ran"] == [{"stage": STAGES[0], "result": "done", "error": None}]
+    # the next stage is queued, not run: one press, one stage
+    assert first["stage"] == STAGES[1] and first["stage_status"] == "running"
+    second = workflow.run_cycle_now(db, cycle, user_id=analyst.id)
+    assert [r["stage"] for r in second["ran"]] == [STAGES[1]]
+    # the other cycle's job was not taken
+    waiting = db.execute(select(Job).where(Job.cycle_id == untouched.id)).scalars().all()
+    assert [j.status for j in waiting] == ["queued"]
+    # each request is on the ledger in the person's name
+    asked = db.execute(select(LedgerEvent).where(LedgerEvent.action == "cycle.run_requested")).scalars().all()
+    assert len(asked) == 2 and {e.actor_id for e in asked} == {str(analyst.id)}
+
+    for _ in range(len(STAGES)):
+        if cycle.status == "closed":
+            break
+        workflow.run_cycle_now(db, cycle, user_id=analyst.id)
+    assert cycle.status == "closed"
+    with pytest.raises(ValueError, match="closed"):
+        workflow.run_cycle_now(db, cycle, user_id=analyst.id)
+
+
+def test_running_a_cycle_now_stops_where_a_person_is_needed(db, borrower, handlers):
+    def intake(db, cycle, st):
+        db.add(WorkItem(borrower_id=cycle.borrower_id, cycle_id=cycle.id, stage=STAGES[0],
+                        item_type="test.blocking_item", title="A document could not be filed",
+                        question="What is this document?", allowed_decisions=["classified_by_hand"],
+                        required_permission="upload_document"))
+        db.flush()
+        return "done"
+
+    for s in STAGES:
+        handlers[s] = lambda db, cycle, st: "done"
+    handlers[STAGES[0]] = intake
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=date(2026, 9, 30), months=9)
+    result = workflow.run_cycle_now(db, cycle, user_id=user(db, "analyst").id)
+    assert result["ran"][0]["result"] == "needs_person" and result["open_blocking_items"] == 1
+    again = workflow.run_cycle_now(db, cycle, user_id=user(db, "analyst").id)
+    assert again["ran"] == [] and again["stage"] == STAGES[0]  # nothing runs until the person decides

@@ -223,3 +223,40 @@ def test_a_held_figure_says_which_line_its_label_names_and_its_value_there(clien
                        item_type="spread.value_unverified", title="Held", question="?", allowed_decisions=["retry"],
                        evidence={"cells": cells[:1]})
     assert client.get(f"/api/v1/work-items/{other.id}").json()["evidence"] == {"cells": cells[:1]}
+
+
+def test_a_person_runs_the_next_stage_only_with_the_permission_and_a_model(client, db, world, monkeypatch, tmp_path):
+    from app.domain import stages
+    from app.domain.monitoring import STAGES
+
+    _, cycle = world
+    url = f"/api/v1/cycles/{cycle.id}/run"
+    monkeypatch.setattr(workflow, "STAGE_HANDLERS", {s: (lambda db, cycle, st: "done") for s in STAGES})
+    sign_in(client, "helen.strand")  # a credit officer decides; she does not run agents
+    assert client.post(url).status_code == 403
+
+    sign_in(client, "priya.raman")
+    # no model: recorded mode with nothing recorded. Nothing runs and no stage is failed by it.
+    monkeypatch.setenv("SQUAD_LLM_MODE", "recorded")
+    monkeypatch.setenv("SQUAD_RECORDINGS_DIR", str(tmp_path / "none"))
+    get_settings.cache_clear()
+    assert client.get("/api/v1/agents/status").json()["model_connected"] is False
+    refused = client.post(url)
+    assert refused.status_code == 409 and "Nothing was run" in refused.json()["detail"]
+    assert {s.status for s in workflow.stages(db, cycle)} == {"pending"}
+    # live mode needs a key
+    monkeypatch.setenv("SQUAD_LLM_MODE", "live")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "")
+    get_settings.cache_clear()
+    assert client.post(url).status_code == 409
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test-not-a-real-key")
+    get_settings.cache_clear()
+    status = client.get("/api/v1/agents/status").json()
+    assert status["model_connected"] is True and status["mode"] == "live" and "key" not in str(status).lower()
+
+    ran = client.post(url).json()
+    assert ran["ran"] == [{"stage": STAGES[0], "result": "done", "error": None}] and ran["stage"] == STAGES[1]
+    asked = client.get("/api/v1/ledger", params={"action": "cycle.run_requested"}).json()
+    assert len(asked) == 1 and asked[0]["actor_type"] == "user"
+    assert client.post("/api/v1/cycles/00000000-0000-4000-8000-000000000000/run").status_code == 404
+    assert stages.LLM_FACTORY is not None

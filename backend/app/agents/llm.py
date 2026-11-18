@@ -182,6 +182,21 @@ class KeyedScriptedClient:
         raise RecordingMissing(f"no scripted response for {request.record_key}")
 
 
+def model_status(settings: Settings | None = None) -> dict[str, Any]:
+    """Whether an agent could get an answer here. Live and record modes need a key; recorded mode
+    needs stored responses to replay."""
+    s = settings or get_settings()
+    mode = s.squad_llm_mode
+    if mode in ("live", "record"):
+        connected = bool(s.anthropic_api_key.strip())
+        reason = "" if connected else "No model key is set for this deployment."
+    else:
+        root = Path(s.squad_recordings_dir)
+        connected = root.is_dir() and any(root.rglob("*.json"))
+        reason = "" if connected else "This deployment replays recorded model responses and has none stored."
+    return {"mode": mode, "model": s.squad_model, "connected": connected, "reason": reason}
+
+
 def client_for(settings: Settings | None = None) -> LLMClient:
     s = settings or get_settings()
     if s.squad_llm_mode == "live":
