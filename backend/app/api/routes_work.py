@@ -197,9 +197,24 @@ def list_agent_runs(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | 
         query = query.where(AgentRun.borrower_id == borrower_id)
     if cycle_id:
         query = query.where(AgentRun.cycle_id == cycle_id)
-    names = _names(db)
-    return [{**row(r, exclude=("raw_output", "output", "scope")), "borrower_name": names.get(r.borrower_id)}
+    borrowers = _borrowers(db)
+    return [{**row(r, exclude=("raw_output", "output", "scope")), **_run_extras(r, borrowers)}
             for r in db.execute(query).scalars()]
+
+
+def _borrowers(db: Session) -> dict[uuid.UUID, tuple[str, str]]:
+    return {b.id: (b.name, b.code) for b in db.execute(select(Borrower)).scalars()}
+
+
+def _run_extras(run: AgentRun, borrowers: dict[uuid.UUID, tuple[str, str]]) -> dict:
+    """What a run's row does not carry: whom it is about, and how long it took. The duration is
+    worked out here, from the stored start and finish, so the workspace does no arithmetic on
+    timestamps. It is null until the run has finished."""
+    name, code = borrowers.get(run.borrower_id, (None, None))
+    duration = None
+    if run.finished_at is not None and run.created_at is not None:
+        duration = max(0, round((run.finished_at - run.created_at).total_seconds() * 1000))
+    return {"borrower_name": name, "borrower_code": code, "duration_ms": duration}
 
 
 @router.get("/agent-runs/{run_id}")
@@ -208,7 +223,7 @@ def get_agent_run(run_id: uuid.UUID, db: Session = Depends(get_db), _: User = De
     if run is None:
         raise HTTPException(404, "Agent run not found.")
     steps = db.execute(select(AgentStep).where(AgentStep.run_id == run.id).order_by(AgentStep.n)).scalars()
-    return {**row(run), "steps": [row(s) for s in steps]}
+    return {**row(run), **_run_extras(run, _borrowers(db)), "steps": [row(s) for s in steps]}
 
 
 @router.get("/agents")
