@@ -7,6 +7,7 @@ import { AgentMark, Button, Card, formatDate, GuardrailNotes, Kbd, PageHeader, S
 import { useWorkspaceDrawer } from '@/drawer/context';
 import { formatTimestamp, humanize } from '@/domain/labels';
 import { cx } from '@/lib/cx';
+import { AgentBody, referencedFactIds } from '@/source/AgentBody';
 import { Def, ErrorNotice, Load, Notice } from './parts';
 
 /* ── Words ────────────────────────────────────────────────────────────── */
@@ -38,11 +39,97 @@ export function formatDuration(ms: number): string {
   return `${Math.floor(seconds / 60)} min ${String(seconds % 60).padStart(2, '0')} s`;
 }
 
-function plainValue(value: unknown): string {
-  if (value === null || value === undefined) return 'None';
-  if (typeof value === 'string') return value;
+const isSet = (value: unknown): boolean =>
+  value !== null && value !== undefined && value !== '' && !(Array.isArray(value) && value.length === 0) && !(typeof value === 'object' && !Array.isArray(value) && Object.keys(value as object).length === 0);
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** One scope value in plain words: dates as dates, ids as their first eight characters, lists joined. */
+function scopeValue(value: unknown): string {
+  if (Array.isArray(value)) return value.map(scopeValue).join(', ');
+  if (typeof value === 'string') return UUID.test(value) ? value.slice(0, 8) : ISO_DATE.test(value) ? formatDate(value) : value;
   if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return JSON.stringify(value);
+  return Object.entries(value as Record<string, unknown>)
+    .filter(([, inner]) => isSet(inner))
+    .map(([key, inner]) => `${humanize(key).toLowerCase()} ${scopeValue(inner)}`)
+    .join(', ');
+}
+
+/**
+ * The scope code set for the run, in plain words. Only the fields that were set: an empty list or a
+ * missing facility says nothing, so it is left out. A borrower is named when the run names it.
+ */
+export function scopeParts(scope: Record<string, unknown> | null | undefined, run?: Pick<AgentRunRow, 'borrower_id' | 'borrower_name'>): string[] {
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(scope ?? {})) {
+    if (!isSet(value)) continue;
+    const name = humanize(key.replace(/_ids?$/, '')).toLowerCase();
+    if (key === 'borrower_id' && run?.borrower_name && value === run.borrower_id) parts.push(`borrower ${run.borrower_name}`);
+    else if (key === 'months' && typeof value === 'number') parts.push(`${value} months`);
+    else if (key === 'period_end' && typeof value === 'string') parts.push(`period ended ${scopeValue(value)}`);
+    else if (key.endsWith('_ids') && Array.isArray(value)) parts.push(`${value.length === 1 ? name : `${name}s`} ${scopeValue(value)}`);
+    else parts.push(`${name} ${scopeValue(value)}`);
+  }
+  return parts;
+}
+
+/* ── The answer, as fields ────────────────────────────────────────────── */
+
+const TITLE_KEYS = ['heading', 'title', 'name'];
+
+/** Agent text: each {{fact:…}} becomes a figure chip that opens its source. */
+function OutputText({ text }: { text: string }) {
+  if (referencedFactIds(text).length === 0) return <span className="whitespace-pre-line">{text}</span>;
+  return <AgentBody text={text} chips className="text-body" />;
+}
+
+/** Structured output as labelled fields, never as raw JSON. */
+export function OutputValue({ value, depth = 0 }: { value: unknown; depth?: number }): ReactNode {
+  if (!isSet(value)) return <span className="text-ink-500">None</span>;
+  if (typeof value === 'string') return <OutputText text={value} />;
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (typeof value === 'number') return String(value);
+  if (Array.isArray(value)) {
+    if (value.every((entry) => typeof entry !== 'object' || entry === null)) {
+      return (
+        <ul className="list-disc space-y-0.5 pl-4">
+          {value.map((entry, index) => (
+            <li key={index}>
+              <OutputValue value={entry} depth={depth + 1} />
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    return (
+      <ol className="space-y-2">
+        {value.map((entry, index) => (
+          <li key={index} data-output-item className="rounded-sm border border-hairline px-3 py-2">
+            <OutputValue value={entry} depth={depth + 1} />
+          </li>
+        ))}
+      </ol>
+    );
+  }
+  const record = value as Record<string, unknown>;
+  const titleKey = TITLE_KEYS.find((key) => typeof record[key] === 'string' && record[key]);
+  const fields = Object.entries(record).filter(([key]) => key !== titleKey);
+  return (
+    <div>
+      {titleKey ? <p className="mb-1 font-semibold text-ink">{String(record[titleKey])}</p> : null}
+      <dl className="space-y-1.5">
+        {fields.map(([key, inner]) => (
+          <div key={key}>
+            <dt className="eyebrow">{humanize(key)}</dt>
+            <dd className="mt-0.5 text-ink">
+              <OutputValue value={inner} depth={depth + 1} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
 }
 
 /* ── Guardrail marks ──────────────────────────────────────────────────── */
@@ -158,8 +245,18 @@ function Telemetry({ run }: { run: AgentRunRow }) {
     `${count(run.input_tokens)} in`,
     `${count(run.output_tokens)} out`,
     run.served_model ?? run.model,
-  ].filter(Boolean);
-  return <p className="ident text-caption text-ink-500 [overflow-wrap:anywhere]">{parts.join(' · ')}</p>;
+  ].filter((part): part is string => Boolean(part));
+  // Lines break between readings, never inside one: a model id stays whole on a phone.
+  return (
+    <p data-telemetry className="ident text-caption text-ink-500">
+      {parts.map((part, index) => (
+        <span key={index} className="whitespace-nowrap">
+          {index > 0 ? ' · ' : ''}
+          {part}
+        </span>
+      ))}
+    </p>
+  );
 }
 
 function RunRow({ run, selected, onSelect, children }: { run: AgentRunRow; selected: boolean; onSelect: (id: string) => void; children?: ReactNode }) {
@@ -289,6 +386,7 @@ function StepMark({ kind }: { kind: AgentStepRow['kind'] }) {
 
 export function RunDetail({ run, flush }: { run: AgentRunDetail; flush?: boolean }) {
   const refusals = run.steps.filter((step) => step.refused).length;
+  const scope = scopeParts(run.scope, run);
   const body = (
     <>
       {flush ? null : (
@@ -311,7 +409,7 @@ export function RunDetail({ run, flush }: { run: AgentRunDetail; flush?: boolean
           <span className="tnum">{formatTimestamp(run.created_at)}</span> UTC
         </Def>
         <Def label="Model">
-          <span className="ident">{run.served_model ?? run.model}</span> · {run.llm_mode} responses
+          <span className="ident whitespace-nowrap">{run.served_model ?? run.model}</span> · {run.llm_mode} responses
         </Def>
         {run.duration_ms !== null && run.duration_ms !== undefined ? (
           <Def label="Duration">
@@ -324,16 +422,11 @@ export function RunDetail({ run, flush }: { run: AgentRunDetail; flush?: boolean
           </span>
         </Def>
         <Def label="Steps">
-          <span className="tnum">{run.steps_count}</span>
+          {/* The steps listed below are the record; the summary count on the run row can lag behind them. */}
+          <span className="tnum">{run.steps.length}</span>
           {refusals > 0 ? `, ${refusals} refused by code` : ''}
         </Def>
-        <Def label="Scope set by code">
-          {Object.keys(run.scope ?? {}).length > 0
-            ? Object.entries(run.scope)
-                .map(([key, value]) => `${humanize(key).toLowerCase()} ${plainValue(value).slice(0, 12)}`)
-                .join(' · ')
-            : 'None recorded'}
-        </Def>
+        <Def label="Scope set by code">{scope.length > 0 ? scope.join(' · ') : 'None recorded'}</Def>
         <Def label="Run">
           <span className="ident [overflow-wrap:anywhere]">{run.id}</span>
         </Def>
@@ -390,11 +483,13 @@ export function RunDetail({ run, flush }: { run: AgentRunDetail; flush?: boolean
       {run.output ? (
         <div className="border-t border-hairline-strong px-4 pt-3 pb-2">
           <h3 className="eyebrow mb-1">Answer after the guardrails</h3>
-          <dl className="border-t border-ink">
+          <dl data-run-output className="border-t border-ink">
             {Object.entries(run.output).map(([key, value]) => (
-              <div key={key} className="grid grid-cols-[112px_minmax(0,1fr)] gap-x-4 border-b border-hairline py-1.5 text-body last:border-b-0 sm:grid-cols-[160px_minmax(0,1fr)]">
-                <dt className="text-ink-500">{humanize(key)}</dt>
-                <dd className="text-pretty whitespace-pre-line text-ink [overflow-wrap:anywhere]">{plainValue(value)}</dd>
+              <div key={key} className="border-b border-hairline py-2 text-body last:border-b-0">
+                <dt className="mb-1 text-ink-500">{humanize(key)}</dt>
+                <dd className="min-w-0 text-pretty text-ink [overflow-wrap:break-word]">
+                  <OutputValue value={value} />
+                </dd>
               </div>
             ))}
           </dl>
