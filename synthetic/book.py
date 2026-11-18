@@ -383,8 +383,12 @@ def _expected(spec: BorrowerSpec, book: dict, docs: list[DocPlan], details: dict
             raise_exception(
                 "bb.certificate_mismatch", subject, "The certificate differs from the recalculated borrowing base."
             )
+    chasing = any(e["type"] == "intake.missing_document" for e in exceptions)
     for signal in signals:
         if signal["period_end"] == CURRENT_PERIOD and signal["severity"] == "high":
+            if signal["rule"] == "reporting_late" and chasing:
+                # one late filing is one question for a person: the warning joins the open chaser
+                continue
             raise_exception("signal.high", f"signal:{signal['rule']}", f"High-severity signal {signal['rule']}.")
 
     tests = [row for end in TEST_PERIODS for row in tests_by_period[end]]
@@ -413,7 +417,7 @@ def _verify_scenario(spec: BorrowerSpec, result: dict, details: dict) -> None:
         "hidden_breach": ["covenant.reported_mismatch"],
         "unapproved_amendment": ["covenant.reported_mismatch", "terms.unapproved_amendment"],
         "addback_over_cap": [],
-        "late_reporting": ["intake.missing_document", "intake.missing_document", "signal.high"],
+        "late_reporting": ["intake.missing_document", "intake.missing_document"],
         "miscounted_ineligible": ["bb.certificate_mismatch"],
         "over_advance": ["bb.over_advance"],
         "scale_trap": [],

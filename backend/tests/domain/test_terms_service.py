@@ -178,8 +178,9 @@ def test_rejecting_needs_a_reason(db, world):
     facility, people = world
     officer = people["credit_officer"]
     version, item = propose(db, facility, terms())
-    with pytest.raises(TermsRefused):
+    with pytest.raises(ValueError, match="needs a reason"):
         workflow.decide_work_item(db, item, user_id=officer.id, user_role=officer.role, decision="reject")
+    assert item.status == "open" and version.status == "proposed"
     workflow.decide_work_item(db, item, user_id=officer.id, user_role=officer.role, decision="reject",
                               reason="Threshold misread; see section 7.11.")
     assert version.status == "rejected" and governing_terms(db, facility, date(2025, 12, 31))[0] is None

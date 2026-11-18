@@ -293,7 +293,7 @@ def drain(db: Session, limit: int = 1000) -> int:
 DECISIONS_NEEDING_REASON = frozenset({
     "waiver_requested", "reservation_of_rights", "escalate_to_committee", "not_a_breach", "paydown_required",
     "temporary_overadvance_approved", "certificate_correct", "extension_granted", "received_elsewhere",
-    "rating_review_requested", "add_to_watch_list", "values_corrected", "accept_as_reported",
+    "rating_review_requested", "add_to_watch_list", "accept_as_reported",
     "restated_update_prior", "keep_prior", "amendment_not_applicable", "not_applicable", "return_for_rework",
     "reject",
 })
@@ -321,7 +321,7 @@ def decide_work_item(
         raise PermissionError(f"your role cannot decide this item ({item.required_permission})")
     reason = (reason or "").strip()
     if needs_reason(item.item_type, decision) and not reason:
-        raise ValueError("this decision needs a written reason")
+        raise ValueError("this decision needs a reason")
     if item.requires_second_person:
         require_second_person(item.prepared_by_id, user_id)
     # The decision is recorded first and its hook runs second, inside one savepoint. A hook that
