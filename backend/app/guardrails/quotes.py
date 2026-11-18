@@ -85,25 +85,32 @@ def column_aligned(figure: Box, header: Box, tolerance: float = 12.0) -> bool:
 
 def row_label(words: Sequence[Word], figure: Box) -> str:
     """The label of the row a figure sits on, read from the page by code: the words on the same
-    row to the left of the figure, up to the first word that is itself a figure. The reader's
-    own choice of label text is never used for this, because a reader can pick a fragment that
-    hides what the row is ("net of current portion" for long-term debt)."""
+    row to the left of the figure, without the cells of other columns. The reader's own choice
+    of label text is never used for this, because a reader can pick a fragment that hides what
+    the row is ("net of current portion" for long-term debt).
+
+    A number inside the label ("invoices more than 90 days past invoice date", "term loan due
+    2027") belongs to it: it follows the word before it at an ordinary word space. A cell of
+    another column stands apart from what precedes it.
+    """
     left = sorted((w for w in words
                    if same_row((float(w[0]), float(w[1]), float(w[2]), float(w[3])), figure)
                    and float(w[2]) <= figure[0] + 1.0), key=lambda w: float(w[0]))
-    label: list[str] = []
-    for word in left:
-        text = str(word[4]).strip()
-        if not text or not any(ch.isalnum() for ch in text):
-            if text in _DASH_CELLS:
-                break  # a dash is an empty cell of an earlier column, not part of the label
-            continue  # leader dots and other decoration
-        if parse_printed_figure(text) is not None:
-            break
-        label.append(text)
-    return " ".join(label)
+    end = len(left)
+    while end > 0:
+        text = str(left[end - 1][4]).strip()
+        gap = float(left[end - 1][0]) - float(left[end - 2][2]) if end > 1 else _CELL_GAP + 1
+        is_cell = text in _DASH_CELLS or text in "$£€" or parse_printed_figure(text) is not None
+        after_sign = end > 1 and str(left[end - 2][4]).strip() in ("$", "£", "€")
+        if is_cell and (gap > _CELL_GAP or after_sign or text in "$£€" or text in _DASH_CELLS):
+            end -= 1
+            continue
+        break
+    label = [str(w[4]).strip() for w in left[:end]]
+    return " ".join(t for t in label if any(ch.isalnum() for ch in t))
 
 
+_CELL_GAP = 8.0  # points: a figure set further than this from the word before it is a column cell
 _DASH_CELLS = {"-", "—", "–", "−"}
 
 
@@ -400,6 +407,12 @@ def verify_cell(
                              detail=f"cannot confirm {printed_figure!r} sits under {column_header!r}")
         candidates = in_column
 
+    if len(candidates) > 1 and printed_label is not None:
+        # the same figure on two rows whose labels share words ("Inventory availability" and
+        # "Inventory availability before sublimit"): the row whose whole label was reported wins
+        exact = [c for c in candidates
+                 if _squash(row_label(words, c.bbox)).lower() == _squash(printed_label).lower()]
+        candidates = exact or candidates
     label = row_label(words, candidates[0].bbox)
     if len(candidates) > 1 and printed_label is not None and (column_header is not None or period_end is not None):
         return CellCheck("ambiguous", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,

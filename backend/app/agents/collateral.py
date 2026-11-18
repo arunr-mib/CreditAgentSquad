@@ -21,8 +21,8 @@ from app.domain.documents import Document
 from app.domain.documents_service import get_page, read_file
 from app.domain.facts_service import store_extracted_cell
 from app.domain.monitoring import Cycle
-from app.guardrails.numbers import extract_figures
-from app.guardrails.quotes import locate, quote_on_page, same_row
+from app.guardrails.numbers import extract_figures, parse_printed_figure
+from app.guardrails.quotes import _rows, quote_on_page, same_row
 from app.guardrails.units import scale_of
 
 BUCKETS = ("current", "days_31_60", "days_61_90", "over_90")  # aged from invoice date
@@ -116,6 +116,69 @@ _CATEGORIES = ((r"consign", "consigned"), (r"work[\s-]*in[\s-]*(?:process|progre
                (r"in[\s-]*transit", "in_transit"), (r"packag", "packaging"), (r"supplies", "supplies"))
 
 
+# What a certificate line's printed label must say, and must not say, to be that line. The row's
+# label is read from the page by code; a line whose label does not fit is held.
+_LINE_WORDS: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = {
+    # line: (all of, any of, none of)
+    "ar_total": (("receivable",), ("gross", "total"), ("ineligible", "eligible", "availability")),
+    "ar_ineligible_excluded": ((), ("affiliate", "foreign", "government", "excluded", "intercompany"), ()),
+    "ar_ineligible_age": ((), ("days", "aged", "past"), ("cross",)),
+    "ar_ineligible_cross_aging": (("cross",), (), ()),
+    "ar_ineligible_contra": (("contra",), (), ()),
+    "ar_ineligible_concentration": (("concentration",), (), ()),
+    "ar_ineligible_total": (("ineligible",), ("total",), ("inventory",)),
+    "ar_eligible": (("eligible",), ("accounts", "receivable", "receivables"), ("ineligible", "availability", "inventory")),
+    "ar_availability": (("availability",), ("accounts", "receivable", "receivables"), ("inventory",)),
+    "inventory_total": (("inventory",), ("gross", "total"), ("ineligible", "eligible", "availability")),
+    "inventory_ineligible": (("ineligible", "inventory"), (), ()),
+    "inventory_eligible": (("eligible", "inventory"), (), ("ineligible", "availability")),
+    "inventory_availability_before_sublimit": (("inventory", "availability", "sublimit"), (), ()),
+    "inventory_availability": (("inventory", "availability"), (), ("sublimit",)),
+    "reserves": ((), ("reserve", "reserves"), ()),
+    "borrowing_base": (("borrowing", "base"), (), ("lesser",)),
+    "commitment": (("commitment",), (), ("lesser",)),
+    "borrowing_limit": (("lesser",), (), ()),
+    "outstanding": ((), ("loans", "advances", "outstanding", "borrowings"), ("letters", "letter")),
+    "letters_of_credit": (("credit",), ("letters", "letter"), ()),
+    "availability": (("availability",), (), ("inventory", "receivable", "receivables", "accounts", "sublimit")),
+    "over_advance": (("advance",), ("over", "overadvance"), ("availability",)),
+}
+assert set(_LINE_WORDS) == set(LINE_NAMES), "every borrowing base line needs its label rule"
+
+
+def _line_doubt(line: str, row_label: str) -> str | None:
+    words = set(re.findall(r"[a-z]+", row_label.lower()))
+    every, some, none = _LINE_WORDS[line]
+    if all(w in words for w in every) and (not some or words & set(some)) and not words & set(none):
+        return None
+    return f"the row labelled {row_label!r} does not read as the certificate's {LINE_HELP[line]} line"
+
+
+def _row_note(words, anchor) -> str:
+    """Text printed on a row after its first figure that is not itself a figure: the note column."""
+    row = sorted((w for w in words if same_row((float(w[0]), float(w[1]), float(w[2]), float(w[3])), anchor)),
+                 key=lambda w: float(w[0]))
+    first = next((i for i, w in enumerate(row) if parse_printed_figure(str(w[4])) is not None), None)
+    if first is None:
+        return ""
+    return " ".join(str(w[4]) for w in row[first:] if parse_printed_figure(str(w[4])) is None
+                    and any(ch.isalpha() for ch in str(w[4])) or
+                    (parse_printed_figure(str(w[4])) is not None and float(w[0]) > anchor[2] + 1)).strip()
+
+
+def _printed_total(words) -> Decimal | None:
+    """The last figure on the aging's own "Total" row, if the page prints exactly one."""
+    totals = []
+    for row in _rows(words):
+        if str(row[0][4]).strip().lower().rstrip(":") == "total" or " ".join(
+                str(w[4]) for w in row[:2]).lower().startswith(("total accounts", "grand total")):
+            figures = [parse_printed_figure(str(w[4])) for w in row]
+            figures = [f for f in figures if f is not None]
+            if figures:
+                totals.append(figures[-1].value)
+    return totals[0] if len(totals) == 1 else None
+
+
 def inventory_category(printed: str) -> str:
     lowered = printed.lower()
     return next((name for pattern, name in _CATEGORIES if re.search(pattern, lowered)), _slug(printed))
@@ -149,22 +212,33 @@ def read_collateral(db: Session, *, borrower: Borrower, document: Document, peri
         result.unverified.append({"what": "units", "reason": "scale_not_understood"})
         return result
 
-    def cell(key: str, page_number: int, figure: str, label: str, header: str | None) -> Decimal | None:
+    found: dict[str, Any] = {}  # what code read on the page for each stored cell: row label and place
+
+    def cell(key: str, page_number: int, figure: str, label: str, header: str | None,
+             fits: Any = None) -> Decimal | None:
+        """`fits` judges the row's label as code read it from the page; the label the reader
+        reported only finds the row."""
+        def doubt_for(check, _value):
+            return fits(check.row_label) if fits is not None else None
+
         fact, check = store_extracted_cell(
             db, borrower_id=borrower.id, key=key, period_end=period_end, months=0, document=document,
             page_number=page_number, printed_figure=figure, printed_label=label, column_header=header,
-            scale=scale, presentation_sign=1, agent_run_id=outcome.run.id, actor=("agent", "borrowing_base_reader"))
+            scale=scale, presentation_sign=1, agent_run_id=outcome.run.id, actor=("agent", "borrowing_base_reader"),
+            doubt_for=doubt_for)
         if fact is None or not check.ok:
             result.unverified.append({"what": key, "label": label, "printed": figure, "reason": check.status,
                                       "detail": check.detail})
             return None
         result.fact_ids[key] = str(fact.id)
+        found[key] = check
         return fact.value
 
     for line in out.certificate_lines:
         if line.line not in LINE_NAMES or line.line in result.certificate:
             continue
-        value = cell(f"bbc.{line.line}", line.page, line.printed_figure, line.printed_label, None)
+        value = cell(f"bbc.{line.line}", line.page, line.printed_figure, line.printed_label, None,
+                     fits=lambda row_label, name=line.line: _line_doubt(name, row_label))
         if value is not None:
             result.certificate[line.line] = value
 
@@ -173,6 +247,7 @@ def read_collateral(db: Session, *, borrower: Borrower, document: Document, peri
         result.unverified.append({"what": "aging headers", "reason": "headers_not_recognised",
                                   "detail": f"cannot map {out.aging_headers} to age buckets"})
         return result
+    aging_totals: list[tuple[int, Decimal]] = []
     for n, row in enumerate(out.aging_rows, start=1):
         if len(row.figures_printed) != len(buckets):
             result.unverified.append({"what": f"aging row {n}", "label": row.customer_printed, "reason": "wrong_width"})
@@ -186,18 +261,15 @@ def read_collateral(db: Session, *, borrower: Borrower, document: Document, peri
             result.unverified.append({"what": f"aging row {n}", "label": row.customer_printed,
                                       "reason": "row_does_not_add_up"})
             continue
-        entry: dict[str, Any] = {"customer": row.customer_printed, "days_1_30": "0",
+        place = found[f"bbc.ar.{n:03d}.total"]
+        entry: dict[str, Any] = {"customer": place.row_label or row.customer_printed, "days_1_30": "0",
                                  **{b: str(values[b]) for b in BUCKETS}}
-        note = row.note_printed.strip()
+        page = get_page(db, document.id, row.page)
+        # whatever else is printed on the customer's row is its note, reported or not: an
+        # affiliate or a contra balance changes what is eligible
+        note = _row_note(page.words, place.bbox) if page is not None else row.note_printed.strip()
+        aging_totals.append((row.page, values["total"]))
         if note:
-            page = get_page(db, document.id, row.page)
-            on_row = page is not None and any(
-                same_row(hit.bbox, lab.bbox) for hit in locate(page.words, note)
-                for lab in locate(page.words, row.customer_printed))
-            if not on_row:
-                result.unverified.append({"what": f"aging row {n} note", "label": row.customer_printed,
-                                          "reason": "note_not_on_row"})
-                continue
             lowered = note.lower()
             flag = next((flag for word, flag in _FLAGS if word in lowered), None)
             if flag:
@@ -215,10 +287,22 @@ def read_collateral(db: Session, *, borrower: Borrower, document: Document, peri
                 continue
         result.ar_rows.append(entry)
 
+    # a customer left out of the reading makes the rest more eligible: the rows must add up to the
+    # total the aging itself prints
+    for page_number in sorted({p for p, _ in aging_totals}):
+        page = get_page(db, document.id, page_number)
+        printed = _printed_total(page.words) if page is not None else None
+        read = sum((v for p, v in aging_totals if p == page_number), Decimal(0))
+        if printed is not None and printed * scale != read and len({p for p, _ in aging_totals}) == 1:
+            result.unverified.append({"what": "aging", "reason": "rows_do_not_add_to_printed_total",
+                                      "detail": "the customer rows read do not add up to the total the aging prints"})
+
     for n, item in enumerate(out.inventory_rows, start=1):
         value = cell(f"bbc.inventory.{n:03d}", item.page, item.amount_printed, item.category_printed, None)
         if value is not None:
-            result.inventory_rows.append({"category": inventory_category(item.category_printed), "amount": str(value),
-                                          "printed_category": item.category_printed})
+            # eligibility turns on the category, so it is taken from the row as printed
+            printed_category = found[f"bbc.inventory.{n:03d}"].row_label or item.category_printed
+            result.inventory_rows.append({"category": inventory_category(printed_category), "amount": str(value),
+                                          "printed_category": printed_category})
     db.flush()
     return result

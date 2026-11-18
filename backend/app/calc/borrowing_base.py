@@ -296,7 +296,7 @@ class LineDifference:
     computed: Decimal | None
     certificate: Decimal
     difference: Decimal | None  # computed - certificate
-    status: str  # match | mismatch | unknown_line | not_computed
+    status: str  # match | mismatch | unknown_line | not_computed | not_reported (set by the service)
 
 
 def reconcile(

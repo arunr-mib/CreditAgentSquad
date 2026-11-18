@@ -24,12 +24,14 @@ def review_borrowing_base(
     db: Session, *, borrower: Borrower, facility: Facility, period_end: date, ar_rows: list[dict[str, Any]],
     inventory_rows: list[dict[str, Any]], certificate: dict[str, Decimal], outstanding: Decimal,
     letters_of_credit: Decimal, cycle: Cycle | None = None, origin: str = "live", raise_items: bool = True,
-    tolerance: Decimal = DEFAULT_TOLERANCE, source: dict[str, Any] | None = None,
+    tolerance: Decimal = DEFAULT_TOLERANCE, source: dict[str, Any] | None = None, require_all_lines: bool = False,
     actor: tuple[str, str] = ("system", "borrowing_base"),
 ) -> BorrowingBaseReview:
     """`ar_rows` and `inventory_rows` are the listing rows with decimals as strings; `certificate`
     maps the calculation's line names to what the borrower reported; `source` records where the
-    rows came from (document and fact ids), so the review can be traced."""
+    rows came from (document and fact ids), so the review can be traced. With `require_all_lines`
+    (a certificate read from a document), a line the recalculation has a figure for and the
+    certificate reading lacks is reported as a difference."""
     version_row, version = governing_terms(db, facility, period_end)
     terms = version.terms.borrowing_base if version_row is not None else None
     result = bb_calc.compute_borrowing_base(
@@ -37,6 +39,13 @@ def review_borrowing_base(
         [bb_calc.InventoryRow(r["category"], Decimal(str(r["amount"]))) for r in inventory_rows],
         terms, outstanding, letters_of_credit)
     differences = bb_calc.reconcile(result, certificate, tolerance) if not result.errors else []
+    if not result.errors and require_all_lines:
+        # only lines the certificate reports can be compared, so a line the recalculation has a
+        # figure for and the reading left out is itself a difference: otherwise leaving lines
+        # out is the way to make a certificate "agree"
+        differences += [bb_calc.LineDifference(name, value, Decimal(0), value, "not_reported")
+                        for name, value in result.lines.items()
+                        if name not in certificate and name != "over_advance" and value not in (None, Decimal(0))]
     mismatches = [d for d in differences if d.status != "match"]
 
     calc = CalcRun(

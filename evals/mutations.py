@@ -287,6 +287,53 @@ def supplemental_row_reported_twice(answer: Answer) -> Answer:
     return answer
 
 
+# found by the third independent review (2026-11-18): the borrowing base reader
+
+
+def _without_lines(answer: Answer, names: set[str]) -> Answer:
+    answer["certificate_lines"] = [line for line in answer["certificate_lines"] if line["line"] not in names]
+    return answer
+
+
+_INVENTORY_AND_BELOW = {"inventory_total", "inventory_ineligible", "inventory_eligible",
+                        "inventory_availability_before_sublimit", "inventory_availability", "borrowing_base",
+                        "borrowing_limit", "availability", "over_advance"}
+_RECEIVABLES_AND_BELOW = {"ar_ineligible_total", "ar_eligible", "ar_availability", "borrowing_base"}
+
+
+def ineligible_inventory_named_by_a_fragment(answer: Answer) -> Answer:
+    for row in answer["inventory_rows"]:
+        if row["category_printed"].lower().startswith("work in"):
+            row["category_printed"] = row["category_printed"].split()[-1]
+    return _without_lines(answer, _INVENTORY_AND_BELOW)
+
+
+def receivable_total_filed_as_inventory(answer: Answer) -> Answer:
+    row = max(answer["aging_rows"], key=lambda r: len(r["figures_printed"][-1]))
+    answer["inventory_rows"].append({"page": row["page"], "category_printed": row["customer_printed"],
+                                     "amount_printed": row["figures_printed"][-1]})
+    return _without_lines(answer, _INVENTORY_AND_BELOW)
+
+
+def affiliate_note_dropped_with_its_lines(answer: Answer) -> Answer:
+    next(r for r in answer["aging_rows"] if r["note_printed"] == "Affiliate")["note_printed"] = ""
+    return _without_lines(answer, {"ar_ineligible_excluded", *_RECEIVABLES_AND_BELOW})
+
+
+def contra_note_dropped_with_its_lines(answer: Answer) -> Answer:
+    next(r for r in answer["aging_rows"] if r["note_printed"].startswith("Contra"))["note_printed"] = ""
+    return _without_lines(answer, {"ar_ineligible_contra", *_RECEIVABLES_AND_BELOW})
+
+
+def letters_of_credit_from_an_empty_row(answer: Answer) -> Answer:
+    empty = next(line for line in answer["certificate_lines"] if line["printed_figure"] in ("-", "—"))
+    letters = next(line for line in answer["certificate_lines"] if line["line"] == "letters_of_credit")
+    letters["printed_label"], letters["printed_figure"] = empty["printed_label"], empty["printed_figure"]
+    return _without_lines(answer, {"availability", "over_advance"})
+
+
+OVER_ADVANCE = "briarstone-beverage"  # the line is over-advanced once ineligible inventory is taken out
+LETTERS = "tallwater-foodservice"  # letters of credit are outstanding
 CLEAN_BB = "harrowgate-precision"  # clean, statements in thousands, borrowing base, a dollar covenant
 REPORTED_BREACH = "pellham-grain"  # fixed charge coverage fails and the certificate says so
 DOLLARS = "sablewood-dental"  # clean, statements in whole dollars
@@ -325,6 +372,11 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("bb-aging-figure-misread", "an aging figure with one digit wrong", CLEAN_BB, "collateral", aging_figure_misread),
     Mutation("bb-aging-row-dropped", "a customer left out of the aging", CLEAN_BB, "collateral", aging_row_dropped),
     Mutation("bb-lines-misnamed", "commitment and loans outstanding attributed to each other's lines", CLEAN_BB, "collateral", certificate_line_misnamed),
+    Mutation("bb-ineligible-inventory-named-by-a-fragment", "work in process reported as 'process' with the inventory lines of the certificate left out, turning an over-advance into availability", OVER_ADVANCE, "collateral", ineligible_inventory_named_by_a_fragment),
+    Mutation("bb-receivable-filed-as-inventory", "a customer's receivable total added as an inventory row, certificate lines left out", OVER_ADVANCE, "collateral", receivable_total_filed_as_inventory),
+    Mutation("bb-affiliate-note-and-lines-dropped", "an affiliate's note dropped and the certificate lines that would show it left out", CLEAN_BB, "collateral", affiliate_note_dropped_with_its_lines),
+    Mutation("bb-contra-note-and-lines-dropped", "a contra note dropped and the certificate lines that would show it left out", CLEAN_BB, "collateral", contra_note_dropped_with_its_lines),
+    Mutation("bb-letters-of-credit-from-an-empty-row", "letters of credit read from another line's empty cell", LETTERS, "collateral", letters_of_credit_from_an_empty_row),
     Mutation("intake-misclassified", "a compliance certificate classified as interim statements", CLEAN_BB, "intake", misclassified_document),
     Mutation("intake-statements-called-audited", "management statements classified as audited", CLEAN_BB, "intake", statements_called_audited),
     Mutation("intake-wrong-period", "a certificate filed by its signing date instead of its period end", CLEAN_BB, "intake", certificate_dated_by_its_signing_date),

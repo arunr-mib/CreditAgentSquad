@@ -211,7 +211,7 @@ def borrowing_base_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     review = review_borrowing_base(
         db, borrower=borrower, facility=facility, period_end=cycle.period_end, ar_rows=reading.ar_rows,
         inventory_rows=reading.inventory_rows, certificate=reading.certificate, outstanding=outstanding.value,
-        letters_of_credit=letters, cycle=cycle,
+        letters_of_credit=letters, cycle=cycle, require_all_lines=True,
         source={"document_id": str(documents[-1].id), "agent_run_id": str(reading.run_id), "fact_ids": reading.fact_ids})
     st.detail = {**st.detail, "outcome": review.outcome}
     return "done"

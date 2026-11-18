@@ -1,6 +1,6 @@
 """Mutation checks with the product in the loop: tamper with the stand-in reader's answer, run
-the live cycle, and record who caught it. About one minute (three borrowers loaded once each,
-45 runs of the cycle). Deselect with: -m "not slow".
+the live cycle, and record who caught it. About one minute (six borrowers loaded once each,
+50 runs of the cycle). Deselect with: -m "not slow".
 
 EXPECTED is what each mutation was seen to do on 2026-11-17. `product` means the product refused
 the tampered item into a work item or a guardrail note. `grader` means the product accepted it
@@ -70,6 +70,14 @@ EXPECTED = {
     "review-quantity-in-words": "product",
     "review-figure-as-an-identifier": "product",
     "review-figure-as-a-note-number": "product",
+    # Found by the third independent review on 2026-11-18: the borrowing base reader took a row's
+    # category, its notes and which certificate line it was from the reader, and compared only
+    # the certificate lines the reader chose to report.
+    "bb-ineligible-inventory-named-by-a-fragment": "product",
+    "bb-receivable-filed-as-inventory": "product and grader",
+    "bb-affiliate-note-and-lines-dropped": "product",
+    "bb-contra-note-and-lines-dropped": "product",
+    "bb-letters-of-credit-from-an-empty-row": "product",
 }
 
 
