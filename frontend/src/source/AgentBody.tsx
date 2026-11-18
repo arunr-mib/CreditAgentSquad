@@ -14,7 +14,15 @@ export function referencedFactIds(text: string): string[] {
  * renders the stored fact as a figure that opens the source drawer. A reference that does not
  * resolve to a stored fact is shown as unresolved, never hidden and never replaced by a guess.
  */
-export function AgentBody({ text, className }: { text: string; className?: string }) {
+export function AgentBody({
+  text,
+  className,
+  chips,
+}: {
+  text: string;
+  className?: string;
+  /** Show each figure as a chip with its short fact id beside it. */ chips?: boolean;
+}) {
   const ids = referencedFactIds(text);
   const facts = useFactsById(ids);
   return (
@@ -28,7 +36,18 @@ export function AgentBody({ text, className }: { text: string; className?: strin
           const fact = facts.data?.[match[1] ?? ''];
           parts.push(
             fact ? (
-              <FactFigure key={`f${start}`} fact={fact} weight="medium" />
+              chips ? (
+                <span
+                  key={`f${start}`}
+                  data-fact-chip
+                  className="mx-px inline-flex items-baseline gap-1 rounded-xs border border-hairline-strong bg-surface px-1 align-baseline"
+                >
+                  <FactFigure fact={fact} weight="medium" />
+                  <span className="ident text-micro text-ink-500">{fact.id.slice(0, 8)}</span>
+                </span>
+              ) : (
+                <FactFigure key={`f${start}`} fact={fact} weight="medium" />
+              )
             ) : facts.isPending && ids.length > 0 ? (
               <span key={`f${start}`} className="text-ink-500">
                 …
