@@ -20,6 +20,7 @@ export function Wordmark({ markOnly = false }: { markOnly?: boolean }) {
       {markOnly ? null : (
         <span className="whitespace-nowrap">
           <span className="block text-body/4 font-semibold tracking-[-0.012em] text-ink">Credit Agent Squad</span>
+          {/* A space between the two lines, so the text read out is "Credit Agent Squad Bank of Stoic", not run together. */}{' '}
           <span className="block text-micro/4 text-ink-500">Bank of Stoic</span>
         </span>
       )}

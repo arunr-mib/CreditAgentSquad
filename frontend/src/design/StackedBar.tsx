@@ -45,32 +45,40 @@ export function StackedBar({ label, segments, onSelect, selectedId, className }:
   const shown = segments.filter((segment) => segment.count > 0);
   const total = shown.reduce((sum, segment) => sum + segment.count, 0);
   const summary = shown.map((segment) => `${segment.label} ${segment.count}`).join(', ');
+  const width = (segment: BarSegment) => `${(segment.count / total) * 100}%`;
+  const dimmed = (segment: BarSegment) => selectedId != null && selectedId !== segment.id;
+  // The picture and the click targets are siblings, not one inside the other: an image may not hold
+  // controls (axe nested-interactive). The segments are a pointer shortcut only; the legend beside a
+  // bar offers the same choices to a keyboard and a screen reader.
   return (
-    <div
-      role="img"
-      aria-label={`${label}: ${summary || 'nothing to show'}`}
-      className={cx('flex h-2.5 w-full gap-px overflow-hidden rounded-xs bg-sunken', className)}
-    >
-      {total === 0
-        ? null
-        : shown.map((segment) => {
-            const style = { width: `${(segment.count / total) * 100}%`, background: barFill(segment.fill) };
-            const dimmed = selectedId != null && selectedId !== segment.id;
-            return onSelect ? (
-              <button
+    <div className={cx('relative w-full', className)}>
+      <div role="img" aria-label={`${label}: ${summary || 'nothing to show'}`} className="flex h-2.5 w-full gap-px overflow-hidden rounded-xs bg-sunken">
+        {total === 0
+          ? null
+          : shown.map((segment) => (
+              <span
                 key={segment.id}
-                type="button"
-                tabIndex={-1}
-                aria-hidden
-                title={`${segment.label}: ${segment.count}`}
-                onClick={() => onSelect(segment.id)}
-                style={style}
-                className={cx('h-full min-w-[3px] t-colors hover:opacity-80', dimmed && 'opacity-35')}
+                title={onSelect ? undefined : `${segment.label}: ${segment.count}`}
+                style={{ width: width(segment), background: barFill(segment.fill) }}
+                className={cx('h-full min-w-[3px] t-colors', dimmed(segment) && 'opacity-35')}
               />
-            ) : (
-              <span key={segment.id} title={`${segment.label}: ${segment.count}`} style={style} className={cx('h-full min-w-[3px]', dimmed && 'opacity-35')} />
-            );
-          })}
+            ))}
+      </div>
+      {onSelect && total > 0 ? (
+        <div aria-hidden className="absolute inset-0 flex gap-px overflow-hidden rounded-xs">
+          {shown.map((segment) => (
+            <button
+              key={segment.id}
+              type="button"
+              tabIndex={-1}
+              title={`${segment.label}: ${segment.count}`}
+              onClick={() => onSelect(segment.id)}
+              style={{ width: width(segment) }}
+              className="h-full min-w-[3px] t-colors hover:bg-canvas/30"
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

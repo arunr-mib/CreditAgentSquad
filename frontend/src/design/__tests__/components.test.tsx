@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { Fact } from '@/api/types';
 import { SEVERITY_TONE } from '@/domain/labels';
-import { AgentNote, AgentText, CommandPalette, DataTable, FactsProvider, Figure, StatusDot, Stepper, useCommandPaletteShortcut, WorkItemCard } from '..';
+import { AgentNote, AgentText, CommandPalette, DataTable, Drawer, FactsProvider, StackedBar, Figure, StatusDot, Stepper, useCommandPaletteShortcut, WorkItemCard } from '..';
 
 const documentFact: Fact = {
   id: 'F-1',
@@ -315,5 +315,68 @@ describe('CommandPalette', () => {
     expect(screen.getByRole('option', { name: /Show low-severity exceptions/ })).toBeInTheDocument();
     await userEvent.keyboard('{Enter}');
     expect(run).toHaveBeenCalledWith('low');
+  });
+});
+
+describe('Drawer', () => {
+  function Harness() {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <button type="button" onClick={() => setOpen(true)}>
+          Open the item
+        </button>
+        <Drawer open={open} onOpenChange={setOpen} title="the workspace drawer" header={<button type="button">Copilot</button>}>
+          <p>Evidence</p>
+        </Drawer>
+      </>
+    );
+  }
+
+  it('gives focus back to what opened it when Esc closes it from inside', async () => {
+    render(<Harness />);
+    const opener = screen.getByRole('button', { name: 'Open the item' });
+    await userEvent.click(opener);
+    expect(opener).toHaveFocus();
+    // Not modal: opening leaves focus where it was; the reader moves into the drawer.
+    await userEvent.click(screen.getByRole('button', { name: 'Copilot' }));
+    expect(screen.getByRole('button', { name: 'Copilot' })).toHaveFocus();
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByText('Evidence')).toBeNull();
+    expect(opener).toHaveFocus();
+  });
+
+  it('gives focus back after the close button too', async () => {
+    render(<Harness />);
+    const opener = screen.getByRole('button', { name: 'Open the item' });
+    await userEvent.click(opener);
+    await userEvent.click(screen.getByRole('button', { name: 'Close the workspace drawer' }));
+    expect(screen.queryByText('Evidence')).toBeNull();
+    expect(opener).toHaveFocus();
+  });
+});
+
+describe('StackedBar', () => {
+  const segments = [
+    { id: 'breach', label: 'Breach', count: 1, fill: 'breach' as const },
+    { id: 'pass', label: 'Compliant', count: 3, fill: 'pass' as const },
+  ];
+
+  it('is one picture with a name, and holds no control inside it, even when its segments can be pressed', async () => {
+    const onSelect = vi.fn();
+    const { container } = render(<StackedBar label="Covenant tests by outcome" segments={segments} onSelect={onSelect} />);
+    const picture = screen.getByRole('img', { name: 'Covenant tests by outcome: Breach 1, Compliant 3' });
+    // axe nested-interactive: an image's children are presentational, so a button inside one is lost.
+    expect(picture.querySelector('button, a, [tabindex]')).toBeNull();
+    const targets = container.querySelectorAll('button');
+    expect(targets).toHaveLength(2);
+    for (const target of targets) expect(target).toHaveAttribute('tabindex', '-1');
+    await userEvent.click(targets[0]!);
+    expect(onSelect).toHaveBeenCalledWith('breach');
+  });
+
+  it('draws no click targets when nothing can be chosen', () => {
+    const { container } = render(<StackedBar label="Open signals" segments={segments} />);
+    expect(container.querySelector('button')).toBeNull();
   });
 });

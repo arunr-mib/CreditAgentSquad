@@ -328,7 +328,7 @@ function Summary({ data, status, onStatus }: { data: PortfolioSummary; status: s
                   className={cx(legendRow, legendAction)}
                 >
                   <Swatch fill={OUTCOME_FILL[entry.outcome]} />
-                  {OUTCOME[entry.outcome].label}
+                  {OUTCOME[entry.outcome].label}{' '}
                   <span className={legendCount}>{entry.count}</span>
                 </button>
               </li>
@@ -375,7 +375,7 @@ function Summary({ data, status, onStatus }: { data: PortfolioSummary; status: s
                   className={cx(legendRow, legendAction)}
                 >
                   <Swatch fill={SEVERITY_FILL[entry.severity]} />
-                  {SEVERITY_LABEL[entry.severity]}
+                  {SEVERITY_LABEL[entry.severity]}{' '}
                   <span className={legendCount}>{entry.count}</span>
                 </Link>
               </li>
