@@ -539,7 +539,7 @@ def test_a_portfolio_question_works_without_an_open_borrower(db):
         tool_call("portfolio_query", {"covenant_status": "any", "headroom_below_percent": 10,
                                       "min_signal_severity": "any", "open_items_only": False,
                                       "rank_by": "headroom", "limit": 25}),
-        final(f"Two borrowers have less than ten percent covenant headroom. Vantry Freight Systems is tightest: its "
+        final(f"Two borrowers have thin covenant headroom. Vantry Freight Systems is tightest: its "
               f"Total Leverage Ratio is over the limit by {{{{fact:{vantry_headroom}|pct}}}}. Kestrel Bay Packaging "
               f"follows at {{{{fact:{kestrel_headroom}|pct}}}} on the same covenant.")],
         question="Which borrowers have less than ten percent covenant headroom?")

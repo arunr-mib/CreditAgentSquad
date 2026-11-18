@@ -194,3 +194,37 @@ def test_words_and_marks_around_a_reference_that_change_what_it_shows_are_refuse
 ])
 def test_what_a_credit_analyst_would_honestly_write_is_let_through(text):
     assert check_narrative(text, _FACTS) == [], [n.subject for n in check_narrative(text, _FACTS)]
+
+
+# ---- third independent review: the allowances made for honest prose were used to carry figures --
+
+@pytest.mark.parametrize("text", [
+    "Receivables are now collected on a 74-day cycle.", "The largest customer is 120 days past due.",
+    "Revenue is a third lower than a year ago.", "EBITDA fell a fifth while debt rose a quarter.",
+    "Gross margin has slipped into the low twenties.", "DSO is now in the high seventies.",
+    "Fixed charge coverage is one-to-one.", "Leverage trebled over the year.",
+    "A couple of turns of leverage were added in the buyout.", "Liquidity covers four months of fixed charges.",
+    f"Revenue was {{{{fact:{_USD}}}}} (figures in thousands).", f"Revenue was {{{{fact:{_USD}}}}}, in thousands.",
+    f"Revenue was {{{{fact:{_USD}}}}} (USD millions).", f"Revenue was {{{{fact:{_USD}}}}}, stated in millions.",
+    "Leverage stood at Section 4.25 against the limit of Section 3.50.", "Leverage is north of Schedule 4.5.",
+    "EBITDA came in 2031 against plan.", f"Leverage was {{{{fact:{_RATIO}}}}} per quarter.",
+    f"Net income was {{{{fact:{_USD}}}}} a month.", f"Revenue rose {{{{fact:{_USD}}}}}-fold.",
+    "The line is fully drawn and availability is nil.",
+    "Top 10 customers are 90 days past due on the 180-day terms.",
+])
+def test_the_allowances_for_honest_prose_do_not_carry_a_figure(text):
+    assert check_narrative(text, _FACTS), text
+
+
+@pytest.mark.parametrize("text", [
+    f"Revenue for the nine months was {{{{fact:{_USD}}}}}, up from {{{{fact:{_USD}}}}} a year earlier.",
+    f"Fixed charge coverage fell to {{{{fact:{_RATIO}}}}}, below the minimum required by Section 6.12(b) of the credit agreement.",
+    f"Margin narrowed to {{{{fact:{_RATIO}}}}} in the third quarter of 2025.",
+    f"Leverage ({{{{fact:{_RATIO}}}}}) remains above the limit ({{{{fact:{_RATIO}}}}}) for the second consecutive quarter.",
+    f"Revenue grew to {{{{fact:{_USD}}}}} compared with 2025, while gross margin held steady.",
+    "The borrower has reported late in three of the last four quarters.",
+    f"Net income of {{{{fact:{_USD}|usd_k}}}} for the first nine months of 2026 was lower than the same period last year.",
+    "Receivables more than 90 days past due are excluded, and a 13-week cash flow forecast was requested.",
+])
+def test_the_third_reviewers_honest_sentences_are_let_through(text):
+    assert check_narrative(text, _FACTS) == [], [n.subject or n.detail for n in check_narrative(text, _FACTS)]

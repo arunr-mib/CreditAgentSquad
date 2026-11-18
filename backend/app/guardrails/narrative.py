@@ -24,7 +24,7 @@ UNIT_FORMATS = {"usd": ("usd", "usd_k", "usd_m"), "ratio": ("ratio",), "pct": ("
 # "four and a half times", "twelve million", "zero availability").
 _CARDINAL = (r"two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|"
              r"seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|"
-             r"million|billion|trillion|dozens?|zero|nil")
+             r"millions?|billions?|trillions?|thousands|hundreds|dozens?|zero|nil")
 _COUNT_NOUN = (r"facilit(?:y|ies)|loans?|borrowers?|customers?|suppliers?|vendors?|covenants?|quarters?|months?|"
                r"years?|weeks?|periods?|amendments?|waivers?|exceptions?|items?|locations?|plants?|sites?|"
                r"statements?|certificates?|documents?|reports?|tests?|signals?|lenders?|guarantors?|subsidiar(?:y|ies)|"
@@ -34,7 +34,8 @@ _COUNT_ADJECTIVE = (r"consecutive|largest|major|principal|main|key|new|open|rema
                     r"additional|other|separate|straight|successive|fiscal|calendar|interim|reporting|financial|"
                     r"compliance|late|missed|scheduled|operating|trailing")
 _ALLOWED_COUNT = re.compile(
-    rf"^[\s-]+(?:(?:{_COUNT_ADJECTIVE})\s+){{0,2}}(?:{_COUNT_NOUN})\b(?!\s+(?:of\s+)?(?:ebitda|revenue|debt|income))"
+    rf"^[\s-]+(?:(?:{_COUNT_ADJECTIVE})\s+){{0,2}}(?:{_COUNT_NOUN})\b(?!\s+(?:of\s+)?(?:ebitda|revenue|debt|income|fixed|interest|service|payroll|"
+    r"expenses?|sales|purchases|inventory|cover|coverage|liquidity|runway|cash))"
     rf"|^\s+of\s+(?:the|its|their|these|those|them|which)\b", re.I)
 # a Roman numeral standing for a number ("leverage is IV times"); after a capitalised word it is
 # part of a name ("Article IV", "Phase II")
@@ -45,7 +46,14 @@ _LABEL_BEFORE = re.compile(r"\b(?:pages?|sections?|parts?|steps?|phases?|stages?
                            r"appendix|notes?|items?|chapters?|paragraphs?|clauses?)\s+$", re.I)
 _CARDINAL_WORD = re.compile(rf"\b(?:{_CARDINAL})\b", re.I)
 _OTHER_QUANTITY_WORDS = re.compile(
-    r"\b(?:doubled?|doubling|tripled?|tripling|quadrupled?|quintupled?|halved|halving|twice|thrice|\w+fold)\b"
+    r"\b(?:doubled?|doubling|tripled?|tripling|trebled?|trebling|quadrupled?|quintupled?|halved|halving|twice|thrice|\w+fold)\b"
+    r"|\b(?:fell|rose|dropped|grew|declined|increased|decreased|climbed|slipped|down|up|by|is|was|are|were)\s+"
+    r"(?:nearly\s+|about\s+|roughly\s+|almost\s+)?an?\s+(?:third|quarter|fifth|tenth|eighth)\b"
+    r"|\ban?\s+(?:third|quarter|fifth|tenth|eighth)\s+(?:lower|higher|less|more|below|above|of)\b"
+    r"|\b(?:teens|twenties|thirties|forties|fifties|sixties|seventies|eighties|nineties)\b"
+    r"|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)-to-(?:one|two|three|four|five)\b"
+    r"|\bcouple\s+of\s+(?:turns?|times|points?|percent|hundred|thousand|million|billion)\b"
+    r"|\((?:usd|us\$|\$)\s*(?:000s?|thousands?|millions?|mm|m|k)\)"
     r"|\b(?<!first\s)(?<!second\s)(?<!latter\s)(?<!first-)(?<!second-)hal(?:f|ves)\b"
     r"|\b(?:by|nearly|about|roughly|almost|around|approximately|over|under)\s+(?:a|one|two|three)[\s-](?:thirds?|quarters?|fifths?|tenths?)\b"
     r"|\b(?:a|one|two|three)[\s-](?:thirds?|quarters?|fifths?|tenths?)\s+of\b"
@@ -62,7 +70,10 @@ _BEFORE_REF = re.compile(r"(?:[\w$£€.,+\-−–}]|\b(?:minus|negative|less|pl
 _AFTER_REF = re.compile(
     r"^(?:[\w%$£€{]|[.,]\d|[-−–]\d"
     r"|\s*\(?\s*(?:in\s+)?(?:hundreds?|thousands?|millions?|billions?|trillions?|mm|bn|k|m|b|percent|per\s+cent|"
-    r"percentage\s+points?|points?|pts|bps|basis\s+points?|times|turns?|x)\b)", re.I)
+    r"percentage\s+points?|points?|pts|bps|basis\s+points?|times|turns?|x)\b"
+    r"|[-−–]\w|,?\s*(?:stated|expressed|reported|shown|presented|figures|amounts)\b"
+    r"|\s+(?:per|each|every)\s+(?:day|week|month|quarter|year|share|unit)\b"
+    r"|\s+an?\s+(?:day|week|month|quarter|share|unit)\b|\s+a\s+year\b(?!\s+(?:earlier|ago|before|later|prior)))", re.I)
 _BRACKETED_REF = (re.compile(r"\(\s*$"), re.compile(r"^\s*\)"))
 
 
@@ -129,7 +140,9 @@ def check_narrative(
             notes.append(Note("narrative", "format_wrong_for_unit", "retry",
                               f"{token} shows a {facts[fid].unit} fact as {fmt}"))
         before, after = text[:m.start()], text[m.end():]
-        bracketed = _BRACKETED_REF[0].search(before) and _BRACKETED_REF[1].match(after)  # reads as a negative
+        # an amount of money in brackets reads as a negative; a ratio, percentage or count does not
+        bracketed = (_BRACKETED_REF[0].search(before) and _BRACKETED_REF[1].match(after)
+                     and (fid not in facts or facts[fid].unit == "usd"))
         if _BEFORE_REF.search(before) or _AFTER_REF.match(after) or bracketed:
             notes.append(Note("narrative", "reference_joined", "retry",
                               f"text is joined onto {token} and would change the figure it shows"))

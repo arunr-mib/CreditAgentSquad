@@ -157,7 +157,7 @@ def _follow_ups(items: list[str], notes: list[dict[str, str]]) -> list[str]:
         text = " ".join(item.split())
         if not text or text in kept:
             continue
-        if "{{" in text or extract_figures(text):
+        if "{{" in text or check_narrative(text, {}):  # the same strict reading as the answer itself
             notes.append(_note("narrative", "follow_up_has_figure", "follow_up_dropped",
                                "a suggested question contained a figure and was left out"))
             continue
@@ -172,10 +172,10 @@ def _guard(db: Session, output: CopilotAnswer, facts: dict[str, FactView], borro
     if not output.answer.strip():
         notes.append(_note("narrative", "empty_answer", "refuse", "the answer was empty"))
         return "empty_answer", citations
+    # A figure in the question is not evidence: "Is leverage above 2.10x?" answered "leverage is
+    # 2.10x" would pass a number nobody stored. Only quoted document text and fact references count.
     allowed = [figure.value for c in citations for figure in extract_figures(c["quote"])]
-    # a threshold the person stated in the question may be said back to them
-    allowed += [figure.value for figure in extract_figures(question)]
-    problems = check_narrative(output.answer, facts, allowed_figures=allowed, echo=question)
+    problems = check_narrative(output.answer, facts, allowed_figures=allowed)
     if problems:
         for check in dict.fromkeys(p.check for p in problems):
             count = sum(1 for p in problems if p.check == check)

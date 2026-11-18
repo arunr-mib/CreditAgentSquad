@@ -36,8 +36,8 @@ from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Sign
 from app.domain.org import User
 from app.domain.reviews import Action, Commentary, ReviewMeeting, ReviewSheet
 from app.domain.signals_service import quarter_ends
-from app.guardrails.narrative import FACT_REF
-from app.guardrails.numbers import extract_figures
+from app.guardrails.narrative import FACT_REF, FactView, check_narrative
+from app.guardrails.numbers import extract_figures, stray_digits
 from app.publishing.style import WITHHELD
 
 CONTENT_VERSION = "package-1"
@@ -198,20 +198,41 @@ class Registry:
         """Text typed by a person or carried on a record. A figure in it has no source, so it is
         withheld from the published file and reported."""
         text = text or ""
-        figures = extract_figures(text)
-        if not figures:
+        # read as strictly as agent text is: digits glued to letters or dressed as a reference,
+        # a list marker or a date are figures with no source too
+        spans = [(f.start, f.end, f.raw) for f in extract_figures(text, strict=True)]
+        for word in stray_digits(text, strict=True):
+            at = text.find(word)
+            if at != -1 and not any(start <= at < end for start, end, _ in spans):
+                spans.append((at, at + len(word), word))
+        if not spans:
             return [text] if text else []
         out, cursor = [], 0
-        for f in figures:
-            out.append(text[cursor:f.start] + WITHHELD)
-            cursor = f.end
+        for start, end, _raw in sorted(spans):
+            if start < cursor:
+                continue
+            out.append(text[cursor:start] + WITHHELD)
+            cursor = end
         out.append(text[cursor:])
-        self.warnings.append(f"{where}: {len(figures)} typed figure(s) with no source were withheld "
-                             f"({', '.join(f.raw for f in figures)})")
+        self.warnings.append(f"{where}: {len(spans)} typed figure(s) with no source were withheld "
+                             f"({', '.join(raw for _, _, raw in sorted(spans))})")
         return ["".join(out)]
 
     def narrative(self, body: str, where: str) -> list[Any]:
-        """Commentary: text with `{{fact:<id>}}` references becomes text and figures."""
+        """Commentary: text with `{{fact:<id>}}` references becomes text and figures. Commentary
+        that states a quantity in words, or joins text onto a reference so that it reads as a
+        different figure, is not published at all: no part of such a sentence can be trusted."""
+        views = {}
+        for m in FACT_REF.finditer(body):
+            fact = self.db.get(Fact, uuid.UUID(m.group(1)))
+            if fact is not None:
+                views[m.group(1).lower()] = FactView(m.group(1).lower(), fact.value, fact.unit)
+        unsafe = sorted({n.check for n in check_narrative(body, views)
+                         if n.check in ("number_in_words", "reference_joined", "format_wrong_for_unit")})
+        if unsafe:
+            self.warnings.append(f"{where}: withheld, because it states a quantity that is not a stored fact "
+                                 f"({', '.join(unsafe)})")
+            return ["[Commentary withheld: it states a quantity that is not a stored fact.]"]
         segments: list[Any] = []
         cursor = 0
         for m in FACT_REF.finditer(body):

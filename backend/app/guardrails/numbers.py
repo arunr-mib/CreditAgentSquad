@@ -76,20 +76,31 @@ _STRICT_NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
     ("quarter", re.compile(rf"\b(?:Q[1-4]|[1-4]Q)(?:\s?-?\s?(?:FY)?\s?{_YEAR}|-?'?\d{{2}})\b(?![,.]?\d)")),
     ("fiscal_year", re.compile(rf"\bFY\s?'?(?:{_YEAR}|\d{{2}})\b(?![,.]?\d)")),
     ("section_sign", re.compile(rf"§+\s*{_SECTION_NO}")),
+    # a reference is one only where a reference would stand: after "under", "in", "by", "see",
+    # "pursuant to" and the like, or opening a sentence. "stood at Section 4.25" is a ratio.
     ("reference", re.compile(
-        rf"\b(?:Sections?|Articles?|Clauses?|Exhibits?|Schedules?|Annex(?:es)?|Appendi(?:x|ces))\s+(?:{_SECTION_NO}|[IVXLC]+\b)")),
+        r"(?:(?:^|[.;:(,]\s*)|\b(?:under|in|by|per|see|and|or|with|(?:pursuant|subject|according)\s+to)\s+)"
+        rf"(?:Sections?|Articles?|Clauses?|Exhibits?|Schedules?|Annex(?:es)?|Appendi(?:x|ces))\s+(?:{_SECTION_NO}|[IVXLC]+\b)"
+        r"(?!\s+(?:against|versus|vs\.?|times|turns?)\b)")),
     ("amendment", re.compile(r"\b(?:Amendments?|Waivers?|Forbearance Agreements?)\s+(?:No\.?\s*)?\d{1,2}\b(?![\w,.%]*\d|\s*(?:percent|%|x\b))")),
     ("filing", re.compile(r"\b(?:Form\s+)?(?:10-K|10-Q|8-K|K-1|S-1)\b")),
-    ("length_of_time", re.compile(r"(?<![\w.,$-])\d{1,3}-(?:day|week|month|year)\b")),
+    # a length of time naming a requirement or a document ("the 120-day reporting requirement",
+    # "a 13-week cash flow forecast"), never a measurement ("a 74-day cycle")
+    ("length_of_time", re.compile(
+        r"(?<![\w.,$-])\d{1,3}-(?:day|week|month|year)\s+(?:reporting|delivery|notice|cure|grace|cash\s+flow|"
+        r"forecast|budget|deadline|requirement|window|extension|waiver|standstill|forbearance)\b")),
     ("quarter_alone", re.compile(r"(?<![\w.,$-])Q[1-4]\b(?![,.]?\d|\s*(?:percent|%|x\b|times|million|thousand|billion))")),
     # the names of the standard aging buckets and customer rankings, which are not measurements
-    ("aging_bucket", re.compile(r"(?<![\w.,$-])(?:30|60|90|120|150|180)\+?\s+days\s+(?:or\s+more\s+)?(?:past\s+due|delinquent|overdue)\b")),
-    ("ranking", re.compile(r"\btop[- ](?:5|10|20|25|50|100)\b(?![,.]?\d|\s*(?:percent|%))", re.I)),
+    ("aging_bucket", re.compile(
+        r"\b(?:more\s+than|over|greater\s+than|at\s+least|beyond)\s+(?:30|60|90|120|150|180)\s+days\s+"
+        r"(?:past\s+due|delinquent|overdue)\b")),
+    ("ranking", re.compile(r"\btop-(?:5|10|20|25|50|100)\s+(?:customers?|suppliers?|vendors?|accounts?)\b", re.I)),
     # a year: only close to the present, only after a word of time. A four-digit amount that
     # happens to look like a nearby year after "in" is the one thing this cannot tell apart.
     ("year", re.compile(
         r"\b(?:in|during|since|throughout|until|through|fiscal(?:\s+year)?|calendar(?:\s+year)?|"
-        r"year|early|late|mid)[\s-]+(?:201\d|202\d|203[0-5])\b"
+        r"year|early|late|mid|(?:quarter|half|months?|end|start|beginning|close)\s+of|compared\s+(?:with|to)|"
+        r"versus|from)[\s-]+(?:201\d|202\d|2030)\b"
         r"(?!\d|[,.]\d|%|x\b|\s?(?:thousand|million|billion|percent)\b)", re.I)),
 ]
 
