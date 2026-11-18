@@ -20,7 +20,8 @@ export function AsOfControl() {
           type="button"
           className="inline-flex h-8 shrink-0 items-center gap-2 rounded-sm border border-hairline-strong bg-surface px-2.5 text-body text-ink t-colors hover:border-ink-400 data-[state=open]:border-ink-400"
         >
-          <Clock size={14} strokeWidth={1.75} aria-hidden className="shrink-0 text-ink-500 @max-[400px]:hidden" />
+          {/* On the narrowest phones the clock gives way to the freshness warning, and only then. */}
+          <Clock size={14} strokeWidth={1.75} aria-hidden className={cx('shrink-0 text-ink-500', stale && '@max-[400px]:hidden')} />
           <span className="whitespace-nowrap text-ink-500 @max-[520px]:sr-only">As of</span>
           <span data-as-of className="tnum font-medium whitespace-nowrap">
             {asOf ? formatDate(asOf) : 'reading the clock'}
