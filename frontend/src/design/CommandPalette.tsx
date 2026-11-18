@@ -148,7 +148,7 @@ export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Se
                         className={cx('flex h-9 cursor-pointer items-center gap-2.5 rounded-sm px-2.5 text-body text-ink', selected && 'bg-cobalt-bg')}
                       >
                         {command.icon ? <span className={cx('flex shrink-0', selected ? 'text-cobalt-strong' : 'text-ink-500')}>{command.icon}</span> : null}
-                        <span className="min-w-0 flex-1 truncate font-medium">{command.label}</span>
+                        <span className="min-w-0 flex-1 font-medium text-pretty">{command.label}</span>
                         {command.hint ? <span className="shrink-0 text-caption text-ink-500">{command.hint}</span> : null}
                         {selected ? <CornerDownLeft size={12} aria-hidden className="shrink-0 text-cobalt-strong" /> : null}
                       </div>

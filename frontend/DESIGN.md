@@ -63,7 +63,7 @@ Weights: 400, 500, 600. Hierarchy comes from size and weight, not colour. Inter 
 ## Space, radius, shadow, motion
 
 - **Space:** 4 px scale. `--space-1` to `--space-16` = 4, 8, 12, 16, 20, 24, 32, 40, 48, 64. Tailwind spacing is set to 4 px per unit.
-- **Layout:** top bar 48 px; navigation 208 px, a 56 px icon rail below 1200 px; page gutter 24 px. Two-column work layouts from 1400 px; one column below. Minimum usable width 1024 px.
+- **Layout:** top bar 48 px; navigation 208 px, a 56 px icon rail below 1200 px, a bottom bar below 640 px; page gutter 24 px, smaller on a phone. Two-column work layouts from 1400 px; one column below. No minimum width: the page never scrolls sideways (checked from 360 px). Below 1024 px wide tables scroll inside their own frame with the name column pinned, or set each row out as a labelled list on a phone. Text that carries a decision (borrower, question, covenant, outcome) wraps and is never cut with an ellipsis.
 - **Radius:** `--radius-xs` 2 px (marks, keys, highlighted quote), `--radius-sm` 4 px (controls), `--radius-md` 6 px (cards, overlays). Round is for status dots and stage markers only.
 - **Shadow:** `--shadow-raised` (popover, menu, toast) and `--shadow-overlay` (dialog, command palette). Cards and tables are flat with a hairline border.
 - **Motion:** `--motion-instant` 80 ms (hover, press), `--motion-fast` 140 ms (popover, tooltip, menu), `--motion-base` 200 ms (dialog, toast), `--motion-max` 240 ms (ceiling). Skeletons are still. `prefers-reduced-motion` removes the rest.

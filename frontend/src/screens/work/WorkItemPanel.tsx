@@ -476,17 +476,28 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
 }
 
 /**
- * The decision form, and a cue fixed to the bottom of the window while the form is out of sight,
- * so a long question or a short screen never hides that a decision is asked for below.
+ * The decision form, and a cue fixed to the bottom of the window while the item is on screen but
+ * its form is not, so a long question or a short screen never hides that a decision is asked for.
  */
 function DecisionSection({ item }: { item: WorkItemDetail }) {
   const formRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
+  const [panelInView, setPanelInView] = useState(false);
   useEffect(() => {
     const element = formRef.current;
-    if (!element || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver(([entry]) => setInView(entry?.isIntersecting ?? true), { threshold: 0.05 });
+    const panel = element?.closest('[data-work-item]');
+    if (!element || !panel || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.target === element) setInView(entry.isIntersecting);
+          else setPanelInView(entry.isIntersecting);
+        }
+      },
+      { threshold: 0.05 },
+    );
     observer.observe(element);
+    observer.observe(panel);
     return () => observer.disconnect();
   }, []);
   const choices = item.allowed_decisions.length;
@@ -495,10 +506,10 @@ function DecisionSection({ item }: { item: WorkItemDetail }) {
       <div ref={formRef} tabIndex={-1} className="outline-none">
         <DecisionForm item={item} />
       </div>
-      {inView ? null : (
+      {inView || !panelInView ? null : (
         <div
           data-decision-cue
-          className="fixed right-3 bottom-3 left-3 z-30 flex items-center justify-between gap-3 rounded-md border border-hairline-strong bg-surface px-4 py-2 shadow-raised xl:right-6 xl:left-auto xl:w-[400px]"
+          className="fixed right-3 bottom-3 left-3 z-30 max-sm:bottom-[calc(68px+env(safe-area-inset-bottom))] flex items-center justify-between gap-3 rounded-md border border-hairline-strong bg-surface px-4 py-2 shadow-raised xl:right-6 xl:left-auto xl:w-[400px]"
         >
           <p className="text-caption text-ink-700">
             <span className="font-medium text-ink">Your decision is below.</span> {choices} {choices === 1 ? 'choice' : 'choices'}, with a reason.

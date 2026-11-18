@@ -82,7 +82,7 @@ export function Stepper({ steps, label, className, collapseLater = false }: Step
   const shown = folded ? steps.slice(0, lastReached + 2) : steps;
   return (
     <div className={className}>
-      <ol aria-label={label} className="flex">
+      <ol aria-label={label} className="flex max-sm:flex-col max-sm:gap-2.5">
         {shown.map((step, index) => {
           const next = shown[index + 1];
           const attention = step.status === 'needs_person' || step.status === 'failed';
@@ -92,32 +92,44 @@ export function Stepper({ steps, label, className, collapseLater = false }: Step
             <li
               key={step.id}
               aria-current={index === currentIndex ? 'step' : undefined}
-              className={cx('relative min-w-0 flex-1 pr-3', folded ? undefined : 'last:flex-none last:pr-0')}
+              className={cx(
+                'relative min-w-0 flex-1 pr-3 max-sm:flex max-sm:items-start max-sm:gap-2.5 max-sm:pr-0',
+                folded ? undefined : 'sm:last:flex-none sm:last:pr-0',
+              )}
             >
               {line ? (
                 <span
                   aria-hidden
                   className={cx(
-                    'absolute top-2 right-0 left-4 h-px -translate-y-1/2',
+                    'absolute top-2 right-0 left-4 h-px -translate-y-1/2 max-sm:hidden',
                     step.status === 'done' && line.status !== 'pending' ? 'bg-ink' : 'bg-hairline-strong',
                   )}
                 />
               ) : null}
               <Marker status={step.status} />
-              <div className={cx('mt-2 text-caption font-medium text-pretty', reached ? 'text-ink' : 'text-ink-500')}>{step.label}</div>
-              <div className={cx('text-caption text-pretty', attention ? 'font-medium text-amber' : 'text-ink-500')}>
-                {step.detail ?? statusWord[step.status]}
+              <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:gap-x-2">
+                <div className={cx('mt-2 text-caption font-medium text-pretty max-sm:mt-0', reached ? 'text-ink' : 'text-ink-500')}>{step.label}</div>
+                <div className={cx('text-caption text-pretty', attention ? 'font-medium text-amber' : 'text-ink-500')}>
+                  {step.detail ?? statusWord[step.status]}
+                </div>
               </div>
             </li>
           );
         })}
         {folded ? (
-          <li className="relative min-w-0 flex-none">
+          <li className="relative min-w-0 flex-none max-sm:flex max-sm:items-start max-sm:gap-2.5">
             <Marker status="pending" />
-            <button type="button" onClick={() => setShowAll(true)} aria-expanded={false} className="link mt-2 block text-left text-caption font-medium">
-              {later.length} later stages
-            </button>
-            <div className="text-caption text-ink-500">Not started</div>
+            <div className="max-sm:flex max-sm:flex-wrap max-sm:gap-x-2">
+              <button
+                type="button"
+                onClick={() => setShowAll(true)}
+                aria-expanded={false}
+                className="link mt-2 block text-left text-caption font-medium max-sm:mt-0"
+              >
+                {later.length} later stages
+              </button>
+              <div className="text-caption text-ink-500">Not started</div>
+            </div>
           </li>
         ) : null}
       </ol>

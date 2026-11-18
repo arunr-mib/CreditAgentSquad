@@ -6,13 +6,28 @@ import { SEVERITY_LABEL, SEVERITY_TONE } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 
 /** A notice inside the page: a hairline border on all four sides and a dot plus a word. No coloured edge. */
-export function Notice({ tone = 'neutral', title, children, action, className }: { tone?: StatusTone; title: string; children?: ReactNode; action?: ReactNode; className?: string }) {
+export function Notice({
+  tone = 'neutral',
+  title,
+  children,
+  action,
+  className,
+}: {
+  tone?: StatusTone;
+  title: string;
+  children?: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
   return (
-    <div role={tone === 'attention' || tone === 'breach' ? 'alert' : 'note'} className={cx('rounded-md border border-hairline-strong bg-surface px-4 py-3', className)}>
+    <div
+      role={tone === 'attention' || tone === 'breach' ? 'alert' : 'note'}
+      className={cx('rounded-md border border-hairline-strong bg-surface px-4 py-3', className)}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-body font-semibold text-ink">
-            <StatusDot tone={tone} emphasis={tone === 'breach'}>
+            <StatusDot tone={tone} emphasis={tone === 'breach'} className="whitespace-normal!">
               {title}
             </StatusDot>
           </p>
@@ -112,13 +127,13 @@ export function Def({ label, children }: { label: string; children: ReactNode })
 export function SectionHead({ id, title, note, actions }: { id?: string; title: string; note?: ReactNode; actions?: ReactNode }) {
   return (
     <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-      <div className="flex items-baseline gap-3">
+      <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5">
         <h2 id={id} className="text-title font-semibold text-ink">
           {title}
         </h2>
         {note ? <p className="text-caption text-ink-500">{note}</p> : null}
       </div>
-      {actions ? <div className="flex items-center gap-3">{actions}</div> : null}
+      {actions ? <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">{actions}</div> : null}
     </div>
   );
 }
