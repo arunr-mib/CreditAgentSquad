@@ -91,6 +91,17 @@ uv run python -m evals.run --mode live --only kestrel-bay-packaging briarstone-b
 
 Report the scorecard (`evals/results/latest.md`) with its real token counts and cost, misses included; nothing on the hosted link changes (each borrower runs inside a rolled-back transaction).
 
+## Done: the first live measurement (18 November 2026)
+
+- **Run 1, three borrowers, live** (`evals/results/latest.md`): gate passed; extraction 57.8%, covenants 28.6%. Kestrel Bay closed with its hidden breach caught (102 of 102 figures). Harrowgate and Briarstone stopped at spreading because of a collision between the spreading prompt and the template over total equity (`docs/lessons/the-first-live-run-finds-what-stand-ins-cannot.md`). Tokens 78,407 in / 28,924 out.
+- **Fixed:** spreading prompt version 2; the evaluation keeps held figures and unshown agent prose.
+- **Run 2, the same two borrowers, record mode** (`evals/results/live-2026-11-18-record-two-borrowers.md`, responses in `evals/recordings/`): gate passed; extraction 400 of 400, covenants 100%, exception recall 100%, both cycles closed. Two false exceptions, both `intake.unclassified`. Tokens 79,567 in / 28,679 out. Estimated cost of both runs together about 2 US dollars (an estimate from token counts, not an invoice).
+- **Open from the live runs:**
+  1. The Intake Agent sees two pages (`PAGES_SHOWN`) but is told to raise a concern when pages look missing, so it reports unseen pages as missing (Harrowgate). On Briarstone it raised the over-advance itself, which the borrowing base stage also raises. Proposed: say in `intake.md` that only the first pages are shown and that figures are checked by later stages.
+  2. The Covenant Agent reached its step cap on Kestrel Bay (run 1) and gave no answer.
+  3. Recorded replay cannot reproduce agents that cite facts (new fact ids each run), so a replay of run 2 does not close its cycles. Tests and CI that replay the Review or Early Warning agents need stable fact ids or a mapping from recorded ids.
+  4. Run 2's results JSON was overwritten by a replay; its scorecard is kept.
+
 ## Running it
 
 ```bash

@@ -573,15 +573,19 @@ def _output_payloads(content: list[dict[str, Any]]) -> list[Any]:
     return payloads
 
 
-def _prose(value: Any) -> list[str]:
-    """Free text in a model's answer: strings in lists (notes, concerns) and bare text answers.
-    A string with no space is an identifier (a line key), not prose."""
+_PROSE_FIELDS = re.compile(r"note|concern|explanation|reason|rationale|comment|summary|missing_evidence", re.I)
+
+
+def _prose(value: Any, inside: bool = False) -> list[str]:
+    """Free text an agent wrote in its answer: strings under a field whose name says it is prose
+    (notes, a concern, an explanation), at any depth. Row labels, bucket names, printed figures
+    and line keys sit under other fields and are not prose the agent wrote."""
     if isinstance(value, str):
-        return [value] if " " in value.strip() else []
+        return [value] if inside and len(value.split()) >= 4 else []  # a label or an id is not a sentence
     if isinstance(value, dict):
-        return [s for v in value.values() for s in (_prose(v) if not isinstance(v, str) else [])]
+        return [s for k, v in value.items() for s in _prose(v, inside or bool(_PROSE_FIELDS.search(str(k))))]
     if isinstance(value, list):
-        return [s for v in value for s in _prose(v)]
+        return [s for v in value for s in _prose(v, inside)]
     return []
 
 

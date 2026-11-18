@@ -60,3 +60,30 @@ def test_capturing_client_keeps_each_answer_and_passes_it_through():
     assert response.content == [{"type": "text", "text": "{}"}]
     assert cap.mode == "standin"
     assert cap.outputs == [{"record_key": "spreading/doc/0", "content": [{"type": "text", "text": "{}"}]}]
+
+
+def test_unshown_text_reads_a_concern_held_as_a_single_field():
+    # the Intake Agent's answer, as recorded in the first live run (one concern per document)
+    rec = {"agent_runs": [{"agent": "intake", "guardrail_notes": []}],
+           "model_outputs": [{"record_key": "intake/x/01", "content": [{"type": "text", "text": json.dumps(
+               {"documents": [{"doc_type": "interim_statements", "title_as_printed": "Interim Financial Statements",
+                               "concern": "The document has five pages but only two were shown."},
+                              {"doc_type": "compliance_certificate", "concern": ""}]})}]}]}
+    assert [t["text"] for t in unshown_text(rec)] == ["The document has five pages but only two were shown."]
+
+
+def test_unshown_text_skips_labels_that_are_not_prose():
+    # aging bucket names and row labels are copied from the page, not written by the agent
+    rec = {"agent_runs": [{"agent": "collateral", "guardrail_notes": []}],
+           "model_outputs": [{"record_key": "collateral/x/01", "content": [{"type": "text", "text": json.dumps(
+               {"buckets": ["0-30 days", "Over 90 days"], "rows": [{"label": "Eligible receivables"}]})}]}]}
+    assert unshown_text(rec) == []
+
+
+def test_unshown_text_skips_row_notes_and_ids_under_prose_fields():
+    # an aging row's note ("Contra 20,800") and a bare fact id are copied, not written
+    rec = {"agent_runs": [{"agent": "collateral", "guardrail_notes": []}],
+           "model_outputs": [{"record_key": "collateral/x/01", "content": [{"type": "text", "text": json.dumps(
+               {"rows": [{"note": "Contra 20,800"}, {"note": "Affiliate"}],
+                "reason": "54e8fe6e-dcb1-4bce-a6c5-13c08f506ce3"})}]}]}
+    assert unshown_text(rec) == []
