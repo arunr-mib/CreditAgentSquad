@@ -228,3 +228,24 @@ def test_the_allowances_for_honest_prose_do_not_carry_a_figure(text):
 ])
 def test_the_third_reviewers_honest_sentences_are_let_through(text):
     assert check_narrative(text, _FACTS) == [], [n.subject or n.detail for n in check_narrative(text, _FACTS)]
+
+
+# ---- first run with a real model (18 November 2026): honest sentences the strict check dropped --
+
+@pytest.mark.parametrize("text", [
+    f"Trailing twelve-month revenue rose from {{{{fact:{_USD}}}}} to {{{{fact:{_USD}}}}}.",
+    f"Last twelve-month EBITDA was {{{{fact:{_USD}}}}}.",
+    f"The certificate figures match the bank's calculations for all three covenants: {{{{fact:{_RATIO}}}}}.",
+    "The reported figures agree with the spread.",
+])
+def test_sentences_from_the_first_live_run_are_let_through(text):
+    assert [n.check for n in check_narrative(text, _FACTS)] == []
+
+
+@pytest.mark.parametrize("text", [
+    "Losses reached seven figures.", "The borrower booked a six-figure loss.", "Margins are in the high single figures.",
+    "Cash gives a six-month runway.", "Trailing twelve-month cover is thin.", "Twelve months of revenue were lost.",
+    "Revenue over the twelve-month period fell by four.", "The trailing twelve months of payroll were unpaid.",
+])
+def test_the_narrowed_rules_still_refuse_an_amount_in_words(text):
+    assert "number_in_words" in [n.check for n in check_narrative(text, _FACTS)]

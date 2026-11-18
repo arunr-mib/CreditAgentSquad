@@ -45,6 +45,11 @@ _CAPITALISED_BEFORE = re.compile(r"[A-Z][A-Za-z.]*\s+$")
 _LABEL_BEFORE = re.compile(r"\b(?:pages?|sections?|parts?|steps?|phases?|stages?|tiers?|exhibits?|schedules?|"
                            r"appendix|notes?|items?|chapters?|paragraphs?|clauses?)\s+$", re.I)
 _CARDINAL_WORD = re.compile(rf"\b(?:{_CARDINAL})\b", re.I)
+# "trailing twelve-month revenue", "last twelve-month EBITDA": the name of a measurement window, with the
+# number hyphenated onto its unit. It says which period a figure covers and states no amount of anything;
+# "twelve months of revenue" and "a six-month runway" are not this form and stay refused.
+_WINDOW_BEFORE = re.compile(r"\b(?:trailing|last|latest|rolling|prior|preceding)\s+$", re.I)
+_WINDOW_AFTER = re.compile(r"^-(?:month|quarter|year|week)\b(?!s)(?!\s+(?:cover|coverage|liquidity|runway|cash)\b)", re.I)
 _OTHER_QUANTITY_WORDS = re.compile(
     r"\b(?:doubled?|doubling|tripled?|tripling|trebled?|trebling|quadrupled?|quintupled?|halved|halving|twice|thrice|\w+fold)\b"
     r"|\b(?:fell|rose|dropped|grew|declined|increased|decreased|climbed|slipped|down|up|by|is|was|are|were)\s+"
@@ -59,7 +64,9 @@ _OTHER_QUANTITY_WORDS = re.compile(
     r"|\b(?:a|one|two|three)[\s-](?:thirds?|quarters?|fifths?|tenths?)\s+of\b"
     r"|\b(?:one|two|three|four)-(?:thirds?|quarters?|fifths?|tenths?)\b"
     r"|\b(?:single|double|triple)[\s-]digits?\b|\b(?:tens|hundreds|thousands|millions|billions)\s+of\b"
-    r"|\b\w+[\s-]figures?\b(?<!the figures)(?<!the figure)(?<!these figures)(?<!those figures)"
+    # "seven figures", "a six-figure loss", "high single figures": a size stated in words. Any other word before
+    # "figures" ("the certificate figures", "reported figures") names figures and states none.
+    rf"|\b(?:{_CARDINAL}|one|low|mid|high|upper|lower|several|multi|single|double|triple)[\s-]figures?\b"
     r"|\b(?:below|above|under|over|than|exceeds?|exceeded|reached|near|nearly|around|about|approximately|to|at|of|is|was)\s+one\b(?!\s+(?:of|or)\b|-)"
     r"|\bone\s+(?:times?|turns?|percent|point)\b"
     r"|[¼½¾⅓⅔⅛⅜⅝⅞]",
@@ -162,6 +169,7 @@ def check_narrative(
     said = " ".join(echo.lower().split())
     in_words = [m for m in _CARDINAL_WORD.finditer(outside)
                 if not _ALLOWED_COUNT.match(outside[m.end():]) and not _LABEL_BEFORE.search(outside[:m.start()])
+                and not (_WINDOW_AFTER.match(outside[m.end():]) and _WINDOW_BEFORE.search(outside[:m.start()]))
                 and not re.search(r"\d\s?$", outside[:m.start()])]  # "51.3 million" is already reported as a figure
     in_words += list(_OTHER_QUANTITY_WORDS.finditer(outside))
     in_words += [m for m in _ROMAN.finditer(outside) if m.group(0) and not _CAPITALISED_BEFORE.search(outside[:m.start()])]

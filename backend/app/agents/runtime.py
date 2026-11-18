@@ -158,7 +158,9 @@ def run_agent(
             _finish(db, run, "failed", f"{type(exc).__name__}: {exc}"[:600])
             return AgentOutcome(run, "failed", reason="error")
         run.served_model = response.model or run.served_model
-        run.input_tokens += response.usage.get("input_tokens", 0)
+        # tokens written to the prompt cache are input the model read for the first time: count them as
+        # input, or a cached run looks as if it read almost nothing
+        run.input_tokens += response.usage.get("input_tokens", 0) + response.usage.get("cache_creation_input_tokens", 0)
         run.output_tokens += response.usage.get("output_tokens", 0)
         run.cache_read_tokens += response.usage.get("cache_read_input_tokens", 0)
         _add_step(ctx, "model", "response", f"exchange {exchange}", response.stop_reason,
