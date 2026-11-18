@@ -55,7 +55,7 @@ class SpreadExtraction(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="spreading", version="1",
+    name="spreading", version="2",
     purpose="Locate template figures in financial statements; code verifies each on its page.",
     prompt_file="spreading.md", output_model=SpreadExtraction, tools=(), effort="high", max_tokens=32000)
 

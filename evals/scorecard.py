@@ -145,6 +145,31 @@ def render_markdown(results: dict[str, Any]) -> str:
             out.append(f"| `{code}` | {s['stage']} | {_cell(open_items)} | {_cell(decisions)} |")
         out.append("")
 
+    held = [(code, c) for code, g in results["borrowers"].items() for c in g.get("held_cells", [])]
+    if held:
+        out.append("## Figures held for a person")
+        out.append("")
+        out.append("| Borrower | Item | Filed under | Label the reader gave | Label on the page | Reason |")
+        out.append("|---|---|---|---|---|---|")
+        for code, c in held:
+            out.append(f"| `{code}` | {c['item']} | `{c['key']}` | {_cell(str(c['printed_label'] or ''))} | "
+                       f"{_cell(str(c['row_label'] or ''))} | {c['reason']} |")
+        out.append("")
+
+    unshown = [(code, t) for code, g in results["borrowers"].items() for t in g.get("unshown_text", [])]
+    if unshown:
+        out.append("## Agent text no person was shown")
+        out.append("")
+        out.append("Prose from the raw model answer that is not among the shown notes: refused by a guardrail, "
+                   "or placed where the product does not show it. Read each one: a refused honest sentence is a "
+                   "defect, and the text is the test case.")
+        out.append("")
+        out.append("| Borrower | Agent | Typed figures | Text |")
+        out.append("|---|---|---|---|")
+        for code, t in unshown:
+            out.append(f"| `{code}` | {t['agent']} | {', '.join(t['typed_figures']) or 'none'} | {_cell(t['text'])[:400]} |")
+        out.append("")
+
     observations = [(code, o) for code, g in results["borrowers"].items() for o in g.get("observations", [])]
     notes = [(code, r["agent"], n) for code, g in results["borrowers"].items() for r in g.get("agent_runs", [])
              for n in (r.get("guardrail_notes") or []) if isinstance(n, dict) and n.get("action") != "shown"]

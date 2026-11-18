@@ -543,7 +543,61 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
         "agent_runs": [{"agent": r["agent"], "status": r["status"], "llm_mode": r["llm_mode"],
                         "served_model": r["served_model"], "guardrail_notes": r["guardrail_notes"]}
                        for r in rec["agent_runs"]],
+        "held_cells": held_cells(items), "unshown_text": unshown_text(rec),
         "tokens": tokens, "ledger_ok": (rec.get("ledger") or {}).get("ok"), "seconds": rec.get("seconds")})
+    return out
+
+
+def held_cells(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Each figure the product held for a person, with the reason, from the work items' evidence."""
+    out = []
+    for w in items:
+        for cell in (w.get("evidence") or {}).get("cells") or []:
+            if isinstance(cell, dict):
+                out.append({"item": w.get("type"), "key": cell.get("key"), "printed_label": cell.get("printed_label"),
+                            "row_label": cell.get("row_label"), "reason": cell.get("reason"),
+                            "page": cell.get("page")})
+    return out
+
+
+def _output_payloads(content: list[dict[str, Any]]) -> list[Any]:
+    payloads: list[Any] = []
+    for block in content:
+        if block.get("type") == "tool_use":
+            payloads.append(block.get("input"))
+        elif block.get("type") == "text":
+            try:
+                payloads.append(json.loads(block.get("text") or ""))
+            except ValueError:
+                payloads.append(block.get("text") or "")
+    return payloads
+
+
+def _prose(value: Any) -> list[str]:
+    """Free text in a model's answer: strings in lists (notes, concerns) and bare text answers.
+    A string with no space is an identifier (a line key), not prose."""
+    if isinstance(value, str):
+        return [value] if " " in value.strip() else []
+    if isinstance(value, dict):
+        return [s for v in value.values() for s in (_prose(v) if not isinstance(v, str) else [])]
+    if isinstance(value, list):
+        return [s for v in value for s in _prose(v)]
+    return []
+
+
+def unshown_text(rec: dict[str, Any]) -> list[dict[str, Any]]:
+    """Prose the model wrote that no person was shown: notes and concerns in the raw answer whose
+    text is not among the run's shown notes. Kept in the evaluation's results only."""
+    shown = {str(n.get("detail", "")).strip() for r in rec.get("agent_runs") or []
+             for n in (r.get("guardrail_notes") or []) if isinstance(n, dict) and n.get("action") == "shown"}
+    out = []
+    for o in rec.get("model_outputs") or []:
+        agent = (o.get("record_key") or "").split("/", 1)[0]
+        for payload in _output_payloads(o.get("content") or []):
+            for text in _prose(payload) if not isinstance(payload, str) else []:
+                if text.strip() not in shown:
+                    out.append({"agent": agent, "record_key": o.get("record_key"), "text": text,
+                                "typed_figures": typed_figures(text)})
     return out
 
 

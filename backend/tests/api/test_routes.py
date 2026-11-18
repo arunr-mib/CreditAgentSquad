@@ -285,6 +285,7 @@ def test_a_person_runs_the_next_stage_only_with_the_permission_and_a_model(clien
     # live mode needs a key
     monkeypatch.setenv("SQUAD_LLM_MODE", "live")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "")
+    monkeypatch.delenv("SQUAD_ANTHROPIC_API_KEY", raising=False)  # read first; a cloud session sets it
     get_settings.cache_clear()
     assert client.post(url).status_code == 409
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test-not-a-real-key")

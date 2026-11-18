@@ -416,12 +416,32 @@ def scratch_file_store():
             get_settings.cache_clear()
 
 
+class CapturingClient:
+    """Keeps what the model answered, in memory, for the evaluation's results only. The product
+    stores a refused note as "removed" and never its text (a refused figure must not reach a
+    person); the grader needs that text, because a refused honest sentence is the test case."""
+
+    def __init__(self, inner):
+        self.inner = inner
+        self.mode = getattr(inner, "mode", "unknown")
+        self.outputs: list[dict[str, Any]] = []
+
+    def create(self, request):
+        response = self.inner.create(request)
+        content = getattr(response, "content", None)
+        self.outputs.append({"record_key": getattr(request, "record_key", ""),
+                             "content": content if isinstance(content, list) else []})
+        return response
+
+
 def run_pass(engine: Engine, book: Book, client, *, decide: bool, progress: Callable[[str], None] | None = None,
              ) -> dict[str, dict[str, Any]]:
     """One pass over every borrower in the book. Returns recordings by borrower code."""
     recordings = {}
     for borrower in book:
-        recording = run_borrower(engine, book, borrower, lambda: client, decide=decide)
+        capture = CapturingClient(client)
+        recording = run_borrower(engine, book, borrower, lambda capture=capture: capture, decide=decide)
+        recording["model_outputs"] = capture.outputs
         recordings[borrower.code] = recording
         if progress:
             cycle = recording.get("cycle", {})

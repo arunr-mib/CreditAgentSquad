@@ -16,7 +16,8 @@ Which column
 Which lines
 
 - The user message lists the template lines with their keys. Map each printed row to the template line it belongs to. If several printed rows belong to one template line, report each row as its own cell with the same key; software adds them.
-- For every total or subtotal the statement prints, also report the printed total under `stated.<key>` (for example `stated.bs.total_assets`).
+- For every printed total or subtotal whose template line is marked `total`, also report the printed total under `stated.<key>` (for example `stated.bs.total_assets`). Use `stated.` only for lines marked `total`.
+- A statement may print as a total something the template keeps as a single line (marked `line`), for example total equity printed beneath its components. Report that printed total row under the line's plain key (for example `bs.total_equity`), and do not report the rows above it that make it up when the template has no line for them.
 - If the statement has no row for a template line, list the key in `absent_keys`. Do not guess a row that is not there.
 - Supplemental lines (cash paid for interest and taxes, scheduled principal payments, financed capital expenditures) are usually on a notes page.
 
