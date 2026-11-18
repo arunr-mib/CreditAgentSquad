@@ -14,7 +14,7 @@ import { cx } from '@/lib/cx';
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { ChangeFigure } from './ChangeFigure';
 import { SourceContext, useSource, type SourceRef } from './context';
-import { PdfPage } from './PdfPage';
+import { PdfPage, useFitWidth } from './PdfPage';
 
 const PAGE_WIDTH = 548;
 
@@ -147,13 +147,16 @@ function PageBlock({
   markLabel: string;
   onNavigate: () => void;
 }) {
+  const frame = useRef<HTMLElement>(null);
+  // On a phone the page is drawn to the drawer's width, so the outlined figure is on screen.
+  const width = useFitWidth(frame, PAGE_WIDTH);
   if (!page.document_id || !page.page) return null;
   return (
-    <figure>
+    <figure ref={frame} className="min-w-0">
       <PdfPage
         documentId={page.document_id}
         page={page.page}
-        width={PAGE_WIDTH}
+        width={width}
         title={page.document_title}
         maxHeight={360}
         marks={page.boxes.length > 0 ? [{ id: 'cited', boxes: page.boxes, active: true, label: markLabel }] : []}
