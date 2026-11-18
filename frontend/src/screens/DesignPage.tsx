@@ -310,7 +310,7 @@ export function DesignPage() {
           lead="A 4 px grid. Small radii and no pills. Two shadow steps, both for things that float. Nothing moves for longer than 240 ms."
         >
           <Story name="Spacing" rule="4 px scale: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64.">
-            <div className="flex items-end gap-3">
+            <div className="flex flex-wrap items-end gap-3">
               {[4, 8, 12, 16, 20, 24, 32, 40, 48, 64].map((size) => (
                 <div key={size} className="text-center">
                   <span aria-hidden className="block bg-ink" style={{ width: size, height: size }} />
@@ -455,7 +455,7 @@ export function DesignPage() {
             </div>
           </Story>
           <Story name="Input and Select" rule="A label always. Validation is amber: red is kept for covenant breaches.">
-            <div className="grid max-w-[720px] grid-cols-3 gap-4">
+            <div className="grid max-w-[720px] grid-cols-1 gap-4 sm:grid-cols-3">
               <Input label="Borrower" placeholder="Search by name" leading={<Search size={14} aria-hidden />} />
               <Input label="Reason for the decision" defaultValue="" error="A reason is required to decide otherwise." />
               <Select
@@ -613,7 +613,7 @@ export function DesignPage() {
             </div>
           </Story>
           <Story name="Card" rule="A surface with a hairline border. No shadow and no coloured edge.">
-            <div className="grid max-w-[720px] grid-cols-2 gap-5">
+            <div className="grid max-w-[720px] grid-cols-1 gap-5 sm:grid-cols-2">
               <Card>
                 <CardHeader eyebrow="Terms" title="Version 2" meta="Approved 9 Jan 2025" actions={<Button size="sm">Open</Button>} />
                 <CardBody>

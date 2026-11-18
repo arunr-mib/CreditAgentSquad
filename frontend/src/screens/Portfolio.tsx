@@ -11,8 +11,8 @@ import { Load } from './parts';
 
 function Stat({ label, children, note }: { label: string; children: ReactNode; note?: ReactNode }) {
   return (
-    <div className="min-w-0 px-5 py-3.5 first:pl-0 last:pr-0">
-      <h2 className="eyebrow whitespace-nowrap">{label}</h2>
+    <div className="min-w-0 border-hairline-strong py-3.5 max-md:odd:pr-4 max-md:even:border-l max-md:even:pl-4 max-md:nth-[n+3]:border-t md:px-5 md:first:pl-0 md:last:pr-0">
+      <h2 className="eyebrow lg:whitespace-nowrap">{label}</h2>
       <div className="mt-1 text-heading font-semibold text-ink">{children}</div>
       {note ? <div className="mt-0.5 text-caption text-ink-500">{note}</div> : null}
     </div>
@@ -77,6 +77,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
         header: 'Borrower',
         rowHeader: true,
         wrap: true,
+        minWidth: '132px',
         sortValue: (row) => row.name,
         cell: (row) => (
           <Link to="/borrowers/$code" params={{ code: row.code }} onClick={(event) => event.stopPropagation()} className="font-medium text-ink hover:text-cobalt-strong hover:underline">
@@ -117,10 +118,12 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
       {
         id: 'covenants',
         header: 'Covenants',
+        wrap: 'narrow',
+        minWidth: '132px',
         sortValue: (row) => (row.covenant_status ? OUTCOME[row.covenant_status].rank : 9),
         cell: (row) =>
           row.covenant_status ? (
-            <StatusDot tone={OUTCOME[row.covenant_status].tone} emphasis={OUTCOME[row.covenant_status].emphasis}>
+            <StatusDot tone={OUTCOME[row.covenant_status].tone} emphasis={OUTCOME[row.covenant_status].emphasis} className="max-lg:whitespace-normal!">
               {OUTCOME[row.covenant_status].label}
             </StatusDot>
           ) : (
@@ -158,6 +161,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
       {
         id: 'stage',
         header: 'Stage',
+        wrap: 'narrow',
         sortValue: (row) => (row.latest_cycle ? STAGE_ORDER.indexOf(row.latest_cycle.stage) : 99),
         cell: (row) => <span className="text-ink-700">{row.latest_cycle ? (row.latest_cycle.stage === 'review_prep' ? 'Review prep' : stageLabel(row.latest_cycle.stage)) : 'No cycle'}</span>,
       },
@@ -170,16 +174,16 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
         <h2 id="book-heading" className="sr-only">
           Borrowers
         </h2>
-        <Input label="Search borrowers" hideLabel placeholder="Search by name, industry or person" className="w-72" leading={<Search size={14} aria-hidden />} value={text} onChange={(event) => setText(event.target.value)} />
+        <Input label="Search borrowers" hideLabel placeholder="Search by name, industry or person" className="w-full sm:w-72" leading={<Search size={14} aria-hidden />} value={text} onChange={(event) => setText(event.target.value)} />
         <Select
           label="Covenant status"
           hideLabel
-          className="w-56"
+          className="w-full sm:w-56"
           value={status}
           onValueChange={setStatus}
           options={[{ value: 'all', label: 'All covenant statuses' }, ...statuses.map((id) => ({ value: id, label: OUTCOME[id].label })), { value: 'none', label: 'Not tested yet' }]}
         />
-        <Select label="Cycle stage" hideLabel className="w-48" value={stage} onValueChange={setStage} options={[{ value: 'all', label: 'All stages' }, ...stages.map((id) => ({ value: id, label: stageLabel(id) }))]} />
+        <Select label="Cycle stage" hideLabel className="w-full sm:w-48" value={stage} onValueChange={setStage} options={[{ value: 'all', label: 'All stages' }, ...stages.map((id) => ({ value: id, label: stageLabel(id) }))]} />
         <p className="ml-auto text-caption text-ink-500" aria-live="polite">
           {filtered.length} of {borrowers.length} borrowers · amounts in USD thousands
         </p>
@@ -192,6 +196,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
         initialSort={{ id: 'covenants' }}
         onRowActivate={(row) => void navigate({ to: '/borrowers/$code', params: { code: row.code } })}
         stickyTop="var(--topbar-h)"
+        narrow="stack"
         empty={
           <EmptyState
             title="No borrower matches"
@@ -233,7 +238,7 @@ export function Portfolio() {
       />
       <Load query={portfolio} what="The portfolio summary" rows={3}>
         {(data) => (
-          <section aria-label="Portfolio figures" className="grid grid-cols-5 divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong">
+          <section aria-label="Portfolio figures" className="grid grid-cols-2 divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong md:grid-cols-5 md:divide-x">
             <Stat label="Total commitment, USD millions" note={`${data.loans} loans to ${data.borrowers} borrowers`}>
               <SourcedFigure
                 value={data.exposure.commitment}
@@ -336,6 +341,8 @@ export function Borrowers() {
         id: 'name',
         header: 'Borrower',
         rowHeader: true,
+        wrap: true,
+        minWidth: '160px',
         sortValue: (row) => row.name,
         cell: (row) => (
           <Link to="/borrowers/$code" params={{ code: row.code }} onClick={(event) => event.stopPropagation()} className="font-medium text-ink hover:text-cobalt-strong hover:underline">
@@ -344,12 +351,13 @@ export function Borrowers() {
         ),
       },
       { id: 'code', header: 'Record', sortValue: (row) => row.code, cell: (row) => <span className="ident text-ink-700">{row.code}</span> },
-      { id: 'industry', header: 'Industry', sortValue: (row) => row.industry, cell: (row) => <span className="text-ink-700">{humanize(row.industry)}</span> },
-      { id: 'rm', header: 'Relationship manager', sortValue: (row) => row.relationship_manager, cell: (row) => row.relationship_manager ?? <span className="text-ink-500">Not assigned</span> },
-      { id: 'analyst', header: 'Credit analyst', sortValue: (row) => row.analyst, cell: (row) => row.analyst ?? <span className="text-ink-500">Not assigned</span> },
+      { id: 'industry', header: 'Industry', wrap: 'narrow', sortValue: (row) => row.industry, cell: (row) => <span className="text-ink-700">{humanize(row.industry)}</span> },
+      { id: 'rm', header: 'Relationship manager', wrap: 'narrow', sortValue: (row) => row.relationship_manager, cell: (row) => row.relationship_manager ?? <span className="text-ink-500">Not assigned</span> },
+      { id: 'analyst', header: 'Credit analyst', wrap: 'narrow', sortValue: (row) => row.analyst, cell: (row) => row.analyst ?? <span className="text-ink-500">Not assigned</span> },
       {
         id: 'stage',
         header: 'Cycle stage',
+        wrap: 'narrow',
         sortValue: (row) => (row.latest_cycle ? STAGE_ORDER.indexOf(row.latest_cycle.stage) : 99),
         cell: (row) => <span className="text-ink-700">{row.latest_cycle ? stageLabel(row.latest_cycle.stage) : 'No cycle'}</span>,
       },
@@ -365,8 +373,8 @@ export function Borrowers() {
           const filtered = rows.filter((row) => !needle || `${row.name} ${row.code} ${row.industry} ${row.analyst ?? ''} ${row.relationship_manager ?? ''}`.toLowerCase().includes(needle));
           return (
             <section aria-label="Borrower directory">
-              <div className="mb-3 flex items-end gap-3">
-                <Input label="Search borrowers" hideLabel placeholder="Search by name, record, industry or person" className="w-80" leading={<Search size={14} aria-hidden />} value={text} onChange={(event) => setText(event.target.value)} />
+              <div className="mb-3 flex flex-wrap items-end gap-3">
+                <Input label="Search borrowers" hideLabel placeholder="Search by name, record, industry or person" className="w-full sm:w-80" leading={<Search size={14} aria-hidden />} value={text} onChange={(event) => setText(event.target.value)} />
                 <p className="ml-auto text-caption text-ink-500" aria-live="polite">
                   {filtered.length} of {rows.length} borrowers
                 </p>
@@ -379,6 +387,7 @@ export function Borrowers() {
                 initialSort={{ id: 'name' }}
                 onRowActivate={(row) => void navigate({ to: '/borrowers/$code', params: { code: row.code } })}
                 stickyTop="var(--topbar-h)"
+                narrow="stack"
                 empty={<EmptyState title="No borrower matches" description="Nothing in the book fits this search." action={<Button onClick={() => setText('')}>Clear the search</Button>} />}
               />
             </section>

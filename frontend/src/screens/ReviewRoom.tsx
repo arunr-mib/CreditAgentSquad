@@ -121,7 +121,7 @@ function NewMeeting({ periods }: { periods: string[] }) {
       <CardHeader as="h2" title="New review meeting" meta="Every review sheet for the period that has no meeting yet is attached" />
       <form onSubmit={submit} className="space-y-3 border-t border-hairline px-4 pt-3 pb-4">
         <Input label="Title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Quarterly portfolio review" />
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Input label="Meeting date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
           <Select label="Period reviewed" value={period} onValueChange={setPeriod} options={periods.map((value) => ({ value, label: `${quarterLabel(value)} · ${formatDate(value)}` }))} />
         </div>
@@ -158,6 +158,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
       <Card className="min-w-0">
         <CardHeader
           as="h2"
+          className="max-sm:flex-wrap max-sm:gap-y-1"
           eyebrow={`Review sheet · ${quarterLabel(sheet.period_end)}`}
           title={sheet.borrower_name}
           meta={
@@ -188,17 +189,17 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
           <Commentary key={sheet.id} sheet={sheet} />
         </div>
         {(sheet.content.metrics ?? []).length > 0 ? (
-          <table className="w-full border-separate border-spacing-0 text-body">
+          <table className="w-full border-separate border-spacing-0 text-body max-sm:[&_:is(th,td)]:px-2 max-sm:[&_:is(th,td):first-child]:pl-4 max-sm:[&_:is(th,td):last-child]:pr-4">
             <caption className="eyebrow border-t border-hairline-strong px-4 pt-3 pb-1.5 text-left">Performance</caption>
             <thead>
               <tr>
                 <th scope="col" className="eyebrow h-8 border-b border-ink px-4 text-left">
                   Measure
                 </th>
-                <th scope="col" className="eyebrow h-8 w-44 border-b border-ink px-4 text-right">
+                <th scope="col" className="eyebrow h-8 w-28 border-b border-ink px-4 text-right sm:w-44">
                   This period
                 </th>
-                <th scope="col" className="eyebrow h-8 w-44 border-b border-ink px-4 text-right">
+                <th scope="col" className="eyebrow h-8 w-28 border-b border-ink px-4 text-right sm:w-44">
                   A year earlier
                 </th>
               </tr>
@@ -221,7 +222,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
           </table>
         ) : null}
         {(sheet.content.covenants ?? []).length > 0 ? (
-          <table className="w-full border-separate border-spacing-0 text-body">
+          <table className="stack-narrow w-full border-separate border-spacing-0 text-body">
             <caption className="eyebrow px-4 pt-4 pb-1.5 text-left">Covenants</caption>
             <thead>
               <tr>
@@ -239,12 +240,12 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
                     {covenant.covenant}
                   </th>
                   {[covenant.value, covenant.threshold, covenant.headroom_pct, covenant.reported].map((id, index) => (
-                    <td key={index} className="border-b border-hairline px-4 text-right">
+                    <td key={index} data-label={['Calculated', 'Required', 'Headroom', 'Certificate'][index]} className="border-b border-hairline px-4 text-right">
                       <FactFigure fact={fact(id)} weight={index === 0 ? 'semibold' : 'regular'} />
                     </td>
                   ))}
-                  <td className="border-b border-hairline px-4">
-                    <StatusDot tone={OUTCOME[covenant.outcome].tone} emphasis={OUTCOME[covenant.outcome].emphasis}>
+                  <td data-label="Outcome" className="border-b border-hairline px-4">
+                    <StatusDot tone={OUTCOME[covenant.outcome].tone} emphasis={OUTCOME[covenant.outcome].emphasis} className="max-lg:whitespace-normal!">
                       {OUTCOME[covenant.outcome].label}
                     </StatusDot>
                   </td>
@@ -322,7 +323,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
                 const open = action.status === 'open' || action.status === 'in_progress';
                 return (
                   <li key={action.id} className="border-b border-hairline px-4 py-2 text-body last:border-b-0">
-                    <div className="grid grid-cols-[minmax(0,1fr)_170px_150px_auto] items-center gap-x-4">
+                    <div className="grid grid-cols-1 items-center gap-x-4 gap-y-1 md:grid-cols-[minmax(0,1fr)_170px_150px_auto]">
                       <div className="min-w-0">
                         <p className="font-medium text-pretty text-ink">{action.title}</p>
                         <p className="text-caption text-ink-500">{action.borrower_name}</p>
@@ -331,7 +332,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
                       <StatusDot tone={action.overdue ? 'attention' : action.status === 'done' ? 'pass' : action.status === 'cancelled' ? 'muted' : 'neutral'} emphasis={action.overdue}>
                         {action.status === 'done' ? 'Done' : action.status === 'cancelled' ? 'Cancelled' : action.due_date ? `${action.overdue ? 'Overdue, ' : 'Due '}${formatDate(action.due_date)}` : humanize(action.status)}
                       </StatusDot>
-                      <span className="flex justify-end gap-1.5">
+                      <span className="flex gap-1.5 md:justify-end">
                         {open && allowed ? (
                           <>
                             {action.status === 'open' ? (
@@ -349,7 +350,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
                     {action.closing_note ? <p className="mt-1 text-caption text-ink-700">Closing note: {action.closing_note}</p> : null}
                     {closing?.id === action.id ? (
                       <form
-                        className="mt-2 flex items-end gap-2"
+                        className="mt-2 flex flex-wrap items-end gap-2"
                         onSubmit={(event) => {
                           event.preventDefault();
                           change(action, 'done', closing.note);
@@ -379,7 +380,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
         </div>
       ) : null}
       {allowed ? (
-        <form onSubmit={submit} className="grid grid-cols-[minmax(0,1.2fr)_minmax(0,1.6fr)_minmax(0,1fr)_150px_auto] items-end gap-3 border-t border-hairline-strong px-4 pt-3 pb-4">
+        <form onSubmit={submit} className="grid grid-cols-1 items-end gap-3 border-t sm:grid-cols-2 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1.6fr)_minmax(0,1fr)_150px_auto] border-hairline-strong px-4 pt-3 pb-4">
           <Select label="Borrower" value={borrowerId} onValueChange={setBorrowerId} options={[{ value: 'none', label: 'Choose a borrower' }, ...(borrowers.data ?? []).map((row) => ({ value: row.id, label: row.name }))]} />
           <Input label="Action" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="What must be done" />
           <Select label="Owner" value={owner} onValueChange={setOwner} options={[{ value: 'none', label: 'No owner yet' }, ...(users.data ?? []).map((user) => ({ value: user.id, label: user.name }))]} />
@@ -388,7 +389,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
             Raise the action
           </Button>
           {create.error ? (
-            <div className="col-span-5">
+            <div className="col-span-full">
               <Notice tone="attention" title="The action was not raised">
                 The server said: “{errorMessage(create.error)}”
               </Notice>
@@ -425,7 +426,7 @@ export function ReviewRoom() {
               {rows.length > 1 ? (
                 <Select
                   label="Meeting"
-                  className="w-96"
+                  className="w-full sm:w-96"
                   value={selected?.id ?? ''}
                   onValueChange={(value) => void navigate({ search: { meeting: value }, replace: true })}
                   options={rows.map((meeting) => ({ value: meeting.id, label: `${meeting.title} · ${formatDate(meeting.meeting_date)}` }))}

@@ -142,7 +142,7 @@ function CertificateComparison({ test, facts }: { test: CovenantTestRow; facts: 
   const fact = (id: string | null) => (id ? facts[id] : undefined);
   const claim = test.reported_in_compliance;
   return (
-    <dl className="grid grid-cols-4 divide-x divide-hairline border-t border-hairline-strong">
+    <dl className="grid grid-cols-1 divide-y divide-hairline border-t border-hairline-strong sm:grid-cols-4 sm:divide-x sm:divide-y-0 max-sm:[&>div]:flex max-sm:[&>div]:items-baseline max-sm:[&>div]:justify-between max-sm:[&>div]:gap-4 max-sm:[&_dd]:mt-0 max-sm:[&_dd]:text-right">
       <div className="px-4 py-2.5">
         <dt className="eyebrow">Calculated by code</dt>
         <dd className="mt-0.5 text-title">
@@ -191,6 +191,7 @@ function CalculationCard({ test, facts, history, onSelect, code }: { test: Coven
       <CardHeader
         as="h2"
         eyebrow="Calculation"
+        className="max-sm:flex-wrap max-sm:gap-y-1"
         title={test.covenant_name}
         meta={
           <>
@@ -226,7 +227,7 @@ function CalculationCard({ test, facts, history, onSelect, code }: { test: Coven
           <ErrorNotice error={calc.error} what="The calculation" onRetry={() => void calc.refetch()} />
         </div>
       ) : calc.data ? (
-        <div className="border-t border-hairline-strong">
+        <div className="relative overflow-x-auto border-t border-hairline-strong max-sm:[&_thead_th]:w-auto max-sm:[&_thead_th]:whitespace-normal">
           <CalculationBreakdown calc={calc.data} resultLabel={test.covenant_name} resultUnit={test.unit} />
         </div>
       ) : test.calc_run_id ? (
@@ -282,9 +283,10 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
       {
         id: 'outcome',
         header: 'Outcome',
+        wrap: 'narrow',
         sortValue: (row) => OUTCOME[row.outcome].rank,
         cell: (row) => (
-          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis}>
+          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="max-lg:whitespace-normal!">
             {OUTCOME[row.outcome].label}
           </StatusDot>
         ),
@@ -331,12 +333,13 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
               selectedRowId={selected.id}
               onRowActivate={select}
               stickyTop="var(--topbar-h)"
+              narrow="stack"
             />
           </section>
           <CalculationCard key={selected.id} test={selected} facts={facts} history={history} onSelect={select} code={borrower.code} />
         </div>
 
-        <aside aria-label="Exception for the selected covenant" className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
+        <aside aria-label="Exception for the selected covenant" className="min-w-0 xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
           {selected.work_item ? (
             <WorkItemPanel key={selected.work_item.id} itemId={selected.work_item.id} />
           ) : (

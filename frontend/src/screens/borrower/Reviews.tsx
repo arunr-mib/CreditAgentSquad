@@ -52,7 +52,7 @@ export function Reviews() {
             ) : (
               <ul className="border-t border-ink">
                 {rows.map((action) => (
-                  <li key={action.id} className="grid min-h-[34px] grid-cols-[minmax(0,1fr)_auto_auto] items-baseline gap-x-4 border-b border-hairline px-4 py-1.5 text-body last:border-b-0">
+                  <li key={action.id} className="grid min-h-[34px] grid-cols-1 items-baseline gap-x-4 gap-y-0.5 border-b border-hairline px-4 py-1.5 text-body last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
                     <span className="font-medium text-ink">{action.title}</span>
                     <span className="text-ink-700">{action.owner_name ?? 'No owner'}</span>
                     <StatusDot tone={action.overdue ? 'attention' : action.status === 'done' ? 'pass' : 'neutral'}>

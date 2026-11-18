@@ -14,7 +14,7 @@ import { Wordmark } from './Wordmark';
 
 const navLinkClass = (current: boolean) =>
   cx(
-    'flex h-8 items-center gap-2.5 rounded-sm px-2.5 text-body t-colors',
+    'flex h-11 items-center justify-center gap-2.5 rounded-sm text-body t-colors sm:h-8 sm:justify-start sm:px-2.5',
     current ? 'bg-sunken font-semibold text-ink' : 'font-medium text-ink-700 hover:bg-hover hover:text-ink',
   );
 
@@ -22,18 +22,21 @@ function Navigation({ pathname }: { pathname: string }) {
   const portfolio = usePortfolio();
   const openItems = portfolio.data?.work_items.open;
   return (
-    <nav aria-label="Workspace" className="sticky top-0 flex h-screen w-14 shrink-0 flex-col border-r border-hairline-strong bg-canvas lg:w-52">
-      <Link to="/command-centre" aria-label="Credit Agent Squad, home" className="flex h-12 shrink-0 items-center px-[18px] lg:px-5">
+    <nav
+      aria-label="Workspace"
+      className="fixed inset-x-0 bottom-0 z-30 flex shrink-0 border-t border-hairline-strong bg-canvas px-1 pb-[env(safe-area-inset-bottom)] sm:sticky sm:inset-x-auto sm:top-0 sm:bottom-auto sm:z-auto sm:h-screen sm:w-14 sm:flex-col sm:border-t-0 sm:border-r sm:px-0 sm:pb-0 lg:w-52"
+    >
+      <Link to="/command-centre" aria-label="Credit Agent Squad, home" className="hidden h-12 shrink-0 items-center px-[18px] sm:flex lg:px-5">
         <Wordmark />
       </Link>
-      <div className="mx-3 border-t border-hairline-strong lg:mx-5" />
-      <ul className="flex flex-1 flex-col gap-0.5 px-2 pt-3 lg:px-3">
+      <div className="mx-3 hidden border-t border-hairline-strong sm:block lg:mx-5" />
+      <ul className="flex h-14 flex-[7] items-center sm:h-auto sm:flex-1 sm:flex-col sm:items-stretch sm:gap-0.5 sm:px-2 sm:pt-3 lg:px-3">
         {NAV.map((item) => {
           const current = pathname.startsWith(item.to);
           const count = item.to === '/command-centre' ? openItems : undefined;
           const Icon = item.icon;
           return (
-            <li key={item.to}>
+            <li key={item.to} className="min-w-0 flex-1 px-0.5 sm:flex-none sm:px-0">
               <Tooltip content={item.label} side="right">
                 <Link to={item.to} aria-current={current ? 'page' : undefined} className={navLinkClass(current)}>
                   <Icon size={16} strokeWidth={current ? 2 : 1.75} aria-hidden className={cx('shrink-0', current ? 'text-ink' : 'text-ink-500')} />
@@ -50,7 +53,7 @@ function Navigation({ pathname }: { pathname: string }) {
           );
         })}
       </ul>
-      <div className="px-2 pb-3 lg:px-3">
+      <div className="flex h-14 min-w-0 flex-1 flex-col justify-center px-0.5 sm:block sm:h-auto sm:flex-none sm:px-2 sm:pb-3 lg:px-3">
         <Tooltip content="Design system" side="right">
           <Link to="/design" aria-current={pathname.startsWith('/design') ? 'page' : undefined} className={navLinkClass(pathname.startsWith('/design'))}>
             <Palette size={16} strokeWidth={1.75} aria-hidden className="shrink-0 text-ink-500" />
@@ -77,12 +80,12 @@ function AsOfControl() {
       trigger={
         <button type="button" className="inline-flex h-8 items-center gap-2 rounded-sm px-2 text-body text-ink t-colors hover:bg-hover">
           <CalendarClock size={15} strokeWidth={1.75} aria-hidden className="text-ink-500" />
-          <span className="text-ink-500">As of</span>
+          <span className="text-ink-500 max-sm:sr-only">As of</span>
           <span data-as-of className="tnum font-medium">
             {asOf ? formatDate(asOf) : 'reading the clock'}
           </span>
           <span className="sr-only">, simulated clock</span>
-          <ChevronDown size={13} aria-hidden className="text-ink-500" />
+          <ChevronDown size={13} aria-hidden className="text-ink-500 max-sm:hidden" />
         </button>
       }
     >
@@ -200,11 +203,11 @@ export function AppShell() {
       </a>
       <Navigation pathname={pathname} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-12 shrink-0 items-center justify-between gap-4 border-b border-hairline-strong bg-canvas px-6">
+        <header className="@container sticky top-0 z-30 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-hairline-strong bg-canvas px-4 sm:gap-4 sm:px-6">
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="flex h-8 w-[340px] items-center gap-2 rounded-sm border border-hairline-strong bg-surface px-2.5 text-body text-ink-500 t-colors hover:border-ink-400 hover:text-ink-700"
+            className="flex size-8 shrink-0 items-center justify-center gap-2 rounded-sm border border-hairline-strong bg-surface text-body text-ink-500 t-colors hover:border-ink-400 hover:text-ink-700 @min-[680px]:w-[340px] @min-[680px]:justify-start @min-[680px]:px-2.5 [&>span]:sr-only @min-[680px]:[&>span]:not-sr-only"
             aria-keyshortcuts="Control+K Meta+K"
           >
             <Search size={14} aria-hidden />
@@ -213,14 +216,14 @@ export function AppShell() {
               <Kbd>Ctrl K</Kbd>
             </span>
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-1 sm:gap-2">
             <Copilot />
             <AsOfControl />
-            <span aria-hidden className="mx-1 h-5 border-l border-hairline-strong" />
+            <span aria-hidden className="mx-1 hidden h-5 border-l border-hairline-strong sm:block" />
             <UserMenu />
           </div>
         </header>
-        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1480px] flex-1 px-6 pt-6 pb-12 outline-none">
+        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1480px] flex-1 px-4 pt-4 pb-24 outline-none sm:px-6 sm:pt-6 sm:pb-12">
           <Outlet />
         </main>
       </div>

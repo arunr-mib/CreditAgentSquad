@@ -98,13 +98,13 @@ function NewSchedule({ borrowerId, borrowerName }: { borrowerId: string; borrowe
             { value: 'portfolio', label: 'The whole portfolio' },
           ]}
         />
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Select label="How often" value={cadence} onValueChange={setCadence} options={Object.entries(CADENCE).map(([value, label]) => ({ value, label }))} />
           <Input label="Days after period end" inputMode="numeric" value={days} onChange={(event) => setDays(event.target.value)} error={problems.days} />
         </div>
         <fieldset aria-describedby={problems.formats ? formatsNote : undefined}>
           <legend className="mb-1 text-caption font-medium text-ink-700">Files</legend>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
             {FORMATS.map((format) => (
               <label key={format.id} className="inline-flex items-center gap-1.5 text-body text-ink">
                 <input
@@ -163,7 +163,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]" data-package-schedules>
       <section aria-labelledby="schedules-heading" className="min-w-0">
         <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-          <div className="flex items-baseline gap-3">
+          <div className="flex items-baseline gap-x-3 max-sm:flex-wrap">
             <h2 id="schedules-heading" className="text-title font-semibold text-ink">
               Schedules
             </h2>
@@ -184,7 +184,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
                 {here.length === 0 ? (
                   <p className="px-4 py-3 text-body text-pretty text-ink-700">No schedule covers {borrowerName} yet. Packages are prepared only when someone asks for one above.</p>
                 ) : (
-                  <table className="w-full border-separate border-spacing-0 text-body">
+                  <table className="stack-narrow w-full border-separate border-spacing-0 text-body">
                     <caption className="sr-only">Package schedules that cover this borrower</caption>
                     <thead>
                       <tr>
@@ -201,13 +201,13 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
                           <th scope="row" className="h-[34px] border-b border-hairline px-4 py-1.5 text-left font-medium text-ink">
                             {row.title}
                           </th>
-                          <td className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{row.scope === 'portfolio' ? 'The whole portfolio' : 'This borrower'}</td>
-                          <td className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{CADENCE[row.cadence] ?? row.cadence}</td>
-                          <td className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">
+                          <td data-label="For" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{row.scope === 'portfolio' ? 'The whole portfolio' : 'This borrower'}</td>
+                          <td data-label="How often" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{CADENCE[row.cadence] ?? row.cadence}</td>
+                          <td data-label="Due" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">
                             <span className="tnum">{row.days_after_period_end}</span> {row.days_after_period_end === 1 ? 'day' : 'days'} after period end
                           </td>
-                          <td className="border-b border-hairline px-4 py-1.5 text-ink-700">{row.formats.map((format) => FORMAT_LABEL[format] ?? format).join(', ')}</td>
-                          <td className="border-b border-hairline px-4 py-1.5 whitespace-nowrap">
+                          <td data-label="Files" className="border-b border-hairline px-4 py-1.5 text-ink-700">{row.formats.map((format) => FORMAT_LABEL[format] ?? format).join(', ')}</td>
+                          <td data-label="Next run" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap">
                             {!row.active ? <StatusDot tone="muted">Paused</StatusDot> : row.next_run ? <span className="tnum text-ink">{formatDate(row.next_run)}</span> : <span className="text-ink-500">Not set</span>}
                           </td>
                         </tr>

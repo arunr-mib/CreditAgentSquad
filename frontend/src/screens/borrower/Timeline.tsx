@@ -50,7 +50,7 @@ export function Timeline() {
                   </h3>
                   <ol>
                     {entries.map((event) => (
-                      <li key={event.seq} className="grid min-h-[34px] grid-cols-[52px_190px_minmax(0,1fr)_200px_auto] items-baseline gap-x-4 border-b border-hairline px-4 py-1.5 text-body last:border-b-0">
+                      <li key={event.seq} className="grid min-h-[34px] grid-cols-[52px_minmax(0,1fr)] items-baseline gap-x-4 border-b border-hairline px-4 py-1.5 text-body last:border-b-0 max-md:[&>*:nth-child(n+3)]:col-start-2 md:grid-cols-[52px_190px_minmax(0,1fr)_200px_auto]">
                         <span className="tnum text-ink-500">{event.ts.slice(11, 16)}</span>
                         <span className="font-medium text-ink">{actionLabel(event.action)}</span>
                         <span className="text-pretty text-ink-700">{describeEvent(event)}</span>

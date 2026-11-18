@@ -95,7 +95,7 @@ export function BorrowerLayout() {
             </dl>
           }
         />
-        <nav aria-label="Borrower sections" className={`${tabListClass} mt-4`}>
+        <nav aria-label="Borrower sections" className={`${tabListClass} mt-4 flex-wrap gap-y-0`}>
           {TABS.map((tab) => {
             const to = `${base}${tab.path}`;
             const current = tab.path === '' ? pathname === base || pathname === `${base}/` : pathname.startsWith(to);

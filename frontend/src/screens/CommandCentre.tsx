@@ -1,5 +1,5 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useRef, type ReactNode } from 'react';
 import { usePortfolio, useWorkItems } from '@/api/hooks';
 import type { WorkItemRow } from '@/api/schema';
 import type { Severity } from '@/api/types';
@@ -14,9 +14,9 @@ import { WorkItemPanel } from './work/WorkItemPanel';
 /** A headline count with its breakdown. Counts of records are not facts: each links to the list it counts. */
 function SummaryBlock({ label, value, note, children }: { label: string; value: number; note: string; children: ReactNode }) {
   return (
-    <div className="min-w-0 px-5 py-3.5 first:pl-0 last:pr-0">
-      <h2 className="eyebrow whitespace-nowrap">{label}</h2>
-      <p className="mt-0.5 flex items-baseline gap-2">
+    <div className="min-w-0 border-hairline-strong py-3.5 max-md:odd:pr-4 max-md:even:border-l max-md:even:pl-4 max-md:nth-[n+3]:border-t md:px-5 md:first:pl-0 md:last:pr-0">
+      <h2 className="eyebrow md:whitespace-nowrap">{label}</h2>
+      <p className="mt-0.5 flex items-baseline gap-x-2 max-md:flex-wrap">
         <span className="tnum text-display font-semibold tracking-[-0.02em] text-ink">{value}</span>
         <span className="text-caption whitespace-nowrap text-ink-500">{note}</span>
       </p>
@@ -26,7 +26,7 @@ function SummaryBlock({ label, value, note, children }: { label: string; value: 
 }
 
 const countRowClass =
-  'group flex h-[22px] w-full items-baseline justify-between gap-3 rounded-xs text-left whitespace-nowrap text-ink-700 t-colors hover:text-cobalt-strong aria-pressed:text-cobalt-strong';
+  'group flex min-h-[22px] w-full items-baseline justify-between gap-3 rounded-xs text-left text-ink-700 t-colors hover:text-cobalt-strong aria-pressed:text-cobalt-strong md:h-[22px] md:whitespace-nowrap';
 const countClass = 'tnum font-semibold text-ink group-hover:text-cobalt-strong group-aria-pressed:text-cobalt-strong';
 
 /** The borrower's name leads every title; the table already has a borrower column. */
@@ -69,6 +69,11 @@ export function CommandCentre() {
   );
 
   const selected = filtered.find((item) => item.id === search.item) ?? filtered[0] ?? null;
+  const panelRef = useRef<HTMLElement>(null);
+  /** Below 1024 px the selected item sits under the queue, out of sight: choosing a row brings it into view. */
+  const showPanel = () => {
+    if (window.matchMedia?.('(max-width: 1023px)').matches) requestAnimationFrame(() => panelRef.current?.scrollIntoView({ block: 'start' }));
+  };
   const mine = items.filter((item) => can(item.required_permission)).length;
 
   const columns = useMemo<Array<DataColumn<WorkItemRow>>>(
@@ -78,6 +83,8 @@ export function CommandCentre() {
         id: 'borrower',
         header: 'Borrower',
         rowHeader: true,
+        wrap: 'narrow',
+        minWidth: '150px',
         sortValue: (item) => item.borrower_name,
         cell: (item) => <span className="font-medium text-ink">{item.borrower_name}</span>,
       },
@@ -163,7 +170,7 @@ export function CommandCentre() {
       {header}
 
       {summary ? (
-        <section aria-label="Portfolio summary" className="grid grid-cols-4 divide-x divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong">
+        <section aria-label="Portfolio summary" className="grid grid-cols-2 divide-hairline-strong border-t border-b border-t-ink border-b-hairline-strong md:grid-cols-4 md:divide-x">
           <SummaryBlock label="Cycles in progress" value={summary.cycles.open} note={`of ${summary.borrowers} borrowers`}>
             {[...summary.cycles.by_stage]
               .sort((a, b) => STAGE_ORDER.indexOf(a.stage) - STAGE_ORDER.indexOf(b.stage))
@@ -191,7 +198,7 @@ export function CommandCentre() {
               .map((entry) => (
                 <li key={entry.outcome}>
                   <Link to="/portfolio" className={countRowClass}>
-                    <StatusDot tone={OUTCOME[entry.outcome].tone} emphasis={OUTCOME[entry.outcome].emphasis}>
+                    <StatusDot tone={OUTCOME[entry.outcome].tone} emphasis={OUTCOME[entry.outcome].emphasis} className="max-md:whitespace-normal!">
                       {OUTCOME[entry.outcome].label}
                     </StatusDot>
                     <span className={countClass}>{entry.count}</span>
@@ -238,19 +245,21 @@ export function CommandCentre() {
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
           <section aria-label="Work queue" className="min-w-0">
             <div className="mb-3 flex flex-wrap items-center gap-3">
-              <Segmented
-                label="Severity"
-                value={severity}
-                onValueChange={(value) => setSearch({ severity: value === 'all' ? undefined : value, item: undefined })}
-                options={[
-                  { value: 'all', label: 'All', count: items.length },
-                  ...SEVERITIES.map((level) => ({ value: level, label: SEVERITY_LABEL[level], count: items.filter((item) => item.severity === level).length })),
-                ]}
-              />
+              <div className="relative -m-1 max-w-[calc(100%+8px)] overflow-x-auto p-1 max-sm:[&_button]:px-2">
+                <Segmented
+                  label="Severity"
+                  value={severity}
+                  onValueChange={(value) => setSearch({ severity: value === 'all' ? undefined : value, item: undefined })}
+                  options={[
+                    { value: 'all', label: 'All', count: items.length },
+                    ...SEVERITIES.map((level) => ({ value: level, label: SEVERITY_LABEL[level], count: items.filter((item) => item.severity === level).length })),
+                  ]}
+                />
+              </div>
               <Select
                 label="Type"
                 hideLabel
-                className="w-52"
+                className="w-full sm:w-52"
                 value={group}
                 onValueChange={(value) => setSearch({ type: value === 'all' ? undefined : value, item: undefined })}
                 options={[
@@ -269,8 +278,12 @@ export function CommandCentre() {
               columns={columns}
               getRowId={(item) => item.id}
               selectedRowId={selected?.id ?? null}
-              onRowActivate={(item) => setSearch({ item: item.id })}
+              onRowActivate={(item) => {
+                setSearch({ item: item.id });
+                showPanel();
+              }}
               stickyTop="var(--topbar-h)"
+              narrow="stack"
               empty={
                 <EmptyState
                   title="Nothing matches these filters"
@@ -282,7 +295,7 @@ export function CommandCentre() {
             <p className="mt-2 text-caption text-ink-500">Up and Down move between rows. Enter opens the item. {selected ? `Showing: ${itemTypeLabel(selected.item_type)}.` : ''}</p>
           </section>
 
-          <aside aria-label="Selected item" className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
+          <aside ref={panelRef} aria-label="Selected item" className="min-w-0 scroll-mt-16 max-md:min-h-[calc(100dvh-120px)] xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
             {selected ? <WorkItemPanel key={selected.id} itemId={selected.id} /> : <EmptyCard title="No item selected" description="Choose a row in the queue to see its question, evidence and decision." />}
           </aside>
         </div>

@@ -49,7 +49,7 @@ export function Documents() {
           </Link>
         ),
       },
-      { id: 'type', header: 'Type', sortValue: (row) => docTypeLabel(row.doc_type), cell: (row) => <span className="text-ink-700">{docTypeLabel(row.doc_type)}</span> },
+      { id: 'type', header: 'Type', wrap: 'narrow', sortValue: (row) => docTypeLabel(row.doc_type), cell: (row) => <span className="text-ink-700">{docTypeLabel(row.doc_type)}</span> },
       {
         id: 'period',
         header: 'Period',
@@ -102,7 +102,7 @@ export function Documents() {
                     label="Document type"
                     hideLabel
                     size="sm"
-                    className="w-56"
+                    className="w-44 sm:w-56"
                     value={type}
                     onValueChange={setType}
                     options={[{ value: 'all', label: 'All types' }, ...types.map((id) => ({ value: id, label: docTypeLabel(id === 'unclassified' ? null : id) }))]}
@@ -128,6 +128,7 @@ export function Documents() {
               getRowId={(row) => row.id}
               onRowActivate={(row) => void navigate({ to: '/borrowers/$code/documents/$documentId', params: { code: borrower.code, documentId: row.id } })}
               stickyTop="var(--topbar-h)"
+              narrow="stack"
               empty={<EmptyState title="No document of this type" action={<Button onClick={() => setType('all')}>Show all types</Button>} />}
             />
           </section>

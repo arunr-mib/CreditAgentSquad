@@ -8,7 +8,7 @@ import { useCurrentBorrower } from './BorrowerLayout';
 import { CycleStepper } from './Covenants';
 import { basisFactIds, SignalBasis } from './Signals';
 
-const rowClass = 'flex min-h-[34px] items-center justify-between gap-4 border-b border-hairline px-4 py-1.5 text-body last:border-b-0';
+const rowClass = 'flex min-h-[34px] flex-col gap-x-4 gap-y-1 border-b border-hairline px-4 py-1.5 text-body last:border-b-0 sm:flex-row sm:items-center sm:justify-between';
 const more = 'link text-caption font-medium';
 
 export function Summary() {
@@ -50,7 +50,7 @@ export function Summary() {
                 tests.length === 0 ? (
                   <p className="border-t border-hairline px-4 py-3 text-body text-ink-700">No covenant has been tested for this period yet. An earlier stage is waiting for a person.</p>
                 ) : (
-                  <table className="w-full border-separate border-spacing-0 text-body">
+                  <table className="stack-narrow w-full border-separate border-spacing-0 text-body">
                     <caption className="sr-only">Covenant tests for the latest period</caption>
                     <thead>
                       <tr>
@@ -69,20 +69,20 @@ export function Summary() {
                               {test.covenant_name}
                             </Link>
                           </th>
-                          <td className="border-b border-hairline px-4 text-right">
+                          <td data-label="Calculated" className="border-b border-hairline px-4 text-right">
                             <FactFigure fact={test.value_fact_id ? facts[test.value_fact_id] : undefined} weight="semibold" absent="Not calculated" />
                           </td>
-                          <td className="border-b border-hairline px-4 text-right">
+                          <td data-label="Threshold" className="border-b border-hairline px-4 text-right">
                             <span className="mr-1.5 text-ink-500" role="img" aria-label={test.operator === '>=' ? 'at least' : 'at most'}>
                               {test.operator === '>=' ? '≥' : '≤'}
                             </span>
                             <FactFigure fact={test.threshold_fact_id ? facts[test.threshold_fact_id] : undefined} />
                           </td>
-                          <td className="border-b border-hairline px-4 text-right">
+                          <td data-label="Headroom" className="border-b border-hairline px-4 text-right">
                             <FactFigure fact={test.headroom_fact_id ? facts[test.headroom_fact_id] : undefined} />
                           </td>
-                          <td className="border-b border-hairline px-4">
-                            <StatusDot tone={OUTCOME[test.outcome].tone} emphasis={OUTCOME[test.outcome].emphasis}>
+                          <td data-label="Outcome" className="border-b border-hairline px-4">
+                            <StatusDot tone={OUTCOME[test.outcome].tone} emphasis={OUTCOME[test.outcome].emphasis} className="max-lg:whitespace-normal!">
                               {OUTCOME[test.outcome].label}
                             </StatusDot>
                           </td>
@@ -114,7 +114,7 @@ export function Summary() {
                   <ul className="border-t border-ink">
                     {topSignals.map((signal) => (
                       <li key={signal.id} className={rowClass}>
-                        <span className="flex min-w-0 items-baseline gap-3">
+                        <span className="flex min-w-0 flex-wrap items-baseline gap-x-3 sm:flex-nowrap">
                           <SeverityDot severity={signal.severity} />
                           <span className="font-medium text-ink">
                             {signalLabel(signal.rule_id)}
@@ -122,7 +122,7 @@ export function Summary() {
                           </span>
                           <span className="tnum text-caption text-ink-500">{quarterLabel(signal.period_end)}</span>
                         </span>
-                        <span className="shrink-0 text-right">
+                        <span className="sm:shrink-0 sm:text-right">
                           <SignalBasis signal={signal} facts={signalFacts.data ?? {}} code={borrower.code} />
                         </span>
                       </li>
