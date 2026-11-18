@@ -46,7 +46,7 @@ One drawer for the whole app, mounted in the shell, with a segmented header: **E
 
 ## Shell
 
-- **Rail**: expanded with labels (208 px) or collapsed to icons with tooltips (56 px); toggle button and `[`; choice remembered per browser. Count beside Command centre; a pulsing iris dot beside Agent activity while a run is in progress. Active item: raised surface, ink icon.
+- **Rail**: expanded with labels (208 px) or collapsed to icons with tooltips (56 px); toggle button and `[`; choice remembered per browser. As built: from 1200 px the labelled rail sits beside the page (from 1400 px while the drawer is open); below that the rail stays 56 px and the toggle opens the labels over the page, because the screens are laid out for the narrow rail at those widths. Count beside Command centre; a still iris dot (nothing animates for longer than 240 ms) beside Agent activity while a run is in progress. Active item: raised surface, ink icon.
 - **Top bar**: search trigger with `Ctrl K`; "As of" as a compact control with a clock icon and the freshness warning; user control with initials, name and role as text, and "Switch demo user"; "Ask Copilot" with an iris spark and `Ctrl J`.
 - **Command palette**: borrower jump, queue filters, "Ask Copilot about…".
 - **Phone**: bottom bar stays; the drawer is a full-screen sheet. No page scrolls sideways at any width from 360 px.

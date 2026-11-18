@@ -14,7 +14,7 @@ export interface SegmentedProps {
   options: SegmentedOption[];
 }
 
-/** A single-choice filter. Square-shouldered segments joined by hairlines; not pills. */
+/** A single-choice filter. Square-shouldered segments joined by hairlines. */
 export function Segmented({ label, value, onValueChange, options }: SegmentedProps) {
   return (
     <ToggleGroup.Root

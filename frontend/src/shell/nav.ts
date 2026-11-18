@@ -28,7 +28,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: 'Oversight',
     items: [
       { label: 'Agent activity', to: '/agent-activity', icon: Activity, description: 'Runs, steps and guardrail notes' },
-      { label: 'Governance', to: '/governance', icon: Landmark, description: 'Ledger, agent versions and the simulated clock' },
+      { label: 'Governance', to: '/governance', icon: Landmark, description: 'Roles and permissions, policy rules, the ledger, agent versions and the simulated clock' },
     ],
   },
 ];

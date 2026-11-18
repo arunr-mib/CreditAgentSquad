@@ -34,7 +34,7 @@ export interface StatusDotProps {
   className?: string;
 }
 
-/** Status is a small dot plus a word. Never a pill, never colour alone. */
+/** Status is a small dot plus a word, never colour alone. For severity and actionable status use Tag. */
 export function StatusDot({ tone, children, emphasis, className }: StatusDotProps) {
   return (
     <span className={cx('inline-flex items-baseline gap-1.5 whitespace-nowrap', className)}>
