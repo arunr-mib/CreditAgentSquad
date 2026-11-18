@@ -139,6 +139,8 @@ export interface WorkItemRow {
   requires_second_person: boolean;
   required_permission: string;
   prepared_by_id: string | null;
+  /** The person the item is routed to, if any. */
+  assigned_to?: string | null;
   due_date: string | null;
   status: 'open' | 'decided' | 'dismissed';
   decision: string | null;

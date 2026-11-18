@@ -131,10 +131,12 @@ export function DataTable<T extends RowData>({
     const index = Number(event.target.dataset.index);
     switch (event.key) {
       case 'ArrowDown':
+      case 'j':
         event.preventDefault();
         focusRow(index + 1);
         break;
       case 'ArrowUp':
+      case 'k':
         event.preventDefault();
         focusRow(index - 1);
         break;
@@ -239,7 +241,7 @@ export function DataTable<T extends RowData>({
                 className={cx(
                   'group/row t-colors',
                   interactive && 'cursor-pointer focus-visible:-outline-offset-2',
-                  selected ? 'bg-cobalt-bg' : cx('max-md:bg-surface', interactive && 'hover:bg-hover max-md:hover:bg-hover'),
+                  selected ? 'bg-hover' : cx('max-md:bg-surface', interactive && 'hover:bg-hover max-md:hover:bg-hover'),
                 )}
               >
                 {columns.map((column, columnIndex) => {
@@ -260,6 +262,8 @@ export function DataTable<T extends RowData>({
                         column.minWidth && 'max-[1279px]:min-w-(--col-min)',
                         column.align === 'right' ? 'text-right' : 'text-left',
                         !last && 'border-b border-hairline',
+                        // the selected row: a 3 px cobalt bar on its left edge (the one stripe the design allows)
+                        selected && columnIndex === 0 && 'shadow-[inset_3px_0_0_var(--cobalt)]',
                         last && columnIndex === 0 && 'rounded-bl-md',
                         last && columnIndex === columns.length - 1 && 'rounded-br-md',
                         columnIndex === 0 && pinFirst && 'max-md:sticky max-md:left-0 max-md:z-[1] max-md:bg-[inherit]',

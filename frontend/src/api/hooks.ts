@@ -160,8 +160,19 @@ export const useCorrectFact = () =>
 export const useRejectFact = () =>
   useFigureMutation(({ factId, reason }: { factId: string; reason: string }) => post<FactChange>(`/facts/${factId}/reject`, { reason }));
 export const useEnterFact = () =>
-  useFigureMutation(({ borrowerId, ...body }: { borrowerId: string; key: string; period_end: string; months: number; value: string; reason: string; read_from_fact_id?: string }) =>
-    post<FactChange>(`/borrowers/${borrowerId}/facts`, body),
+  useFigureMutation(
+    ({
+      borrowerId,
+      ...body
+    }: {
+      borrowerId: string;
+      key: string;
+      period_end: string;
+      months: number;
+      value: string;
+      reason: string;
+      read_from_fact_id?: string;
+    }) => post<FactChange>(`/borrowers/${borrowerId}/facts`, body),
   );
 
 /* ── Work ─────────────────────────────────────────────────────────────── */
@@ -221,6 +232,15 @@ export const useAgentsStatus = () =>
     queryFn: () => get<{ model_connected: boolean; mode: string; model: string; reason: string }>('/agents/status'),
     staleTime: 60_000,
   });
+
+/** Give an open item an owner: used to route a decision to a person who may take it. */
+export function useAssignItem(itemId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { assigned_to: string | null; due_date: string | null }) => post<WorkItemRow>(`/work-items/${itemId}/assign`, body),
+    onSuccess: () => invalidateAfterDecision(client),
+  });
+}
 
 export const useCycles = (query: { period_end?: string; borrower_id?: string } = {}, options: { enabled?: boolean } = {}) =>
   useQuery({

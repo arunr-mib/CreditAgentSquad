@@ -1,12 +1,28 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowUpRight, Users } from 'lucide-react';
-import { useId, useState, type FormEvent, type ReactNode } from 'react';
+import { ArrowUpRight, ShieldCheck, Users } from 'lucide-react';
+import { useState, type FormEvent, type ReactNode } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
-import { useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkItem } from '@/api/hooks';
+import { useAssignItem, useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkItem } from '@/api/hooks';
 import type { ApiRecommendation, WorkItemDetail } from '@/api/schema';
 import type { ProvenanceKind } from '@/api/types';
 import { useAuth } from '@/auth/context';
-import { AgentNote, Button, Card, formatDate, formatDue, GuardrailNotes, ProvenanceGlyph, Quote, Skeleton, StatusDot, useToast } from '@/design';
+import {
+  AgentMark,
+  AgentNote,
+  Button,
+  Card,
+  ChoiceCards,
+  formatDate,
+  formatDue,
+  GuardrailNotes,
+  ProvenanceGlyph,
+  Quote,
+  Select,
+  Skeleton,
+  StatusDot,
+  Tag,
+  useToast,
+} from '@/design';
 import {
   decisionHint,
   decisionLabel,
@@ -20,17 +36,17 @@ import {
   quarterLabel,
   roleLabel,
   ROLES_WITH,
-  SEVERITY_LABEL,
-  SEVERITY_TONE,
   signalLabel,
   stageLabel,
 } from '@/domain/labels';
+import { useWorkspaceDrawer } from '@/drawer/context';
 import { cx } from '@/lib/cx';
 import { useAsOf } from '@/shell/AsOf';
 import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import { FactFigure, SourcedFigure } from '@/source/figures';
-import { ErrorNotice, Notice, Textarea } from '../parts';
+import { ErrorNotice, Notice, SeverityTag, Textarea } from '../parts';
+import { KeyFigures } from './KeyFigures';
 import { HeldFigures } from './HeldFigures';
 
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
@@ -364,19 +380,110 @@ function refusalTitle(error: unknown): string {
   return 'Not recorded';
 }
 
-function DecisionForm({ item }: { item: WorkItemDetail }) {
-  const decide = useDecide(item.id);
+/**
+ * Shown in place of a silent refusal: who may decide, and one press to send the item to them.
+ * Routing assigns the item to a person who holds the permission; it is recorded in the ledger.
+ */
+function AuthorityGate({ item }: { item: WorkItemDetail }) {
   const { user, can } = useAuth();
+  const users = useUsers();
+  const assign = useAssignItem(item.id);
   const toast = useToast();
-  const groupId = useId();
+  const roles = ROLES_WITH[item.required_permission] ?? [];
+  const holders = (users.data ?? []).filter((person) => roles.includes(person.role) && person.id !== user?.id);
+  const [chosen, setChosen] = useState('');
+  const target = holders.find((person) => person.id === chosen) ?? holders[0];
+  const assignee = users.data?.find((person) => person.id === item.assigned_to);
+  const routed = assignee && roles.includes(assignee.role);
+  const roleNames = roles.map(roleLabel).join(' or ');
+
+  return (
+    <div data-authority-gate role="note" className="mt-3 rounded-md border border-ink bg-canvas px-3 py-2.5">
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-body font-semibold text-ink">
+        <Tag tone="gate" icon={<ShieldCheck size={12} strokeWidth={2} />}>
+          {roleNames} sign-off
+        </Tag>
+        This decision is outside your authority
+      </p>
+      <p className="mt-1 text-body text-pretty text-ink-700">
+        It needs permission to {permissionLabel(item.required_permission)}. Your role{user ? `, ${roleLabel(user.role)},` : ''} does not have it, so the
+        decision cannot be recorded from here.
+      </p>
+      {routed ? (
+        <p data-routed className="mt-2 text-body text-ink">
+          <StatusDot tone="pass">
+            Routed to {assignee.name}, {assignee.title}
+          </StatusDot>
+        </p>
+      ) : !can('manage_actions') ? (
+        <p className="mt-2 text-caption text-ink-700">Your role cannot route items either. Ask a {roleNames.toLowerCase()} to open it.</p>
+      ) : holders.length === 0 ? (
+        <p className="mt-2 text-caption text-ink-700">
+          {users.isPending ? 'Finding who may decide.' : `No ${roleNames.toLowerCase()} is on file to route this to.`}
+        </p>
+      ) : (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          {holders.length > 1 ? (
+            <Select
+              label="Route to"
+              hideLabel
+              className="w-full sm:w-72"
+              value={target?.id ?? ''}
+              onValueChange={setChosen}
+              options={holders.map((person) => ({ value: person.id, label: `${person.name}, ${person.title}` }))}
+            />
+          ) : null}
+          <Button
+            variant="primary"
+            disabled={assign.isPending || !target}
+            onClick={() =>
+              target &&
+              assign.mutate(
+                { assigned_to: target.id, due_date: item.due_date },
+                {
+                  onSuccess: () =>
+                    toast({
+                      tone: 'pass',
+                      title: `Routed to ${target.name}`,
+                      description: 'The item now shows in their queue as assigned to them. The routing is in the ledger.',
+                    }),
+                },
+              )
+            }
+          >
+            {assign.isPending ? 'Routing' : `Route to ${holders.length > 1 ? roleNames.toLowerCase() : (target?.name ?? roleNames)} for sign-off`}
+          </Button>
+        </div>
+      )}
+      {assign.error ? (
+        <Notice tone="attention" title="Not routed" className="mt-2">
+          The server said: “{errorMessage(assign.error)}”
+        </Notice>
+      ) : null}
+    </div>
+  );
+}
+
+export function DecisionForm({ item }: { item: WorkItemDetail }) {
+  const decide = useDecide(item.id);
+  const { can } = useAuth();
+  const toast = useToast();
+  const { reasonDraft } = useWorkspaceDrawer();
   const [decision, setDecision] = useState<string>('');
   const [reason, setReason] = useState('');
+  const [takenStamp, setTakenStamp] = useState<number | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const permitted = can(item.required_permission);
-  const holders = (ROLES_WITH[item.required_permission] ?? []).map(roleLabel);
+
+  // Text a person chose to carry over from a Copilot answer: appended once, with the run it came from.
+  if (reasonDraft && reasonDraft.itemId === item.id && reasonDraft.stamp !== takenStamp) {
+    setTakenStamp(reasonDraft.stamp);
+    setReason((current) => (current.trim() ? `${current.trim()}\n\n${reasonDraft.text}` : reasonDraft.text));
+  }
 
   function submit(event: FormEvent) {
     event.preventDefault();
+    if (!permitted) return;
     if (!decision) {
       setProblem('Choose a decision first.');
       return;
@@ -400,49 +507,31 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
   }
 
   return (
-    <form onSubmit={submit} noValidate aria-label="Record a decision" className="rounded-b-md border-t border-hairline-strong bg-surface px-4 pt-3 pb-3.5">
-      <fieldset>
-        <legend className="eyebrow mb-1.5">Your decision</legend>
-        <div className="space-y-px">
-          {item.allowed_decisions.map((option) => {
-            const id = `${groupId}-${option}`;
-            const checked = decision === option;
-            return (
-              <label
-                key={option}
-                htmlFor={id}
-                className={cx('flex cursor-pointer items-start gap-2.5 rounded-sm px-2 py-1.5 t-colors', checked ? 'bg-cobalt-bg' : 'hover:bg-hover')}
-              >
-                <input
-                  id={id}
-                  type="radio"
-                  name={groupId}
-                  value={option}
-                  checked={checked}
-                  onChange={() => {
-                    setDecision(option);
-                    setProblem(null);
-                    decide.reset();
-                  }}
-                  className="mt-[3px] size-3.5 shrink-0 accent-cobalt"
-                />
-                <span className="min-w-0">
-                  <span className="block text-body font-medium text-ink">{decisionLabel(option)}</span>
-                  {decisionHint(option) ? <span className="block text-caption text-pretty text-ink-500">{decisionHint(option)}</span> : null}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
-      <Textarea
-        className="mt-3"
-        label={decision && decisionNeedsReason(decision) ? 'Reason (required)' : 'Reason'}
-        hint="Recorded in the ledger with your name and the time."
-        value={reason}
-        onChange={(event) => setReason(event.target.value)}
-        rows={3}
+    <form onSubmit={submit} noValidate aria-label="Record a decision" className="rounded-b-md border-t border-hairline-strong bg-surface px-4 pt-3 pb-4">
+      <p className="eyebrow mb-1.5">{permitted ? 'Your decision' : 'The decision'}</p>
+      <ChoiceCards
+        label="Decision"
+        value={decision}
+        disabled={!permitted}
+        onValueChange={(value) => {
+          setDecision(value);
+          setProblem(null);
+          decide.reset();
+        }}
+        choices={item.allowed_decisions.map((option) => ({ value: option, label: decisionLabel(option), hint: decisionHint(option) || undefined }))}
       />
+      {permitted ? (
+        <Textarea
+          className="mt-3"
+          label={decision && decisionNeedsReason(decision) ? 'Reason (required)' : 'Reason'}
+          hint="Recorded in the ledger with your name and the time."
+          value={reason}
+          onChange={(event) => setReason(event.target.value)}
+          rows={3}
+        />
+      ) : (
+        <AuthorityGate item={item} />
+      )}
       {problem ? (
         <p role="alert" className="mt-2 text-body font-medium text-amber">
           {problem}
@@ -453,24 +542,15 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
           The server said: “{errorMessage(decide.error)}”
         </Notice>
       ) : null}
-      <Button type="submit" variant="primary" className="mt-3 w-full" disabled={decide.isPending}>
+      <Button type="submit" variant="primary" className="mt-3 w-full" disabled={decide.isPending || !permitted}>
         {decide.isPending ? 'Recording' : 'Record decision'}
       </Button>
-      <div className="mt-2 space-y-1 text-caption text-ink-700">
-        <p>
-          Needs permission to {permissionLabel(item.required_permission)}
-          {holders.length > 0 ? ` (${holders.join(', ')})` : ''}.
-          {!permitted && user ? (
-            <span className="font-medium text-amber"> Your role, {roleLabel(user.role)}, does not have it; the server will refuse.</span>
-          ) : null}
+      {item.requires_second_person ? (
+        <p className="mt-2 flex items-center gap-1.5 text-caption text-ink-700">
+          <Users size={12} aria-hidden className="shrink-0 text-ink-500" />
+          Needs a second person: whoever prepared this cannot approve it.
         </p>
-        {item.requires_second_person ? (
-          <p className="flex items-center gap-1.5">
-            <Users size={12} aria-hidden className="shrink-0 text-ink-500" />
-            Needs a second person: whoever prepared this cannot approve it.
-          </p>
-        ) : null}
-      </div>
+      ) : null}
     </form>
   );
 }
@@ -515,6 +595,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className,
   const query = useWorkItem(itemId);
   const borrowers = useBorrowers();
   const { asOf } = useAsOf();
+  const drawer = useWorkspaceDrawer();
   const SubHeading = Heading === 'h2' ? 'h3' : 'h4';
 
   if (query.error) return <ErrorNotice error={query.error} what="This item" onRetry={() => void query.refetch()} />;
@@ -539,9 +620,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className,
     <Card data-work-item={item.id} data-item-status={item.status} className={cx('flex flex-col', variant === 'drawer' && 'rounded-none border-0', className)}>
       <div className="px-4 pt-3.5">
         <div className="flex items-center justify-between gap-3 text-caption">
-          <StatusDot tone={SEVERITY_TONE[item.severity]}>
-            <span className="font-medium">{SEVERITY_LABEL[item.severity]}</span>
-          </StatusDot>
+          <SeverityTag severity={item.severity} />
           <span className={cx('tnum', due?.overdue ? 'font-medium text-amber' : 'text-ink-500')}>
             {due ? due.sentence : item.status === 'open' ? 'No due date set' : 'Decided'}
           </span>
@@ -571,9 +650,22 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className,
           )}
           <span className="ident">{item.id.slice(0, 8)}</span>
         </div>
+        {variant === 'drawer' ? (
+          <button
+            type="button"
+            data-ask-copilot
+            onClick={() => drawer.openCopilot({ kind: 'item', itemId: item.id })}
+            className="mt-2 inline-flex items-center gap-1.5 text-left text-caption font-medium text-iris hover:underline"
+          >
+            <AgentMark size={8} />
+            Ask Copilot about {item.borrower_name ? `${item.borrower_name}’s ` : 'this '}
+            {itemTypeLabel(item.item_type).toLowerCase()}
+          </button>
+        ) : null}
       </div>
 
       <div className="mt-3.5 space-y-4 px-4 pb-4">
+        <KeyFigures item={item} />
         <Evidence item={item} code={borrower?.code} headingLevel={SubHeading} />
         {item.item_type === 'spread.value_unverified' || item.item_type === 'spread.does_not_foot' ? (
           <HeldFigures item={item} code={borrower?.code} headingLevel={SubHeading} />
