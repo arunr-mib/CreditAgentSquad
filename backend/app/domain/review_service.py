@@ -114,6 +114,46 @@ def _store_commentary(db: Session, sheet_row: ReviewSheet, section: str, body: s
     return row
 
 
+# Which check withheld a drafted section, in the words the approver reads.
+_WITHHELD_BY = {"narrative": "number check", "policy": "policy check"}
+
+
+def withheld_sections(notes: list[dict[str, Any]]) -> list[dict[str, str]]:
+    """Each section the agent drafted that a check withheld, with the check and the reason, in
+    section order. An older note without `section` is read from its `detail` ("section: why")."""
+    out = []
+    for note in notes:
+        if note.get("action") != "section_dropped":
+            continue
+        section, _, reason = (note.get("detail") or "").partition(": ")
+        withheld_by = ("fact reference check" if note.get("check") == "no_facts"
+                       else _WITHHELD_BY.get(note.get("layer", ""), "check"))
+        out.append({"section": note.get("section") or section, "withheld_by": withheld_by,
+                    "check": note.get("check", ""), "reason": note.get("reason") or reason})
+    return sorted(out, key=lambda w: w["section"])
+
+
+def _approval_wording(name: str, drafted: bool, withheld: list[dict[str, str]]) -> tuple[str, str]:
+    """The approval item's title and question. Withheld sections are named in both, so the
+    approver knows the sheet is missing them before opening it."""
+    title = f"{name}: review sheet is ready for approval"
+    if not withheld:
+        return title, ("The Review Agent drafted commentary for this review. Approve it as written or after your "
+                       "edits?" if drafted else
+                       "No commentary could be drafted for this review. Write the commentary and approve the sheet?")
+    many = len(withheld) != 1
+    by = " and the ".join(sorted({w["withheld_by"] for w in withheld}))
+    title = f"{title}, {len(withheld)} section{'s' if many else ''} withheld by the {by}"
+    names = [w["section"] for w in withheld]
+    listed = names[0] if not many else ", ".join(names[:-1]) + " and " + names[-1]
+    lead = ("The Review Agent drafted commentary for this review, but" if drafted
+            else "No section of the Review Agent's draft passed its checks:")
+    question = (f"{lead} the {listed} section{'s were' if many else ' was'} withheld and "
+                f"{'are' if many else 'is'} not on the sheet. Write the withheld section{'s' if many else ''}, "
+                f"or approve the sheet without {'them' if many else 'it'}?")
+    return title[:240], question
+
+
 def prepare_review(db: Session, *, cycle: Cycle, llm: LLMClient) -> ReviewSheet:
     """Build the sheet, ask the Review Agent for a draft, and ask a person to approve it."""
     borrower = db.get(Borrower, cycle.borrower_id)
@@ -128,19 +168,22 @@ def prepare_review(db: Session, *, cycle: Cycle, llm: LLMClient) -> ReviewSheet:
     draft = draft_commentary(db, borrower=borrower, cycle=cycle, sheet=sheet, facts=facts, labels=labels, llm=llm)
     for section, body in draft.sections.items():
         _store_commentary(db, row, section, body, author=("agent", "review@1"), agent_run_id=draft.run_id)
+    withheld = withheld_sections(draft.notes)
+    row.content = {**row.content, "withheld_sections": withheld}
+    title, question = _approval_wording(borrower.name, bool(draft.sections), withheld)
     raise_item(
         db, borrower_id=borrower.id, cycle_id=cycle.id, stage="review_prep", item_type="review.commentary_approval",
-        severity="medium", title=f"{borrower.name}: review sheet is ready for approval",
-        question=("The Review Agent drafted commentary for this review. Approve it as written or after your edits?"
-                  if draft.sections else
-                  "No commentary could be drafted for this review. Write the commentary and approve the sheet?"),
+        severity="medium", title=title, question=question,
         allowed_decisions=["approve", "return_for_rework"], required_permission="approve_commentary",
-        evidence={"review_sheet_id": str(row.id), "sections": sorted(draft.sections)}, guardrail_notes=draft.notes,
+        evidence={"review_sheet_id": str(row.id), "sections": sorted(draft.sections),
+                  "withheld_sections": withheld},
+        guardrail_notes=draft.notes,
         agent_run_id=draft.run_id, actor=("agent", "review"), dedupe_key=f"review.approval:{row.id}")
     ledger.record(db, actor_type="system", actor_id="reviews", action="review_sheet.prepared",
                   entity_type="review_sheet", entity_id=row.id,
                   payload={"cycle_id": cycle.id, "sections_drafted": sorted(draft.sections),
-                           "sections_dropped": len(draft.notes)})
+                           "sections_dropped": len(draft.notes),
+                           "sections_withheld": [w["section"] for w in withheld]})
     db.flush()
     return row
 

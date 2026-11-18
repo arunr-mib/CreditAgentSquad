@@ -141,3 +141,49 @@ def test_no_draft_still_asks_a_person_and_approval_needs_commentary(db, world, m
     with pytest.raises(ValueError, match="no commentary to approve"):
         workflow.decide_work_item(db, item, user_id=manager.id, user_role=manager.role, decision="approve")
     assert item.status == "open" and cycle.stage == "review_prep"
+
+
+def test_withheld_sections_are_named_to_the_approver_with_the_reason(db, world, monkeypatch):
+    """A draft with sections withheld by the checks used to be raised as "ready for approval" with
+    nothing saying a section was missing. The item now says how many and which, and the sheet
+    lists each withheld section with the check that withheld it and why."""
+    from app.api.routes_reviews import _sheet_out
+
+    borrower, cycle = world
+    sheet, _, _ = review_service.build_sheet(db, cycle)
+    revenue, covenant = refs(sheet)
+    script(monkeypatch, [
+        {"section": "summary", "body": "The borrower remains in compliance with every covenant this quarter."},
+        {"section": "performance", "body": f"Revenue was {{{{fact:{revenue['current']}|usd_m}}}}."},
+        {"section": "covenants", "body": f"{covenant['covenant']} calculated to {{{{fact:{covenant['value']}}}}} "
+                                         "against a minimum of 1.20x."},  # a typed figure
+        {"section": "collateral", "body": "Collateral coverage stood at 2.4 times the line."},  # a typed figure
+    ])
+    workflow.advance(db, cycle)
+    workflow.drain(db)
+    item = db.execute(select(WorkItem).where(WorkItem.item_type == "review.commentary_approval")).scalar_one()
+    assert item.title == f"{borrower.name}: review sheet is ready for approval, 2 sections withheld by the number check"
+    assert "collateral and covenants" in item.question and item.question.endswith("?")
+    withheld = item.evidence["withheld_sections"]
+    assert [w["section"] for w in withheld] == ["collateral", "covenants"]
+    assert all(w["withheld_by"] == "number check" and w["check"] == "figure_untraceable" for w in withheld)
+    # the reason says why; the typed figure itself is not repeated, as the agent's figure is unverified
+    reason = next(w for w in withheld if w["section"] == "covenants")["reason"]
+    assert reason.startswith("a figure was typed, not referenced") and "1.20" not in reason
+    assert item.evidence["sections"] == ["performance", "summary"]
+
+    sheet_row = db.execute(select(ReviewSheet).where(ReviewSheet.cycle_id == cycle.id)).scalar_one()
+    shown = _sheet_out(db, sheet_row)
+    assert [w["section"] for w in shown["withheld_sections"]] == ["collateral", "covenants"]
+    assert {c["section"] for c in shown["commentary"]} == {"summary", "performance"}
+
+
+def test_a_full_draft_says_nothing_was_withheld(db, world, monkeypatch):
+    borrower, cycle = world
+    script(monkeypatch, [
+        {"section": "summary", "body": "The borrower remains in compliance with every covenant this quarter."}])
+    workflow.advance(db, cycle)
+    workflow.drain(db)
+    item = db.execute(select(WorkItem).where(WorkItem.item_type == "review.commentary_approval")).scalar_one()
+    assert item.title == f"{borrower.name}: review sheet is ready for approval"
+    assert item.evidence["withheld_sections"] == []

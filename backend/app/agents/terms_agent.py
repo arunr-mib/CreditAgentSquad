@@ -28,7 +28,7 @@ from app.agents.llm import LLMClient
 from app.agents.runtime import AgentSpec, run_agent
 from app.agents.tools import Scope, ToolGateway
 from app.calc.terms import Terms
-from app.core import ledger
+from app.core import clock, ledger
 from app.core.roles import Permission
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
@@ -36,7 +36,7 @@ from app.domain.documents_service import get_page, read_file
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.terms import TermsVersion
 from app.domain.terms_service import TermsRefused, propose_terms
-from app.domain.work_items import raise_item
+from app.domain.work_items import due_date_for, raise_item
 from app.guardrails.narrative import check_narrative
 from app.guardrails.numbers import blank_non_figures, extract_figures, same_number
 from app.guardrails.quotes import dates_in, quote_on_page
@@ -836,6 +836,7 @@ def extract_terms(db: Session, *, facility: Facility, documents: list[Document],
         if extra:
             version.warnings = [*(version.warnings or []), *extra]
             item.severity = "high"
+            item.due_date = due_date_for("high", clock.today(db))  # the item is due as a high one now
             item.question = ("Some terms could not be verified and were left out. Approve these terms as they "
                              "stand, or reject them for correction?")
         item.evidence = {**item.evidence, "warnings": version.warnings, "unverified": result.unverified}

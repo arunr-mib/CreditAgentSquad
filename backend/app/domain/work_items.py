@@ -1,14 +1,34 @@
 """Raise exceptions for people: one specific question, the evidence, and the decisions allowed."""
 import uuid
+from datetime import date, timedelta
 from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core import ledger
+from app.core import clock, ledger
 from app.domain.monitoring import WorkItem
 
 SEVERITIES = ("low", "medium", "high", "critical")
+
+# How long a person has to decide an item, in business days (Monday to Friday) from the day it is
+# raised on the demonstration clock. The policy register reads this table; a person may set a
+# different date when they assign the item.
+DUE_BUSINESS_DAYS: dict[str, int] = {"critical": 2, "high": 5, "medium": 10, "low": 20}
+
+
+def add_business_days(start: date, days: int) -> date:
+    """`days` weekdays after `start`. No bank holidays are counted: the demonstration has none."""
+    day = start
+    while days > 0:
+        day += timedelta(days=1)
+        if day.weekday() < 5:
+            days -= 1
+    return day
+
+
+def due_date_for(severity: str, raised_on: date) -> date:
+    return add_business_days(raised_on, DUE_BUSINESS_DAYS[severity])
 
 # Decisions an item type may not offer, because nothing in the product can carry them out: a
 # person has no way to edit a collateral listing, and prior-period figures cannot yet be restated
@@ -57,10 +77,12 @@ def raise_item(
         severity=severity, title=title, question=question, allowed_decisions=allowed_decisions,
         evidence=evidence, recommendation=recommendation, guardrail_notes=guardrail_notes or [],
         blocks_stage=blocks_stage, requires_second_person=requires_second_person,
-        required_permission=required_permission, prepared_by_id=prepared_by_id, agent_run_id=agent_run_id)
+        required_permission=required_permission, prepared_by_id=prepared_by_id, agent_run_id=agent_run_id,
+        due_date=due_date_for(severity, clock.today(db)))
     db.add(item)
     db.flush()
     ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="work_item.raised",
                   entity_type="work_item", entity_id=item.id,
-                  payload={"type": item_type, "severity": severity, "title": title, "cycle_id": cycle_id})
+                  payload={"type": item_type, "severity": severity, "title": title, "cycle_id": cycle_id,
+                           "due_date": item.due_date})
     return item
