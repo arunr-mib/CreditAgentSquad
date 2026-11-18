@@ -188,6 +188,13 @@
   }
 }
 
+/* The navigation rail changes between labels and icons in one short step, well under the 240 ms ceiling. */
+@media (width >= 640px) {
+  .rail {
+    transition: width var(--motion-fast) var(--ease-out);
+  }
+}
+
 @keyframes cas-pop {
   from {
     opacity: 0;
