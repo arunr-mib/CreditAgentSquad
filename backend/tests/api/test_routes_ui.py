@@ -2,6 +2,7 @@
 real services: one with a breach behind a compliant certificate, one with an over-advance."""
 import subprocess
 import sys
+import uuid
 from datetime import date
 from decimal import Decimal as D
 from pathlib import Path
@@ -90,6 +91,23 @@ def test_portfolio_summary_counts_and_totals(client, db, world):
     assert D(body["exposure"]["revolver_outstanding"]) == sum(D(f["value"]) for f in revolvers)
     assert D(body["exposure"]["outstanding"]) == D(body["exposure"]["revolver_outstanding"]) + D(
         body["exposure"]["term_loan_outstanding"])
+
+
+def test_borrower_list_headroom_is_the_lowest_stored_fact_of_the_latest_period(client, db, world):
+    sign_in(client)
+    listed = {b["code"]: b for b in client.get(f"{API}/borrowers").json()}
+    for code in (BREACH, OVER_ADVANCE):
+        borrower = world[code]
+        covenants = client.get(f"{API}/ui/borrowers/{borrower.id}/covenants").json()
+        current = [t for t in covenants["tests"] if t["period_end"] == "2026-09-30" and t["headroom_fact_id"]]
+        lowest = min(current, key=lambda t: D(covenants["facts"][t["headroom_fact_id"]]["value"]))
+        shown = listed[code]["tightest_headroom"]
+        # the list shows a stored fact as it stands: same id, same value, calculated by code
+        assert shown == covenants["facts"][lowest["headroom_fact_id"]], code
+        stored = db.get(Fact, uuid.UUID(shown["id"]))
+        assert D(shown["value"]) == stored.value and shown["kind"] == "calculated" and shown["calc_run_id"]
+    breach = listed[BREACH]["tightest_headroom"]
+    assert breach["label"] == "Total Leverage Ratio, headroom" and D(breach["value"]) < 0
 
 
 def test_facts_in_bulk_with_labels(client, db, world):
