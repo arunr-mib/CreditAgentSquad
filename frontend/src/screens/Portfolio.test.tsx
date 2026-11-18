@@ -418,6 +418,11 @@ describe('portfolio table', () => {
     expect(within(cards).getByRole('img', { name: 'Covenant tests by outcome: Breach, reported compliant 3, Breach 1, Compliant, variance 3, Compliant 39' })).toBeInTheDocument();
     expect(within(cards).getByRole('img', { name: 'Open items by severity: Critical 4, High 8, Medium 1' })).toBeInTheDocument();
     expect(within(cards).getByRole('link', { name: 'Critical: 4 open items. Open them in the command centre.' })).toHaveAttribute('href', '/command-centre?severity=critical');
+    // Label in name (WCAG 2.5.3): the words on the row, as read out, begin the accessible name.
+    const critical = within(cards).getByRole('link', { name: /^Critical: 4 open items/ });
+    expect(critical.textContent?.replace(/\s+/g, ' ').trim()).toBe('Critical 4');
+    const breach = within(cards).getByRole('button', { name: /^Breach, reported compliant: 3 tests/ });
+    expect(breach.textContent?.replace(/\s+/g, ' ').trim()).toBe('Breach, reported compliant 3');
     expect(within(cards).getByRole('button', { name: /^573\.5, Total commitment across the book/ })).toBeInTheDocument();
     expect(within(cards).getByRole('button', { name: /^128\.4, Lines of credit outstanding across the book/ })).toBeInTheDocument();
   });

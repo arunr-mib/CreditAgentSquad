@@ -259,6 +259,20 @@ describe('navigation rail', () => {
     expect(RUNS_POLL_MS).toBeGreaterThanOrEqual(20_000);
   });
 
+  it('reads each link’s visible words at the start of its accessible name (WCAG 2.5.3, label in name)', async () => {
+    mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [] });
+    renderShell(<RailHarness />);
+    const queue = await screen.findByRole('link', { name: 'Command centre, 13 open items' });
+    const home = screen.getByRole('link', { name: /, home$/ });
+    // What a sighted person sees, as a screen reader joins it: the words must not run together.
+    const words = (element: HTMLElement) => (element.textContent ?? '').replace(/\s+/g, ' ').trim().toLowerCase();
+    const name = (element: HTMLElement) => (element.getAttribute('aria-label') ?? '').replace(/[,.]/g, '').toLowerCase();
+    expect(words(home)).toBe('credit agent squad bank of stoic');
+    expect(name(home).startsWith(words(home))).toBe(true);
+    expect(words(queue)).toBe('command centre 13');
+    expect(name(queue).startsWith(words(queue))).toBe(true);
+  });
+
   it('shows no mark when no run is in progress', async () => {
     mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [{ id: 'r-2', status: 'completed' }] });
     renderShell(<RailHarness />);

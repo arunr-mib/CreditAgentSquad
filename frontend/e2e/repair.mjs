@@ -5,6 +5,9 @@
 // and assert what a first correction does, so they need a fresh load each time; 3, 4 and 5 can be repeated.
 // Journey 1 is the held-figures panel: what is on file, what was read, why it was held, and one clear action.
 //
+// The queue selectors were scoped to the command centre's exception queue for the workspace drawer (cockpit
+// redesign, 18 Nov 2026); these journeys have not been re-run since, because they need a repair-seeded database.
+//
 // Usage: node e2e/repair.mjs [--only 1,3]     (BASE_URL=http://localhost:5173 by default; HEADED=1 to watch)
 // Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
 import { createRequire } from 'node:module';
@@ -22,6 +25,8 @@ const MANAGER = 'dana.whitfield@bankofstoic.example';
 const here = dirname(fileURLToPath(import.meta.url));
 const shotsDir = resolve(here, '..', 'screenshots');
 const failuresDir = resolve(here, 'failures');
+// The command centre's queue. The workspace drawer beside it can hold tables of its own.
+const QUEUE_ROWS = 'section[aria-label="Exception queue"] table tbody tr[data-row]';
 mkdirSync(shotsDir, { recursive: true });
 
 function assert(condition, message) {
@@ -100,7 +105,7 @@ const journeys = [
     name: 'an analyst opens a held spread, reads what is on file, what was read and why each figure was held, files two swapped readings with one action, enters two figures, sees what was recalculated and finishes the spread',
     async run(page) {
       await signIn(page, ANALYST);
-      const rows = page.locator('table tbody tr[data-row]');
+      const rows = page.locator(QUEUE_ROWS);
       const held = rows.filter({ hasText: 'could not be verified on the page' });
       assert((await held.count()) > 0, 'an open held spread is in the queue (load a fresh database with e2e/seed_repair.py)');
       const before = await rows.count();
@@ -249,7 +254,7 @@ const journeys = [
       await page.getByText('Recorded: Values corrected').first().waitFor();
       await page.waitForFunction((id) => !document.querySelector(`[data-work-item="${id}"][data-item-status="open"]`), itemId);
       // One item fewer: the held spread left the queue and no new question was raised, so the corrected statements foot.
-      await page.waitForFunction((expected) => document.querySelectorAll('table tbody tr[data-row]').length === expected, before - 1);
+      await page.waitForFunction(([selector, expected]) => document.querySelectorAll(selector).length === expected, [QUEUE_ROWS, before - 1]);
       assert((await rows.filter({ hasText: 'could not be verified on the page' }).count()) === 0, 'the held spread left the queue');
       await shot(page, 'repair-06-decision-recorded');
 

@@ -47,7 +47,8 @@ function RailLink({ to, label, icon: Icon, current, labelled, note, onFollow, ch
       >
         <Icon size={16} strokeWidth={current ? 2 : 1.75} aria-hidden className={cx('shrink-0', current ? 'text-ink' : 'text-ink-500')} />
         <span className={labelled ? 'flex-1 whitespace-nowrap' : 'sr-only'}>{label}</span>
-        {children}
+        {/* The visible words must read as the start of the accessible name (WCAG 2.5.3): "Command centre 12", not "Command centre12". */}
+        {children ? <>{' '}{children}</> : null}
       </Link>
     </Tooltip>
   );
@@ -116,7 +117,8 @@ export function Rail({ pathname, rail }: { pathname: string; rail: RailState }) 
         <Link
           to="/command-centre"
           onClick={dismiss}
-          aria-label="Credit Agent Squad, home"
+          // The visible name comes first, so a person who says what they see can follow the link (WCAG 2.5.3).
+          aria-label={collapsed ? 'Credit Agent Squad, home' : 'Credit Agent Squad, Bank of Stoic, home'}
           className={cx('hidden h-12 shrink-0 items-center border-b border-hairline-strong sm:flex', collapsed ? 'justify-center' : 'px-4')}
         >
           <Wordmark markOnly={collapsed} />
