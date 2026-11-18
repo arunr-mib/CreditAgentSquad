@@ -1,7 +1,32 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { PolicyRegister, RolesAndPermissions } from '@/api/schema';
-import { PolicyTables, RolesMatrix } from './Governance';
+import type { LedgerEvent } from '@/api/schema';
+import { describeEvent, ledgerAgentName, ledgerPage, PolicyTables, RolesMatrix } from './Governance';
+
+const ledgerEvent = (seq: number, action: string, payload: Record<string, unknown> = {}) => ({ seq, action, payload }) as unknown as LedgerEvent;
+
+describe('the ledger', () => {
+  it('names an agent once, whether or not the record carries its version', () => {
+    expect(ledgerAgentName('review')).toBe('Review agent');
+    expect(ledgerAgentName('review@1')).toBe('Review agent');
+    expect(ledgerAgentName('copilot@2')).toBe('Copilot');
+  });
+
+  it('hides sign-ins by default and says how many, keeping a full page of the rest', () => {
+    const events = [ledgerEvent(10, 'auth.signed_in'), ledgerEvent(9, 'work_item.decided'), ledgerEvent(8, 'auth.signed_in'), ledgerEvent(7, 'fact.recorded')];
+    expect(ledgerPage(events, true, 100)).toEqual({ shown: [events[1], events[3]], hidden: 2, more: false });
+    expect(ledgerPage(events, false, 100).shown).toHaveLength(4);
+    const page = ledgerPage(events, true, 1);
+    expect(page.shown.map((event) => event.seq)).toEqual([9]);
+    expect(page.hidden).toBe(1);
+    expect(page.more).toBe(true);
+  });
+
+  it('shortens record ids in the detail to eight characters', () => {
+    expect(describeEvent(ledgerEvent(1, 'x.y', { work_item_id: '3996a458-07f8-4a16-9520-0b01b3cb2cb2' }))).toBe('work item id 3996a458');
+  });
+});
 
 /** The shape `/governance/roles` returns, with the grants of backend/app/core/roles.py for the permissions used here. */
 const TABLE: RolesAndPermissions = {

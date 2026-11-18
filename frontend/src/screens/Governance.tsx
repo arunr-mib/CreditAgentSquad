@@ -8,7 +8,7 @@ import { AgentMark, Button, Card, DataTable, EmptyState, formatDate, Input, Page
 import { actionLabel, decisionLabel, docTypeLabel, formatTimestamp, humanize, roleLabel, signalLabel, STAGE_STATUS_LABEL, stageLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { useAsOf } from '@/shell/AsOf';
-import { Load, Notice, SectionHead, SeverityDot } from './parts';
+import { Load, Notice, SectionHead, SeverityDot, ShortId } from './parts';
 
 const ACTION_FILTERS: Array<[string, string]> = [
   ['all', 'All actions'],
@@ -28,6 +28,31 @@ const ACTION_FILTERS: Array<[string, string]> = [
   ['auth.', 'Sign-ins'],
   ['clock.', 'Clock'],
 ];
+
+const UUID = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
+
+/** An agent is recorded as "review" or "review@1"; it is the same agent, so it gets one name. */
+export function ledgerAgentName(actorId: string): string {
+  const name = actorId.split('@')[0] ?? actorId;
+  return name === 'copilot' ? 'Copilot' : `${humanize(name)} agent`;
+}
+
+/** Sign-ins and sign-outs: many, and rarely what a reader of the ledger is looking for. */
+export const isSignIn = (event: Pick<LedgerEvent, 'action'>) => event.action.startsWith('auth.');
+
+/** One page of the ledger, with sign-ins left out when asked. */
+export function ledgerPage(events: LedgerEvent[], hideSignIns: boolean, size: number): { shown: LedgerEvent[]; hidden: number; more: boolean } {
+  if (!hideSignIns) return { shown: events.slice(0, size), hidden: 0, more: events.length >= size };
+  const kept = events.filter((event) => !isSignIn(event));
+  const shown = kept.slice(0, size);
+  const last = shown[shown.length - 1];
+  const hidden = events.filter((event) => isSignIn(event) && (!last || event.seq > last.seq)).length;
+  return { shown, hidden, more: kept.length > size || events.length >= LEDGER_FETCH };
+}
+
+const LEDGER_PAGE = 100;
+/** With sign-ins hidden, more is read than is shown, so that a page is still a page. */
+const LEDGER_FETCH = 500;
 
 /** The payload in a few plain words: the decision and its reason first, then whatever else is there. */
 export function describeEvent(event: LedgerEvent): string {
@@ -56,7 +81,7 @@ export function describeEvent(event: LedgerEvent): string {
   else if (text('file_name')) parts.push(text('file_name') as string);
   if (parts.length === 0) {
     for (const [key, value] of Object.entries(payload).slice(0, 3)) {
-      if (value !== null && typeof value !== 'object') parts.push(`${humanize(key).toLowerCase()} ${String(value)}`);
+      if (value !== null && typeof value !== 'object') parts.push(`${humanize(key).toLowerCase()} ${String(value).replace(UUID, (id) => id.slice(0, 8))}`);
     }
   }
   return parts.join(' · ');
@@ -71,8 +96,17 @@ function Ledger() {
   const verification = useLedgerVerification(verify);
   const action = search.action ?? 'all';
   const entity = search.entity ?? '';
-  const filter = { action: action === 'all' ? undefined : action, entity_id: entity || undefined, before_seq: before[before.length - 1], limit: 100 };
+  // Sign-ins are hidden unless asked for, or unless the reader filtered to them.
+  const [showSignIns, setShowSignIns] = useState(false);
+  const hideSignIns = !showSignIns && action !== 'auth.';
+  const filter = {
+    action: action === 'all' ? undefined : action,
+    entity_id: entity || undefined,
+    before_seq: before[before.length - 1],
+    limit: hideSignIns ? LEDGER_FETCH : LEDGER_PAGE,
+  };
   const ledger = useLedger(filter);
+  const page = ledger.data ? ledgerPage(ledger.data, hideSignIns, LEDGER_PAGE) : null;
   const names = useMemo(() => new Map((users.data ?? []).map((user) => [user.id, user])), [users.data]);
   const setFilter = (next: { action?: string; entity?: string }) => {
     setBefore([]);
@@ -91,10 +125,12 @@ function Ledger() {
           const user = names.get(event.actor_id);
           if (user) return <span className="text-ink">{user.name}</span>;
           return event.actor_type === 'agent' ? (
-            <StatusDot tone="agent">{humanize(event.actor_id)} agent</StatusDot>
+            <span title={event.actor_id}>
+              <StatusDot tone="agent">{ledgerAgentName(event.actor_id)}</StatusDot>
+            </span>
           ) : (
             <span className="text-ink-500">
-              {event.actor_type === 'system' ? 'System' : 'Person'} · <span className="ident">{event.actor_id.slice(0, 12)}</span>
+              {event.actor_type === 'system' ? 'System' : 'Person'} · <ShortId id={event.actor_id} />
             </span>
           );
         },
@@ -107,7 +143,7 @@ function Ledger() {
         wrap: 'narrow',
         cell: (event) => (
           <button type="button" className="link text-left text-caption" onClick={() => setFilter({ entity: event.entity_id })} aria-label={`Show every event for ${humanize(event.entity_type)} ${event.entity_id.slice(0, 8)}`}>
-            {humanize(event.entity_type)} <span className="ident">{event.entity_id.slice(0, 8)}</span>
+            {humanize(event.entity_type)} <ShortId id={event.entity_id} />
           </button>
         ),
       },
@@ -164,17 +200,35 @@ function Ledger() {
             value={entity}
             onChange={(event) => setFilter({ entity: event.target.value.trim() || undefined })}
           />
+          {action !== 'auth.' ? (
+            <label className="inline-flex h-8 items-center gap-2 text-body text-ink-700">
+              <input
+                type="checkbox"
+                checked={!showSignIns}
+                onChange={(event) => {
+                  setBefore([]);
+                  setShowSignIns(!event.target.checked);
+                }}
+                className="size-4 accent-[var(--cobalt)]"
+              />
+              Hide sign-ins
+            </label>
+          ) : null}
           {entity || action !== 'all' ? (
             <Button variant="ghost" onClick={() => setFilter({ entity: undefined, action: undefined })}>
               Clear filters
             </Button>
           ) : null}
           <p className="ml-auto text-caption text-ink-500" aria-live="polite">
-            {ledger.data ? `${ledger.data.length} events, newest first${before.length > 0 ? ` · page ${before.length + 1}` : ''}` : ''}
+            {page
+              ? `${page.shown.length} events, newest first${page.hidden > 0 ? `, ${page.hidden} sign-ins hidden` : ''}${before.length > 0 ? ` · page ${before.length + 1}` : ''}`
+              : ''}
           </p>
         </div>
         <Load query={ledger} what="The ledger" rows={12}>
-          {(events) => (
+          {(fetched) => {
+            const { shown: events, more } = ledgerPage(fetched, hideSignIns, LEDGER_PAGE);
+            return (
             <>
               <DataTable
                 caption="Ledger events, newest first"
@@ -192,7 +246,7 @@ function Ledger() {
                     Newer
                   </Button>
                   <Button
-                    disabled={events.length < 100}
+                    disabled={!more}
                     onClick={() => {
                       const last = events[events.length - 1];
                       if (last) setBefore((stack) => [...stack, last.seq]);
@@ -203,7 +257,8 @@ function Ledger() {
                 </div>
               </div>
             </>
-          )}
+            );
+          }}
         </Load>
       </section>
     </div>
