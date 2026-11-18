@@ -7,10 +7,13 @@ export const RAIL_STORAGE_KEY = 'cas.rail';
 
 /** From this width the navigation is a rail on the left edge; below it, a bar along the bottom. */
 export const RAIL_FROM = '(min-width: 640px)';
-/** From this width the rail starts with its labels, until the person chooses otherwise. */
-const LABELS_FROM = '(min-width: 1200px)';
-/** From this width the page has room for the rail's labels and the open drawer together. */
-const BESIDE_DRAWER_FROM = '(min-width: 1400px)';
+/**
+ * From this width the page is drawn with room for the labelled rail beside it. Below it every screen is laid
+ * out for the 56 px rail, so the labels open over the page instead of taking width from it.
+ */
+const ROOM_FROM = '(min-width: 1200px)';
+/** From this width the page has room for the labelled rail and the open drawer together. */
+const ROOM_BESIDE_DRAWER_FROM = '(min-width: 1400px)';
 
 function readChoice(): RailChoice | null {
   try {
@@ -51,33 +54,49 @@ function isTyping(target: EventTarget | null): boolean {
 }
 
 export interface Rail {
-  /** What is shown now. */
-  collapsed: boolean;
-  /** The drawer is open on a window too narrow for both, so the rail is held collapsed whatever the choice. */
-  held: boolean;
-  /** Switch between labels and icons, and remember it. Does nothing while the rail is held. */
+  /** The labels are showing, beside the page or over it. */
+  expanded: boolean;
+  /** The labels are showing over the page, because the page has no width to give them. They go away again by themselves. */
+  floating: boolean;
+  /** Show or hide the labels. Where they sit beside the page, the choice is remembered in this browser. */
   toggle: () => void;
+  /** Put floating labels away. Does nothing to labels that sit beside the page. */
+  dismiss: () => void;
 }
 
 /**
  * The navigation rail's two states from 640 px up: expanded with labels, or collapsed to icons.
- * The toggle button and the `[` key switch between them; the choice is remembered in this browser.
+ * The toggle button and the `[` key switch between them.
+ *
+ * Where the page has room (1200 px and wider; 1400 px while the drawer is open) the labelled rail sits
+ * beside the page, and the choice is remembered in this browser. Where it has not, the rail beside the
+ * page stays at icons whatever the choice, so the page keeps its room, and the labels open over the page
+ * until the person goes somewhere, presses Esc or clicks away.
  */
-export function useRail(drawerOpen: boolean): Rail {
+export function useRail(drawerOpen: boolean, pathname: string): Rail {
   const [choice, setChoice] = useState<RailChoice | null>(readChoice);
   const isRail = useMediaQuery(RAIL_FROM);
-  const roomForLabels = useMediaQuery(LABELS_FROM);
-  const roomBesideDrawer = useMediaQuery(BESIDE_DRAWER_FROM);
+  const wide = useMediaQuery(ROOM_FROM);
+  const wideBesideDrawer = useMediaQuery(ROOM_BESIDE_DRAWER_FROM);
+  const room = wide && (!drawerOpen || wideBesideDrawer);
 
-  const held = drawerOpen && !roomBesideDrawer;
-  const collapsed = held || (choice ?? (roomForLabels ? 'expanded' : 'collapsed')) === 'collapsed';
+  // Floating labels belong to the moment they were opened in: another screen, the drawer or a resize puts them away.
+  const moment = `${pathname}|${drawerOpen}|${room}`;
+  const [floatingIn, setFloatingIn] = useState<string | null>(null);
+  const floating = !room && floatingIn === moment;
+  const expanded = room ? (choice ?? 'expanded') === 'expanded' : floating;
 
   const toggle = useCallback(() => {
-    if (held) return;
-    const next: RailChoice = collapsed ? 'expanded' : 'collapsed';
-    writeChoice(next);
-    setChoice(next);
-  }, [held, collapsed]);
+    if (room) {
+      const next: RailChoice = expanded ? 'collapsed' : 'expanded';
+      writeChoice(next);
+      setChoice(next);
+    } else {
+      setFloatingIn(floating ? null : moment);
+    }
+  }, [room, expanded, floating, moment]);
+
+  const dismiss = useCallback(() => setFloatingIn(null), []);
 
   useEffect(() => {
     if (!isRail) return;
@@ -92,5 +111,5 @@ export function useRail(drawerOpen: boolean): Rail {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isRail, toggle]);
 
-  return { collapsed, held, toggle };
+  return { expanded, floating, toggle, dismiss };
 }

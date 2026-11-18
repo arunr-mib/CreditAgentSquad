@@ -17,7 +17,7 @@ export function AppShell() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((open) => !open), []));
   const { open: drawerOpen, tab: drawerTab, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
-  const rail = useRail(drawerOpen);
+  const rail = useRail(drawerOpen, pathname);
   const commands = useShellCommands(pathname);
   // Ctrl or Cmd + J: the Copilot, scoped to the borrower on screen when there is one.
   useEffect(() => {

@@ -38,7 +38,14 @@ const portfolio = {
   },
 };
 const borrowers = [
-  { id: 'b-1', code: 'kestrel-bay-packaging', name: 'Kestrel Bay Packaging Corp.', industry: 'Manufacturing', analyst: 'Theo Lindqvist', relationship_manager: 'Dana Whitcombe' },
+  {
+    id: 'b-1',
+    code: 'kestrel-bay-packaging',
+    name: 'Kestrel Bay Packaging Corp.',
+    industry: 'Manufacturing',
+    analyst: 'Theo Lindqvist',
+    relationship_manager: 'Dana Whitcombe',
+  },
   { id: 'b-2', code: 'ashgrove-fleet', name: 'Ashgrove Fleet Maintenance, LLC', industry: 'Services', analyst: null, relationship_manager: null },
 ];
 
@@ -119,7 +126,7 @@ function renderShell(ui: ReactNode, { at = '/command-centre', authValue = auth()
 
 function RailHarness({ drawerOpen = false }: { drawerOpen?: boolean }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const rail = useRail(drawerOpen);
+  const rail = useRail(drawerOpen, pathname);
   return (
     <>
       <Rail pathname={pathname} rail={rail} />
@@ -182,38 +189,68 @@ describe('navigation rail', () => {
     expect(await railState()).toBe('expanded');
   });
 
-  it('starts collapsed on a window too narrow for labels until the person chooses', async () => {
+  it('keeps the page its room on a narrower window: the labels open over the page and go away again', async () => {
     stubWindowWidth(1024);
+    window.localStorage.setItem(RAIL_STORAGE_KEY, 'expanded');
     mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [] });
     renderShell(<RailHarness />);
-    expect(await railState()).toBe('collapsed');
-    expect(window.localStorage.getItem(RAIL_STORAGE_KEY)).toBeNull();
+    const nav = await screen.findByRole('navigation', { name: 'Workspace' });
+    // Beside the page the rail is icons, whatever was chosen on a wider window.
+    expect(nav).toHaveAttribute('data-rail', 'collapsed');
+
     await userEvent.click(screen.getByRole('button', { name: 'Expand navigation' }));
-    expect(await railState()).toBe('expanded');
+    expect(nav).toHaveAttribute('data-rail', 'expanded');
+    expect(nav).toHaveAttribute('data-floating', 'true');
+    await userEvent.keyboard('{Escape}');
+    expect(nav).toHaveAttribute('data-rail', 'collapsed');
+    expect(nav).not.toHaveAttribute('data-floating');
+
+    await userEvent.keyboard('[[');
+    expect(nav).toHaveAttribute('data-floating', 'true');
+    await userEvent.click(screen.getByRole('textbox', { name: 'Reason' }));
+    expect(nav).toHaveAttribute('data-rail', 'collapsed');
+
+    await userEvent.keyboard('{Tab}');
+    await userEvent.click(screen.getByRole('button', { name: 'Expand navigation' }));
+    await userEvent.click(screen.getByRole('link', { name: 'Portfolio' }));
+    await waitFor(() => expect(screen.getByRole('link', { name: 'Portfolio' })).toHaveAttribute('aria-current', 'page'));
+    expect(nav).toHaveAttribute('data-rail', 'collapsed');
+    // None of this is a choice to remember.
+    expect(window.localStorage.getItem(RAIL_STORAGE_KEY)).toBe('expanded');
   });
 
-  it('stays collapsed while the drawer is open on a window narrower than 1400 px, whatever the choice', async () => {
+  it('stays collapsed beside the page while the drawer is open on a window narrower than 1400 px, whatever the choice', async () => {
     stubWindowWidth(1280);
     window.localStorage.setItem(RAIL_STORAGE_KEY, 'expanded');
     mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [] });
     const view = renderShell(<RailHarness drawerOpen />);
     expect(await railState()).toBe('collapsed');
-    const toggle = screen.getByRole('button', { name: 'Expand navigation' });
-    expect(toggle).toHaveAttribute('aria-disabled', 'true');
-    await userEvent.click(toggle);
-    await userEvent.keyboard('[[');
-    expect(await railState()).toBe('collapsed');
+    await userEvent.click(screen.getByRole('button', { name: 'Expand navigation' }));
+    expect(screen.getByRole('navigation', { name: 'Workspace' })).toHaveAttribute('data-floating', 'true');
     expect(window.localStorage.getItem(RAIL_STORAGE_KEY)).toBe('expanded');
 
-    // On a wide window the rail and the drawer both fit.
+    // Without the drawer the same window has room, and the choice stands.
     view.unmount();
+    const closed = renderShell(<RailHarness />);
+    expect(await railState()).toBe('expanded');
+    expect(screen.getByRole('navigation', { name: 'Workspace' })).not.toHaveAttribute('data-floating');
+
+    // On a wide window the rail and the drawer both fit.
+    closed.unmount();
     stubWindowWidth(1440);
     renderShell(<RailHarness drawerOpen />);
     expect(await railState()).toBe('expanded');
+    expect(screen.getByRole('navigation', { name: 'Workspace' })).not.toHaveAttribute('data-floating');
   });
 
   it('shows the open-item count the API reports, and a still mark while an agent run is in progress', async () => {
-    mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [{ id: 'r-1', status: 'running' }, { id: 'r-2', status: 'completed' }] });
+    mockApi({
+      '/ui/portfolio': portfolio,
+      '/agent-runs': [
+        { id: 'r-1', status: 'running' },
+        { id: 'r-2', status: 'completed' },
+      ],
+    });
     renderShell(<RailHarness />);
     expect(await screen.findByRole('link', { name: 'Command centre, 13 open items' })).toBeInTheDocument();
     const mark = await screen.findByRole('img', { name: '1 agent run in progress' });
@@ -239,7 +276,14 @@ describe('user menu', () => {
   });
 
   it('switches demo user by signing out, then signing in as the chosen person', async () => {
-    const dana: ApiUser = { id: 'u-3', email: 'dana.whitfield@bankofstoic.example', name: 'Dana Whitfield', title: 'Portfolio Manager', role: 'portfolio_manager', permissions: ['view'] };
+    const dana: ApiUser = {
+      id: 'u-3',
+      email: 'dana.whitfield@bankofstoic.example',
+      name: 'Dana Whitfield',
+      title: 'Portfolio Manager',
+      role: 'portfolio_manager',
+      permissions: ['view'],
+    };
     const signOut = vi.fn(async () => {});
     const signIn = vi.fn(async () => dana);
     renderShell(<UserMenu demoUsers={DEMO_USERS} />, { authValue: auth({ signIn, signOut }) });

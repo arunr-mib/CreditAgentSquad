@@ -52,7 +52,11 @@ export function UserMenu({ demoUsers = SHOW_DEMO_USERS ? DEMO_USERS : [] }: User
       const next = await signIn(person.email, DEMO_PASSWORD);
       toast({ title: `Signed in as ${next.name}`, description: `${roleLabel(next.role)}. Everything on screen is now read with this person’s authority.` });
     } catch (error) {
-      toast({ title: `Could not sign in as ${person.name}`, description: `${errorMessage(error)} You are signed out; sign in again to continue.`, tone: 'attention' });
+      toast({
+        title: `Could not sign in as ${person.name}`,
+        description: `${errorMessage(error)} You are signed out; sign in again to continue.`,
+        tone: 'attention',
+      });
     }
   }
 
@@ -106,7 +110,12 @@ export function UserMenu({ demoUsers = SHOW_DEMO_USERS ? DEMO_USERS : [] }: User
                   <span className="block text-caption text-pretty text-ink-500">Signs you out, then in as that person.</span>
                 </DropdownMenu.Label>
                 {others.map((person) => (
-                  <DropdownMenu.Item key={person.email} data-demo-user={person.email} onSelect={() => void switchTo(person)} className={cx(itemClass, 'py-1.5')}>
+                  <DropdownMenu.Item
+                    key={person.email}
+                    data-demo-user={person.email}
+                    onSelect={() => void switchTo(person)}
+                    className={cx(itemClass, 'py-1.5')}
+                  >
                     <Initials name={person.name} />
                     <span className="min-w-0 flex-1 leading-tight">
                       <span className="block font-medium">{person.name}</span>
