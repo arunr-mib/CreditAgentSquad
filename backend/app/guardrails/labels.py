@@ -34,6 +34,19 @@ def best_match(printed: str, candidates: Mapping[str, Iterable[str]]) -> tuple[s
     return best_key, best
 
 
+def reads_as(printed: str, assigned: str, candidates: Mapping[str, Iterable[str]]) -> str | None:
+    """The other known line this printed label names, when it names one clearly and more closely
+    than the line it was assigned to; otherwise None."""
+    if not printed.strip():
+        return None
+    own = max((similarity(printed, label) for label in candidates.get(assigned, ())), default=0.0)
+    others = {k: v for k, v in candidates.items() if k != assigned}
+    other_key, other = best_match(printed, others)
+    if other_key is not None and other >= STRONG and other > own:
+        return other_key
+    return None
+
+
 def mapping_doubt(printed: str, assigned: str, candidates: Mapping[str, Iterable[str]], *,
                   confirmed: bool = False) -> str | None:
     """A reason to hold the assignment for a person, or None. `candidates` maps each known key
@@ -43,11 +56,10 @@ def mapping_doubt(printed: str, assigned: str, candidates: Mapping[str, Iterable
         return None
     if not printed.strip():
         return f"no row label could be read from the page for {assigned}"
-    own = max((similarity(printed, label) for label in candidates.get(assigned, ())), default=0.0)
-    others = {k: v for k, v in candidates.items() if k != assigned}
-    other_key, other = best_match(printed, others)
-    if other_key is not None and other >= STRONG and other > own:
+    other_key = reads_as(printed, assigned, candidates)
+    if other_key is not None:
         return f"the label {printed!r} reads as {other_key}, not {assigned}"
+    own = max((similarity(printed, label) for label in candidates.get(assigned, ())), default=0.0)
     if own >= STRONG:
         return None
     return f"the label {printed!r} is not a known name for {assigned}"

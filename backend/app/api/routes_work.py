@@ -8,7 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import current_user, require
-from app.api.serialize import row
+from app.api.serialize import plain, row
 from app.core import clock, ledger
 from app.core.db import get_db
 from app.core.ledger import LedgerEvent
@@ -60,7 +60,21 @@ def get_work_item(item_id: uuid.UUID, db: Session = Depends(get_db), _: User = D
     item = db.get(WorkItem, item_id)
     if item is None:
         raise HTTPException(404, "Work item not found.")
-    return {**_item(item), "borrower_name": _names(db).get(item.borrower_id)}
+    return {**_item(item), "evidence": plain(_evidence(db, item)), "borrower_name": _names(db).get(item.borrower_id)}
+
+
+def _evidence(db: Session, item: WorkItem) -> dict | None:
+    """The item's evidence as stored. For a held spread, each held figure whose row label names
+    another line also says which (`reads_as`: that line's key, and the value the printed figure
+    has when filed under it). Worked out on reading; the stored evidence is not changed."""
+    evidence = item.evidence
+    cells = evidence.get("cells") if isinstance(evidence, dict) else None
+    if item.item_type != "spread.value_unverified" or item.stage != "spreading" or not isinstance(cells, list):
+        return evidence
+    from app.agents import spreading  # imported here: it imports the workflow
+
+    return {**evidence, "cells": [{**cell, "reads_as": spreading.line_the_label_names(db, cell)}
+                                  if isinstance(cell, dict) else cell for cell in cells]}
 
 
 class DecisionIn(BaseModel):
