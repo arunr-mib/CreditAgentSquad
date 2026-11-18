@@ -740,7 +740,7 @@ const others: WorkItem[] = [
     borrowerName: 'Quillfeather Print & Label',
     stage: 'spreading',
     periodLabel: 'Q3 2026',
-    question: 'One printed figure could not be found on the page. Confirm or correct it?',
+    question: 'One printed figure could not be found on the page. Keep, replace or reject it?',
     summary: 'Printed figure not located',
     evidence: [{ kind: 'extracted', label: 'Compiled financial statements', detail: 'page 2, balance sheet', ref: quillValue.id }],
     decisions: [

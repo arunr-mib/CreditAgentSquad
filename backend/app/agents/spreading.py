@@ -426,7 +426,7 @@ def spread_document(
                         "line their label does not name. Is each figure right and filed under the right line?")
         else:
             title = f"{document.title}: {len(result.unverified)} figure(s) could not be verified on the page"
-            question = "These figures could not be found on the cited page exactly as reported. Confirm or correct each one?"
+            question = "These figures could not be found on the cited page exactly as reported. Keep, replace or reject each one?"
         _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="medium",
               title=title, question=question,
               allowed_decisions=["values_confirmed", "values_corrected", "request_new_document"],

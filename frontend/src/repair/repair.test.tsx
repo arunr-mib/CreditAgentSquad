@@ -160,7 +160,7 @@ const item = (over: Partial<WorkItemDetail> = {}, cells: unknown[] = [PAYABLE_RO
   item_type: 'spread.value_unverified',
   severity: 'medium',
   title: 'Interim statements: 2 figure(s) could not be verified on the page',
-  question: 'These figures could not be found on the cited page exactly as reported. Confirm or correct each one?',
+  question: 'These figures could not be found on the cited page exactly as reported. Keep, replace or reject each one?',
   allowed_decisions: ['values_confirmed', 'values_corrected', 'request_new_document'],
   blocks_stage: true,
   requires_second_person: false,
