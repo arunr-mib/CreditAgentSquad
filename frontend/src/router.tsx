@@ -4,6 +4,8 @@ import { Button } from '@/design';
 import { CommandCentre } from '@/screens/CommandCentre';
 import { Notice } from '@/screens/parts';
 import { SignIn } from '@/screens/SignIn';
+import { WorkspaceDrawerProvider } from '@/drawer/context';
+import { CopilotConversationProvider } from '@/drawer/CopilotPanel';
 import { AppShell } from '@/shell/AppShell';
 import { SourceProvider } from '@/source/SourceDrawer';
 
@@ -49,7 +51,11 @@ function Root() {
   }
   return (
     <SourceProvider>
-      <AppShell />
+      <WorkspaceDrawerProvider>
+        <CopilotConversationProvider>
+          <AppShell />
+        </CopilotConversationProvider>
+      </WorkspaceDrawerProvider>
     </SourceProvider>
   );
 }

@@ -108,6 +108,9 @@
   .anim-rise {
     animation: cas-rise var(--motion-base) var(--ease-out);
   }
+  .anim-slide {
+    animation: cas-slide var(--motion-base) var(--ease-out);
+  }
   .t-colors {
     transition:
       background-color var(--motion-instant) var(--ease-out),
@@ -194,6 +197,12 @@
 @keyframes cas-fade {
   from {
     opacity: 0;
+  }
+}
+@keyframes cas-slide {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
   }
 }
 @keyframes cas-rise {

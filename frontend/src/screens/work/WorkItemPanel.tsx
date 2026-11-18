@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { ArrowUpRight, Users } from 'lucide-react';
-import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useId, useState, type FormEvent, type ReactNode } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
 import { useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkItem } from '@/api/hooks';
 import type { ApiRecommendation, WorkItemDetail } from '@/api/schema';
@@ -475,61 +475,6 @@ function DecisionForm({ item }: { item: WorkItemDetail }) {
   );
 }
 
-/**
- * The decision form, and a cue fixed to the bottom of the window while the item is on screen but
- * its form is not, so a long question or a short screen never hides that a decision is asked for.
- */
-function DecisionSection({ item }: { item: WorkItemDetail }) {
-  const formRef = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(true);
-  const [panelInView, setPanelInView] = useState(false);
-  useEffect(() => {
-    const element = formRef.current;
-    const panel = element?.closest('[data-work-item]');
-    if (!element || !panel || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.target === element) setInView(entry.isIntersecting);
-          else setPanelInView(entry.isIntersecting);
-        }
-      },
-      { threshold: 0.05 },
-    );
-    observer.observe(element);
-    observer.observe(panel);
-    return () => observer.disconnect();
-  }, []);
-  const choices = item.allowed_decisions.length;
-  return (
-    <>
-      <div ref={formRef} tabIndex={-1} className="outline-none">
-        <DecisionForm item={item} />
-      </div>
-      {inView || !panelInView ? null : (
-        <div
-          data-decision-cue
-          className="fixed right-3 bottom-3 left-3 z-30 max-sm:bottom-[calc(68px+env(safe-area-inset-bottom))] flex items-center justify-between gap-3 rounded-md border border-hairline-strong bg-surface px-4 py-2 shadow-raised xl:right-6 xl:left-auto xl:w-[400px]"
-        >
-          <p className="text-caption text-ink-700">
-            <span className="font-medium text-ink">Your decision is below.</span> {choices} {choices === 1 ? 'choice' : 'choices'}, with a reason.
-          </p>
-          <Button
-            size="sm"
-            variant="primary"
-            onClick={() => {
-              formRef.current?.scrollIntoView({ block: 'start' });
-              formRef.current?.focus({ preventScroll: true });
-            }}
-          >
-            Go to the decision
-          </Button>
-        </div>
-      )}
-    </>
-  );
-}
-
 function RecordedDecision({ item }: { item: WorkItemDetail }) {
   const users = useUsers();
   const who = users.data?.find((user) => user.id === item.decided_by);
@@ -558,13 +503,15 @@ export interface WorkItemPanelProps {
   itemId: string;
   headingLevel?: 'h2' | 'h3';
   className?: string;
+  /** In the workspace drawer the panel has no frame of its own. */
+  variant?: 'card' | 'drawer';
 }
 
 /**
  * One question for a person: what is asked, the evidence (each row opens its source), what the
  * agent recommends if it said anything, and the decision. The panel decides nothing itself.
  */
-export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className }: WorkItemPanelProps) {
+export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className, variant = 'card' }: WorkItemPanelProps) {
   const query = useWorkItem(itemId);
   const borrowers = useBorrowers();
   const { asOf } = useAsOf();
@@ -589,7 +536,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
   const breach = isBreachItem(item.item_type);
 
   return (
-    <Card data-work-item={item.id} data-item-status={item.status} className={cx('flex flex-col', className)}>
+    <Card data-work-item={item.id} data-item-status={item.status} className={cx('flex flex-col', variant === 'drawer' && 'rounded-none border-0', className)}>
       <div className="px-4 pt-3.5">
         <div className="flex items-center justify-between gap-3 text-caption">
           <StatusDot tone={SEVERITY_TONE[item.severity]}>
@@ -640,7 +587,7 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className 
         ) : null}
       </div>
 
-      {item.status === 'open' ? <DecisionSection key={item.id} item={item} /> : <RecordedDecision item={item} />}
+      {item.status === 'open' ? <DecisionForm key={item.id} item={item} /> : <RecordedDecision item={item} />}
     </Card>
   );
 }

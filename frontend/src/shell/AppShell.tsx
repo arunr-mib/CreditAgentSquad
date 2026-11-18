@@ -1,11 +1,13 @@
 import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
 import { Building2, CalendarClock, ChevronDown, LogOut, Palette, Search } from 'lucide-react';
 import { DropdownMenu } from 'radix-ui';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useBorrowers, usePortfolio } from '@/api/hooks';
 import { useAuth } from '@/auth/context';
 import { CommandPalette, formatDate, Kbd, Popover, Tooltip, useCommandPaletteShortcut, useToast, type Command } from '@/design';
 import { roleLabel } from '@/domain/labels';
+import { useWorkspaceDrawer } from '@/drawer/context';
+import { WorkspaceDrawer } from '@/drawer/WorkspaceDrawer';
 import { cx } from '@/lib/cx';
 import { STALE_AFTER_DAYS, useAsOf } from './AsOf';
 import { Copilot } from './Copilot';
@@ -183,6 +185,22 @@ export function AppShell() {
   const borrowers = useBorrowers();
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((open) => !open), []));
+  const drawer = useWorkspaceDrawer();
+  const { open: drawerOpen, tab: drawerTab, openCopilot, close: closeDrawer } = drawer;
+  // Ctrl or Cmd + J: the Copilot, scoped to the borrower on screen when there is one.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'j') return;
+      event.preventDefault();
+      if (drawerOpen && drawerTab === 'copilot') closeDrawer();
+      else {
+        const code = pathname.match(/^\/borrowers\/([^/]+)/)?.[1];
+        openCopilot(code ? { kind: 'borrower', code } : undefined);
+      }
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [drawerOpen, drawerTab, openCopilot, closeDrawer, pathname]);
 
   const commands = useMemo<Command[]>(() => {
     const go = (to: string) => () => void navigate({ to });
@@ -245,10 +263,14 @@ export function AppShell() {
             <UserMenu />
           </div>
         </header>
-        <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1480px] flex-1 px-4 pt-4 pb-24 outline-none sm:px-6 sm:pt-6 sm:pb-12">
-          <Outlet />
-        </main>
+        {/* From 1200 px the open drawer takes its own column, so the page beside it stays whole. */}
+        <div data-drawer-open={drawerOpen || undefined} className={cx('flex min-w-0 flex-1 flex-col', drawerOpen && 'lg:pr-[var(--drawer-w)]')}>
+          <main id="main" tabIndex={-1} className="mx-auto w-full max-w-[1480px] flex-1 px-4 pt-4 pb-24 outline-none sm:px-6 sm:pt-6 sm:pb-12">
+            <Outlet />
+          </main>
+        </div>
       </div>
+      <WorkspaceDrawer />
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} commands={commands} />
     </div>
   );
