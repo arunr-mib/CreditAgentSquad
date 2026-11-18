@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import { ArrowLeft, ArrowUpRight, X } from 'lucide-react';
 import { Dialog as RadixDialog } from 'radix-ui';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { errorMessage } from '@/api/client';
 import { mul } from '@/api/decimal';
-import { useCalculation, useFactSource, useQuoteLocation } from '@/api/hooks';
-import type { FactSource, SourcePage } from '@/api/schema';
+import { useCalculation, useFactsById, useFactSource, useQuoteLocation } from '@/api/hooks';
+import type { CovenantOperator, FactSource, FactSummary, HeadroomSource, SourcePage, TermSource } from '@/api/schema';
 import type { ProvenanceKind, Unit } from '@/api/types';
 import { useAuth } from '@/auth/context';
 import { Button, formatDate, formatFigure, provenance, ProvenanceGlyph, Quote, Skeleton, StatusDot, type StatusTone } from '@/design';
@@ -34,7 +34,8 @@ const VERIFIED_BY_KIND: Record<string, string> = {
   seeded: 'Loaded history, not extracted from a document',
 };
 
-function statusFor(status: string, kind?: string): { tone: StatusTone; label: string } {
+function statusFor(status: string, kind?: string, origin?: 'term' | null): { tone: StatusTone; label: string } {
+  if (status === 'verified' && origin === 'term') return { tone: 'pass', label: 'From approved terms' };
   if (status === 'verified' && kind && VERIFIED_BY_KIND[kind]) {
     return { tone: kind === 'seeded' ? 'neutral' : 'pass', label: VERIFIED_BY_KIND[kind] };
   }
@@ -51,10 +52,13 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function Section({ title, children, note }: { title: string; children: ReactNode; note?: ReactNode }) {
+  const id = useId();
   return (
-    <section className="border-t border-hairline-strong px-5 pt-3.5 pb-4">
+    <section aria-labelledby={id} className="border-t border-hairline-strong px-5 pt-3.5 pb-4">
       <div className="mb-2 flex items-baseline justify-between gap-4">
-        <h3 className="eyebrow">{title}</h3>
+        <h3 id={id} className="eyebrow">
+          {title}
+        </h3>
         {note ? <span className="text-caption text-ink-500">{note}</span> : null}
       </div>
       {children}
@@ -187,7 +191,12 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
   if (error || !data) return <ErrorBody message={errorMessage(error)} />;
   const { fact, page, calculation, clause } = data;
   const shown = toFact(fact);
-  const status = statusFor(fact.status, fact.kind);
+  // A threshold read from approved terms, or a headroom worked from the value and the threshold.
+  // Older APIs send neither; the fact then shows its calculation as before.
+  const term = fact.provenance === 'term' && data.term ? data.term : null;
+  const headroom = fact.provenance === 'headroom' && data.headroom ? data.headroom : null;
+  const ratioCalculationId = headroom ? (headroom.ratio_calculation_id ?? data.ratio_calculation_id ?? null) : null;
+  const status = statusFor(fact.status, fact.kind, term ? 'term' : null);
   const located = page?.method === 'located';
   const yesNo = fact.unit === 'count' && fact.key.endsWith('in_compliance');
 
@@ -195,6 +204,7 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
     <>
       <Heading
         kind={fact.kind}
+        eyebrow={term ? 'From approved terms' : undefined}
         title={fact.label}
         context={`${data.borrower.name} · ${periodLabel(fact.period_end, fact.months)}`}
         value={yesNo ? (fact.value === '1' ? 'Yes' : 'No') : formatFigure(shown.value, shown.unit).text}
@@ -230,7 +240,11 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
         </Section>
       ) : null}
 
-      {calculation ? (
+      {term ? <TermSection term={term} code={data.borrower.code} onNavigate={onNavigate} /> : null}
+
+      {headroom ? <HeadroomSection headroom={headroom} ratioCalculationId={ratioCalculationId} /> : null}
+
+      {calculation && !term && !headroom ? (
         <Section title="Calculation" note={calculation.expression ?? undefined}>
           <div className="-mx-5">
             <CalculationBreakdown calc={calculation} resultLabel={fact.label} resultUnit={fact.unit === 'pct' ? 'ratio' : fact.unit} selfContained />
@@ -254,7 +268,7 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
         </Section>
       ) : null}
 
-      {clause ? (
+      {clause && !term ? (
         <Section title="Clause that sets the threshold" note={clause.section ? `Section ${clause.section}` : undefined}>
           {clause.quote ? <Quote text={clause.quote} /> : null}
           <div className="mt-3">
@@ -315,6 +329,130 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
         <History entries={data.history} unit={fact.unit} />
       </Section>
     </>
+  );
+}
+
+/** A stored decimal in the covenant's unit: per cent is stored as a fraction. */
+function formatIn(value: string, unit: Unit): string {
+  return formatFigure(unit === 'pct' ? mul(value, '100') : value, unit).text;
+}
+
+function operatorWords(operator: CovenantOperator): string {
+  return { '<=': 'At most', '<': 'Below', '>=': 'At least', '>': 'Above' }[operator];
+}
+
+function TermSection({ term, code, onNavigate }: { term: TermSource; code: string; onNavigate: () => void }) {
+  const clause = term.clause;
+  const anyStep = term.steps.some((step) => step.in_force);
+  const schedule = [
+    { key: 'base', label: 'Base', value: term.base_threshold, inForce: !anyStep },
+    ...term.steps.map((step) => ({ key: step.from, label: `From ${formatDate(step.from)}`, value: step.value, inForce: step.in_force })),
+  ];
+  return (
+    <Section title="Term in force" note={term.covenant_name}>
+      <p className="tnum text-title font-semibold text-ink">
+        {operatorWords(term.operator)} {formatIn(term.threshold_in_force, term.unit)}
+      </p>
+      <h4 className="eyebrow mt-3 mb-1">Schedule</h4>
+      <ol aria-label="Threshold schedule" className="border-t border-ink">
+        {schedule.map((step) => (
+          <li
+            key={step.key}
+            aria-current={step.inForce ? 'true' : undefined}
+            className={cx('flex items-baseline justify-between gap-4 border-b border-hairline py-1.5 text-body', step.inForce && 'bg-cobalt-bg px-2 font-medium')}
+          >
+            <span className="text-ink-700">{step.label}</span>
+            <span className="inline-flex items-baseline gap-3">
+              {step.inForce ? <span className="text-caption text-ink-700">In force</span> : null}
+              <span className="tnum text-ink">{formatIn(step.value, term.unit)}</span>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <dl className="mt-2">
+        <Row label="Terms version">
+          Version <span className="tnum">{term.terms_version.version}</span>, {term.terms_version.status}, effective {formatDate(term.terms_version.effective_from)}
+        </Row>
+        {clause ? (
+          <Row label="Clause of the step in force">
+            {clause.section ? `Section ${clause.section}` : clause.document_title}
+            {clause.page ? <span className="tnum">, page {clause.page}</span> : null}
+          </Row>
+        ) : null}
+      </dl>
+      {clause?.quote ? (
+        <div className="mt-3">
+          <Quote text={clause.quote} />
+        </div>
+      ) : null}
+      {clause ? (
+        <div className="mt-3">
+          <PageBlock page={clause} code={code} markLabel="Clause of the step in force" onNavigate={onNavigate} />
+        </div>
+      ) : null}
+    </Section>
+  );
+}
+
+function HeadroomSection({ headroom, ratioCalculationId }: { headroom: HeadroomSource; ratioCalculationId: string | null }) {
+  const source = useSource();
+  const facts = useFactsById([headroom.value_fact_id, headroom.threshold_fact_id]);
+  const valueFact = headroom.value_fact_id ? facts.data?.[headroom.value_fact_id] : undefined;
+  const thresholdFact = headroom.threshold_fact_id ? facts.data?.[headroom.threshold_fact_id] : undefined;
+  const unit: Unit = valueFact?.unit ?? thresholdFact?.unit ?? 'ratio';
+  const maximum = headroom.operator === '<=' || headroom.operator === '<';
+  const chip = (id: string | null, value: string, fact: FactSummary | undefined, what: string) =>
+    id ? (
+      <InlineFact id={id} text={formatIn(fact?.value ?? value, fact?.unit ?? unit)} kind={fact?.kind ?? 'calculated'} label={what} />
+    ) : (
+      <span className="tnum">{formatIn(value, unit)}</span>
+    );
+  const thresholdChip = chip(headroom.threshold_fact_id, headroom.threshold, thresholdFact, 'threshold');
+  const valueChip = chip(headroom.value_fact_id, headroom.value, valueFact, 'calculated value');
+  const [first, second] = maximum ? [thresholdChip, valueChip] : [valueChip, thresholdChip];
+  return (
+    <Section title="Headroom" note={headroom.formula}>
+      <p className="text-body text-pretty text-ink-700">
+        {maximum
+          ? 'For a maximum, headroom is the threshold less the calculated value, divided by the size of the threshold.'
+          : 'For a minimum, headroom is the calculated value less the threshold, divided by the size of the threshold.'}{' '}
+        Positive is cushion; negative is the shortfall.
+      </p>
+      <dl className="mt-3">
+        <Row label={maximum ? 'Threshold − value' : 'Value − threshold'}>
+          <span className="inline-flex flex-wrap items-baseline justify-end gap-x-1.5">
+            {first}
+            <span aria-label="minus">−</span>
+            {second}
+            <span aria-hidden>=</span>
+            <span className="tnum">{formatIn(headroom.headroom, unit)}</span>
+          </span>
+        </Row>
+        {headroom.headroom_pct !== null ? (
+          <Row label="÷ |threshold|">
+            <span className="inline-flex flex-wrap items-baseline justify-end gap-x-1.5">
+              <span className="tnum">{formatIn(headroom.headroom, unit)}</span>
+              <span aria-label="divided by">÷</span>
+              <span className="tnum">{formatIn(headroom.threshold.replace(/^-/, ''), unit)}</span>
+              <span aria-hidden>=</span>
+              <span className="tnum font-semibold">{formatIn(headroom.headroom_pct, 'pct')}</span>
+            </span>
+          </Row>
+        ) : (
+          <Row label="Per cent">Not measured: the threshold is zero</Row>
+        )}
+      </dl>
+      {ratioCalculationId ? (
+        <button
+          type="button"
+          className="link mt-3 inline-flex items-center gap-0.5 text-body font-medium"
+          onClick={() => source.open({ type: 'calculation', id: ratioCalculationId })}
+        >
+          Open the ratio’s calculation
+          <ArrowUpRight size={12} aria-hidden />
+        </button>
+      ) : null}
+    </Section>
   );
 }
 
@@ -428,11 +566,12 @@ function CalculationView({ id, title }: { id: string; title?: string }) {
   );
 }
 
-function InlineFact({ id, text, kind }: { id: string; text: string; kind: ProvenanceKind }) {
+function InlineFact({ id, text, kind, label }: { id: string; text: string; kind: ProvenanceKind; label?: string }) {
   const source = useSource();
   return (
     <button
       type="button"
+      aria-label={label ? `${text}, ${label}. Open its source` : undefined}
       onClick={() => source.open({ type: 'fact', id })}
       className="-mx-1 inline-flex items-center gap-1 rounded-xs px-1 text-ink t-colors hover:bg-cobalt-bg hover:text-cobalt-strong"
     >

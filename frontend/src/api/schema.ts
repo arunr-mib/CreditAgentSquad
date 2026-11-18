@@ -319,12 +319,54 @@ export interface FactSource {
     confirmed_at: string | null;
     created_at: string;
     agent_run_id: string | null;
+    /** `term`: a covenant threshold read from approved terms. `headroom`: a covenant's headroom. Absent on older APIs. */
+    provenance?: 'term' | 'headroom' | null;
   };
   borrower: { id: string; name: string; code: string };
   page: SourcePage | null;
   calculation: Calculation | null;
   clause: SourcePage | null;
+  /** For a threshold fact: the covenant's term in force and its schedule. Absent on older APIs. */
+  term?: TermSource | null;
+  /** For a headroom fact: the arithmetic from the value and the threshold. Absent on older APIs. */
+  headroom?: HeadroomSource | null;
+  /** For a headroom fact: the calculation of the ratio the headroom is measured on. */
+  ratio_calculation_id?: string | null;
   history: FactHistoryEntry[];
+}
+
+export type CovenantOperator = '>=' | '<=' | '>' | '<';
+
+export interface TermStep {
+  /** The date the step takes effect (ISO). */
+  from: string;
+  value: string;
+  in_force: boolean;
+}
+
+export interface TermSource {
+  covenant_name: string;
+  operator: CovenantOperator;
+  unit: Unit;
+  threshold_in_force: string;
+  base_threshold: string;
+  steps: TermStep[];
+  terms_version: { id: string; version: number; status: string; effective_from: string };
+  clause: SourcePage | null;
+}
+
+export interface HeadroomSource {
+  operator: CovenantOperator;
+  value: string;
+  value_fact_id: string | null;
+  threshold: string;
+  threshold_fact_id: string | null;
+  headroom: string;
+  /** Headroom over the threshold's size, as a fraction. */
+  headroom_pct: string | null;
+  /** For example "(threshold − value) ÷ |threshold|". */
+  formula: string;
+  ratio_calculation_id?: string | null;
 }
 
 /* ── Spread ───────────────────────────────────────────────────────────── */
