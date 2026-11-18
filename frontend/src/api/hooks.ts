@@ -239,7 +239,7 @@ export const useAgentsStatus = () =>
 export function useAssignItem(itemId: string) {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: (body: { assigned_to: string | null; due_date: string | null }) => post<WorkItemRow>(`/work-items/${itemId}/assign`, body),
+    mutationFn: (body: { assigned_to: string | null; due_date?: string | null }) => post<WorkItemRow>(`/work-items/${itemId}/assign`, body),
     onSuccess: () => invalidateAfterDecision(client),
   });
 }

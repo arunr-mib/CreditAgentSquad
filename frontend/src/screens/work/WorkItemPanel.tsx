@@ -198,11 +198,31 @@ function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail;
   const note = text(evidence.note);
   const error = text(evidence.error);
   const draft = text(evidence.draft_email);
+  const withheld = Array.isArray(evidence.withheld_sections)
+    ? (evidence.withheld_sections as Array<{ section?: string; withheld_by?: string; reason?: string }>)
+    : [];
 
   return (
     <div>
       <Heading className="eyebrow mb-1">Evidence</Heading>
       {rows.length > 0 ? <ul className="border-t border-ink">{rows}</ul> : null}
+      {withheld.length > 0 ? (
+        <div data-withheld-sections className="mt-3">
+          <p className="text-body text-ink-700">
+            {withheld.length === 1 ? 'One section was' : `${withheld.length} sections were`} withheld from the sheet. The agent&rsquo;s text failed a
+            check, so it is not shown; write the section or approve the sheet without it.
+          </p>
+          <ul className="mt-1.5 border-t border-hairline">
+            {withheld.map((entry, index) => (
+              <li key={`${entry.section ?? 'section'}-${index}`} className="border-b border-hairline py-1.5 text-body">
+                <span className="font-medium text-ink">{humanize(entry.section ?? 'Section')}</span>
+                {entry.withheld_by ? <span className="text-ink-600"> · withheld by the {entry.withheld_by}</span> : null}
+                {entry.reason ? <span className="block text-ink-600">{entry.reason}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       {lines.length > 0 && calcId ? (
         <table className="mt-2 w-full text-body">
           <caption className="eyebrow pb-1 text-left">Lines that differ, USD thousands</caption>
@@ -478,7 +498,7 @@ function AuthorityGate({ item }: { item: WorkItemDetail }) {
             onClick={() =>
               target &&
               assign.mutate(
-                { assigned_to: target.id, due_date: item.due_date },
+                { assigned_to: target.id },
                 {
                   onSuccess: () =>
                     toast({

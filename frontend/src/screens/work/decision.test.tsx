@@ -116,7 +116,7 @@ describe('a decision outside the reader’s authority', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Route to Helen Strand for sign-off' }));
     await waitFor(() => expect(calls.some((call) => call.method === 'POST')).toBe(true));
     expect(calls.filter((call) => call.method === 'POST')).toEqual([
-      { method: 'POST', url: '/api/v1/work-items/w-1/assign', body: { assigned_to: 'u-2', due_date: null } },
+      { method: 'POST', url: '/api/v1/work-items/w-1/assign', body: { assigned_to: 'u-2' } },
     ]);
   });
 
@@ -216,6 +216,28 @@ describe('open questions that may change the result', () => {
     panel(item({ related_items: [] }));
     await screen.findByRole('form', { name: 'Record a decision' });
     expect(screen.queryByRole('region', { name: 'Open questions that may change this result' })).toBeNull();
+  });
+
+  it('names each review section the checks withheld and the check that withheld it', async () => {
+    panel(
+      item({
+        item_type: 'review.commentary_approval',
+        evidence: {
+          withheld_sections: [
+            { section: 'covenants', withheld_by: 'number check', reason: 'a figure was typed, not referenced' },
+            { section: 'outlook', withheld_by: 'policy check', reason: 'the wording was refused' },
+          ],
+        },
+      }),
+    );
+    const block = await waitFor(() => {
+      const found = document.querySelector('[data-withheld-sections]');
+      expect(found).not.toBeNull();
+      return found as HTMLElement;
+    });
+    expect(block).toHaveTextContent('2 sections were withheld');
+    expect(block).toHaveTextContent('Covenants · withheld by the number check');
+    expect(block).toHaveTextContent('Outlook · withheld by the policy check');
   });
 });
 
