@@ -25,6 +25,14 @@ class Settings(BaseSettings):
     session_secret: str = "change-me"
     session_hours: int = 12
     file_store_dir: str = "./var/files"
+    # A read-only folder of document files to fall back on when a document's own file is missing
+    # from the file store: a host whose disk does not persist ships the synthetic documents with
+    # the deployment. Files are matched by content hash, never by name.
+    file_fallback_dir: str = ""
+    # Hosting on a shared database server: keep every table in this schema, and open a
+    # connection per request instead of keeping a pool (serverless functions do not live long).
+    db_schema: str = ""
+    db_pool: str = ""  # "" = the default pool; "null" = no pool
 
     # Leave unset to follow `squad_env`; set to override it.
     session_cookie_secure: bool | None = None

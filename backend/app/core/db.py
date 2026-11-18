@@ -3,9 +3,10 @@ import uuid
 from collections.abc import Iterator
 from datetime import datetime
 
-from sqlalchemy import DateTime, MetaData, create_engine, func
+from sqlalchemy import DateTime, MetaData, create_engine, event, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
+from sqlalchemy.pool import NullPool
 
 from app.core.config import get_settings
 
@@ -36,10 +37,29 @@ _engine = None
 _SessionLocal: sessionmaker[Session] | None = None
 
 
+def make_engine(url: str | None = None):
+    """An engine for `url` (default: the application's database) with the configured schema and
+    pooling applied. Migrations use this too, so tables are created where the application looks."""
+    settings = get_settings()
+    options = {"poolclass": NullPool} if settings.db_pool.strip().lower() == "null" else {"pool_pre_ping": True}
+    engine = create_engine(url or settings.database_url, **options)
+    schema = settings.db_schema.strip()
+    if schema:
+        if not schema.replace("_", "").isalnum():
+            raise ValueError("DB_SCHEMA must be letters, digits and underscores")
+
+        @event.listens_for(engine, "connect")
+        def _use_schema(connection, _record):  # every new connection looks in the schema first
+            with connection.cursor() as cursor:
+                cursor.execute(f'SET search_path TO "{schema}"')
+            connection.commit()
+    return engine
+
+
 def get_engine():
     global _engine, _SessionLocal
     if _engine is None:
-        _engine = create_engine(get_settings().database_url, pool_pre_ping=True)
+        _engine = make_engine()
         _SessionLocal = sessionmaker(bind=_engine, expire_on_commit=False)
     return _engine
 

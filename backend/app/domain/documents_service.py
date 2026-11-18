@@ -92,5 +92,24 @@ def get_page(db: Session, document_id: uuid.UUID, page_number: int) -> DocumentP
         DocumentPage.document_id == document_id, DocumentPage.page_number == page_number)).scalar_one_or_none()
 
 
+_FALLBACK: dict[str, Path] | None = None
+
+
+def _fallback_file(sha256: str) -> Path | None:
+    """The file with this content hash in the read-only fallback folder, if one is configured."""
+    global _FALLBACK
+    root = get_settings().file_fallback_dir
+    if not root:
+        return None
+    if _FALLBACK is None:
+        _FALLBACK = {hashlib.sha256(path.read_bytes()).hexdigest(): path for path in Path(root).rglob("*.pdf")}
+    return _FALLBACK.get(sha256)
+
+
 def read_file(doc: Document) -> bytes:
-    return Path(doc.storage_path).read_bytes()
+    path = Path(doc.storage_path)
+    if not path.exists():
+        fallback = _fallback_file(doc.sha256)
+        if fallback is not None:
+            return fallback.read_bytes()
+    return path.read_bytes()
