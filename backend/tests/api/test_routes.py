@@ -9,6 +9,7 @@ from app.domain import workflow
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document
 from app.domain.facts_service import add_fact, correct_fact
+from app.domain.monitoring import CovenantTest
 from app.domain.org import User
 from app.domain.work_items import raise_item
 from app.seed_users import seed_users
@@ -53,6 +54,43 @@ def test_borrower_list_and_detail(client, db, world):
     detail = client.get(f"/api/v1/borrowers/{borrower.id}").json()
     assert detail["facilities"][0]["has_borrowing_base"] is True
     assert client.get("/api/v1/borrowers/00000000-0000-4000-8000-000000000000").status_code == 404
+
+
+def test_borrower_list_carries_the_tightest_stored_headroom(client, db, world):
+    borrower, cycle = world
+    facility = db.execute(select(Facility).where(Facility.borrower_id == borrower.id)).scalar_one()
+    sign_in(client, "priya.raman")
+    # no covenant has been tested: nothing is shown, and nothing is read as zero
+    assert client.get("/api/v1/borrowers").json()[0]["tightest_headroom"] is None
+
+    def tested(covenant, period, headroom, outcome="compliant", **fields):
+        fact = None
+        if headroom is not None:
+            fact = add_fact(db, borrower_id=borrower.id, key=f"cov.{covenant}.headroom_pct", period_end=period,
+                            months=0, value=D(headroom), kind="seeded", unit="pct")
+        db.add(CovenantTest(borrower_id=borrower.id, facility_id=facility.id, cycle_id=cycle.id, covenant_id=covenant,
+                            covenant_name=covenant.replace("_", " ").title(), period_end=period, outcome=outcome,
+                            **fields))
+        db.flush()
+        return fact
+
+    tested("fixed_charge", PERIOD, "0.2")
+    tight = tested("total_leverage", PERIOD, "0.05")
+    tested("current_ratio", PERIOD, None, outcome="cannot_test")       # no stored headroom: left out
+    tested("total_leverage", date(2026, 6, 30), "-0.5")                # an earlier period does not count
+    tested("senior_leverage", PERIOD, "-0.9", superseded=True)         # nor does a test that was replaced
+    row = client.get("/api/v1/borrowers").json()[0]
+    assert row["tightest_headroom"]["id"] == str(tight.id)
+    assert row["tightest_headroom"]["value"] == "0.05" and row["tightest_headroom"]["unit"] == "pct"
+    assert row["tightest_headroom"]["key"] == "cov.total_leverage.headroom_pct"
+    assert row["tightest_headroom"]["label"] == "Total Leverage, headroom"
+
+    # a corrected headroom is a new fact; the list shows that one, not the fact it replaced
+    analyst = db.query(User).filter(User.email == "priya.raman@bankofstoic.example").one()
+    corrected = correct_fact(db, tight, value=D("0.3"), user_id=analyst.id, reason="Threshold misread.")
+    row = client.get("/api/v1/borrowers").json()[0]
+    assert corrected.id != tight.id and row["tightest_headroom"]["value"] == "0.2"
+    assert row["tightest_headroom"]["key"] == "cov.fixed_charge.headroom_pct"
 
 
 def test_upload_page_citations_and_file(client, db, world):

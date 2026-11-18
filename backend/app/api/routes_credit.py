@@ -10,6 +10,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import PageNumber, current_user, require
+from app.api.routes_ui import _Labels, _summary
 from app.api.serialize import plain, row
 from app.calc import template
 from app.core.clock import today
@@ -53,9 +54,12 @@ def list_borrowers(db: Session = Depends(get_db), _: User = Depends(current_user
         if cycle is not None and test.period_end == cycle.period_end:
             if rank.get(test.outcome, 0) >= rank.get(worst.get(test.borrower_id, "compliant"), 0):
                 worst[test.borrower_id] = test.outcome
+    tightest = _tightest_headroom(db, latest_cycle)
+    labels = _Labels(db)
     out = []
     for b in db.execute(select(Borrower).order_by(Borrower.name)).scalars():
         cycle = latest_cycle.get(b.id)
+        headroom = tightest.get(b.id)
         out.append({
             **row(b, exclude=("profile",)),
             "relationship_manager": users.get(b.relationship_manager_id), "analyst": users.get(b.analyst_id),
@@ -64,8 +68,30 @@ def list_borrowers(db: Session = Depends(get_db), _: User = Depends(current_user
             "latest_cycle": {"id": str(cycle.id), "period_end": cycle.period_end.isoformat(), "stage": cycle.stage,
                              "status": cycle.status} if cycle else None,
             "covenant_status": worst.get(b.id),
+            "tightest_headroom": _summary(headroom, labels) if headroom else None,
         })
     return out
+
+
+def _tightest_headroom(db: Session, latest_cycle: dict[uuid.UUID, Cycle]) -> dict[uuid.UUID, Fact]:
+    """Per borrower, the stored headroom fact with the lowest value among the covenant tests in
+    force for the latest cycle's period. Nothing is calculated here: the fact is chosen, not made.
+    A test with no stored headroom (it could not be tested) is left out, never read as zero."""
+    stored: dict[tuple[uuid.UUID, str, date], Fact] = {}
+    for fact in db.execute(select(Fact).where(Fact.key.like("cov.%.headroom_pct"),
+                                              Fact.status.in_(("verified", "confirmed")))
+                           .order_by(Fact.seq)).scalars():
+        stored[(fact.borrower_id, fact.key, fact.period_end)] = fact
+    tightest: dict[uuid.UUID, Fact] = {}
+    for test in db.execute(select(CovenantTest).where(CovenantTest.superseded.is_(False))
+                           .order_by(CovenantTest.covenant_id)).scalars():
+        cycle = latest_cycle.get(test.borrower_id)
+        if cycle is None or test.period_end != cycle.period_end:
+            continue
+        fact = stored.get((test.borrower_id, f"cov.{test.covenant_id}.headroom_pct", test.period_end))
+        if fact is not None and (test.borrower_id not in tightest or fact.value < tightest[test.borrower_id].value):
+            tightest[test.borrower_id] = fact
+    return tightest
 
 
 @router.get("/borrowers/{borrower_id}")
