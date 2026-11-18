@@ -66,12 +66,16 @@ def draft_commentary(db: Session, *, borrower: Borrower, cycle: Cycle, sheet: di
         phrase = next((p for p in PROHIBITED_PHRASES if p in lowered), None)
         if problems:
             result.notes.append({"layer": "narrative", "check": problems[0].check, "action": "section_dropped",
+                                 "section": section.section, "reason": problems[0].detail,
                                  "detail": f"{section.section}: {problems[0].detail}"})
         elif phrase:
+            reason = f"proposes an action reserved for a person ({phrase})"
             result.notes.append({"layer": "policy", "check": "prohibited_phrase", "action": "section_dropped",
-                                 "detail": f"{section.section}: proposes an action reserved for a person ({phrase})"})
+                                 "section": section.section, "reason": reason,
+                                 "detail": f"{section.section}: {reason}"})
         elif not referenced_fact_ids(section.body) and section.section != "summary":
             result.notes.append({"layer": "narrative", "check": "no_facts", "action": "section_dropped",
+                                 "section": section.section, "reason": "makes no reference to any fact",
                                  "detail": f"{section.section}: makes no reference to any fact"})
         else:
             result.sections[section.section] = section.body
