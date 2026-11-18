@@ -161,3 +161,46 @@ def test_statements_are_not_filed_to_the_comparative_columns_date(db, world):
     result = classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="t9")
     assert result.filed == [] and doc.period_end is None
     assert "comparative column" in db.execute(select(WorkItem)).scalar_one().evidence["reason"]
+
+
+def test_one_late_filing_raises_one_item_and_the_late_signal_attaches_to_it(db, world):
+    """Reporting 18 days late used to raise both "reporting is 18 days past due" (the calendar's
+    chaser) and "reporting late" (the early warning). One late obligation is one item: the
+    early warning is recorded on the chaser item instead of raising a second."""
+    from app.core.ledger import LedgerEvent
+    from app.domain.monitoring import Signal
+    from app.domain.signals_service import run_signals
+
+    borrower, cycle = world
+    today = date(2026, 12, 2)  # the September reporting was due on November 14
+    calendar.refresh_statuses(db, today)
+    chaser = chase_missing(db, borrower=borrower, cycle=cycle, today=today)
+    assert chaser.evidence["days_past_due"] == 18
+    run_signals(db, borrower=borrower, period_end=PERIOD, as_of=today, cycle=cycle)
+    late = db.execute(select(Signal).where(Signal.rule_id == "reporting_late")).scalar_one()
+    assert late.severity == "high"
+
+    open_items = db.execute(select(WorkItem).where(WorkItem.status == "open")).scalars().all()
+    assert [w.id for w in open_items] == [chaser.id]
+    assert chaser.evidence["signals"] == [{"signal_id": str(late.id), "rule_id": "reporting_late"}]
+    attached = db.execute(select(LedgerEvent).where(LedgerEvent.action == "work_item.signal_attached")).scalar_one()
+    assert attached.entity_id == str(chaser.id) and attached.payload["signal_id"] == str(late.id)
+
+    # running both again changes nothing
+    chase_missing(db, borrower=borrower, cycle=cycle, today=today)
+    run_signals(db, borrower=borrower, period_end=PERIOD, as_of=today, cycle=cycle)
+    assert db.execute(select(WorkItem).where(WorkItem.status == "open")).scalars().all() == [chaser]
+    assert len(chaser.evidence["signals"]) == 1
+
+
+def test_late_reporting_with_no_chaser_still_raises_the_early_warning(db, world):
+    """Received late: nothing is missing, so there is no chaser, and the early warning is the item."""
+    from app.domain.signals_service import run_signals
+
+    borrower, cycle = world
+    for ob in db.execute(select(ReportingObligation).where(ReportingObligation.period_end == PERIOD)).scalars():
+        ob.status, ob.received_date = "received", date(2026, 12, 2)
+    db.flush()
+    run_signals(db, borrower=borrower, period_end=PERIOD, as_of=date(2026, 12, 3), cycle=cycle)
+    items = db.execute(select(WorkItem).where(WorkItem.status == "open")).scalars().all()
+    assert [w.item_type for w in items] == ["signal.high"]

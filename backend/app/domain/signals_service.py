@@ -15,7 +15,7 @@ from app.domain.covenant_service import fact_provider
 from app.domain.credit import Borrower, Facility
 from app.domain.facts import Fact
 from app.domain.facts_service import current_fact
-from app.domain.monitoring import CovenantTest, Cycle, Signal
+from app.domain.monitoring import CovenantTest, Cycle, Signal, WorkItem
 from app.domain.terms import ReportingObligation
 from app.domain.work_items import raise_item
 
@@ -109,6 +109,10 @@ def run_signals(
                                                  "period_end": period_end, "subject": fired.subject})
         stored.append(row)
         if raise_items and fired.severity == "high":
+            chaser = _open_chaser(db, borrower.id, period_end) if fired.rule_id == "reporting_late" else None
+            if chaser is not None:
+                _attach_signal(db, chaser, row)
+                continue
             raise_item(
                 db, borrower_id=borrower.id, cycle_id=cycle.id if cycle else None, stage="signals",
                 item_type="signal.high", severity="high",
@@ -119,6 +123,28 @@ def run_signals(
                 actor=("system", "signals"), dedupe_key=f"signal.high:{row.id}")
     db.flush()
     return stored
+
+
+def _open_chaser(db: Session, borrower_id: uuid.UUID, period_end: date) -> WorkItem | None:
+    """The open chaser for the period's missing reporting, if the calendar raised one. Late
+    reporting that is still missing is one exception: the chaser asks the person to act, and the
+    early warning is recorded on it rather than raised as a second item."""
+    return db.execute(select(WorkItem).join(Cycle, Cycle.id == WorkItem.cycle_id).where(
+        WorkItem.borrower_id == borrower_id, WorkItem.item_type == "intake.missing_document",
+        WorkItem.status == "open", Cycle.period_end == period_end)
+        .order_by(WorkItem.created_at)).scalars().first()
+
+
+def _attach_signal(db: Session, item: WorkItem, signal: Signal) -> None:
+    attached = list(item.evidence.get("signals", []))
+    if any(s.get("signal_id") == str(signal.id) for s in attached):
+        return
+    attached.append({"signal_id": str(signal.id), "rule_id": signal.rule_id})
+    item.evidence = {**item.evidence, "signals": attached}  # a new dict, so the JSON column is saved
+    ledger.record(db, actor_type="system", actor_id="signals", action="work_item.signal_attached",
+                  entity_type="work_item", entity_id=item.id,
+                  payload={"signal_id": signal.id, "rule_id": signal.rule_id, "severity": signal.severity,
+                           "period_end": signal.period_end})
 
 
 def facility_for_signals(db: Session, borrower_id: uuid.UUID) -> Facility | None:
