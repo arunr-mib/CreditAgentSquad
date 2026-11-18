@@ -16,13 +16,15 @@ import { useWorkspaceDrawer } from './context';
 /* ── Marks shared with the portfolio and the borrower directory ───────── */
 
 /**
- * A covenant outcome. A breach or a variance is something a person acts on, so it is a tag;
- * compliant needs nothing from anyone, so it is a dot and a word.
+ * A covenant outcome. A breach, or a test that cannot be run, is something a person acts on, so it
+ * is a tag. A variance is logged and needs no decision, so it is an amber dot and a word; compliant
+ * needs nothing from anyone, so it is a green dot and a word.
  */
 export function OutcomeMark({ outcome }: { outcome: CovenantOutcome | null | undefined }) {
   if (!outcome) return <StatusDot tone="muted">Not tested yet</StatusDot>;
   const meta = OUTCOME[outcome];
   if (outcome === 'compliant') return <StatusDot tone="pass">{meta.label}</StatusDot>;
+  if (outcome === 'compliant_variance') return <StatusDot tone="attention">{meta.label}</StatusDot>;
   return <Tag tone={meta.tone === 'breach' ? 'breach' : 'attention'}>{meta.label}</Tag>;
 }
 
