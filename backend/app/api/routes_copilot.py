@@ -26,6 +26,7 @@ class TurnIn(BaseModel):
 class AskIn(BaseModel):
     question: str = Field(min_length=1, max_length=copilot.MAX_QUESTION_CHARS)
     borrower_id: uuid.UUID | None = None
+    work_item_id: uuid.UUID | None = None  # the exception open beside the Copilot, if any
     history: list[TurnIn] = Field(default_factory=list, max_length=40)
 
 
@@ -46,9 +47,10 @@ def ask(body: AskIn, db: Session = Depends(get_db), user: User = Depends(require
         raise HTTPException(503, "The Copilot's model is not available.") from exc
     try:
         response = copilot.ask(db, question=body.question, user=user, llm=llm, borrower_id=body.borrower_id,
-                               history=[turn.model_dump() for turn in body.history])
+                               history=[turn.model_dump() for turn in body.history],
+                               work_item_id=body.work_item_id)
     except LookupError as exc:
-        raise HTTPException(404, "Borrower not found.") from exc
+        raise HTTPException(404, "The borrower or the exception was not found.") from exc
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()

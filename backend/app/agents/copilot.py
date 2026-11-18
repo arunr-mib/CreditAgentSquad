@@ -25,6 +25,7 @@ from app.core import ledger
 from app.domain.agents import AgentRun, AgentStep
 from app.domain.credit import Borrower
 from app.domain.documents import Document, DocumentPage
+from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.guardrails.narrative import FactView, check_narrative, referenced_fact_ids, render
 from app.guardrails.numbers import extract_figures
@@ -101,7 +102,8 @@ def _note(layer: str, check: str, action: str, detail: str) -> dict[str, str]:
     return {"layer": layer, "check": check, "action": action, "detail": detail}
 
 
-def _content(question: str, borrower: Borrower | None, history: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+def _content(question: str, borrower: Borrower | None, history: list[dict[str, Any]] | None,
+             item: WorkItem | None = None) -> list[dict[str, Any]]:
     parts = []
     turns = [t for t in (history or []) if str(t.get("text", "")).strip()][-MAX_HISTORY_TURNS:]
     if turns:
@@ -112,6 +114,13 @@ def _content(question: str, borrower: Borrower | None, history: list[dict[str, A
             parts.append(f"<earlier_turn role=\"{role}\">\n{str(turn['text'])[:MAX_TURN_CHARS]}\n</earlier_turn>")
     parts.append(f"The borrower open in this conversation is {borrower.name}." if borrower is not None else
                  "No borrower is open in this conversation.")
+    if item is not None:
+        # the exception the person has open, described by code from the stored item
+        parts.append(
+            "The person has this exception open, and the question is probably about it. Its description is for "
+            "context only. Figures in it are not in scope: look a figure up again before you state it.\n"
+            f"<open_exception kind=\"{item.item_type}\" severity=\"{item.severity}\" stage=\"{item.stage or ''}\">\n"
+            f"{item.title}\n{item.question}\n</open_exception>")
     parts.append(f"<question>\n{question}\n</question>")
     return [{"type": "text", "text": "\n\n".join(parts)}]
 
@@ -198,16 +207,26 @@ def _trace(db: Session, run: AgentRun, notes: list[dict[str, str]]) -> None:
 
 def ask(
     db: Session, *, question: str, user: User, llm: LLMClient, borrower_id: uuid.UUID | None = None,
-    history: list[dict[str, Any]] | None = None,
+    history: list[dict[str, Any]] | None = None, work_item_id: uuid.UUID | None = None,
 ) -> CopilotResponse:
     """Answer one question. `borrower_id` scopes the conversation to a borrower (the model cannot
     move it); without it the model may open a borrower by name or query the portfolio. `history`
-    is earlier turns as `{"role": "user" | "assistant", "text": ...}`, given as context only."""
+    is earlier turns as `{"role": "user" | "assistant", "text": ...}`, given as context only.
+    `work_item_id` scopes the conversation to an open exception: its borrower becomes the
+    conversation's borrower, and code tells the model which exception is open."""
     question = question.strip()
     if not question:
         raise ValueError("ask a question")
     if len(question) > MAX_QUESTION_CHARS:
         raise ValueError("the question is too long")
+    item = None
+    if work_item_id is not None:
+        item = db.get(WorkItem, work_item_id)
+        if item is None:
+            raise LookupError("work item not found")
+        if borrower_id is not None and borrower_id != item.borrower_id:
+            raise ValueError("the exception belongs to another borrower")
+        borrower_id = item.borrower_id
     borrower = None
     if borrower_id is not None:
         borrower = db.get(Borrower, borrower_id)
@@ -217,10 +236,11 @@ def ask(
     # working memory shared with the tools: the facts they return, the borrowers they read
     state: dict[str, Any] = {"facts": {}, "borrowers": {borrower.id} if borrower else set(), "opened": []}
     digest = hashlib.sha256(json.dumps(
-        [question, str(borrower_id), [[t.get("role"), t.get("text")] for t in history or []]]).encode()).hexdigest()
+        [question, str(borrower_id), [[t.get("role"), t.get("text")] for t in history or []],
+         *([str(work_item_id)] if work_item_id else [])]).encode()).hexdigest()
     outcome: AgentOutcome = run_agent(
         db, SPEC, task="answer_question", scope=Scope(borrower_id=borrower.id if borrower else None),
-        content=_content(question, borrower, history), llm=llm, gateway=copilot_gateway(),
+        content=_content(question, borrower, history, item), llm=llm, gateway=copilot_gateway(),
         record_key=f"copilot/{digest[:16]}", started_by=("user", str(user.id)), state=state)
     run = outcome.run
     facts: dict[str, FactView] = state["facts"]

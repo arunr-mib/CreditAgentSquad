@@ -662,6 +662,20 @@ def test_scope_history_and_follow_ups(db):
                      history=history)
     assert carried.status == "refused"
 
+    # an open exception fixes the borrower too, and code tells the model which exception it is
+    item = db.execute(select(WorkItem).where(WorkItem.borrower_id == kestrel.id, WorkItem.status == "open")).scalars().first()
+    scoped, llm = ask(db, [tool_call("covenant_tests", {"period_end": None}),
+                           final(f"Leverage is {{{{fact:{test.value_fact_id}}}}}.")],
+                      question="What is this about?", work_item_id=item.id)
+    sent = llm.requests[0].messages[0]["content"][0]["text"]
+    assert "The borrower open in this conversation is Kestrel Bay Packaging Corp." in sent
+    assert f'<open_exception kind="{item.item_type}"' in sent and item.question in sent and "not in scope" in sent
+    assert scoped.status == "answered" and scoped.borrower == {"id": str(kestrel.id), "name": kestrel.name}
+    with pytest.raises(ValueError):
+        ask(db, [], work_item_id=item.id, borrower_id=borrower(db, "vantry-freight").id)
+    with pytest.raises(LookupError):
+        ask(db, [], work_item_id=uuid.uuid4())
+
     with pytest.raises(LookupError):
         ask(db, [], borrower_id=uuid.uuid4())
     with pytest.raises(ValueError):
