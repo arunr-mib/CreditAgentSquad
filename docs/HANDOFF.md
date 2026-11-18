@@ -80,6 +80,17 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 4. Remember a confirmed layout per borrower, so that in assisted mode a person confirms a borrower's first statements and later periods with the same layout go through; this is the planned way to earn `automatic`.
 5. Slice two: underwriting.
 
+## Next: the first live measurement (approved by the owner on 18 November 2026)
+
+Approved: three borrowers, estimated 3 to 7 US dollars in total (an estimate, not a measurement). The answer key is signed (75 rows). The owner is adding `ANTHROPIC_API_KEY` as an environment variable of the CreditAgentSquad cloud environment; a new session picks it up (a Claude API key cannot be a network secret). Then:
+
+```bash
+service postgresql start
+uv run python -m evals.run --mode live --only kestrel-bay-packaging briarstone-beverage harrowgate-precision --confirm-billable
+```
+
+Report the scorecard (`evals/results/latest.md`) with its real token counts and cost, misses included; nothing on the hosted link changes (each borrower runs inside a rolled-back transaction).
+
 ## Running it
 
 ```bash
