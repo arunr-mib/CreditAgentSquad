@@ -41,7 +41,7 @@ cd frontend && pnpm install && pnpm dev   # workspace
 
 ## Design rules for the workspace
 
-One typeface (Inter); JetBrains Mono only for identifiers; figures use tabular numerals. Colour carries meaning only: red breach or critical item, amber needs attention or high item, green verified pass or recorded resolution, iris written by an agent, cobalt interactive. Provenance is a glyph, not a colour. Banned: coloured side stripes on cards, pill-shaped status tags, more than two shadow steps, animation over 240 ms, any figure without its source. Say "Recommends resolve", never "Resolved"; never "AI thinks".
+One typeface (Inter); JetBrains Mono only for identifiers; figures use tabular numerals. Colour carries meaning only: red breach or critical item, amber needs attention or high item, green verified pass or recorded resolution, iris written by an agent, cobalt interactive. Provenance is a glyph, not a colour. Capsule tags are for severity and actionable status only; metadata (dates, ids, periods, routine roles) stays plain text or small mono. The selected table row carries a 3 px cobalt bar on its left edge and a warm tint. Bars and meters show plot positions only; every number beside them is stored or counted by the API. Banned: coloured side stripes on cards, pills on everything, more than two shadow steps, animation over 240 ms, any figure without its source. Full rules: `docs/specs/2026-11-18-cockpit-design.md`. Say "Recommends resolve", never "Resolved"; never "AI thinks".
 
 ## Working with the owner
 
