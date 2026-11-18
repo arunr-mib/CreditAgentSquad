@@ -4,7 +4,7 @@
 |---|---|
 | Product | Credit Agent Squad: an AI agent squad for commercial lending |
 | Slice covered | Slice one, the portfolio monitoring cycle |
-| Status | Built and running on synthetic data; hosted test link live; not yet measured with a real model |
+| Status | Built and running on synthetic data; hosted test link live with a model connected; one live agent run made; accuracy with a real model not yet measured |
 | Owner | Product owner (GitHub `arunr-mib`) |
 | Date | 18 November 2026 |
 | Related | `docs/specs/2026-11-17-credit-agent-squad-design.md` (system design), `docs/specs/2026-11-18-cockpit-design.md` (interface design), `docs/product/explainer.md` (plain-language guide), `docs/HANDOFF.md` (current state) |
@@ -22,7 +22,7 @@ The owner's four success measures, with the measurement for each.
 | 1 | Agents handle the workflow; people step in only for judgement | Share of cycles that close without a person; every seeded problem raises exactly its expected exception and clean borrowers raise none | Stand-in reader, automatic path: 17 of 21 cycles closed, the other 4 resting on the exceptions their scenarios expect; 47.6% needed no person; exception precision and recall 100%. Not measured with a real model |
 | 2 | No invented numbers; accurate calculations; sources cited | Extraction graded against ground truth; build fails on an invented number or a false "compliant"; tampering checks; every figure resolves to a stored fact | 2,677 of 2,677 facts with the stand-in reader; covenant outcomes 100%; 47 tampering checks, none slipped; three independent reviews found and closed 24 holes. Not measured with a real model |
 | 3 | Every action traceable and auditable | Hash-chained ledger verifies; a person cannot approve their own work (tested); every figure in every Word, Excel and PowerPoint output traces to a fact | Ledger verifies on the hosted link (about 19,900 events); the application's database login there cannot alter the ledger; four-eyes tests pass; package verifier passes |
-| 4 | Enterprise grade, visually superior, intuitive | Browser journeys with screenshots; no sideways scrolling from 360 px; accessibility checks; review by someone who has not seen the build | Cockpit redesign in progress (18 November 2026); zero sideways overflow measured at 360 to 1280 px before the redesign; to be re-measured after it |
+| 4 | Enterprise grade, visually superior, intuitive | Browser journeys with screenshots; no sideways scrolling from 360 px; accessibility checks; review by someone who has not seen the build | Cockpit redesign live on the test link (18 November 2026): zero sideways overflow on every route at 360, 390, 820, 1024, 1280 and 1440 px; independent review and updated browser journeys in progress |
 
 Non-goals for slice one: underwriting and credit memos, risk rating scorecards, problem-loan workout, real connectors to bank systems, single sign-on, multiple tenants, commercial real estate.
 
@@ -118,7 +118,7 @@ Set out in full in `docs/specs/2026-11-18-cockpit-design.md`. In brief:
 - **Grading**: deterministic. The gate fails on any invented number, any false "compliant", or any tampering check that slips.
 - **Tampering checks**: 47 mutations of a reading or an answer; each must be refused by the product or recovered by code.
 - **Independent review**: a fresh reviewer is given only the promise and asked to break it. Three rounds so far.
-- **Live measurement (owed)**: the first runs with a real model, graded the same way, starting with three borrowers.
+- **Live measurement (owed)**: runs with a real model, graded the same way, starting with three borrowers. One ungraded live run exists (Review Agent, one borrower, 18 November 2026): all figures were fact references; two honest sections were dropped by an over-strict wording rule, since corrected.
 
 ## 9. Risks and open questions
 
@@ -130,7 +130,7 @@ Set out in full in `docs/specs/2026-11-18-cockpit-design.md`. In brief:
 | The oracle of expected answers has not been signed by the owner | 76 rows awaiting sign-off |
 | A database owner can still rewrite the ledger | Keep a copy of the chain's head outside the database; a scheduled export is not yet built |
 | A long stage holds the ledger lock, so other writes wait | Acceptable for a test deployment; needs a shorter transaction around model calls before real use |
-| Cost per cycle | Estimated at about one US dollar per borrower cycle with the default model; unmeasured |
+| Cost per cycle | Estimated at about one US dollar per borrower cycle with the default model. The one live stage run so far cost roughly ten US cents (estimate: its cached input was not recorded at the time) |
 
 ## 10. Roadmap
 

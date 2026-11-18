@@ -73,7 +73,7 @@ Verified, on synthetic data:
 
 Not yet verified:
 
-- **No agent has yet been measured with a real AI model.** The model connection was switched on for the hosted test link on 18 November 2026; accuracy on live runs is unmeasured.
+- **Accuracy with a real AI model is unmeasured.** One live run has been made (18 November 2026, the Review Agent on one borrower). The agent used a stored-fact reference for every figure, and the run surfaced an over-strict wording rule that has since been corrected. One run is not a measurement; the readers of documents (spreading, certificates, borrowing bases, terms) have not yet run with a real model at all.
 - A fourth independent review has not been run, and the first three each found something new.
 - Real bank documents. The reading rules were written against synthetic statements and reviewers' test layouts. Real statements will include layouts neither covered; the design holds unfamiliar layouts for a person, which is safe but means more touches at first.
 - By default a person confirms every document reading. Removing that step for a borrower should follow measured accuracy on that bank's own documents.

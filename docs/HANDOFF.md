@@ -6,6 +6,14 @@ Current state of the build, for whoever (person or agent) continues it. Updated 
 
 Branch `slice-1/monitoring-cycle`. `main` holds only the README and licence.
 
+**Since the table below was written (all on 18 November 2026):**
+
+- **Hosted test link:** `https://credit-agent-squad.vercel.app` (Vercel and Supabase; see `docs/DEPLOY.md`). A model key is set there, so "Run … now" on a borrower's cycle and the Copilot make billable calls. No background worker: a person runs a cycle one stage at a time (`POST /cycles/{id}/run`).
+- **Interface redesigned as a cockpit** (`docs/specs/2026-11-18-cockpit-design.md`): command centre with summary cards and bars, one workspace drawer for the selected exception and the Copilot, an authority gate that routes a decision to a person who may take it, borrower tear-sheet, agent activity timeline, governance matrix, source drawer beside the page, phone and tablet layouts. Every route measured at 360 to 1440 px with no sideways scrolling.
+- **Held figures panel rebuilt** (on file, read from the document, why held, one clear action); a figure filed under another line keeps its page citation.
+- **Product documents:** `docs/product/explainer.md` and `docs/product/PRD.md`.
+- **In progress when this was written:** an independent review of the redesign, and the browser journey scripts (`frontend/e2e/`) being updated for it. Until that lands, `frontend/e2e/run.mjs` is stale.
+
 | Milestone | State | Evidence |
 |---|---|---|
 | 0 Foundation | Done | Schema, hash-chained ledger with database guards, sign-in, roles, second-person rule |
@@ -25,7 +33,7 @@ The promise is that no invented or wrong number reaches a person or a covenant t
 - **No fourth review has been run.** After reviews one and two I believed the holes were closed, and the next reviewer found more. Expect a fourth to find something.
 - **What changed in kind, not only in number.** The readers no longer trust anything the reader supplies to locate a figure: code reads the row label, the column, the units, the sign, the certificate's compliance entry, an inventory row's category and an aging row's note from the page itself. Agent text is refused unless every digit is inside a fact reference or a narrow list of date and reference forms.
 - **The default is now that a person confirms every document reading** (`EXTRACTION_AUTONOMY=assisted`). A reading that passes every check still raises one question per document. `automatic` uses a clean reading without a person; choose it only when accuracy measured on the bank's own documents justifies it. The test suite and the evaluation measure the automatic path.
-- **Nothing here has been measured with a real model.** Every figure in the scorecard comes from a stand-in reader built from the synthetic book's own ground truth.
+- **Nothing here has been measured with a real model.** Every figure in the scorecard comes from a stand-in reader built from the synthetic book's own ground truth. One live run exists (Review Agent, Brindlewood, on the hosted link, 18 November 2026): every figure was a fact reference, and two of four sections were dropped by wording rules that were too strict (`docs/lessons/the-first-live-run-finds-what-stand-ins-cannot.md`). The document readers have never run with a real model.
 
 ## Verified on 2026-11-18
 
