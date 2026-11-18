@@ -11,6 +11,7 @@ import { FactFigure, ProvenanceLegend } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, SectionHead } from '../parts';
 import { WorkItemPanel } from '../work/WorkItemPanel';
 import { useCurrentBorrower } from './BorrowerLayout';
+import { RunStage } from './RunStage';
 
 export function CycleStepper({ cycle }: { cycle: NonNullable<BorrowerOverview['cycle']> }) {
   const steps: Step[] = cycle.stages.map((stage) => ({
@@ -30,13 +31,26 @@ export function CycleStepper({ cycle }: { cycle: NonNullable<BorrowerOverview['c
         </span>
       </div>
       <Stepper label={`Stages of the ${quarterLabel(cycle.period_end)} monitoring cycle`} steps={steps} collapseLater />
+      <RunStage cycle={cycle} />
     </section>
   );
 }
 
-function Trend({ tests, facts, selectedId, onSelect }: { tests: CovenantTestRow[]; facts: FactsById; selectedId: string; onSelect: (test: CovenantTestRow) => void }) {
+function Trend({
+  tests,
+  facts,
+  selectedId,
+  onSelect,
+}: {
+  tests: CovenantTestRow[];
+  facts: FactsById;
+  selectedId: string;
+  onSelect: (test: CovenantTestRow) => void;
+}) {
   // Plot positions only: the figures shown beside the chart are the stored facts, formatted from their strings.
-  const points = tests.filter((test) => test.value !== null).map((test) => ({ id: test.id, label: quarterLabel(test.period_end), plot: Number(test.value), threshold: Number(test.threshold), test }));
+  const points = tests
+    .filter((test) => test.value !== null)
+    .map((test) => ({ id: test.id, label: quarterLabel(test.period_end), plot: Number(test.value), threshold: Number(test.threshold), test }));
   const selected = points.find((point) => point.id === selectedId) ?? points[points.length - 1];
   if (points.length < 2 || !selected) return null;
   const values = points.flatMap((point) => [point.plot, point.threshold]).filter((value) => Number.isFinite(value));
@@ -90,7 +104,15 @@ function Trend({ tests, facts, selectedId, onSelect }: { tests: CovenantTestRow[
                 );
               }}
             />
-            <YAxis domain={[low - pad, high + pad]} width={48} axisLine={false} tickLine={false} tickCount={4} tick={{ fontSize: 11, fill: 'var(--ink-500)' }} tickFormatter={(value: number) => value.toFixed(2)} />
+            <YAxis
+              domain={[low - pad, high + pad]}
+              width={48}
+              axisLine={false}
+              tickLine={false}
+              tickCount={4}
+              tick={{ fontSize: 11, fill: 'var(--ink-500)' }}
+              tickFormatter={(value: number) => value.toFixed(2)}
+            />
             <ReferenceLine
               y={selected.threshold}
               stroke="var(--ink-700)"
@@ -126,8 +148,8 @@ function Trend({ tests, facts, selectedId, onSelect }: { tests: CovenantTestRow[
         </ResponsiveContainer>
       </div>
       <p className="mt-1 text-body text-ink-700" aria-live="polite">
-        {selected.label}: <FactFigure fact={selected.test.value_fact_id ? facts[selected.test.value_fact_id] : undefined} weight="semibold" /> against a {minimum ? 'minimum' : 'maximum'} of{' '}
-        <FactFigure fact={selected.test.threshold_fact_id ? facts[selected.test.threshold_fact_id] : undefined} />
+        {selected.label}: <FactFigure fact={selected.test.value_fact_id ? facts[selected.test.value_fact_id] : undefined} weight="semibold" /> against a{' '}
+        {minimum ? 'minimum' : 'maximum'} of <FactFigure fact={selected.test.threshold_fact_id ? facts[selected.test.threshold_fact_id] : undefined} />
         {selected.test.passed === false ? (
           <StatusDot tone="breach" emphasis className="ml-3">
             {minimum ? 'Below the minimum' : 'Above the maximum'}
@@ -181,7 +203,19 @@ function CertificateComparison({ test, facts }: { test: CovenantTestRow; facts: 
   );
 }
 
-function CalculationCard({ test, facts, history, onSelect, code }: { test: CovenantTestRow; facts: FactsById; history: CovenantTestRow[]; onSelect: (test: CovenantTestRow) => void; code: string }) {
+function CalculationCard({
+  test,
+  facts,
+  history,
+  onSelect,
+  code,
+}: {
+  test: CovenantTestRow;
+  facts: FactsById;
+  history: CovenantTestRow[];
+  onSelect: (test: CovenantTestRow) => void;
+  code: string;
+}) {
   const calc = useCalculation(test.calc_run_id);
   const source = useSource();
   const outcome = OUTCOME[test.outcome];
@@ -204,7 +238,15 @@ function CalculationCard({ test, facts, history, onSelect, code }: { test: Coven
                   type="button"
                   className="link"
                   onClick={() =>
-                    source.open({ type: 'document', documentId: citation.document_id as string, page: citation.page as number, quote: citation.quote, section: citation.section, title: 'Credit agreement', borrowerCode: code })
+                    source.open({
+                      type: 'document',
+                      documentId: citation.document_id as string,
+                      page: citation.page as number,
+                      quote: citation.quote,
+                      section: citation.section,
+                      title: 'Credit agreement',
+                      borrowerCode: code,
+                    })
                   }
                 >
                   {citation.section ? `Section ${citation.section}` : 'The clause'}, page {citation.page}
@@ -253,15 +295,33 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
   const periods = useMemo(() => [...new Set(tests.map((test) => test.period_end))].sort().reverse(), [tests]);
   const linked = tests.find((test) => test.id === search.test);
   const period = linked?.period_end ?? (search.period && periods.includes(search.period) ? search.period : periods[0]);
-  const current = useMemo(() => tests.filter((test) => test.period_end === period).sort((a, b) => OUTCOME[a.outcome].rank - OUTCOME[b.outcome].rank || a.covenant_name.localeCompare(b.covenant_name)), [tests, period]);
+  const current = useMemo(
+    () =>
+      tests
+        .filter((test) => test.period_end === period)
+        .sort((a, b) => OUTCOME[a.outcome].rank - OUTCOME[b.outcome].rank || a.covenant_name.localeCompare(b.covenant_name)),
+    [tests, period],
+  );
   const selected = current.find((test) => test.id === search.test) ?? current[0];
   const select = (test: CovenantTestRow) => void navigate({ search: { test: test.id }, replace: true, resetScroll: false });
 
   const columns = useMemo<Array<DataColumn<CovenantTestRow>>>(() => {
     const fact = (id: string | null) => (id ? facts[id] : undefined);
     return [
-      { id: 'name', header: 'Covenant', rowHeader: true, wrap: true, sortValue: (row) => row.covenant_name, cell: (row) => <span className="font-medium text-ink">{row.covenant_name}</span> },
-      { id: 'calculated', header: 'Calculated', align: 'right', cell: (row) => <FactFigure fact={fact(row.value_fact_id)} weight="semibold" absent="Not calculated" /> },
+      {
+        id: 'name',
+        header: 'Covenant',
+        rowHeader: true,
+        wrap: true,
+        sortValue: (row) => row.covenant_name,
+        cell: (row) => <span className="font-medium text-ink">{row.covenant_name}</span>,
+      },
+      {
+        id: 'calculated',
+        header: 'Calculated',
+        align: 'right',
+        cell: (row) => <FactFigure fact={fact(row.value_fact_id)} weight="semibold" absent="Not calculated" />,
+      },
       {
         id: 'threshold',
         header: 'Threshold',
@@ -277,7 +337,13 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
           </span>
         ),
       },
-      { id: 'headroom', header: 'Headroom', align: 'right', sortValue: (row) => (fact(row.headroom_fact_id) ? Number(fact(row.headroom_fact_id)?.value) : null), cell: (row) => <FactFigure fact={fact(row.headroom_fact_id)} /> },
+      {
+        id: 'headroom',
+        header: 'Headroom',
+        align: 'right',
+        sortValue: (row) => (fact(row.headroom_fact_id) ? Number(fact(row.headroom_fact_id)?.value) : null),
+        cell: (row) => <FactFigure fact={fact(row.headroom_fact_id)} />,
+      },
       { id: 'certificate', header: 'Certificate', align: 'right', cell: (row) => <FactFigure fact={fact(row.reported_fact_id)} absent="Not reported" /> },
       {
         id: 'outcome',
@@ -293,7 +359,9 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
   }, [facts]);
 
   if (!selected || !period) return null;
-  const history = tests.filter((test) => test.covenant_id === selected.covenant_id && test.facility_id === selected.facility_id).sort((a, b) => a.period_end.localeCompare(b.period_end));
+  const history = tests
+    .filter((test) => test.covenant_id === selected.covenant_id && test.facility_id === selected.facility_id)
+    .sort((a, b) => a.period_end.localeCompare(b.period_end));
   const outcome = OUTCOME[selected.outcome];
   const cycle = overview?.cycle;
 
@@ -336,12 +404,20 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
           <CalculationCard key={selected.id} test={selected} facts={facts} history={history} onSelect={select} code={borrower.code} />
         </div>
 
-        <aside aria-label="Exception for the selected covenant" className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
+        <aside
+          aria-label="Exception for the selected covenant"
+          className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md"
+        >
           {selected.work_item ? (
             <WorkItemPanel key={selected.work_item.id} itemId={selected.work_item.id} />
           ) : (
             <Card>
-              <CardHeader as="h2" eyebrow="Selected covenant" title={selected.covenant_name} meta={`${quarterLabel(selected.period_end)} · ${selected.loan_name ?? 'Loan'}`} />
+              <CardHeader
+                as="h2"
+                eyebrow="Selected covenant"
+                title={selected.covenant_name}
+                meta={`${quarterLabel(selected.period_end)} · ${selected.loan_name ?? 'Loan'}`}
+              />
               <div className="px-4 pb-4">
                 <StatusDot tone={outcome.tone} emphasis={outcome.emphasis}>
                   {outcome.label}

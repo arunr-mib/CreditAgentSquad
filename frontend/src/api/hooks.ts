@@ -4,6 +4,7 @@
  */
 import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { get, post, upload, type Query } from './client';
+import type { StageId, StageStatus } from './types';
 import type {
   ActionRow,
   AgentRunDetail,
@@ -63,7 +64,11 @@ export const useBorrowerTerms = (id?: string) =>
 export const useBorrowerCovenants = (id?: string) =>
   useQuery({ queryKey: ['borrower', id, 'covenants'], queryFn: () => get<BorrowerCovenants>(`/ui/borrowers/${id}/covenants`), enabled: enabled(id) });
 export const useBorrowingBase = (id?: string) =>
-  useQuery({ queryKey: ['borrower', id, 'borrowing-base'], queryFn: () => get<BorrowingBaseReview[]>(`/ui/borrowers/${id}/borrowing-base`), enabled: enabled(id) });
+  useQuery({
+    queryKey: ['borrower', id, 'borrowing-base'],
+    queryFn: () => get<BorrowingBaseReview[]>(`/ui/borrowers/${id}/borrowing-base`),
+    enabled: enabled(id),
+  });
 export const useSpread = (id?: string) =>
   useQuery({ queryKey: ['borrower', id, 'spread'], queryFn: () => get<Spread>(`/borrowers/${id}/spread`), enabled: enabled(id) });
 export const useTimeline = (id?: string, includeRoutine = false) =>
@@ -76,7 +81,11 @@ export const useTimeline = (id?: string, includeRoutine = false) =>
 /* ── Documents ────────────────────────────────────────────────────────── */
 
 export const useDocuments = (borrowerId?: string) =>
-  useQuery({ queryKey: ['borrower', borrowerId, 'documents'], queryFn: () => get<DocumentRow[]>(`/borrowers/${borrowerId}/documents`), enabled: enabled(borrowerId) });
+  useQuery({
+    queryKey: ['borrower', borrowerId, 'documents'],
+    queryFn: () => get<DocumentRow[]>(`/borrowers/${borrowerId}/documents`),
+    enabled: enabled(borrowerId),
+  });
 /** Files a PDF for the borrower. The route takes the file and an optional title; nothing else. */
 export function useUploadDocument(borrowerId: string) {
   const client = useQueryClient();
@@ -104,7 +113,8 @@ export const usePageFigures = (documentId?: string | null, page?: number | null)
 export const useQuoteLocation = (documentId?: string | null, page?: number | null, quote?: string | null) =>
   useQuery({
     queryKey: ['document', documentId, 'locate', page, quote],
-    queryFn: () => get<{ found: boolean; boxes: Box[]; width: number; height: number }>(`/ui/documents/${documentId}/pages/${page}/locate`, { quote: quote ?? '' }),
+    queryFn: () =>
+      get<{ found: boolean; boxes: Box[]; width: number; height: number }>(`/ui/documents/${documentId}/pages/${page}/locate`, { quote: quote ?? '' }),
     enabled: enabled(documentId) && enabled(page) && enabled(quote),
     staleTime: 10 * 60_000,
   });
@@ -144,8 +154,11 @@ function useFigureMutation<TBody, TOut>(send: (body: TBody) => Promise<TOut>) {
 
 export const useConfirmFact = () => useFigureMutation((factId: string) => post<StoredFact>(`/facts/${factId}/confirm`));
 export const useCorrectFact = () =>
-  useFigureMutation(({ factId, value, reason }: { factId: string; value: string; reason: string }) => post<FactChange>(`/facts/${factId}/correct`, { value, reason }));
-export const useRejectFact = () => useFigureMutation(({ factId, reason }: { factId: string; reason: string }) => post<FactChange>(`/facts/${factId}/reject`, { reason }));
+  useFigureMutation(({ factId, value, reason }: { factId: string; value: string; reason: string }) =>
+    post<FactChange>(`/facts/${factId}/correct`, { value, reason }),
+  );
+export const useRejectFact = () =>
+  useFigureMutation(({ factId, reason }: { factId: string; reason: string }) => post<FactChange>(`/facts/${factId}/reject`, { reason }));
 export const useEnterFact = () =>
   useFigureMutation(({ borrowerId, ...body }: { borrowerId: string; key: string; period_end: string; months: number; value: string; reason: string }) =>
     post<FactChange>(`/borrowers/${borrowerId}/facts`, body),
@@ -160,7 +173,19 @@ export const useWorkItem = (id?: string | null) =>
 
 /** Everything a recorded decision can change: the queue, cycle stages, counts, the ledger. */
 export function invalidateAfterDecision(client: QueryClient) {
-  for (const key of ['work-items', 'work-item', 'portfolio', 'borrowers', 'borrower', 'cycles', 'ledger', 'review-sheets', 'review-sheet', 'actions', 'signals']) {
+  for (const key of [
+    'work-items',
+    'work-item',
+    'portfolio',
+    'borrowers',
+    'borrower',
+    'cycles',
+    'ledger',
+    'review-sheets',
+    'review-sheet',
+    'actions',
+    'signals',
+  ]) {
     void client.invalidateQueries({ queryKey: [key] });
   }
 }
@@ -173,8 +198,36 @@ export function useDecide(itemId: string) {
   });
 }
 
+export interface RunCycleResult {
+  ran: Array<{ stage: StageId; result: StageStatus | null; error: string | null }>;
+  cycle_status: string;
+  stage: StageId;
+  stage_status: StageStatus | null;
+  open_blocking_items: number;
+}
+
+/** Run the cycle's next stage now, in the request. Everything on screen may change afterwards. */
+export function useRunCycle(cycleId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => post<RunCycleResult>(`/cycles/${cycleId}/run`, {}),
+    onSettled: () => void client.invalidateQueries(),
+  });
+}
+
+export const useAgentsStatus = () =>
+  useQuery({
+    queryKey: ['agents-status'],
+    queryFn: () => get<{ model_connected: boolean; mode: string; model: string; reason: string }>('/agents/status'),
+    staleTime: 60_000,
+  });
+
 export const useCycles = (query: { period_end?: string; borrower_id?: string } = {}, options: { enabled?: boolean } = {}) =>
-  useQuery({ queryKey: ['cycles', query], queryFn: () => get<Array<CycleRow & { borrower_name: string | null }>>('/cycles', query as Query), enabled: options.enabled ?? true });
+  useQuery({
+    queryKey: ['cycles', query],
+    queryFn: () => get<Array<CycleRow & { borrower_name: string | null }>>('/cycles', query as Query),
+    enabled: options.enabled ?? true,
+  });
 export const useCalendar = () => useQuery({ queryKey: ['calendar'], queryFn: () => get<CalendarResponse>('/calendar') });
 export const useSignals = (query: { status?: string; borrower_id?: string } = {}) =>
   useQuery({ queryKey: ['signals', query], queryFn: () => get<SignalRow[]>('/signals', query as Query) });
@@ -201,7 +254,12 @@ export const useLedger = (filter: LedgerFilter) =>
 export const useLedgerVerification = (run: boolean) =>
   useQuery({ queryKey: ['ledger-verify'], queryFn: () => get<LedgerVerification>('/ledger/verify'), enabled: run, staleTime: 0, gcTime: 0 });
 export const useClock = (signedIn: boolean) =>
-  useQuery({ queryKey: ['clock'], queryFn: () => get<{ today: string; latest_document_received?: string | null; days_since_latest_document?: number | null }>('/clock'), enabled: signedIn, staleTime: 5 * 60_000 });
+  useQuery({
+    queryKey: ['clock'],
+    queryFn: () => get<{ today: string; latest_document_received?: string | null; days_since_latest_document?: number | null }>('/clock'),
+    enabled: signedIn,
+    staleTime: 5 * 60_000,
+  });
 
 export function useSetClock() {
   const client = useQueryClient();
@@ -226,7 +284,8 @@ function useReviewMutation<TBody, TOut>(path: (body: TBody) => string, strip: (b
   return useMutation({
     mutationFn: (body: TBody) => post<TOut>(path(body), strip(body)),
     onSuccess: () => {
-      for (const key of ['review-meetings', 'review-sheets', 'review-sheet', 'actions', 'ledger', 'borrower']) void client.invalidateQueries({ queryKey: [key] });
+      for (const key of ['review-meetings', 'review-sheets', 'review-sheet', 'actions', 'ledger', 'borrower'])
+        void client.invalidateQueries({ queryKey: [key] });
     },
   });
 }
@@ -238,9 +297,10 @@ export const useSetMeetingPhase = () =>
     ({ phase, notes }) => ({ phase, notes }),
   );
 export const useCreateAction = () =>
-  useReviewMutation<{ borrower_id: string; title: string; detail?: string; owner_id?: string | null; due_date?: string | null; meeting_id?: string | null }, ActionRow>(
-    () => '/actions',
-  );
+  useReviewMutation<
+    { borrower_id: string; title: string; detail?: string; owner_id?: string | null; due_date?: string | null; meeting_id?: string | null },
+    ActionRow
+  >(() => '/actions');
 export const useSetActionStatus = () =>
   useReviewMutation<{ id: string; status: ActionRow['status']; note?: string }, ActionRow>(
     (body) => `/actions/${body.id}/status`,
