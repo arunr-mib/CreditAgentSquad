@@ -29,7 +29,7 @@ from app.core import ledger
 from app.core.config import MAX_UPLOAD_BYTES, get_settings
 from app.core.db import get_db
 from app.core.roles import _GRANTS, Permission, Role
-from app.domain import collateral_service, covenant_service
+from app.domain import collateral_service, covenant_service, work_items
 from app.domain.org import User
 from app.publishing import content
 
@@ -146,6 +146,12 @@ def _people_decide() -> list[dict[str, Any]]:
         *[_rule(f"second_person.{p.value}", what, "Second person", detail, source)
           for p, (what, detail, source) in SECOND_PERSON.items()],
         _rule("extraction_autonomy", "Document readings", setting, effect, "domain/stages.py"),
+        _rule("work_item_due", "Time to decide an exception",
+              " · ".join(f"{severity.capitalize()} {days}" for severity, days in
+                         sorted(work_items.DUE_BUSINESS_DAYS.items(), key=lambda kv: kv[1])) + " business days",
+              "Each work item is due this many business days after it is raised, by its severity, counted from "
+              "the workspace's date. A person may set a different date when assigning it.",
+              "domain/work_items.py"),
     ]
     if covenant.POLICY.require_person:
         rows.append(_rule("require_person", "An agent recommends; a person decides", "Locked",

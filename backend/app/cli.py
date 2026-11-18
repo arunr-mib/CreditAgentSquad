@@ -8,6 +8,9 @@
   inventory           list registered agent versions with model and prompt hash
   grant-runtime-role  (owner) give the `squad_runtime` role its rights again: everything the
                       application needs, and only SELECT and INSERT on the ledger
+  backfill-due-dates  give every open work item that has no due date the one the policy in
+                      app.domain.work_items sets, counted from the day it was raised, and record
+                      one ledger event per item. Safe to run again: an item with a date is left alone.
   runtime-login <name>
                       (owner) create or update the login the application connects as, a member
                       of `squad_runtime`. The password is read from RUNTIME_DATABASE_PASSWORD.
@@ -87,6 +90,33 @@ def runtime_login(db: Session, name: str) -> int:
     return 0
 
 
+def backfill_due_dates(db: Session) -> int:
+    """Items raised before due dates were set when raising have none. Each open one gets the date
+    the severity policy gives, counted from the day it was raised (`created_at`), not from today,
+    so an old item does not look newer than it is. A date already set, by the policy or by a
+    person, is never changed."""
+    from app.domain.monitoring import WorkItem
+    from app.domain.work_items import DUE_BUSINESS_DAYS, due_date_for
+
+    items = list(db.execute(select(WorkItem).where(WorkItem.status == "open", WorkItem.due_date.is_(None))
+                            .order_by(WorkItem.created_at)).scalars())
+    skipped = 0
+    for item in items:
+        if item.severity not in DUE_BUSINESS_DAYS:
+            skipped += 1
+            continue
+        raised_on = item.created_at.date()
+        item.due_date = due_date_for(item.severity, raised_on)
+        ledger.record(db, actor_type="system", actor_id="backfill", action="work_item.due_date_set",
+                      entity_type="work_item", entity_id=item.id,
+                      payload={"due_date": item.due_date, "severity": item.severity, "raised_on": raised_on,
+                               "business_days": DUE_BUSINESS_DAYS[item.severity], "reason": "backfill"})
+    db.commit()
+    print(f"due dates set on {len(items) - skipped} open work items"
+          + (f"; {skipped} left without one (unknown severity)" if skipped else ""))
+    return 0
+
+
 def restore_files(db: Session, root: str) -> int:
     """Put back document files that are on record but missing from the file store, from a
     freshly generated synthetic book. A hosted demo whose disk is replaced on each deploy keeps
@@ -121,6 +151,7 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser("grant-runtime-role")
     commands.add_parser("runtime-login").add_argument("name")
     commands.add_parser("restore-files").add_argument("--book", default="synthetic/out")
+    commands.add_parser("backfill-due-dates")
     try:
         args = parser.parse_args(argv)
     except SystemExit:
@@ -143,6 +174,8 @@ def main(argv: list[str] | None = None) -> int:
                 return 2
         if args.command == "inventory":
             return inventory(db)
+        if args.command == "backfill-due-dates":
+            return backfill_due_dates(db)
         try:
             if args.command == "grant-runtime-role":
                 return grant_runtime_role(db)
