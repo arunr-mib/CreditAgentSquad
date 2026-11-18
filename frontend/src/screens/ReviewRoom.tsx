@@ -245,7 +245,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
                     </td>
                   ))}
                   <td data-label="Outcome" className="border-b border-hairline px-4">
-                    <StatusDot tone={OUTCOME[covenant.outcome].tone} emphasis={OUTCOME[covenant.outcome].emphasis} className="max-lg:whitespace-normal!">
+                    <StatusDot tone={OUTCOME[covenant.outcome].tone} emphasis={OUTCOME[covenant.outcome].emphasis} className="max-[1279px]:whitespace-normal!">
                       {OUTCOME[covenant.outcome].label}
                     </StatusDot>
                   </td>

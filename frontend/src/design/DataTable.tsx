@@ -24,10 +24,10 @@ export interface DataColumn<T> {
   rowHeader?: boolean;
   /**
    * Let long text wrap onto a second line. Nothing is ever clipped; other columns do not wrap.
-   * 'narrow' wraps only below 1200 px, where the table has less room, and leaves the wide layout as it is.
+   * 'narrow' wraps only below 1280 px, where the table has less room, and leaves the wide layout as it is.
    */
   wrap?: boolean | 'narrow';
-  /** Below 1200 px, the narrowest a wrapping column may get before the table scrolls in its frame instead, for example "160px". */
+  /** Below 1280 px, the narrowest a wrapping column may get before the table scrolls in its frame instead, for example "160px". */
   minWidth?: string;
 }
 
@@ -255,8 +255,9 @@ export function DataTable<T extends RowData>({
                         rowHeight,
                         'px-2 font-regular first:pl-4 last:pr-4',
                         column.wrap === true ? 'py-1.5 text-pretty' : 'py-0 whitespace-nowrap',
-                        column.wrap === 'narrow' && 'max-lg:py-1.5 max-lg:text-pretty max-lg:whitespace-normal',
-                        column.minWidth && 'max-lg:min-w-(--col-min)',
+                        // Below 1280 px, not 1200: the navigation widens at 1200 px, so the page is narrower just above it than just below.
+                        column.wrap === 'narrow' && 'max-[1279px]:py-1.5 max-[1279px]:text-pretty max-[1279px]:whitespace-normal',
+                        column.minWidth && 'max-[1279px]:min-w-(--col-min)',
                         column.align === 'right' ? 'text-right' : 'text-left',
                         !last && 'border-b border-hairline',
                         last && columnIndex === 0 && 'rounded-bl-md',

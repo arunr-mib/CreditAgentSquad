@@ -227,7 +227,7 @@ function CalculationCard({ test, facts, history, onSelect, code }: { test: Coven
           <ErrorNotice error={calc.error} what="The calculation" onRetry={() => void calc.refetch()} />
         </div>
       ) : calc.data ? (
-        <div className="relative overflow-x-auto border-t border-hairline-strong max-sm:[&_thead_th]:w-auto max-sm:[&_thead_th]:whitespace-normal">
+        <div className="border-t border-hairline-strong max-md:relative max-md:overflow-x-auto max-sm:[&_thead_th]:w-auto max-sm:[&_thead_th]:whitespace-normal">
           <CalculationBreakdown calc={calc.data} resultLabel={test.covenant_name} resultUnit={test.unit} />
         </div>
       ) : test.calc_run_id ? (
@@ -286,7 +286,7 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
         wrap: 'narrow',
         sortValue: (row) => OUTCOME[row.outcome].rank,
         cell: (row) => (
-          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="max-lg:whitespace-normal!">
+          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="max-[1279px]:whitespace-normal!">
             {OUTCOME[row.outcome].label}
           </StatusDot>
         ),

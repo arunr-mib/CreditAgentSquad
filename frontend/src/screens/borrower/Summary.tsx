@@ -82,7 +82,7 @@ export function Summary() {
                             <FactFigure fact={test.headroom_fact_id ? facts[test.headroom_fact_id] : undefined} />
                           </td>
                           <td data-label="Outcome" className="border-b border-hairline px-4">
-                            <StatusDot tone={OUTCOME[test.outcome].tone} emphasis={OUTCOME[test.outcome].emphasis} className="max-lg:whitespace-normal!">
+                            <StatusDot tone={OUTCOME[test.outcome].tone} emphasis={OUTCOME[test.outcome].emphasis} className="max-[1279px]:whitespace-normal!">
                               {OUTCOME[test.outcome].label}
                             </StatusDot>
                           </td>

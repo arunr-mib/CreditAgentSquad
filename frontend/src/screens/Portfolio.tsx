@@ -123,7 +123,7 @@ function PortfolioTable({ borrowers, summary }: { borrowers: BorrowerRow[]; summ
         sortValue: (row) => (row.covenant_status ? OUTCOME[row.covenant_status].rank : 9),
         cell: (row) =>
           row.covenant_status ? (
-            <StatusDot tone={OUTCOME[row.covenant_status].tone} emphasis={OUTCOME[row.covenant_status].emphasis} className="max-lg:whitespace-normal!">
+            <StatusDot tone={OUTCOME[row.covenant_status].tone} emphasis={OUTCOME[row.covenant_status].emphasis} className="max-[1279px]:whitespace-normal!">
               {OUTCOME[row.covenant_status].label}
             </StatusDot>
           ) : (

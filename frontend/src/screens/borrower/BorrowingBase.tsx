@@ -52,7 +52,7 @@ function ReviewCard({ review, code }: { review: BorrowingBaseReview; code: strin
           </StatusDot>
         }
       />
-      <div className="relative overflow-x-auto">
+      <div className="max-md:relative max-md:overflow-x-auto">
         <table className="w-full border-separate border-spacing-0 text-body">
           <caption className="sr-only">Borrowing base as of {formatDate(review.period_end)}: each line as recalculated beside the certificate, US dollars in thousands</caption>
           <thead>
