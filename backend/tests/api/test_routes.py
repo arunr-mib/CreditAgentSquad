@@ -298,3 +298,66 @@ def test_a_person_runs_the_next_stage_only_with_the_permission_and_a_model(clien
     assert len(asked) == 1 and asked[0]["actor_type"] == "user"
     assert client.post("/api/v1/cycles/00000000-0000-4000-8000-000000000000/run").status_code == 404
     assert stages.LLM_FACTORY is not None
+
+
+def test_a_breach_decision_needs_a_reason_on_the_server(client, db, world):
+    borrower, cycle = world
+    breach = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="covenant_testing",
+                        item_type="covenant.breach", severity="critical", title="Leverage breach",
+                        question="How should the breach be handled?",
+                        allowed_decisions=["reservation_of_rights", "not_a_breach"],
+                        required_permission="decide_breach")
+    sign_in(client, "helen.strand")
+    for reason in ("", "   "):
+        refused = client.post(f"/api/v1/work-items/{breach.id}/decide", json={"decision": "not_a_breach", "reason": reason})
+        assert refused.status_code == 422 and "reason" in refused.json()["detail"]
+    db.refresh(breach)
+    assert breach.status == "open"
+    done = client.post(f"/api/v1/work-items/{breach.id}/decide",
+                       json={"decision": "reservation_of_rights", "reason": "  Letter sent while the waiver is worked.  "})
+    assert done.status_code == 200 and done.json()["decision_reason"] == "Letter sent while the waiver is worked."
+
+
+def test_an_item_is_routed_only_to_someone_who_may_decide_it_and_keeps_its_due_date(client, db, world):
+    from app.core.ledger import LedgerEvent
+
+    borrower, cycle = world
+    breach = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="covenant_testing",
+                        item_type="covenant.breach", severity="critical", title="Leverage breach",
+                        question="How should the breach be handled?", allowed_decisions=["reservation_of_rights"],
+                        required_permission="decide_breach")
+    breach.due_date = date(2026, 11, 20)
+    db.flush()
+    analyst = db.query(User).filter(User.email == "priya.raman@bankofstoic.example").one()
+    officer = db.query(User).filter(User.email == "helen.strand@bankofstoic.example").one()
+    sign_in(client, "priya.raman")
+    refused = client.post(f"/api/v1/work-items/{breach.id}/assign", json={"assigned_to": str(analyst.id)})
+    assert refused.status_code == 422 and "cannot decide" in refused.json()["detail"]
+    routed = client.post(f"/api/v1/work-items/{breach.id}/assign", json={"assigned_to": str(officer.id)})
+    assert routed.status_code == 200 and routed.json()["assigned_to"] == str(officer.id)
+    assert routed.json()["due_date"] == "2026-11-20", "routing without a due date keeps the one set"
+    moved = client.post(f"/api/v1/work-items/{breach.id}/assign",
+                        json={"assigned_to": str(officer.id), "due_date": "2026-11-27"})
+    assert moved.json()["due_date"] == "2026-11-27"
+    event = db.execute(select(LedgerEvent).where(LedgerEvent.action == "work_item.assigned")
+                       .order_by(LedgerEvent.seq.desc()).limit(1)).scalar_one()
+    assert event.payload["previous_due_date"] == "2026-11-20" and event.payload["due_date"] == "2026-11-27"
+
+
+def test_a_breach_lists_the_open_questions_that_may_change_it(client, db, world):
+    borrower, cycle = world
+    breach = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="covenant_testing",
+                        item_type="covenant.breach", severity="critical", title="Leverage breach",
+                        question="How should the breach be handled?", allowed_decisions=["reservation_of_rights"],
+                        required_permission="decide_breach")
+    amendment = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="compliance_tracking",
+                           item_type="terms.unapproved_amendment", severity="high", title="First amendment on file",
+                           question="Should the terms be updated before covenants are tested?",
+                           allowed_decisions=["amendment_not_applicable"], required_permission="approve_terms")
+    raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="intake", item_type="intake.unclassified",
+               title="Unfiled document", question="What is this document?", allowed_decisions=["classified_by_hand"],
+               required_permission="upload_document")
+    sign_in(client, "helen.strand")
+    related = client.get(f"/api/v1/work-items/{breach.id}").json()["related_items"]
+    assert [r["id"] for r in related] == [str(amendment.id)] and "amendment" in related[0]["relation"]
+    assert client.get(f"/api/v1/work-items/{amendment.id}").json()["related_items"] == []

@@ -205,6 +205,8 @@ def test_source_of_a_certificate_figure_and_a_threshold_clause(client, db, world
     assert reported["page"]["doc_type"] == "compliance_certificate" and reported["page"]["quote"] == "2.41x"
     assert "Total Leverage Ratio" in reported["page"]["label_text"]
     threshold = client.get(f"{API}/ui/facts/{leverage['threshold_fact_id']}/source").json()
+    assert threshold["fact"]["provenance"] == "term" and threshold["calculation"] is None
+    assert threshold["term"]["threshold_in_force"] == leverage["threshold"] and threshold["term"]["operator"] == "<="
     clause = threshold["clause"]
     assert clause["doc_type"] == "credit_agreement" and clause["section"] and "Total Leverage Ratio" in clause["quote"]
     assert clause["boxes"], "the quoted clause is outlined on its page"
@@ -325,3 +327,47 @@ def test_expression_text_reads_like_a_formula():
     assert expression_text(tree) == ("(EBITDA − Cash paid for income taxes) ÷ "
                                      "(Cash paid for interest + Scheduled principal payments on term debt)")
     assert expression_text({"op": "line", "key": "bs.cash"}) == "Cash and equivalents"
+
+
+STEPPED = "calder-finch-staffing"
+
+
+@pytest.fixture()
+def stepped(db, client, book, tmp_path, monkeypatch):
+    monkeypatch.setenv("FILE_STORE_DIR", str(tmp_path))
+    get_settings.cache_clear()
+    seed_users(db, password="pw")
+    seed_book(db, root=book, only=[STEPPED], password="pw")
+    db.flush()
+    yield db.execute(select(Borrower).where(Borrower.code == STEPPED)).scalar_one()
+    get_settings.cache_clear()
+
+
+def test_a_stepped_threshold_cites_the_step_in_force_and_headroom_shows_its_own_formula(client, db, stepped):
+    sign_in(client)
+    body = client.get(f"{API}/ui/borrowers/{stepped.id}/covenants").json()
+    leverage = [t for t in body["tests"] if t["covenant_id"] == "total_leverage"]
+    current = next(t for t in leverage if t["period_end"] == "2026-09-30")
+    before = next(t for t in leverage if t["period_end"] == "2025-09-30")
+    assert D(current["threshold"]) == D("1.75") and D(before["threshold"]) == D("2.00")
+    # the covenant row's clause is the step's for the stepped period, the base clause before it
+    assert "1.75" in current["citation"]["quote"] and "2.00" not in current["citation"]["quote"]
+    assert "2.00" in before["citation"]["quote"]
+
+    threshold = client.get(f"{API}/ui/facts/{current['threshold_fact_id']}/source").json()
+    term = threshold["term"]
+    assert threshold["fact"]["provenance"] == "term" and threshold["calculation"] is None
+    assert D(term["threshold_in_force"]) == D("1.75") and D(term["base_threshold"]) == D("2.00")
+    assert not term["base_in_force"] and [s["in_force"] for s in term["steps"]] == [True]
+    assert "1.75" in threshold["clause"]["quote"] and threshold["clause"]["boxes"]
+    assert threshold["ratio_calculation_id"]
+
+    headroom = client.get(f"{API}/ui/facts/{current['headroom_fact_id']}/source").json()
+    derivation = headroom["headroom"]
+    assert headroom["fact"]["provenance"] == "headroom" and headroom["calculation"] is None
+    assert derivation["formula"] == "(threshold − value) ÷ |threshold|"
+    assert derivation["value_fact_id"] == current["value_fact_id"]
+    assert derivation["threshold_fact_id"] == current["threshold_fact_id"]
+    value, limit = D(derivation["value"]), D(derivation["threshold"])
+    assert D(derivation["headroom"]) == limit - value
+    assert D(derivation["headroom_pct"]) == ((limit - value) / abs(limit)).quantize(D(derivation["headroom_pct"]))
