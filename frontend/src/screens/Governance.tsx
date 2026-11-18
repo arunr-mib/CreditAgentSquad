@@ -333,7 +333,7 @@ export function RolesMatrix({ table, ownRole }: { table: RolesAndPermissions; ow
 
   return (
     <div>
-      <Card className="overflow-hidden max-lg:hidden">
+      <Card className="overflow-hidden max-md:hidden">
         <table data-roles-matrix className="w-full table-fixed border-separate border-spacing-0 text-body">
           <caption className="sr-only">Roles and what each may do</caption>
           <thead>
@@ -384,7 +384,7 @@ export function RolesMatrix({ table, ownRole }: { table: RolesAndPermissions; ow
         </table>
       </Card>
 
-      <div data-roles-list className="space-y-4 lg:hidden">
+      <div data-roles-list className="space-y-4 md:hidden">
         {groups.map((group) => (
           <section key={group.name} aria-label={group.name}>
             <h3 className="eyebrow mb-1 px-1">{group.name}</h3>
@@ -430,7 +430,7 @@ export function RolesMatrix({ table, ownRole }: { table: RolesAndPermissions; ow
             <GrantMark grant="second" /> {GRANT_WORDS.second}
           </li>
         ) : null}
-        <li className="inline-flex items-center gap-2 max-lg:hidden">
+        <li className="inline-flex items-center gap-2 max-md:hidden">
           <GrantMark grant="no" /> {GRANT_WORDS.no}
         </li>
       </ul>

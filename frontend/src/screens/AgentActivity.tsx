@@ -464,7 +464,7 @@ export function HowRunsStart({ connected }: { connected: boolean | undefined }) 
 }
 
 function useIsWide(): boolean {
-  const query = '(min-width: 1280px)';
+  const query = '(min-width: 1400px)'; // the xl breakpoint: two-column work layouts
   return useSyncExternalStore(
     (changed) => {
       const media = window.matchMedia?.(query);
