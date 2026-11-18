@@ -129,7 +129,7 @@ function Repair({ borrowerId, line, held, heldId, current, context, canAct, tota
     enter.reset();
     reject.reset();
     try {
-      const stored = await enter.mutateAsync({ borrowerId, key: target.base, period_end: context.period_end, months: context.months, value: cell.reads_as.value, reason: fileReason });
+      const stored = await enter.mutateAsync({ borrowerId, key: target.base, period_end: context.period_end, months: context.months, value: cell.reads_as.value, reason: fileReason, read_from_fact_id: heldLive.id });
       setFiled(true);
       setSteps([{ title: `What code recalculated when the figure was stored under ${target.label}`, subject: 'this figure', recalculation: stored.recalculation }]);
       const aside = await reject.mutateAsync({ factId: heldLive.id, reason: fileReason });

@@ -419,7 +419,7 @@ describe('the held-figures panel', () => {
 
     const reason = 'The row is printed “Accounts payable” on page 2, so the figure is filed under Accounts payable, not Accrued liabilities.';
     expect(posts(calls)).toEqual([
-      { url: '/api/v1/borrowers/b-1/facts', body: { key: 'bs.accounts_payable', period_end: '2026-09-30', months: 9, value: '8067000', reason } },
+      { url: '/api/v1/borrowers/b-1/facts', body: { key: 'bs.accounts_payable', period_end: '2026-09-30', months: 9, value: '8067000', reason, read_from_fact_id: 'f-ap' } },
       { url: '/api/v1/facts/f-ap/reject', body: { reason } },
     ]);
     const notes = within(payable).getAllByRole('status');

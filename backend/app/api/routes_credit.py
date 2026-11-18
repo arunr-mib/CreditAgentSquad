@@ -261,6 +261,7 @@ class ManualFactIn(BaseModel):
     months: int
     value: str
     reason: str
+    read_from_fact_id: uuid.UUID | None = None  # the reading this figure was taken from; its page is cited
 
 
 _LARGEST_FIGURE = Decimal(10) ** 18  # figures are stored with 18 digits before the point and 6 after
@@ -341,10 +342,18 @@ def enter_fact(borrower_id: uuid.UUID, body: ManualFactIn, db: Session = Depends
         raise HTTPException(422, "Entering a figure by hand needs a reason.")
     if line.flow and body.months not in (3, 6, 9, 12):
         raise HTTPException(422, "A flow line needs the number of months in the period: 3, 6, 9 or 12.")
+    read_from = None
+    if body.read_from_fact_id is not None:
+        read_from = db.get(Fact, body.read_from_fact_id)
+        if (read_from is None or read_from.borrower_id != borrower_id or read_from.period_end != body.period_end
+                or read_from.document_id is None or read_from.page is None):
+            raise HTTPException(422, "The reading named as the source is not a figure read from a document page "
+                                     "for this borrower and period.")
     try:
         fact, recalculation = corrections.enter(
             db, borrower_id=borrower_id, key=body.key, period_end=body.period_end,
-            months=body.months if line.flow else 0, value=_decimal(body.value), user_id=user.id, reason=body.reason)
+            months=body.months if line.flow else 0, value=_decimal(body.value), user_id=user.id, reason=body.reason,
+            read_from=read_from)
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()

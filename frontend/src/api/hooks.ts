@@ -160,7 +160,7 @@ export const useCorrectFact = () =>
 export const useRejectFact = () =>
   useFigureMutation(({ factId, reason }: { factId: string; reason: string }) => post<FactChange>(`/facts/${factId}/reject`, { reason }));
 export const useEnterFact = () =>
-  useFigureMutation(({ borrowerId, ...body }: { borrowerId: string; key: string; period_end: string; months: number; value: string; reason: string }) =>
+  useFigureMutation(({ borrowerId, ...body }: { borrowerId: string; key: string; period_end: string; months: number; value: string; reason: string; read_from_fact_id?: string }) =>
     post<FactChange>(`/borrowers/${borrowerId}/facts`, body),
   );
 

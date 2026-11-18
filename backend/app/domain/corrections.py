@@ -306,9 +306,12 @@ def correct(db: Session, fact: Fact, *, value: Decimal, user_id: uuid.UUID, reas
 
 
 def enter(db: Session, *, borrower_id: uuid.UUID, key: str, period_end: date, months: int, value: Decimal,
-          user_id: uuid.UUID, reason: str) -> tuple[Fact, dict[str, Any]]:
+          user_id: uuid.UUID, reason: str, read_from: Fact | None = None) -> tuple[Fact, dict[str, Any]]:
     """A person keys a statement line by hand. If the line already has a figure this is a
-    correction; if it was taken as zero because the statement did not print it, the zero goes."""
+    correction; if it was taken as zero because the statement did not print it, the zero goes.
+
+    `read_from` is the reading the person took the figure from (a row filed under the wrong line):
+    the new figure then cites the same document and page, so its source still opens."""
     if not value.is_finite():
         raise ValueError("a figure must be a finite number")
     existing = facts_service.current_fact(db, borrower_id, key, period_end, months)
@@ -317,6 +320,7 @@ def enter(db: Session, *, borrower_id: uuid.UUID, key: str, period_end: date, mo
     new = facts_service.add_fact(
         db, borrower_id=borrower_id, key=key, period_end=period_end, months=months, value=value, kind="manual",
         entered_by=user_id, reason=reason, supersedes_fact_id=existing.id if existing else None,
+        document_id=read_from.document_id if read_from else None, page=read_from.page if read_from else None,
         actor=("user", str(user_id)))
     if existing is not None:
         existing.status = "superseded"

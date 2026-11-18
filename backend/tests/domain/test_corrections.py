@@ -101,3 +101,16 @@ def test_rejecting_a_figure_retires_what_was_calculated_from_it(db, spread):
     assert current_fact(db, borrower.id, "is.revenue", PERIOD, 9) is None
     assert current_fact(db, borrower.id, "is.gross_profit", PERIOD, 9) is None
     assert all(line.key for line in template.LINES)
+
+
+def test_a_figure_filed_under_another_line_still_cites_the_page_it_was_read_from(db, spread):
+    """The reader filed a row under the wrong line and the right line is empty. The person files it
+    under the right line: the new figure is theirs, and it opens the same document page."""
+    borrower, analyst, _ = spread
+    reading = current_fact(db, borrower.id, "bs.accrued_liabilities", PERIOD, 0)
+    assert reading.document_id is not None and reading.page is not None
+    new, _ = corrections.enter(db, borrower_id=borrower.id, key="bs.subordinated_debt", period_end=PERIOD, months=0,
+                               value=reading.value, user_id=analyst.id,
+                               reason="The row is printed as subordinated debt.", read_from=reading)
+    assert new.kind == "manual" and new.entered_by == analyst.id
+    assert (new.document_id, new.page) == (reading.document_id, reading.page)
