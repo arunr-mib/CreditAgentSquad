@@ -114,15 +114,15 @@ def test_every_signal_rule_is_listed_with_its_own_threshold(client, people):
     body = client.get("/api/v1/governance/policy").json()
     listed = {r["id"]: r for r in body["signal_rules"]["rules"]}
     assert list(listed) == [r.id for r in signals.RULES]
-    assert listed["covenant_headroom_low"]["trigger"] == "Headroom on a covenant is below 10%"
-    assert listed["leverage_increase"]["trigger"] == "Leverage is up more than 0.5x on the same period a year earlier"
+    assert listed["covenant_headroom_low"]["trigger"] == "Headroom on a covenant below 10%"
+    assert listed["leverage_increase"]["trigger"] == "Leverage up more than 0.5x on the same period a year earlier"
     assert listed["ebitda_margin_decline"]["trigger"] == (
-        "EBITDA margin is down more than 3 points on the same period a year earlier")
-    assert listed["reporting_late"]["trigger"] == "A reporting requirement is more than 15 days late"
+        "EBITDA margin down more than 3 points on the same period a year earlier")
+    assert listed["reporting_late"]["trigger"] == "A reporting requirement more than 15 days late"
     assert listed["net_loss"]["severity"] == "high"
     # a rule whose threshold changes in the table changes on the page
     moved = signals.SignalRule("covenant_headroom_low", "medium", "headroom_below", {"threshold": Decimal("0.125")})
-    assert signal_trigger(moved) == "Headroom on a covenant is below 12.5%"
+    assert signal_trigger(moved) == "Headroom on a covenant below 12.5%"
 
 
 def test_the_agent_versions_listed_are_the_ones_this_build_runs(client, people):

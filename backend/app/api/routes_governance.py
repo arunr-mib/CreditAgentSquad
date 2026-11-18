@@ -140,7 +140,9 @@ def _people_decide() -> list[dict[str, Any]]:
     # stages._review_reading skips the confirmation only for "automatic"; any other value is assisted
     setting, effect = _AUTONOMY["automatic" if autonomy == "automatic" else "assisted"]
     rows = [
-        _rule("second_person", "A person cannot approve their own work", "Always", SECOND_PERSON_RULE, "core/roles.py"),
+        _rule("second_person", "A person cannot approve their own work", "Always",
+              "An approval from the person who prepared the work is refused. The rule compares the two people, "
+              "not their roles, so it binds an administrator as it binds everyone else.", "core/roles.py"),
         *[_rule(f"second_person.{p.value}", what, "Second person", detail, source)
           for p, (what, detail, source) in SECOND_PERSON.items()],
         _rule("extraction_autonomy", "Document readings", setting, effect, "domain/stages.py"),
@@ -249,27 +251,27 @@ def signal_trigger(rule: signals.SignalRule) -> str:
     compare = _COMPARE.get(p.get("compare", ""), "")
     match rule.kind:
         case "headroom_below":
-            return f"Headroom on a covenant is below {_pct(p['threshold'])}"
+            return f"Headroom on a covenant below {_pct(p['threshold'])}"
         case "headroom_falling":
-            return f"Headroom on a covenant has fallen {p['periods']} periods running"
+            return f"Headroom on a covenant falling {p['periods']} periods running"
         case "pct_decrease":
-            return f"{metric} is down more than {_pct(p['threshold'])} {compare}"
+            return f"{metric} down more than {_pct(p['threshold'])} {compare}"
         case "abs_decrease":
-            return f"{metric} is down more than {_change(p['metric'], p['threshold'])} {compare}"
+            return f"{metric} down more than {_change(p['metric'], p['threshold'])} {compare}"
         case "abs_increase":
-            return f"{metric} is up more than {_change(p['metric'], p['threshold'])} {compare}"
+            return f"{metric} up more than {_change(p['metric'], p['threshold'])} {compare}"
         case "below":
-            return f"{metric} is below {_change(p['metric'], p['threshold'])}"
+            return f"{metric} below {_change(p['metric'], p['threshold'])}"
         case "usage_above":
-            return f"The drawn balance is above {_pct(p['threshold'])} of the commitment"
+            return f"Drawn balance above {_pct(p['threshold'])} of the commitment"
         case "availability_below":
-            return f"Borrowing base availability is below {_pct(p['threshold'])} of the commitment"
+            return f"Borrowing base availability below {_pct(p['threshold'])} of the commitment"
         case "reporting_late":
-            return f"A reporting requirement is more than {p['days']} days late"
+            return f"A reporting requirement more than {p['days']} days late"
         case "past_due":
-            return f"A payment is more than {p['days']} days past due"
+            return f"A payment more than {p['days']} days past due"
         case "auditor_opinion":
-            return "The auditor's opinion is " + " or ".join(_plain(o) for o in p["opinions"])
+            return "Auditor's opinion " + " or ".join(_plain(o) for o in p["opinions"])
     return _plain(rule.kind).capitalize()  # a kind added later is named, never left blank
 
 
