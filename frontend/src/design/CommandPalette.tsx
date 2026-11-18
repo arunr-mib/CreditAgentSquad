@@ -9,10 +9,12 @@ export interface Command {
   id: string;
   group: string;
   label: string;
-  /** Secondary text on the right: a borrower id, a shortcut, a section. */
+  /** Secondary text on the right, or beneath the label where the row is narrow: an industry, a count, what the command does. */
   hint?: string;
   icon?: ReactNode;
   keywords?: string;
+  /** Listed only once the person has typed something: for the long tail that would bury the short list. */
+  searchOnly?: boolean;
   run: () => void;
 }
 
@@ -45,7 +47,7 @@ export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Se
 
   const matches = useMemo(() => {
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-    if (words.length === 0) return commands;
+    if (words.length === 0) return commands.filter((command) => !command.searchOnly);
     return commands.filter((command) => {
       const haystack = `${command.label} ${command.group} ${command.hint ?? ''} ${command.keywords ?? ''}`.toLowerCase();
       return words.every((word) => haystack.includes(word));
@@ -101,7 +103,7 @@ export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Se
         <RadixDialog.Overlay className={overlayClass} />
         <RadixDialog.Content
           aria-describedby={undefined}
-          className="anim-rise fixed top-[14vh] left-1/2 z-50 w-[600px] -translate-x-1/2 overflow-hidden rounded-md border border-hairline-strong bg-surface shadow-overlay"
+          className="anim-rise fixed top-[6vh] left-1/2 z-50 w-[620px] -translate-x-1/2 overflow-hidden rounded-md border border-hairline-strong bg-surface shadow-overlay sm:top-[14vh]"
         >
           <RadixDialog.Title className="sr-only">Command palette</RadixDialog.Title>
           <div className="flex h-12 items-center gap-3 border-b border-hairline-strong px-4">
@@ -122,11 +124,14 @@ export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Se
               placeholder={placeholder}
               className="h-full min-w-0 flex-1 bg-transparent text-prose text-ink outline-none placeholder:text-ink-500"
             />
-            <Kbd>Esc</Kbd>
+            <span aria-hidden className="max-sm:hidden">
+              <Kbd>Esc</Kbd>
+            </span>
+            <RadixDialog.Close className="link text-body font-medium sm:hidden">Close</RadixDialog.Close>
           </div>
-          <div ref={listRef} id={listId} role="listbox" aria-label="Results" className="max-h-[360px] overflow-y-auto p-1.5">
+          <div ref={listRef} id={listId} role="listbox" aria-label="Results" className="@container max-h-[min(440px,60vh)] overflow-y-auto p-1.5">
             {matches.length === 0 ? (
-              <p className="px-3 py-6 text-body text-ink-700">Nothing matches “{query}”. Try a borrower name or a section.</p>
+              <p className="px-3 py-6 text-body text-pretty text-ink-700">Nothing matches “{query}”. Try a borrower name, a section or a queue filter.</p>
             ) : (
               groups.map(([group, entries]) => (
                 <div key={group} role="group" aria-label={group} className="mb-1 last:mb-0">
@@ -145,12 +150,19 @@ export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Se
                         onKeyDown={(event) => {
                           if (event.key === 'Enter') run(command);
                         }}
-                        className={cx('flex h-9 cursor-pointer items-center gap-2.5 rounded-sm px-2.5 text-body text-ink', selected && 'bg-cobalt-bg')}
+                        className={cx('flex min-h-9 cursor-pointer items-start gap-2.5 rounded-sm px-2.5 py-2 text-body text-ink', selected && 'bg-cobalt-bg')}
                       >
-                        {command.icon ? <span className={cx('flex shrink-0', selected ? 'text-cobalt-strong' : 'text-ink-500')}>{command.icon}</span> : null}
-                        <span className="min-w-0 flex-1 font-medium text-pretty">{command.label}</span>
-                        {command.hint ? <span className="shrink-0 text-caption text-ink-500">{command.hint}</span> : null}
-                        {selected ? <CornerDownLeft size={12} aria-hidden className="shrink-0 text-cobalt-strong" /> : null}
+                        {command.icon ? (
+                          <span className={cx('flex h-5 shrink-0 items-center', selected ? 'text-cobalt-strong' : 'text-ink-500')}>{command.icon}</span>
+                        ) : null}
+                        {/* A long name or hint wraps onto its own line; nothing is cut short. */}
+                        <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                          <span className="min-w-0 font-medium text-pretty">{command.label}</span>
+                          {command.hint ? (
+                            <span className="min-w-0 text-caption text-pretty text-ink-500 @min-[480px]:ml-auto @min-[480px]:text-right">{command.hint}</span>
+                          ) : null}
+                        </span>
+                        <CornerDownLeft size={12} aria-hidden className={cx('mt-1 shrink-0 text-cobalt-strong', !selected && 'invisible')} />
                       </div>
                     );
                   })}
@@ -158,13 +170,16 @@ export function CommandPalette({ open, onOpenChange, commands, placeholder = 'Se
               ))
             )}
           </div>
-          <div className="flex items-center gap-4 border-t border-hairline px-4 py-2 text-caption text-ink-500">
+          <div className="flex items-center gap-4 border-t border-hairline px-4 py-2 text-caption text-ink-500 max-sm:hidden">
             <span className="inline-flex items-center gap-1.5">
               <Kbd>↑</Kbd>
               <Kbd>↓</Kbd> to move
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Kbd>Enter</Kbd> to open
+              <Kbd>Enter</Kbd> to choose
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Kbd>Esc</Kbd> to close
             </span>
           </div>
         </RadixDialog.Content>

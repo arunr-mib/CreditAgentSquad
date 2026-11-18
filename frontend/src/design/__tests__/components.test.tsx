@@ -286,4 +286,34 @@ describe('CommandPalette', () => {
     await userEvent.keyboard('{ArrowDown}{Enter}');
     expect(run).toHaveBeenCalledWith('portfolio');
   });
+
+  it('closes on Esc without running anything', async () => {
+    const run = vi.fn();
+    render(<Harness run={run} />);
+    await userEvent.keyboard('{Control>}k{/Control}');
+    await screen.findByRole('combobox');
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('combobox')).toBeNull();
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it('lists a search-only command once something is typed, and cuts no row short', async () => {
+    const run = vi.fn();
+    render(
+      <CommandPalette
+        open
+        onOpenChange={() => {}}
+        commands={[
+          { id: 'critical', group: 'Queue', label: 'Show critical exceptions', hint: 'A long explanation that has to wrap onto a second line on a narrow screen', run: () => run('critical') },
+          { id: 'low', group: 'Queue', label: 'Show low-severity exceptions', searchOnly: true, run: () => run('low') },
+        ]}
+      />,
+    );
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    for (const node of screen.getByRole('option').querySelectorAll('*')) expect(node.getAttribute('class') ?? '').not.toMatch(/truncate|text-ellipsis|whitespace-nowrap|line-clamp/);
+    await userEvent.type(screen.getByRole('combobox', { name: 'Search' }), 'low');
+    expect(screen.getByRole('option', { name: /Show low-severity exceptions/ })).toBeInTheDocument();
+    await userEvent.keyboard('{Enter}');
+    expect(run).toHaveBeenCalledWith('low');
+  });
 });

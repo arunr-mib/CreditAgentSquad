@@ -1,23 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { errorMessage } from '@/api/client';
 import { useAuth } from '@/auth/context';
+import { DEMO_PASSWORD, DEMO_USERS, SHOW_DEMO_USERS } from '@/auth/demoUsers';
 import { Button, Input } from '@/design';
 import { roleLabel } from '@/domain/labels';
 import { Mark } from '@/shell/Wordmark';
-
-/** The demonstration users (backend/app/seed_users.py). Listed here so a reviewer can try each role. */
-const DEMO_USERS: Array<{ email: string; name: string; title: string; role: string }> = [
-  { email: 'priya.raman@bankofstoic.example', name: 'Priya Raman', title: 'Senior Credit Analyst', role: 'analyst' },
-  { email: 'tomas.keller@bankofstoic.example', name: 'Tomas Keller', title: 'Credit Analyst', role: 'analyst' },
-  { email: 'dana.whitfield@bankofstoic.example', name: 'Dana Whitfield', title: 'Portfolio Manager', role: 'portfolio_manager' },
-  { email: 'helen.strand@bankofstoic.example', name: 'Helen Strand', title: 'Senior Credit Officer', role: 'credit_officer' },
-  { email: 'li.zhang@bankofstoic.example', name: 'Li Zhang', title: 'Credit Administration Lead', role: 'credit_admin' },
-  { email: 'ruth.calloway@bankofstoic.example', name: 'Ruth Calloway', title: 'Credit Review Officer', role: 'credit_review' },
-  { email: 'admin@bankofstoic.example', name: 'Platform Administrator', title: 'Administrator', role: 'admin' },
-];
-const DEMO_PASSWORD = 'squad-demo';
-/** Build with VITE_DEMO_USERS=off for a deployment with real accounts: the list is then not in the page at all. */
-const SHOW_DEMO_USERS = import.meta.env.VITE_DEMO_USERS !== 'off';
 
 export function SignIn() {
   const { signIn, status, retry } = useAuth();

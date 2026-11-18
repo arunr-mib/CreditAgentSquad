@@ -14,10 +14,10 @@ export function Copilot() {
       title="Ask a question about a borrower or the portfolio. Answers cite stored facts and documents; nothing is changed. The log of what agents did is under Agent activity."
       aria-keyshortcuts="Control+J Meta+J"
       onClick={() => drawer.openCopilot(code ? { kind: 'borrower', code } : { kind: 'portfolio' })}
-      className="inline-flex h-8 items-center gap-2 rounded-sm px-2 text-body text-ink-700 t-colors hover:bg-hover hover:text-ink"
+      className="inline-flex h-8 shrink-0 items-center gap-2 rounded-sm border border-hairline-strong bg-surface px-2.5 text-body font-medium text-ink t-colors hover:border-ink-400 max-sm:w-8 max-sm:justify-center max-sm:px-0"
     >
-      <Sparkles size={15} strokeWidth={1.75} aria-hidden className="text-iris-mark" />
-      <span className="max-sm:sr-only">Ask Copilot</span>
+      <Sparkles size={15} strokeWidth={1.75} aria-hidden className="shrink-0 text-iris-mark" />
+      <span className="whitespace-nowrap max-sm:sr-only">Ask Copilot</span>
       <span aria-hidden className="max-lg:hidden">
         <Kbd>Ctrl J</Kbd>
       </span>

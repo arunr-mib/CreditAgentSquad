@@ -12,11 +12,17 @@ export function Mark({ size = 20 }: { size?: number }) {
   );
 }
 
-export function Wordmark() {
+/** The mark with the product's name and the lender's beneath it; the mark alone where there is no room for words. */
+export function Wordmark({ markOnly = false }: { markOnly?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2.5">
-      <Mark />
-      <span className="hidden text-prose font-semibold tracking-[-0.012em] whitespace-nowrap text-ink lg:inline">Credit Agent Squad</span>
+      <Mark size={22} />
+      {markOnly ? null : (
+        <span className="whitespace-nowrap">
+          <span className="block text-body/4 font-semibold tracking-[-0.012em] text-ink">Credit Agent Squad</span>
+          <span className="block text-micro/4 text-ink-500">Bank of Stoic</span>
+        </span>
+      )}
     </span>
   );
 }
