@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { useBorrowerCovenants, useBorrowerOverview, useCalculation } from '@/api/hooks';
 import type { BorrowerCovenants, BorrowerOverview, CovenantTestRow, FactsById } from '@/api/schema';
 import { Card, CardHeader, DataTable, formatDate, Select, SkeletonRows, StatusDot, Stepper, type DataColumn, type Step } from '@/design';
@@ -9,6 +9,7 @@ import { CalculationBreakdown } from '@/source/CalculationBreakdown';
 import { useSource } from '@/source/context';
 import { FactFigure, ProvenanceLegend } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, SectionHead } from '../parts';
+import { useIsPhone } from '../Portfolio';
 import { WorkItemPanel } from '../work/WorkItemPanel';
 import { useCurrentBorrower } from './BorrowerLayout';
 import { RunStage } from './RunStage';
@@ -36,6 +37,36 @@ export function CycleStepper({ cycle }: { cycle: NonNullable<BorrowerOverview['c
   );
 }
 
+export interface TrendPoint {
+  id: string;
+  label: string;
+  /** Plot positions only; figures beside the chart are formatted from the stored strings. */
+  plot: number;
+  /** The threshold in force in this period, or null where none was in force. */
+  threshold: number | null;
+  /** Failed against its own period's threshold. */
+  breach: boolean;
+  test: CovenantTestRow;
+}
+
+/** One point per tested period, each with the threshold that governed that period. */
+export function trendPoints(tests: CovenantTestRow[]): TrendPoint[] {
+  return tests
+    .filter((test) => test.value !== null)
+    .map((test) => {
+      const threshold = test.threshold === null ? null : Number(test.threshold);
+      return {
+        id: test.id,
+        label: quarterLabel(test.period_end),
+        plot: Number(test.value),
+        threshold: threshold !== null && Number.isFinite(threshold) ? threshold : null,
+        // The stored result was tested against this period's own threshold; no threshold, no breach.
+        breach: test.passed === false && test.threshold !== null,
+        test,
+      };
+    });
+}
+
 function Trend({
   tests,
   facts,
@@ -48,12 +79,13 @@ function Trend({
   onSelect: (test: CovenantTestRow) => void;
 }) {
   // Plot positions only: the figures shown beside the chart are the stored facts, formatted from their strings.
-  const points = tests
-    .filter((test) => test.value !== null)
-    .map((test) => ({ id: test.id, label: quarterLabel(test.period_end), plot: Number(test.value), threshold: Number(test.threshold), test }));
+  const points = trendPoints(tests);
+  // On a phone the quarter and the year sit on two lines, so seven periods fit side by side.
+  const twoLines = useIsPhone();
   const selected = points.find((point) => point.id === selectedId) ?? points[points.length - 1];
   if (points.length < 2 || !selected) return null;
-  const values = points.flatMap((point) => [point.plot, point.threshold]).filter((value) => Number.isFinite(value));
+  const values = points.flatMap((point) => [point.plot, point.threshold]).filter((value): value is number => value !== null && Number.isFinite(value));
+  const stepped = new Set(points.map((point) => point.threshold)).size > 1;
   const low = Math.min(...values);
   const high = Math.max(...values);
   const pad = (high - low || 1) * 0.15;
@@ -62,14 +94,14 @@ function Trend({
     <div>
       <div className="h-[168px]" role="group" aria-label={`${selected.test.covenant_name} by period. Choose a period to see its test.`}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={points} margin={{ top: 12, right: 44, bottom: 0, left: 0 }} accessibilityLayer={false}>
+          <LineChart data={points} margin={{ top: 12, right: 30, bottom: 0, left: 0 }} accessibilityLayer={false}>
             <CartesianGrid vertical={false} stroke="var(--hairline)" />
             <XAxis
               dataKey="label"
               axisLine={{ stroke: 'var(--hairline-strong)' }}
               tickLine={false}
               interval={0}
-              height={28}
+              height={twoLines ? 38 : 28}
               tick={(props: { x?: number | string; y?: number | string; index?: number; payload?: { value?: string } }) => {
                 const point = points[props.index ?? 0];
                 const active = point?.id === selected.id;
@@ -88,7 +120,7 @@ function Trend({
                     }}
                     className="cursor-pointer"
                   >
-                    <rect x={Number(props.x) - 30} y={Number(props.y) - 2} width={60} height={22} fill="transparent" />
+                    <rect x={Number(props.x) - 30} y={Number(props.y) - 2} width={60} height={twoLines ? 34 : 22} fill="transparent" />
                     <text
                       x={props.x}
                       y={Number(props.y) + 12}
@@ -98,7 +130,13 @@ function Trend({
                       fill={active ? 'var(--cobalt-strong)' : 'var(--ink-500)'}
                       textDecoration={active ? 'underline' : undefined}
                     >
-                      {props.payload?.value}
+                      {twoLines
+                        ? (props.payload?.value ?? '').split(' ').map((part, index) => (
+                            <tspan key={part} x={props.x} dy={index === 0 ? 0 : 13}>
+                              {part}
+                            </tspan>
+                          ))
+                        : props.payload?.value}
                     </text>
                   </g>
                 );
@@ -113,11 +151,17 @@ function Trend({
               tick={{ fontSize: 11, fill: 'var(--ink-500)' }}
               tickFormatter={(value: number) => value.toFixed(2)}
             />
-            <ReferenceLine
-              y={selected.threshold}
+            {/* Each period's own threshold, stepped where the terms change it. */}
+            <Line
+              dataKey="threshold"
+              type="stepAfter"
               stroke="var(--ink-700)"
+              strokeWidth={1.25}
               strokeDasharray="4 3"
-              label={{ value: minimum ? 'Minimum' : 'Maximum', position: 'right', fontSize: 11, fill: 'var(--ink-700)' }}
+              dot={false}
+              activeDot={false}
+              connectNulls={false}
+              isAnimationActive={false}
             />
             <Line
               dataKey="plot"
@@ -126,7 +170,7 @@ function Trend({
               isAnimationActive={false}
               dot={(props: { cx?: number; cy?: number; index?: number }) => {
                 const point = points[props.index ?? 0];
-                const failed = point?.test.passed === false;
+                const failed = point?.breach === true;
                 const active = point?.id === selected.id;
                 return (
                   <circle
@@ -147,6 +191,28 @@ function Trend({
           </LineChart>
         </ResponsiveContainer>
       </div>
+      <ul aria-label="Chart key" className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-caption text-ink-700">
+        <li className="inline-flex items-center gap-1.5">
+          <svg width="18" height="8" aria-hidden>
+            <line x1="0" y1="4" x2="18" y2="4" stroke="var(--ink-900)" strokeWidth="1.5" />
+          </svg>
+          Calculated
+        </li>
+        <li className="inline-flex items-center gap-1.5">
+          <svg width="18" height="8" aria-hidden>
+            <line x1="0" y1="4" x2="18" y2="4" stroke="var(--ink-700)" strokeWidth="1.25" strokeDasharray="4 3" />
+          </svg>
+          {minimum ? 'Minimum' : 'Maximum'} in force each period{stepped ? ', stepped as the terms change' : ''}
+        </li>
+        {points.some((point) => point.breach) ? (
+          <li className="inline-flex items-center gap-1.5">
+            <svg width="8" height="8" aria-hidden>
+              <circle cx="4" cy="4" r="3.5" fill="var(--red-mark)" />
+            </svg>
+            Fails its own period’s threshold
+          </li>
+        ) : null}
+      </ul>
       <p className="mt-1 text-body text-ink-700" aria-live="polite">
         {selected.label}: <FactFigure fact={selected.test.value_fact_id ? facts[selected.test.value_fact_id] : undefined} weight="semibold" /> against a{' '}
         {minimum ? 'minimum' : 'maximum'} of <FactFigure fact={selected.test.threshold_fact_id ? facts[selected.test.threshold_fact_id] : undefined} />
@@ -188,14 +254,11 @@ function CertificateComparison({ test, facts }: { test: CovenantTestRow; facts: 
         <dd className="mt-0.5 text-body">
           {claim === null ? (
             <StatusDot tone="muted">Nothing certified</StatusDot>
-          ) : claim && test.passed === false ? (
-            <StatusDot tone="breach" emphasis>
-              Compliance
-            </StatusDot>
           ) : claim ? (
+            // What the borrower claims is not itself a breach; the outcome beside it carries the colour.
             <StatusDot tone="neutral">Compliance</StatusDot>
           ) : (
-            <StatusDot tone="attention">Non-compliance</StatusDot>
+            <StatusDot tone="breach">Non-compliance</StatusDot>
           )}
         </dd>
       </div>
@@ -349,10 +412,11 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
       {
         id: 'outcome',
         header: 'Outcome',
-        wrap: 'narrow',
+        // Wraps wherever the column is short of room: below 1280 px, or beside an open source drawer.
+        wrap: true,
         sortValue: (row) => OUTCOME[row.outcome].rank,
         cell: (row) => (
-          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="max-[1279px]:whitespace-normal!">
+          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="whitespace-normal!">
             {OUTCOME[row.outcome].label}
           </StatusDot>
         ),
@@ -368,9 +432,9 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
   const cycle = overview?.cycle;
 
   return (
-    <div data-ready className="space-y-5">
+    <div data-ready className="@container space-y-5">
       {cycle && cycle.period_end === period ? <CycleStepper cycle={cycle} /> : null}
-      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="grid items-start gap-5 @min-[1080px]:grid-cols-[minmax(0,1fr)_400px]">
         <div className="min-w-0 space-y-5">
           <section aria-labelledby="tests-heading" className="min-w-0">
             <SectionHead
@@ -409,7 +473,7 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
 
         <aside
           aria-label="Exception for the selected covenant"
-          className="min-w-0 xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md"
+          className="min-w-0 @min-[1080px]:sticky @min-[1080px]:top-[68px] @min-[1080px]:max-h-[calc(100vh-88px)] @min-[1080px]:overflow-y-auto @min-[1080px]:rounded-md"
         >
           {selected.work_item ? (
             <WorkItemPanel key={selected.work_item.id} itemId={selected.work_item.id} />

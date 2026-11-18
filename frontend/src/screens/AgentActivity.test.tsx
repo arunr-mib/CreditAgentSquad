@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { AgentRunRow } from '@/api/schema';
-import { AgentActivity, checkMarks, checkResult, formatDuration, HowRunsStart, RunTimeline } from './AgentActivity';
+import { AgentActivity, checkMarks, checkResult, formatDuration, HowRunsStart, RunDetail, RunTimeline, scopeParts } from './AgentActivity';
 
 window.scrollTo = () => {}; // jsdom has none; the router calls it on navigation
 
@@ -124,7 +124,8 @@ describe('the run timeline', () => {
     const checked = row(container, 'checked');
     expect(within(checked).getByText('Covenant agent')).toBeVisible();
     expect(within(checked).getByRole('link', { name: 'Briarstone Beverage Company' })).toHaveAttribute('href', '/borrowers/briarstone-beverage');
-    expect(within(checked).getByText('41.3 s · 48,210 in · 2,114 out · claude-opus-5-5')).toHaveClass('ident');
+    expect(checked.querySelector('[data-telemetry]')).toHaveTextContent('41.3 s · 48,210 in · 2,114 out · claude-opus-5-5');
+    expect(checked.querySelector('[data-telemetry]')).toHaveClass('ident');
     expect(within(checked).getByRole('button', { name: 'Investigate a covenant exception' })).toHaveAttribute('aria-pressed', 'true');
 
     const failed = row(container, 'failed');
@@ -132,7 +133,7 @@ describe('the run timeline', () => {
     expect(within(failed).getByText('No single borrower')).toBeVisible();
     expect(within(failed).queryByRole('link')).toBeNull();
     // a run still in progress has no duration to show
-    expect(within(row(container, 'running')).getByText('48,210 in · 2,114 out · claude-opus-5-5')).toBeVisible();
+    expect(row(container, 'running').querySelector('[data-telemetry]')?.textContent).toBe('48,210 in · 2,114 out · claude-opus-5-5');
 
     await userEvent.click(within(failed).getByRole('button'));
     expect(onSelect).toHaveBeenCalledWith('failed');
@@ -154,6 +155,65 @@ describe('the run timeline', () => {
     expect(formatDuration(126000)).toBe('2 min 06 s');
   });
 });
+
+describe('the selected run', () => {
+  const detail = {
+    ...run({ id: '3996a458-07f8-4a16-9520-0b01b3cb2cb2', status: 'completed', steps_count: 0 }),
+    scope: { months: 9, cycle_id: 'baac17bd-5110-4c1e-9a2b-000000000000', period_end: '2026-09-30', borrower_id: 'b-1', facility_id: null, document_ids: [] },
+    raw_output: null,
+    output: {
+      sections: [
+        { heading: 'Performance', body: 'Total debt to EBITDA fell from {{fact:f-old}} to {{fact:f-new}}.' },
+        { heading: 'Covenants', body: 'Every tested covenant passed.' },
+      ],
+    },
+    steps: [{ id: 's-1', n: 1, kind: 'model', name: 'response', input_summary: 'exchange 1', output_summary: 'end_turn', refused: false, duration_ms: 900 }],
+  } as unknown as Parameters<typeof RunDetail>[0]['run'];
+
+  it('shows the answer as labelled fields with figure chips, never raw JSON or placeholders', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        const fact = (id: string, value: string) => ({ id, key: 'm.lev', label: 'Leverage', value, unit: 'ratio', kind: 'calculated', status: 'verified', period_end: '2026-09-30', months: 12, borrower_id: 'b-1', document_id: null, page: null, calc_run_id: 'c' });
+        return { ok: true, status: 200, text: async () => JSON.stringify({ 'f-old': fact('f-old', '2.10'), 'f-new': fact('f-new', '1.80') }) } as Response;
+      }),
+    );
+    const { container } = inRouter(<RunDetail run={detail} />);
+    const output = await waitForElement(container, '[data-run-output]');
+    expect(output).not.toHaveTextContent('{"');
+    expect(output).not.toHaveTextContent('{{fact');
+    expect(within(output).getByText('Performance')).toBeVisible();
+    expect(within(output).getAllByText('Body')).toHaveLength(2);
+    expect(await within(output).findByText('2.10x')).toBeVisible();
+    expect(output.querySelectorAll('[data-fact-chip]')).toHaveLength(2);
+  });
+
+  it('counts the steps it lists, and states the scope in plain words with only the fields that were set', async () => {
+    const { container } = inRouter(<RunDetail run={detail} />);
+    await waitForElement(container, '[data-run-output]');
+    const steps = screen.getByText('Steps', { selector: 'dt' }).parentElement as HTMLElement;
+    expect(steps).toHaveTextContent('Steps1');
+    const scope = screen.getByText('Scope set by code', { selector: 'dt' }).parentElement as HTMLElement;
+    expect(scope).toHaveTextContent('9 months · cycle baac17bd · period ended 30 Sep 2026 · borrower Briarstone Beverage Company');
+    expect(scope).not.toHaveTextContent('None');
+    expect(scope).not.toHaveTextContent('[]');
+  });
+
+  it('leaves out unset scope fields and shortens ids', () => {
+    expect(scopeParts({ facility_id: null, document_ids: [], borrower_id: 'b-2' }, { borrower_id: 'b-1', borrower_name: 'X' })).toEqual(['borrower b-2']);
+    expect(scopeParts({ document_ids: ['3996a458-07f8-4a16-9520-0b01b3cb2cb2'] })).toEqual(['document 3996a458']);
+    expect(scopeParts(null)).toEqual([]);
+  });
+});
+
+async function waitForElement(container: HTMLElement, selector: string): Promise<HTMLElement> {
+  for (let tries = 0; tries < 50; tries += 1) {
+    const found = container.querySelector<HTMLElement>(selector);
+    if (found) return found;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  throw new Error(`${selector} not found`);
+}
 
 describe('when no agent has run', () => {
   it('says how a run starts and that each run is billable', async () => {

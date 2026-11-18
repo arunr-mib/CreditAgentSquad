@@ -357,7 +357,7 @@ export function DesignPage() {
         <Section
           id="identity"
           title="Identity"
-          lead="A working cockpit on a warm stone base, with a bank’s authority. Quiet surfaces, ink type, hairline rules, and five colours that each mean one thing: every colour, tag and bar on a screen says something financial. Agents appear as a colleague’s annotations; people decide."
+          lead="A working cockpit on a warm stone base, with a bank’s authority. Quiet surfaces, ink type, hairline rules, five colours that each mean one thing, and an ink ramp for neutral quantity: every colour, tag and bar on a screen says something financial. Agents appear as a colleague’s annotations; people decide."
         >
           <Story name="Mark and wordmark" rule="Three units in formation. The wordmark is Inter semibold; there is no second typeface.">
             <div className="flex flex-wrap items-center gap-10">
@@ -384,7 +384,7 @@ export function DesignPage() {
           title="Colour"
           lead="Colour carries meaning only. If a colour appears and none of these meanings applies, it is a defect. Text, ground and border variants pass WCAG AA on every surface they are used on; a test enforces it."
         >
-          <Story name="The rules" rule="Six meanings and no others. Each is shown here the way it appears in the product.">
+          <Story name="The rules" rule="Five colours, one meaning each, and the ink ramp for quantity. No others. Each is shown here the way it appears in the product.">
             <ul className="border-t border-ink">
               {COLOUR_RULES.map((entry) => (
                 <li key={entry.name} className="grid items-center gap-x-6 gap-y-1.5 border-b border-hairline py-2 text-body last:border-b-0 sm:grid-cols-[110px_minmax(0,1fr)_minmax(0,240px)]">

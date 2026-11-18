@@ -2,11 +2,11 @@ import { Outlet, useRouterState } from '@tanstack/react-router';
 import { Search } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { CommandPalette, Kbd, useCommandPaletteShortcut } from '@/design';
-import { useWorkspaceDrawer } from '@/drawer/context';
+import { defaultCopilotScope, useWorkspaceDrawer } from '@/drawer/context';
 import { WorkspaceDrawer } from '@/drawer/WorkspaceDrawer';
 import { cx } from '@/lib/cx';
 import { AsOfControl } from './AsOfControl';
-import { borrowerCodeIn, useShellCommands } from './commands';
+import { useShellCommands } from './commands';
 import { Copilot } from './Copilot';
 import { Rail } from './Rail';
 import { useRail } from './useRail';
@@ -16,23 +16,20 @@ export function AppShell() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((open) => !open), []));
-  const { open: drawerOpen, tab: drawerTab, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
+  const { open: drawerOpen, tab: drawerTab, itemId: drawerItem, borrowerCode: drawerBorrower, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
   const rail = useRail(drawerOpen, pathname);
   const commands = useShellCommands(pathname);
-  // Ctrl or Cmd + J: the Copilot, scoped to the borrower on screen when there is one.
+  // Ctrl or Cmd + J: the Copilot, scoped to the exception open in the drawer, else the borrower on screen.
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'j') return;
       event.preventDefault();
       if (drawerOpen && drawerTab === 'copilot') closeDrawer();
-      else {
-        const code = borrowerCodeIn(pathname);
-        openCopilot(code ? { kind: 'borrower', code } : undefined);
-      }
+      else openCopilot(defaultCopilotScope({ open: drawerOpen, itemId: drawerItem, borrowerCode: drawerBorrower }, pathname));
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [drawerOpen, drawerTab, openCopilot, closeDrawer, pathname]);
+  }, [drawerOpen, drawerTab, drawerItem, drawerBorrower, openCopilot, closeDrawer, pathname]);
 
   return (
     <div className="flex min-h-screen bg-canvas">

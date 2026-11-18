@@ -5,6 +5,25 @@ import { Button, Card, EmptyState, fieldLabelClass, SkeletonRows, StatusDot, Tag
 import { SEVERITY_LABEL, SEVERITY_TONE } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 
+/**
+ * A record's identifier as its first eight characters. The whole id is in the tooltip, and copying
+ * the short form copies the whole id, so nothing is lost by shortening it.
+ */
+export function ShortId({ id, className }: { id: string; className?: string }) {
+  return (
+    <span
+      className={cx('ident', className)}
+      title={id}
+      onCopy={(event) => {
+        event.clipboardData.setData('text/plain', id);
+        event.preventDefault();
+      }}
+    >
+      {id.slice(0, 8)}
+    </span>
+  );
+}
+
 /** A notice inside the page: a hairline border on all four sides and a dot plus a word. No coloured edge. */
 export function Notice({
   tone = 'neutral',

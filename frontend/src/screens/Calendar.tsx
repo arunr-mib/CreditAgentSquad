@@ -38,9 +38,14 @@ function ObligationStatus({ row }: { row: Obligation }) {
   }
 }
 
-/** Overdue first, the longest overdue at the top; then what is due, then the rest. */
+/** Overdue first, the longest overdue at the top; then what is due, soonest first; then the rest. */
 const STATUS_RANK: Record<string, number> = { overdue: 0, due: 1, received: 2, waived: 3, untracked: 4 };
-const statusSort = (row: Obligation) => (STATUS_RANK[row.status] ?? 9) * 100_000 - (row.status === 'overdue' ? (row.days_late ?? 0) : 0);
+export const statusSort = (row: Obligation): string =>
+  `${STATUS_RANK[row.status] ?? 9}-${String(99_999 - (row.status === 'overdue' ? (row.days_late ?? 0) : 0)).padStart(5, '0')}-${row.due_date}`;
+
+/** What "not tracked" means here, in the words the calendar shows beside the filter. */
+export const UNTRACKED_NOTE =
+  'Not tracked: requirements for past periods from before this book was loaded. The book holds documents for some past periods only, so a missing one is not counted as overdue.';
 
 /** A choice of one, set out as separate buttons so that on a phone they wrap onto a second line instead of scrolling sideways. */
 function Choice({ label, value, onValueChange, options }: { label: string; value: string; onValueChange: (value: string) => void; options: Array<{ value: string; label: string; count: number }> }) {
@@ -177,6 +182,8 @@ export function Calendar() {
                     { value: 'overdue', label: 'Overdue', count: count('overdue') },
                     { value: 'due', label: 'Due', count: count('due') },
                     { value: 'received', label: 'Received', count: count('received') },
+                    ...(count('waived') > 0 ? [{ value: 'waived', label: 'Waived', count: count('waived') }] : []),
+                    ...(count('untracked') > 0 ? [{ value: 'untracked', label: 'Not tracked', count: count('untracked') }] : []),
                     { value: 'all', label: 'All', count: all.length },
                   ]}
                 />
@@ -199,7 +206,8 @@ export function Calendar() {
                 data={shown}
                 columns={columns}
                 getRowId={(row) => row.id}
-                initialSort={{ id: 'due', desc: status !== 'due' }}
+                // Outstanding and overdue lead with what is most late; the other views run by due date.
+                initialSort={status === 'open' || status === 'overdue' ? { id: 'status' } : { id: 'due', desc: status !== 'due' }}
                 selectedRowId={selected}
                 onRowActivate={(row) => {
                   const code = codes.get(row.borrower_id);
@@ -228,6 +236,7 @@ export function Calendar() {
                 }
               />
               <p className="mt-2 text-caption text-ink-500">A row opens the borrower at a glance; the name opens the borrower page.</p>
+              {count('untracked') > 0 ? <p className="mt-1 max-w-[80ch] text-caption text-pretty text-ink-500">{UNTRACKED_NOTE}</p> : null}
             </section>
           );
         }}

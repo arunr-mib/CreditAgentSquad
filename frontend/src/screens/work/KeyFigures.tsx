@@ -5,11 +5,17 @@ import { OUTCOME } from '@/domain/labels';
 import { FactFigure, SourcedFigure } from '@/source/figures';
 import type { ReactNode } from 'react';
 
+/**
+ * Tiles on a grid: they line up and wrap together. Each tile draws its own right and bottom rule just
+ * outside itself, and the frame clips the rules that would fall on its edge, so no rule is left loose.
+ */
+const GRID = 'grid grid-cols-[repeat(auto-fit,minmax(124px,1fr))] border-t border-hairline';
+
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
 function Tile({ label, note, children }: { label: string; note?: ReactNode; children: ReactNode }) {
   return (
-    <div className="min-w-0 flex-1 basis-[120px] px-3 py-2.5 first:pl-0">
+    <div className="min-w-0 px-3 py-2.5 shadow-[1px_0_0_var(--hairline),0_1px_0_var(--hairline)]">
       <p className="eyebrow">{label}</p>
       <p className="mt-0.5 text-heading leading-tight font-semibold text-ink">{children}</p>
       {note ? <p className="mt-0.5 text-caption text-ink-700">{note}</p> : null}
@@ -39,12 +45,12 @@ export function KeyFigures({ item }: { item: WorkItemDetail }) {
     const headroom = fact(test.headroom_fact_id);
     const headroomValue = headroom ? Number(headroom.value) : null;
     return (
-      <section aria-label="Key figures" data-key-figures="covenant" className="rounded-md border border-hairline-strong bg-canvas px-3">
-        <p className="pt-2.5 text-caption text-ink-700">
+      <section aria-label="Key figures" data-key-figures="covenant" className="overflow-hidden rounded-md border border-hairline-strong bg-canvas">
+        <p className="px-3 pt-2.5 pb-1 text-caption text-ink-700">
           <span className="font-medium text-ink">{test.covenant_name}</span>
           {test.operator ? ` · must be ${test.operator === '>=' ? 'at least' : 'at most'} the threshold` : ''}
         </p>
-        <div className="flex flex-wrap divide-x divide-hairline">
+        <div className={GRID}>
           <Tile label="Calculated by code" note={<span className={outcome.tone === 'breach' ? 'font-medium text-red' : undefined}>{outcome.label}</span>}>
             <FactFigure fact={fact(test.value_fact_id)} weight="semibold" />
           </Tile>
@@ -112,11 +118,11 @@ export function KeyFigures({ item }: { item: WorkItemDetail }) {
     const overValue = out('over_advance');
     if (!base && !drawn) return null;
     return (
-      <section aria-label="Key figures" data-key-figures="borrowing-base" className="rounded-md border border-hairline-strong bg-canvas px-3">
-        <p className="pt-2.5 text-caption text-ink-700">
+      <section aria-label="Key figures" data-key-figures="borrowing-base" className="overflow-hidden rounded-md border border-hairline-strong bg-canvas">
+        <p className="px-3 pt-2.5 pb-1 text-caption text-ink-700">
           <span className="font-medium text-ink">Borrowing base, recalculated by code</span> · USD thousands
         </p>
-        <div className="flex flex-wrap divide-x divide-hairline">
+        <div className={GRID}>
           {base ? <Tile label="Recalculated base">{base}</Tile> : null}
           {drawn ? <Tile label="Borrowings">{drawn}</Tile> : null}
           {over && overValue !== null && Number(overValue) > 0 ? (

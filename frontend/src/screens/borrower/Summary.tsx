@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useBorrower, useBorrowerCovenants, useBorrowerOverview, useDocuments, useFactsById, useSignals, useWorkItems } from '@/api/hooks';
 import { Card, CardHeader, formatDate, StatusDot } from '@/design';
-import { docTypeLabel, humanize, itemTypeLabel, isBreachItem, OUTCOME, quarterLabel, SEVERITY_RANK, signalLabel } from '@/domain/labels';
+import { docTypeLabel, humanize, itemTypeLabel, isBreachItem, legalFormLabel, OUTCOME, quarterLabel, SEVERITY_RANK, signalLabel } from '@/domain/labels';
 import { FactFigure } from '@/source/figures';
 import { Def, ErrorNotice, Load, SeverityDot } from '../parts';
 import { useCurrentBorrower } from './BorrowerLayout';
@@ -172,7 +172,7 @@ export function Summary() {
           <Card>
             <CardHeader as="h2" title="Profile" />
             <dl className="border-t border-hairline px-4 pb-2">
-              <Def label="Legal form">{profile?.legal_form ? profile.legal_form.charAt(0).toUpperCase() + profile.legal_form.slice(1) : 'Not recorded'}</Def>
+              <Def label="Legal form">{profile?.legal_form ? legalFormLabel(profile.legal_form) : 'Not recorded'}</Def>
               <Def label="Chief financial officer">{profile?.chief_financial_officer ?? 'Not recorded'}</Def>
               <Def label="Auditor">{profile?.auditor ?? 'Not recorded'}</Def>
               <Def label="Statements reported in">{profile?.statement_scale === 1000 ? 'Thousands of US dollars' : 'Whole US dollars'}</Def>

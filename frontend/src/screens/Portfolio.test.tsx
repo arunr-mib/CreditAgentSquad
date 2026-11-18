@@ -354,15 +354,15 @@ describe('portfolio table', () => {
     expect(row).toHaveAttribute('aria-selected', 'false');
   });
 
-  it('tags a breach in red and a variance in amber, and leaves a compliant row with a dot and a word', async () => {
+  it('tags a breach in red, and leaves a variance with an amber dot and a compliant row with a green dot', async () => {
     show('/portfolio');
     const breach = await rowOf(/^Kestrel Bay/);
     expect(breach.querySelector('[data-tag]')).toHaveAttribute('data-tag', 'breach');
     expect(breach.querySelector('[data-tag]')).toHaveTextContent('Breach, reported compliant');
 
     const variance = await rowOf(/^Quillfeather/);
-    expect(variance.querySelectorAll('[data-tag]')).toHaveLength(1);
-    expect(variance.querySelector('[data-tag]')).toHaveAttribute('data-tag', 'attention');
+    expect(variance.querySelector('[data-tag]')).toBeNull();
+    expect(within(variance).getByText('Compliant, variance')).toBeInTheDocument();
 
     const compliant = await rowOf(/^Sablewood/);
     expect(compliant.querySelector('[data-tag]')).toBeNull();
@@ -521,8 +521,10 @@ describe('calendar', () => {
     show('/calendar');
     const filter = await screen.findByRole('group', { name: 'Status' });
     expect(filter).toHaveClass('flex-wrap');
-    expect(within(filter).getAllByRole('button').map((button) => button.textContent)).toEqual(['Outstanding2', 'Overdue1', 'Due1', 'Received1', 'All4']);
+    expect(within(filter).getAllByRole('button').map((button) => button.textContent)).toEqual(['Outstanding2', 'Overdue1', 'Due1', 'Received1', 'Not tracked1', 'All4']);
     expect(within(filter).getByRole('button', { name: /^Outstanding/ })).toHaveAttribute('aria-pressed', 'true');
+    // a requirement from before the book was loaded has its own filter and a plain explanation
+    expect(screen.getByText(/^Not tracked: requirements for past periods/)).toBeInTheDocument();
     await userEvent.click(within(filter).getByRole('button', { name: /^Overdue/ }));
     expect(screen.getByText('1 of 4 requirements')).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /^Quillfeather/ })).toBeNull();

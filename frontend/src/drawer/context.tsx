@@ -34,6 +34,21 @@ export interface WorkspaceDrawerValue {
   close: () => void;
 }
 
+/**
+ * The scope the Copilot opens on when nobody names one: the exception open in the drawer, else the
+ * borrower on screen, else the whole portfolio.
+ */
+export function defaultCopilotScope(
+  drawer: Pick<WorkspaceDrawerValue, 'open' | 'itemId' | 'borrowerCode'>,
+  pathname: string,
+): CopilotScope {
+  if (drawer.open && drawer.itemId && !drawer.borrowerCode) return { kind: 'item', itemId: drawer.itemId };
+  const code = pathname.match(/^\/borrowers\/([^/]+)/)?.[1];
+  if (code) return { kind: 'borrower', code };
+  if (drawer.open && drawer.borrowerCode) return { kind: 'borrower', code: drawer.borrowerCode };
+  return { kind: 'portfolio' };
+}
+
 const noop = () => {};
 const closed: WorkspaceDrawerValue = {
   open: false,

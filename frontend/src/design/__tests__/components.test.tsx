@@ -215,6 +215,34 @@ describe('DataTable', () => {
     await userEvent.keyboard('{Enter}');
     expect(onActivate).toHaveBeenCalledWith(rows[2]);
   });
+
+  it('moves with J and K from anywhere on the page when asked to, starting from the selected row', async () => {
+    render(<DataTable caption="Covenants" data={rows} columns={columns} getRowId={(row) => row.id} onRowActivate={() => {}} selectedRowId="b" pageKeys />);
+    const body = screen.getAllByRole('row').slice(1);
+    expect(document.activeElement).toBe(document.body);
+    await userEvent.keyboard('j');
+    expect(body[2]).toHaveFocus();
+    await userEvent.keyboard('k');
+    expect(body[1]).toHaveFocus();
+  });
+
+  it('starts at the first row when none is selected, and never acts while the reader is typing', async () => {
+    render(
+      <>
+        <input aria-label="Reason" />
+        <DataTable caption="Covenants" data={rows} columns={columns} getRowId={(row) => row.id} onRowActivate={() => {}} pageKeys />
+      </>,
+    );
+    const body = screen.getAllByRole('row').slice(1);
+    const input = screen.getByRole('textbox', { name: 'Reason' });
+    await userEvent.click(input);
+    await userEvent.keyboard('jk');
+    expect(input).toHaveFocus();
+    expect(input).toHaveValue('jk');
+    input.blur();
+    await userEvent.keyboard('j');
+    expect(body[0]).toHaveFocus();
+  });
 });
 
 describe('WorkItemCard', () => {

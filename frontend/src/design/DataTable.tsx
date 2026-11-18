@@ -1,6 +1,6 @@
 import { createSortedRowModel, rowSortingFeature, tableFeatures, useTable, type ColumnDef, type RowData, type SortingState } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react';
-import { useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react';
 import { cx } from '@/lib/cx';
 
 const features = tableFeatures({ rowSortingFeature, sortedRowModel: createSortedRowModel() });
@@ -54,6 +54,20 @@ export interface DataTableProps<T> {
   narrow?: 'scroll' | 'stack';
   empty?: ReactNode;
   className?: string;
+  /**
+   * J and K move between rows from anywhere on the page, not only from a focused row: for the one
+   * table a screen is about (the work queue). Never while the reader is typing.
+   */
+  pageKeys?: boolean;
+}
+
+/** A key pressed here is typing, not a command. */
+export function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+  if (target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return true;
+  if (target instanceof HTMLInputElement) return !['button', 'checkbox', 'radio', 'submit', 'reset', 'range', 'color', 'file'].includes(target.type);
+  return ['textbox', 'combobox', 'searchbox', 'spinbutton'].includes(target.getAttribute('role') ?? '');
 }
 
 function compareValues(a: SortValue, b: SortValue): number {
@@ -82,6 +96,7 @@ export function DataTable<T extends RowData>({
   narrow = 'scroll',
   empty,
   className,
+  pageKeys = false,
 }: DataTableProps<T>) {
   const columnDefs = useMemo<Array<ColumnDef<Features, T, unknown>>>(
     () =>
@@ -125,6 +140,26 @@ export function DataTable<T extends RowData>({
     setFocusIndex(clamped);
     bodyRef.current?.querySelectorAll<HTMLTableRowElement>('tr[data-row]')[clamped]?.focus();
   }
+
+  useEffect(() => {
+    if (!pageKeys || !interactive) return;
+    function onPageKey(event: globalThis.KeyboardEvent) {
+      if (event.key !== 'j' && event.key !== 'k') return;
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || isTypingTarget(event.target)) return;
+      const body = bodyRef.current;
+      // A row has its own handler; a modal (the command palette) owns the keyboard while it is open.
+      if (!body || (event.target instanceof Node && body.contains(event.target))) return;
+      if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+      const rowElements = [...body.querySelectorAll<HTMLTableRowElement>('tr[data-row]')];
+      if (rowElements.length === 0) return;
+      const from = rowElements.findIndex((row) => row.getAttribute('aria-selected') === 'true');
+      event.preventDefault();
+      const next = from < 0 ? 0 : Math.max(0, Math.min(rowElements.length - 1, from + (event.key === 'j' ? 1 : -1)));
+      rowElements[next]?.focus(); // the row's own focus handler records the position
+    }
+    document.addEventListener('keydown', onPageKey);
+    return () => document.removeEventListener('keydown', onPageKey);
+  }, [pageKeys, interactive]);
 
   function onKeyDown(event: KeyboardEvent<HTMLTableSectionElement>) {
     if (!interactive || !(event.target instanceof HTMLTableRowElement)) return;

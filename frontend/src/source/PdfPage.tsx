@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import type * as PdfJs from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { API } from '@/api/client';
@@ -24,6 +24,27 @@ function loadPdf(documentId: string): Promise<PdfDocument> {
     documents.set(documentId, document);
   }
   return document;
+}
+
+/**
+ * The width a page can take inside `ref`, never more than `max`: a page drawn wider than its frame
+ * would hide the figure it was opened for off the side of a phone.
+ */
+export function useFitWidth(ref: RefObject<HTMLElement | null>, max: number): number {
+  const [width, setWidth] = useState(max);
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const available = Math.floor(element.clientWidth) - 2; // the page's own border
+      if (available > 0) setWidth(Math.min(max, available));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref, max]);
+  return width;
 }
 
 export interface PageMark {
@@ -92,14 +113,19 @@ export function PdfPage({ documentId, page, width, title, marks = [], maxHeight,
 
   const scale = current?.status === 'ready' ? width / current.pointWidth : 0;
   const height = current?.status === 'ready' ? current.pointHeight * scale : Math.round(width * 1.294);
-  const activeTop = marks.find((mark) => mark.active)?.boxes[0]?.[1];
+  const activeBox = marks.find((mark) => mark.active)?.boxes[0];
+  const activeTop = activeBox?.[1];
+  const activeLeft = activeBox?.[0];
 
-  // Bring the cited figure into the window once the page is drawn.
+  // Bring the cited figure into the window once the page is drawn: down to it, and across where the frame is narrower than the page.
   useEffect(() => {
     const scroller = scrollerRef.current;
-    if (!scroller || !maxHeight || !scale || activeTop === undefined) return;
-    scroller.scrollTop = Math.max(0, activeTop * scale - maxHeight / 2);
-  }, [scale, activeTop, maxHeight, key]);
+    if (!scroller || !scale || activeTop === undefined) return;
+    if (maxHeight) scroller.scrollTop = Math.max(0, activeTop * scale - maxHeight / 2);
+    if (activeLeft !== undefined && scroller.scrollWidth > scroller.clientWidth) {
+      scroller.scrollLeft = Math.max(0, activeLeft * scale - scroller.clientWidth / 2);
+    }
+  }, [scale, activeTop, activeLeft, maxHeight, key]);
 
   return (
     <div
@@ -109,7 +135,7 @@ export function PdfPage({ documentId, page, width, title, marks = [], maxHeight,
       role={maxHeight ? 'group' : undefined}
       aria-label={maxHeight ? `${title}, page ${page}` : undefined}
       data-pdf-page={current?.status ?? 'loading'}
-      className={cx('relative rounded-sm border border-hairline-strong bg-white', Boolean(maxHeight) && 'overflow-y-auto', className)}
+      className={cx('relative max-w-full rounded-sm border border-hairline-strong bg-white', Boolean(maxHeight) && 'overflow-auto', className)}
       style={{ width: width + 2, maxHeight }}
     >
       <div className="relative" style={{ width, height }}>
