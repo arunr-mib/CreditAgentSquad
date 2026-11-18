@@ -25,7 +25,11 @@ const TASK: Record<string, string> = {
   answer_question: 'Answer a question put to the Copilot',
 };
 export const taskLabel = (task: string) => TASK[task] ?? humanize(task);
-export const agentLabel = (name: string) => (name === 'copilot' ? 'Copilot' : `${humanize(name)} agent`);
+/** An agent's name in words. A name recorded with its version ("review@1") is the same agent. */
+export const agentLabel = (recorded: string) => {
+  const name = recorded.split('@')[0] ?? recorded;
+  return name === 'copilot' ? 'Copilot' : `${humanize(name)} agent`;
+};
 
 const STATUS_LABEL: Record<string, string> = { running: 'Running', completed: 'Completed', abstained: 'Abstained', failed: 'Failed', refused: 'Refused' };
 const STEP_KIND: Record<string, string> = { model: 'Model call', tool: 'Tool call', guardrail: 'Guardrail', note: 'Note' };
@@ -114,7 +118,8 @@ export function OutputValue({ value, depth = 0 }: { value: unknown; depth?: numb
   }
   const record = value as Record<string, unknown>;
   const titleKey = TITLE_KEYS.find((key) => typeof record[key] === 'string' && record[key]);
-  const fields = Object.entries(record).filter(([key]) => key !== titleKey);
+  // Under a heading, the section's machine key says nothing a reader needs.
+  const fields = Object.entries(record).filter(([key]) => key !== titleKey && !(titleKey && key === 'key'));
   return (
     <div>
       {titleKey ? <p className="mb-1 font-semibold text-ink">{String(record[titleKey])}</p> : null}
