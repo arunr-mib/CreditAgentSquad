@@ -12,7 +12,7 @@ Branch `slice-1/monitoring-cycle`. `main` holds only the README and licence.
 - **Interface redesigned as a cockpit** (`docs/specs/2026-11-18-cockpit-design.md`): command centre with summary cards and bars, one workspace drawer for the selected exception and the Copilot, an authority gate that routes a decision to a person who may take it, borrower tear-sheet, agent activity timeline, governance matrix, source drawer beside the page, phone and tablet layouts. Every route measured at 360 to 1440 px with no sideways scrolling.
 - **Held figures panel rebuilt** (on file, read from the document, why held, one clear action); a figure filed under another line keeps its page citation.
 - **Product documents:** `docs/product/explainer.md` and `docs/product/PRD.md`.
-- **In progress when this was written:** an independent review of the redesign, and the browser journey scripts (`frontend/e2e/`) being updated for it. Until that lands, `frontend/e2e/run.mjs` is stale.
+- **Independent review of the redesign (18 November 2026):** five P0 findings (a threshold's source showed the base clause and the ratio's calculation instead of the step in force; headroom had no derivation; the trend chart drew today's limit across past quarters; a breach did not mention an unapproved amendment; the server accepted decisions without a reason and routing to someone without the permission). All are fixed with tests, as are the P1 and P2 findings, except the Administrator's unrestricted permissions, which await the owner's decision. Browser journeys (`frontend/e2e/run.mjs`) are rewritten for the cockpit and pass (10 journeys) on a freshly seeded local database; they decide the seeded breaches, so reseed before rerunning. `repair.mjs` has not been re-run.
 
 | Milestone | State | Evidence |
 |---|---|---|
@@ -76,7 +76,7 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 
 1. On the owner's machine: sign the oracle, then the first recorded live run (`uv run python -m evals.run --mode record --confirm-billable`), and fix what it shows. This is the first time a real model's reading meets these checks.
 2. A fourth independent review of number safety, after the live run, briefed with the promise and the list of what has already been found (`docs/lessons/`).
-3. The test deployment is live (`docs/DEPLOY.md`, option A): `https://credit-agent-squad.vercel.app`, all 21 borrowers loaded, the application's database login cannot rewrite the ledger. Agents are off until the owner adds `ANTHROPIC_API_KEY` to the Vercel project; after that a person runs a cycle one stage at a time from the borrower page. **No stage has yet run with a real model, here or anywhere.**
+3. The test deployment is live (`docs/DEPLOY.md`, option A): `https://credit-agent-squad.vercel.app`, all 21 borrowers loaded, the application's database login cannot rewrite the ledger. A model key is set, so agents are on and billable; a person runs a cycle one stage at a time from the borrower page. One stage has run with a real model (Review Agent, one borrower, 18 November 2026); accuracy with a real model is not yet measured.
 4. Remember a confirmed layout per borrower, so that in assisted mode a person confirms a borrower's first statements and later periods with the same layout go through; this is the planned way to earn `automatic`.
 5. Slice two: underwriting.
 

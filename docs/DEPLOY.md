@@ -11,7 +11,7 @@ The workspace is served as static files and the API runs as one Python serverles
 - **Database:** Supabase project "Credit Agent Squad" (free plan, region us-east-1), reached through the session pooler. All tables are in the schema `squad`.
 - **Two database logins.** `squad_app` owns the tables and runs migrations (`MIGRATION_DATABASE_URL`). `squad_web` is what the application serves with (`DATABASE_URL`): it is a member of `squad_runtime`, which may read and write the working tables but only SELECT and INSERT on `ledger_events`. `GET /api/v1/ledger/verify` reports `append_only_for_this_role: true`. Passwords were generated in the session, stored only as SCRAM verifiers in the database and as secret variables on Vercel; they are in no file in this repository.
 - **Loaded:** the 9 demo users and all 21 borrowers of the synthetic book (seed 20261117).
-- **Model:** `SQUAD_LLM_MODE=live`, and **no `ANTHROPIC_API_KEY` is set**, so agents cannot run and the "Run … now" button on a borrower's cycle is off and says why. Adding the key (Vercel project settings, Production) and redeploying switches agents on; every run is then billable.
+- **Model:** `SQUAD_LLM_MODE=live` with `ANTHROPIC_API_KEY` set (added by the owner on 18 November 2026), so agents are on: "Run … now" on a borrower's cycle and the Copilot call a real model, and **every run is billable**. Removing the key and redeploying switches them off again.
 - **Checked on the live site:** sign-in, every menu page in a browser with no failed request, a source PDF, the ledger chain, the run route's refusal without a model.
 
 | File | Role |
