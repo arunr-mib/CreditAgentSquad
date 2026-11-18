@@ -13,7 +13,12 @@ def run_migrations_online() -> None:
     with engine.connect() as connection:
         schema = get_settings().db_schema.strip()
         if schema:
-            connection.exec_driver_sql(f'CREATE SCHEMA IF NOT EXISTS "{schema}"')
+            # IF NOT EXISTS still needs the right to create schemas, which a least-privilege login
+            # given an existing schema does not have: look first
+            exists = connection.exec_driver_sql(
+                "SELECT 1 FROM pg_namespace WHERE nspname = %s", (schema,)).first()
+            if not exists:
+                connection.exec_driver_sql(f'CREATE SCHEMA "{schema}"')
             connection.commit()
         context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
         with context.begin_transaction():

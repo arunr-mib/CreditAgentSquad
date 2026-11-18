@@ -54,7 +54,9 @@ def setup_status(x_setup_token: str | None = Header(default=None)) -> dict:
             loaded = sorted(db.execute(text("select code from borrowers")).scalars())
             users = db.execute(text("select count(*) from users")).scalar()
     except Exception as exc:  # noqa: BLE001 - before migration there are no tables to count
-        return {"migrated": False, "detail": type(exc).__name__, "book": codes}
+        # the first line of a driver error names the host and the reason, never the password
+        reason = (str(getattr(exc, "orig", exc)).splitlines() or [""])[0][:200]
+        return {"migrated": False, "detail": type(exc).__name__, "reason": reason, "book": codes}
     manifest = json.loads((BOOK / "manifest.json").read_text()) if (BOOK / "manifest.json").exists() else {}
     return {"migrated": True, "users": users, "loaded": loaded, "to_load": [c for c in codes if c not in loaded],
             "book_borrowers": len(codes), "book_seed": manifest.get("seed")}
@@ -68,7 +70,11 @@ def setup_migrate(x_setup_token: str | None = Header(default=None)) -> dict:
 
     config = Config(str(ROOT / "backend" / "alembic.ini"))
     config.set_main_option("script_location", str(ROOT / "backend" / "migrations"))
-    command.upgrade(config, "head")
+    try:
+        command.upgrade(config, "head")
+    except Exception as exc:  # noqa: BLE001 - say why to the person holding the setup token
+        reason = (str(getattr(exc, "orig", exc)).splitlines() or [""])[0][:300]
+        raise HTTPException(500, f"{type(exc).__name__}: {reason}") from exc
     from app.seed_users import seed_users
 
     with _session() as db:
