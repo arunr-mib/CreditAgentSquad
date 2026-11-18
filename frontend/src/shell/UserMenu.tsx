@@ -64,7 +64,7 @@ export function UserMenu({ demoUsers = SHOW_DEMO_USERS ? DEMO_USERS : [] }: User
           className="inline-flex h-9 shrink-0 items-center gap-2.5 rounded-sm py-1 pr-1.5 pl-1 text-left t-colors hover:bg-hover data-[state=open]:bg-hover"
         >
           <Initials name={user.name} signedIn />
-          <span className="hidden leading-tight md:block">
+          <span className="leading-tight @max-[760px]:hidden">
             <span data-user-name className="block text-caption font-semibold whitespace-nowrap text-ink">
               {user.name}
             </span>
@@ -72,7 +72,7 @@ export function UserMenu({ demoUsers = SHOW_DEMO_USERS ? DEMO_USERS : [] }: User
               {roleLabel(user.role)}
             </span>
           </span>
-          <span className="sr-only md:hidden">
+          <span className="sr-only @min-[760px]:hidden">
             {user.name}, {roleLabel(user.role)}
           </span>
           <span className="sr-only">Account menu</span>

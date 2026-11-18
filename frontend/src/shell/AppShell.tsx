@@ -44,20 +44,24 @@ export function AppShell() {
       </a>
       <Rail pathname={pathname} rail={rail} />
       <div className="flex min-w-0 flex-1 flex-col">
+        {/*
+          The bar is a container: what it shows follows its own width, not the window's, because the rail
+          beside it has two widths. Under 520 px controls are icons; from 900 px the search has its words.
+        */}
         <header className="@container sticky top-0 z-30 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-hairline-strong bg-canvas px-4 sm:gap-4 sm:px-6">
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            className="flex size-8 shrink-0 items-center justify-center gap-2 rounded-sm border border-hairline-strong bg-surface text-body text-ink-500 t-colors hover:border-ink-400 hover:text-ink-700 @min-[720px]:w-[300px] @min-[720px]:justify-start @min-[720px]:px-2.5 @min-[960px]:w-[380px] [&>span]:sr-only @min-[720px]:[&>span]:not-sr-only"
+            className="flex size-8 shrink-0 items-center justify-center gap-2 rounded-sm border border-hairline-strong bg-surface text-body text-ink-500 t-colors hover:border-ink-400 hover:text-ink-700 @min-[900px]:w-auto @min-[900px]:max-w-[400px] @min-[900px]:min-w-[220px] @min-[900px]:flex-1 @min-[900px]:shrink @min-[900px]:justify-start @min-[900px]:px-2.5 [&>span]:sr-only @min-[900px]:[&>span]:not-sr-only"
             aria-keyshortcuts="Control+K Meta+K"
           >
             <Search size={14} aria-hidden className="shrink-0" />
-            <span className="flex-1 text-left whitespace-nowrap">Search borrowers and commands</span>
+            <span className="min-w-0 flex-1 overflow-hidden text-left whitespace-nowrap">Search borrowers and commands</span>
             <span aria-hidden>
               <Kbd>Ctrl K</Kbd>
             </span>
           </button>
-          <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <Copilot />
             <AsOfControl />
             <span aria-hidden className="mx-0.5 hidden h-5 border-l border-hairline-strong sm:block" />

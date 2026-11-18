@@ -215,9 +215,9 @@ describe('navigation rail', () => {
   it('shows the open-item count the API reports, and a still mark while an agent run is in progress', async () => {
     mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [{ id: 'r-1', status: 'running' }, { id: 'r-2', status: 'completed' }] });
     renderShell(<RailHarness />);
-    expect(await screen.findByRole('link', { name: /^Command centre,\s*13\s*open items$/ })).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Command centre, 13 open items' })).toBeInTheDocument();
     const mark = await screen.findByRole('img', { name: '1 agent run in progress' });
-    expect(within(screen.getByRole('link', { name: /^Agent activity/ })).getByRole('img')).toBe(mark);
+    expect(within(screen.getByRole('link', { name: 'Agent activity, 1 agent run in progress' })).getByRole('img')).toBe(mark);
     expect(mark.className).not.toMatch(/animate|pulse/);
     expect(RUNS_POLL_MS).toBeGreaterThanOrEqual(20_000);
   });
@@ -225,7 +225,7 @@ describe('navigation rail', () => {
   it('shows no mark when no run is in progress', async () => {
     mockApi({ '/ui/portfolio': portfolio, '/agent-runs': [{ id: 'r-2', status: 'completed' }] });
     renderShell(<RailHarness />);
-    await screen.findByRole('link', { name: /^Command centre,\s*13\s*open items$/ });
+    await screen.findByRole('link', { name: 'Command centre, 13 open items' });
     expect(screen.queryByRole('img', { name: /in progress/ })).toBeNull();
   });
 });

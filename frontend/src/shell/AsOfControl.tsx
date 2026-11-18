@@ -18,21 +18,24 @@ export function AsOfControl() {
       trigger={
         <button
           type="button"
-          className="inline-flex h-8 min-w-0 items-center gap-2 rounded-sm border border-hairline-strong bg-surface px-2.5 text-body text-ink t-colors hover:border-ink-400 data-[state=open]:border-ink-400"
+          className="inline-flex h-8 shrink-0 items-center gap-2 rounded-sm border border-hairline-strong bg-surface px-2.5 text-body text-ink t-colors hover:border-ink-400 data-[state=open]:border-ink-400"
         >
-          <Clock size={14} strokeWidth={1.75} aria-hidden className="shrink-0 text-ink-500" />
-          <span className="text-ink-500 max-sm:sr-only">As of</span>
+          <Clock size={14} strokeWidth={1.75} aria-hidden className="shrink-0 text-ink-500 @max-[400px]:hidden" />
+          <span className="whitespace-nowrap text-ink-500 @max-[520px]:sr-only">As of</span>
           <span data-as-of className="tnum font-medium whitespace-nowrap">
             {asOf ? formatDate(asOf) : 'reading the clock'}
           </span>
           <span className="sr-only">, simulated clock</span>
           {stale ? (
-            <span data-stale className="inline-flex items-center gap-1 text-caption font-medium text-amber">
+            // The same words at every width; where the bar is short only the count of days is drawn, and the popover says the rest.
+            <span data-stale className="inline-flex items-center gap-1 text-caption font-medium whitespace-nowrap text-amber">
               <span aria-hidden className="size-[7px] shrink-0 rounded-full bg-amber-mark" />
-              <span className="sr-only">Data may be out of date: </span>no document for {daysSinceLatestDocument} days
+              <span className="sr-only">Data may be out of date: </span>
+              <span className="@max-[1100px]:sr-only">no document for </span>
+              {daysSinceLatestDocument} days
             </span>
           ) : null}
-          <ChevronDown size={13} aria-hidden className="shrink-0 text-ink-500 max-sm:hidden" />
+          <ChevronDown size={13} aria-hidden className="shrink-0 text-ink-500 @max-[520px]:hidden" />
         </button>
       }
     >

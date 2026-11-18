@@ -16,7 +16,7 @@ interface RailLinkProps {
   current: boolean;
   /** The label is written beside the icon. Otherwise the icon stands alone and a tooltip names it. */
   labelled: boolean;
-  /** Extra words for the tooltip: a count or a state. */
+  /** Extra words for the tooltip and the accessible name: a count or a state. */
   note?: string;
   /** A count or a mark that belongs to the item. */
   children?: ReactNode;
@@ -32,6 +32,8 @@ function RailLink({ to, label, icon: Icon, current, labelled, note, children }: 
       <Link
         to={to}
         aria-current={current ? 'page' : undefined}
+        // One clean name for a screen reader: the label, then the count or state when there is one.
+        aria-label={note ? `${label}, ${note}` : undefined}
         className={cx(
           'relative flex h-11 items-center justify-center gap-2.5 rounded-sm border text-body t-colors',
           labelled ? 'sm:h-8 sm:justify-start sm:px-2' : 'sm:h-9',
@@ -115,9 +117,7 @@ export function Rail({ pathname, rail }: { pathname: string; rail: RailState }) 
                           current ? 'text-ink-700' : 'text-ink-500',
                         )}
                       >
-                        <span className="sr-only">, </span>
                         {count}
-                        <span className="sr-only"> open {count === 1 ? 'item' : 'items'}</span>
                       </span>
                     ) : null}
                     {runs ? (
