@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { ArrowLeft, ArrowUpRight, X } from 'lucide-react';
 import { Dialog as RadixDialog } from 'radix-ui';
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { errorMessage } from '@/api/client';
 import { mul } from '@/api/decimal';
 import { useCalculation, useFactSource, useQuoteLocation } from '@/api/hooks';
@@ -62,7 +62,21 @@ function Section({ title, children, note }: { title: string; children: ReactNode
   );
 }
 
-function Heading({ kind, eyebrow, title, context, value, valueNote }: { kind: ProvenanceKind; eyebrow?: string; title: string; context?: string; value?: string; valueNote?: string }) {
+function Heading({
+  kind,
+  eyebrow,
+  title,
+  context,
+  value,
+  valueNote,
+}: {
+  kind: ProvenanceKind;
+  eyebrow?: string;
+  title: string;
+  context?: string;
+  value?: string;
+  valueNote?: string;
+}) {
   return (
     <div className="flex items-start justify-between gap-5 px-5 pt-1 pb-4">
       <div className="min-w-0">
@@ -85,7 +99,21 @@ function Heading({ kind, eyebrow, title, context, value, valueNote }: { kind: Pr
   );
 }
 
-function ViewerLink({ code, documentId, page, factId, quote, onNavigate }: { code?: string; documentId: string | null; page: number | null; factId?: string; quote?: string | null; onNavigate: () => void }) {
+function ViewerLink({
+  code,
+  documentId,
+  page,
+  factId,
+  quote,
+  onNavigate,
+}: {
+  code?: string;
+  documentId: string | null;
+  page: number | null;
+  factId?: string;
+  quote?: string | null;
+  onNavigate: () => void;
+}) {
   if (!code || !documentId) return null;
   return (
     <Link
@@ -102,7 +130,19 @@ function ViewerLink({ code, documentId, page, factId, quote, onNavigate }: { cod
 }
 
 /** The page a figure or clause is printed on, with the figure outlined. */
-function PageBlock({ page, code, factId, markLabel, onNavigate }: { page: SourcePage; code?: string; factId?: string; markLabel: string; onNavigate: () => void }) {
+function PageBlock({
+  page,
+  code,
+  factId,
+  markLabel,
+  onNavigate,
+}: {
+  page: SourcePage;
+  code?: string;
+  factId?: string;
+  markLabel: string;
+  onNavigate: () => void;
+}) {
   if (!page.document_id || !page.page) return null;
   return (
     <figure>
@@ -128,7 +168,15 @@ function PageBlock({ page, code, factId, markLabel, onNavigate }: { page: Source
 }
 
 function factFormat(unit: Unit) {
-  return unit === 'usd' ? { text: 'US dollars' } : unit === 'ratio' ? { text: 'Ratio' } : unit === 'pct' ? { text: 'Per cent' } : unit === 'days' ? { text: 'Days' } : { text: 'Count' };
+  return unit === 'usd'
+    ? { text: 'US dollars' }
+    : unit === 'ratio'
+      ? { text: 'Ratio' }
+      : unit === 'pct'
+        ? { text: 'Per cent' }
+        : unit === 'days'
+          ? { text: 'Days' }
+          : { text: 'Count' };
 }
 
 function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
@@ -165,8 +213,9 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
           </dl>
           {located ? (
             <p className="mt-2 text-caption text-pretty text-ink-500">
-              This fact was loaded from the synthetic book, not read from the page by an agent. Code searched the period’s {docTypeLabel(page.doc_type).toLowerCase()} for the
-              stored value and outlined the row whose label matches. An extracted fact carries its own page and quote.
+              This fact was loaded from the synthetic book, not read from the page by an agent. Code searched the period’s{' '}
+              {docTypeLabel(page.doc_type).toLowerCase()} for the stored value and outlined the row whose label matches. An extracted fact carries its own page
+              and quote.
             </p>
           ) : null}
         </Section>
@@ -175,8 +224,8 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
       {fact.kind === 'seeded' && !page ? (
         <Section title="Source">
           <p className="text-body text-pretty text-ink-700">
-            This fact was loaded from the synthetic book’s ground truth. Code did not find the stored value printed in the period’s documents (a line printed as a dash, or a
-            document that is not on file), so there is no page to show.
+            This fact was loaded from the synthetic book’s ground truth. Code did not find the stored value printed in the period’s documents (a line printed as
+            a dash, or a document that is not on file), so there is no page to show.
           </p>
         </Section>
       ) : null}
@@ -192,7 +241,8 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
             </Row>
             {calculation.terms_version ? (
               <Row label="Terms in force">
-                Version <span className="tnum">{calculation.terms_version.version}</span>, {calculation.terms_version.status}, effective {formatDate(calculation.terms_version.effective_from)}
+                Version <span className="tnum">{calculation.terms_version.version}</span>, {calculation.terms_version.status}, effective{' '}
+                {formatDate(calculation.terms_version.effective_from)}
               </Row>
             ) : null}
             <Row label="Calculation">
@@ -252,7 +302,9 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
             </Row>
           ) : null}
           <Row label="Stored value">
-            <span className="tnum">{fact.unit === 'usd' ? formatFigure(fact.value, 'usd', { unitMark: false, dp: fact.value.includes('.') ? 2 : 0 }).text : fact.value}</span>{' '}
+            <span className="tnum">
+              {fact.unit === 'usd' ? formatFigure(fact.value, 'usd', { unitMark: false, dp: fact.value.includes('.') ? 2 : 0 }).text : fact.value}
+            </span>{' '}
             {fact.unit === 'pct' ? 'as a fraction, shown in per cent' : fact.unit === 'usd' ? 'whole US dollars' : factFormat(fact.unit).text.toLowerCase()}
           </Row>
           {fact.note ? <Row label="Note">{fact.note}</Row> : null}
@@ -275,7 +327,10 @@ function History({ entries, unit }: { entries: FactSource['history']; unit: Unit
       <h4 className="eyebrow mb-1">History, newest first</h4>
       <ol className="border-t border-ink">
         {entries.map((entry) => (
-          <li key={entry.id} className={cx('grid grid-cols-[1fr_auto] gap-x-4 border-b border-hairline py-1.5 text-caption', entry.relation === 'this' && 'bg-cobalt-bg px-2')}>
+          <li
+            key={entry.id}
+            className={cx('grid grid-cols-[1fr_auto] gap-x-4 border-b border-hairline py-1.5 text-caption', entry.relation === 'this' && 'bg-cobalt-bg px-2')}
+          >
             <span className="text-ink">
               <span className="tnum font-medium">{formatFigure(unit === 'pct' ? mul(entry.value, '100') : entry.value, unit).text}</span>
               {entry.relation === 'this' ? ' · this version' : ''}
@@ -331,7 +386,11 @@ function CalculationView({ id, title }: { id: string; title?: string }) {
               return (
                 <li key={`${input.key}-${index}`} className="flex items-baseline justify-between gap-4 border-b border-hairline py-1.5 text-body">
                   <span className="text-ink-700">{fact?.label ?? input.name}</span>
-                  {fact ? <InlineFact id={fact.id} text={formatFigure(toFact(fact).value, fact.unit).text} kind={fact.kind} /> : <span className="tnum">{input.value}</span>}
+                  {fact ? (
+                    <InlineFact id={fact.id} text={formatFigure(toFact(fact).value, fact.unit).text} kind={fact.kind} />
+                  ) : (
+                    <span className="tnum">{input.value}</span>
+                  )}
                 </li>
               );
             })}
@@ -372,7 +431,11 @@ function CalculationView({ id, title }: { id: string; title?: string }) {
 function InlineFact({ id, text, kind }: { id: string; text: string; kind: ProvenanceKind }) {
   const source = useSource();
   return (
-    <button type="button" onClick={() => source.open({ type: 'fact', id })} className="-mx-1 inline-flex items-center gap-1 rounded-xs px-1 text-ink t-colors hover:bg-cobalt-bg hover:text-cobalt-strong">
+    <button
+      type="button"
+      onClick={() => source.open({ type: 'fact', id })}
+      className="-mx-1 inline-flex items-center gap-1 rounded-xs px-1 text-ink t-colors hover:bg-cobalt-bg hover:text-cobalt-strong"
+    >
       <span className="tnum">{text}</span>
       <ProvenanceGlyph kind={kind} labelled />
     </button>
@@ -386,15 +449,32 @@ function DocumentView({ source, onNavigate }: { source: Extract<SourceRef, { typ
   const title = source.title ?? 'Document';
   return (
     <>
-      <Heading kind="extracted" eyebrow="Quoted from a document" title={title} context={`Page ${source.page}${source.section ? ` · Section ${source.section}` : ''}`} />
-      <Section title="Source page" note={needsLocation && located.data && !located.data.found ? 'The quote was not found word for word on this page' : undefined}>
+      <Heading
+        kind="extracted"
+        eyebrow="Quoted from a document"
+        title={title}
+        context={`Page ${source.page}${source.section ? ` · Section ${source.section}` : ''}`}
+      />
+      <Section
+        title="Source page"
+        note={needsLocation && located.data && !located.data.found ? 'The quote was not found word for word on this page' : undefined}
+      >
         {source.quote ? (
           <div className="mb-3">
             <Quote text={source.quote} />
           </div>
         ) : null}
         <PageBlock
-          page={{ document_id: source.documentId, document_title: title, doc_type: null, page: source.page, page_count: null, boxes, quote: source.quote ?? null, method: 'cited' }}
+          page={{
+            document_id: source.documentId,
+            document_title: title,
+            doc_type: null,
+            page: source.page,
+            page_count: null,
+            boxes,
+            quote: source.quote ?? null,
+            method: 'cited',
+          }}
           code={source.borrowerCode}
           markLabel="Quoted passage"
           onNavigate={onNavigate}
@@ -455,31 +535,61 @@ function ErrorBody({ message }: { message: string }) {
 export function SourceProvider({ children }: { children: ReactNode }) {
   const [stack, setStack] = useState<SourceRef[]>([]);
   const current = stack[stack.length - 1] ?? null;
+  // Where the reader last pressed: inside the drawer (follow the trail) or on the page (start again).
+  const insideDrawer = useRef(false);
+  useEffect(() => {
+    const note = (event: Event) => {
+      insideDrawer.current = event.target instanceof Element && event.target.closest('[data-source-drawer]') !== null;
+    };
+    document.addEventListener('pointerdown', note, true);
+    document.addEventListener('keydown', note, true);
+    return () => {
+      document.removeEventListener('pointerdown', note, true);
+      document.removeEventListener('keydown', note, true);
+    };
+  }, []);
   const open = useCallback((ref: SourceRef) => {
     setStack((existing) => {
       const top = existing[existing.length - 1];
       if (top && JSON.stringify(top) === JSON.stringify(ref)) return existing;
-      return [...existing, ref];
+      // A figure chosen on the page replaces what the drawer shows; one chosen inside it adds a step to the trail.
+      return insideDrawer.current ? [...existing, ref] : [ref];
     });
   }, []);
   const close = useCallback(() => setStack([]), []);
   const api = useMemo(() => ({ open, close, current }), [open, close, current]);
+  // The page makes room for the drawer (see styles.css), so what it explains stays in view beside it.
+  const isOpen = current !== null;
+  useEffect(() => {
+    if (isOpen) document.documentElement.dataset.sourceOpen = 'true';
+    else delete document.documentElement.dataset.sourceOpen;
+    return () => {
+      delete document.documentElement.dataset.sourceOpen;
+    };
+  }, [isOpen]);
 
   return (
     <SourceContext.Provider value={api}>
       {children}
-      <RadixDialog.Root open={current !== null} onOpenChange={(next) => (next ? undefined : close())}>
+      {/* Not modal: the page beside it stays in use, so a reader can go from figure to figure with the source alongside. */}
+      <RadixDialog.Root open={isOpen} onOpenChange={(next) => (next ? undefined : close())} modal={false}>
         <RadixDialog.Portal>
-          <RadixDialog.Overlay className="anim-fade fixed inset-0 z-40 bg-ink/20" />
           <RadixDialog.Content
             aria-describedby={undefined}
             data-source-drawer
-            className="anim-fade fixed inset-y-0 right-0 z-50 flex w-[590px] max-w-full flex-col border-l border-hairline-strong bg-surface shadow-overlay outline-none"
+            onInteractOutside={(event) => event.preventDefault()}
+            onOpenAutoFocus={(event) => event.preventDefault()}
+            className="anim-slide fixed top-[var(--topbar-h)] right-0 bottom-0 z-40 flex w-[var(--source-w)] max-w-full flex-col border-l border-hairline-strong bg-surface shadow-overlay outline-none max-sm:top-0 max-sm:bottom-[calc(56px+env(safe-area-inset-bottom))] max-sm:w-full max-sm:max-w-none max-sm:border-l-0"
           >
             <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-hairline px-3">
               <div className="flex items-center gap-1">
                 {stack.length > 1 ? (
-                  <Button variant="ghost" size="sm" iconLeft={<ArrowLeft size={13} aria-hidden />} onClick={() => setStack((existing) => existing.slice(0, -1))}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    iconLeft={<ArrowLeft size={13} aria-hidden />}
+                    onClick={() => setStack((existing) => existing.slice(0, -1))}
+                  >
                     Back
                   </Button>
                 ) : (
@@ -491,7 +601,10 @@ export function SourceProvider({ children }: { children: ReactNode }) {
                   </span>
                 ) : null}
               </div>
-              <RadixDialog.Close aria-label="Close the source" className="inline-flex size-8 items-center justify-center rounded-sm text-ink-500 t-colors hover:bg-hover hover:text-ink">
+              <RadixDialog.Close
+                aria-label="Close the source"
+                className="inline-flex size-8 items-center justify-center rounded-sm text-ink-500 t-colors hover:bg-hover hover:text-ink"
+              >
                 <X size={16} aria-hidden />
               </RadixDialog.Close>
             </div>

@@ -211,3 +211,10 @@
     transform: translateY(6px);
   }
 }
+
+/* While a figure's source is open, the page keeps its own column beside the source drawer (from 1200 px). */
+@media (min-width: 1200px) {
+  html[data-source-open] div:has(> #main) {
+    padding-right: var(--source-w);
+  }
+}

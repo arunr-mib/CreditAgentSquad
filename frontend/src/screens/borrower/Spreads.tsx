@@ -5,6 +5,7 @@ import type { FactSummary, Spread, SpreadLineApi } from '@/api/schema';
 import { formatDate, Select } from '@/design';
 import { quarterLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
+import { useWorkspaceDrawer } from '@/drawer/context';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, ProvenanceLegend } from '@/source/figures';
 import { EmptyCard, Load, SectionHead } from '../parts';
@@ -22,7 +23,10 @@ const TOTALS = new Set(['is.net_income', 'bs.total_assets', 'bs.total_liabilitie
 type Period = Spread['periods'][number];
 
 function periodHead(period: Period): { top: string; bottom: string } {
-  return { top: period.months === 12 ? `FY ${period.period_end.slice(0, 4)}` : quarterLabel(period.period_end), bottom: period.months === 12 ? '12 months' : `${period.months} months` };
+  return {
+    top: period.months === 12 ? `FY ${period.period_end.slice(0, 4)}` : quarterLabel(period.period_end),
+    bottom: period.months === 12 ? '12 months' : `${period.months} months`,
+  };
 }
 
 function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; scroll: boolean }) {
@@ -72,7 +76,11 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
       return null;
     };
     const inColumn = (step: 1 | -1): HTMLButtonElement | null => {
-      for (let next = step === 1 ? row.nextElementSibling : row.previousElementSibling; next; next = step === 1 ? next.nextElementSibling : next.previousElementSibling) {
+      for (
+        let next = step === 1 ? row.nextElementSibling : row.previousElementSibling;
+        next;
+        next = step === 1 ? next.nextElementSibling : next.previousElementSibling
+      ) {
         const found = (next as HTMLTableRowElement).cells?.[column]?.querySelector<HTMLButtonElement>('button[data-fact]');
         if (found) return found;
       }
@@ -95,7 +103,9 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
   }
 
   const columnCount = periods.length + 1;
-  const sections = STATEMENTS.map((statement) => ({ ...statement, lines: spread.lines.filter((line) => line.statement === statement.id) })).filter((section) => section.lines.length > 0);
+  const sections = STATEMENTS.map((statement) => ({ ...statement, lines: spread.lines.filter((line) => line.statement === statement.id) })).filter(
+    (section) => section.lines.length > 0,
+  );
   const lastKey = sections[sections.length - 1]?.lines.at(-1)?.key;
 
   return (
@@ -110,7 +120,13 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
         </colgroup>
         <thead>
           <tr>
-            <th scope="col" className={cx('eyebrow sticky left-0 z-20 rounded-tl-md border-b border-ink bg-surface px-4 text-left align-bottom', scroll ? 'top-0' : 'top-0 md:top-(--topbar-h)')}>
+            <th
+              scope="col"
+              className={cx(
+                'eyebrow sticky left-0 z-20 rounded-tl-md border-b border-ink bg-surface px-4 text-left align-bottom',
+                scroll ? 'top-0' : 'top-0 md:top-(--topbar-h)',
+              )}
+            >
               <span className="block pb-1.5">Line</span>
             </th>
             {periods.map((period, index) => {
@@ -119,7 +135,11 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
                 <th
                   key={period.period_end}
                   scope="col"
-                  className={cx('sticky z-10 border-b border-ink bg-surface pt-2 pr-[34px] pl-2 text-right align-bottom', scroll ? 'top-0' : 'top-0 md:top-(--topbar-h)', index === periods.length - 1 && 'rounded-tr-md')}
+                  className={cx(
+                    'sticky z-10 border-b border-ink bg-surface pt-2 pr-[34px] pl-2 text-right align-bottom',
+                    scroll ? 'top-0' : 'top-0 md:top-(--topbar-h)',
+                    index === periods.length - 1 && 'rounded-tr-md',
+                  )}
                 >
                   <span className="block text-body font-semibold whitespace-nowrap text-ink">{head.top}</span>
                   <span className="block text-micro font-medium whitespace-nowrap text-ink-500">{formatDate(period.period_end)}</span>
@@ -140,7 +160,11 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
           {sections.map((section, sectionIndex) => (
             <Fragment key={section.id}>
               <tr>
-                <th scope="colgroup" colSpan={columnCount} className={cx('h-9 border-b border-hairline-strong px-4 text-left align-bottom', sectionIndex > 0 && 'pt-3')}>
+                <th
+                  scope="colgroup"
+                  colSpan={columnCount}
+                  className={cx('h-9 border-b border-hairline-strong px-4 text-left align-bottom', sectionIndex > 0 && 'pt-3')}
+                >
                   <span className="sticky left-4 inline-block pb-1.5">
                     <span className="text-body font-semibold text-ink">{section.title}</span>
                     <span className="ml-2 text-caption font-regular text-ink-500">{section.basis}</span>
@@ -175,7 +199,14 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
                           )}
                         >
                           {fact ? (
-                            <FactFigure fact={fact} scale={1000} unitMark={false} align="column" weight={line.computed ? 'semibold' : 'regular'} tabIndex={fact.id === tabStop ? 0 : -1} />
+                            <FactFigure
+                              fact={fact}
+                              scale={1000}
+                              unitMark={false}
+                              align="column"
+                              weight={line.computed ? 'semibold' : 'regular'}
+                              tabIndex={fact.id === tabStop ? 0 : -1}
+                            />
                           ) : (
                             <Absent align="column" reason="No figure stored for this line and period" />
                           )}
@@ -194,6 +225,10 @@ function Grid({ spread, periods, scroll }: { spread: Spread; periods: Period[]; 
 }
 
 export function Spreads() {
+  // With a drawer beside it the grid has less room than its periods need, so it scrolls in its own frame.
+  const sourceOpen = useSource().current !== null;
+  const drawerOpen = useWorkspaceDrawer().open;
+  const beside = sourceOpen || drawerOpen;
   const borrower = useCurrentBorrower();
   const spread = useSpread(borrower.id);
   const search = useSearch({ from: '/borrowers/$code/spreads' });
@@ -260,10 +295,14 @@ export function Spreads() {
                 </Link>
               </p>
             ) : null}
-            {periods.length === 0 ? <EmptyCard title="No fiscal year is on file" description="Choose another set of periods." /> : <Grid spread={data} periods={periods} scroll={periods.length > 7} />}
+            {periods.length === 0 ? (
+              <EmptyCard title="No fiscal year is on file" description="Choose another set of periods." />
+            ) : (
+              <Grid spread={data} periods={periods} scroll={periods.length > 7 || beside} />
+            )}
             <p className="text-caption text-pretty text-ink-500">
-              A dash means no figure is stored for that line and period; it is never read as zero. Computed lines carry a rule above; totals carry a double rule below. Arrow keys move
-              between figures; Enter opens the source page with the figure outlined.
+              A dash means no figure is stored for that line and period; it is never read as zero. Computed lines carry a rule above; totals carry a double rule
+              below. Arrow keys move between figures; Enter opens the source page with the figure outlined.
             </p>
           </div>
         );
