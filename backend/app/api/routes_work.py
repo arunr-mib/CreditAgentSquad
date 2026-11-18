@@ -197,24 +197,56 @@ def list_agent_runs(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | 
         query = query.where(AgentRun.borrower_id == borrower_id)
     if cycle_id:
         query = query.where(AgentRun.cycle_id == cycle_id)
+    runs = list(db.execute(query).scalars())
     borrowers = _borrowers(db)
-    return [{**row(r, exclude=("raw_output", "output", "scope")), **_run_extras(r, borrowers)}
-            for r in db.execute(query).scalars()]
+    steps: dict[uuid.UUID, list[tuple[str, dict]]] = {r.id: [] for r in runs}
+    if runs:
+        for run_id, kind, detail in db.execute(select(AgentStep.run_id, AgentStep.kind, AgentStep.detail).where(
+                AgentStep.run_id.in_(list(steps)))):
+            steps[run_id].append((kind, detail or {}))
+    return [{**row(r, exclude=("raw_output", "output", "scope")), **_run_extras(r, borrowers, steps[r.id])}
+            for r in runs]
 
 
 def _borrowers(db: Session) -> dict[uuid.UUID, tuple[str, str]]:
     return {b.id: (b.name, b.code) for b in db.execute(select(Borrower)).scalars()}
 
 
-def _run_extras(run: AgentRun, borrowers: dict[uuid.UUID, tuple[str, str]]) -> dict:
-    """What a run's row does not carry: whom it is about, and how long it took. The duration is
-    worked out here, from the stored start and finish, so the workspace does no arithmetic on
-    timestamps. It is null until the run has finished."""
+def _run_extras(run: AgentRun, borrowers: dict[uuid.UUID, tuple[str, str]],
+                steps: list[tuple[str, dict]]) -> dict:
+    """What a run's row does not carry, or carries in a form a person should not read: whom it is
+    about, how long it took, its scope, its steps and its tokens. `steps` is (kind, detail) for
+    each step stored for the run.
+
+    The duration is worked out from the stored start and finish, so the workspace does no
+    arithmetic on timestamps; it is null until the run has finished. The scope lists only what
+    code set. `steps_count` is the number of steps stored, the ones the run's page lists;
+    `tool_calls` is the stored count the step cap is measured against. Tokens are summed from
+    the usage each model step stored, so `input_tokens` is every input token the model read:
+    uncached, written to the prompt cache and read from it, with the last two also given apart.
+    A run whose steps stored no usage falls back to its own totals, and then how many tokens
+    were written to the cache is not known: null, never zero."""
     name, code = borrowers.get(run.borrower_id, (None, None))
     duration = None
     if run.finished_at is not None and run.created_at is not None:
         duration = max(0, round((run.finished_at - run.created_at).total_seconds() * 1000))
-    return {"borrower_name": name, "borrower_code": code, "duration_ms": duration}
+    usage = [d["usage"] for kind, d in steps if kind == "model" and isinstance(d.get("usage"), dict)]
+    if usage:
+        def total(key: str) -> int:
+            return sum(int(u.get(key) or 0) for u in usage)
+
+        cache_read, cache_creation = total("cache_read_input_tokens"), total("cache_creation_input_tokens")
+        tokens = {"input_tokens": total("input_tokens") + cache_creation + cache_read,
+                  "output_tokens": total("output_tokens"), "cache_read_tokens": cache_read,
+                  "cache_creation_tokens": cache_creation}
+    else:
+        # the stored input total already includes tokens written to the cache, not those read from it
+        tokens = {"input_tokens": (run.input_tokens or 0) + (run.cache_read_tokens or 0),
+                  "output_tokens": run.output_tokens, "cache_read_tokens": run.cache_read_tokens,
+                  "cache_creation_tokens": None}
+    scope = {k: v for k, v in (run.scope or {}).items() if v is not None and v != [] and v != ""}
+    return {"borrower_name": name, "borrower_code": code, "duration_ms": duration, "scope": scope,
+            "steps_count": len(steps), "tool_calls": run.steps_count, **tokens}
 
 
 @router.get("/agent-runs/{run_id}")
@@ -222,8 +254,9 @@ def get_agent_run(run_id: uuid.UUID, db: Session = Depends(get_db), _: User = De
     run = db.get(AgentRun, run_id)
     if run is None:
         raise HTTPException(404, "Agent run not found.")
-    steps = db.execute(select(AgentStep).where(AgentStep.run_id == run.id).order_by(AgentStep.n)).scalars()
-    return {**row(run), **_run_extras(run, _borrowers(db)), "steps": [row(s) for s in steps]}
+    steps = list(db.execute(select(AgentStep).where(AgentStep.run_id == run.id).order_by(AgentStep.n)).scalars())
+    return {**row(run), **_run_extras(run, _borrowers(db), [(s.kind, s.detail or {}) for s in steps]),
+            "steps": [row(s) for s in steps]}
 
 
 @router.get("/agents")
