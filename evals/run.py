@@ -47,8 +47,8 @@ STANDIN_LABEL = ("STAND-IN: a perfect reader built from the book's ground truth 
 COST_WARNING = (
     "WARNING: this mode calls the model and is billable. A full pass makes up to five model calls per "
     "borrower (intake, spreading, certificate, borrowing base, review), each carrying a PDF. Estimate, "
-    "labelled as an estimate and not measured: a few US dollars per pass of 21 borrowers. Run it only "
-    "with the owner's go-ahead.")
+    "labelled as an estimate and not measured: about 20 US dollars per pass of 21 borrowers (range 10 "
+    "to 35), and 2 to 5 dollars for a three-borrower trial. Run it only with the owner's go-ahead.")
 
 # A scripted, sensible decision for each kind of exception, so a cycle can continue past the
 # point where a person is needed. Items that are not listed are left open on purpose: the cycle
