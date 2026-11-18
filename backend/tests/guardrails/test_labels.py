@@ -1,4 +1,4 @@
-from app.guardrails.labels import mapping_doubt, similarity
+from app.guardrails.labels import mapping_doubt, reads_as, similarity
 
 LINES = {
     "bs.long_term_debt": ["Long-term debt, net of current portion"],
@@ -40,6 +40,16 @@ def test_a_label_that_fits_another_line_better_is_a_doubt_even_when_it_is_close_
     lines = {**LINES, "bs.cpltd": ["Current portion of long-term debt"]}
     doubt = mapping_doubt("Current portion of long-term debt", "bs.long_term_debt", lines)
     assert doubt and "bs.cpltd" in doubt
+
+
+def test_reads_as_names_the_other_line_only_when_the_label_clearly_names_it():
+    assert reads_as("Accounts payable", "bs.accrued_liabilities", LINES) == "bs.accounts_payable"
+    assert reads_as("Accounts payable", "bs.accounts_payable", LINES) is None  # the line it was filed under
+    assert reads_as("Trade creditors", "bs.accounts_payable", LINES) is None   # unfamiliar: names no line
+    assert reads_as("  ", "bs.revolver", LINES) is None
+    # the doubt and the line it names never disagree
+    for label, assigned in (("Accounts payable", "bs.accrued_liabilities"), ("Line of credit", "bs.accounts_payable")):
+        assert f"reads as {reads_as(label, assigned, LINES)}, not {assigned}" in mapping_doubt(label, assigned, LINES)
 
 
 def test_similarity_ignores_case_punctuation_and_filler_words():

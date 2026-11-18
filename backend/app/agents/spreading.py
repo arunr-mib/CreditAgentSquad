@@ -28,7 +28,7 @@ from app.domain.facts import CalcRun, Fact
 from app.domain.facts_service import add_fact, current_fact, label_confirmed, store_extracted_cell
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.work_items import raise_item
-from app.guardrails.labels import mapping_doubt
+from app.guardrails.labels import mapping_doubt, reads_as
 from app.guardrails.narrative import check_narrative
 from app.guardrails.quotes import dates_in, quote_on_page
 from app.guardrails.units import scale_of, units_in
@@ -117,6 +117,36 @@ def _sign(key: str) -> int:
     if key.startswith(template.STATED_PREFIX):
         return 1
     return template.LINE_BY_KEY[key].presentation_sign
+
+
+_COMPARATIVE = "@comparative"
+
+
+def line_the_label_names(db: Session, cell: dict[str, Any]) -> dict[str, Any] | None:
+    """For a held figure whose row label, as code read it from the page, names another line of
+    the template: that line, and the value the same printed figure has when it is filed there
+    (lines differ in the sign they are stored with, so the stored value cannot simply be moved).
+
+    Read-only: nothing is stored or changed. None when the label names no other line, when
+    nothing was stored for the figure, or when the stored fact is one of several rows of its line.
+    """
+    key, fact_id, label = cell.get("key"), cell.get("fact_id"), cell.get("row_label")
+    if not (isinstance(key, str) and isinstance(fact_id, str) and isinstance(label, str)):
+        return None
+    suffix = _COMPARATIVE if key.endswith(_COMPARATIVE) else ""
+    assigned = key.removesuffix(_COMPARATIVE)
+    if assigned not in _LABELS:
+        return None
+    other = reads_as(label, assigned, _LABELS)
+    if other is None:
+        return None
+    try:
+        fact = db.get(Fact, uuid.UUID(fact_id))
+    except ValueError:
+        return None
+    if fact is None or fact.key != key:
+        return None
+    return {"key": other + suffix, "value": fact.value * _sign(assigned) * _sign(other)}
 
 
 def _months_for(key: str, months: int) -> int:

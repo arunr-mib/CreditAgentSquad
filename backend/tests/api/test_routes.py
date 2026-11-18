@@ -174,3 +174,52 @@ def test_assign_a_work_item_and_acknowledge_a_signal(client, db, world):
     ack = client.post(f"/api/v1/signals/{signal.id}/acknowledge", json={"note": "Discussed with the lender."})
     assert ack.status_code == 200 and ack.json()["status"] == "acknowledged"
     assert client.post(f"/api/v1/signals/{signal.id}/acknowledge", json={}).status_code == 422
+
+
+def test_a_held_figure_says_which_line_its_label_names_and_its_value_there(client, db, world):
+    """Read-only: the work item says which line a held row's printed label names, with the value
+    the printed figure has under that line. Nothing is stored and the item's evidence is unchanged."""
+    from app.domain.facts import Fact
+
+    borrower, cycle = world
+
+    def held(key, label, value, months=0):
+        return add_fact(db, borrower_id=borrower.id, key=key, period_end=PERIOD, months=months, value=D(value),
+                        kind="seeded", status="proposed", label_text=label)
+
+    payable = held("bs.accrued_liabilities", "Accounts payable", "8067000")
+    accrued = held("bs.accounts_payable", "Accrued liabilities", "1966000")
+    # an outflow printed as (1,200) and filed under a line stored as printed: the line its label
+    # names stores outflows as positive amounts, so the value there has the other sign
+    capex = held("cf.other_investing", "Purchases of property and equipment", "-1200000", months=9)
+    unfamiliar = held("bs.revolver", "Notes payable to bank", "500000")
+    cells = [
+        {"key": "bs.accrued_liabilities", "row_label": "Accounts payable", "reason": "mapping_doubt", "fact_id": str(payable.id)},
+        {"key": "bs.accounts_payable", "row_label": "Accrued liabilities", "reason": "mapping_doubt", "fact_id": str(accrued.id)},
+        {"key": "cf.other_investing", "row_label": "Purchases of property and equipment", "reason": "mapping_doubt",
+         "fact_id": str(capex.id)},
+        {"key": "bs.revolver", "row_label": "Notes payable to bank", "reason": "mapping_doubt", "fact_id": str(unfamiliar.id)},
+        {"key": "bs.inventory", "row_label": "", "reason": "label_mismatch", "fact_id": None},
+    ]
+    item = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="spreading",
+                      item_type="spread.value_unverified", title="Held", question="Is each figure right?",
+                      allowed_decisions=["values_confirmed", "values_corrected"], required_permission="confirm_spread",
+                      evidence={"document_id": None, "cells": cells})
+    facts_before = db.query(Fact).count()
+    sign_in(client, "priya.raman")
+    got = client.get(f"/api/v1/work-items/{item.id}").json()["evidence"]["cells"]
+    assert [c["reads_as"] for c in got] == [
+        {"key": "bs.accounts_payable", "value": "8067000"},
+        {"key": "bs.accrued_liabilities", "value": "1966000"},
+        {"key": "cf.capex", "value": "1200000"},
+        None,   # an unfamiliar label names no line
+        None,   # nothing was stored
+    ]
+    assert [{k: v for k, v in c.items() if k != "reads_as"} for c in got] == cells
+    db.refresh(item)
+    assert item.evidence["cells"] == cells and db.query(Fact).count() == facts_before
+    # the same item type raised at another stage (terms, certificate) is passed through as stored
+    other = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="covenant_testing",
+                       item_type="spread.value_unverified", title="Held", question="?", allowed_decisions=["retry"],
+                       evidence={"cells": cells[:1]})
+    assert client.get(f"/api/v1/work-items/{other.id}").json()["evidence"] == {"cells": cells[:1]}

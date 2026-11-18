@@ -3,6 +3,7 @@
 // These need a database loaded by frontend/e2e/seed_repair.py (see its header): the normal seed holds no
 // spread with figures waiting for a person. Journeys 1 and 2 record real corrections (1 also a decision)
 // and assert what a first correction does, so they need a fresh load each time; 3, 4 and 5 can be repeated.
+// Journey 1 is the held-figures panel: what is on file, what was read, why it was held, and one clear action.
 //
 // Usage: node e2e/repair.mjs [--only 1,3]     (BASE_URL=http://localhost:5173 by default; HEADED=1 to watch)
 // Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
@@ -42,6 +43,15 @@ async function shot(page, name) {
   const file = resolve(shotsDir, `${name}.png`);
   await page.screenshot({ path: file });
   console.log(`      wrote ${file}`);
+}
+
+/** Scrolls so `locator` starts just under the top bar: a long panel is captured from the part the journey is about. */
+async function bringToTop(page, locator) {
+  await locator.evaluate((element) => {
+    element.style.scrollMarginTop = '96px';
+    element.scrollIntoView({ block: 'start' });
+    element.style.scrollMarginTop = '';
+  });
 }
 
 const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -87,7 +97,7 @@ async function expectFocusRing(page, locator, what) {
 
 const journeys = [
   {
-    name: 'an analyst opens a held spread, opens a held figure’s page, corrects two figures, keys two, sees what was recalculated and finishes the spread',
+    name: 'an analyst opens a held spread, reads what is on file, what was read and why each figure was held, files two swapped readings with one action, enters two figures, sees what was recalculated and finishes the spread',
     async run(page) {
       await signIn(page, ANALYST);
       const rows = page.locator('table tbody tr[data-row]');
@@ -97,24 +107,65 @@ const journeys = [
       await held.first().click();
       const panel = page.locator('[data-work-item]');
       const section = panel.locator('[data-held-figures]');
-      await section.getByRole('button', { name: /^Confirm / }).first().waitFor();
+      const pair = section.locator('[data-swapped-pair]');
+      const swap = pair.getByRole('button', { name: 'File both under the lines their labels name' });
+      await swap.waitFor();
       const itemId = await panel.getAttribute('data-work-item');
 
       const row = (key) => section.locator(`[data-held-row="${key}"]`);
-      const printed = async (key) => ((await row(key).locator('.tnum').first().textContent()) ?? '').trim();
+      const printed = async (key) => ((await row(key).locator('[data-read] .tnum').first().textContent()) ?? '').trim();
+      const part = async (key, name) => ((await row(key).locator(`[data-${name}]`).textContent()) ?? '').replace(/\s+/g, ' ').trim();
       assert((await section.locator('[data-held-row]').count()) === 4, 'four figures are held');
       assert((await section.locator('[data-held-count]').textContent()) === '4 of 4 still need a person', 'all four wait for a person');
-      // What was stored is offered for confirmation or correction; what was not stored can only be keyed.
-      assert((await row('bs.accrued_liabilities').getByRole('button', { name: /^Confirm / }).count()) === 1, 'a stored figure can be confirmed');
-      assert((await row('bs.inventory').getByRole('button', { name: /^Confirm |^Correct / }).count()) === 0, 'a figure with no stored value cannot be confirmed');
-      assert((await row('bs.inventory').getByRole('button', { name: /^Key a figure/ }).count()) === 1, 'a figure with no stored value can be keyed');
+      const payablePrinted = await printed('bs.accrued_liabilities'); // the Accounts payable row, filed under accrued liabilities
+      const accruedPrinted = await printed('bs.accounts_payable');
+
+      // Each held figure says three things, in this order: what is on file, what was read from the document, why it was held.
+      for (const key of ['bs.inventory', 'bs.accrued_liabilities', 'bs.accounts_payable', 'is.interest_expense']) {
+        const terms = (await row(key).locator('dt').allTextContents()).slice(0, 3);
+        assert(terms.join(' | ') === 'On file | Read from the document | Why it was held', `the row for ${key} is labelled in order, got: ${terms.join(' | ')}`);
+      }
+      // On file: the line the figure was filed under and the value stored for it, held until a person decides.
+      const onFile = await part('bs.accrued_liabilities', 'on-file');
+      assert(onFile.startsWith(`Accrued liabilities$${payablePrinted},000`) && onFile.includes('held: not used in any calculation until a person decides'), `what is on file is said, got: ${onFile}`);
+      await row('bs.accrued_liabilities').locator('[data-on-file]').getByRole('button', { name: new RegExp(`^\\$${payablePrinted},000, Accrued liabilities, `) }).waitFor();
+      assert((await part('bs.inventory', 'on-file')).startsWith('InventoryNothing on file'), 'a figure that was not stored says nothing is on file');
+      // Read from the document: the label as printed, the figure as printed, and the link that opens the page.
+      const read = await part('bs.accrued_liabilities', 'read');
+      assert(read.startsWith(`“Accounts payable”${payablePrinted}as printed, in thousands`), `what was read is said as printed, got: ${read}`);
+      assert((await row('bs.accrued_liabilities').getByRole('button', { name: 'Open page 2' }).count()) === 1, 'the reading links to its page');
+      // Why it was held: the check's reason in plain words, with lines named as the screen names them.
+      const why = await part('bs.accrued_liabilities', 'why');
+      assert(why === 'The row is printed “Accounts payable”, which names Accounts payable, not Accrued liabilities, the line it was filed under.', `the reason is in plain words, got: ${why}`);
+      assert((await part('is.interest_expense', 'why')) === 'The figure the reader reported is not on the page it cited. Nothing was stored.', 'a figure that is not on the page says so');
+
+      // The two swapped readings are named once, with one action for both; every other held figure has one action of its own.
+      const finding = ((await pair.locator('p').first().textContent()) ?? '').replace(/\s+/g, ' ').trim();
+      assert(
+        finding === 'Two readings look swapped. The row printed “Accounts payable” was filed under Accrued liabilities, and the row printed “Accrued liabilities” under Accounts payable.',
+        `the swap is said in one sentence, got: ${finding}`,
+      );
+      const willDo = ((await pair.locator('[data-will-do]').textContent()) ?? '').replace(/\s+/g, ' ').trim();
+      assert(
+        /^Stores each figure under the line its printed label names, as two corrections in your name\. .*totals will be footed and this period’s covenants tested once the decision below is recorded\.$/.test(willDo),
+        `the action says what it will do before the click, got: ${willDo}`,
+      );
+      const primaries = (await section.locator('[data-primary]').allTextContents()).map((label) => label.trim());
+      assert(primaries.join(' | ') === 'File both under the lines their labels name | Enter the figure | Enter the figure', `one primary action per held figure, got: ${primaries.join(' | ')}`);
+      for (const key of ['bs.accrued_liabilities', 'bs.accounts_payable']) {
+        assert((await row(key).locator('[data-primary]').count()) === 0, 'a figure covered by the pair’s action has no primary of its own');
+        const choices = (await row(key).locator('[data-actions] button').allTextContents()).map((label) => label.trim());
+        assert(choices.join(' | ') === 'Keep as read | Enter a different figure | Reject this reading', `the other choices are offered beside it, got: ${choices.join(' | ')}`);
+      }
+      assert((await row('bs.inventory').locator('[data-actions] button').count()) === 1, 'a figure with no stored value can only be entered');
+      assert((await section.getByRole('button', { name: /^Confirm|^Correct/ }).count()) === 0, 'no Confirm or Correct button is left');
       await expectKeyboardReachable(page, section);
-      await expectFocusRing(page, row('bs.accrued_liabilities').getByRole('button', { name: /^Correct / }), 'the Correct button');
+      await expectFocusRing(page, swap, 'the action for the swapped pair');
+      await swap.blur();
+      await bringToTop(page, section);
       await shot(page, 'repair-01-held-figures');
 
       // Each held figure opens the page it was read from.
-      const payablePrinted = await printed('bs.accrued_liabilities'); // the Accounts payable row, filed under accrued liabilities
-      const accruedPrinted = await printed('bs.accounts_payable');
       await row('bs.accrued_liabilities').locator('[data-printed-figure]').click();
       const drawer = page.locator('[data-source-drawer]');
       await drawer.getByRole('heading', { name: 'Accrued liabilities' }).waitFor();
@@ -131,62 +182,69 @@ const journeys = [
       await panel.getByText(/The server said: “these figures were not found on the page and have no value to confirm; enter them first/).waitFor();
       assert((await panel.getAttribute('data-item-status')) === 'open', 'the item is still open after the refusal');
 
-      // Correct the figure filed under the wrong line. The form checks the value and the reason before anything is sent.
-      await row('bs.accrued_liabilities').getByRole('button', { name: /^Correct / }).click();
-      let form = row('bs.accrued_liabilities').getByRole('form', { name: 'Correct Accrued liabilities' });
+      // Another choice: a different figure. The form checks the value and the reason before anything is sent.
+      await row('bs.accrued_liabilities').getByRole('button', { name: 'Enter a different figure for Accrued liabilities' }).click();
+      let form = row('bs.accrued_liabilities').getByRole('form', { name: 'Enter a different figure for Accrued liabilities' });
       const value = form.getByLabel('Value, in whole US dollars');
       assert((await value.inputValue()) === dollars(payablePrinted), 'the form starts from the value on file');
       assert(await value.evaluate((element) => element === document.activeElement), 'the value field takes focus when the form opens');
       await value.fill('about two million');
-      await form.getByRole('button', { name: 'Record the correction' }).click();
+      await form.getByRole('button', { name: 'Record the figure' }).click();
       await form.getByText('This is not a number. Enter digits only, for example 1236000.').waitFor();
       await form.getByText('A reason is required. It is recorded in the ledger with your name.').waitFor();
       assert((await value.getAttribute('aria-invalid')) === 'true', 'the invalid value is marked for assistive technology');
       const described = await value.getAttribute('aria-describedby');
       assert(described && (await page.locator(`[id="${described}"]`).textContent())?.startsWith('This is not a number'), 'the error is tied to its field');
-      await shot(page, 'repair-03-correction-form-errors');
-      await expectAccessible(page, '[data-held-figures]', 'the held figures with a correction form open');
+      await shot(page, 'repair-03-different-figure-form-errors');
+      await expectAccessible(page, '[data-held-figures]', 'the held figures with a form open');
       await value.fill(dollars(accruedPrinted));
       await form.getByText(`shown on a statement in thousands as ${accruedPrinted}.`).waitFor();
-      await form.getByLabel('Reason (required)').fill('Page 2: this is the accounts payable row. Accrued liabilities is the row beneath it.');
-      // Enter in the value field submits, so the whole correction can be made from the keyboard.
-      await value.press('Enter');
-      const note = row('bs.accrued_liabilities').locator('[data-recalculation]');
-      await note.getByText('What code recalculated').waitFor();
-      const said = (await note.textContent()) ?? '';
-      assert(/retired|Nothing had been calculated/.test(said), `the result says what was recalculated, got: ${said}`);
-      await row('bs.accrued_liabilities').getByText('Entered by a person. On file now:').waitFor();
-      await row('bs.accrued_liabilities').getByRole('button', { name: new RegExp(`^\\$${accruedPrinted},000, Accrued liabilities`) }).waitFor();
-      await section.getByText('3 of 4 still need a person').waitFor();
-      await shot(page, 'repair-04-corrected-and-recalculated');
+      await form.getByRole('button', { name: 'Cancel' }).click();
+      await form.waitFor({ state: 'detached' });
 
-      await row('bs.accounts_payable').getByRole('button', { name: /^Correct / }).click();
-      form = row('bs.accounts_payable').getByRole('form', { name: 'Correct Accounts payable' });
-      await form.getByLabel('Value, in whole US dollars').fill(dollars(payablePrinted));
-      await form.getByLabel('Reason (required)').fill('Page 2: this is the accrued liabilities row. Accounts payable is the row above it.');
-      await form.getByRole('button', { name: 'Record the correction' }).click();
+      // One action files both readings under the lines their labels name, as two corrections, from the keyboard;
+      // the panel then says what code did for each.
+      await swap.press('Enter');
+      await pair.getByText('Both filed under the lines their labels name').waitFor();
+      const notes = pair.locator('[data-recalculation]');
+      await notes.nth(0).getByText('What code recalculated when Accrued liabilities was corrected').waitFor();
+      await notes.nth(1).getByText('What code recalculated when Accounts payable was corrected').waitFor();
+      for (const index of [0, 1]) {
+        const said = (await notes.nth(index).textContent()) ?? '';
+        assert(/retired|Nothing had been calculated/.test(said), `the result says what was recalculated, got: ${said}`);
+      }
+      assert((await swap.count()) === 0, 'the pair’s action is not offered twice');
+      // Each line now has the figure whose label names it, entered by a person, and neither waits any longer.
+      await row('bs.accrued_liabilities').locator('[data-on-file]').getByRole('button', { name: new RegExp(`^\\$${accruedPrinted},000, Accrued liabilities, .*Entered by a person`) }).waitFor();
+      await row('bs.accounts_payable').locator('[data-on-file]').getByRole('button', { name: new RegExp(`^\\$${payablePrinted},000, Accounts payable, .*Entered by a person`) }).waitFor();
+      await row('bs.accrued_liabilities').getByText('Cleared: a person entered the figure on file').waitFor();
       await section.getByText('2 of 4 still need a person').waitFor();
+      assert((await section.locator('[data-primary]').count()) === 2, 'only the two figures still waiting have a primary action');
+      await bringToTop(page, section);
+      await shot(page, 'repair-04-swapped-pair-filed');
+      await expectAccessible(page, '[data-held-figures]', 'the held figures after the pair was filed');
 
-      // Key the two figures the spread could not store.
-      await row('bs.inventory').getByRole('button', { name: /^Key a figure/ }).click();
-      form = row('bs.inventory').getByRole('form', { name: /^Key Inventory/ });
+      // Enter the two figures the spread could not store.
+      await row('bs.inventory').getByRole('button', { name: 'Enter the figure for Inventory' }).click();
+      form = row('bs.inventory').getByRole('form', { name: /^Enter Inventory, at / });
       await form.getByLabel('Value, in whole US dollars').fill(dollars(await printed('bs.inventory')));
       await form.getByLabel('Reason (required)').fill('Page 2: the row is printed as Inventory; the figure is as reported.');
       await form.getByRole('button', { name: 'Record the figure' }).click();
       await section.getByText('1 of 4 still needs a person').waitFor();
 
-      await row('is.interest_expense').getByRole('button', { name: /^Key a figure/ }).click();
-      form = row('is.interest_expense').getByRole('form', { name: /^Key Interest expense/ });
+      await row('is.interest_expense').getByRole('button', { name: 'Enter the figure for Interest expense' }).click();
+      form = row('is.interest_expense').getByRole('form', { name: /^Enter Interest expense, 9 months to / });
       // The reader misreported the last digit; the page prints one less.
       await form.getByLabel('Value, in whole US dollars').fill(dollars(await printed('is.interest_expense'), -1));
       await form.getByLabel('Reason (required)').fill('Page 3: read from the interest expense row by hand.');
       await form.getByRole('button', { name: 'Record the figure' }).click();
       await section.getByText('All 4 cleared; record the decision below').waitFor();
+      await bringToTop(page, section);
       await shot(page, 'repair-05-all-cleared');
 
       // The decision that finishes the spread stays with the person.
       await panel.getByRole('radio', { name: /Values corrected/ }).check();
-      await panel.getByRole('form', { name: 'Record a decision' }).getByLabel(/Reason/).fill('Two rows were filed under each other’s lines and two figures were keyed from the page.');
+      await panel.getByRole('form', { name: 'Record a decision' }).getByLabel(/Reason/).fill('Two rows were filed under each other’s lines and two figures were entered from the page.');
       await panel.getByRole('button', { name: 'Record decision' }).click();
       await page.getByText('Recorded: Values corrected').first().waitFor();
       await page.waitForFunction((id) => !document.querySelector(`[data-work-item="${id}"][data-item-status="open"]`), itemId);

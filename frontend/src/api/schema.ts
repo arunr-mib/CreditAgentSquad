@@ -686,8 +686,14 @@ export interface HeldCell {
   row_label: string | null;
   reason: string;
   detail: string | null;
-  /** Absent when nothing could be stored: the figure has to be keyed. */
+  /** Absent when nothing could be stored: the figure has to be entered. */
   fact_id: string | null;
+  /**
+   * When the row's printed label names another line of the template: that line's key, and the
+   * value the printed figure has when filed under it (lines differ in the sign they store).
+   * Worked out by the API; the workspace never derives either.
+   */
+  reads_as: { key: string; value: string } | null;
 }
 
 /** One failed footing check (`evidence.checks` of a spread that does not foot). */
