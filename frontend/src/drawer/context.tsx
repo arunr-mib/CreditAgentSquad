@@ -17,10 +17,14 @@ export interface WorkspaceDrawerValue {
   open: boolean;
   tab: DrawerTab;
   itemId: string | null;
+  /** A borrower shown as a tear-sheet in the first tab, in place of an exception. */
+  borrowerCode: string | null;
   copilotScope: CopilotScope;
   reasonDraft: ReasonDraft | null;
   /** Show an exception with its evidence and decision. */
   openItem: (itemId: string) => void;
+  /** Show a borrower's tear-sheet. */
+  openBorrower: (code: string) => void;
   /** Show the Copilot, optionally scoped. */
   openCopilot: (scope?: CopilotScope) => void;
   setTab: (tab: DrawerTab) => void;
@@ -35,9 +39,11 @@ const closed: WorkspaceDrawerValue = {
   open: false,
   tab: 'item',
   itemId: null,
+  borrowerCode: null,
   copilotScope: { kind: 'portfolio' },
   reasonDraft: null,
   openItem: noop,
+  openBorrower: noop,
   openCopilot: noop,
   setTab: noop,
   setCopilotScope: noop,
@@ -52,11 +58,18 @@ export function WorkspaceDrawerProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<DrawerTab>('item');
   const [itemId, setItemId] = useState<string | null>(null);
+  const [borrowerCode, setBorrowerCode] = useState<string | null>(null);
   const [copilotScope, setCopilotScope] = useState<CopilotScope>({ kind: 'portfolio' });
   const [reasonDraft, setReasonDraft] = useState<ReasonDraft | null>(null);
 
   const openItem = useCallback((id: string) => {
     setItemId(id);
+    setBorrowerCode(null);
+    setTab('item');
+    setOpen(true);
+  }, []);
+  const openBorrower = useCallback((code: string) => {
+    setBorrowerCode(code);
     setTab('item');
     setOpen(true);
   }, []);
@@ -68,14 +81,15 @@ export function WorkspaceDrawerProvider({ children }: { children: ReactNode }) {
   const draftReason = useCallback((id: string, text: string) => {
     setReasonDraft({ itemId: id, text, stamp: Date.now() });
     setItemId(id);
+    setBorrowerCode(null);
     setTab('item');
     setOpen(true);
   }, []);
   const close = useCallback(() => setOpen(false), []);
 
   const value = useMemo<WorkspaceDrawerValue>(
-    () => ({ open, tab, itemId, copilotScope, reasonDraft, openItem, openCopilot, setTab, setCopilotScope, draftReason, close }),
-    [open, tab, itemId, copilotScope, reasonDraft, openItem, openCopilot, draftReason, close],
+    () => ({ open, tab, itemId, borrowerCode, copilotScope, reasonDraft, openItem, openBorrower, openCopilot, setTab, setCopilotScope, draftReason, close }),
+    [open, tab, itemId, borrowerCode, copilotScope, reasonDraft, openItem, openBorrower, openCopilot, draftReason, close],
   );
   return <WorkspaceDrawerContext.Provider value={value}>{children}</WorkspaceDrawerContext.Provider>;
 }

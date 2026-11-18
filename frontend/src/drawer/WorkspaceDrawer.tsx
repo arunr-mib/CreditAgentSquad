@@ -1,6 +1,7 @@
 import { AgentMark, Drawer, EmptyState } from '@/design';
 import { cx } from '@/lib/cx';
 import { WorkItemPanel } from '@/screens/work/WorkItemPanel';
+import { BorrowerTearSheet } from './BorrowerTearSheet';
 import { CopilotPanel } from './CopilotPanel';
 import { useWorkspaceDrawer, type DrawerTab } from './context';
 
@@ -52,7 +53,7 @@ export function WorkspaceDrawer() {
       header={
         <div role="tablist" aria-label="Drawer" className="inline-flex items-center gap-1 rounded-sm border border-hairline-strong bg-surface p-0.5">
           <TabButton tab="item" current={drawer.tab} onSelect={drawer.setTab}>
-            Exception &amp; decision
+            {drawer.borrowerCode ? 'Borrower' : <>Exception &amp; decision</>}
           </TabButton>
           <TabButton tab="copilot" current={drawer.tab} onSelect={drawer.setTab}>
             <AgentMark size={8} />
@@ -62,7 +63,9 @@ export function WorkspaceDrawer() {
       }
     >
       <div role="tabpanel" id="drawer-panel-item" aria-labelledby="drawer-tab-item" hidden={drawer.tab !== 'item'}>
-        {drawer.itemId ? (
+        {drawer.borrowerCode ? (
+          <BorrowerTearSheet key={drawer.borrowerCode} code={drawer.borrowerCode} />
+        ) : drawer.itemId ? (
           <WorkItemPanel key={drawer.itemId} itemId={drawer.itemId} variant="drawer" />
         ) : (
           <div className="px-4 py-10">
