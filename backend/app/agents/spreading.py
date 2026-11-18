@@ -198,8 +198,8 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
     for cell in allowed:
         rows_per_key[cell.key] = rows_per_key.get(cell.key, 0) + 1
 
-    # pages of the document that name the borrower: when some do, a figure cited from one that
-    # does not may belong to another entity printed in the same file
+    # pages of the document that name the borrower: a figure cited from a page that does not
+    # may belong to another entity printed in the same file
     named = {p.page_number: _names(p.text, borrower.name) for p in db.execute(
         select(DocumentPage).where(DocumentPage.document_id == document.id)).scalars()}
     used: dict[tuple, str] = {}  # a printed figure can be reported for one line only
@@ -214,7 +214,7 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
                 return f"the same printed figure was already reported for {used[place]}"
             if place is not None:
                 used[place] = key
-            if any(named.values()) and not named.get(page, False):
+            if not named.get(page, False):
                 return f"page {page} does not name {borrower.name}; it may belong to another entity"
             if value < 0 and key in template.NEVER_NEGATIVE:
                 return f"{key} is negative as printed, where only a positive amount is expected"
@@ -312,6 +312,19 @@ def spread_document(
         else:
             result.notes.append({"layer": "agent", "check": "note", "action": "shown", "detail": note})
 
+    # a document that names the borrower nowhere is somebody else's, or cannot be told to be this
+    # borrower's: nothing is read from it
+    if not any(_names(p.text, borrower.name) for p in db.execute(
+            select(DocumentPage).where(DocumentPage.document_id == document.id)).scalars()):
+        _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="high",
+              title=f"{document.title}: no page names {borrower.name}",
+              question=f"No page of this document names {borrower.name}, so it may be another company's "
+                       "statements. Is this the right document for this borrower?",
+              allowed_decisions=["wrong_document", "request_new_document", "key_by_hand"],
+              required_permission="confirm_spread", evidence={"document_id": str(document.id)},
+              guardrail_notes=result.notes)
+        outcome.run.guardrail_notes = result.notes
+        return result
     scale = scale_override or _derive_scale(db, document, out, result)
     headers = {c.column_header for c in out.cells}
     # which column each figure sits in is decided cell by cell from the page's own headers; here

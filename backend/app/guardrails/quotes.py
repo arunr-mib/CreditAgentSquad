@@ -120,6 +120,11 @@ _DURATION = re.compile(
     r"|\b(quarter|year)s?\s+end(?:ed|ing)\b", re.I)
 _DURATION_MONTHS = {"three": 3, "3": 3, "six": 6, "6": 6, "nine": 9, "9": 9, "twelve": 12, "12": 12,
                     "quarter": 3, "year": 12}
+# words a column header may carry besides its date and still be the period's own column
+_HEADER_WORDS = re.compile(
+    r"\b(?:un)?audited\b|\bactual\b|\bas\s+of\b|\bat\b|\bfor\s+the\b|\bperiod\b|\bended\b|\bending\b|"
+    r"\byear[\s-]to[\s-]date\b|\bytd\b|\bfiscal\b|\byears?\b|\bquarters?\b|\bmonths?\b|\bthe\b|[(),.:$]|"
+    r"\bin\s+thousands\b|\b(?:three|six|nine|twelve)\b", re.I)
 _ALIGN = 3.0       # points: right edges this close are one column
 _INDENT = 40.0     # points: a row starting this close to the label margin is a label row, not a header
 _RUN_GAP = 12.0    # points: a wider gap between words starts a new header phrase
@@ -189,7 +194,14 @@ def column_for_period(words: Sequence[Word], figure: Box, period_end: date, mont
     if row is None:
         return "the figure's row could not be read"
     margin = float(row[0][0])
-    columns = sorted({round(float(w[2]), 1) for w in row if _is_figure(str(w[4])) and float(w[0]) > margin + 1})
+    # the columns are those of the whole page, not of this row alone: a row with one cell blank
+    # would otherwise look like a one-column table
+    # (taken from rows that carry at least two figures, so a year in a title is not a column)
+    columns = sorted({round(float(w[2]), 1) for r in rows
+                      if float(r[0][0]) <= margin + _INDENT and not _is_figure(str(r[0][4]))
+                      and sum(1 for w in r[1:] if _is_figure(str(w[4]))) >= 2
+                      for w in r[1:] if _is_figure(str(w[4])) and float(w[0]) > margin + 1}
+                     | {round(float(w[2]), 1) for w in row if _is_figure(str(w[4])) and float(w[0]) > margin + 1})
     merged: list[float] = []
     for edge in columns:
         if not merged or edge - merged[-1] > _ALIGN:
@@ -217,7 +229,8 @@ def column_for_period(words: Sequence[Word], figure: Box, period_end: date, mont
 
     own = ["" for _ in columns]
     spanning = ["" for _ in columns]
-    context: list[str] = []
+    context: list[str] = []   # titles and loose text, nearest first
+    headings: list[str] = []  # titles between the figure and its column headers: they head its block
     above = [r for r in rows if float(r[0][3]) <= figure[1] + 1.0 and not any(same_row(_box(w), figure) for w in r)]
     collecting, done = False, False
     for r in reversed(above):  # nearest row first
@@ -225,18 +238,29 @@ def column_for_period(words: Sequence[Word], figure: Box, period_end: date, mont
             if collecting:
                 done = True  # the header block of this table has ended; everything further up is context
             if not any(_is_figure(str(w[4])) and aligned(w) is not None for w in r[1:]):
-                context.append(" ".join(str(w[4]) for w in r))  # a title; rows of figures are not context
+                text = " ".join(str(w[4]) for w in r)  # a title; rows of figures are not context
+                context.append(text)
+                if not collecting:
+                    headings.append(text)
             continue
         if done:
             context.append(" ".join(str(w[4]) for w in r))
             continue
-        collecting = True
         runs: list[list[Word]] = []
         for w in r:
             if runs and float(w[0]) - float(runs[-1][-1][2]) <= _RUN_GAP:
                 runs[-1].append(w)
             else:
                 runs.append([w])
+        if not collecting and not any(float(run[-1][2]) > left and float(run[0][0]) < right
+                                      for run in runs for left, right in bands):
+            # a sub-heading set in from the margin, over no column: it heads a section of the
+            # table, not a column
+            text = " ".join(str(w[4]) for w in r)
+            context.append(text)
+            headings.append(text)
+            continue
+        collecting = True
         for run in runs:
             x0, x1, text = float(run[0][0]), float(run[-1][2]), " ".join(str(w[4]) for w in run)
             over = [i for i, (left, right) in enumerate(bands) if x1 > left and x0 < right]
@@ -247,13 +271,30 @@ def column_for_period(words: Sequence[Word], figure: Box, period_end: date, mont
                     spanning[i] = f"{text} {spanning[i]}".strip()
             else:
                 context.append(text)
-    title = " ".join(reversed(context))
+    # What stands nearest above a figure governs it. A heading between the figure and its column
+    # headers ("Three months ended ...", or the prior year's block stacked under the current
+    # one) heads the block the figure is in, whatever the top of the page says.
+    for text in headings:
+        stated_dates, stated_lengths = dates_in(text), durations_in(text)
+        if stated_dates and period_end not in stated_dates:
+            return "the figure sits under a heading for a different date"
+        if months and stated_lengths and months not in stated_lengths:
+            return "the figure sits under a heading for a different length of period"
+        if stated_dates or stated_lengths:
+            break
+    dated_title = next((t for t in context if dates_in(t) or _MONTH_DAY.search(t)), "")
+    length_title = next((t for t in context if durations_in(t)), "")
 
     def is_period(i: int) -> bool:
+        # a column headed budget, forecast, pro forma, restated or variance is not the period's
+        # figures, whatever date stands over it
+        leftover = _HEADER_WORDS.sub(" ", _LONG_DATE.sub(" ", _SLASH_DATE.sub(" ", _DURATION.sub(" ", own[i]))))
+        if re.search(r"[A-Za-z%]", _YEAR_TOKEN.sub(" ", leftover)):
+            return False
         own_dates = dates_in(own[i])
         if own_dates:
             return set(own_dates) == {period_end}
-        around = f"{spanning[i]} {title}"
+        around = f"{spanning[i]} {dated_title}"
         years = {int(y) for y in _YEAR_TOKEN.findall(own[i])}
         if years:
             month_days = {(_month(name), int(day)) for name, day in _MONTH_DAY.findall(around)}
@@ -277,7 +318,7 @@ def column_for_period(words: Sequence[Word], figure: Box, period_end: date, mont
             fitting = stated if len(stated) == 1 else fitting
         dated = fitting
         if dated == [mine] and length_fits(mine) is None:
-            in_title = durations_in(title)
+            in_title = durations_in(length_title)
             if in_title and months not in in_title:
                 return "the page is for a different length of period than the one requested"
     if not dated:

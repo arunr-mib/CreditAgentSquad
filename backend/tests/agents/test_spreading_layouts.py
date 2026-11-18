@@ -273,3 +273,43 @@ def test_a_confirmed_label_stops_counting_once_the_figure_is_corrected_or_reject
     assert not label_confirmed(db, borrower.id, ["bs.long_term_debt"], "Other liabilities")
     again = spread(db, borrower, answer(swapped(cells("current"))), sp.build_pdf())
     assert again.status == "needs_person" and usable(db, borrower, "bs.long_term_debt") is None
+
+
+# ---- third independent review: blocks stacked on one page, and a document for another company ----
+
+QUARTER_BLOCK = [("sup.cash_interest_paid", "Cash paid for interest", "390", "380"),
+                 ("sup.cash_taxes_paid", "Cash paid for income taxes", "100", "260"),
+                 ("sup.scheduled_principal", "Scheduled principal payments on term debt", "300", "300"),
+                 ("sup.financed_capex", "Capital expenditures financed with purchase-money debt", "1,150", "40")]
+
+
+def stacked_pdf():
+    """Page three carries the nine-month figures, then a second block headed "Three months ended"."""
+    page_three = [("Nine months ended September 30, 2026", {})] + std_rows(3) + [("", {}),
+                 ("Three months ended September 30, 2026", {})] + \
+                 [(label, {440: cur, 560: prior}) for _key, label, cur, prior in QUARTER_BLOCK]
+    return mk([{"pre": std_header(), "rows": std_rows(1)}, {"pre": std_header(), "rows": std_rows(2)},
+               {"pre": std_header(), "rows": page_three, "y0": 690, "dy": 14}])
+
+
+def test_figures_from_a_three_month_block_lower_on_the_page_are_held(db, borrower):
+    quarter = {key: figure for key, _label, figure, _prior in QUARTER_BLOCK}
+    reading = [{**c, "printed_figure": quarter[c["key"]]} if c["key"] in quarter else c for c in cells("current")]
+    result = spread(db, borrower, answer(reading), stacked_pdf())
+    assert result.status == "needs_person"
+    assert all(usable(db, borrower, key) is None for key in ("sup.cash_interest_paid", "sup.scheduled_principal"))
+
+
+def test_the_nine_month_block_of_that_page_is_spread_with_no_person(db, borrower):
+    result = spread(db, borrower, answer(cells("current")), stacked_pdf())
+    assert result.status == "spread" and result.unverified == [], result.unverified[:3]
+    assert usable(db, borrower, "sup.cash_interest_paid") == D("1180000")
+
+
+def test_a_document_that_names_only_another_company_is_not_read(db, borrower):
+    pages = [{"pre": std_header(), "rows": std_rows(n), "title": "Northfield Castings Group, LLC"} for n in (1, 2, 3)]
+    result = spread(db, borrower, answer(cells("current")), mk(pages))
+    assert result.status == "needs_person"
+    assert db.execute(select(Fact).where(Fact.borrower_id == borrower.id)).first() is None
+    item = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower.id)).scalar_one()
+    assert "another company" in item.question

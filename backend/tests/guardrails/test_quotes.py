@@ -123,3 +123,35 @@ def test_a_quote_may_not_begin_or_end_inside_a_number_or_a_word():
     assert not quote_on_page(page, "less than 1.2")      # stops inside 1.20
     assert not quote_on_page(page, "orrower shall not")  # starts inside a word
     assert quote_on_page(page, "$12,000,000") and quote_on_page(page, "12,000,000 apply")
+
+
+# ---- third independent review: column geometry ---------------------------------------------------
+
+def _figure(words, text):
+    return locate(words, text)[0].bbox
+
+
+def test_a_budget_or_pro_forma_column_is_not_the_period_whatever_date_stands_over_it():
+    from datetime import date
+
+    from app.guardrails.quotes import column_for_period
+    period = date(2026, 9, 30)
+    page = (row(20, right(440, "September 30, 2026"), right(600, "September 30, 2026"))
+            + row(32, right(440, "Actual"), right(600, "Budget"))
+            + row(60, (40, "Net revenue"), right(440, "48,250"), right(600, "52,000")))
+    assert column_for_period(page, _figure(page, "52,000"), period) is not None
+    page = (row(20, right(600, "Pro forma")) + row(32, right(440, "September 30, 2026"), right(600, "September 30, 2026"))
+            + row(60, (40, "Net revenue"), right(440, "48,250"), right(600, "55,900")))
+    assert column_for_period(page, _figure(page, "55,900"), period) is not None
+    assert column_for_period(page, _figure(page, "48,250"), period) is None
+
+
+def test_a_row_with_a_blank_current_cell_does_not_make_the_prior_figure_current():
+    from datetime import date
+
+    from app.guardrails.quotes import column_for_period
+    page = (row(20, right(440, "September 30, 2026"), right(600, "September 30, 2025"))
+            + row(60, (40, "Net revenue"), right(440, "48,250"), right(600, "45,100"))
+            + row(75, (40, "Financed capital expenditures"), right(600, "120")))
+    assert column_for_period(page, _figure(page, "120"), date(2026, 9, 30), 9) is not None
+    assert column_for_period(page, _figure(page, "120"), date(2025, 9, 30), 9) is None

@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.agents.llm import LLMClient
 from app.agents.runtime import AgentSpec, run_agent
+from app.agents.spreading import _names
 from app.agents.tools import Scope, ToolGateway
 from app.core import ledger
 from app.domain import calendar
@@ -144,6 +145,14 @@ def classify_documents(
             effective = _one_date(answer.effective_date_text, head)
             if needs_period and period_end is None:
                 problem = "the period end the Intake Agent reported is not on the first pages as a single date"
+            elif period_end is not None and date(period_end.year + 1, period_end.month, min(period_end.day, 28)) in {
+                    date(d.year, d.month, min(d.day, 28)) for d in dates_in(head)}:
+                # statements print the prior year beside the current one: the earlier of the pair
+                # is the comparative column, not the period
+                problem = ("the first pages also print the same date one year later, so the period end reported "
+                           "looks like the comparative column")
+            elif not _names(head, borrower.name):
+                problem = f"the first pages do not name {borrower.name}; the document may be another company's"
         concern = ""
         if answer is not None and answer.concern.strip():
             if check_narrative(answer.concern, {}):
