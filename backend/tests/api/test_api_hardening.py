@@ -128,6 +128,7 @@ def test_other_numbers_in_requests_are_refused_or_clamped_never_a_server_error(c
         assert client.get(f"{API}/documents/{missing}/pages/{page}").status_code == 422, page
         assert client.get(f"{API}/ui/documents/{missing}/pages/{page}/figures").status_code == 422, page
         assert client.get(f"{API}/ui/documents/{missing}/pages/{page}/locate?quote=x").status_code == 422, page
+    sign_in(client, "dana.whitfield")  # schedules belong to whoever releases packages, not the administrator
     schedule = {"title": "Quarterly pack", "scope": "portfolio", "cadence": "quarterly"}
     for days in (-1, 100000, 10**30):
         refused = client.post(f"{API}/package-schedules", json={**schedule, "days_after_period_end": days})

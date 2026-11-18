@@ -49,7 +49,9 @@ _GRANTS: dict[Role, frozenset[Permission]] = {
         P.MANAGE_ACTIONS, P.RUN_AGENTS,
     }),
     Role.CREDIT_REVIEW: frozenset({P.VIEW, P.RECORD_QA_FINDING}),
-    Role.ADMIN: frozenset(Permission),
+    # Segregation of duties: the administrator runs the system (people, policy, the demonstration
+    # clock) and takes no credit decision, so no one login can change a rule and then act under it.
+    Role.ADMIN: frozenset({P.VIEW, P.CHANGE_POLICY, P.MANAGE_USERS, P.ADVANCE_CLOCK}),
 }
 
 

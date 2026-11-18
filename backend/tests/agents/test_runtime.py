@@ -144,3 +144,42 @@ def test_strict_schema_closes_objects_and_requires_everything():
     schema = strict_schema(Answer)
     assert schema["additionalProperties"] is False and schema["required"] == ["verdict", "note"]
     assert "title" not in schema
+
+
+def _typed(answer, _state):
+    return ["a figure was typed"] if "2.41" in answer.note else []
+
+
+def _run_checked(db, responses):
+    llm = ScriptedClient(responses)
+    outcome = run_agent(db, SPEC, task="unit", scope=SCOPE, content=[{"type": "text", "text": "go"}],
+                        llm=llm, gateway=GATEWAY, record_key="test/unit", prose_check=_typed)
+    return outcome, llm
+
+
+def _checks(db, outcome):
+    return [(s.name, s.detail.get("action")) for s in db.execute(
+        select(AgentStep).where(AgentStep.run_id == outcome.run.id).order_by(AgentStep.n)).scalars()
+        if s.kind == "guardrail"]
+
+
+def test_a_typed_figure_is_sent_back_once_and_the_corrected_answer_is_kept(db):
+    outcome, llm = _run_checked(db, [answer('{"verdict": "ok", "note": "leverage is 2.41x"}'),
+                                     answer('{"verdict": "ok", "note": "leverage is {{fact:f-1}}"}')])
+    assert outcome.ok and outcome.output.note == "leverage is {{fact:f-1}}"
+    assert _checks(db, outcome) == [("number_check", "retry")]
+    retry_prompt = llm.requests[1].messages[-1]["content"][0]["text"]
+    assert "number check" in retry_prompt and "{{fact:<id>}}" in retry_prompt
+    assert llm.requests[1].tools == []
+
+
+def test_the_second_answer_is_returned_whatever_it_says_so_the_caller_withholds_it(db):
+    outcome, llm = _run_checked(db, [answer('{"verdict": "ok", "note": "leverage is 2.41x"}'),
+                                     answer('{"verdict": "ok", "note": "still 2.41x"}')])
+    assert outcome.ok and outcome.output.note == "still 2.41x" and len(llm.requests) == 2
+    assert _checks(db, outcome) == [("number_check", "retry")]
+
+
+def test_a_clean_answer_is_not_sent_back(db):
+    outcome, llm = _run_checked(db, [answer('{"verdict": "ok", "note": "leverage is {{fact:f-1}}"}')])
+    assert outcome.ok and len(llm.requests) == 1 and _checks(db, outcome) == []

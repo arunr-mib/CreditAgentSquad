@@ -99,3 +99,20 @@ def setup_seed(code: str, x_setup_token: str | None = Header(default=None)) -> d
         report = seed_book(db, root=BOOK, only=[code])
         db.commit()
     return {"code": code, "loaded": "now", "documents": report.documents}
+
+
+@app.post("/api/_setup/backfill-due-dates")
+def setup_backfill_due_dates(x_setup_token: str | None = Header(default=None)) -> dict:
+    """Give open items raised before the due-date policy their policy date, one ledger event
+    each. The same code as `python -m app.cli backfill-due-dates`; safe to call again."""
+    _allowed(x_setup_token)
+    from app.cli import backfill_due_dates
+    from app.domain.monitoring import WorkItem
+    from sqlalchemy import func, select
+
+    with _session() as db:
+        missing = select(func.count()).select_from(WorkItem).where(WorkItem.status == "open", WorkItem.due_date.is_(None))
+        before = db.execute(missing).scalar_one()
+        backfill_due_dates(db)  # commits
+        after = db.execute(missing).scalar_one()
+    return {"open_items_without_due_date_before": before, "after": after}

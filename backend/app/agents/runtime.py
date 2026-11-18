@@ -5,6 +5,7 @@ each agent module applies its guardrails to the answer, and the workflow (code) 
 """
 import hashlib
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -126,8 +127,14 @@ def run_agent(
     record_key: str,
     started_by: tuple[str, str] = ("system", "workflow"),
     state: dict[str, Any] | None = None,
+    prose_check: Callable[[BaseModel, dict[str, Any]], list[str]] | None = None,
 ) -> AgentOutcome:
-    """Run the agent until it answers, is refused, fails, or reaches its step cap."""
+    """Run the agent until it answers, is refused, fails, or reaches its step cap.
+
+    `prose_check(answer, state)` returns what in a valid answer's text fails the number check. A
+    first failure is sent back once, asking for fact references in place of typed figures; the
+    second answer is returned whatever it says, and the caller's guardrails withhold what still
+    fails. The model gets one chance to correct itself, never a loop."""
     register_spec(db, spec)
     run = AgentRun(
         agent_name=spec.name, agent_version=spec.version, model=spec.resolved_model(), task=task,
@@ -144,6 +151,7 @@ def run_agent(
     tools = gateway.definitions(spec.tools)
     schema = strict_schema(spec.output_model)
     retried_shape = False
+    retried_prose = False
     exchange = 0
 
     while True:
@@ -198,6 +206,22 @@ def run_agent(
         # the model has answered
         parsed, problem = _parse(spec, response)
         run.raw_output = {"text": response.text()}
+        if parsed is not None and prose_check is not None and not retried_prose:
+            problems = prose_check(parsed, ctx.state)
+            if problems:
+                retried_prose = True
+                _add_step(ctx, "guardrail", "number_check", len(problems), "retry",
+                          {"layer": "narrative", "check": "number_check", "action": "retry",
+                           "problems": len(problems)})
+                messages.append({"role": "assistant", "content": response.content})
+                messages.append({"role": "user", "content": [{"type": "text", "text": (
+                    "Some of your text did not pass the number check:\n- " + "\n- ".join(problems[:12]) +
+                    "\nRewrite those parts. Every figure must be a {{fact:<id>}} reference to a fact you were "
+                    "given or read; never type a digit for an amount, ratio or percentage, and never write "
+                    "figures in words. Keep everything else as it was. Return the full corrected JSON object. "
+                    "Do not call tools.")}]})
+                tools = []
+                continue
         if parsed is not None:
             run.output = parsed.model_dump(mode="json")
             _finish(db, run, "completed", None)

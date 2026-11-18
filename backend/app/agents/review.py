@@ -51,8 +51,13 @@ def draft_commentary(db: Session, *, borrower: Borrower, cycle: Cycle, sheet: di
         f"Review sheet (structure; figures appear as fact ids):\n{json.dumps(sheet, indent=1, default=str)}\n\n"
         f"Facts you may reference:\n{json.dumps(listing, indent=1)}")}]
     scope = Scope(borrower_id=borrower.id, period_end=cycle.period_end, months=cycle.months, cycle_id=cycle.id)
+    def typed_figures(answer, _state) -> list[str]:
+        return [f"{section.section}: {problem.detail}" for section in answer.sections
+                for problem in check_narrative(section.body, facts)]
+
     outcome = run_agent(db, SPEC, task="draft_review_commentary", scope=scope, content=content, llm=llm,
-                        gateway=ToolGateway(), record_key=f"review/{borrower.code}/{cycle.period_end}")
+                        gateway=ToolGateway(), record_key=f"review/{borrower.code}/{cycle.period_end}",
+                        prose_check=typed_figures)
     result.run_id = outcome.run.id
     if not outcome.ok:
         result.notes.append({"layer": "runtime", "check": outcome.reason or "no_answer", "action": "no_draft",

@@ -254,8 +254,20 @@ def explain_signals(db: Session, borrower: Borrower, period_end: date, llm: LLMC
         {"type": "text", "text": json.dumps({"signals": listing}, indent=1)}]
     cycle_id = next((s.cycle_id for s in signals if s.cycle_id), None)
     scope = Scope(borrower_id=borrower.id, period_end=period_end, cycle_id=cycle_id)
+    by_id = {str(s.id): s for s in signals}
+
+    def typed_figures(answer, _state) -> list[str]:
+        out = []
+        for entry in answer.explanations:
+            signal = by_id.get(entry.signal_id.strip().lower())
+            if signal is not None:
+                out += [f"{signal.rule_id}: {p.detail}" for p in
+                        check_narrative(entry.explanation, views, allowed_figures=_threshold(signal))]
+        return out
+
     outcome = run_agent(db, SPEC, task="explain_signals", scope=scope, content=content, llm=llm,
-                        gateway=ToolGateway(), record_key=f"early_warning/{borrower.code}/{period_end}")
+                        gateway=ToolGateway(), record_key=f"early_warning/{borrower.code}/{period_end}",
+                        prose_check=typed_figures)
     result.run_id = outcome.run.id
     if not outcome.ok:
         _note(result, "runtime", outcome.reason or outcome.status, "nothing_stored",

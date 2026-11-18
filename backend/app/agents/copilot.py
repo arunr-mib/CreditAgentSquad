@@ -4,7 +4,8 @@ facts and document pages only. It reads and never acts.
 The model writes an answer with fact references and citations. Code then decides what the
 person sees: each citation's quote must be on its page or the citation is dropped; every figure
 must be a reference to a fact that a tool returned during this run, or a figure inside a
-surviving quote; an answer that fails is replaced by a refusal written by code, never repaired
+surviving quote. An answer with a typed figure is sent back once to be rewritten with fact
+references; if it still fails it is replaced by a refusal written by code, never repaired by code
 and never guessed. The exchange is recorded on the ledger with the user as the asker.
 """
 import hashlib
@@ -174,6 +175,13 @@ def _follow_ups(items: list[str], notes: list[dict[str, str]]) -> list[str]:
     return kept[:MAX_FOLLOW_UPS]
 
 
+def _typed_figures(answer: CopilotAnswer, state: dict[str, Any]) -> list[str]:
+    """The number check, run before the answer is accepted so the model can correct itself once.
+    Figures inside the quotes it cites pass here; the quotes are verified on their pages later."""
+    allowed = [figure.value for c in answer.citations for figure in extract_figures(c.quote)]
+    return [p.detail for p in check_narrative(answer.answer, state.get("facts", {}), allowed_figures=allowed)]
+
+
 def _guard(db: Session, output: CopilotAnswer, facts: dict[str, FactView], borrowers: set[uuid.UUID],
            notes: list[dict[str, str]], question: str = "") -> tuple[str | None, list[dict[str, Any]]]:
     """Apply the guardrails. Returns (why the answer is withheld or None, surviving citations)."""
@@ -241,7 +249,8 @@ def ask(
     outcome: AgentOutcome = run_agent(
         db, SPEC, task="answer_question", scope=Scope(borrower_id=borrower.id if borrower else None),
         content=_content(question, borrower, history, item), llm=llm, gateway=copilot_gateway(),
-        record_key=f"copilot/{digest[:16]}", started_by=("user", str(user.id)), state=state)
+        record_key=f"copilot/{digest[:16]}", started_by=("user", str(user.id)), state=state,
+        prose_check=_typed_figures)
     run = outcome.run
     facts: dict[str, FactView] = state["facts"]
     notes: list[dict[str, str]] = []
