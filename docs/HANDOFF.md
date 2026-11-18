@@ -68,7 +68,7 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 
 1. On the owner's machine: sign the oracle, then the first recorded live run (`uv run python -m evals.run --mode record --confirm-billable`), and fix what it shows. This is the first time a real model's reading meets these checks.
 2. A fourth independent review of number safety, after the live run, briefed with the promise and the list of what has already been found (`docs/lessons/`).
-3. Finish the test deployment (`docs/DEPLOY.md`, option A). The workspace and API are live at `https://credit-agent-squad.vercel.app` but no database is connected: the owner needs to create a PostgreSQL database and set `DATABASE_URL` on the Vercel project; then run the one-time setup routes.
+3. The test deployment is live (`docs/DEPLOY.md`, option A): `https://credit-agent-squad.vercel.app`, all 21 borrowers loaded, the application's database login cannot rewrite the ledger. Agents are off until the owner adds `ANTHROPIC_API_KEY` to the Vercel project; after that a person runs a cycle one stage at a time from the borrower page. **No stage has yet run with a real model, here or anywhere.**
 4. Remember a confirmed layout per borrower, so that in assisted mode a person confirms a borrower's first statements and later periods with the same layout go through; this is the planned way to earn `automatic`.
 5. Slice two: underwriting.
 
