@@ -13,7 +13,7 @@ from app.api.serialize import plain, row
 from app.core import clock, ledger
 from app.core.db import get_db
 from app.core.ledger import LedgerEvent
-from app.core.roles import Permission, SecondPersonRequired
+from app.core.roles import Permission, SecondPersonRequired, can
 from app.domain import calendar, stages, workflow
 from app.domain.agents import AgentRun, AgentSpecRecord, AgentStep
 from app.domain.credit import Borrower
@@ -62,7 +62,37 @@ def get_work_item(item_id: uuid.UUID, db: Session = Depends(get_db), _: User = D
     item = db.get(WorkItem, item_id)
     if item is None:
         raise HTTPException(404, "Work item not found.")
-    return {**_item(item), "evidence": plain(_evidence(db, item)), "borrower_name": _names(db).get(item.borrower_id)}
+    return {**_item(item), "evidence": plain(_evidence(db, item)), "borrower_name": _names(db).get(item.borrower_id),
+            "related_items": _related_items(db, item)}
+
+
+# Open questions on the same borrower that can change a covenant or borrowing base result: the
+# terms the test used, the figures it read, or a correction that moved an outcome.
+_CHANGES_RESULT = {
+    "terms.unapproved_amendment": "An amendment on file is not yet in the approved terms the test used",
+    "terms.approval_needed": "The terms the test relies on are awaiting approval",
+    "spread.value_unverified": "A figure the calculation may read is held",
+    "spread.does_not_foot": "The statements the calculation reads do not foot",
+    "spread.restatement": "A prior period was restated",
+    "fact.correction_changed_outcome": "A correction changed an outcome",
+    "reading.review": "A document reading awaits confirmation",
+}
+_RESULT_ITEMS = {"covenant.breach", "covenant.reported_mismatch", "covenant.reported_breach_unconfirmed",
+                 "covenant.cannot_test", "bb.over_advance", "bb.certificate_mismatch"}
+
+
+def _related_items(db: Session, item: WorkItem) -> list[dict]:
+    if item.item_type not in _RESULT_ITEMS:
+        return []
+    query = select(WorkItem).where(WorkItem.borrower_id == item.borrower_id, WorkItem.id != item.id,
+                                   WorkItem.status == "open", WorkItem.item_type.in_(tuple(_CHANGES_RESULT)))
+    out = []
+    for other in db.execute(query.order_by(WorkItem.created_at)).scalars():
+        if item.facility_id and other.facility_id and other.facility_id != item.facility_id:
+            continue
+        out.append({**row(other, only=("id", "item_type", "title", "severity", "status")),
+                    "relation": _CHANGES_RESULT[other.item_type]})
+    return out
 
 
 def _evidence(db: Session, item: WorkItem) -> dict | None:
@@ -300,11 +330,20 @@ def assign_work_item(item_id: uuid.UUID, body: AssignIn, db: Session = Depends(g
         raise HTTPException(404, "Work item not found.")
     if item.status != "open":
         raise HTTPException(422, "This item has already been decided.")
-    if body.assigned_to is not None and db.get(User, body.assigned_to) is None:
-        raise HTTPException(422, "No such person.")
-    item.assigned_to, item.due_date = body.assigned_to, body.due_date
+    if body.assigned_to is not None:
+        assignee = db.get(User, body.assigned_to)
+        if assignee is None or not assignee.is_active:
+            raise HTTPException(422, "No such person.")
+        if not can(assignee.role, Permission(item.required_permission)):
+            raise HTTPException(422, f"{assignee.name} cannot decide this item; it needs {item.required_permission}.")
+    payload: dict = {"assigned_to": body.assigned_to, "previous_assigned_to": item.assigned_to}
+    item.assigned_to = body.assigned_to
+    if "due_date" in body.model_fields_set:
+        # a due date is only changed when one is sent, and the old one stays on the ledger
+        payload.update(due_date=body.due_date, previous_due_date=item.due_date)
+        item.due_date = body.due_date
     ledger.record(db, actor_type="user", actor_id=user.id, action="work_item.assigned", entity_type="work_item",
-                  entity_id=item.id, payload={"assigned_to": body.assigned_to, "due_date": body.due_date})
+                  entity_id=item.id, payload=payload)
     db.commit()
     return row(item)
 

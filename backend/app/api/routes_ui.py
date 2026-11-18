@@ -455,17 +455,88 @@ def get_calculation(calc_id: uuid.UUID, db: Session = Depends(get_db), _: User =
     return out
 
 
-def _threshold_citation(version: TermsVersion | None, covenant_id: str) -> dict[str, Any] | None:
+def _covenant_terms(version: TermsVersion | None, covenant_id: str) -> dict[str, Any] | None:
     if version is None:
         return None
     for covenant in (version.terms or {}).get("covenants", []):
         if covenant.get("id") == covenant_id:
-            citations = covenant.get("citations") or []
-            for citation in citations:
-                if str(citation.get("field", "")).startswith("test"):
-                    return citation
-            return citations[0] if citations else None
+            return covenant
     return None
+
+
+def _step_in_force(test: dict[str, Any], period_end: date | None) -> int | None:
+    """Index into `test.steps` of the step in force at `period_end`, or None when the base
+    threshold governs. The same rule as `calc.terms.threshold_in_force`."""
+    if period_end is None:
+        return None
+    chosen: int | None = None
+    latest: date | None = None
+    for index, step in enumerate(test.get("steps") or []):
+        start = date.fromisoformat(str(step.get("from")))
+        if start <= period_end and (latest is None or start > latest):
+            chosen, latest = index, start
+    return chosen
+
+
+def _threshold_citation(version: TermsVersion | None, covenant_id: str,
+                        period_end: date | None = None) -> dict[str, Any] | None:
+    """The clause that sets the threshold in force at `period_end`: the step's own clause once a
+    step governs, else the base threshold's. Without a period, the base threshold's clause."""
+    covenant = _covenant_terms(version, covenant_id)
+    if covenant is None:
+        return None
+    citations = covenant.get("citations") or []
+    step = _step_in_force(covenant.get("test") or {}, period_end)
+    wanted = f"test.steps[{step}]" if step is not None else "test.threshold"
+    for citation in citations:
+        if citation.get("field") == wanted:
+            return citation
+    if step is not None:
+        return None  # never show the base clause as the source of a stepped threshold
+    for citation in citations:
+        if str(citation.get("field", "")).startswith("test"):
+            return citation
+    return citations[0] if citations else None
+
+
+def _term_out(db: Session, fact: Fact, version: TermsVersion | None, covenant_id: str) -> dict[str, Any] | None:
+    """A covenant threshold as what it is: a term of the approved agreement, with its schedule
+    and the clause of the step in force."""
+    covenant = _covenant_terms(version, covenant_id)
+    if covenant is None or version is None:
+        return None
+    test = covenant.get("test") or {}
+    step = _step_in_force(test, fact.period_end)
+    steps = sorted(((i, s) for i, s in enumerate(test.get("steps") or [])), key=lambda pair: str(pair[1].get("from")))
+    return {
+        "covenant_name": covenant.get("name"), "operator": test.get("operator"), "unit": test.get("unit"),
+        "threshold_in_force": plain(fact.value), "base_threshold": plain(test.get("threshold")),
+        "base_in_force": step is None,
+        "steps": [{"from": str(s.get("from")), "value": plain(s.get("value")), "in_force": i == step} for i, s in steps],
+        "terms_version": {"id": str(version.id), "version": version.version, "status": version.status,
+                          "effective_from": plain(version.effective_from)},
+        "clause": _clause(db, fact.borrower_id, _threshold_citation(version, covenant_id, fact.period_end)),
+    }
+
+
+def _headroom_out(db: Session, fact: Fact, calc: CalcRun, covenant_id: str) -> dict[str, Any]:
+    """Headroom with its own derivation: the ratio and the threshold it was measured against,
+    each a stored fact, and the formula for the covenant's direction."""
+    produced = {f.key: f for f in db.execute(select(Fact).where(Fact.calc_run_id == calc.id)).scalars()}
+    value = produced.get(f"cov.{covenant_id}.value")
+    threshold = produced.get(f"cov.{covenant_id}.threshold")
+    test = db.execute(select(CovenantTest).where(CovenantTest.calc_run_id == calc.id)
+                      .order_by(CovenantTest.superseded)).scalars().first()
+    operator = test.operator if test else None
+    formula = ("(value − threshold) ÷ |threshold|" if operator in (">=", ">")
+               else "(threshold − value) ÷ |threshold|")
+    return {
+        "operator": operator, "formula": formula,
+        "value": plain(value.value) if value else None, "value_fact_id": str(value.id) if value else None,
+        "threshold": plain(threshold.value) if threshold else None,
+        "threshold_fact_id": str(threshold.id) if threshold else None,
+        "headroom": plain(test.headroom) if test else None, "headroom_pct": plain(fact.value),
+    }
 
 
 @router.get("/ui/facts/{fact_id}/source")
@@ -492,14 +563,27 @@ def fact_source(fact_id: uuid.UUID, db: Session = Depends(get_db), _: User = Dep
     out["page"] = _cited_page(db, fact)
     if out["page"] is None and fact.kind in ("seeded", "manual"):
         out["page"] = locate_fact(db, fact, labels)
+    out["fact"]["provenance"] = None
+    out["term"] = out["headroom"] = out["ratio_calculation_id"] = None
     if fact.calc_run_id:
         calc = db.get(CalcRun, fact.calc_run_id)
         if calc is not None:
-            out["calculation"] = calculation_out(db, calc, labels)
             parts = fact.key.split(".")
-            if parts[0] == "cov" and parts[-1] == "threshold" and calc.terms_version_id:
-                version = db.get(TermsVersion, calc.terms_version_id)
-                out["clause"] = _clause(db, fact.borrower_id, _threshold_citation(version, ".".join(parts[1:-1])))
+            covenant_id = ".".join(parts[1:-1])
+            if parts[0] == "cov" and parts[-1] == "threshold":
+                # A threshold is a contract term, not the ratio's calculation: show the term in force
+                # and the clause that sets it, and link the ratio separately.
+                version = db.get(TermsVersion, calc.terms_version_id) if calc.terms_version_id else None
+                out["fact"]["provenance"] = "term"
+                out["term"] = _term_out(db, fact, version, covenant_id)
+                out["clause"] = out["term"]["clause"] if out["term"] else None
+                out["ratio_calculation_id"] = str(calc.id)
+            elif parts[0] == "cov" and parts[-1] == "headroom_pct":
+                out["fact"]["provenance"] = "headroom"
+                out["headroom"] = _headroom_out(db, fact, calc, covenant_id)
+                out["ratio_calculation_id"] = str(calc.id)
+            else:
+                out["calculation"] = calculation_out(db, calc, labels)
     earlier, cursor, seen = [], fact, {fact.id}
     while cursor.supersedes_fact_id and cursor.supersedes_fact_id not in seen:
         cursor = db.get(Fact, cursor.supersedes_fact_id)
@@ -681,7 +765,7 @@ def borrower_covenants(borrower_id: uuid.UUID, db: Session = Depends(get_db), _:
         threshold = companions.get((f"cov.{test.covenant_id}.threshold", test.period_end))
         headroom = companions.get((f"cov.{test.covenant_id}.headroom_pct", test.period_end))
         version = versions.get(test.terms_version_id)
-        citation = _threshold_citation(version, test.covenant_id)
+        citation = _threshold_citation(version, test.covenant_id, test.period_end)
         item = items_by_test.get(str(test.id))
         facility = facilities.get(test.facility_id)
         entry = {

@@ -288,6 +288,24 @@ def drain(db: Session, limit: int = 1000) -> int:
     return count
 
 
+# Decisions that must carry a written reason: every response to a breach or an over-advance, and
+# every decision that sets aside what code found. Enforced here, not only in the browser.
+DECISIONS_NEEDING_REASON = frozenset({
+    "waiver_requested", "reservation_of_rights", "escalate_to_committee", "not_a_breach", "paydown_required",
+    "temporary_overadvance_approved", "certificate_correct", "extension_granted", "received_elsewhere",
+    "rating_review_requested", "add_to_watch_list", "values_corrected", "accept_as_reported",
+    "restated_update_prior", "keep_prior", "amendment_not_applicable", "not_applicable", "return_for_rework",
+    "reject",
+})
+ITEM_TYPES_NEEDING_REASON = frozenset({
+    "covenant.breach", "covenant.reported_mismatch", "covenant.reported_breach_unconfirmed", "bb.over_advance",
+})
+
+
+def needs_reason(item_type: str, decision: str) -> bool:
+    return decision in DECISIONS_NEEDING_REASON or item_type in ITEM_TYPES_NEEDING_REASON
+
+
 def decide_work_item(
     db: Session, item: WorkItem, *, user_id: uuid.UUID, user_role: str, decision: str, reason: str = "",
 ) -> WorkItem:
@@ -301,6 +319,9 @@ def decide_work_item(
         raise ValueError(f"{decision!r} is not one of the allowed decisions: {allowed}")
     if not can(user_role, Permission(item.required_permission)):
         raise PermissionError(f"your role cannot decide this item ({item.required_permission})")
+    reason = (reason or "").strip()
+    if needs_reason(item.item_type, decision) and not reason:
+        raise ValueError("this decision needs a written reason")
     if item.requires_second_person:
         require_second_person(item.prepared_by_id, user_id)
     # The decision is recorded first and its hook runs second, inside one savepoint. A hook that
