@@ -21,7 +21,7 @@ EXPECTED_EXCEPTIONS = {
     "unapproved_amendment": ["covenant.reported_mismatch", "terms.unapproved_amendment"],
     "addback_over_cap": [],
     "deteriorating_trend": ["signal.high"],
-    "late_reporting": ["intake.missing_document", "intake.missing_document", "signal.high"],
+    "late_reporting": ["intake.missing_document", "intake.missing_document"],
     "miscounted_ineligible": ["bb.certificate_mismatch"],
     "over_advance": ["bb.over_advance"],
     "scale_trap": [],
@@ -240,8 +240,11 @@ def test_signals(generated):
     assert "availability_low" in {s["rule"] for s in over["expected"]["signals"]}
     for truth in generated.truths.values():
         highs = [s for s in truth["expected"]["signals"] if s["period_end"] == CURRENT and s["severity"] == "high"]
+        chasing = any(e["type"] == "intake.missing_document" for e in truth["expected"]["exceptions"])
+        # a late-reporting warning joins the open chaser instead of raising its own item
+        own_item = [s for s in highs if not (s["rule"] == "reporting_late" and chasing)]
         raised = [e for e in truth["expected"]["exceptions"] if e["type"] == "signal.high"]
-        assert len(highs) == len(raised)
+        assert len(own_item) == len(raised)
 
 
 def test_scale_trap_and_variance_details(generated):

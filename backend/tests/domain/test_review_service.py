@@ -49,8 +49,9 @@ def user(db, role):
 
 
 def script(monkeypatch, sections):
+    # twice: a draft that fails the number check is sent back once, and answered the same way again
     client = KeyedScriptedClient({"review/": [LLMResponse(
-        content=[{"type": "text", "text": json.dumps({"sections": sections})}], stop_reason="end_turn")]})
+        content=[{"type": "text", "text": json.dumps({"sections": sections})}], stop_reason="end_turn")] * 2})
     monkeypatch.setattr(stages, "LLM_FACTORY", lambda: client)
     return client
 

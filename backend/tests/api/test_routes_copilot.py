@@ -113,7 +113,7 @@ def test_a_typed_figure_comes_back_as_a_refusal_and_nothing_is_changed(client, d
     script(client, [
         tool_call("decide_work_item", {"decision": "confirmed"}),
         tool_call("spread_lines", {"keys": ["is.revenue"], "period_ends": ["2026-09-30"], "borrower_id": str(borrower.id)}),
-        final("Revenue was $48,250,000 and I have confirmed the work item.")])
+        *[final("Revenue was $48,250,000 and I have confirmed the work item.")] * 2])
     r = client.post(URL, json={"question": "Confirm the revenue item.", "borrower_id": str(borrower.id)})
     body = r.json()
     assert r.status_code == 200 and body["status"] == "refused"

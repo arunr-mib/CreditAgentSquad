@@ -123,8 +123,10 @@ def test_an_invented_signal_is_ignored_and_a_typed_figure_drops_only_the_explana
                  "explanation": "Margin is quoted from {{fact:" + str(uuid.uuid4()) + "}}, a fact that was not given."}],
             "ranking": [invented, dso["signal_id"], dso["signal_id"]]})
 
-    result = explain_signals(db, borrower, PERIOD, FlowClient([respond]))
+    client = FlowClient([respond, respond])  # sent back once for the typed figure, answered the same way
+    result = explain_signals(db, borrower, PERIOD, client)
     after = signals(db, borrower)
+    assert len(client.requests) == 2, "the typed figure was sent back once"
     assert snapshot(db, borrower) == before and invented not in after
     assert db.get(Signal, uuid.UUID(invented)) is None
     noted = [(n["check"], n["action"]) for n in result.notes]
