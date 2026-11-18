@@ -172,10 +172,23 @@ export interface ApiRecommendation {
   [key: string]: unknown;
 }
 
+/** An open item on the same borrower (and loan, where known) that may change another item's result. */
+export interface RelatedItem {
+  id: string;
+  item_type: string;
+  title: string;
+  severity: Severity;
+  status: 'open' | 'decided' | 'dismissed';
+  /** Why it matters here, in the server's words: an unapproved amendment, held figures, a correction. */
+  relation: string;
+}
+
 export interface WorkItemDetail extends WorkItemRow {
   evidence: Record<string, unknown>;
   recommendation: ApiRecommendation | null;
   guardrail_notes: GuardrailNote[];
+  /** Absent on older APIs. */
+  related_items?: RelatedItem[];
 }
 
 /* ── Documents ────────────────────────────────────────────────────────── */

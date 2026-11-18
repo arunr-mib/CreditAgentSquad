@@ -1,11 +1,31 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ApiUser, WorkItemDetail } from '@/api/schema';
 import { AuthContext } from '@/auth/context';
+import { WorkspaceDrawerContext, type WorkspaceDrawerValue } from '@/drawer/context';
 import { SeverityTag } from '../parts';
-import { DecisionForm } from './WorkItemPanel';
+import { DecisionForm, WorkItemPanel } from './WorkItemPanel';
+
+window.scrollTo = () => {};
+const noop = () => {};
+const drawerValue: WorkspaceDrawerValue = {
+  open: true,
+  tab: 'item',
+  itemId: 'w-1',
+  borrowerCode: null,
+  copilotScope: { kind: 'portfolio' },
+  reasonDraft: null,
+  openItem: noop,
+  openBorrower: noop,
+  openCopilot: noop,
+  setTab: noop,
+  setCopilotScope: noop,
+  draftReason: noop,
+  close: noop,
+};
 
 const item = (over: Partial<WorkItemDetail> = {}): WorkItemDetail =>
   ({
@@ -131,6 +151,71 @@ describe('a decision within the reader’s authority', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Record decision' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('This decision needs a reason');
     expect(calls.filter((call) => call.method === 'POST')).toEqual([]);
+  });
+});
+
+describe('open questions that may change the result', () => {
+  const RELATED = [
+    {
+      id: 'w-amend-1234',
+      item_type: 'terms.amendment_unapproved',
+      title: 'Second amendment is on file but not approved into terms',
+      severity: 'high' as const,
+      status: 'open' as const,
+      relation: 'An unapproved amendment may change the threshold',
+    },
+    { id: 'w-held-5678', item_type: 'spread.value_unverified', title: 'Two figures are held', severity: 'medium' as const, status: 'open' as const, relation: 'Held figures feed this ratio' },
+  ];
+
+  function panel(work: WorkItemDetail) {
+    const openItem = vi.fn();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        const body = url.startsWith('/api/v1/work-items/') ? work : url.startsWith('/api/v1/ui/users') ? PEOPLE : [];
+        return { ok: true, status: 200, text: async () => JSON.stringify(body) } as Response;
+      }),
+    );
+    const root = createRootRoute();
+    const page = createRoute({ getParentRoute: () => root, path: '/', component: () => <WorkItemPanel itemId={work.id} variant="drawer" /> });
+    const router = createRouter({ routeTree: root.addChildren([page]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const auth = {
+      user: officer,
+      status: 'signed-in' as const,
+      can: (permission: string) => officer.permissions.includes(permission),
+      signIn: async () => officer,
+      signOut: async () => {},
+      retry: () => {},
+    };
+    render(
+      <QueryClientProvider client={client}>
+        <AuthContext.Provider value={auth}>
+          <WorkspaceDrawerContext.Provider value={{ ...drawerValue, openItem }}>
+            <RouterProvider router={router as never} />
+          </WorkspaceDrawerContext.Provider>
+        </AuthContext.Provider>
+      </QueryClientProvider>,
+    );
+    return openItem;
+  }
+
+  it('lists each related open item above the decision, each opening in the drawer, without blocking the decision', async () => {
+    const openItem = panel(item({ related_items: RELATED }));
+    const notice = await screen.findByRole('region', { name: 'Open questions that may change this result' });
+    const form = screen.getByRole('form', { name: 'Record a decision' });
+    expect(notice.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(notice).toHaveTextContent('An unapproved amendment may change the threshold');
+    await userEvent.click(screen.getByRole('button', { name: 'Second amendment is on file but not approved into terms' }));
+    expect(openItem).toHaveBeenCalledWith('w-amend-1234');
+    await userEvent.click(screen.getByRole('radio', { name: /Escalate to committee/ }));
+    expect(screen.getByRole('button', { name: 'Record decision' })).toBeEnabled();
+  });
+
+  it('shows nothing when there are none, or when the API does not send them', async () => {
+    panel(item({ related_items: [] }));
+    await screen.findByRole('form', { name: 'Record a decision' });
+    expect(screen.queryByRole('region', { name: 'Open questions that may change this result' })).toBeNull();
   });
 });
 

@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import { ArrowUpRight, ShieldCheck, Users } from 'lucide-react';
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useId, useState, type FormEvent, type ReactNode } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
 import { useAssignItem, useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkItem } from '@/api/hooks';
-import type { ApiRecommendation, WorkItemDetail } from '@/api/schema';
+import type { ApiRecommendation, RelatedItem, WorkItemDetail } from '@/api/schema';
 import type { ProvenanceKind } from '@/api/types';
 import { useAuth } from '@/auth/context';
 import {
@@ -367,6 +367,45 @@ function Recommendation({
   );
 }
 
+/* ── Related items ────────────────────────────────────────────────────── */
+
+/**
+ * Open questions on the same borrower that may change this item's result: an amendment not yet
+ * approved into terms, held figures, a correction. Shown before the decision; it does not block it.
+ */
+export function RelatedItems({ items, headingLevel: Heading }: { items: RelatedItem[]; headingLevel: 'h3' | 'h4' }) {
+  const drawer = useWorkspaceDrawer();
+  const headingId = useId();
+  if (items.length === 0) return null;
+  return (
+    <section data-related-items aria-labelledby={headingId} className="rounded-md border border-amber-border bg-amber-bg px-3 py-2.5">
+      <Heading id={headingId} className="text-body font-semibold text-ink">
+        <StatusDot tone="attention" className="whitespace-normal!">
+          Open questions that may change this result
+        </StatusDot>
+      </Heading>
+      <p className="mt-0.5 pl-[13px] text-caption text-pretty text-ink-700">
+        {items.length === 1 ? 'This item is' : 'These items are'} still open. You can decide now; the result may change once{' '}
+        {items.length === 1 ? 'it is' : 'they are'} settled.
+      </p>
+      <ul className="mt-1.5 space-y-1 pl-[13px]">
+        {items.map((related) => (
+          <li key={related.id} className="text-body">
+            <button type="button" className="link text-left font-medium" onClick={() => drawer.openItem(related.id)}>
+              {related.title}
+            </button>
+            <span className="text-ink-700">
+              {' '}
+              · {related.relation}
+            </span>
+            <span className="ident ml-1.5 text-caption text-ink-500">{related.id.slice(0, 8)}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /* ── Decision ─────────────────────────────────────────────────────────── */
 
 /** The server's refusal, named by what it means and shown in its own words. */
@@ -676,6 +715,9 @@ export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className,
           <p className="rounded-md border border-hairline bg-canvas px-3 py-2 text-body text-pretty text-ink-700">
             No agent recommendation is attached. The evidence above was produced by code; the decision is yours.
           </p>
+        ) : null}
+        {item.status === 'open' ? (
+          <RelatedItems items={(item.related_items ?? []).filter((related) => related.id !== item.id && related.status === 'open')} headingLevel={SubHeading} />
         ) : null}
       </div>
 
