@@ -9,6 +9,7 @@ import { CalculationBreakdown } from '@/source/CalculationBreakdown';
 import { useSource } from '@/source/context';
 import { FactFigure, ProvenanceLegend } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, SectionHead } from '../parts';
+import { useIsPhone } from '../Portfolio';
 import { WorkItemPanel } from '../work/WorkItemPanel';
 import { useCurrentBorrower } from './BorrowerLayout';
 import { RunStage } from './RunStage';
@@ -79,6 +80,8 @@ function Trend({
 }) {
   // Plot positions only: the figures shown beside the chart are the stored facts, formatted from their strings.
   const points = trendPoints(tests);
+  // On a phone the quarter and the year sit on two lines, so seven periods fit side by side.
+  const twoLines = useIsPhone();
   const selected = points.find((point) => point.id === selectedId) ?? points[points.length - 1];
   if (points.length < 2 || !selected) return null;
   const values = points.flatMap((point) => [point.plot, point.threshold]).filter((value): value is number => value !== null && Number.isFinite(value));
@@ -91,14 +94,14 @@ function Trend({
     <div>
       <div className="h-[168px]" role="group" aria-label={`${selected.test.covenant_name} by period. Choose a period to see its test.`}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={points} margin={{ top: 12, right: 16, bottom: 0, left: 0 }} accessibilityLayer={false}>
+          <LineChart data={points} margin={{ top: 12, right: 30, bottom: 0, left: 0 }} accessibilityLayer={false}>
             <CartesianGrid vertical={false} stroke="var(--hairline)" />
             <XAxis
               dataKey="label"
               axisLine={{ stroke: 'var(--hairline-strong)' }}
               tickLine={false}
               interval={0}
-              height={28}
+              height={twoLines ? 38 : 28}
               tick={(props: { x?: number | string; y?: number | string; index?: number; payload?: { value?: string } }) => {
                 const point = points[props.index ?? 0];
                 const active = point?.id === selected.id;
@@ -117,7 +120,7 @@ function Trend({
                     }}
                     className="cursor-pointer"
                   >
-                    <rect x={Number(props.x) - 30} y={Number(props.y) - 2} width={60} height={22} fill="transparent" />
+                    <rect x={Number(props.x) - 30} y={Number(props.y) - 2} width={60} height={twoLines ? 34 : 22} fill="transparent" />
                     <text
                       x={props.x}
                       y={Number(props.y) + 12}
@@ -127,7 +130,13 @@ function Trend({
                       fill={active ? 'var(--cobalt-strong)' : 'var(--ink-500)'}
                       textDecoration={active ? 'underline' : undefined}
                     >
-                      {props.payload?.value}
+                      {twoLines
+                        ? (props.payload?.value ?? '').split(' ').map((part, index) => (
+                            <tspan key={part} x={props.x} dy={index === 0 ? 0 : 13}>
+                              {part}
+                            </tspan>
+                          ))
+                        : props.payload?.value}
                     </text>
                   </g>
                 );
