@@ -36,9 +36,14 @@ def actions(db, prefix="auth."):
 
 
 def app_in(db, monkeypatch, env: str | None):
-    """The app as it starts with SQUAD_ENV set to `env`, or not set at all."""
+    """The app as it starts with SQUAD_ENV set to `env`, or not set at all. "Not set" must not
+    pick up a developer's own .env file (scripts/demo.sh writes one with SQUAD_ENV=local), so
+    the settings are built without it."""
+    from app.core import config
+
     if env is None:
         monkeypatch.delenv("SQUAD_ENV", raising=False)
+        monkeypatch.setitem(config.Settings.model_config, "env_file", None)
     else:
         monkeypatch.setenv("SQUAD_ENV", env)
     get_settings.cache_clear()

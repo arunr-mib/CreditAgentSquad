@@ -35,7 +35,7 @@ EXPECTED = {
     "bb-aging-note-dropped": "recovered",  # since 2026-11-18 code reads a row's note from the page itself
     "bb-aging-figure-misread": "product",
     "bb-aging-row-dropped": "product and grader",
-    "bb-lines-misnamed": "product and grader",
+    "bb-lines-misnamed": "product",  # since 2026-11-18 the row label must name the line, so the figures are never stored
     "intake-misclassified": "product",
     "intake-wrong-period": "product and grader",
     "review-types-a-figure": "product",

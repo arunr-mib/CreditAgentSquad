@@ -31,7 +31,8 @@ The promise is that no invented or wrong number reaches a person or a covenant t
 
 - Complete evaluation on the committed code (`evals/results/latest.md`): 21 borrowers, extraction 2,677 of 2,677 facts, covenant outcomes 100%, exception precision and recall 100%, 17 of 21 cycles closed, the other 4 resting on the exceptions their scenarios expect, 47.6% of cycles needing no person on the automatic path. Stand-in reader.
 - 47 tampering checks: 46 refused by the product, 1 recovered (code reads the dropped note from the page itself), none slipped.
-- Test suite: see the last entry in `docs/lessons/` and the commit history for the run at each stage; the complete suite takes about 17 minutes (`uv run pytest`), about 11 without the slow evaluation tests (`-m "not slow"`).
+- Test suite: the complete run on the final code gave 973 passed, 5 failed. The five were two tests that read a developer's local `.env` and three stale expectations in the tampering tests; all five were fixed and the two files then passed (65 tests). The complete suite was not run again after those test-only fixes. It takes about 13 minutes (`uv run pytest`), about 10 without the slow evaluation tests (`-m "not slow"`).
+- Workspace: 164 unit tests pass and the type check is clean; the repair, commentary, upload and schedule screens were exercised in a browser by the worker that built them, except rejecting a figure and clicking Confirm, which are covered by unit tests only.
 - `scripts/demo.sh` run on Linux against an empty database: created the database, loaded the book, started the API and the workspace, sign-in worked.
 - `scripts/start-hosted.sh` run locally against an empty database: migrations, demo data, worker and API came up.
 
@@ -75,7 +76,7 @@ Decided on 2026-11-17: receivable-days and payable-days signals are medium sever
 
 ```bash
 service postgresql start                                   # cloud container
-uv sync && uv run pytest                                   # all tests, about 17 minutes
+uv sync && uv run pytest                                   # all tests, about 13 minutes
 uv run python -m synthetic.generate                        # build the book into synthetic/out/
 cd backend && uv run alembic upgrade head && cd ..         # create the schema
 PYTHONPATH=backend uv run python -m app.seed_book          # load users and the book (demo password: squad-demo)
