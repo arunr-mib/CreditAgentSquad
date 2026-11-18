@@ -450,7 +450,7 @@ function AuthorityGate({ item }: { item: WorkItemDetail }) {
       </p>
       {routed ? (
         <p data-routed className="mt-2 text-body text-ink">
-          <StatusDot tone="pass">
+          <StatusDot tone="neutral">
             Routed to {assignee.name}, {assignee.title}
           </StatusDot>
         </p>

@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { Banknote, FileStack, FileText, Inbox, Radar, Scale, ShieldCheck, Table2, X, type LucideIcon } from 'lucide-react';
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { usePortfolio, useUsers, useWorkItems } from '@/api/hooks';
 import type { WorkItemRow } from '@/api/schema';
 import type { Severity, StageId } from '@/api/types';
@@ -14,6 +14,7 @@ import {
   formatDue,
   Kbd,
   PageHeader,
+  Popover,
   Segmented,
   SkeletonRows,
   StackedBar,
@@ -67,8 +68,8 @@ function SummaryCard({
         <span className="text-caption text-ink-700">{note}</span>
       </p>
       {bar ? <div className="mt-2">{bar}</div> : null}
-      {/* Beside the open drawer the cards keep their headline and bar and give the rows' room to the queue. */}
-      {compact ? null : <ul className="mt-2 grid grid-cols-1 gap-px text-body">{children}</ul>}
+      {/* Beside the open drawer the cards keep their rows, set a little tighter, two to a line. */}
+      <ul className={cx('mt-2 grid grid-cols-1 gap-px', compact ? 'text-caption' : 'text-body')}>{children}</ul>
     </section>
   );
 }
@@ -112,6 +113,45 @@ function rolesFor(item: WorkItemRow): string {
   return (ROLES_WITH[item.required_permission] ?? []).map(roleLabel).join(' or ');
 }
 
+/**
+ * The items outside the reader's authority, in a few words: one role is named; several are
+ * grouped as "other roles", and the list of who needs what sits behind it.
+ */
+export function othersPhrase(others: Array<[string, number]>): { text: string; list: Array<[string, number]> | null } | null {
+  const total = others.reduce((sum, [, count]) => sum + count, 0);
+  if (total === 0) return null;
+  const only = others.length === 1 ? others[0] : undefined;
+  if (only) return { text: `${only[1]} ${only[1] === 1 ? 'needs' : 'need'} ${only[0]} sign-off`, list: null };
+  return { text: `${total} ${total === 1 ? 'needs' : 'need'} other roles`, list: others };
+}
+
+function OtherRoles({ others }: { others: Array<[string, number]> }) {
+  const phrase = othersPhrase(others);
+  if (!phrase) return null;
+  if (!phrase.list) return <>{phrase.text}</>;
+  return (
+    <Popover
+      label="Exceptions that need other roles"
+      trigger={
+        <button type="button" data-other-roles className="link">
+          {phrase.text}
+        </button>
+      }
+      className="w-72 px-3 py-2"
+    >
+      <p className="eyebrow mb-1">Who may sign them off</p>
+      <ul className="text-body">
+        {phrase.list.map(([role, count]) => (
+          <li key={role} className="flex items-baseline justify-between gap-4 border-b border-hairline py-1 last:border-b-0">
+            <span className="text-ink-700">{role}</span>
+            <span className="tnum font-semibold text-ink">{count}</span>
+          </li>
+        ))}
+      </ul>
+    </Popover>
+  );
+}
+
 export function CommandCentre() {
   const queue = useWorkItems({ status: 'open' });
   const portfolio = usePortfolio();
@@ -125,7 +165,7 @@ export function CommandCentre() {
   const items = useMemo(() => queue.data ?? [], [queue.data]);
   const severity = search.severity && SEVERITIES.includes(search.severity as Severity) ? search.severity : 'all';
   const group = search.type ?? 'all';
-  const setSearch = (next: { item?: string; severity?: string; type?: string }) =>
+  const setSearch = (next: { severity?: string; type?: string }) =>
     void navigate({ search: (previous) => ({ ...previous, ...next }), replace: true, resetScroll: false });
 
   const groupCounts = useMemo(() => {
@@ -144,12 +184,31 @@ export function CommandCentre() {
     [items, severity, group, can],
   );
 
-  // A link that names an item opens it. After that the drawer owns the selection.
+  // A link that names an item opens it, once. After that the drawer owns the selection and the
+  // address follows it: ?item= names the open exception, and goes when the drawer closes.
   const linked = search.item;
   const { openItem } = drawer;
+  const handledLink = useRef<string | null>(null);
   useEffect(() => {
-    if (linked && items.some((item) => item.id === linked)) openItem(linked);
+    if (linked && linked !== handledLink.current && items.some((item) => item.id === linked)) {
+      handledLink.current = linked;
+      openItem(linked);
+    }
   }, [linked, items, openItem]);
+
+  const shownItem = drawer.open && !drawer.borrowerCode ? drawer.itemId : null;
+  const wasShown = useRef<string | null>(null);
+  useEffect(() => {
+    if (shownItem) {
+      wasShown.current = shownItem;
+      handledLink.current = shownItem;
+      if (linked !== shownItem) void navigate({ search: (previous) => ({ ...previous, item: shownItem }), replace: true, resetScroll: false });
+    } else if (wasShown.current) {
+      wasShown.current = null;
+      handledLink.current = null;
+      if (linked) void navigate({ search: (previous) => ({ ...previous, item: undefined }), replace: true, resetScroll: false });
+    }
+  }, [shownItem, linked, navigate]);
 
   const openId = drawer.open ? drawer.itemId : null;
   useEffect(() => {
@@ -169,6 +228,7 @@ export function CommandCentre() {
     return [...counts.entries()].sort((a, b) => b[1] - a[1]);
   }, [items, can]);
 
+  const compact = drawer.open;
   const columns = useMemo<Array<DataColumn<WorkItemRow>>>(
     () => [
       { id: 'severity', header: 'Severity', sortValue: (item) => SEVERITY_RANK[item.severity], cell: (item) => <SeverityTag severity={item.severity} /> },
@@ -178,6 +238,7 @@ export function CommandCentre() {
         rowHeader: true,
         wrap: true,
         minWidth: '150px',
+        width: compact ? '30%' : undefined,
         sortValue: (item) => item.borrower_name,
         cell: (item) => <span className="font-medium text-ink">{item.borrower_name}</span>,
       },
@@ -185,7 +246,7 @@ export function CommandCentre() {
         id: 'summary',
         header: 'Exception / finding',
         wrap: true,
-        width: '40%',
+        width: compact ? undefined : '40%',
         sortValue: (item) => shortTitle(item),
         cell: (item) =>
           isBreachItem(item.item_type) ? (
@@ -196,33 +257,38 @@ export function CommandCentre() {
             <span className="text-ink-700">{shortTitle(item)}</span>
           ),
       },
-      {
-        id: 'routing',
-        header: 'Routing',
-        wrap: true,
-        sortValue: (item) => (can(item.required_permission) ? 0 : 1),
-        cell: (item) => {
-          const assignee = item.assigned_to ? users.data?.find((person) => person.id === item.assigned_to) : undefined;
-          return (
-            <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              {can(item.required_permission) ? (
-                <span className="text-ink-700">Within your authority</span>
-              ) : (
-                <Tag tone="gate" icon={<ShieldCheck size={12} strokeWidth={2} />}>
-                  {rolesFor(item) || 'Another role'} sign-off
-                </Tag>
-              )}
-              {assignee ? <span className="text-caption text-ink-700">routed to {assignee.name}</span> : null}
-              {item.agent_run_id ? (
-                <span className="inline-flex items-center gap-1 text-caption text-iris">
-                  <AgentMark size={8} />
-                  agent note
-                </span>
-              ) : null}
-            </span>
-          );
-        },
-      },
+      // Beside the open drawer, routing gives way: the drawer shows who may decide the open item.
+      ...(compact
+        ? []
+        : [
+            {
+              id: 'routing',
+              header: 'Routing',
+              wrap: true,
+              sortValue: (item) => (can(item.required_permission) ? 0 : 1),
+              cell: (item) => {
+                const assignee = item.assigned_to ? users.data?.find((person) => person.id === item.assigned_to) : undefined;
+                return (
+                  <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    {can(item.required_permission) ? (
+                      <span className="text-ink-700">Within your authority</span>
+                    ) : (
+                      <Tag tone="gate" icon={<ShieldCheck size={12} strokeWidth={2} />}>
+                        {rolesFor(item) || 'Another role'} sign-off
+                      </Tag>
+                    )}
+                    {assignee ? <span className="text-caption text-ink-700">routed to {assignee.name}</span> : null}
+                    {item.agent_run_id ? (
+                      <span className="inline-flex items-center gap-1 text-caption text-iris">
+                        <AgentMark size={8} />
+                        agent note
+                      </span>
+                    ) : null}
+                  </span>
+                );
+              },
+            } satisfies DataColumn<WorkItemRow>,
+          ]),
       {
         id: 'due',
         header: 'Due / SLA',
@@ -239,7 +305,7 @@ export function CommandCentre() {
         },
       },
     ],
-    [asOf, can, users.data],
+    [asOf, can, users.data, compact],
   );
 
   const summary = portfolio.data;
@@ -254,9 +320,19 @@ export function CommandCentre() {
               ? `${quarterLabel(summary.period_end)} monitoring cycle (ended ${formatDate(summary.period_end)})`
               : 'No monitoring cycle is open'}{' '}
             · {items.length} {items.length === 1 ? 'exception' : 'exceptions'} awaiting sign-off
-            {user && items.length > 0
-              ? `: ${mine} within your ${roleLabel(user.role)} authority${others.length > 0 ? `, ${others.map(([role, count]) => `${count} for ${role}`).join(', ')}` : ''}.`
-              : '.'}{' '}
+            {user && items.length > 0 ? (
+              <>
+                : {mine} within your authority
+                {others.length > 0 ? (
+                  <>
+                    , <OtherRoles others={others} />
+                  </>
+                ) : null}
+                .
+              </>
+            ) : (
+              '.'
+            )}{' '}
             <span className="text-ink-500">Totals cover the whole portfolio.</span>
           </span>
         ) : undefined
@@ -288,7 +364,6 @@ export function CommandCentre() {
   const outcomes = summary ? [...summary.covenants.by_outcome].sort((a, b) => OUTCOME[a.outcome].rank - OUTCOME[b.outcome].rank) : [];
   const filterLabel = group === 'all' ? null : group === 'mine' ? 'Within my authority' : (ITEM_GROUP_LABEL[group as ItemGroup] ?? group);
   const filtersOn = group !== 'all' || severity !== 'all';
-  const compact = drawer.open;
 
   return (
     <div data-ready className="@container space-y-5">
@@ -334,12 +409,7 @@ export function CommandCentre() {
               const Icon = GROUP_ICON[key];
               return (
                 <li key={key}>
-                  <button
-                    type="button"
-                    aria-pressed={group === key}
-                    onClick={() => setSearch({ type: group === key ? undefined : key, item: undefined })}
-                    className={rowClass}
-                  >
+                  <button type="button" aria-pressed={group === key} onClick={() => setSearch({ type: group === key ? undefined : key })} className={rowClass}>
                     <span className="flex min-w-0 items-center gap-2">
                       <Icon size={14} strokeWidth={1.75} aria-hidden className="shrink-0 text-ink-500 group-aria-pressed:text-cobalt" />
                       {ITEM_GROUP_LABEL[key]}
@@ -353,7 +423,7 @@ export function CommandCentre() {
               <button
                 type="button"
                 aria-pressed={group === 'mine'}
-                onClick={() => setSearch({ type: group === 'mine' ? undefined : 'mine', item: undefined })}
+                onClick={() => setSearch({ type: group === 'mine' ? undefined : 'mine' })}
                 className={cx(rowClass, 'mt-1 border-t border-hairline pt-1')}
               >
                 <span>Within my authority</span>
@@ -400,7 +470,7 @@ export function CommandCentre() {
             </li>
             <li>
               <Link to="/calendar" className={rowClass}>
-                <StatusDot tone="pass">Received, last 30 days</StatusDot>
+                <span>Received, last 30 days</span>
                 <span className={countClass}>{summary.obligations.received_in_last_30_days}</span>
               </Link>
             </li>
@@ -451,7 +521,7 @@ export function CommandCentre() {
               <Segmented
                 label="Severity"
                 value={severity}
-                onValueChange={(value) => setSearch({ severity: value === 'all' ? undefined : value, item: undefined })}
+                onValueChange={(value) => setSearch({ severity: value === 'all' ? undefined : value })}
                 options={[
                   { value: 'all', label: 'All', count: items.length },
                   ...SEVERITIES.map((level) => ({ value: level, label: SEVERITY_LABEL[level], count: items.filter((item) => item.severity === level).length })),
@@ -462,7 +532,7 @@ export function CommandCentre() {
               <button
                 type="button"
                 data-active-filter
-                onClick={() => setSearch({ type: undefined, item: undefined })}
+                onClick={() => setSearch({ type: undefined })}
                 className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-cobalt-border bg-cobalt-bg px-2.5 text-body font-medium text-ink t-colors hover:border-cobalt"
               >
                 {filterLabel}
@@ -471,7 +541,7 @@ export function CommandCentre() {
               </button>
             ) : null}
             {filtersOn ? (
-              <Button variant="ghost" size="sm" onClick={() => setSearch({ severity: undefined, type: undefined, item: undefined })}>
+              <Button variant="ghost" size="sm" onClick={() => setSearch({ severity: undefined, type: undefined })}>
                 Clear filters
               </Button>
             ) : null}
@@ -490,7 +560,7 @@ export function CommandCentre() {
               <EmptyState
                 title="Nothing matches these filters"
                 description="No open exception has this severity and kind together."
-                action={<Button onClick={() => setSearch({ severity: undefined, type: undefined, item: undefined })}>Clear filters</Button>}
+                action={<Button onClick={() => setSearch({ severity: undefined, type: undefined })}>Clear filters</Button>}
               />
             }
           />
