@@ -412,10 +412,11 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
       {
         id: 'outcome',
         header: 'Outcome',
-        wrap: 'narrow',
+        // Wraps wherever the column is short of room: below 1280 px, or beside an open source drawer.
+        wrap: true,
         sortValue: (row) => OUTCOME[row.outcome].rank,
         cell: (row) => (
-          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="max-[1279px]:whitespace-normal!">
+          <StatusDot tone={OUTCOME[row.outcome].tone} emphasis={OUTCOME[row.outcome].emphasis} className="whitespace-normal!">
             {OUTCOME[row.outcome].label}
           </StatusDot>
         ),
@@ -431,9 +432,9 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
   const cycle = overview?.cycle;
 
   return (
-    <div data-ready className="space-y-5">
+    <div data-ready className="@container space-y-5">
       {cycle && cycle.period_end === period ? <CycleStepper cycle={cycle} /> : null}
-      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+      <div className="grid items-start gap-5 @min-[1080px]:grid-cols-[minmax(0,1fr)_400px]">
         <div className="min-w-0 space-y-5">
           <section aria-labelledby="tests-heading" className="min-w-0">
             <SectionHead
@@ -472,7 +473,7 @@ function Workspace({ data, overview }: { data: BorrowerCovenants; overview: Borr
 
         <aside
           aria-label="Exception for the selected covenant"
-          className="min-w-0 xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md"
+          className="min-w-0 @min-[1080px]:sticky @min-[1080px]:top-[68px] @min-[1080px]:max-h-[calc(100vh-88px)] @min-[1080px]:overflow-y-auto @min-[1080px]:rounded-md"
         >
           {selected.work_item ? (
             <WorkItemPanel key={selected.work_item.id} itemId={selected.work_item.id} />
