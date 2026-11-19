@@ -2,7 +2,7 @@
 
 **Mode: record.** Mode record: answers came from a live model.
 
-- Generated 2026-11-19T07:03:34+00:00; commit `0c77f8c1208dc649943e43e5561010b4562e9641`; 2 borrower(s) (['harrowgate-precision', 'briarstone-beverage']); 1 pass(es); run time 217.0 seconds.
+- Generated 2026-11-19T18:41:00+00:00; commit `b96b0e7db5f37e1c82ca96ae7245f2a90ef86cc4`; 1 borrower(s) (['kestrel-bay-packaging']); 1 pass(es); run time 120.8 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 0.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
@@ -15,17 +15,17 @@ Rule: any invented-number or false-compliant in any pass fails; accuracy is repo
 
 | Measure | Value |
 |---|---|
-| Extraction accuracy (verified facts equal to truth, over facts expected) | 100.0% (400 of 400) |
+| Extraction accuracy (verified facts equal to truth, over facts expected) | 100.0% (102 of 102) |
 | Extraction abstain rate (expected facts with no usable fact) | 0.0% |
 | Covenant outcome accuracy | 100.0% |
 | Covenant abstain rate (cannot test where the truth has an outcome) | 0.0% |
 | Exception precision | 100.0% |
 | Exception recall | 100.0% |
-| Cycles needing no person (beyond the commentary approval every review needs) | 50.0% (the book expects 50.0%) |
-| Cycles reaching the signals stage or beyond | 2 of 2 |
-| Cycles closed | 2 of 2 |
+| Cycles needing no person (beyond the commentary approval every review needs) | 0.0% (the book expects 0.0%) |
+| Cycles reaching the signals stage or beyond | 1 of 1 |
+| Cycles closed | 1 of 1 |
 | Other disagreements with the truth | 0 |
-| Model tokens in / out | 76,703 / 25,746 |
+| Model tokens in / out | 42,519 / 13,110 |
 
 | Named failure | Count |
 |---|---|
@@ -35,7 +35,7 @@ Rule: any invented-number or false-compliant in any pass fails; accuracy is repo
 | missed-exception | 0 |
 | false-exception | 0 |
 | wrong-citation | 0 |
-| wrong-abstain | 0 |
+| wrong-abstain | 1 |
 | missed-abstain | 0 |
 | stale-terms | 0 |
 
@@ -43,20 +43,20 @@ Rule: any invented-number or false-compliant in any pass fails; accuracy is repo
 
 | Borrower | Scenario | Stage reached | Expected exceptions | Raised exceptions | Extraction | Covenants | Differences |
 |---|---|---|---|---|---|---|---|
-| `briarstone-beverage` | over_advance | closed (closed) | bb.over_advance | bb.over_advance | 100.0% (201/201) | 2/2 | none |
-| `harrowgate-precision` | clean | closed (closed) | none | none | 100.0% (199/199) | 3/3 | none |
+| `kestrel-bay-packaging` | hidden_breach | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | 1 |
 
 ## Differences from the truth
 
-None. Every borrower's outcome agrees with the book.
+| Borrower | Failure | Item | Detail | Known finding |
+|---|---|---|---|---|
+| `kestrel-bay-packaging` | wrong-abstain | covenant run | the run abstained: no answer |  |
 
 ## Where a person was needed
 
 | Borrower | Stage | Open items | Scripted decisions |
 |---|---|---|---|
-| `briarstone-beverage` | borrowing_base | bb.over_advance | bb.over_advance: paydown_required by credit_officer |
-| `briarstone-beverage` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `harrowgate-precision` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `kestrel-bay-packaging` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
+| `kestrel-bay-packaging` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 
 ## Agent text no person was shown
 
@@ -64,25 +64,14 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 
 | Borrower | Agent | Typed figures | Text |
 |---|---|---|---|
-| `briarstone-beverage` | certificate | none | Both covenants in the approved terms are reported in the summary table on the first page; the calculation schedule on the second page shows matching values. |
-| `briarstone-beverage` | collateral | none | No separate over-advance line is printed; the single line labelled Availability (over-advance) is reported under availability and shows a bracketed (negative) figure. |
-| `briarstone-beverage` | collateral | none | The certificate's Inventory sublimit row does not match any requested line name and was not reported; advance rate percentage rows were skipped. |
-| `briarstone-beverage` | collateral | none | The certification text states the borrower acknowledges revolving loans outstanding exceed the borrowing base. |
-| `briarstone-beverage` | collateral | none | The inventory report states work in process and consigned inventory are not eligible, but no consignment category is listed; it also states quantities come from perpetual records last counted at the most recent fiscal year end. |
-| `briarstone-beverage` | collateral | none | The aging is aged from invoice date; inventory is stated at lower of cost and market. |
-| `briarstone-beverage` | collateral | none | No instructions directed at the reader were found in the document. |
-| `briarstone-beverage` | early_warning | none | Availability is negative at {{fact:47c5f695-e47b-4894-ac60-e0a1ba696867}}, or {{fact:6ee5f9bc-2aba-4ced-9af1-0027a8bc22f1}} of the {{fact:d77ca677-c565-4134-aa02-00a92e729f6a}} commitment. Outstandings exceed eligible collateral, leaving no liquidity cushion on the line. No other signal fired to show whether this comes from heavier borrowing or shrinking receivables and inventory. |
-| `harrowgate-precision` | spreading | none | The debt schedule on page 5 (revolving line of credit, term notes payable, total debt outstanding) was not mapped as the template has no separate lines for it. |
-| `harrowgate-precision` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one; values were taken from that table rather than the Schedule 1 calculations. |
-| `harrowgate-precision` | certificate | none | No instructions were found embedded in the document. |
-| `harrowgate-precision` | collateral | none | The certificate prints availability and over-advance on a single combined line labelled 'Availability (over-advance)'; it is reported as availability, and no separate over-advance line is printed, so over_advance is omitted. |
-| `harrowgate-precision` | collateral | none | The certificate's 'Inventory sublimit' line does not match any requested line name and was not reported. |
-| `harrowgate-precision` | collateral | none | Advance rate rows are percentages and were skipped. |
-| `harrowgate-precision` | collateral | none | The aging is stated as aged from invoice date; the aging and inventory pages also state amounts in U.S. dollars, the inventory being at lower of cost and market. |
-| `harrowgate-precision` | collateral | none | The inventory page states that work in process and consignment inventory are not eligible, and that quantities come from perpetual records last counted at the most recent fiscal year end. |
-| `harrowgate-precision` | collateral | none | No instructions addressed to the reader were found in the document. |
+| `kestrel-bay-packaging` | certificate | none | Both covenants in the approved terms are reported in the summary table on page one and in Schedule 1 on page two. |
+| `kestrel-bay-packaging` | certificate | none | The Schedule 1 leverage calculation adds back pro forma cost savings from plant consolidation to arrive at EBITDA as calculated by the Borrower; the credit team may wish to confirm this add-back is permitted under the Credit Agreement. |
+| `kestrel-bay-packaging` | certificate | none | No embedded instructions were found in the document. |
+| `kestrel-bay-packaging` | early_warning | none | Total leverage of {{fact:c601b895-84de-4c17-924d-3a457d9892bf}} is above the {{fact:4836287c-1df0-4096-9e1b-02a7553358db}} maximum, so headroom is negative at {{fact:63375695-c4ab-42c7-83aa-4c5a3acfd506}}. On these figures the covenant appears to be breached, not just tight. Debt is high relative to earnings, and this coincides with shrinking liquidity headroom on the current ratio. |
+| `kestrel-bay-packaging` | early_warning | none | The current ratio of {{fact:ca57b164-5c32-4cfe-a039-7f0017a2a32a}} still clears the {{fact:7c9ed9aa-c5b8-49ec-90d5-6d3d9e2f105b}} minimum, but with only {{fact:f34ba902-b8c0-40ad-81a1-6424bca6a595}} headroom. Thin short-term liquidity on top of leverage already over its limit points to pressure on both debt load and near-term cash. |
+| `kestrel-bay-packaging` | early_warning | none | Current ratio headroom slipped from {{fact:883e7a9a-0fe4-42ce-9bcc-c0fc09932e29}} in March to {{fact:590ebb45-361b-46f4-965b-14f83831998f}} in June, then fell sharply to {{fact:f34ba902-b8c0-40ad-81a1-6424bca6a595}} in September. This shows the thin liquidity cushion is a worsening trend rather than a one-off, with most of the deterioration in the third quarter. |
 
 ## Observations
 
-- `harrowgate-precision`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `kestrel-bay-packaging`: guardrail note on covenant: step_cap -> abstain: the run reached its step cap before giving an answer
 
