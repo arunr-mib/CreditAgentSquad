@@ -1,23 +1,22 @@
 {
  "meta": {
   "suite": "monitoring-cycle",
-  "mode": "live",
+  "mode": "record",
   "standin": false,
-  "label": "Mode live: answers came from a live model.",
-  "generated_at": "2026-11-18T22:36:06+00:00",
-  "commit": "fa9f7e07843396cf1d96e950e1fc18a082742c18",
-  "borrowers": 3,
+  "label": "Mode record: answers came from a live model.",
+  "generated_at": "2026-11-19T07:03:34+00:00",
+  "commit": "0c77f8c1208dc649943e43e5561010b4562e9641",
+  "borrowers": 2,
   "scope": [
-   "kestrel-bay-packaging",
-   "briarstone-beverage",
-   "harrowgate-precision"
+   "harrowgate-precision",
+   "briarstone-beverage"
   ],
   "decide": true,
   "passes": 1,
-  "seconds": 258.5,
+  "seconds": 217.0,
   "unsigned_oracle_rows": 0,
   "standin_print_vs_truth_disagreements": [],
-  "eval_run_id": "fedd7e4c-9203-4a82-89ec-8dccf362cbd5"
+  "eval_run_id": "9dd644fd-7ce1-40a2-ac63-6d49df352ca4"
  },
  "gate": {
   "passed": true,
@@ -28,31 +27,31 @@
   "stale_known_findings": []
  },
  "metrics": {
-  "extraction_accuracy": 0.5777,
-  "extraction_facts_expected": 502,
-  "extraction_facts_correct": 290,
-  "extraction_abstain_rate": 0.4223,
-  "cycles_needing_no_person": 0.0,
-  "cycles_expected_to_need_no_person": 0.3333,
-  "exception_precision": 0.2,
-  "exception_recall": 0.5,
-  "covenant_outcome_accuracy": 0.2857,
-  "covenant_abstain_rate": 0.7143,
-  "cycles_run": 3,
-  "cycles_closed": 1,
-  "cycles_reaching_signals": 1,
-  "disagreements": 1,
-  "input_tokens": 78407,
-  "output_tokens": 28924
+  "extraction_accuracy": 1.0,
+  "extraction_facts_expected": 400,
+  "extraction_facts_correct": 400,
+  "extraction_abstain_rate": 0.0,
+  "cycles_needing_no_person": 0.5,
+  "cycles_expected_to_need_no_person": 0.5,
+  "exception_precision": 1.0,
+  "exception_recall": 1.0,
+  "covenant_outcome_accuracy": 1.0,
+  "covenant_abstain_rate": 0.0,
+  "cycles_run": 2,
+  "cycles_closed": 2,
+  "cycles_reaching_signals": 2,
+  "disagreements": 0,
+  "input_tokens": 76703,
+  "output_tokens": 25746
  },
  "failure_counts": {
   "invented-number": 0,
   "false-compliant": 0,
   "false-breach": 0,
-  "missed-exception": 1,
-  "false-exception": 4,
+  "missed-exception": 0,
+  "false-exception": 0,
   "wrong-citation": 0,
-  "wrong-abstain": 8,
+  "wrong-abstain": 0,
   "missed-abstain": 0,
   "stale-terms": 0
  },
@@ -64,366 +63,23 @@
    "expected_exceptions": [
     "bb.over_advance"
    ],
-   "stage_reached": "spreading",
-   "stage_status": "needs_person",
-   "cycle_status": "open",
-   "last_stage_done": "intake",
-   "raised_exceptions": [
-    "intake.unclassified",
-    "spread.value_unverified"
-   ],
-   "routine_approvals": [],
-   "not_reached": [],
-   "failures": [
-    {
-     "name": "missed-exception",
-     "item": "bb.over_advance",
-     "detail": "expected for scenario over_advance; the cycle rests at spreading (needs_person)"
-    },
-    {
-     "name": "false-exception",
-     "item": "intake.unclassified",
-     "detail": "not expected for scenario over_advance: bbc-2026-09-30.pdf: the Intake Agent raised a concern"
-    },
-    {
-     "name": "false-exception",
-     "item": "spread.value_unverified",
-     "detail": "not expected for scenario over_advance: Briarstone Beverage Company interim financial statements, Q3 2026: 2 row(s) filed under a line their label does not name"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "fccr @ 2026-09-30",
-     "detail": "truth compliant at 1.73; the product recorded no test"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "total_leverage @ 2026-09-30",
-     "detail": "truth compliant at 1.97; the product recorded no test"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "borrowing base @ 2026-09-30",
-     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
-    }
-   ],
-   "disagreements": [
-    {
-     "kind": "signals-not-run",
-     "item": "signals @ 2026-09-30",
-     "detail": "1 expected signal(s); the signals stage is pending"
-    }
-   ],
-   "observations": [],
-   "extraction": {
-    "expected": 201,
-    "correct": 94,
-    "missing": 107,
-    "wrong": 0,
-    "accuracy": 0.4677,
-    "abstain_rate": 0.5323,
-    "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 96,
-      "correct": 94
-     },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 0
-     },
-     "bbc-2026-09-30.pdf": {
-      "expected": 99,
-      "correct": 0
-     }
-    },
-    "ungraded_facts": {}
-   },
-   "covenants": {
-    "expected": 2,
-    "correct": 0,
-    "abstained": 2
-   },
-   "needs_no_person": false,
-   "stops": [
-    {
-     "stage": "spreading",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "intake.unclassified",
-       "blocks_stage": false,
-       "stage": "intake"
-      },
-      {
-       "type": "spread.value_unverified",
-       "blocks_stage": true,
-       "stage": "spreading"
-      }
-     ],
-     "decisions": []
-    }
-   ],
-   "agent_runs": [
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "live",
-     "served_model": "claude-opus-5-5",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "live",
-     "served_model": "claude-opus-5-5",
-     "guardrail_notes": [
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Interim statements prepared by management, not audited or reviewed."
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Comparative balance sheet column is as of the same interim date of the prior year, not the prior fiscal year end."
-      },
-      {
-       "check": "figure_untraceable",
-       "layer": "narrative",
-       "action": "dropped",
-       "detail": "a note from the agent contained a typed figure and was removed"
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Dividends paid mapped to distributions to owners."
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "The cover page also states the currency as 'In u.s. dollars'; the statement pages use '(in U.S. dollars)', reported as the scale statement."
-      },
-      {
-       "check": "unknown_key",
-       "layer": "spreading",
-       "action": "dropped",
-       "detail": "stated.bs.total_equity is not a line the agent may fill"
-      },
-      {
-       "check": "unknown_key",
-       "layer": "spreading",
-       "action": "dropped",
-       "detail": "stated.bs.total_equity is not a line the agent may fill"
-      }
-     ]
-    }
-   ],
-   "tokens": {
-    "input": 16754,
-    "output": 7618,
-    "cache_read": 0
-   },
-   "ledger_ok": true,
-   "seconds": 61.14
-  },
-  "harrowgate-precision": {
-   "borrower": "harrowgate-precision",
-   "scenario": "clean",
-   "error": null,
-   "expected_exceptions": [],
-   "stage_reached": "spreading",
-   "stage_status": "needs_person",
-   "cycle_status": "open",
-   "last_stage_done": "intake",
-   "raised_exceptions": [
-    "spread.value_unverified"
-   ],
-   "routine_approvals": [],
-   "not_reached": [],
-   "failures": [
-    {
-     "name": "false-exception",
-     "item": "spread.value_unverified",
-     "detail": "not expected for scenario clean: Harrowgate Precision Components, Inc. interim financial statements, Q3 2026: 2 row(s) filed under a line their label does not name"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "fccr @ 2026-09-30",
-     "detail": "truth compliant at 1.51; the product recorded no test"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "total_leverage @ 2026-09-30",
-     "detail": "truth compliant at 1.89; the product recorded no test"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "min_tnw @ 2026-09-30",
-     "detail": "truth compliant at 22137000; the product recorded no test"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "borrowing base @ 2026-09-30",
-     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
-    }
-   ],
-   "disagreements": [],
-   "observations": [],
-   "extraction": {
-    "expected": 199,
-    "correct": 94,
-    "missing": 105,
-    "wrong": 0,
-    "accuracy": 0.4724,
-    "abstain_rate": 0.5276,
-    "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 96,
-      "correct": 94
-     },
-     "cc-2026-09-30.pdf": {
-      "expected": 9,
-      "correct": 0
-     },
-     "bbc-2026-09-30.pdf": {
-      "expected": 94,
-      "correct": 0
-     }
-    },
-    "ungraded_facts": {}
-   },
-   "covenants": {
-    "expected": 3,
-    "correct": 0,
-    "abstained": 3
-   },
-   "needs_no_person": false,
-   "stops": [
-    {
-     "stage": "spreading",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "spread.value_unverified",
-       "blocks_stage": true,
-       "stage": "spreading"
-      }
-     ],
-     "decisions": []
-    }
-   ],
-   "agent_runs": [
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "live",
-     "served_model": "claude-opus-5-5",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "live",
-     "served_model": "claude-opus-5-5",
-     "guardrail_notes": [
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Interim statements prepared by management, unaudited and not reviewed; income statement and cash flow cover the nine months ended September 30."
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "The balance sheet comparative column is the same date of the prior year, not the prior fiscal year-end."
-      },
-      {
-       "check": "figure_untraceable",
-       "layer": "narrative",
-       "action": "dropped",
-       "detail": "a note from the agent contained a typed figure and was removed"
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Dividends paid is mapped to cf.distributions."
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Totals and subtotals are reported only under stated keys; no total operating expenses subtotal is printed on the income statement."
-      },
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "Cash beginning and end of period rows on the cash flow statement and the debt schedule on the supplemental page were not mapped to template lines."
-      },
-      {
-       "check": "unknown_key",
-       "layer": "spreading",
-       "action": "dropped",
-       "detail": "stated.bs.total_equity is not a line the agent may fill"
-      },
-      {
-       "check": "unknown_key",
-       "layer": "spreading",
-       "action": "dropped",
-       "detail": "stated.bs.total_equity is not a line the agent may fill"
-      }
-     ]
-    }
-   ],
-   "tokens": {
-    "input": 16736,
-    "output": 7843,
-    "cache_read": 0
-   },
-   "ledger_ok": true,
-   "seconds": 61.96
-  },
-  "kestrel-bay-packaging": {
-   "borrower": "kestrel-bay-packaging",
-   "scenario": "hidden_breach",
-   "error": null,
-   "expected_exceptions": [
-    "covenant.reported_mismatch"
-   ],
    "stage_reached": "closed",
    "stage_status": "done",
    "cycle_status": "closed",
    "last_stage_done": "closed",
    "raised_exceptions": [
-    "covenant.reported_mismatch",
-    "intake.unclassified"
+    "bb.over_advance"
    ],
    "routine_approvals": [
     "review.commentary_approval"
    ],
    "not_reached": [],
-   "failures": [
-    {
-     "name": "false-exception",
-     "item": "intake.unclassified",
-     "detail": "not expected for scenario hidden_breach: cc-2026-09-30.pdf: the Intake Agent raised a concern"
-    },
-    {
-     "name": "wrong-abstain",
-     "item": "covenant run",
-     "detail": "the run abstained: no answer"
-    }
-   ],
+   "failures": [],
    "disagreements": [],
    "observations": [],
    "extraction": {
-    "expected": 102,
-    "correct": 102,
+    "expected": 201,
+    "correct": 201,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
@@ -436,9 +92,14 @@
      "cc-2026-09-30.pdf": {
       "expected": 6,
       "correct": 6
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 99,
+      "correct": 99
      }
     },
     "ungraded_facts": {
+     "signal": 1,
      "metric": 15
     }
    },
@@ -450,24 +111,19 @@
    "needs_no_person": false,
    "stops": [
     {
-     "stage": "covenant_testing",
+     "stage": "borrowing_base",
      "stage_status": "needs_person",
      "open_items": [
       {
-       "type": "intake.unclassified",
-       "blocks_stage": false,
-       "stage": "intake"
-      },
-      {
-       "type": "covenant.reported_mismatch",
+       "type": "bb.over_advance",
        "blocks_stage": true,
-       "stage": "covenant_testing"
+       "stage": "borrowing_base"
       }
      ],
      "decisions": [
       {
-       "type": "covenant.reported_mismatch",
-       "decision": "escalate_to_committee",
+       "type": "bb.over_advance",
+       "decision": "paydown_required",
        "by_role": "credit_officer",
        "error": null
       }
@@ -477,11 +133,6 @@
      "stage": "review_prep",
      "stage_status": "needs_person",
      "open_items": [
-      {
-       "type": "intake.unclassified",
-       "blocks_stage": false,
-       "stage": "intake"
-      },
       {
        "type": "review.commentary_approval",
        "blocks_stage": true,
@@ -502,27 +153,27 @@
     {
      "agent": "intake",
      "status": "completed",
-     "llm_mode": "live",
+     "llm_mode": "record",
      "served_model": "claude-opus-5-5",
      "guardrail_notes": []
     },
     {
      "agent": "spreading",
      "status": "completed",
-     "llm_mode": "live",
+     "llm_mode": "record",
      "served_model": "claude-opus-5-5",
      "guardrail_notes": [
       {
-       "check": "figure_untraceable",
-       "layer": "narrative",
-       "action": "dropped",
-       "detail": "a note from the agent contained a typed figure and was removed"
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Statements are interim, unaudited, prepared by management and not reviewed; income and cash flow figures cover nine months year to date."
       },
       {
-       "check": "figure_untraceable",
-       "layer": "narrative",
-       "action": "dropped",
-       "detail": "a note from the agent contained a typed figure and was removed"
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The balance sheet comparative column is the prior-year interim date (September 30, 2025), not the prior fiscal year end."
       },
       {
        "check": "note",
@@ -534,84 +185,330 @@
        "check": "note",
        "layer": "agent",
        "action": "shown",
-       "detail": "Capital expenditures financed with purchase-money debt is printed as a dash in both columns."
+       "detail": "Total stockholders' equity was reported under the total equity line; its component rows were not reported separately."
       }
      ]
     },
     {
      "agent": "certificate_reader",
      "status": "completed",
-     "llm_mode": "live",
+     "llm_mode": "record",
      "served_model": "claude-opus-5-5",
      "guardrail_notes": []
     },
     {
-     "agent": "covenant",
-     "status": "abstained",
-     "llm_mode": "live",
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "record",
      "served_model": "claude-opus-5-5",
-     "guardrail_notes": [
-      {
-       "check": "step_cap",
-       "layer": "runtime",
-       "action": "abstain",
-       "detail": "the run reached its step cap before giving an answer"
-      }
-     ]
+     "guardrail_notes": []
     },
     {
      "agent": "early_warning",
      "status": "completed",
-     "llm_mode": "live",
+     "llm_mode": "record",
      "served_model": "claude-opus-5-5",
      "guardrail_notes": []
     },
     {
      "agent": "review",
      "status": "completed",
-     "llm_mode": "live",
+     "llm_mode": "record",
      "served_model": "claude-opus-5-5",
      "guardrail_notes": []
     }
    ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/briarstone-beverage/2026-09-30/01",
+     "text": "Both covenants in the approved terms are reported in the summary table on the first page; the calculation schedule on the second page shows matching values.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "No separate over-advance line is printed; the single line labelled Availability (over-advance) is reported under availability and shows a bracketed (negative) figure.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The certificate's Inventory sublimit row does not match any requested line name and was not reported; advance rate percentage rows were skipped.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The certification text states the borrower acknowledges revolving loans outstanding exceed the borrowing base.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The inventory report states work in process and consigned inventory are not eligible, but no consignment category is listed; it also states quantities come from perpetual records last counted at the most recent fiscal year end.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The aging is aged from invoice date; inventory is stated at lower of cost and market.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "No instructions directed at the reader were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/briarstone-beverage/2026-09-30/01",
+     "text": "Availability is negative at {{fact:47c5f695-e47b-4894-ac60-e0a1ba696867}}, or {{fact:6ee5f9bc-2aba-4ced-9af1-0027a8bc22f1}} of the {{fact:d77ca677-c565-4134-aa02-00a92e729f6a}} commitment. Outstandings exceed eligible collateral, leaving no liquidity cushion on the line. No other signal fired to show whether this comes from heavier borrowing or shrinking receivables and inventory.",
+     "typed_figures": []
+    }
+   ],
    "tokens": {
-    "input": 44917,
-    "output": 13463,
-    "cache_read": 35995
+    "input": 37753,
+    "output": 11971,
+    "cache_read": 0
    },
    "ledger_ok": true,
-   "seconds": 133.19
+   "seconds": 100.5
+  },
+  "harrowgate-precision": {
+   "borrower": "harrowgate-precision",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 199,
+    "correct": 199,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Interim statements for the nine months ended September 30, 2026 are unaudited and prepared by management, not audited or reviewed."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The comparative balance sheet column is as of September 30, 2025 (same date prior year), not the prior fiscal year end."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Dividends paid on the cash flow statement was mapped to distributions to owners."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Total stockholders' equity was reported under total equity; its component rows (common stock and additional paid-in capital, retained earnings) were not reported separately."
+      },
+      {
+       "check": "figure_untraceable",
+       "layer": "narrative",
+       "action": "dropped",
+       "detail": "a note from the agent contained a typed figure and was removed"
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "spreading",
+     "record_key": "spreading/harrowgate-precision/2026-09-30/447cc02c3009/01",
+     "text": "The debt schedule on page 5 (revolving line of credit, term notes payable, total debt outstanding) was not mapped as the template has no separate lines for it.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/harrowgate-precision/2026-09-30/01",
+     "text": "All three covenants in the approved terms are reported in the summary table on page one; values were taken from that table rather than the Schedule 1 calculations.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/harrowgate-precision/2026-09-30/01",
+     "text": "No instructions were found embedded in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The certificate prints availability and over-advance on a single combined line labelled 'Availability (over-advance)'; it is reported as availability, and no separate over-advance line is printed, so over_advance is omitted.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The certificate's 'Inventory sublimit' line does not match any requested line name and was not reported.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "Advance rate rows are percentages and were skipped.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The aging is stated as aged from invoice date; the aging and inventory pages also state amounts in U.S. dollars, the inventory being at lower of cost and market.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The inventory page states that work in process and consignment inventory are not eligible, and that quantities come from perpetual records last counted at the most recent fiscal year end.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "No instructions addressed to the reader were found in the document.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 38950,
+    "output": 13775,
+    "cache_read": 5998
+   },
+   "ledger_ok": true,
+   "seconds": 115.11
   }
  },
  "known_findings": [],
  "passes": [
   {
    "metrics": {
-    "extraction_accuracy": 0.5777,
-    "extraction_facts_expected": 502,
-    "extraction_facts_correct": 290,
-    "extraction_abstain_rate": 0.4223,
-    "cycles_needing_no_person": 0.0,
-    "cycles_expected_to_need_no_person": 0.3333,
-    "exception_precision": 0.2,
-    "exception_recall": 0.5,
-    "covenant_outcome_accuracy": 0.2857,
-    "covenant_abstain_rate": 0.7143,
-    "cycles_run": 3,
-    "cycles_closed": 1,
-    "cycles_reaching_signals": 1,
-    "disagreements": 1,
-    "input_tokens": 78407,
-    "output_tokens": 28924
+    "extraction_accuracy": 1.0,
+    "extraction_facts_expected": 400,
+    "extraction_facts_correct": 400,
+    "extraction_abstain_rate": 0.0,
+    "cycles_needing_no_person": 0.5,
+    "cycles_expected_to_need_no_person": 0.5,
+    "exception_precision": 1.0,
+    "exception_recall": 1.0,
+    "covenant_outcome_accuracy": 1.0,
+    "covenant_abstain_rate": 0.0,
+    "cycles_run": 2,
+    "cycles_closed": 2,
+    "cycles_reaching_signals": 2,
+    "disagreements": 0,
+    "input_tokens": 76703,
+    "output_tokens": 25746
    },
    "failure_counts": {
     "invented-number": 0,
     "false-compliant": 0,
     "false-breach": 0,
-    "missed-exception": 1,
-    "false-exception": 4,
+    "missed-exception": 0,
+    "false-exception": 0,
     "wrong-citation": 0,
-    "wrong-abstain": 8,
+    "wrong-abstain": 0,
     "missed-abstain": 0,
     "stale-terms": 0
    }
