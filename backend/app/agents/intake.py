@@ -76,7 +76,7 @@ class IntakeAnswer(BaseModel):
     documents: list[Classified]
 
 
-SPEC = AgentSpec(name="intake", version="1", purpose="Classify received documents and identify their period.",
+SPEC = AgentSpec(name="intake", version="2", purpose="Classify received documents and identify their period.",
                  prompt_file="intake.md", output_model=IntakeAnswer, tools=(), effort="low", max_tokens=8000)
 
 
