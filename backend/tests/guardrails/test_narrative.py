@@ -249,3 +249,31 @@ def test_sentences_from_the_first_live_run_are_let_through(text):
 ])
 def test_the_narrowed_rules_still_refuse_an_amount_in_words(text):
     assert "number_in_words" in [n.check for n in check_narrative(text, _FACTS)]
+
+
+@pytest.mark.parametrize("text", [
+    # the Spreading Agent's note from the live run of 19 November 2026, withheld before this rule
+    "The debt schedule on page 5 (revolving line of credit, term notes payable, total debt outstanding) was not "
+    "mapped as the template has no separate lines for it.",
+    "The aging report on page 3 was read in full.",
+    "The inventory listing on page 4 was not mapped.",
+])
+def test_a_page_of_the_document_is_let_through(text):
+    assert [n.check for n in check_narrative(text, _FACTS)] == []
+
+
+@pytest.mark.parametrize("text", [
+    "Leverage stood on page 4.25 this quarter.",      # a decimal is a measurement, not a page
+    "Revenue came from page 12,500 of sales.",       # a comma makes it an amount
+    "The shortfall shown on page 5 percent.",
+    "Coverage on page 3x is thin.",
+    "The loss on page 7 million was booked.",
+    "Leverage is page 4 against the limit.",          # no word that introduces a page
+    "Margin fell 4 points, shown on page 2.",         # the page is allowed; the other figure is not
+    "The ratio stood at 1,250 on page 5.",
+    "Leverage on page 5 is above the limit.",         # a page after a measure, as a reviewer used it
+    "See page 4 for leverage.",                       # no part of a document named before the page
+    "The schedule on page 4.25 shows leverage.",
+])
+def test_a_page_reference_cannot_carry_a_figure(text):
+    assert [n.check for n in check_narrative(text, _FACTS)] != []

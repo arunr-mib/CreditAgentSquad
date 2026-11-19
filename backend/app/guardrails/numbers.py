@@ -82,6 +82,14 @@ _STRICT_NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
         r"(?:(?:^|[.;:(,]\s*)|\b(?:under|in|by|per|see|and|or|with|(?:pursuant|subject|according)\s+to)\s+)"
         rf"(?:Sections?|Articles?|Clauses?|Exhibits?|Schedules?|Annex(?:es)?|Appendi(?:x|ces))\s+(?:{_SECTION_NO}|[IVXLC]+\b)"
         r"(?!\s+(?:against|versus|vs\.?|times|turns?)\b)")),
+    # where a part of the document sits ("the debt schedule on page 5"): only straight after the
+    # name of a part of a document, a whole number of one to three digits, nothing after it that
+    # makes it a measurement. A page after a measure ("leverage on Page 5") stays refused: a
+    # reviewer used that to carry a ratio. Found in the live runs, where a note was withheld.
+    ("page_reference", re.compile(
+        r"\b(?:schedules?|statements?|notes?|tables?|reports?|aging|listings?|certificates?|sheets?)"
+        r"\s+(?:is\s+|are\s+)?on\s+pages?\s+\d{1,3}\b(?![\w,.%]*\d|\s*(?:percent|%|x\b|times|turns?|"
+        r"thousand|million|billion|bps|basis))", re.I)),
     ("amendment", re.compile(r"\b(?:Amendments?|Waivers?|Forbearance Agreements?)\s+(?:No\.?\s*)?\d{1,2}\b(?![\w,.%]*\d|\s*(?:percent|%|x\b))")),
     ("filing", re.compile(r"\b(?:Form\s+)?(?:10-K|10-Q|8-K|K-1|S-1)\b")),
     # a length of time naming a requirement or a document ("the 120-day reporting requirement",
