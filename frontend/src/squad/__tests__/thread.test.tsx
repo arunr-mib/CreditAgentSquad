@@ -7,9 +7,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Thread, ThreadMessage } from '../api/types';
 import { ClientThread } from '../thread/ClientThread';
 
-const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, open: vi.fn(), openItem: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
+const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, borrowersError: false, refetchBorrowers: vi.fn(), open: vi.fn(), openItem: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
 vi.mock('@/api/hooks', () => ({
-  useBorrowerByCode: (code: string) => ({ borrower: state.notFound ? undefined : { id: 'b1', code, name: 'Quillfeather Labs, Inc.' }, notFound: state.notFound, isPending: false }),
+  useBorrowerByCode: (code: string) => ({ borrower: state.notFound || state.borrowersError ? undefined : { id: 'b1', code, name: 'Quillfeather Labs, Inc.' }, notFound: state.notFound, isPending: false, error: state.borrowersError ? new Error('down') : null, refetch: state.refetchBorrowers }),
 }));
 vi.mock('../api/hooks', async () => {
   const { useEffect, useState } = await import('react');
@@ -58,6 +58,8 @@ function mount(search = '') {
 
 beforeEach(() => {
   state.notFound = false;
+  state.borrowersError = false;
+  state.refetchBorrowers.mockClear();
   state.thread = thread(messages);
   state.trail = undefined;
   state.open.mockClear();
@@ -112,6 +114,15 @@ describe('ClientThread', () => {
     mount();
     expect(await screen.findByRole('alert')).toHaveTextContent(/no client with that code/i);
     expect(screen.getByRole('link', { name: /back to squad/i })).toHaveAttribute('href', '/');
+  });
+
+  it('says the client list could not be loaded, with Try again, instead of waiting for ever', async () => {
+    state.borrowersError = true;
+    mount();
+    expect(await screen.findByRole('alert')).toHaveTextContent(/could not be loaded/i);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: /try again/i }));
+    expect(state.refetchBorrowers).toHaveBeenCalled();
   });
 
   it('loads "How I got here" only when it is opened', async () => {

@@ -55,7 +55,7 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
           ))}
         </fieldset>
       ) : (
-        <p><b>{message.chosen_by} chose {message.choice}</b></p>
+        <p><b>{message.choice ? `${message.chosen_by ?? 'Someone'} chose ${message.choice}` : 'Closed without an answer'}</b></p>
       )}
       {open && mayAnswer ? (
         <>

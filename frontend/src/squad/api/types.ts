@@ -28,7 +28,7 @@ export type ThreadMessage = MessageBase &
     | { type: 'document'; document_id: string; title: string; doc_type: string | null; pages: number; period_end: string | null }
     | { type: 'held'; document_id: string; title: string; reason: string }
     | { type: 'draft'; draft_id: string; borrower_id: string; to: string; subject: string; body: string; kind: string; status: 'draft' | 'sent'; created_by: string; created_at: string; edited_by: string | null; sent_by: string | null; sent_at: string | null; work_item_id: string | null }
-    | { type: 'decision'; work_item_id: string; decision: string | null; reason: string; by: string; by_id: string }
+    | { type: 'decision'; work_item_id: string; decision: string | null; decision_words?: string; reason: string; by: string; by_id: string }
     | { type: 'handoff'; work_item_id: string; assigned_to: string | null; assigned_to_id: string | null; by: string }
     | { type: 'qa'; question: string; answer: string; fact_ids: string[]; citations: Array<{ document_id: string; page: number }>; status: string; run_id: string; asked_by: string }
   );
@@ -38,10 +38,11 @@ export interface Thread {
   messages: ThreadMessage[];
 }
 export interface TrailStep { n: number; who: string; role_line: string; text: string; check: string; run_id: string | null }
+export interface TrailInput { name?: string; key?: string; fact_id?: string; value?: unknown }
 export interface Trail {
   work_item_id: string;
   steps: TrailStep[];
-  calculation: { id: string; formula_key: string; inputs: unknown[]; outputs: Record<string, unknown> } | null;
+  calculation: { id: string; formula_key: string; inputs: TrailInput[]; outputs: Record<string, unknown> } | null;
   checks: Array<{ layer: string | null; check: string | null; action: string | null; detail: string | null }>;
 }
 /** A draft as returned by the draft routes; sending records who sent it and delivers nothing. */

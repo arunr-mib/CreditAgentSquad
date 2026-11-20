@@ -10,7 +10,7 @@ import { MessageView } from './messages';
 export function ClientThread() {
   const { code } = useParams({ strict: false }) as { code: string };
   const { case: focusId } = useSearch({ strict: false }) as { case?: string };
-  const { borrower, notFound } = useBorrowerByCode(code);
+  const { borrower, notFound, error: borrowersError, refetch: refetchBorrowers } = useBorrowerByCode(code);
   const thread = useThread(borrower?.id);
 
   const scrolled = useRef<string | undefined>(undefined);
@@ -28,6 +28,14 @@ export function ClientThread() {
       <div role="alert" className="sq-card">
         <p>There is no client with that code.</p>
         <Link to="/" className="sq-link">Back to Squad</Link>
+      </div>
+    );
+  }
+  if (!borrower && borrowersError) {
+    return (
+      <div role="alert" className="sq-card">
+        <p>The client list could not be loaded.</p>
+        <button type="button" className="sq-btn" onClick={() => void refetchBorrowers()}>Try again</button>
       </div>
     );
   }

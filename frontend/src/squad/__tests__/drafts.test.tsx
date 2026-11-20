@@ -43,6 +43,19 @@ describe('DraftMessage', () => {
     expect(screen.queryByText(/drafted by squad/i)).not.toBeInTheDocument();
   });
 
+  it('gives each draft its own textarea name, so two drafts are told apart', () => {
+    render(
+      <AuthContext.Provider value={{ user: priya, status: 'signed-in', can: () => true, signIn: async () => priya, signOut: async () => {}, retry: () => {} }}>
+        <PresenceProvider needs={0}>
+          <DraftMessage message={draft({ draft_id: 'd1', to: 'cfo@quillfeather.example' })} />
+          <DraftMessage message={draft({ draft_id: 'd2', to: 'controller@quillfeather.example' })} />
+        </PresenceProvider>
+      </AuthContext.Provider>,
+    );
+    expect(screen.getByRole('textbox', { name: 'Message to cfo@quillfeather.example' })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Message to controller@quillfeather.example' })).toBeInTheDocument();
+  });
+
   it('says nothing about an edit when nobody edited it', () => {
     mount(draft());
     expect(screen.queryByText(/edited by/i)).not.toBeInTheDocument();
@@ -50,7 +63,7 @@ describe('DraftMessage', () => {
 
   it('offers to save only once the text has changed', async () => {
     mount(draft());
-    await userEvent.type(screen.getByLabelText('Message'), ' Thanks.');
+    await userEvent.type(screen.getByLabelText('Message to cfo@quillfeather.example'), ' Thanks.');
     expect(screen.getByRole('button', { name: /save changes/i })).toBeInTheDocument();
   });
 
@@ -67,7 +80,7 @@ describe('DraftMessage', () => {
     calls.edit.mockResolvedValue({ status: 'draft' });
     calls.send.mockResolvedValue({ status: 'sent', delivered: false });
     mount(draft());
-    const box = screen.getByLabelText('Message');
+    const box = screen.getByLabelText('Message to cfo@quillfeather.example');
     await userEvent.clear(box);
     await userEvent.type(box, 'Shorter.');
     await userEvent.click(screen.getByRole('button', { name: 'Send as Priya' }));
@@ -78,7 +91,7 @@ describe('DraftMessage', () => {
   it('does not send when the save is refused', async () => {
     calls.edit.mockRejectedValue(new ApiError(422, 'this draft has been sent and cannot be changed'));
     mount(draft());
-    await userEvent.type(screen.getByLabelText('Message'), ' more');
+    await userEvent.type(screen.getByLabelText('Message to cfo@quillfeather.example'), ' more');
     await userEvent.click(screen.getByRole('button', { name: 'Send as Priya' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('cannot be changed');
     expect(calls.send).not.toHaveBeenCalled();
@@ -88,13 +101,14 @@ describe('DraftMessage', () => {
     mount(draft({ status: 'sent', sent_by: 'Priya Raman', sent_at: '2026-11-20T09:00:00Z' }));
     expect(screen.getByText('Sent')).toBeInTheDocument();
     expect(screen.getByText(/sent by Priya Raman/i)).toBeInTheDocument();
-    expect(screen.getByLabelText('Message')).toHaveAttribute('readonly');
+    expect(screen.getByLabelText('Message to cfo@quillfeather.example')).toHaveAttribute('readonly');
     expect(screen.queryByRole('button', { name: /send as/i })).not.toBeInTheDocument();
   });
 
   it('is read-only for a person who may not send', () => {
     mount(draft(), false);
-    expect(screen.getByText(/only an analyst can send this/i)).toBeInTheDocument();
+    expect(screen.getByText("You can't send this draft.")).toBeInTheDocument();
+    expect(screen.queryByText(/analyst/i)).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /send as/i })).not.toBeInTheDocument();
   });
 });
@@ -103,7 +117,7 @@ describe('DraftMessage when someone else sent first', () => {
   it('shows the sent state with the real sender after the refused send, read-only and with the recorded text', async () => {
     calls.send.mockRejectedValue(new ApiError(422, 'this draft has already been sent'));
     const view = mount(draft());
-    await userEvent.type(screen.getByLabelText('Message'), ' local');
+    await userEvent.type(screen.getByLabelText('Message to cfo@quillfeather.example'), ' local');
     calls.edit.mockResolvedValue({ status: 'draft' });
     await userEvent.click(screen.getByRole('button', { name: 'Send as Priya' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('already been sent');
@@ -116,7 +130,7 @@ describe('DraftMessage when someone else sent first', () => {
     );
     expect(screen.getByText(/sent by Dana Cole/i)).toBeInTheDocument();
     expect(screen.queryByText(/Priya Raman/)).not.toBeInTheDocument();
-    const box = screen.getByLabelText('Message');
+    const box = screen.getByLabelText('Message to cfo@quillfeather.example');
     expect(box).toHaveAttribute('readonly');
     expect(box).toHaveValue('Recorded text.');
   });

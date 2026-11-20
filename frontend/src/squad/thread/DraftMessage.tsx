@@ -55,7 +55,7 @@ export function DraftMessage({ message }: { message: Draft }) {
         {sent ? <span className="sq-tag">Sent</span> : null}
       </header>
       <p className="sq-muted">Subject: {message.subject}</p>
-      <textarea aria-label="Message" value={sent ? message.body : body} readOnly={sent || !mayWrite} onChange={(e) => setBody(e.target.value)} rows={6} className="sq-paper sq-draftbox" />
+      <textarea aria-label={`Message to ${message.to}`} value={sent ? message.body : body} readOnly={sent || !mayWrite} onChange={(e) => setBody(e.target.value)} rows={6} className="sq-paper sq-draftbox" />
       {sent ? <p className="sq-faint">Sent by {message.sent_by ?? (justSent ? user?.name : null)}{message.sent_at ? <> <Time ts={message.sent_at} /></> : null}. Recorded on the ledger, not emailed.</p> : null}
       {!sent && mayWrite ? (
         <div className="sq-actions">
@@ -65,7 +65,7 @@ export function DraftMessage({ message }: { message: Draft }) {
           {dirty ? <button type="button" className="sq-btn" disabled={edit.isPending} onClick={() => void save().then((ok) => ok && say('Draft saved'))}>Save changes</button> : null}
         </div>
       ) : null}
-      {!sent && !mayWrite ? <p className="sq-muted">Only an analyst can send this.</p> : null}
+      {!sent && !mayWrite ? <p className="sq-muted">You can't send this draft.</p> : null}
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
     </article>
   );

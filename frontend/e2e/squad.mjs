@@ -142,7 +142,7 @@ journey('drafts: edit then Send as Priya records the send and claims no delivery
   const draft = folded.messages.find((m) => m.type === 'draft' && m.draft_id === draftId);
   if (draft.status === 'sent') return console.log('  (draft already sent on an earlier run; skipping)');
   await page.goto(`${BASE}/clients/${folded.borrower.code}`);
-  await page.getByLabel('Message').fill('Hi, October MRR please. Thanks.');
+  await page.getByLabel(/^Message to /).fill('Hi, October MRR please. Thanks.');
   await page.getByRole('button', { name: 'Send as Priya' }).click();
   await page.getByRole('status').filter({ hasText: /Send recorded as Priya · not emailed/ }).waitFor();
   const sent = (await api(page, `/ledger?entity_id=${draftId}&limit=10`)).find((e) => e.action === 'draft.sent');

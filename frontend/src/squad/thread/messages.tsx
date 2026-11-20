@@ -21,7 +21,7 @@ const SEVERITY: Record<string, string> = { critical: 'Critical', high: 'High', m
 export function caseState(message: Extract<ThreadMessage, { type: 'case' }>, all: ThreadMessage[]): { text: string; needsYou: boolean } {
   const mine = all.filter((m) => 'work_item_id' in m && m.work_item_id === message.work_item_id);
   const decision = mine.find((m): m is Extract<ThreadMessage, { type: 'decision' }> => m.type === 'decision');
-  if (decision) return { text: `${words(decision.decision)} by ${decision.by}`, needsYou: false };
+  if (decision) return { text: `${decision.decision_words ?? words(decision.decision)} by ${decision.by}`, needsYou: false };
   if (message.status !== 'open') return { text: words(message.status).replace(/^./, (c) => c.toUpperCase()), needsYou: false };
   if (message.needs_you) return { text: 'Needs your call', needsYou: true };
   const handoff = [...mine].reverse().find((m): m is Extract<ThreadMessage, { type: 'handoff' }> => m.type === 'handoff');
@@ -77,7 +77,7 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
     case 'decision':
       return (
         <article className="sq-msg sq-card" data-work-item={message.work_item_id}>
-          <p><b>{message.by}: {words(message.decision)}</b> <Time ts={message.ts} /></p>
+          <p><b>{message.by}: {message.decision_words ?? words(message.decision)}</b> <Time ts={message.ts} /></p>
           {message.reason ? <blockquote className="sq-quote">{message.reason}</blockquote> : null}
         </article>
       );
