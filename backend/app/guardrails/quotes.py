@@ -83,7 +83,7 @@ def column_aligned(figure: Box, header: Box, tolerance: float = 12.0) -> bool:
     return abs(figure[2] - header[2]) <= tolerance or abs(centre_f - centre_h) <= tolerance
 
 
-def row_label(words: Sequence[Word], figure: Box) -> str:
+def row_label(words: Sequence[Word], figure: Box, label_gap: float | None = None) -> str:
     """The label of the row a figure sits on, read from the page by code: the words on the same
     row to the left of the figure, without the cells of other columns. The reader's own choice
     of label text is never used for this, because a reader can pick a fragment that hides what
@@ -96,6 +96,11 @@ def row_label(words: Sequence[Word], figure: Box) -> str:
     left = sorted((w for w in words
                    if same_row((float(w[0]), float(w[1]), float(w[2]), float(w[3])), figure)
                    and float(w[2]) <= figure[0] + 1.0), key=lambda w: float(w[0]))
+    if label_gap is not None:
+        for i in range(1, len(left)):
+            if float(left[i][0]) - float(left[i - 1][2]) > label_gap:
+                left = left[:i]
+                break
     end = len(left)
     while end > 0:
         text = str(left[end - 1][4]).strip()
@@ -365,6 +370,7 @@ def verify_cell(
     column_anchor: str | None = None,
     period_end: date | None = None,
     months: int = 0,
+    label_gap: float | None = None,
 ) -> CellCheck:
     """Verify one statement cell: the figure as printed, on the row of its label, under its column.
 
@@ -415,9 +421,9 @@ def verify_cell(
         # the same figure on two rows whose labels share words ("Inventory availability" and
         # "Inventory availability before sublimit"): the row whose whole label was reported wins
         exact = [c for c in candidates
-                 if _squash(row_label(words, c.bbox)).lower() == _squash(printed_label).lower()]
+                 if _squash(row_label(words, c.bbox, label_gap)).lower() == _squash(printed_label).lower()]
         candidates = exact or candidates
-    label = row_label(words, candidates[0].bbox)
+    label = row_label(words, candidates[0].bbox, label_gap)
     if len(candidates) > 1 and printed_label is not None and (column_header is not None or period_end is not None):
         return CellCheck("ambiguous", value=parsed.value, unit=parsed.unit, bbox=candidates[0].bbox,
                          occurrences=len(candidates), detail="more than one matching cell", row_label=label)

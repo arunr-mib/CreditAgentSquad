@@ -47,6 +47,9 @@ SPEC = AgentSpec(name="certificate_reader", version="1",
                  purpose="Locate the borrower's reported covenant values on a compliance certificate.",
                  prompt_file="certificate.md", output_model=CertificateReading, tools=(), effort="low",
                  max_tokens=8000)
+# a certificate is a table: the covenant's name is its first cell, and the next column (the section,
+# the tail of a wrapped requirement) starts after a gap far wider than a space between words
+_COLUMN_GAP = 20.0
 _YES_NO = {"yes": 1, "no": 0, "y": 1, "n": 0, "in compliance": 1, "not in compliance": 0}
 
 
@@ -144,7 +147,8 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
         else:
             # the row the figure sits on must be this covenant's row. Code reads the row's label
             # from the page; the label the reader reported is only used to find the row
-            located = verify_cell(page.words, printed_figure=row.actual_printed, printed_label=row.printed_label)
+            located = verify_cell(page.words, printed_figure=row.actual_printed, printed_label=row.printed_label,
+                                  label_gap=_COLUMN_GAP)
             if located.value is not None:
                 problem = _row_problem(located.row_label, row.covenant_id, names)
             printed = parse_printed_figure(row.actual_printed)
@@ -163,6 +167,7 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
             document=document, page_number=row.page, printed_figure=row.actual_printed,
             printed_label=row.printed_label, column_header=None, scale=scale if unit == "usd" else 1,
             presentation_sign=1, agent_run_id=outcome.run.id, unit=unit, unit_factor=per_cent,
+            label_gap=_COLUMN_GAP,
             actor=("agent", "certificate_reader"))
         if fact is None or not check.ok:
             result.unverified.append({"covenant_id": covenant.id, "reason": check.status, "detail": check.detail})

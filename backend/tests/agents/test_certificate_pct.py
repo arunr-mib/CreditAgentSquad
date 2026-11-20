@@ -73,6 +73,13 @@ def test_a_percent_covenant_is_stored_as_a_fraction_and_cites_the_printed_figure
     assert value.unit == "pct" and threshold.unit == "pct"
 
 
+def test_a_wrapped_required_cell_does_not_change_the_stored_label(book):  # noqa: F811
+    result, get = run(book, unit="pct")
+    assert get("value").label_text == "Revenue to Plan"
+    assert get("threshold").label_text == "Revenue to Plan" and get("in_compliance").label_text == "Revenue to Plan"
+    assert result.unverified == []
+
+
 def test_a_percent_sign_on_a_covenant_that_is_not_a_percentage_is_refused_not_scaled(book):  # noqa: F811
     result, get = run(book, unit="ratio")
     assert get("value") is None and result.stored == []

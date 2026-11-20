@@ -53,7 +53,7 @@ def store_extracted_cell(
     actor: tuple[str, str] = ("agent", "spreading"),
     doubt_for: Callable[[CellCheck, Decimal], str | None] | None = None,
     column_anchor: str | None = None, column_period: date | None = None, column_months: int = 0,
-    unit_factor: Decimal = Decimal(1),
+    unit_factor: Decimal = Decimal(1), label_gap: float | None = None,
 ) -> tuple[Fact | None, CellCheck]:
     """Verify one cell on its page and store it. The value comes from the page, never the model.
 
@@ -63,7 +63,8 @@ def store_extracted_cell(
     the value, and returns a reason to hold the cell for a person, or None; the label the reader
     reported is never what is judged.
     `unit_factor` converts the printed unit to the stored one (a percentage printed "105.24%" is
-    stored as 1.0524); the quote still shows the figure as printed.
+    stored as 1.0524); the quote still shows the figure as printed. `label_gap` ends the row label
+    at the first gap wider than that many points (a table whose cells are columns).
     With `column_period`, the column is decided from the page's own headers (see
     `guardrails.quotes.column_for_period`) and the header the reader reported is not used.
     """
@@ -74,7 +75,7 @@ def store_extracted_cell(
         return None, CellCheck("not_found", detail=f"page {page_number} has no text layer")
     check = verify_cell(page.words, printed_figure=printed_figure, printed_label=printed_label,
                         column_header=column_header, column_anchor=column_anchor, period_end=column_period,
-                        months=column_months)
+                        months=column_months, label_gap=label_gap)
     if check.value is None:
         return None, check
     value = Decimal(presentation_sign) * check.value * Decimal(scale) * unit_factor

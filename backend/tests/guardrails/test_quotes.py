@@ -155,3 +155,13 @@ def test_a_row_with_a_blank_current_cell_does_not_make_the_prior_figure_current(
             + row(75, (40, "Financed capital expenditures"), right(600, "120")))
     assert column_for_period(page, _figure(page, "120"), date(2026, 9, 30), 9) is not None
     assert column_for_period(page, _figure(page, "120"), date(2025, 9, 30), 9) is None
+
+
+def test_row_label_of_a_table_row_ends_at_the_column_gap():
+    # a certificate row: covenant | section | wrapped requirement tail | actual
+    page = row(60, (40, "Revenue to Plan"), (220, "6.3"), (243, "plan")) + row(60, right(500, "105.30%"))
+    figure = locate(page, "105.30%")[0]
+    assert row_label(page, figure.bbox) == "Revenue to Plan 6.3 plan"  # without a gap, everything left of it
+    assert row_label(page, figure.bbox, label_gap=20.0) == "Revenue to Plan"
+    check = verify_cell(page, printed_figure="105.30%", printed_label="Revenue to Plan", label_gap=20.0)
+    assert check.ok and check.row_label == "Revenue to Plan"
