@@ -1,4 +1,4 @@
-<title>Squad muse style demo</title>
+<title>Squad - Credit Analyst agent demo</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%23ECE8FF%22/%3E%3Cg fill=%22%238F7BF0%22%3E%3Ccircle cx=%2250%22 cy=%2218%22 r=%2211%22/%3E%3Ccircle cx=%2282%22 cy=%2250%22 r=%2211%22/%3E%3Ccircle cx=%2250%22 cy=%2282%22 r=%2211%22/%3E%3Ccircle cx=%2218%22 cy=%2250%22 r=%2211%22/%3E%3C/g%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2217%22 fill=%22%234A35B8%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8,6 +8,7 @@
    Single deliberate light look (the product's warm-white shell), with a dark focus panel for the officer's decision. */
 :root {
   --ground: #f5f3ee; --surface: #ffffff; --sunk: #efebe3; --line: #e3ded3; --line-strong: #cfc8ba;
+  --on-ink: #ffffff; --paper: #fbfaf6; --paper-ink: #2b2925; --hair: #f0ece5; --tint: #fcfbff; --bubble: #e9e5dc; --hover: #fbfaf7; --me: #2f6f8f;
   --ink: #161513; --ink-2: #4f4a42; --ink-3: #8a847a;
   --ember: #f2643a; --ember-ink: #1c0c05; --ember-soft: #fde9e1;
   --squad: #6a4cf5; --squad-ink: #3d2a9e; --squad-soft: #f2efff; --squad-line: #ddd5ff;
@@ -17,6 +18,17 @@
   --r: 14px; --shadow: 0 1px 2px rgba(22,21,19,.04), 0 8px 28px rgba(22,21,19,.07);
   color-scheme: light;
 }
+/* colour variants: same meanings (red breach, amber attention, green verified, lavender = Squad), different grounds */
+:root[data-look="cool"] { --ground: #f1f3f6; --sunk: #e7ebf0; --line: #dce1e8; --line-strong: #c3cad4; --ink: #13161b; --ink-2: #49505b; --ink-3: #848c98; --paper: #fafbfc; --hair: #edf0f4; --bubble: #e1e6ee; --hover: #f7f9fb; --me: #33557a; }
+:root[data-look="lavender"] { --ground: #f4f2fb; --sunk: #ebe7f7; --line: #e0dbf0; --line-strong: #c9c1e4; --ink: #1a1726; --ink-2: #4d4862; --ink-3: #8a84a0; --paper: #fcfbff; --hair: #efecf8; --bubble: #e4def6; --hover: #f8f6fd; --me: #4a35b8; }
+:root[data-look="sage"] { --ground: #f0f3ee; --sunk: #e5eae1; --line: #d9e0d4; --line-strong: #c0cab9; --ink: #151a14; --ink-2: #4a5347; --ink-3: #858f80; --paper: #fbfcfa; --hair: #ecf0e9; --bubble: #dfe7da; --hover: #f7f9f5; --me: #3f6b4a; }
+:root[data-look="night"] { color-scheme: dark; --ground: #141318; --surface: #1d1c22; --sunk: #25242b; --line: #2f2e36; --line-strong: #46444f; --ink: #f1eff5; --ink-2: #bbb7c6; --ink-3: #8a8695; --on-ink: #141318;
+  --hair: #29282f; --tint: #211e2b; --bubble: #2d2b35; --hover: #232229; --me: #8f7bf0;
+  --squad: #a493ff; --squad-ink: #cbbfff; --squad-soft: #262140; --squad-line: #3d3561;
+  --ok: #7fd3a0; --ok-soft: #17301f; --warn: #f0c06a; --warn-soft: #36290f; --bad: #ff9b8f; --bad-soft: #3a1b17; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px rgba(0,0,0,.35); }
+.looks { display: flex; align-items: center; gap: 6px; padding: 8px 10px 4px; font-size: 12px; color: var(--ink-3); }
+.looks button { width: 20px; height: 20px; border-radius: 10px; border: 1px solid var(--line-strong); padding: 0; }
+.looks button[aria-pressed="true"] { outline: 2px solid var(--squad); outline-offset: 2px; }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body { display: flex; flex-direction: column; background: var(--ground); color: var(--ink); font: 15px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
@@ -35,21 +47,21 @@ button { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .mk .orbit, .mk .core { animation: none; } }
 
 /* presenter strip */
-.strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ink); color: #f3efe8;
+.strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: #161513; color: #f3efe8;
   padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--ink); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: #161513; }
 .strip .label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #a8a196; white-space: nowrap; }
 .dots { display: flex; gap: 6px; }
 .dot { width: 26px; height: 26px; border-radius: 13px; border: 1px solid #45413b; background: transparent; color: #a8a196; font-size: 12px; font-weight: 600; }
-.dot[aria-current="step"] { background: #f3efe8; border-color: #f3efe8; color: var(--ink); }
+.dot[aria-current="step"] { background: #f3efe8; border-color: #f3efe8; color: #161513; }
 .dot.done { background: #2d2a26; color: #f3efe8; }
 .strip .hint { flex: 1 1 280px; min-width: 0; font-size: 14px; }
 .strip .hint b { color: #fff; }
 .strip .hint span { color: #bdb6aa; }
 .strip .nav { display: flex; gap: 6px; }
 .sbtn { height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #45413b; background: transparent; color: #f3efe8; font-size: 13px; font-weight: 600; }
-.sbtn.primary { background: #f3efe8; color: var(--ink); border-color: #f3efe8; }
+.sbtn.primary { background: #f3efe8; color: #161513; border-color: #f3efe8; }
 
 /* shell */
 .app { flex: 1; min-height: 0; display: grid; grid-template-columns: 252px minmax(0, 1fr); }
@@ -70,7 +82,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .badge.ember { background: var(--ember); color: var(--ember-ink); }
 .badge.warn { background: var(--warn-soft); color: var(--warn); }
 .me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
-.avatar { width: 32px; height: 32px; border-radius: 16px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.avatar { width: 32px; height: 32px; border-radius: 16px; background: var(--ink); color: var(--on-ink); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .me small { display: block; color: var(--ink-3); font-size: 12px; }
 
 .main { min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; position: relative; }
@@ -80,7 +92,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* messages */
 .msg { display: flex; gap: 12px; align-items: flex-start; }
 .msg.me-msg { justify-content: flex-end; }
-.bubble-me { max-width: 560px; background: #e9e5dc; border-radius: 16px 16px 4px 16px; padding: 12px 16px; }
+.bubble-me { max-width: 560px; background: var(--bubble); border-radius: 16px 16px 4px 16px; padding: 12px 16px; }
 .msgbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
 .meta { font-size: 12px; color: var(--ink-3); }
 .meta b { color: var(--squad-ink); font-weight: 600; }
@@ -98,15 +110,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .btn { height: 42px; padding: 0 16px; border-radius: 11px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
 .btn:hover { border-color: var(--ink-3); }
-.btn.primary { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
-.btn.primary:hover { background: #2b2925; }
-.btn.dark { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--on-ink); font-weight: 600; }
+.btn.primary:hover { opacity: .9; }
+.btn.dark { background: var(--ink); border-color: var(--ink); color: var(--on-ink); font-weight: 600; }
 .btn.ghost { border-color: transparent; background: transparent; color: var(--squad-ink); font-weight: 600; padding: 0 8px; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; }
 .tag { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .tag.bad { background: var(--bad-soft); color: var(--bad); } .tag.warn { background: var(--warn-soft); color: var(--warn); } .tag.ok { background: var(--ok-soft); color: var(--ok); } .tag.squad { background: var(--squad-soft); color: var(--squad-ink); }
 .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); font-size: 13px; }
-.chip.file { background: #fff; }
+.chip.file { background: var(--surface); }
 .worklist { display: grid; gap: 8px; }
 .workitem { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); text-align: left; width: 100%; }
 .workitem:hover { border-color: var(--line-strong); }
@@ -123,7 +135,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .trail > button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 0; background: transparent; text-align: left; font-size: 13px; color: var(--ink-2); }
 .trail > button b { color: var(--squad-ink); }
 .trail ol { list-style: none; margin: 0; padding: 0 14px 8px; }
-.trail li { display: grid; grid-template-columns: 22px 150px minmax(0, 1fr) auto; gap: 10px; padding: 9px 0; border-top: 1px solid #f1eee8; font-size: 13px; align-items: start; animation: rise .3s ease-out both; }
+.trail li { display: grid; grid-template-columns: 22px 150px minmax(0, 1fr) auto; gap: 10px; padding: 9px 0; border-top: 1px solid var(--hair); font-size: 13px; align-items: start; animation: rise .3s ease-out both; }
 .trail li .k { font-family: var(--f-mono); color: var(--ink-3); }
 .trail li .ck { color: var(--ok); white-space: nowrap; }
 
@@ -133,7 +145,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .composer .box.over { border-color: var(--squad); background: var(--squad-soft); }
 .composer input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; height: 40px; font-size: 15px; }
 .iconbtn { width: 42px; height: 42px; border-radius: 11px; border: 1px solid var(--line); background: var(--surface); display: inline-flex; align-items: center; justify-content: center; }
-.iconbtn.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
+.iconbtn.dark { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
 
 /* portfolio */
 .ptitle { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
@@ -149,10 +161,10 @@ table.port { width: 100%; border-collapse: collapse; font-size: 14px; }
 .port tr[data-co] { cursor: pointer; }
 .port th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-3); padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
 .port th.r, .port td.r { text-align: right; }
-.port td { padding: 13px 14px; border-bottom: 1px solid #f0ece5; vertical-align: middle; }
+.port td { padding: 13px 14px; border-bottom: 1px solid var(--hair); vertical-align: middle; }
 .port tr.watch td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
 .port tr.alert td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
-.port tr:hover td { background: #fbfaf7; }
+.port tr:hover td { background: var(--hover); }
 .co b { display: block; } .co small { color: var(--ink-3); }
 .rml { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .rml.bad { color: var(--bad); } .rml.warn { color: var(--warn); }
@@ -160,7 +172,7 @@ table.port { width: 100%; border-collapse: collapse; font-size: 14px; }
 
 /* review split */
 .split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0; }
-.page { background: #fbfaf6; border-right: 1px solid var(--line); padding: 28px 34px; font-family: var(--f-doc); font-size: 14px; color: #2b2925; display: flex; flex-direction: column; gap: 8px; border-radius: var(--r) 0 0 var(--r); }
+.page { background: var(--paper); border-right: 1px solid var(--line); padding: 28px 34px; font-family: var(--f-doc); font-size: 14px; color: var(--paper-ink); display: flex; flex-direction: column; gap: 8px; border-radius: var(--r) 0 0 var(--r); }
 .page .ln { display: flex; justify-content: space-between; gap: 12px; padding: 2px 6px; border-radius: 3px; }
 .page .ln span:last-child { font-variant-numeric: tabular-nums; }
 .page .hl { outline: 2px solid var(--squad); outline-offset: 2px; background: var(--squad-soft); }
@@ -184,17 +196,17 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .drawer header { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
 .drawer header b { flex: 1; }
 .drawer .body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-.clause { background: #fbfaf6; border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; font-family: var(--f-doc); font-size: 15px; line-height: 1.7; color: #2b2925; display: flex; flex-direction: column; gap: 10px; }
+.clause { background: var(--paper); color: var(--paper-ink); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; font-family: var(--f-doc); font-size: 15px; line-height: 1.7; display: flex; flex-direction: column; gap: 10px; }
 .clause mark { background: var(--squad-soft); outline: 2px solid var(--squad); outline-offset: 3px; border-radius: 2px; color: inherit; }
 .verified { font-size: 12px; color: var(--ok); font-weight: 600; }
-.calc { font-family: var(--f-mono); font-size: 13px; line-height: 1.9; background: #fbfaf6; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.calc { font-family: var(--f-mono); font-size: 13px; line-height: 1.9; background: var(--sunk); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
 .calc .tot { border-top: 1px solid var(--line-strong); margin-top: 4px; padding-top: 4px; font-weight: 600; }
 
 /* recommendation + email */
-.doc { font-family: var(--f-doc); font-size: 16px; line-height: 1.6; color: #2b2925; }
+.doc { font-family: var(--f-doc); font-size: 16px; line-height: 1.6; color: var(--ink); }
 .doc h3 { font-family: var(--f-ui); font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 0 0 6px; }
 .squadmark { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--squad-ink); }
-.email { border: 1.5px dashed var(--squad-line); border-radius: 14px; background: #fcfbff; }
+.email { border: 1.5px dashed var(--squad-line); border-radius: 14px; background: var(--tint); }
 .email .hd { padding: 10px 14px; border-bottom: 1px solid var(--squad-line); font-size: 13px; color: var(--ink-2); display: flex; gap: 12px; flex-wrap: wrap; }
 .email textarea { border: 0; background: transparent; width: 100%; min-height: 110px; padding: 12px 14px; resize: none; overflow: hidden; font-size: 14px; line-height: 1.55; }
 
@@ -213,20 +225,68 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .night .btn.primary { background: var(--night-ink); border-color: var(--night-ink); color: var(--ink); }
 
 /* toast */
-.toast { position: fixed; left: 50%; top: calc(var(--striph, 0px) + 14px); transform: translateX(-50%); background: var(--ink); color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; animation: rise .25s ease-out both; max-width: calc(100% - 32px); }
+.toast { position: fixed; left: 50%; top: calc(var(--striph, 0px) + 14px); transform: translateX(-50%); background: var(--ink); color: var(--on-ink); padding: 11px 16px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; animation: rise .25s ease-out both; max-width: calc(100% - 32px); }
 .toast b { color: #9ee3b9; }
+:root[data-look="night"] .toast b { color: #17603a; }
 
 .endcard { text-align: center; padding: 36px 24px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .endcard h2 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
 
+/* documents stay paper in every colour variant */
+.page, .clause { --squad: #6a4cf5; --squad-soft: #f2efff; --warn: #8f5a00; --warn-soft: #fbeed3; --line-strong: #cfc8ba; --ink-3: #8a847a; color: var(--paper-ink); }
+:root[data-look="night"] { --paper: #f7f5ef; }
+/* document viewer + spread */
+.viewer { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
+.viewer .page { border-right: 0; border-radius: 0 0 0 var(--r); flex: 1; }
+.vbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 12px; background: var(--sunk); border-bottom: 1px solid var(--line); border-radius: var(--r) 0 0 0; font-size: 12px; }
+.vbar .mono { color: var(--ink-2); }
+.pgs { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.pgs button { height: 26px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 12px; }
+.pgs button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.rside { display: flex; flex-direction: column; min-width: 0; }
+.tabs { display: flex; gap: 4px; padding: 10px 14px 0; border-bottom: 1px solid var(--line); }
+.tabs button { border: 0; background: transparent; padding: 8px 10px 10px; font-size: 13px; font-weight: 600; color: var(--ink-3); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.spread { padding: 14px 16px 18px; }
+.spread table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.spread td { padding: 6px 6px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+.spread tr[data-act] { cursor: pointer; }
+.spread tr[data-act]:hover td { background: var(--hover); }
+.spread tr.on td { background: var(--squad-soft); }
+.spread td small { display: block; color: var(--ink-3); font-size: 11px; }
+.spread tr.tot .tl { font-weight: 700; }
+.spread tr.sec td { padding-top: 12px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.spread td.r { text-align: right; white-space: nowrap; }
+.spread td.ck { width: 24px; text-align: center; font-weight: 700; }
+.spread tr.st-ok td.ck { color: var(--ok); } .spread tr.st-warn td.ck { color: var(--warn); } .spread tr.st-bad td.ck { color: var(--bad); }
+.spread tr.st-warn td { background: var(--warn-soft); } .spread tr.st-bad td.r { color: var(--bad); font-weight: 700; }
+.spread tr.bal td { padding: 10px 6px; font-weight: 600; } .spread tr.bal.ok td { color: var(--ok); } .spread tr.bal.bad td { color: var(--bad); }
+
 /* drawer pushes the case aside where there is room */
 .main .pane, .main .composer { transition: padding-right .24s ease; }
 @media (min-width: 1200px) { .main.push .pane, .main.push .composer { padding-right: 592px; } .main.push .scrim { display: none; } }
+/* collapsible rail */
+.railtop { display: flex; align-items: center; gap: 8px; }
+.railtop .who { flex: 1; min-width: 0; }
+.collapse { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+body.railc .app { grid-template-columns: 76px minmax(0, 1fr); }
+body.railc .rail { padding: 16px 10px; align-items: center; }
+body.railc .railtop { flex-direction: column; }
+body.railc .who > div, body.railc .navgroup, body.railc .me > div, body.railc .looks .lk { display: none; }
+body.railc .who { padding: 4px 0 10px; }
+body.railc .navitem { width: 52px; justify-content: center; padding: 10px 0; position: relative; }
+body.railc .navitem .nl { display: none; }
+body.railc .navitem::before { content: attr(data-short); font-weight: 700; font-size: 13px; }
+body.railc .navitem .badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; font-size: 10px; }
+body.railc .me { padding: 6px; background: transparent; border: 0; }
+body.railc .looks { flex-direction: column; padding: 8px 0; }
+@media (max-width: 900px) { .collapse { display: none; } body.railc .app { grid-template-columns: 1fr; } }
+
 /* guide toggle */
 body.noguide .strip { display: none; }
 #showguide { position: fixed; top: 10px; right: 12px; z-index: 45; display: none; height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 12px; font-weight: 600; box-shadow: var(--shadow); }
 body.noguide #showguide { display: inline-flex; align-items: center; }
-.suggest { align-self: flex-start; border: 1px dashed var(--squad-line); background: #fcfbff; color: var(--squad-ink); border-radius: 9px; height: 30px; padding: 0 10px; font-size: 12px; font-weight: 600; }
+.suggest { align-self: flex-start; border: 1px dashed var(--squad-line); background: var(--tint); color: var(--squad-ink); border-radius: 9px; height: 30px; padding: 0 10px; font-size: 12px; font-weight: 600; }
 .night .suggest { background: transparent; color: #cfc3ff; border-color: #5a5270; }
 .btn.primary[disabled] { opacity: .35; }
 
@@ -235,9 +295,9 @@ body.noguide #showguide { display: inline-flex; align-items: center; }
 .checked { font-size: 12px; color: var(--ok); font-weight: 600; }
 .checked .proto { font-weight: 400; }
 .checked .gnote { color: var(--warn); }
-.chip.cite { height: 28px; font-size: 12px; color: var(--ink-2); background: #fbfaf6; }
+.chip.cite { height: 28px; font-size: 12px; color: var(--ink-2); background: var(--sunk); }
 button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
-.askcard { border: 1px solid var(--squad-line); background: #fcfbff; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.askcard { border: 1px solid var(--squad-line); background: var(--tint); border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
 .askcard .q { font-size: 17px; font-weight: 600; line-height: 1.35; }
 .later { animation: rise .3s ease-out both; animation-delay: 3s; }
 .livetrail li { animation-duration: .35s; }
@@ -258,7 +318,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
 .kv small { display: block; color: var(--ink-3); font-size: 12px; }
 .kv b { font-size: 22px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .ledger { list-style: none; margin: 0; padding: 0; }
-.ledger li { display: grid; grid-template-columns: 64px 140px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid #f0ece5; font-size: 14px; }
+.ledger li { display: grid; grid-template-columns: 64px 140px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--hair); font-size: 14px; }
 .ledger li .mono { color: var(--ink-3); font-size: 12px; padding-top: 2px; }
 
 /* end-of-walkthrough summary */
@@ -284,7 +344,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
 </style>
 
 <div class="strip" role="region" aria-label="Demo steps">
-  <span class="label">Squad muse style demo · Carly's morning</span>
+  <span class="label">Squad - Credit Analyst agent demo · Carly's morning</span>
   <div class="dots" id="dots"></div>
   <div class="hint" id="hint" aria-live="polite"></div>
   <div class="nav">
@@ -323,7 +383,12 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     { co: "Tessaract Labs", sector: "Developer tools · Series B", cash: 11.0, burn: 0.40, cov: ["ok", "Compliant"], next: "—", trend: [26, 26.4, 26.8, 27.1, 27.3, 27.5] },
     { co: "Pellucid Sensors", sector: "Industrial IoT · Series A", cash: 6.3, burn: 0.22, cov: ["ok", "Compliant"], next: "—", trend: [27, 27.5, 28.0, 28.3, 28.5, 28.6] },
   ];
-  const CHATS = [{ id: "dataflake", label: "Dataflake Inc", co: "Dataflake Inc" }, { id: "stripple", label: "Stripple Tech · October", co: "Stripple Tech" }, { id: "lumora", label: "Lumora Health", co: "Lumora Health" }];
+  const CHATS = [{ id: "dataflake", label: "Dataflake Inc", co: "Dataflake Inc", short: "DF" }, { id: "stripple", label: "Stripple Tech · October", co: "Stripple Tech", short: "ST" }, { id: "lumora", label: "Lumora Health", co: "Lumora Health", short: "LH" }];
+  const LOOKS = [["warm", "Warm paper", "#f5f3ee", "#161513"], ["cool", "Cool slate", "#f1f3f6", "#33557a"], ["lavender", "Lavender mist", "#f4f2fb", "#4a35b8"], ["sage", "Sage", "#f0f3ee", "#3f6b4a"], ["night", "Night", "#141318", "#a493ff"]];
+  const pref = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
+  const savePref = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+  let look = pref("squad-look", "warm"); let railC = pref("squad-rail", "open") === "closed";
+  const applyChrome = () => { document.documentElement.dataset.look = look; document.body.classList.toggle("railc", railC); };
   const WATCH = 12;
   const SUGGESTED_VIEW = "One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.";
   const rml = (c, b) => Math.round((c / b) * 10) / 10;   // cash only ÷ average monthly net burn (last 3 months)
@@ -390,13 +455,15 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const helen = helenView();
     const view = s.view.startsWith("cc:") ? (s.stack.filter((v) => v && !v.startsWith("cc:")).pop() || (step === 1 ? "portfolio" : "squad")) : (s.view || (step === 1 ? "portfolio" : "squad"));
     $("rail").innerHTML = `
-      <div class="who">${mark(42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
-      ${helen ? `<button class="navitem" aria-current="page" type="button">Approvals <span class="badge ember">1</span></button>` : `
-      <button class="navitem" data-nav="squad" ${view === "squad" ? 'aria-current="page"' : ""} type="button">Squad <span class="badge ember">${step < 7 ? 3 : 1}</span></button>
-      <button class="navitem" data-nav="portfolio" ${view === "portfolio" ? 'aria-current="page"' : ""} type="button">My Portfolio <span class="badge warn">2</span></button>
+      <div class="railtop"><div class="who">${mark(42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
+        <button class="collapse" type="button" data-act="railc" aria-label="${railC ? "Expand" : "Collapse"} navigation" title="${railC ? "Expand" : "Collapse"} navigation">${railC ? "»" : "«"}</button></div>
+      ${helen ? `<button class="navitem" data-short="A" aria-current="page" type="button" title="Approvals"><span class="nl">Approvals</span> <span class="badge ember">1</span></button>` : `
+      <button class="navitem" data-short="Sq" title="Squad" data-nav="squad" ${view === "squad" ? 'aria-current="page"' : ""} type="button"><span class="nl">Squad</span> <span class="badge ember">${step < 7 ? 3 : 1}</span></button>
+      <button class="navitem" data-short="MP" title="My Portfolio" data-nav="portfolio" ${view === "portfolio" ? 'aria-current="page"' : ""} type="button"><span class="nl">My Portfolio</span> <span class="badge warn">2</span></button>
       <div class="navgroup">Side chats</div>
-      ${CHATS.map((c) => `<button class="navitem" data-nav="chat:${c.id}" ${view === "chat:" + c.id ? 'aria-current="page"' : ""} type="button">${c.label}</button>`).join("")}`}
-      <div class="me"><div class="avatar" style="${helen ? "" : "background:#2f6f8f"}">${helen ? "HS" : "CR"}</div><div><b style="font-size:14px">${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Commercial credit analyst"}</small></div></div>`;
+      ${CHATS.map((c) => `<button class="navitem" data-short="${c.short}" title="${esc(c.label)}" data-nav="chat:${c.id}" ${view === "chat:" + c.id ? 'aria-current="page"' : ""} type="button"><span class="nl">${c.label}</span></button>`).join("")}`}
+      <div class="looks" role="group" aria-label="Colour variant"><span class="lk">Look</span>${LOOKS.map(([k, label, a, b]) => `<button type="button" data-act="look" data-look="${k}" aria-pressed="${look === k}" title="${label}" aria-label="${label}" style="background:linear-gradient(135deg, ${a} 50%, ${b} 50%)"></button>`).join("")}</div>
+      <div class="me"><div class="avatar" style="${helen ? "" : "background:var(--me);color:#fff"}">${helen ? "HS" : "CR"}</div><div><b style="font-size:14px">${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Commercial credit analyst"}</small></div></div>`;
     $("rail").querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => {
       const v = b.dataset.nav;
       if (step === 0 && v === "portfolio") return go(1);
@@ -439,14 +506,14 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     return meMsg(`<div style="display:flex;flex-direction:column;gap:8px">Stripple Tech's October package came in. Here it is.<div class="row"><span class="chip file">${ico.file}Stripple_Oct26_financials.pdf</span><span class="chip file">${ico.file}compliance_cert_oct.pdf</span><span class="chip file">${ico.file}mrr_export.xlsx</span></div></div>`, anim) +
       squadMsg(`<p class="text">${run.typo ? "All three are filed. You told me the MRR report's date is a typo, so it's filed as October 2026 with your note." : "Two are what was due for October and are filed. One I can't place without you."}</p>
       <div class="card" style="overflow:hidden">
-        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid #f0ece5;align-items:center"><b style="font-size:14px">Stripple_Oct26_financials.pdf</b><span style="font-size:13px;color:var(--ink-2)">Monthly financials · October 2026 · names Stripple Tech</span><span class="tag ok">Filed</span></div>
-        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid #f0ece5;align-items:center"><b style="font-size:14px">compliance_cert_oct.pdf</b><span style="font-size:13px;color:var(--ink-2)">Compliance certificate · October · signed by the CFO</span><span class="tag ok">Filed</span></div>
-        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;align-items:center;background:#fffaf0"><b style="font-size:14px">mrr_export.xlsx</b><span style="font-size:13px;color:var(--ink-2)">${run.typo ? "MRR report · filed as October 2026 by Carly: “the date is a typo”" : "Looks like an MRR report, but it names no company and its month reads October 2025"}</span><span class="tag ${run.typo ? "ok" : "warn"}">${run.typo ? "Filed" : "Held"}</span></div>
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--hair);align-items:center"><b style="font-size:14px">Stripple_Oct26_financials.pdf</b><span style="font-size:13px;color:var(--ink-2)">Monthly financials · October 2026 · names Stripple Tech</span><span class="tag ok">Filed</span></div>
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--hair);align-items:center"><b style="font-size:14px">compliance_cert_oct.pdf</b><span style="font-size:13px;color:var(--ink-2)">Compliance certificate · October · signed by the CFO</span><span class="tag ok">Filed</span></div>
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;align-items:center;background:var(--warn-soft)"><b style="font-size:14px">mrr_export.xlsx</b><span style="font-size:13px;color:var(--ink-2)">${run.typo ? "MRR report · filed as October 2026 by Carly: “the date is a typo”" : "Looks like an MRR report, but it names no company and its month reads October 2025"}</span><span class="tag ${run.typo ? "ok" : "warn"}">${run.typo ? "Filed" : "Held"}</span></div>
       </div>`, "Squad · Intake", anim);
   }
   function correctionDone() {
     return squadMsg(`<p class="text">Thanks, Carly. Stripple Tech's October spread is complete: 199 of 199 figures checked on their pages. Your two answers are remembered for next month.</p>
-      <div class="trust">Track record on Stripple Tech <b>412 of 413</b> figures right over 7 months · corrected once, by you, today</div>
+      <div class="trust">Track record on Stripple Tech: <b>197 of 200</b> figures you checked were right · you've corrected me 3 times, once today</div>
       <div>${dive("co:Stripple Tech")}</div>`, "Squad · Spreading");
   }
   function certQuestion() {
@@ -479,7 +546,7 @@ Carly</textarea></div>
     const ask = step === 5 || (s.view === "chat:dataflake" && step < 6) ? certQuestion() : run.certChoice ? certQuestion().replace(/<div class="row">[\s\S]*$/, "") : "";
     return squadMsg(`<p class="text">Dataflake Inc missed its minimum cash covenant. Unrestricted cash is <b class="num">$4.6M</b> against a <b class="num">$5.0M</b> minimum, but they certified <b class="num">$5.3M</b>. The difference is <b class="num">$0.7M</b> pledged for a letter of credit, which the loan agreement excludes. RML is about <b class="num">7 months</b>; a Series B extension is signed and closing in December.</p>
       <div class="trail" id="trail">
-        <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>4 specialists and code · 5 checks passed · 38 of 38 covenant tests right on Dataflake</span></button>
+        <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>4 specialists and code · 5 checks passed · 37 of 38 covenant tests right on Dataflake</span></button>
         ${s.trail ? `<ol>
           <li><span class="k">1</span><b class="who2">Intake</b><span>Filed the October compliance certificate; names Dataflake, period 31 Oct 2026</span><span class="ck">✓ borrower and period</span></li>
           <li style="animation-delay:.06s"><span class="k">2</span><b class="who2">Certificate</b><span>Read reported cash of $5.3M on page 1</span><span class="ck">✓ found on the page</span></li>
@@ -549,9 +616,9 @@ Carly</textarea></div>
     } else if (key === "fig:capsoft") {
       const fixed = s.fixed || step >= 5;
       body = `<h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Stripple Tech · October 2026 spread · Capitalised software, net</h1>
-        <div class="kv"><div><small>Current value (USD thousands)</small><b>${fixed ? "4,850" : "1,200"}</b></div><div><small>Source</small><b style="font-size:16px">${fixed ? "Notes to the financials · p. 3" : "Cash flow note · p. 2"}</b></div><div><small>Status</small><span class="tag ${fixed ? "ok" : "warn"}" style="margin-top:6px">${fixed ? "Corrected by Carly" : "Under review"}</span></div></div>
+        <div class="kv"><div><small>Current value (USD thousands)</small><b>${fixed ? "4,850" : "1,200"}</b></div><div><small>Source</small><b style="font-size:16px">${fixed ? "Note 6, intangible assets · p. 3" : "Cash flow statement · p. 5"}</b></div><div><small>Status</small><span class="tag ${fixed ? "ok" : "warn"}" style="margin-top:6px">${fixed ? "Corrected by Carly" : "Under review"}</span></div></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">History (nothing is overwritten)</div><ul class="ledger">
-          <li><span class="mono">v1</span><b>Spreading</b><span>1,200 from page 2, “Capitalised software development, year to date”${fixed ? " · superseded" : ""}</span></li>
+          <li><span class="mono">v1</span><b>Spreading</b><span>1,200 from page 5, “Capitalised software development”, year to date${fixed ? " · superseded" : ""}</span></li>
           ${fixed ? `<li><span class="mono">v2</span><b>Carly Reyes</b><span>4,850 from page 3. Reason: “That's the year-to-date spend from the cash flow note, not the balance. The balance is on page 3.” Ratios that used it were re-run.</span></li>` : ""}</ul></div>`;
     } else if (key === "cov:dataflake") {
       body = `<h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Dataflake Inc · Minimum unrestricted cash · October 2026</h1>
@@ -584,7 +651,7 @@ Carly</textarea></div>
         <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension closing by 15 December, on her second pass.</div><div>${dive("case:dataflake")}</div></section>
         <section><h3>The January cash case</h3><div>If the close slips to January, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum.</div></section>
         <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Chaser to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li>${run.certAsked ? "<li>Question to Dataflake about the pledged cash: <b>sent</b></li>" : ""}</ul><div class="proto">prototype: nothing was really sent</div></section>
-        <section><h3>What Carly taught Squad</h3><ul><li>${line ? `Contract liabilities go to ${line}${run.remember ? ", remembered for Stripple Tech" : ", not remembered (you'll be asked again)"}` : "Contract liabilities: not answered in this run"}</li><li>Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3</li><li>Track record on Stripple Tech: <b class="num">412 of 413</b>, corrected once today</li></ul></section>
+        <section><h3>What Carly taught Squad</h3><ul><li>${line ? `Contract liabilities go to ${line}${run.remember ? ", remembered for Stripple Tech" : ", not remembered (you'll be asked again)"}` : "Contract liabilities: not answered in this run"}</li><li>Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3</li><li>Track record on Stripple Tech: <b class="num">197 of 200</b> figures right, corrected 3 times (once today)</li></ul></section>
         ${run.asks.some((a) => a.status === "done") ? `<section style="grid-column:1/-1"><h3>What Carly asked</h3><ul>${run.asks.filter((a) => a.status === "done").map((a) => `<li>“${esc(a.q)}” · ${a.answerable === false ? "Squad said it couldn't answer from the evidence" : `answered with ${a.traced} figure${a.traced === 1 ? "" : "s"} traced`}</li>`).join("")}</ul></section>` : ""}
       </div>
       <div class="row"><button class="btn primary" type="button" data-act="restart">Run it again from step 1</button></div>
@@ -606,7 +673,7 @@ Carly</textarea></div>
         ["F8", "RML (remaining months of liquidity)", "7.1 months", "calculated by code: 4.6 ÷ 0.65"],
         ["F9", "Series B extension", "$8M, signed, expected to close in December", "signed term sheet"],
         ["F10", "Cash if the close slips to January", "near $3.3M", "calculated by code: 4.6 − 2 × 0.65"],
-        ["F11", "Squad's track record on Dataflake covenant tests", "38 of 38 right", "evaluation history"],
+        ["F11", "Squad's track record on Dataflake covenant tests", "37 of 38 right; one corrected by Carly in an earlier month", "evaluation history"],
       ],
       clauses: [
         ["C1", "Loan agreement §1.1, p. 4", "“Unrestricted Cash” means cash and cash equivalents of the Borrower held in deposit accounts subject to a control agreement in favour of the Bank, excluding any cash pledged, escrowed or otherwise restricted, including cash securing letters of credit."],
@@ -623,10 +690,10 @@ Carly</textarea></div>
       facts: [
         ["F1", "Contract liabilities (USD thousands)", "3,410", "October financials p. 2, current liabilities"],
         ["F2", "Total current liabilities (USD thousands)", "6,390", "October financials p. 2"],
-        ["F3", "Capitalised software development, year to date (USD thousands)", "1,200", "cash flow note p. 2 (a spend, not a balance)"],
+        ["F3", "Capitalised software development, year to date (USD thousands)", "1,200", "cash flow statement p. 5 (a year-to-date spend, not a balance)"],
         ["F4", "Capitalised software, net balance (USD thousands)", "4,850", "notes to the financials p. 3"],
         ["F5", "Figures checked on their pages", "197 of 199 automatically; 2 sent to Carly", "Spreading"],
-        ["F6", "Squad's track record on Stripple figures", "412 of 413 right over 7 months, corrected once by Carly", "evaluation history"],
+        ["F6", "Squad's track record on Stripple figures", "197 of 200 figures Carly checked were right; corrected 3 times, once today", "evaluation history"],
         ["F7", "Unrestricted cash; net burn; RML", "$6.6M; $0.30M a month; 22.0 months", "October financials; calculated by code"],
       ],
       clauses: [],
@@ -662,13 +729,13 @@ Carly</textarea></div>
       [/january|slip|delay|extension|series|close/i, "The $8M Series B extension is signed and expected to close in December. If it slips to January, two more months of burn leave cash near $3.3M, below the $5.0M minimum.", ["F9", "F10", "F4"]],
       [/rml|runway|month|burn/i, "RML is 7.1 months: unrestricted cash of $4.6M divided by average monthly net burn of $0.65M.", ["F8", "F5", "F7"]],
       [/waive|should|recommend|decide|option/i, "That's your call to recommend and Helen's to decide, not mine. The options on file are a one-time waiver conditioned on funding, a reservation of rights, or a default notice.", ["N2"]],
-      [/trust|sure|right|accura/i, "I've been right on 38 of 38 covenant tests for Dataflake. This one rests on the §1.1 quote, which code found on page 4, and on the bank statements.", ["F11", "C1"]],
+      [/trust|sure|right|accura/i, "I've been right on 37 of 38 covenant tests for Dataflake; you corrected the other one. This one rests on the §1.1 quote, which code found on page 4, and on the bank statements.", ["F11", "C1"]],
     ],
     stripple: [
       [/contract|deferred|liabilit/i, "Contract liabilities of 3,410 is a new line for Stripple Tech, on page 2. It's most likely deferred revenue, subscriptions billed ahead; that's why I asked you rather than guessing.", ["F1", "N2"]],
-      [/software|capitali|4,?850|1,?200|wrong/i, "I took 1,200 from the cash flow note, which is the year-to-date spend. The balance is 4,850 on page 3; you corrected it, and I'll look on page 3 next time.", ["F3", "F4"]],
+      [/software|capitali|4,?850|1,?200|wrong/i, "I took 1,200 from the cash flow statement on page 5, which is the year-to-date spend. The balance is 4,850 on page 3; you corrected it, and I'll look on page 3 next time.", ["F3", "F4"]],
       [/mrr|held|xlsx|2025|arr/i, "mrr_export.xlsx names no company and its month reads October 2025, so I held it. It feeds the ARR-against-plan test, not the spread.", ["N1"]],
-      [/trust|track|right|accura/i, "412 of 413 figures right over 7 months on Stripple Tech, corrected once, by you.", ["F6"]],
+      [/trust|track|right|accura/i, "197 of 200 figures you've checked on Stripple Tech were right. You've corrected me 3 times, once today.", ["F6"]],
     ],
     lumora: [
       [/late|why|report|chaser|send/i, "Lumora Health's October financials and compliance certificate are 12 days late. I drafted a chaser; it goes only if you send it.", ["F4", "N2"]],
@@ -779,6 +846,82 @@ Carly's question: ${q}`;
   }
   const asksHtml = (ctx) => run.asks.map((a, i) => a.ctx === ctx ? askHtml(a, i) : "").join("");
 
+  // ---------- review in place: the source document beside the spread ----------
+  // Synthetic Stripple Tech balance sheet, USD thousands. Totals foot: 9,220 + 610 + 5,470 + 300 = 15,600 = 10,390 + 5,210.
+  const DOC_PAGES = {
+    2: { title: "Balance sheet", lines: [
+      ["h", "Assets"], ["cash", "Cash and cash equivalents", "6,600", 1], ["ar", "Accounts receivable, net", "2,140", 1], ["pre", "Prepaid expenses and other current assets", "480", 1],
+      ["tca", "Total current assets", "9,220", 0, 1], ["ppe", "Property and equipment, net", "610", 1], ["int", "Intangible assets, net (Note 6)", "5,470", 1], ["oa", "Other assets", "300", 1], ["ta", "Total assets", "15,600", 0, 1],
+      ["h", "Liabilities and stockholders' equity"], ["ap", "Accounts payable", "1,120", 1], ["acc", "Accrued expenses", "860", 1], ["cl", "Contract liabilities", "3,410", 1], ["vdc", "Venture debt, current portion", "1,000", 1],
+      ["tcl", "Total current liabilities", "6,390", 0, 1], ["vdn", "Venture debt, net of current portion", "4,000", 1], ["tl", "Total liabilities", "10,390", 0, 1], ["eq", "Total stockholders' equity", "5,210", 1], ["tle", "Total liabilities and stockholders' equity", "15,600", 0, 1]] },
+    3: { title: "Note 6 · Intangible assets", lines: [
+      ["h", "Intangible assets, net, at October 31, 2026"], ["cs", "Capitalised software, net", "4,850", 1], ["at", "Acquired technology, net", "620", 1], ["ti", "Total intangible assets, net", "5,470", 0, 1],
+      ["p", "Capitalised software is amortised on a straight-line basis over three years."]] },
+    5: { title: "Statement of cash flows (extract)", lines: [
+      ["h", "Cash flows from investing activities, year to date"], ["pe", "Purchases of property and equipment", "(210)", 1], ["csd", "Capitalised software development", "(1,200)", 1], ["nci", "Net cash used in investing activities", "(1,410)", 0, 1]] },
+  };
+  function spreadRows() {
+    const fixed = s.fixed || step >= 5;
+    const line = run.line || s.line;
+    const cs = fixed ? ["4,850", 3, "cs", "ok", "on the page"] : ["1,200", 5, "csd", step === 4 ? "warn" : "warn", "needs your eye"];
+    const ti = fixed ? ["5,470", "ok", "ties to p. 2"] : ["1,820", "bad", "page 2 says 5,470"];
+    const ta = fixed ? ["15,600", "ok", "ties to p. 2"] : ["11,950", "bad", "page 2 says 15,600"];
+    const clLabel = line === "other" ? "Other current liabilities" : line === "deferred" ? "Deferred revenue, current" : "Unmapped: contract liabilities";
+    const clStat = run.line ? ["ok", "filed by you"] : step === 3 ? ["warn", "your call"] : ["warn", "not answered"];
+    return [
+      ["sec", "Assets"],
+      ["Cash and equivalents", "6,600", 2, "cash", "ok", "on the page"],
+      ["Accounts receivable", "2,140", 2, "ar", "ok", "on the page"],
+      ["Prepaids and other current", "480", 2, "pre", "ok", "on the page"],
+      ["Total current assets", "9,220", 2, "tca", "ok", "code: ties to p. 2", 1],
+      ["Fixed assets, net", "610", 2, "ppe", "ok", "on the page"],
+      ["Capitalised software", cs[0], cs[1], cs[2], cs[3], cs[4], 0, "capsoft"],
+      ["Other intangibles", "620", 3, "at", "ok", "on the page"],
+      ["Total intangibles", ti[0], 2, "int", ti[1], "code: " + ti[2], 1],
+      ["Other assets", "300", 2, "oa", "ok", "on the page"],
+      ["Total assets", ta[0], 2, "ta", ta[1], "code: " + ta[2], 1],
+      ["sec", "Liabilities and equity"],
+      ["Accounts payable", "1,120", 2, "ap", "ok", "on the page"],
+      ["Accrued expenses", "860", 2, "acc", "ok", "on the page"],
+      [clLabel, "3,410", 2, "cl", clStat[0], clStat[1], 0, "contract"],
+      ["Current portion of debt", "1,000", 2, "vdc", "ok", "on the page"],
+      ["Total current liabilities", "6,390", 2, "tcl", "ok", "code: ties to p. 2", 1],
+      ["Long-term debt", "4,000", 2, "vdn", "ok", "on the page"],
+      ["Total liabilities", "10,390", 2, "tl", "ok", "code: ties to p. 2", 1],
+      ["Equity", "5,210", 2, "eq", "ok", "on the page"],
+      ["Total liabilities and equity", "15,600", 2, "tle", "ok", "code: ties to p. 2", 1],
+      ["bal", fixed ? "Balance check: assets 15,600 = liabilities and equity 15,600" : "Balance check: assets 11,950 ≠ liabilities and equity 15,600", fixed ? "ok" : "bad"],
+    ];
+  }
+  function docFocus() {
+    if (s.page) return [s.page, s.hl];
+    if (step === 3) return [2, "cl"];
+    if (s.fixed || s.wrong) return [3, "cs"];
+    return [5, "csd"];
+  }
+  function viewDoc() {
+    const [pg, hl] = docFocus();
+    const doubt = step === 4 && !s.fixed && hl === "csd";
+    const P = DOC_PAGES[pg];
+    const lines = P.lines.map(([id, label, val, ind, bold]) => id === "h" ? `<div class="ln" style="margin-top:6px"><b>${label}</b><span></span></div>` : id === "p" ? `<div style="font-size:13px;margin-top:8px">${label}</div>` :
+      `<div class="ln ${id === hl ? (doubt ? "hl2" : "hl") : ""}" ${id === hl ? 'id="docfocus"' : ""}><span style="padding-left:${ind ? 14 : 0}px;${bold ? "font-weight:600" : ""}">${label}</span><span style="${bold ? "font-weight:600;border-top:1px solid var(--line-strong)" : ""}">${val}</span></div>`).join("");
+    return `<div class="viewer">
+      <div class="vbar"><span class="mono">Stripple_Oct26_financials.pdf</span><span class="pgs">${[2, 3, 5].map((n) => `<button type="button" data-act="page" data-page="${n}" aria-pressed="${n === pg}">p. ${n}</button>`).join("")}<span class="def">of 9</span></span></div>
+      <div class="page" aria-label="Source page ${pg}">
+        <div style="text-align:center;font-weight:600;font-size:15px">Stripple Tech, Inc.</div>
+        <div style="text-align:center;font-size:13px;margin-bottom:10px">${P.title} · October 31, 2026 · (USD thousands) · page ${pg}</div>
+        ${lines}
+        <div class="synth">SYNTHETIC · FOR DEMONSTRATION</div>
+      </div></div>`;
+  }
+  function viewSpread() {
+    const [, hl] = docFocus();
+    const ico = { ok: "✓", warn: "?", bad: "✗" };
+    return `<div class="spread"><div class="def" style="margin-bottom:8px">Bank of Stoic spreading template · balance sheet · October 2026 · USD thousands. Click a line to see its source.</div>
+      <table><tbody>${spreadRows().map((r) => r[0] === "sec" ? `<tr class="sec"><td colspan="3">${r[1]}</td></tr>` : r[0] === "bal" ? `<tr class="bal ${r[2]}"><td colspan="3">${ico[r[2]]} ${r[1]}</td></tr>` :
+        `<tr class="${r[6] ? "tot" : ""} ${r[3] === hl ? "on" : ""} st-${r[4]}" data-act="srow" data-page="${r[2]}" data-hl="${r[3]}" tabindex="0"><td><span class="tl">${esc(r[0])}</span><small>p. ${r[2]} · ${esc(r[5])}</small></td><td class="r num">${r[1]}</td><td class="ck" aria-label="${r[4]}">${ico[r[4]]}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+
   // ---------- views ----------
   function viewPortfolio() {
     const rows = PORTFOLIO.map((p) => ({ ...p, r: rml(p.cash, p.burn) })).sort((a, b) => a.r - b.r);
@@ -831,7 +974,7 @@ Carly's question: ${q}`;
         <div style="font-size:15px">“${esc(s.helenReason || run.helenReason || "Add a cash case if the close slips to January.")}”</div></div>
         <p class="text">I've added the case: if the extension closes in January instead of December, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum until it closes. Sources attached.</p>
         ${s.sentBack ? `<div class="trust">You sent it back to Helen at 10:52.</div>` : `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am", !s.approved, !s.sentBack);
-      if (s.approved) h += squadMsg(`<div class="card pad" style="background:var(--ok-soft);border-color:#cbe8d6;display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02:</b> one-time waiver, conditioned on the $8M extension closing by 15 December.</div><div style="font-size:14px">Her reason: “${esc(s.approveReason)}”</div><div>${dive("case:dataflake")}</div></div>
+      if (s.approved) h += squadMsg(`<div class="card pad" style="background:var(--ok-soft);border-color:var(--line);display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02:</b> one-time waiver, conditioned on the $8M extension closing by 15 December.</div><div style="font-size:14px">Her reason: “${esc(s.approveReason)}”</div><div>${dive("case:dataflake")}</div></div>
         <p class="text">That's everything that needed you this morning. I'll watch for the extension closing and the weekly cash reports.</p>
         ${s.summary ? "" : `<div class="row"><button class="btn dark" type="button" data-act="showsummary">See the morning's summary</button></div>`}`, "Squad · 11:02 am", !s.summary);
       if (s.summary) h += summary();
@@ -842,29 +985,16 @@ Carly's question: ${q}`;
 
   function viewReview() {
     const isFix = step === 4;
-    return `<div class="col" style="max-width:1080px">
+    if (s.wrong && $("why")) s.why = $("why").value;
+    const tab = s.tab || "ask";
+    return `<div class="col" style="max-width:1240px">
       <div class="row"><button class="btn ghost" type="button" data-act="back" style="padding:0">← Squad</button><span class="meta">Stripple Tech · October financials · ${isFix ? "figure 2 of 2" : "figure 1 of 2"}</span></div>
-      <div class="trust">Track record on Stripple Tech <b>${s.fixed ? "412 of 413" : "412 of 412"}</b> figures right over ${s.fixed ? 7 : 6} months · ${s.fixed ? "corrected once, by you, today" : "you have corrected me 0 times"}</div>
+      <div class="trust">Track record on Stripple Tech: <b>${s.fixed ? "197 of 200" : "196 of 198"}</b> figures you checked were right · ${s.fixed ? "you've corrected me 3 times, once today" : "you've corrected me twice"}</div>
       <div class="card split">
-        <div class="page" aria-label="Source page">
-          <div style="text-align:center;font-weight:600;font-size:15px">Stripple Tech, Inc.</div>
-          <div style="text-align:center;font-size:13px;margin-bottom:10px">${isFix && !s.wrong ? "Notes to the financials" : "Balance sheet"} · October 31, 2026 (USD thousands) · page ${isFix && s.wrong ? 3 : 2}</div>
-          ${isFix && s.wrong ? `
-            <div class="ln"><span>Intangible assets</span><span></span></div>
-            <div class="ln ${s.fixed ? "hl" : "hl2"}"><span>&nbsp;&nbsp;Capitalised software, net</span><span>4,850</span></div>
-            <div class="ln"><span>&nbsp;&nbsp;Acquired technology</span><span>620</span></div>
-            <div class="ln"><span>Total intangible assets</span><span>5,470</span></div>` : isFix ? `
-            <div class="ln"><span>Cash flow note: investing activities</span><span></span></div>
-            <div class="ln"><span>&nbsp;&nbsp;Purchases of equipment</span><span>(210)</span></div>
-            <div class="ln hl"><span>&nbsp;&nbsp;Capitalised software development, year to date</span><span>(1,200)</span></div>
-            <div class="ln"><span>Net cash used in investing</span><span>(1,410)</span></div>` : `
-            <div class="ln"><span>Accounts payable</span><span>1,120</span></div>
-            <div class="ln"><span>Accrued expenses</span><span>860</span></div>
-            <div class="ln hl"><span>Contract liabilities</span><span>3,410</span></div>
-            <div class="ln"><span>Venture debt, current portion</span><span>1,000</span></div>
-            <div class="ln"><span>Total current liabilities</span><span>6,390</span></div>`}
-          <div class="synth">SYNTHETIC · FOR DEMONSTRATION</div>
-        </div>
+        ${viewDoc()}
+        <div class="rside">
+          <div class="tabs" role="tablist"><button type="button" role="tab" data-act="tab" data-tab="ask" aria-selected="${tab === "ask"}">Squad asks</button><button type="button" role="tab" data-act="tab" data-tab="spread" aria-selected="${tab === "spread"}">Spread · balance sheet</button></div>
+          ${tab === "spread" ? viewSpread() : `
         <div class="ask">
           ${isFix ? `
             <div class="squadmark">${mark(16, "rest")}Spreading asks</div>
@@ -873,11 +1003,11 @@ Carly's question: ${q}`;
               <div class="row"><button class="btn dark" type="button" data-act="toDataflake">Back to Squad →</button>${dive("fig:capsoft")}</div>` :
             s.wrong ? `<div style="font-size:20px;font-weight:600;line-height:1.3">What's wrong with it?</div>
               <label class="lbl" for="why">Your reason (kept on the ledger)</label>
-              <textarea class="field" id="why" placeholder="Say what's wrong, in your words. Squad learns from this."></textarea>
+              <textarea class="field" id="why" placeholder="Say what's wrong, in your words. Squad learns from this.">${esc(s.why || "")}</textarea>
               <button class="suggest" type="button" data-act="fill" data-to="why" data-text="That's the year-to-date spend from the cash flow note, not the balance. The balance is on page 3.">Demo: use a sample reason</button>
               <div class="row"><button class="btn primary" type="button" data-act="fix">Correct it</button><button class="btn" type="button" data-act="unwrong">Cancel</button></div>` :
             `<div style="font-size:20px;font-weight:600;line-height:1.3">I filed capitalised software at <span class="num">1,200</span> under intangible assets.</div>
-              <div style="font-size:14px;color:var(--ink-2)">Taken from page 2. I'm confident in the number on the page, less so that it's the balance.</div>
+              <div style="font-size:14px;color:var(--ink-2)">Taken from page 5, the cash flow statement. I'm confident in the number on the page, less so that it's the balance: with it, intangibles add up to <span class="num">1,820</span>, but page 2 says <span class="num">5,470</span>.</div>
               <div class="row"><button class="btn" type="button" data-act="right">Looks right</button><button class="btn primary" type="button" data-act="wrong">That's wrong</button></div>
               <div>${dive("fig:capsoft")}</div>`}` : `
             <div class="squadmark">${mark(16, "rest")}Spreading asks</div>
@@ -888,6 +1018,8 @@ Carly's question: ${q}`;
             <label class="teach"><input type="checkbox" id="remember" ${s.remember ? "checked" : ""}><span>Remember for Stripple Tech. Next month this goes through without asking you.</span></label>
             <div class="row"><button class="btn primary" type="button" data-act="confirm" id="confirmbtn" ${s.line ? "" : "disabled"}>Confirm</button><span class="meta">Recorded on the ledger with your name</span></div>
             <div>${dive("fig:contract")}</div>`}
+            <button class="btn ghost" type="button" data-act="tab" data-tab="spread" style="padding:0;align-self:flex-start">See it in the spread →</button>
+        </div>`}
         </div>
       </div>
     </div>`;
@@ -1036,9 +1168,9 @@ Carly's question: ${q}`;
         return setTimeout(() => go(4), 650);
       }
       case "right": return toast("In this walk-through Squad is wrong here. Try “That's wrong”.");
-      case "wrong": s.wrong = true; return render();
+      case "wrong": s.wrong = true; s.page = 0; s.hl = ""; return render();
       case "unwrong": s.wrong = false; return render();
-      case "fix": if (!val("why").trim()) { toast("Say what's wrong first. That's what Squad learns from."); return $("why").focus(); } s.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
+      case "fix": s.page = 0; s.hl = ""; if (!val("why").trim()) { toast("Say what's wrong first. That's what Squad learns from."); return $("why").focus(); } s.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
       case "toDataflake": return go(5);
       case "trail": s.trail = !s.trail; return render();
       case "drawer": s.drawer = true; return drawer();
@@ -1056,6 +1188,11 @@ Carly's question: ${q}`;
         run.view = v; s.routed = true; return render();
       }
       case "toHelen": return go(7);
+      case "tab": if ($("why")) s.why = $("why").value; s.tab = t.dataset.tab; return render();
+      case "srow": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = t.dataset.hl; render(); return $("docfocus")?.scrollIntoView({ block: "center" });
+      case "page": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = ""; return render();
+      case "look": look = t.dataset.look; savePref("squad-look", look); applyChrome(); return rail();
+      case "railc": railC = !railC; savePref("squad-rail", railC ? "closed" : "open"); applyChrome(); return rail();
       case "showsummary": s.summary = true; return render();
       case "fill": { const el = $(t.dataset.to); if (el) { el.value = t.dataset.text; autosize(el); el.focus(); } return; }
       case "helenrecord": {
@@ -1100,13 +1237,14 @@ Carly's question: ${q}`;
     go(step + 1);
   });
   $("restart").addEventListener("click", () => go(0));
+  applyChrome();
   const setStripH = () => document.documentElement.style.setProperty("--striph", (document.body.classList.contains("noguide") ? 0 : document.querySelector(".strip").offsetHeight) + "px");
   const setGuide = (on) => { document.body.classList.toggle("noguide", !on); try { localStorage.setItem("squad-guide", on ? "on" : "off"); } catch {} setStripH(); };
   $("hideguide").addEventListener("click", () => setGuide(false));
   $("showguide").addEventListener("click", () => setGuide(true));
   addEventListener("resize", setStripH);
   render();
-  try { if (localStorage.getItem("squad-guide") === "off") setGuide(false); } catch {}
+  setGuide(pref("squad-guide", "off") === "on");
   setStripH();
 })();
 </script>

@@ -17,7 +17,7 @@ Working notes from the owner's brainstorm after colleagues' feedback on the cock
 
 ## Direction being prototyped (Carly's morning)
 
-Clickable demo: "Squad muse style demo" (`docs/product/prototype/carly-morning.html`). It is a prototype only and does not touch the live app. The live app's demo analyst (Priya Raman) is unchanged for now.
+Clickable demo: "Squad - Credit Analyst agent demo" (`docs/product/prototype/carly-morning.html`). It is a prototype only and does not touch the live app. The live app's demo analyst (Priya Raman) is unchanged for now.
 
 1. Squad greets the analyst with her work, not a dashboard.
 2. Upload: the Intake Agent files what it can and holds what it cannot place, with one question.
