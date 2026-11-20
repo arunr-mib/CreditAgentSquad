@@ -230,7 +230,7 @@ def test_a_run_that_extracted_no_facts_cannot_pass(small):
     for mode in ("recorded", "live", "standin"):
         assert not evaluate_gate([graded], mode=mode, complete_book=False)["passed"]
     gate = evaluate_gate([graded], mode="recorded", complete_book=False)
-    assert any("extraction coverage is not complete" in r for r in gate["reasons"])
+    assert any(r.startswith("nothing-read") for r in gate["reasons"]) and gate["nothing_read"]
 
 
 def test_a_live_run_is_gated_on_the_two_failures_only_and_its_accuracy_is_reported_not_gated(small):
@@ -239,9 +239,7 @@ def test_a_live_run_is_gated_on_the_two_failures_only_and_its_accuracy_is_report
     worse["harrowgate-precision"]["facts"] = [f for f in worse["harrowgate-precision"]["facts"] if f["key"] != "bs.cash"]
     graded = grade_pass(book, worse)
     assert graded["metrics"]["extraction_accuracy"] < 1
-    # accuracy of a wrong value is reported; a fact with no usable fact at all fails the coverage rule
-    gate = evaluate_gate([graded], mode="live")
-    assert not gate["passed"] and all("coverage" in r for r in gate["reasons"])
+    assert evaluate_gate([graded], mode="live")["passed"]  # an honest abstention is reported, not gated
     assert not evaluate_gate([graded], mode="standin", complete_book=False)["passed"]
 
 

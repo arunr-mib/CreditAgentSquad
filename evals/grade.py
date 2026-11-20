@@ -28,7 +28,8 @@ recalculated borrowing base line that differs) are `disagreements`. Things worth
 attention that are not differences from the truth are `observations`.
 
 Gate: any invented-number or false-compliant, in any pass, fails; so does a cycle that failed on an error
-(run-error) and, outside the stand-in suite, any expected fact with no usable fact. Accuracy of a real model is
+(run-error) and, outside the stand-in suite, a borrower with expected facts and none read (nothing-read).
+An honest abstention on single facts is reported as accuracy, not gated. Accuracy of a real model is
 reported, not gated. The stand-in suite must agree with the truth in full: no failure, no
 disagreement, every expected fact extracted, apart from findings listed in
 `evals/known_findings.json`, which can never excuse the two gated failures.
@@ -734,6 +735,7 @@ def evaluate_gate(passes: list[dict[str, Any]], *, mode: str, known: list[dict[s
     unexplained: list[dict[str, str]] = []
     seen: set[tuple[str, str, str]] = set()
     run_errors: list[dict[str, Any]] = []
+    nothing_read: list[dict[str, Any]] = []
     for n, graded_pass in enumerate(passes, start=1):
         for name in GATED:
             count = graded_pass["failure_counts"][name]
@@ -746,12 +748,12 @@ def evaluate_gate(passes: list[dict[str, Any]], *, mode: str, known: list[dict[s
                     run_errors.append({"pass": n, "borrower": graded["borrower"], "stage": d["item"],
                                        "message": str(d["detail"])[:300]})
         if mode != "standin":
-            # coverage is gated outside the stand-in suite (which must match the truth in full anyway)
-            missing = sum(g["extraction"]["missing"] for g in graded_pass["borrowers"].values())
-            expected = sum(g["extraction"]["expected"] for g in graded_pass["borrowers"].values())
-            if missing:
-                reasons.append(f"pass {n}: extraction coverage is not complete: {missing} of {expected} expected "
-                               "facts have no usable fact")
+            # a borrower expected to have facts, with none read at all, is an empty run (an honest abstention
+            # on one fact is not gated: it shows in extraction accuracy)
+            for graded in graded_pass["borrowers"].values():
+                ext = graded["extraction"]
+                if ext["expected"] and ext["missing"] >= ext["expected"]:
+                    nothing_read.append({"pass": n, "borrower": graded["borrower"], "expected": ext["expected"]})
             continue
         for graded in graded_pass["borrowers"].values():
             for key in _finding_keys(graded):
@@ -763,6 +765,9 @@ def evaluate_gate(passes: list[dict[str, Any]], *, mode: str, known: list[dict[s
         shown = "; ".join(f"{e['borrower']} ({e['stage']}): {e['message']}" for e in run_errors[:3])
         reasons.insert(0, f"run-error: {len(run_errors)} cycle(s) failed on an error, so nothing was measured. "
                           f"First: {shown}")
+    if nothing_read:
+        reasons.append(f"nothing-read: {len(nothing_read)} borrower(s) expected to have facts had none read: "
+                       + ", ".join(f"{e['borrower']} (0 of {e['expected']})" for e in nothing_read[:5]))
     if mode == "standin" and unexplained:
         reasons.append(f"the stand-in suite does not agree with the truth in full: {len(unexplained)} difference(s) "
                        "not listed as known findings")
@@ -770,11 +775,11 @@ def evaluate_gate(passes: list[dict[str, Any]], *, mode: str, known: list[dict[s
     if stale:
         reasons.append(f"{len(stale)} known finding(s) no longer occur; remove them from evals/known_findings.json: "
                        + "; ".join("/".join(k) for k in stale[:5]))
-    return {"passed": not reasons, "reasons": reasons, "run_errors": run_errors,
+    return {"passed": not reasons, "reasons": reasons, "run_errors": run_errors, "nothing_read": nothing_read,
             "rule": ("any invented-number or false-compliant in any pass fails; the stand-in suite must also agree "
                      "with the truth in full, apart from listed known findings" if mode == "standin" else
                      "any invented-number or false-compliant in any pass fails; any cycle that failed on an error "
-                     "fails; every expected fact must have a usable fact; other accuracy is reported, not gated"),
+                     "fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated"),
             "known_findings_applied": sorted("/".join(k) for k in known_keys & seen),
             "unexplained": unexplained, "stale_known_findings": ["/".join(k) for k in stale]}
 
