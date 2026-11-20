@@ -1,0 +1,80 @@
+# backend/tests/squad/test_drafts.py
+import uuid
+
+import pytest
+from app.core.ledger import LedgerEvent
+from app.squad.drafts import create_draft, drafts_for, edit_draft, send_draft
+from app.squad.threads import build_thread
+from sqlalchemy import select
+
+from .conftest import sign_in
+
+
+def _draft(db, borrower):
+    return create_draft(db, borrower_id=borrower.id, to="cfo@quillfeather.example", subject="October MRR",
+                        body="Hi Priya, could you send the October MRR report?", kind="reminder")
+
+
+def test_a_new_draft_is_unsent_and_written_by_squad(db, world):
+    d = _draft(db, world["borrower"])
+    assert d["status"] == "draft" and d["created_by"] == "Squad" and d["sent_by"] is None
+
+
+def test_editing_changes_the_body_and_keeps_the_history_on_the_ledger(db, world):
+    d = _draft(db, world["borrower"])
+    edit_draft(db, uuid.UUID(d["draft_id"]), world["analyst"], body="Hi Priya, October MRR please.")
+    [now] = drafts_for(db, world["borrower"].id)
+    assert now["body"] == "Hi Priya, October MRR please." and now["edited_by"] == "Priya Raman"
+    actions = [e.action for e in db.execute(select(LedgerEvent).where(LedgerEvent.entity_type == "draft").order_by(LedgerEvent.seq)).scalars()]
+    assert actions == ["draft.created", "draft.edited"]
+
+
+def test_send_records_the_person_and_claims_no_delivery(db, world):
+    d = _draft(db, world["borrower"])
+    sent = send_draft(db, uuid.UUID(d["draft_id"]), world["analyst"])
+    assert sent["status"] == "sent" and sent["sent_by"] == "Priya Raman"
+    event = db.execute(select(LedgerEvent).where(LedgerEvent.action == "draft.sent")).scalars().one()
+    assert event.actor_type == "user" and event.payload["delivery"] == "recorded_only"
+
+
+def test_a_sent_draft_cannot_be_edited_or_sent_again(db, world):
+    d = _draft(db, world["borrower"])
+    send_draft(db, uuid.UUID(d["draft_id"]), world["analyst"])
+    with pytest.raises(ValueError):
+        edit_draft(db, uuid.UUID(d["draft_id"]), world["analyst"], body="late change")
+    with pytest.raises(ValueError):
+        send_draft(db, uuid.UUID(d["draft_id"]), world["analyst"])
+
+
+def test_an_empty_body_cannot_be_sent(db, world):
+    d = _draft(db, world["borrower"])
+    edit_draft(db, uuid.UUID(d["draft_id"]), world["analyst"], body="   ")
+    with pytest.raises(ValueError):
+        send_draft(db, uuid.UUID(d["draft_id"]), world["analyst"])
+
+
+def test_drafts_are_per_client_and_appear_in_the_thread(db, world):
+    _draft(db, world["borrower"])
+    assert drafts_for(db, world["other"].id) == []
+    message = [m for m in build_thread(db, world["borrower"].id)["messages"] if m["type"] == "draft"]
+    assert len(message) == 1 and message[0]["subject"] == "October MRR"
+
+
+def test_unknown_draft_is_a_lookup_error(db, world):
+    with pytest.raises(LookupError):
+        send_draft(db, uuid.uuid4(), world["analyst"])
+
+
+def test_endpoints_enforce_the_permission_and_never_deliver(db, client, world):
+    d = _draft(db, world["borrower"])
+    db.commit()
+    sign_in(client, "helen.strand")  # an officer may not send client email
+    assert client.post(f"/api/v1/drafts/{d['draft_id']}/send").status_code == 403
+    sign_in(client, "priya.raman")
+    r = client.post(f"/api/v1/drafts/{d['draft_id']}/send")
+    assert r.status_code == 200 and r.json()["delivered"] is False
+    assert client.post(f"/api/v1/drafts/{d['draft_id']}/send").status_code == 422
+    assert client.post(f"/api/v1/drafts/{uuid.uuid4()}/send").status_code == 404
+    created = client.post(f"/api/v1/borrowers/{world['borrower'].id}/drafts",
+                          json={"to": "a@b.example", "subject": "s", "body": "b"})
+    assert created.status_code == 201 and created.json()["created_by"] == "Priya Raman"

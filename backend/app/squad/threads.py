@@ -55,8 +55,10 @@ def _events(db: Session, action_prefix: str, ids: list[str] | None = None, entit
 
 
 def drafts_messages(db: Session, borrower_id: uuid.UUID, names: dict[str, str]) -> list[dict[str, Any]]:
-    """Replaced in Task 4 by the ledger-derived drafts."""
-    return []
+    from app.squad.drafts import drafts_for
+
+    return [{**d, "id": f"draft:{d['draft_id']}", "type": "draft", "ts": d["created_at"]}
+            for d in drafts_for(db, borrower_id)]
 
 
 def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
