@@ -174,7 +174,7 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
     if decision == "accept_as_reported":
         if not reason.strip():
             raise ValueError("accepting totals as reported needs a reason")
-        for line in template.LINES:
+        for line in template.template_lines(borrower.template_id):
             stated = current_fact(db, borrower.id, template.STATED_PREFIX + line.key, period_end,
                                   months if line.flow else 0) if line.computed else None
             if stated is not None and current_fact(db, borrower.id, line.key, period_end,

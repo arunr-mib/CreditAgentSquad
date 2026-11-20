@@ -304,11 +304,12 @@ def _spread_lines(ctx: ToolContext, args: SpreadInput) -> dict:
     b = _borrower(ctx)
     if not args.keys:
         return {"lines_available": [{"key": line.key, "label": line.label, "statement": line.statement}
-                                    for line in template.LINES],
+                                    for line in template.template_lines(b.template_id)],
                 "message": "call again with the keys you need"}
     if len(args.keys) > MAX_KEYS or len(args.period_ends) > MAX_PERIODS:
         raise Refusal("ask for fewer lines or periods at a time")
-    unknown = [k for k in args.keys if template.line_info(k) is None]
+    unknown = [k for k in args.keys if template.line_info(k) is None
+               or (k in template.ALL_LINE_BY_KEY and not template.in_template(k, b.template_id))]
     if unknown:
         raise Refusal(f"not template lines: {', '.join(unknown[:8])}; call with an empty keys list to see the lines")
     ends = [_period(p) for p in args.period_ends]
