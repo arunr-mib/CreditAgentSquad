@@ -272,39 +272,47 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .main .pane, .main .composer { transition: padding-right .24s ease; }
 .main.push .pane, .main.push .composer { padding-right: calc(var(--dw, 560px) + 32px); } .main.push .scrim { display: none; }
 .drawer { width: var(--dw, min(560px, 100%)); }
-/* rail: icons, collapse, look menu */
+/* rail: icons, open cases, edge chevron */
+.rail { position: relative; padding-top: 18px; overflow: visible; }
 .navitem { justify-content: flex-start; gap: 10px; }
 .navitem .badge { margin-left: auto; }
 .ni { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; color: var(--ink-2); flex-shrink: 0; }
 .navitem[aria-current="page"] .ni { color: var(--ink); }
 .tile { width: 24px; height: 24px; border-radius: 7px; background: var(--sunk); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 9.5px; font-weight: 700; letter-spacing: .02em; color: var(--ink-2); }
-.railfoot { margin-top: auto; display: flex; flex-direction: column; gap: 2px; padding-top: 10px; }
-.railfoot .navitem { color: var(--ink-2); font-size: 13px; }
-.railfoot .me { margin-top: 8px; }
-.looks { position: relative; }
-.lookpop { position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 60; min-width: 190px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.edge { position: absolute; top: 50%; right: -13px; transform: translateY(-50%); z-index: 26; width: 26px; height: 26px; border-radius: 13px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-3); display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+.me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: transparent; border: 0; }
+.me b { display: block; font-size: 13px; } .me small { display: block; font-size: 11px; color: var(--ink-3); }
+/* presence: Squad's state, centred above the conversation */
+.presence { display: flex; justify-content: center; padding: 12px 32px 0; }
+.pres { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 8px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(22,21,19,.04); font-size: 13px; color: var(--ink-2); max-width: 100%; }
+.pres b { color: var(--ink); }
+.pres span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.main.push .presence { padding-right: calc(var(--dw, 560px) + 32px); }
+/* demo controls (prototype only): look menu and guide */
+.democtl { position: fixed; top: 10px; right: 12px; z-index: 45; display: none; gap: 6px; }
+body.noguide .democtl { display: flex; }
+.iconpill { width: 30px; height: 30px; border-radius: 15px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+.lookpop { position: fixed; top: calc(var(--striph, 0px) + 48px); right: 12px; z-index: 60; min-width: 190px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+body:not(.noguide) .lookpop { top: calc(var(--striph, 0px) + 6px); }
+.lookpop[hidden] { display: none; }
 .lookpop button { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; font-size: 13px; text-align: left; }
 .lookpop button:hover { background: var(--sunk); }
 .lookpop button[aria-pressed="true"] { background: var(--squad-soft); color: var(--squad-ink); font-weight: 600; }
 .sw { width: 18px; height: 18px; border-radius: 9px; border: 1px solid var(--line-strong); flex-shrink: 0; }
-body.railc .app { grid-template-columns: 72px minmax(0, 1fr); }
-body.railc .rail { padding: 16px 10px; align-items: center; }
-body.railc .who { padding: 4px 0 14px; }
-body.railc .who > div, body.railc .navgroup, body.railc .nl, body.railc .me > div:not(.avatar) { display: none; }
-body.railc .rail { overflow: visible; position: relative; z-index: 25; }
+/* collapsed rail */
+body.railc .app { grid-template-columns: 68px minmax(0, 1fr); }
+body.railc .rail { padding: 18px 10px; align-items: center; z-index: 25; }
+body.railc .navgroup, body.railc .nl, body.railc .me > div:not(.avatar) { display: none; }
 body.railc .navgroup + .navitem { margin-top: 10px; position: relative; }
-body.railc .navgroup + .navitem::before { content: ""; position: absolute; top: -7px; left: 12px; right: 12px; border-top: 1px solid var(--line); }
-body.railc .navitem { width: 48px; height: 44px; padding: 0; justify-content: center; position: relative; }
-body.railc .navitem .badge { position: absolute; top: 2px; right: 0; min-width: 17px; height: 17px; font-size: 10px; padding: 0 4px; }
-body.railc .railfoot { align-items: center; }
-body.railc .me { padding: 0; background: transparent; border: 0; }
-body.railc .lookpop { left: calc(100% + 10px); bottom: 0; }
-@media (max-width: 900px) { [data-act="railc"] { display: none !important; } body.railc .app { grid-template-columns: 1fr; } .railfoot { margin-top: 0; flex-direction: row; } .railfoot .me { display: none; } .lookpop { bottom: auto; top: calc(100% + 6px); } }
+body.railc .navitem { width: 46px; height: 44px; padding: 0; justify-content: center; position: relative; }
+body.railc .navitem .badge { position: absolute; top: 2px; right: -2px; min-width: 17px; height: 17px; font-size: 10px; padding: 0 4px; }
+body.railc .me { padding: 0; }
+@media (max-width: 900px) { .edge { display: none; } body.railc .app { grid-template-columns: 1fr; } .me { display: none; } .presence { padding: 10px 16px 0; } .main.push .presence { padding-right: 16px; } }
 
 /* guide toggle */
 body.noguide .strip { display: none; }
-#showguide { position: fixed; top: 10px; right: 12px; z-index: 45; display: none; height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 12px; font-weight: 600; box-shadow: var(--shadow); }
-body.noguide #showguide { display: inline-flex; align-items: center; }
+#showguide { height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 12px; font-weight: 600; box-shadow: var(--shadow); }
+#showguide { display: inline-flex; align-items: center; }
 .suggest { align-self: flex-start; border: 1px dashed var(--squad-line); background: var(--tint); color: var(--squad-ink); border-radius: 9px; height: 30px; padding: 0 10px; font-size: 12px; font-weight: 600; }
 .night .suggest { background: transparent; color: #cfc3ff; border-color: #5a5270; }
 .btn.primary[disabled] { opacity: .35; }
@@ -370,14 +378,17 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     <button class="sbtn" id="prev" type="button">Back</button>
     <button class="sbtn primary" id="next" type="button">Next step</button>
     <button class="sbtn" id="restart" type="button">Restart</button>
+    <button class="sbtn" type="button" data-act="lookmenu" aria-label="Colour variant" title="Colour variant">Look</button>
     <button class="sbtn" id="hideguide" type="button" title="Hide the step guide and use the app on its own">Hide guide</button>
   </div>
 </div>
 
-<button id="showguide" type="button">Show guide</button>
+<div class="democtl" id="democtl"><button class="iconpill" type="button" data-act="lookmenu" aria-label="Colour variant" title="Colour variant"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H17a4 4 0 0 0 4-4c0-4.4-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg></button><button id="showguide" type="button">Show guide</button></div>
+<div class="lookpop" id="lookpop" hidden></div>
 <div class="app">
   <aside class="rail" id="rail" aria-label="Navigation"></aside>
   <div class="main">
+    <div class="presence" id="presence" aria-live="polite"></div>
     <div class="pane" id="pane"></div>
     <div class="statusline" id="statusline" role="status" aria-live="polite"></div>
     <div class="composer" id="composer"></div>
@@ -496,30 +507,42 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const lumora = !run.lumoraSent;
     return [stripple, dataflake, lumora].filter(Boolean).length;
   }
+  // Companies with something still open; a side chat leaves the nav when its case closes.
+  function openChats() {
+    const open = { stripple: step < 5, dataflake: !(step === 7 && s.approved), lumora: true };
+    return CHATS.filter((c) => open[c.id] || s.view === "chat:" + c.id);
+  }
+  function presence() {
+    const helen = helenView();
+    const working = s.live || run.asks.some((a) => a.status === "working");
+    const n = needsYou();
+    const state = working ? "work" : helen || n ? "needs" : "rest";
+    const text = helen ? "1 decision waiting for you" : s.live ? "working · checking Dataflake's October certificate" : working ? "working on your question" : n ? `${n} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} you · watching 12 companies` : "all clear · watching 12 companies";
+    $("presence").innerHTML = `<div class="pres">${mark(26, state)}<b>Squad</b><span>${text}</span></div>`;
+  }
   function rail() {
     const helen = helenView();
     const view = s.view.startsWith("cc:") ? (s.stack.filter((v) => v && !v.startsWith("cc:")).pop() || (step === 1 ? "portfolio" : "squad")) : (s.view || (step === 1 ? "portfolio" : "squad"));
     const item = (nav, icon, label, badge, current) => `<button class="navitem" ${nav ? `data-nav="${nav}"` : ""} ${current ? 'aria-current="page"' : ""} title="${esc(label)}" aria-label="${esc(label)}" type="button"><span class="ni">${icon}</span><span class="nl">${label}</span>${badge || ""}</button>`;
+    const n = needsYou(); const chats = openChats();
     $("rail").innerHTML = `
-      <div class="who">${mark(railC ? 34 : 42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 decision waiting" : "watching 12 companies"}</span></div></div>
-      ${helen ? item("", NAVI.approvals, "Approvals", '<span class="badge ember">1</span>', true) : `
-      ${item("squad", NAVI.squad, "Squad", needsYou() ? `<span class="badge ember" title="${needsYou()} need${needsYou() === 1 ? "s" : ""} you">${needsYou()}</span>` : "", view === "squad")}
-      ${item("portfolio", NAVI.portfolio, "My Portfolio", '<span class="badge warn">2</span>', view === "portfolio")}
-      <div class="navgroup">Side chats</div>
-      ${CHATS.map((c) => item("chat:" + c.id, `<span class="tile">${c.short}</span>`, c.label, "", view === "chat:" + c.id)).join("")}`}
-      <div class="railfoot">
-        <div class="looks" role="group" aria-label="Colour variant">
-          <button class="navitem lookbtn" type="button" data-act="lookmenu" aria-expanded="${lookOpen}" title="Colour variant" aria-label="Colour variant"><span class="ni">${NAVI.palette}</span><span class="nl">Look · ${LOOKS.find((l) => l[0] === look)[1]}</span></button>
-          ${lookOpen ? `<div class="lookpop">${LOOKS.map(([k, label, a, b]) => `<button type="button" data-act="look" data-look="${k}" aria-pressed="${look === k}"><span class="sw" style="background:linear-gradient(135deg, ${a} 50%, ${b} 50%)"></span>${label}</button>`).join("")}</div>` : ""}
-        </div>
-        <button class="navitem" type="button" data-act="railc" title="${railC ? "Expand" : "Collapse"} navigation" aria-label="${railC ? "Expand" : "Collapse"} navigation"><span class="ni">${railC ? NAVI.expand : NAVI.collapse}</span><span class="nl">Collapse</span></button>
-        <div class="me"><div class="avatar" style="${helen ? "" : "background:var(--me);color:#fff"}">${helen ? "HS" : "CR"}</div><div><b style="font-size:14px">${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Commercial credit analyst"}</small></div></div>
-      </div>`;
+      <button class="edge" type="button" data-act="railc" aria-label="${railC ? "Expand" : "Collapse"} navigation" title="${railC ? "Expand" : "Collapse"} navigation">${railC ? NAVI.expand : NAVI.collapse}</button>
+      ${helen ? item("", NAVI.approvals, "Approvals", '<span class="badge ember" title="1 decision waiting">1</span>', true) : `
+      ${item("squad", NAVI.squad, "Squad", n ? `<span class="badge ember" title="${n} need${n === 1 ? "s" : ""} you">${n}</span>` : "", view === "squad")}
+      ${item("portfolio", NAVI.portfolio, "My Portfolio", "", view === "portfolio")}
+      ${chats.length ? `<div class="navgroup">Open cases</div>${chats.map((c) => item("chat:" + c.id, `<span class="tile">${c.short}</span>`, c.label, "", view === "chat:" + c.id)).join("")}` : ""}`}
+      <div class="me" title="${helen ? "Helen Strand · credit officer" : "Carly Reyes · commercial credit analyst"}"><div class="avatar" style="${helen ? "" : "background:var(--me);color:#fff"}">${helen ? "HS" : "CR"}</div><div><b>${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Credit analyst"}</small></div></div>`;
     $("rail").querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => {
       const v = b.dataset.nav;
       if (step === 0 && v === "portfolio") return go(1);
       s.stack = []; s.view = v; render();
     }));
+    presence();
+  }
+  function lookMenu() {
+    const el = $("lookpop");
+    el.hidden = !lookOpen;
+    el.innerHTML = lookOpen ? LOOKS.map(([k, label, a, b]) => `<button type="button" data-act="look" data-look="${k}" aria-pressed="${look === k}"><span class="sw" style="background:linear-gradient(135deg, ${a} 50%, ${b} 50%)"></span>${label}</button>`).join("") : "";
   }
 
   // ---------- composer ----------
@@ -844,7 +867,7 @@ Carly's question: ${q}`;
     const a = { ctx, q, status: "working", phase: "Reading the evidence", answer: "", cites: [], traced: 0, mode: "", note: "" };
     run.asks.push(a); const i = run.asks.length - 1;
     render();
-    const upd = () => { const el = $("ask-" + i); if (el) { el.outerHTML = askHtml(a, i); const p = $("pane"); p.scrollTop = p.scrollHeight; } };
+    const upd = () => { presence(); const el = $("ask-" + i); if (el) { el.outerHTML = askHtml(a, i); const p = $("pane"); p.scrollTop = p.scrollHeight; } };
     const history = run.asks.filter((x, j) => j < i && x.ctx === ctx && x.status === "done").slice(-3);
     let res = null, mode = "scripted", guard = "";
     while (!sampleReady) await new Promise((r) => setTimeout(r, 100));
@@ -1194,7 +1217,7 @@ Carly's question: ${q}`;
 
   // ---------- actions ----------
   document.addEventListener("click", (e) => {
-    if (lookOpen && !e.target.closest(".looks")) { lookOpen = false; rail(); }
+    if (lookOpen && !e.target.closest("#lookpop, [data-act=lookmenu]")) { lookOpen = false; lookMenu(); }
     const t = e.target.closest("[data-act],[data-step]");
     if (!t) return;
     if (t.dataset.step) return go(+t.dataset.step);
@@ -1246,8 +1269,8 @@ Carly's question: ${q}`;
       case "tab": if ($("why")) s.why = $("why").value; s.tab = t.dataset.tab; return render();
       case "srow": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = t.dataset.hl; render(); return $("docfocus")?.scrollIntoView({ block: "center" });
       case "page": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = ""; return render();
-      case "look": look = t.dataset.look; lookOpen = false; savePref("squad-look", look); applyChrome(); return rail();
-      case "lookmenu": lookOpen = !lookOpen; return rail();
+      case "look": look = t.dataset.look; lookOpen = false; savePref("squad-look", look); applyChrome(); return lookMenu();
+      case "lookmenu": lookOpen = !lookOpen; return lookMenu();
       case "railc": railC = !railC; lookOpen = false; savePref("squad-rail", railC ? "closed" : "open"); applyChrome(); return rail();
       case "showsummary": s.summary = true; return render();
       case "fill": { const el = $(t.dataset.to); if (el) { el.value = t.dataset.text; autosize(el); el.focus(); } return; }
@@ -1277,7 +1300,7 @@ Carly's question: ${q}`;
   });
   $("scrim").addEventListener("click", () => { s.drawer = false; drawer(); });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && lookOpen) { lookOpen = false; rail(); }
+    if (e.key === "Escape" && lookOpen) { lookOpen = false; lookMenu(); }
     if (e.key === "Escape" && s.drawer) { s.drawer = false; drawer(); }
     if (/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName)) return;
     if (e.key === "ArrowRight") go(step + 1);
