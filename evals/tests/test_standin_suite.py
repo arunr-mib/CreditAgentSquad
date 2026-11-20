@@ -106,7 +106,9 @@ def test_unmeasured_metrics_are_null_never_zero(suite):
     assert suite["metrics"]["input_tokens"] is None and suite["metrics"]["output_tokens"] is None
     assert all(g["tokens"] is None for g in suite["borrowers"].values())
     # the late package has no document to extract from
-    late = suite["borrowers"]["eastmere-building"]["extraction"]
+    # (legacy book: eastmere-building; innovation book: lumora-health)
+    code = next(c for c in ("eastmere-building", "lumora-health") if c in suite["borrowers"])
+    late = suite["borrowers"][code]["extraction"]
     assert late["expected"] == 0 and late["accuracy"] is None
 
 
