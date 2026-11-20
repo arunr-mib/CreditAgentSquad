@@ -15,6 +15,7 @@ from app.domain.documents import Document
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.domain.work_items import offered
+from app.squad import rules
 
 RANK = {"document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4, "handoff": 5, "decision": 6}
 REPORT_TEXT_KEYS = ("narrative", "summary", "explanation")  # an agent's written output, with {{fact:…}} references
@@ -61,7 +62,7 @@ def drafts_messages(db: Session, borrower_id: uuid.UUID, names: dict[str, str]) 
             for d in drafts_for(db, borrower_id)]
 
 
-def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
+def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None) -> dict[str, Any]:
     borrower = db.get(Borrower, borrower_id)
     if borrower is None:
         raise LookupError("borrower not found")
@@ -95,7 +96,10 @@ def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
             messages.append({"id": f"case:{i.id}", "type": "case", "ts": _iso(i.created_at), "work_item_id": str(i.id),
                              "item_type": i.item_type, "title": i.title, "question": i.question,
                              "severity": i.severity, "status": i.status,
-                             "allowed_decisions": offered(i.item_type, i.allowed_decisions)})
+                             "allowed_decisions": offered(i.item_type, i.allowed_decisions),
+                             # the briefing's own rule, for this viewer: the count and the button never disagree
+                             "needs_you": viewer is not None and rules.can_act(viewer, i),
+                             "state_words": rules.state_words(i, names) if i.status == "open" else ""})
 
     for e in _events(db, "work_item.decided", item_ids):
         if e.entity_id in question_ids:

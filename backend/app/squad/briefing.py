@@ -15,6 +15,7 @@ from app.domain.monitoring import Signal, WorkItem
 from app.domain.org import User
 from app.domain.terms import ReportingObligation
 from app.publishing.content import SIGNAL_LABELS
+from app.squad import rules
 from app.squad.threads import REPORT_TEXT_KEYS
 
 BREACH_TYPES = frozenset({"covenant.breach", "covenant.reported_breach_unconfirmed", "bb.over_advance"})
@@ -49,13 +50,9 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         kind = "question" if w.item_type == "question" else "breach" if w.item_type in BREACH_TYPES else "review"
         base = {**ref(w.borrower_id), "title": w.title, "severity": w.severity, "work_item_id": str(w.id)}
         if w.status == "open":
-            try:
-                holds = can(user.role, Permission(w.required_permission))
-            except ValueError:  # an unknown permission is nobody's to act on
-                holds = False
-            prepared_by_me = w.prepared_by_id == str(user.id)
-            second_person_blocked = w.requires_second_person and prepared_by_me
-            if holds and not second_person_blocked and w.assigned_to in (None, user.id):
+            prepared_by_me = rules.prepared_by(user, w)
+            second_person_blocked = rules.second_person_blocked(user, w)
+            if rules.can_act(user, w):
                 state = "Squad asks" if kind == "question" else "waiting for you"
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": state, "needs_you": True,
                               "_due": w.due_date})

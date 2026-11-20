@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Thread, ThreadMessage } from '../api/types';
 import { ClientThread } from '../thread/ClientThread';
 
-const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, open: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
+const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, open: vi.fn(), openItem: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
 vi.mock('@/api/hooks', () => ({
   useBorrowerByCode: (code: string) => ({ borrower: state.notFound ? undefined : { id: 'b1', code, name: 'Quillfeather Labs, Inc.' }, notFound: state.notFound, isPending: false }),
 }));
@@ -26,6 +26,7 @@ vi.mock('../api/hooks', async () => {
   useTrail: () => ({ data: state.trail, isPending: false, error: state.trailError ? new Error('x') : null, refetch: state.refetch }),
   };
 });
+vi.mock('@/drawer/context', () => ({ useWorkspaceDrawer: () => ({ openItem: state.openItem }) }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: state.open, close: () => {}, current: null }) }));
 vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 vi.mock('../thread/Composer', () => ({ Composer: () => null }));
@@ -37,8 +38,8 @@ const base = { ts: '2026-11-20T08:00:00Z' };
 const messages: ThreadMessage[] = [
   { ...base, id: 'doc:1', type: 'document', document_id: 'd1', title: 'October compliance certificate', doc_type: 'compliance_certificate', pages: 2, period_end: '2026-10-31' },
   { ...base, id: 'held:1', type: 'held', document_id: 'd2', title: 'Unknown scan', reason: "Not this client's file" },
-  { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'covenant.breach', title: 'Cash below minimum', question: 'Is this a breach?', severity: 'critical', status: 'open', allowed_decisions: [] },
-  { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'funding_slipped', title: 'Funding slipped', question: 'Review the outlook?', severity: 'high', status: 'open', allowed_decisions: [] },
+  { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'covenant.breach', title: 'Cash below minimum', question: 'Is this a breach?', severity: 'critical', status: 'open', allowed_decisions: [], needs_you: false, state_words: 'With the credit officer' },
+  { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'funding_slipped', title: 'Funding slipped', question: 'Review the outlook?', severity: 'high', status: 'open', allowed_decisions: [], needs_you: false, state_words: 'Open' },
   { ...base, id: 'decision:1', type: 'decision', work_item_id: 'w2', decision: 'reviewed', reason: 'Close is signed.', by: 'Priya Raman', by_id: 'u1' },
   { ...base, id: 'handoff:1', type: 'handoff', work_item_id: 'w1', assigned_to: 'Helen Strand', assigned_to_id: 'u2', by: 'Priya Raman' },
   { ...base, id: 'run:1', type: 'report', agent_name: 'spreading', task: 'read_statements', text: 'Read the October package.', run_id: 'r1' },
@@ -125,10 +126,10 @@ describe('ClientThread', () => {
 
   it('says where each case stands in words, from the thread', async () => {
     state.thread = thread([
-      { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'] },
-      { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'x', title: 'Handed', question: 'q', severity: 'high', status: 'open', allowed_decisions: [] },
+      { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'], needs_you: true, state_words: '' },
+      { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'x', title: 'Handed', question: 'q', severity: 'high', status: 'open', allowed_decisions: [], needs_you: false, state_words: 'Open' },
       { ...base, id: 'handoff:2', type: 'handoff', work_item_id: 'w2', assigned_to: 'Helen Strand', assigned_to_id: 'u2', by: 'Priya Raman' },
-      { ...base, id: 'case:3', type: 'case', work_item_id: 'w3', item_type: 'x', title: 'Done', question: 'q', severity: 'medium', status: 'closed', allowed_decisions: [] },
+      { ...base, id: 'case:3', type: 'case', work_item_id: 'w3', item_type: 'x', title: 'Done', question: 'q', severity: 'medium', status: 'closed', allowed_decisions: [], needs_you: false, state_words: '' },
       { ...base, id: 'decision:3', type: 'decision', work_item_id: 'w3', decision: 'not_a_breach', reason: '', by: 'Priya Raman', by_id: 'u1' },
     ]);
     mount();
@@ -140,6 +141,33 @@ describe('ClientThread', () => {
     expect(within(await card('Done')).getByText('not a breach by Priya Raman')).toBeInTheDocument();
     expect(screen.queryByText('open')).not.toBeInTheDocument();
     expect(screen.queryByText('closed')).not.toBeInTheDocument();
+  });
+
+  it('offers Decide only on a case the viewer can act on, and opens that item in the drawer', async () => {
+    mount();
+    const cash = (await screen.findByText('Cash below minimum')).closest('[data-work-item]') as HTMLElement;
+    expect(within(cash).queryByRole('button', { name: /decide/i })).not.toBeInTheDocument();
+    expect(within(cash).getByText('With Helen Strand')).toBeInTheDocument();
+    state.thread = thread([{ ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'], needs_you: true, state_words: '' }]);
+    state.subs.forEach((f) => act(f));
+    const mine = (await screen.findByText('Mine')).closest('[data-work-item]') as HTMLElement;
+    await userEvent.click(within(mine).getByRole('button', { name: 'Decide Mine' }));
+    expect(state.openItem).toHaveBeenCalledWith('w1');
+  });
+
+  it('reads a case the viewer cannot act on in the backend words, not as their call', async () => {
+    state.thread = thread([{ ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Not mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'], needs_you: false, state_words: 'With the credit officer' }]);
+    mount();
+    const card = (await screen.findByText('Not mine')).closest('[data-work-item]') as HTMLElement;
+    expect(within(card).getByText('With the credit officer')).toBeInTheDocument();
+    expect(screen.queryByText('Needs your call')).not.toBeInTheDocument();
+  });
+
+  it('gives each case its own client-file link with a distinct name', async () => {
+    mount();
+    const link = await screen.findByRole('link', { name: 'Open Cash below minimum in the client file' });
+    expect(link).toHaveAttribute('href', '/borrowers/QFL');
+    expect(screen.getByRole('link', { name: 'Open Funding slipped in the client file' })).toBeInTheDocument();
   });
 
   it('scrolls to the focused case once, not on every update', async () => {

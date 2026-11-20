@@ -23,9 +23,9 @@ router = APIRouter(tags=["squad"])
 
 
 @router.get("/threads/{borrower_id}")
-def get_thread(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(require(Permission.VIEW))) -> dict:
+def get_thread(borrower_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(require(Permission.VIEW))) -> dict:
     try:
-        return build_thread(db, borrower_id)
+        return build_thread(db, borrower_id, user)
     except LookupError as exc:
         raise HTTPException(404, "Client not found.") from exc
 

@@ -93,3 +93,45 @@ def test_a_decided_question_is_an_ask_with_its_choice_and_no_duplicate_decision(
     msgs = build_thread(db, world["borrower"].id)["messages"]
     assert [m["type"] for m in msgs] == ["ask"]
     assert msgs[0]["choice"] == "Parent" and msgs[0]["chosen_by"] == "Priya Raman"
+
+
+def _breach(db, borrower):
+    return raise_item(db, borrower_id=borrower.id, item_type="covenant.breach", title="Cash below minimum",
+                      severity="critical", question="Is this a breach?",
+                      allowed_decisions=["waiver_requested", "not_a_breach"], required_permission="decide_breach")
+
+
+def _case(db, user, borrower_id):
+    return next(m for m in build_thread(db, borrower_id, user)["messages"] if m["type"] == "case")
+
+
+def test_a_case_says_per_viewer_whether_it_needs_them(db, world):
+    _breach(db, world["borrower"])
+    officer = _case(db, world["officer"], world["borrower"].id)
+    analyst = _case(db, world["analyst"], world["borrower"].id)
+    assert officer["needs_you"] is True
+    assert analyst["needs_you"] is False and analyst["state_words"] == "With the credit officer"
+    assert _case(db, None, world["borrower"].id)["needs_you"] is False
+
+
+def test_a_case_the_viewer_prepared_that_needs_a_second_person_is_not_theirs(db, world):
+    item = _breach(db, world["borrower"])
+    item.requires_second_person = True
+    item.prepared_by_id = str(world["officer"].id)
+    db.flush()
+    assert _case(db, world["officer"], world["borrower"].id)["needs_you"] is False
+
+
+def test_a_case_with_no_one_special_reads_open(db, world):
+    _item(db, world["borrower"])
+    assert _case(db, world["admin"], world["borrower"].id)["state_words"] == "Open"
+
+
+def test_the_thread_route_sends_needs_you_for_the_signed_in_viewer(db, client, world):
+    _breach(db, world["borrower"])
+    db.commit()
+    url = f"/api/v1/threads/{world['borrower'].id}"
+    sign_in(client, "helen.strand")
+    assert [m["needs_you"] for m in client.get(url).json()["messages"] if m["type"] == "case"] == [True]
+    sign_in(client, "priya.raman")
+    assert [m["needs_you"] for m in client.get(url).json()["messages"] if m["type"] == "case"] == [False]

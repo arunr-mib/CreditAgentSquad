@@ -23,7 +23,7 @@ interface MessageBase { id: string; ts: string }
 export type ThreadMessage = MessageBase &
   (
     | { type: 'report'; agent_name: string; task: string; text: string; run_id: string }
-    | { type: 'case'; work_item_id: string; item_type: string; title: string; question: string; severity: string; status: string; allowed_decisions: string[] }
+    | { type: 'case'; work_item_id: string; item_type: string; title: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
     | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null }
     | { type: 'document'; document_id: string; title: string; doc_type: string | null; pages: number; period_end: string | null }
     | { type: 'held'; document_id: string; title: string; reason: string }
