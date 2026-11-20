@@ -27,7 +27,7 @@ from app.domain.terms import ReportingObligation, TermsVersion
 
 router = APIRouter(tags=["ui"])
 
-STATEMENT_TYPES = ("annual_statements", "interim_statements")
+STATEMENT_TYPES = ("annual_statements", "interim_statements", "monthly_financials")
 SYSTEM_LABELS = {
     "sys.revolver_outstanding": "Line of credit, outstanding",
     "sys.commitment": "Line of credit, commitment",

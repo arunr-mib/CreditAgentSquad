@@ -21,6 +21,7 @@ from sqlalchemy.orm import Session
 
 from app.agents.intake import chase_missing
 from app.calc import template
+from app.calc.periods import ytd_months
 from app.calc.terms import Terms
 from app.core import clock, ledger
 from app.core.roles import Role
@@ -34,6 +35,7 @@ from app.domain.documents_service import ingest_pdf
 from app.domain.facts_service import add_fact
 from app.domain.monitoring import STAGES, Cycle
 from app.domain.org import User
+from app.domain.periods_service import period_ends_for, reporting_frequency
 from app.domain.signals_service import run_signals
 from app.domain.terms import TermsVersion
 from app.domain.terms_service import check_provenance, raise_unapproved_amendments
@@ -302,13 +304,16 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
     tested = sorted({_day(t["period_end"]) for t in truth["expected"]["covenant_tests"]})
     terms_facilities = [facilities[tv["facility_id"]] for tv in truth["terms_versions"]]
     bb_by_period = {_day(b["period_end"]): b for b in truth["borrowing_base"]}
-    for end in tested:
+    # one cycle per period at the borrower's reporting frequency; the covenant tests in the
+    # truth say which periods the book covers
+    cycle_type = "monthly" if tested and reporting_frequency(db, borrower, tested[-1]) == "monthly" else "quarterly"
+    for end in period_ends_for(db, borrower, tested[0], tested[-1]) if tested else []:
         is_current = end == current_period
         if is_current and current != "seeded":
             continue
-        months = ((end.month - borrower.fiscal_year_end_month) % 12) or 12
+        months = ytd_months(end, borrower.fiscal_year_end_month)
         cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=end, months=months, origin="seeded",
-                                    actor=SEED_ACTOR)
+                                    cycle_type=cycle_type, actor=SEED_ACTOR)
         report.cycles += 1
         stops_here = is_current and not load_current
         for facility in facilities.values():
@@ -351,7 +356,9 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         _settle(db, cycle, close=not is_current)
 
     if current == "live":
-        workflow.open_cycle(db, borrower_id=borrower.id, period_end=current_period, months=9, actor=SEED_ACTOR)
+        workflow.open_cycle(db, borrower_id=borrower.id, period_end=current_period,
+                            months=ytd_months(current_period, borrower.fiscal_year_end_month),
+                            cycle_type=cycle_type, actor=SEED_ACTOR)
         report.cycles += 1
     return borrower
 

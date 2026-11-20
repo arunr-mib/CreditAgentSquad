@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.calc import signals as sig
-from app.calc.periods import FactValue, month_end
+from app.calc.periods import FactValue, month_end, ytd_months
 from app.core import ledger
 from app.domain.covenant_service import fact_provider
 from app.domain.credit import Borrower, Facility
@@ -20,16 +20,26 @@ from app.domain.terms import ReportingObligation
 from app.domain.work_items import raise_item
 
 HISTORY_QUARTERS = 8
+HISTORY_MONTHS = 14  # a venture borrower's history: the month and the thirteen before it
 
 
-def quarter_ends(period_end: date, count: int) -> list[date]:
+def period_end_steps(period_end: date, count: int, step: int = 3) -> list[date]:
+    """`count` period ends ending at `period_end`, `step` months apart, oldest first."""
     ends, year, month = [], period_end.year, period_end.month
     for _ in range(count):
         ends.append(month_end(year, month))
-        month -= 3
-        if month <= 0:
+        month -= step
+        while month <= 0:
             year, month = year - 1, month + 12
     return sorted(ends)
+
+
+def quarter_ends(period_end: date, count: int) -> list[date]:
+    return period_end_steps(period_end, count, 3)
+
+
+def monthly_ends(period_end: date, count: int) -> list[date]:
+    return period_end_steps(period_end, count, 1)
 
 
 def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.PeriodMetrics]:
@@ -37,9 +47,18 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
     fye = borrower.fiscal_year_end_month
     has_base = db.execute(select(Facility.id).where(
         Facility.borrower_id == borrower.id, Facility.has_borrowing_base.is_(True))).first() is not None
+    venture = borrower.template_id == "vc-1"
+    ends = monthly_ends(period_end, HISTORY_MONTHS) if venture else quarter_ends(period_end, HISTORY_QUARTERS)
+    venture_inputs = sig.compute_signal_inputs(
+        period_end, provider, fye_month=fye, template_id="vc-1", history_months=HISTORY_MONTHS - 1) if venture else None
     series = []
-    for end in quarter_ends(period_end, HISTORY_QUARTERS):
-        inputs = sig.compute_signal_inputs(end, provider, fye_month=fye)
+    for end in ends:
+        if venture_inputs is not None:
+            inputs = venture_inputs if end == period_end else venture_inputs.history.get(end)
+            if inputs is None:
+                continue
+        else:
+            inputs = sig.compute_signal_inputs(end, provider, fye_month=fye)
         metrics: dict[str, Any] = dict(inputs.values)
         # the availability rule is about borrowing-base lines only; a line without one is
         # covered by the line-usage rule, so it gets no availability here
@@ -54,7 +73,7 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
             headroom[test.covenant_id] = (FactValue(stored.value, str(stored.id))
                                           if stored is not None and stored.value == test.headroom_pct
                                           else test.headroom_pct)
-        months = ((end.month - fye) % 12) or 12
+        months = ytd_months(end, fye) if venture else ((end.month - fye) % 12) or 12
         series.append(sig.PeriodMetrics(end, months, metrics, headroom))
     return series
 
@@ -83,7 +102,8 @@ def run_signals(
                      ReportingObligation.borrower_id == borrower.id,
                      ReportingObligation.period_end == period_end)).scalars()]
     evaluation = sig.evaluate_signals(period_end, _series(db, borrower, period_end),
-                                      system_rows=_system_rows(db, borrower), reporting=reporting, as_of=as_of)
+                                      system_rows=_system_rows(db, borrower), reporting=reporting, as_of=as_of,
+                                      template_id=borrower.template_id)
     stored: list[Signal] = []
     for fired in _one_per_period(evaluation.signals):
         basis = ledger._jsonable({**fired.basis, "subject": fired.subject,

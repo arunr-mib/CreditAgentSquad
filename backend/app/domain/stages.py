@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.agents import certificate, collateral, early_warning, intake, spreading
 from app.agents import covenant as covenant_agent
 from app.agents.llm import LLMClient, client_for
-from app.calc.periods import prior_fiscal_year_end
+from app.calc.periods import is_fiscal_year_end, prior_fiscal_year_end, ytd_months
 from app.core import clock
 from app.core.config import get_settings
 from app.domain import calendar, workflow
@@ -29,7 +29,7 @@ from app.domain.work_items import raise_item
 
 # Tests replace this to supply scripted model responses.
 LLM_FACTORY: Callable[[], LLMClient] = client_for
-STATEMENT_TYPES = ("interim_statements", "annual_statements")
+STATEMENT_TYPES = ("interim_statements", "annual_statements", "monthly_financials")
 
 
 def _llm() -> LLMClient:
@@ -107,7 +107,7 @@ def intake_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
 @workflow.stage_handler("spreading")
 def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     borrower = _borrower(db, cycle)
-    wanted = "annual_statements" if cycle.months == 12 else "interim_statements"
+    wanted = statements_wanted(cycle, borrower)
     documents = _documents(db, cycle, wanted) or _documents(db, cycle, *STATEMENT_TYPES)
     if not documents:
         return "waiting"
@@ -283,7 +283,17 @@ def closed_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
 
 
 def quarter_months(period_end: date, fiscal_year_end_month: int) -> int:
-    return ((period_end.month - fiscal_year_end_month) % 12) or 12
+    """Months of the fiscal year elapsed at `period_end` (12 at the year end)."""
+    return ytd_months(period_end, fiscal_year_end_month)
+
+
+def statements_wanted(cycle: Cycle, borrower: Borrower) -> str:
+    """The statement a cycle waits for: annual at the fiscal year end (by the borrower's year end,
+    not by a month count, which a monthly cycle shares with a quarterly one), monthly statements
+    for a monthly cycle, interim statements otherwise."""
+    if is_fiscal_year_end(cycle.period_end, borrower.fiscal_year_end_month):
+        return "annual_statements"
+    return "monthly_financials" if cycle.cycle_type == "monthly" else "interim_statements"
 
 
 ZERO = Decimal(0)
