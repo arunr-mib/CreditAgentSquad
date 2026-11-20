@@ -1244,7 +1244,11 @@ Carly's question: ${q}`;
     $("pane").querySelectorAll("textarea").forEach(autosize);
     const thread = !v.includes(":") && v !== "portfolio";
     if (thread && step === 7 && s.summary) requestAnimationFrame(() => { const p = $("pane"), el = $("summary"); if (el) p.scrollTop = el.offsetTop - 24; });
-    else if (thread && (step === 2 || step === 5 || step === 6 || (step === 7 && s.helenDone))) requestAnimationFrame(() => { const p = $("pane"); p.scrollTop = p.scrollHeight; });
+    else if (thread && (step === 2 || step === 5 || step === 6 || (step === 7 && s.helenDone))) requestAnimationFrame(() => {
+      // Bring the start of what's new to the top (e.g. Carly's attachments at step 3), not the bottom of the thread.
+      const p = $("pane"), first = p.querySelector(".anim");
+      if (first) p.scrollTop += first.getBoundingClientRect().top - p.getBoundingClientRect().top - 20; else p.scrollTop = p.scrollHeight;
+    });
     else $("pane").scrollTop = 0;
   }
   function autosize(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; }
