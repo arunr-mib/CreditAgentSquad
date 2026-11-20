@@ -12,9 +12,12 @@ Working notes from the owner's brainstorm after colleagues' feedback on the cock
 | Interface | A standalone interface first; channels (email, team chat, phone, committee) later. |
 | Agent presence | **One agent on the surface** ("Squad"), with the specialists and code shown in a collapsible **work trail** under each message: friendly on top, auditable underneath. |
 | Disclosure | Chat-first with progressive disclosure: decision cards in the conversation; a drawer that opens only the evidence the question needs and closes when it is settled; today's screens remain as "detail screens". |
+| Framing | Squad is a **wrapper over the Credit Agent Squad command centre, not a replacement**. The chat is the front door; the command centre screens stay as the detail behind it. Every Squad message card, evidence drawer and decision carries one consistent dive point, "Open in Command Centre"; individual figures do not (a figure already opens its source page). |
 | Name and mark | **Squad** (chosen over C-Squad, Quorum, Assay and others: simple). Mark: the **closed ring**, eight specialist dots around one larger core ("many into one"); four dots below 32 px. Colour: **lavender** (ground #ECE8FF, dots #8F7BF0, core #4A35B8), the same family as the colour that marks agent-written work, so the mark and the agent's colour mean the same thing. No face, no character. Trademark and domain checks are still owed before anything external. |
 
 ## Direction being prototyped (Carly's morning)
+
+Clickable demo: "Squad muse style demo" (`docs/product/prototype/carly-morning.html`). It is a prototype only and does not touch the live app. The live app's demo analyst (Priya Raman) is unchanged for now.
 
 1. Squad greets the analyst with her work, not a dashboard.
 2. Upload: the Intake Agent files what it can and holds what it cannot place, with one question.
