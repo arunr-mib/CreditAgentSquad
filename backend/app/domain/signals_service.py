@@ -12,7 +12,7 @@ from app.calc import signals as sig
 from app.calc.periods import FactValue, month_end, ytd_months
 from app.core import ledger
 from app.domain import periods_service
-from app.domain.covenant_service import fact_provider
+from app.domain.covenant_service import fact_provider, governing_terms
 from app.domain.credit import Borrower, Facility
 from app.domain.facts import Fact
 from app.domain.facts_service import current_fact
@@ -43,6 +43,21 @@ def monthly_ends(period_end: date, count: int) -> list[date]:
     return period_end_steps(period_end, count, 1)
 
 
+def approved_plan(db: Session, borrower: Borrower, period_end: date) -> dict[date, Decimal] | None:
+    """The monthly revenue plan from the approved terms in force at `period_end` (design spec 5). Plan figures are
+    terms data a person entered and a second person approved, never a budget column read from a borrower document. A
+    proposed version never governs; a covenant on ARR is not a revenue plan. None when the terms hold no revenue plan."""
+    plan: dict[date, Decimal] = {}
+    for facility in db.execute(select(Facility).where(Facility.borrower_id == borrower.id)).scalars():
+        row, version = governing_terms(db, facility, period_end)
+        if row is None:
+            continue
+        for covenant in version.terms.covenants:
+            if covenant.archetype == "revenue_vs_plan" and covenant.typed_params.metric == "revenue":
+                plan.update({month.period_end: month.amount for month in covenant.typed_params.plan})
+    return plan or None
+
+
 def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.PeriodMetrics]:
     provider = fact_provider(db, borrower.id)
     fye = borrower.fiscal_year_end_month
@@ -51,8 +66,10 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
     venture = borrower.template_id == "vc-1"  # which signal inputs exist
     monthly = periods_service.step_months(db, borrower, period_end) == 1  # how often the borrower reports
     ends = monthly_ends(period_end, HISTORY_MONTHS) if monthly else quarter_ends(period_end, HISTORY_QUARTERS)
+    plan = approved_plan(db, borrower, period_end) if venture else None
     venture_inputs = sig.compute_signal_inputs(
-        period_end, provider, fye_month=fye, template_id="vc-1", history_months=HISTORY_MONTHS - 1) if venture else None
+        period_end, provider, fye_month=fye, template_id="vc-1", history_months=HISTORY_MONTHS - 1,
+        plan=plan) if venture else None
     series = []
     for end in ends:
         if venture_inputs is not None:

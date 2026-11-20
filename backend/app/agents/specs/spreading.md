@@ -19,6 +19,7 @@ Which lines
 - For every printed total or subtotal whose template line is marked `total`, also report the printed total under `stated.<key>` (for example `stated.bs.total_assets`). Use `stated.` only for lines marked `total`.
 - A statement may print as a total something the template keeps as a single line (marked `line`), for example total equity printed beneath its components. Report that printed total row under the line's plain key (for example `bs.total_equity`), and do not report the rows above it that make it up when the template has no line for them.
 - If the statement has no row for a template line, list the key in `absent_keys`. Do not guess a row that is not there.
+- A monthly MRR/ARR report holds only the SaaS metric lines (`saas.mrr`, `saas.arr`, `saas.customers`, and net new ARR or net revenue retention where printed); report those and list nothing else as absent. A financial-statement pack need not print the SaaS lines: when it does not, leave them out, never estimate them.
 - Supplemental lines (cash paid for interest and taxes, scheduled principal payments, financed capital expenditures) are usually on a notes page.
 
 Scale

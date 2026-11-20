@@ -54,7 +54,7 @@ class SpreadExtraction(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="spreading", version="3",
+    name="spreading", version="4",
     purpose="Locate template figures in financial statements; code verifies each on its page.",
     prompt_file="spreading.md", output_model=SpreadExtraction, tools=(), effort="high", max_tokens=32000)
 
@@ -64,6 +64,12 @@ REQUIRED_TOTALS: dict[str, tuple[str, ...]] = {
     "vc-1": ("is.vc_net_loss", "bs.vc_total_assets", "bs.vc_total_liabilities_and_equity",
              "cf.vc_net_change_in_cash"),
 }
+
+
+def _statements_for(document: Document | None) -> tuple[str, ...] | None:
+    """The statements a document is read for. An MRR/ARR report holds only the SaaS lines, so only those are
+    checked; any other document is read for every statement of the template."""
+    return ("saas",) if document is not None and document.doc_type == "mrr_report" else None
 
 
 def _mentions(text: str, period_end: date) -> bool:
@@ -435,7 +441,7 @@ def spread_document(
               and not template.ALL_LINE_BY_KEY[k].optional]
     result.context = {**result.context, "scale": scale, "absent": sorted(absent)}
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent,
-                                      template_id=tid)
+                                      statements=_statements_for(document), template_id=tid)
     result.failed_checks = [e.to_dict() for e in report.errors]
     # footing is the check that catches a misread line, so it may not be skipped: each statement
     # that was read must have its final printed total read and agreeing with the lines
@@ -581,7 +587,8 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
     prior = current_fact(db, borrower.id, template.cash_roll_keys(tid)[1],
                          prior_fiscal_year_end(period_end, borrower.fiscal_year_end_month), 0)
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior.value if prior else None,
-                                      absent=still_absent, template_id=tid)
+                                      absent=still_absent, statements=_statements_for(document),
+                                      template_id=tid)
     result.failed_checks = [e.to_dict() for e in report.errors]
     if report.errors:
         _item(db, result, borrower, cycle, document, item_type="spread.does_not_foot", severity="high",

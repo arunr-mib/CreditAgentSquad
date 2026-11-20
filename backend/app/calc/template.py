@@ -208,9 +208,11 @@ VC_LINES: tuple[TemplateLine, ...] = (
     # SaaS metrics (point in time, from the MRR/ARR report)
     _SUP_CASH_INTEREST_PAID,
     _SUP_SCHEDULED_PRINCIPAL,
-    _line("saas.mrr", "Monthly recurring revenue", "SaaS Metrics"),
-    _line("saas.arr", "Annual recurring revenue", "SaaS Metrics"),
-    _line("saas.customers", "Customers", "SaaS Metrics"),
+    # in no total: a financial-statement spread need not print them (the MRR/ARR report fills them), and an
+    # unprinted one is null, never zero
+    _line("saas.mrr", "Monthly recurring revenue", "SaaS Metrics", optional=True),
+    _line("saas.arr", "Annual recurring revenue", "SaaS Metrics", optional=True),
+    _line("saas.customers", "Customers", "SaaS Metrics", optional=True),
     # optional metrics from the investor pack: in no total, null when the pack does not state them
     _line("saas.net_new_arr", "Net new ARR", "SaaS Metrics", optional=True),
     _line("saas.net_revenue_retention", "Net revenue retention", "SaaS Metrics", optional=True),

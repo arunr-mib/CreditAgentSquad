@@ -17,7 +17,8 @@ from app.domain.common import (
 
 DOCUMENT_TYPES = (
     "credit_agreement", "amendment", "waiver", "annual_statements", "interim_statements",
-    "compliance_certificate", "borrowing_base_certificate", "receivables_aging", "tax_return", "other",
+    "compliance_certificate", "borrowing_base_certificate", "receivables_aging", "tax_return",
+    "monthly_financials", "mrr_report", "bank_statement", "term_sheet", "investor_update", "other",
 )
 
 
