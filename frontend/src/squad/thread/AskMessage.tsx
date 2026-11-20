@@ -16,6 +16,7 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
   const answer = useAnswer(message.work_item_id);
   const { say, pulse } = usePresence();
   const group = useId();
+  const noteId = useId();
   const [choice, setChoice] = useState<string | null>(null);
   const [remember, setRemember] = useState(false);
   const [note, setNote] = useState('');
@@ -58,10 +59,10 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
         <>
           <label className="sq-check-label"><input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> Remember this for next time</label>
           {remember ? (
-            <label className="sq-why">
-              <span>Why? Squad will remember this in your words</span>
-              <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} required />
-            </label>
+            <div className="sq-why">
+              <label htmlFor={noteId}>Why? Squad will remember this in your words</label>
+              <textarea id={noteId} value={note} onChange={(e) => setNote(e.target.value)} rows={2} required />
+            </div>
           ) : null}
           <div className="sq-actions">
             <button type="button" className="sq-btn sq-btn-primary" disabled={!ready || answer.isPending} onClick={() => void confirm()}>Confirm</button>
