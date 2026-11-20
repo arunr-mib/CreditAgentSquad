@@ -121,6 +121,7 @@ _VENTURE: dict[str, Mapping[str, Any]] = {
     "unrestricted_cash": point("bs.cash_unrestricted"),
     "net_burn_t3m": sub(add(t3m("cf.vc_capex"), t3m("cf.capitalised_software_spend")),
                         t3m("cf.vc_operating_cash_flow")),
+    "vc_ebitda": add(ttm("is.vc_operating_loss"), ttm("is.vc_depreciation_amortization")),
     "avg_net_burn": div(named("net_burn_t3m"), const("3")),
 }
 

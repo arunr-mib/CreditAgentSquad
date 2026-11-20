@@ -46,6 +46,11 @@ def _total(key: str, label: str, section: str, *terms: str) -> TemplateLine:
                         formula=formula, section=section)
 
 
+# Shared by ci-1 and vc-1: the same object in both templates (a registry test enforces identity).
+_SUP_CASH_INTEREST_PAID = _line("sup.cash_interest_paid", "Cash paid for interest", "Supplemental")
+_SUP_CASH_TAXES_PAID = _line("sup.cash_taxes_paid", "Cash paid for income taxes", "Supplemental")
+_SUP_SCHEDULED_PRINCIPAL = _line("sup.scheduled_principal", "Scheduled principal payments on term debt", "Supplemental")
+
 CI_LINES: tuple[TemplateLine, ...] = (
     # Income statement (flow, fiscal year to date)
     _line("is.revenue", "Net revenue", "Sales"),
@@ -132,9 +137,9 @@ CI_LINES: tuple[TemplateLine, ...] = (
     ),
     _total("cf.net_change_in_cash", "Net change in cash", "Net Change in Cash", "cf.cfo", "cf.cfi", "cf.cff"),
     # Supplemental (from the notes page)
-    _line("sup.cash_interest_paid", "Cash paid for interest", "Supplemental"),
-    _line("sup.cash_taxes_paid", "Cash paid for income taxes", "Supplemental"),
-    _line("sup.scheduled_principal", "Scheduled principal payments on term debt", "Supplemental"),
+    _SUP_CASH_INTEREST_PAID,
+    _SUP_CASH_TAXES_PAID,
+    _SUP_SCHEDULED_PRINCIPAL,
     _line("sup.financed_capex", "Capital expenditures financed with purchase-money debt", "Supplemental"),
 )
 
@@ -148,8 +153,9 @@ VC_LINES: tuple[TemplateLine, ...] = (
     _line("is.rnd", "Research and development", "Operating Expenses"),
     _line("is.sales_marketing", "Sales and marketing", "Operating Expenses"),
     _line("is.gna", "General and administrative", "Operating Expenses"),
+    _line("is.vc_depreciation_amortization", "Depreciation and amortization", "Operating Expenses"),
     _total("is.vc_operating_loss", "Operating income (loss)", "Operating Profit",
-           "is.vc_gross_profit", "-is.rnd", "-is.sales_marketing", "-is.gna"),
+           "is.vc_gross_profit", "-is.rnd", "-is.sales_marketing", "-is.gna", "-is.vc_depreciation_amortization"),
     _line("is.vc_interest", "Interest expense", "Interest"),
     _line("is.vc_other_income", "Other income (expense), net", "Other Income and Expense"),
     _total("is.vc_net_loss", "Net income (loss)", "Net Profit",
@@ -197,6 +203,8 @@ VC_LINES: tuple[TemplateLine, ...] = (
            "cf.vc_operating_cash_flow", "-cf.vc_capex", "-cf.capitalised_software_spend",
            "cf.equity_raised", "cf.debt_raised", "cf.vc_other_financing"),
     # SaaS metrics (point in time, from the MRR/ARR report)
+    _SUP_CASH_INTEREST_PAID,
+    _SUP_SCHEDULED_PRINCIPAL,
     _line("saas.mrr", "Monthly recurring revenue", "SaaS Metrics"),
     _line("saas.arr", "Annual recurring revenue", "SaaS Metrics"),
     _line("saas.customers", "Customers", "SaaS Metrics"),

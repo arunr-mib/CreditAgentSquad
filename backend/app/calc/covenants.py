@@ -94,15 +94,27 @@ def compute_rml(period_end: date, provider: Provider, fye_month: int = 12) -> Rm
     return RmlResult(CALC_CONTEXT.divide(cash.value, burn.value), burn.value, False, [], trace)
 
 
-def compile_covenant(covenant: Covenant, period_end: date | None = None) -> dict[str, Any]:
+class UndefinedForTemplate(Exception):
+    """The covenant names a measure the borrower's spreading template does not define."""
+
+
+def compile_covenant(covenant: Covenant, period_end: date | None = None, template_id: str = "ci-1") -> dict[str, Any]:
     """The archetype's formula as an expression tree."""
     params = covenant.typed_params
     archetype = covenant.archetype
     if archetype == "coverage":
-        numerator: dict[str, Any] = named(params.numerator_base)
+        base = params.numerator_base
+        deductions, denominators = _DEDUCTIONS, _DENOMINATORS
+        if template_id == "vc-1":
+            if base == "adjusted_ebitda":
+                raise UndefinedForTemplate("adjusted EBITDA is not defined for the venture template")
+            base = "vc_ebitda"
+            deductions = {**_DEDUCTIONS, "unfinanced_capex": ttm("cf.vc_capex")}  # no purchase-money financing line
+            denominators = {**_DENOMINATORS, "interest_expense": ttm("is.vc_interest")}
+        numerator: dict[str, Any] = named(base)
         if params.deductions:
-            numerator = sub(numerator, *[_DEDUCTIONS[d] for d in params.deductions])
-        parts = [_DENOMINATORS[d] for d in params.denominator]
+            numerator = sub(numerator, *[deductions[d] for d in params.deductions])
+        parts = [denominators[d] for d in params.denominator]
         return div(numerator, parts[0] if len(parts) == 1 else add(*parts))
     if archetype == "leverage":
         return div(named(params.debt), named(params.ebitda))
@@ -215,8 +227,12 @@ def test_covenant(
     fye_month: int = 12,
     step_up_from: date | None = None,
     calc_id: str | None = None,
+    template_id: str = "ci-1",
 ) -> CovenantTestResult:
     """Test one covenant at `period_end`.
+
+    `template_id` is the borrower's spreading template; a `vc-1` coverage covenant measures
+    `vc_ebitda`.
 
     `definitions` is the governing terms' `definitions` block. `step_up_from` is only needed by
     a min_tangible_net_worth covenant with a step-up percentage: fiscal years ended after that
@@ -240,7 +256,10 @@ def test_covenant(
     if cov.archetype == "min_runway_months":
         return _test_rml(cov, result, period_end, provider, fye_month)
     try:
-        result.expression = compile_covenant(cov, period_end)
+        result.expression = compile_covenant(cov, period_end, template_id)
+    except UndefinedForTemplate as exc:
+        result.errors.append(CalcError(E.MISSING_PARAMETER, str(exc), key="numerator_base", period_end=period_end))
+        return result
     except PlanMissing as exc:
         result.errors.append(CalcError(
             E.MISSING_PARAMETER,

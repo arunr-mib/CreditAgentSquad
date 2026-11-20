@@ -12,7 +12,7 @@ operating, investing and financing sections. Section names are generic public ac
 | Sales | is | `is.revenue` | `is.subscription_revenue`, `is.services_revenue`, `is.total_revenue` |
 | Cost of Sales | is | `is.cogs` | `is.cost_of_revenue` |
 | Gross Profit | is | `is.gross_profit` | `is.vc_gross_profit` |
-| Operating Expenses | is | `is.sga`, `is.depreciation_amortization`, `is.other_operating_expense`, `is.nonrecurring_expense` | `is.rnd`, `is.sales_marketing`, `is.gna` |
+| Operating Expenses | is | `is.sga`, `is.depreciation_amortization`, `is.other_operating_expense`, `is.nonrecurring_expense` | `is.rnd`, `is.sales_marketing`, `is.gna`, `is.vc_depreciation_amortization` |
 | Operating Profit | is | `is.operating_income` | `is.vc_operating_loss` |
 | Interest | is | `is.interest_expense` | `is.vc_interest` |
 | Other Income and Expense | is | `is.other_income_net` | `is.vc_other_income` |
@@ -30,5 +30,5 @@ operating, investing and financing sections. Section names are generic public ac
 | Investing Activities | cf | `cf.capex`, `cf.other_investing`, `cf.cfi` | `cf.vc_capex`, `cf.capitalised_software_spend` |
 | Financing Activities | cf | `cf.revolver_net`, `cf.term_debt_proceeds`, `cf.term_debt_repayments`, `cf.distributions`, `cf.other_financing`, `cf.cff` | `cf.equity_raised`, `cf.debt_raised`, `cf.vc_other_financing` |
 | Net Change in Cash | cf | `cf.net_change_in_cash` | `cf.vc_net_change_in_cash` |
-| Supplemental | sup | `sup.cash_interest_paid`, `sup.cash_taxes_paid`, `sup.scheduled_principal`, `sup.financed_capex` | - |
+| Supplemental | sup | `sup.cash_interest_paid`, `sup.cash_taxes_paid`, `sup.scheduled_principal`, `sup.financed_capex` | `sup.cash_interest_paid`, `sup.scheduled_principal` |
 | SaaS Metrics | saas | - | `saas.mrr`, `saas.arr`, `saas.customers` |

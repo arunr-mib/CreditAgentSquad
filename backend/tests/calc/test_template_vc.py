@@ -117,7 +117,7 @@ def test_vc_check_statement_has_no_ties_and_foots_totals():
     inputs = {"saas.mrr": D("1"), "saas.arr": D("12"), "saas.customers": D("3"), "stated.is.total_revenue": D("9")}
     inputs.update({"is.subscription_revenue": D("6"), "is.services_revenue": D("3"), "is.cost_of_revenue": D("1"),
                    "is.rnd": D("1"), "is.sales_marketing": D("1"), "is.gna": D("1"),
-                   "is.vc_interest": D("0"), "is.vc_other_income": D("0")})
+                   "is.vc_depreciation_amortization": D("0"), "is.vc_interest": D("0"), "is.vc_other_income": D("0")})
     report = check_statement(inputs, scale=1, prior_fye_cash=None, statements=["is"], template_id="vc-1")
     assert report.ok, report.errors
     assert not [c for c in report.checks if c.check == "tie"]

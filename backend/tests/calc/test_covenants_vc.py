@@ -114,3 +114,53 @@ def test_not_meaningful_rml_still_checks_certificate_compliance_flag():
     outcome = determine_outcome(result, entry, D("0.1"))
     assert outcome.outcome == COMPLIANT_VARIANCE and outcome.note == "not_meaningful_cash_flow_positive"
     assert [v.field for v in outcome.variances] == ["in_compliance"]
+
+
+# ---- DSCR for venture borrowers (Task 3b) ----------------------------------------------------
+
+FYE = date(2026, 12, 31)
+
+
+def _dscr_cov():
+    cov = _cov("coverage", {"numerator_base": "ebitda", "deductions": [], "denominator": ["cash_interest", "scheduled_principal"]},
+               "1.20", "ratio", basis="ttm")
+    return cov.model_copy(update={"rounding": cov.rounding.model_copy(update={"dp": 2})})
+
+
+def _dscr_facts(interest="300000", principal="500000"):
+    return provider_from_facts({
+        ("is.vc_operating_loss", FYE, 12): D("-1000000"),
+        ("is.vc_depreciation_amortization", FYE, 12): D("200000"),
+        ("sup.cash_interest_paid", FYE, 12): D(interest),
+        ("sup.scheduled_principal", FYE, 12): D(principal),
+    })
+
+
+def test_vc_dscr_negative_ebitda_is_a_real_breach():
+    result = test_covenant(_dscr_cov(), FYE, _dscr_facts(), template_id="vc-1")
+    assert result.errors == [] and result.value == D("-1.00") and result.passed is False
+
+
+def test_vc_dscr_without_debt_service_cannot_be_tested():
+    result = test_covenant(_dscr_cov(), FYE, _dscr_facts("0", "0"), template_id="vc-1")
+    assert result.passed is None and [e.code for e in result.errors] == ["non_positive_denominator"]
+
+
+def test_vc_dscr_uses_vc_ebitda_and_vc_capex():
+    from app.calc.covenants import compile_covenant
+    plain = compile_covenant(_dscr_cov(), template_id="vc-1")
+    assert "vc_ebitda" in str(plain) and "'ebitda'" not in str(plain)
+    cov = _dscr_cov().model_copy(update={"params": _dscr_cov().typed_params.model_copy(update={"deductions": ["unfinanced_capex"]})})
+    assert "cf.vc_capex" in str(compile_covenant(cov, template_id="vc-1"))
+
+
+def test_vc_adjusted_ebitda_is_not_defined():
+    cov = _dscr_cov().model_copy(update={"params": _dscr_cov().typed_params.model_copy(update={"numerator_base": "adjusted_ebitda"})})
+    result = test_covenant(cov, FYE, _dscr_facts(), template_id="vc-1")
+    assert result.passed is None and result.errors[0].code == "missing_parameter"
+    assert "venture template" in result.errors[0].message
+
+
+def test_ci_coverage_still_uses_ebitda():
+    from app.calc.covenants import compile_covenant
+    assert "vc_ebitda" not in str(compile_covenant(_dscr_cov()))
