@@ -16,6 +16,8 @@ from app.squad import drafts
 from app.squad.briefing import build_briefing
 from app.squad.questions import answer_question
 from app.squad.threads import build_thread
+from app.squad.track_record import track_record
+from app.squad.trail import case_trail
 
 router = APIRouter(tags=["squad"])
 
@@ -99,3 +101,18 @@ def edit_draft_route(draft_id: uuid.UUID, body: DraftEditIn, db: Session = Depen
 def send_draft_route(draft_id: uuid.UUID, db: Session = Depends(get_db),
                      user: User = Depends(require(Permission.EDIT_COMMENTARY))) -> dict:
     return {**_draft_call(db, drafts.send_draft, draft_id, user), "delivered": False}
+
+
+@router.get("/cases/{work_item_id}/trail")
+def trail(work_item_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
+    item = db.get(WorkItem, work_item_id)
+    if item is None:
+        raise HTTPException(404, "Case not found.")
+    return case_trail(db, item)
+
+
+@router.get("/borrowers/{borrower_id}/track-record")
+def borrower_track_record(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> list[dict]:
+    if db.get(Borrower, borrower_id) is None:
+        raise HTTPException(404, "Client not found.")
+    return track_record(db, borrower_id)
