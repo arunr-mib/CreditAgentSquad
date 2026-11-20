@@ -283,10 +283,10 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: transparent; border: 0; }
 .me b { display: block; font-size: 13px; } .me small { display: block; font-size: 11px; color: var(--ink-3); }
 /* presence: Squad's state, centred above the conversation */
-.presence { display: flex; justify-content: center; padding: 12px 32px 0; }
-.pres { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 8px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(22,21,19,.04); font-size: 13px; color: var(--ink-2); max-width: 100%; }
-.pres b { color: var(--ink); }
-.pres span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.presence { display: flex; justify-content: center; padding: 8px 32px 0; }
+.pres { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pane { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px); mask-image: linear-gradient(to bottom, transparent 0, #000 18px); }
 .main.push .presence { padding-right: calc(var(--dw, 560px) + 32px); }
 /* demo controls (prototype only): look menu and guide */
 .democtl { position: fixed; top: 10px; right: 12px; z-index: 45; display: none; gap: 6px; }
@@ -518,7 +518,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const n = needsYou();
     const state = working ? "work" : helen || n ? "needs" : "rest";
     const text = helen ? "1 decision waiting for you" : s.live ? "working · checking Dataflake's October certificate" : working ? "working on your question" : n ? `${n} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} you · watching 12 companies` : "all clear · watching 12 companies";
-    $("presence").innerHTML = `<div class="pres">${mark(26, state)}<b>Squad</b><span>${text}</span></div>`;
+    $("presence").innerHTML = `<div class="pres" title="Squad · ${text}">${mark(34, state)}<span class="sr">Squad: ${text}</span></div>`;
   }
   function rail() {
     const helen = helenView();
