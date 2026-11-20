@@ -278,6 +278,14 @@ class Covenant(_Model):
                 f"measurement basis {self.measurement.basis!r} does not fit archetype {self.archetype!r} "
                 f"(allowed: {', '.join(allowed)})"
             )
+        if self.archetype == "revenue_vs_plan":
+            # revenue is a flow measured over the trailing three months; recurring revenue is a balance
+            metric = self.params["metric"]
+            required = "t3m" if metric == "revenue" else "point"
+            if self.measurement.basis != required:
+                raise ValueError(
+                    f"a revenue_vs_plan covenant on {metric} is measured on basis {required!r}, "
+                    f"not {self.measurement.basis!r}")
         return self
 
     @property

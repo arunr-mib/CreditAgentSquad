@@ -164,3 +164,99 @@ def test_vc_adjusted_ebitda_is_not_defined():
 def test_ci_coverage_still_uses_ebitda():
     from app.calc.covenants import compile_covenant
     assert "vc_ebitda" not in str(compile_covenant(_dscr_cov()))
+
+
+# ---- revenue_vs_plan basis follows the metric (terms validation) -----------------------------
+
+def test_revenue_plan_needs_t3m_and_arr_plan_needs_point():
+    import pytest
+    from pydantic import ValidationError
+    arr = {"metric": "arr", "plan": [{"period_end": OCT.isoformat(), "amount": "4800000"}]}
+    revenue = _plan([date(2026, 8, 31), date(2026, 9, 30), OCT])
+    assert _cov("revenue_vs_plan", revenue, "0.80", "ratio", basis="t3m").measurement.basis == "t3m"
+    assert _cov("revenue_vs_plan", arr, "0.80", "ratio", basis="point").measurement.basis == "point"
+    with pytest.raises(ValidationError, match="measured on basis 't3m'"):
+        _cov("revenue_vs_plan", revenue, "0.80", "ratio", basis="point")
+    with pytest.raises(ValidationError, match="measured on basis 'point'"):
+        _cov("revenue_vs_plan", arr, "0.80", "ratio", basis="t3m")
+
+
+# ---- test gaps (Phase 1 final review) --------------------------------------------------------
+
+def _runway_provider(burn_t3m):
+    """Unrestricted cash 4.6M; operating cash flow over Aug-Oct is -burn_t3m (no capex)."""
+    return provider_from_facts({
+        ("bs.cash_unrestricted", OCT, 10): D("4600000"),
+        ("cf.vc_operating_cash_flow", OCT, 10): D("-1000000") - D(burn_t3m),
+        ("cf.vc_operating_cash_flow", date(2026, 7, 31), 7): D("-1000000"),
+        ("cf.vc_capex", OCT, 10): D("0"), ("cf.vc_capex", date(2026, 7, 31), 7): D("0"),
+        ("cf.capitalised_software_spend", OCT, 10): D("0"),
+        ("cf.capitalised_software_spend", date(2026, 7, 31), 7): D("0"),
+    })
+
+
+def test_rml_with_burn_exactly_zero_is_not_meaningful_and_never_divides():
+    rml = compute_rml(OCT, _runway_provider("0"))
+    assert rml.burn == D("0") and rml.not_meaningful is True and rml.value is None and rml.errors == []
+    result = test_covenant(_cov("min_runway_months", {}, 9, "months", basis="t3m"), OCT, _runway_provider("0"))
+    assert result.passed is True and result.value is None and result.avg_net_burn == D("0")
+    assert result.note == "not_meaningful_cash_flow_positive"
+
+
+def test_a_barely_positive_burn_is_measured():
+    rml = compute_rml(OCT, _runway_provider("3"))  # 1 a month
+    assert rml.not_meaningful is False and rml.value == D("4600000")
+
+
+def test_t3m_in_the_second_month_of_the_year_uses_the_prior_year_end():
+    from app.calc.periods import resolve_line
+    key = "cf.vc_operating_cash_flow"
+    feb = date(2026, 2, 28)
+    facts = {(key, feb, 2): D("-1300"), (key, date(2025, 12, 31), 12): D("-7000"),
+             (key, date(2025, 11, 30), 11): D("-6400")}
+    res = resolve_line(key, "t3m", feb, provider_from_facts(facts))
+    assert res.errors == [] and res.value == D("-1900")  # Dec 600 + Jan..Feb 1300: -(-7000 - -6400) - 1300
+
+
+def test_t3m_with_a_non_december_fiscal_year_end():
+    from app.calc.periods import resolve_line
+    key = "cf.vc_operating_cash_flow"
+    # fiscal year ends June 30; August is the second month of the year
+    aug = date(2026, 8, 31)
+    facts = {(key, aug, 2): D("-900"), (key, date(2026, 6, 30), 12): D("-5000"),
+             (key, date(2026, 5, 31), 11): D("-4600")}
+    res = resolve_line(key, "t3m", aug, provider_from_facts(facts), fye_month=6)
+    assert res.errors == [] and res.value == D("-1300")  # Jun 400 + Jul..Aug 900
+    # October is the fourth month: this year's October less July
+    oct_ = date(2026, 10, 31)
+    facts = {(key, oct_, 4): D("-2000"), (key, date(2026, 7, 31), 1): D("-500")}
+    assert resolve_line(key, "t3m", oct_, provider_from_facts(facts), fye_month=6).value == D("-1500")
+    # September is the third month: the year to date is the answer
+    sep = date(2026, 9, 30)
+    assert resolve_line(key, "t3m", sep, provider_from_facts({(key, sep, 3): D("-1100")}), fye_month=6).value == D("-1100")
+
+
+def test_revenue_vs_plan_with_a_zero_plan_total_does_not_divide_or_pass():
+    provider = provider_from_facts({
+        ("is.subscription_revenue", OCT, 10): D("7700000"),
+        ("is.subscription_revenue", date(2026, 7, 31), 7): D("5300000"),
+        ("is.services_revenue", OCT, 10): D("0"), ("is.services_revenue", date(2026, 7, 31), 7): D("0"),
+    })
+    plan = {"metric": "revenue", "plan": [{"period_end": d.isoformat(), "amount": "0"}
+                                          for d in (date(2026, 8, 31), date(2026, 9, 30), OCT)]}
+    result = test_covenant(_cov("revenue_vs_plan", plan, "0.80", "ratio", basis="t3m"), OCT, provider)
+    assert result.passed is None and result.value is None
+    assert [e.code for e in result.errors] == ["non_positive_denominator"]
+
+
+def test_arr_plan_path_compares_the_point_arr_with_the_months_plan():
+    provider = provider_from_facts({("saas.arr", OCT, 10): D("4800000")})
+    plan = {"metric": "arr", "plan": [{"period_end": OCT.isoformat(), "amount": "5000000"}]}
+    cov = _cov("revenue_vs_plan", plan, "0.90", "ratio", basis="point")
+    cov = cov.model_copy(update={"rounding": cov.rounding.model_copy(update={"dp": 2})})
+    result = test_covenant(cov, OCT, provider)
+    assert result.errors == [] and result.value == D("0.96") and result.passed is True
+    # only the period end month counts: another month's plan figure is not asked for
+    plan_missing = {"metric": "arr", "plan": [{"period_end": "2026-09-30", "amount": "5000000"}]}
+    cannot = test_covenant(_cov("revenue_vs_plan", plan_missing, "0.90", "ratio", basis="point"), OCT, provider)
+    assert cannot.passed is None and cannot.errors[0].code == "missing_parameter"

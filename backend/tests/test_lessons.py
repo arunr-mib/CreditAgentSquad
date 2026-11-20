@@ -93,3 +93,23 @@ def test_lesson_api(client, db):
     assert db.get(Lesson, other.json()["id"]).written_by == me.id
     assert client.post(URL, json={**body, "text": "  "}).status_code == 422
     assert client.post(URL, json={**body, "borrower_id": "00000000-0000-4000-8000-000000000000"}).status_code == 404
+
+
+def test_lesson_text_is_capped_and_the_work_item_must_belong_to_the_borrower(client, db):
+    from app.domain.monitoring import WorkItem
+    seed_users(db, password="pw")
+    b, other = make_borrower(db), make_borrower(db, code="LSO")
+    item = WorkItem(borrower_id=other.id, item_type="spread.value_unverified", severity="medium", title="t",
+                    question="Is this right?", allowed_decisions=["retry"], stage="spreading")
+    db.add(item)
+    db.flush()
+    db.commit()
+    _sign_in(client, "priya.raman")
+    body = {"borrower_id": str(b.id), "topic": "leverage", "text": "x" * 2000}
+    assert client.post(URL, json=body).status_code == 201
+    assert client.post(URL, json={**body, "text": "x" * 2001}).status_code == 422
+    assert client.post(URL, json={**body, "text": "ok", "work_item_id": str(item.id)}).status_code == 422
+    ok = client.post(URL, json={**body, "borrower_id": str(other.id), "text": "ok", "work_item_id": str(item.id)})
+    assert ok.status_code == 201
+    missing = client.post(URL, json={**body, "text": "ok", "work_item_id": "00000000-0000-4000-8000-000000000000"})
+    assert missing.status_code == 404

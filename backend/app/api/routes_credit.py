@@ -172,7 +172,7 @@ def update_funding_event_route(borrower_id: uuid.UUID, event_id: uuid.UUID, body
 class LessonIn(BaseModel):
     borrower_id: uuid.UUID
     topic: str = Field(min_length=1, max_length=48)
-    text: str
+    text: str = Field(max_length=2000)
     work_item_id: uuid.UUID | None = None
     tag: str | None = Field(default=None, max_length=48)
 
@@ -183,8 +183,12 @@ def record_lesson_route(body: LessonIn, db: Session = Depends(get_db),
     """A person teaches once: their own words become precedent for later cases. The author is the
     signed-in user, never named in the body."""
     _borrower_or_404(db, body.borrower_id)
-    if body.work_item_id is not None and db.get(WorkItem, body.work_item_id) is None:
-        raise HTTPException(404, "Work item not found.")
+    if body.work_item_id is not None:
+        item = db.get(WorkItem, body.work_item_id)
+        if item is None:
+            raise HTTPException(404, "Work item not found.")
+        if item.borrower_id != body.borrower_id:
+            raise HTTPException(422, "That work item belongs to a different borrower.")
     try:
         lesson = lessons.record_lesson(db, borrower_id=body.borrower_id, topic=body.topic, text=body.text,
                                        written_by=user.id, work_item_id=body.work_item_id, tag=body.tag)
