@@ -21,7 +21,8 @@ export function SquadNav({ collapsed, onToggle, needs, openClients, pathname, us
   const initials = userName.split(/\s+/).map((p) => p[0]).slice(0, 2).join('');
   return (
     <aside className="sq-nav" data-collapsed={collapsed} aria-label="Credit Squad">
-      <Link to="/" className="sq-navlink sq-navhome" aria-current={pathname === '/' ? 'page' : undefined}>
+      <p className="sq-product sq-navlabel">Credit Squad</p>
+      <Link to="/" className="sq-navlink sq-navhome" title="Squad" aria-current={pathname === '/' ? 'page' : undefined}>
         <SquadMark size={collapsed ? 30 : 34} state={needs > 0 ? 'needs' : 'rest'} />
         <span className="sq-navlabel">Squad</span>
         {needs > 0 ? (
@@ -50,8 +51,8 @@ export function SquadNav({ collapsed, onToggle, needs, openClients, pathname, us
       {OVERSIGHT_ROLES.includes(role) ? (
         <div className="sq-cases">
           <p className="sq-navhead sq-navlabel">Oversight</p>
-          <Link to="/agent-activity" className="sq-navlink"><span className="sq-initial" aria-hidden>A</span><span className="sq-navlabel">Agent activity</span></Link>
-          <Link to="/governance" className="sq-navlink"><span className="sq-initial" aria-hidden>G</span><span className="sq-navlabel">Governance</span></Link>
+          <Link to="/agent-activity" className="sq-navlink" title="Agent activity"><span className="sq-initial" aria-hidden>A</span><span className="sq-navlabel">Agent activity</span></Link>
+          <Link to="/governance" className="sq-navlink" title="Governance"><span className="sq-initial" aria-hidden>G</span><span className="sq-navlabel">Governance</span></Link>
         </div>
       ) : null}
       <div className="sq-navfoot">

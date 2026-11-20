@@ -40,7 +40,7 @@
 .sq-skip:focus { left: 8px; top: 8px; z-index: 80; background: var(--sq-surface); padding: 6px 10px; border-radius: 8px; }
 .sq-nav { width: 248px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; background: var(--sq-surface); border-right: 1px solid var(--sq-line); position: sticky; top: 0; height: 100vh; overflow-y: auto; }
 .sq-nav[data-collapsed='true'] { width: 64px; align-items: center; }
-.sq-nav[data-collapsed='true'] .sq-navlabel, .sq-nav[data-collapsed='true'] .sq-navhead { display: none; }
+.sq-nav[data-collapsed='true'] .sq-navlabel, .sq-nav[data-collapsed='true'] .sq-navhead { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .sq-nav[data-collapsed='true'] .sq-navfoot { flex-direction: column; }
 .sq-navlink { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 4px 8px; border-radius: 10px; color: var(--sq-ink); text-decoration: none; position: relative; }
 .sq-navlink:hover { background: var(--sq-sunk); }
@@ -56,3 +56,4 @@
 .sq-navfoot { margin-top: auto; display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--sq-line); width: 100%; }
 .sq-stage { flex: 1; min-width: 0; }
 .sq-main { max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }
+.sq-product { margin: 4px 8px 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--sq-ink); }

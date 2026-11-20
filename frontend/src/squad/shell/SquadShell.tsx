@@ -1,8 +1,10 @@
 // frontend/src/squad/shell/SquadShell.tsx
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CommandPalette, useCommandPaletteShortcut } from '@/design';
 import { useAuth } from '@/auth/context';
+import { defaultCopilotScope, useWorkspaceDrawer } from '@/drawer/context';
+import { WorkspaceDrawer } from '@/drawer/WorkspaceDrawer';
 import { useBorrowers } from '@/api/hooks';
 import { useBriefing } from '../api/hooks';
 import { LookProvider, useLook } from '../useLook';
@@ -29,6 +31,18 @@ function Frame() {
   const [collapsed, setCollapsed] = useState(storedCollapsed);
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((o) => !o), []));
+  const { open: drawerOpen, tab: drawerTab, itemId: drawerItem, borrowerCode: drawerBorrower, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
+  // Ctrl or Cmd + J: the Copilot, as in the legacy shell, so the legacy screens' drawer keeps working.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'j') return;
+      event.preventDefault();
+      if (drawerOpen && drawerTab === 'copilot') closeDrawer();
+      else openCopilot(defaultCopilotScope({ open: drawerOpen, itemId: drawerItem, borrowerCode: drawerBorrower }, pathname));
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [drawerOpen, drawerTab, drawerItem, drawerBorrower, openCopilot, closeDrawer, pathname]);
   const toggle = () =>
     setCollapsed((c) => {
       try {
@@ -57,6 +71,7 @@ function Frame() {
             <Outlet />
           </main>
         </div>
+        <WorkspaceDrawer />
         <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} commands={commands} placeholder="Search clients and commands" />
       </div>
     </PresenceProvider>
