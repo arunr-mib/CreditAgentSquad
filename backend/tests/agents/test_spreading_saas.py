@@ -89,6 +89,11 @@ def _mrr_pdf() -> bytes:
     return buf.getvalue()
 
 
+def _pack_pdf() -> bytes:
+    from tests.agents.test_spreading_vc import _pdf
+    return _pdf()
+
+
 def test_an_mrr_report_spread_stores_the_saas_lines(db, vc):
     cells = [{"key": k, "page": 1, "printed_figure": f, "printed_label": template.ALL_LINE_BY_KEY[k].label,
               "column_header": CUR} for k, f in SAAS_ROWS]
@@ -103,3 +108,27 @@ def test_an_mrr_report_spread_stores_the_saas_lines(db, vc):
     assert current_fact(db, vc.id, "saas.mrr", PERIOD, 0).value == D("400000")
     assert current_fact(db, vc.id, "saas.arr", PERIOD, 0).value == D("4800000")
     assert current_fact(db, vc.id, "saas.customers", PERIOD, 0).value == D("120")
+
+
+def test_a_financial_pack_mis_filed_as_an_mrr_report_fails_and_stores_nothing_computed(db, vc):
+    from app.domain.monitoring import WorkItem
+    from sqlalchemy import select
+    doc = ingest_pdf(db, borrower_id=vc.id, data=_pack_pdf(), file_name="pack.pdf", doc_type="mrr_report",
+                     doc_type_source="system", period_end=PERIOD)
+    llm = ScriptedClient([LLMResponse(content=[{"type": "text", "text": json.dumps(_answer())}],
+                                      stop_reason="end_turn")])
+    result = spread_document(db, borrower=vc, document=doc, period_end=PERIOD, months=9, cycle=None, llm=llm,
+                             prior_fye_cash=PRIOR_FYE_CASH)
+    assert result.status == "needs_person"
+    assert db.execute(select(WorkItem).where(WorkItem.item_type == "spread.does_not_foot")).first() is not None
+    assert current_fact(db, vc.id, "bs.vc_total_assets", PERIOD, 0) is None
+    assert current_fact(db, vc.id, "is.vc_gross_profit", PERIOD, 9) is None
+
+
+def test_the_ledger_names_the_agent_version_that_ran(db, vc):
+    from app.agents.spreading import SPEC
+    from app.core.ledger import LedgerEvent
+    from sqlalchemy import select
+    _spread(db, vc, _answer())
+    actors = {e.actor_id for e in db.execute(select(LedgerEvent).where(LedgerEvent.action == "spread.finished")).scalars()}
+    assert actors == {f"{SPEC.name}@{SPEC.version}"}

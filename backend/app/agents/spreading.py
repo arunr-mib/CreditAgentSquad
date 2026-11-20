@@ -515,7 +515,7 @@ def spread_document(
         _store_computed(db, borrower, period_end, months, report, result)
         _store_absent(db, borrower, period_end, months, absent, result)
     outcome.run.guardrail_notes = result.notes
-    ledger.record(db, actor_type="agent", actor_id="spreading@1", action="spread.finished",
+    ledger.record(db, actor_type="agent", actor_id=f"{SPEC.name}@{SPEC.version}", action="spread.finished",
                   entity_type="document", entity_id=document.id,
                   payload={"status": result.status, "lines": len(values), "unverified": len(result.unverified),
                            "failed_checks": len(result.failed_checks), "scale": scale})
@@ -566,7 +566,8 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
     """Finish a spread after a person has confirmed, corrected or keyed figures: read the usable
     facts for the period, run the footing and tie checks again, and store totals only if they
     pass. This is the repair path for a spread that was held, and the way totals are calculated
-    again after a correction. `document` is None for history that came from a system of record."""
+    again after a correction. `document` is None for history that came from a system of record.
+    An MRR-report document is checked against the saas statement only (see `_statements_for`)."""
     from app.calc.periods import prior_fiscal_year_end
     from app.domain.facts_service import current_fact
 

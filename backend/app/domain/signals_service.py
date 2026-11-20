@@ -54,6 +54,7 @@ def approved_plan(db: Session, borrower: Borrower, period_end: date) -> dict[dat
             continue
         for covenant in version.terms.covenants:
             if covenant.archetype == "revenue_vs_plan" and covenant.typed_params.metric == "revenue":
+                # overlapping plan months across facilities resolve last-wins (one facility per borrower in practice)
                 plan.update({month.period_end: month.amount for month in covenant.typed_params.plan})
     return plan or None
 
