@@ -97,10 +97,7 @@ def row_label(words: Sequence[Word], figure: Box, label_gap: float | None = None
                    if same_row((float(w[0]), float(w[1]), float(w[2]), float(w[3])), figure)
                    and float(w[2]) <= figure[0] + 1.0), key=lambda w: float(w[0]))
     if label_gap is not None:
-        for i in range(1, len(left)):
-            if float(left[i][0]) - float(left[i - 1][2]) > label_gap:
-                left = left[:i]
-                break
+        left = _first_cell(left, label_gap * (figure[3] - figure[1]))
     end = len(left)
     while end > 0:
         text = str(left[end - 1][4]).strip()
@@ -113,6 +110,23 @@ def row_label(words: Sequence[Word], figure: Box, label_gap: float | None = None
         break
     label = [str(w[4]).strip() for w in left[:end]]
     return " ".join(t for t in label if any(ch.isalnum() for ch in t))
+
+
+_INDEX_CELL = re.compile(r"^(?:\(?\d{1,2}\)?\.?|\(?[A-Za-z]\)|[A-Za-z]\.)$")
+
+
+def _first_cell(left: list, gap: float) -> list:
+    """The first cell of a row's words, split at gaps wider than `gap`; an index cell is skipped."""
+    cells: list[list] = [[left[0]]] if left else []
+    for prev, word in zip(left, left[1:], strict=False):
+        if float(word[0]) - float(prev[2]) > gap:
+            cells.append([])
+        cells[-1].append(word)
+    for position, cell in enumerate(cells):
+        if len(cell) == 1 and _INDEX_CELL.match(str(cell[0][4]).strip()) and position + 1 < len(cells):
+            continue
+        return cell
+    return left
 
 
 _CELL_GAP = 8.0  # points: a figure set further than this from the word before it is a column cell

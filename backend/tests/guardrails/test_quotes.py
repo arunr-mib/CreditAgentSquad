@@ -162,6 +162,22 @@ def test_row_label_of_a_table_row_ends_at_the_column_gap():
     page = row(60, (40, "Revenue to Plan"), (220, "6.3"), (243, "plan")) + row(60, right(500, "105.30%"))
     figure = locate(page, "105.30%")[0]
     assert row_label(page, figure.bbox) == "Revenue to Plan 6.3 plan"  # without a gap, everything left of it
-    assert row_label(page, figure.bbox, label_gap=20.0) == "Revenue to Plan"
-    check = verify_cell(page, printed_figure="105.30%", printed_label="Revenue to Plan", label_gap=20.0)
+    assert row_label(page, figure.bbox, label_gap=2.0) == "Revenue to Plan"
+    check = verify_cell(page, printed_figure="105.30%", printed_label="Revenue to Plan", label_gap=2.0)
     assert check.ok and check.row_label == "Revenue to Plan"
+
+
+def test_row_label_gap_scales_with_the_type_size():
+    big = lambda x, t: [[x + 22 * i, 60, x + 22 * i + 20, 84, w] for i, w in enumerate(t.split())]  # noqa: E731
+    page = big(40, "Revenue to Plan") + [[360, 60, 400, 84, "6.3"], [600, 60, 700, 84, "105.30%"]]
+    figure = locate(page, "105.30%")[0]
+    # 24-point words: the 40-point gap before the section is a column gap, the 2-point word spaces are not
+    assert row_label(page, figure.bbox, label_gap=1.5) == "Revenue to Plan"
+
+
+def test_row_label_skips_a_leading_index_column():
+    page = row(60, (10, "2."), (50, "Revenue to Plan"), (260, "6.3")) + row(60, right(500, "105.30%"))
+    figure = locate(page, "105.30%")[0]
+    assert row_label(page, figure.bbox, label_gap=2.0) == "Revenue to Plan"
+    plain = row(80, (50, "Revenue to Plan"), (260, "6.3")) + row(80, right(500, "105.30%"))
+    assert row_label(plain, locate(plain, "105.30%")[0].bbox, label_gap=2.0) == "Revenue to Plan"

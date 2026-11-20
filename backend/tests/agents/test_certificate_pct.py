@@ -19,7 +19,7 @@ from support.agent_book import book, book_db  # noqa: F401
 PERIOD = date(2026, 9, 30)
 
 
-def cert_pdf(actual="105.30%", required_lines=("Not less than 80.00% of", "plan"), label="Revenue to Plan"):
+def cert_pdf(actual="105.30%", required_lines=("Not less than 80.00% of", "plan"), label="Revenue to Plan", index=""):
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=letter, invariant=1)
     c.setFont("Helvetica", 9)
@@ -31,7 +31,9 @@ def cert_pdf(actual="105.30%", required_lines=("Not less than 80.00% of", "plan"
     c.drawString(450, 560, "Actual")
     c.drawString(510, 560, "In compliance")
     y = 540
-    c.drawString(72, y, label)
+    if index:
+        c.drawString(56, y, index)  # a leading index column
+    c.drawString(72 if not index else 100, y, label)
     c.drawString(220, y, "6.3")
     # the required cell wraps: its first line sits above the covenant's own line
     c.drawString(243, y + 12, required_lines[0])
@@ -141,3 +143,8 @@ def test_a_not_meaningful_actual_leaves_a_fact_the_comparison_can_read(book):  #
     borrower = db.execute(select(Borrower).where(Borrower.code == "pellham-grain")).scalar_one()
     entry, value_fact = _reported(db, borrower.id, "min_runway_months", PERIOD)
     assert entry.not_meaningful is True and entry.value is None and entry.in_compliance is True and value_fact is None
+
+
+def test_a_certificate_with_a_leading_index_column_stores_the_covenant_name(book):  # noqa: F811
+    result, get = run(book, unit="pct", index="3.")
+    assert result.unverified == [] and get("value").label_text == "Revenue to Plan"

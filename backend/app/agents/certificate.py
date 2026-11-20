@@ -48,8 +48,9 @@ SPEC = AgentSpec(name="certificate_reader", version="1",
                  prompt_file="certificate.md", output_model=CertificateReading, tools=(), effort="low",
                  max_tokens=8000)
 # a certificate is a table: the covenant's name is its first cell, and the next column (the section,
-# the tail of a wrapped requirement) starts after a gap far wider than a space between words
-_COLUMN_GAP = 20.0
+# the tail of a wrapped requirement) starts after a gap of more than this many type heights, far wider
+# than a space between words (a fifth of a height)
+_COLUMN_GAP = 1.5
 _YES_NO = {"yes": 1, "no": 0, "y": 1, "n": 0, "in compliance": 1, "not in compliance": 0}
 
 
