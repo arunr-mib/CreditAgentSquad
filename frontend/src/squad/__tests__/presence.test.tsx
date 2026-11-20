@@ -33,8 +33,10 @@ describe('SquadMark', () => {
 
   it('turns every movement off under reduced motion', () => {
     const block = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'));
-    for (const selector of ['.sq-orbit', '.sq-core-breathe', '.sq-ripple']) expect(block).toContain(selector);
-    expect(block).toMatch(/animation:\s*none/);
+    for (const selector of ['.sq-orbit', '.sq-core-breathe', '.sq-ripple', '.sq-mk-responding .sq-orbit']) {
+      const rule = new RegExp(`${selector.replace(/[.]/g, '\\.')}[^{}]*\\{[^}]*animation:\\s*none`);
+      expect(block).toMatch(rule);
+    }
   });
 });
 
@@ -98,5 +100,96 @@ describe('presence line', () => {
     expect(mark()).toHaveAttribute('data-state', 'responding');
     act(() => void vi.advanceTimersByTime(1000));
     expect(mark()).toHaveAttribute('data-state', 'rest');
+  });
+
+  it('unmount clears a pending say timer', () => {
+    const spy = vi.spyOn(globalThis, 'clearTimeout');
+    const { unmount } = mount();
+    act(() => screen.getByText('say').click());
+    unmount();
+    expect(spy).toHaveBeenCalled();
+    expect(vi.getTimerCount()).toBe(0);
+    spy.mockRestore();
+  });
+
+  it('a second say replaces the first and the first timer does not blank it', () => {
+    function Two() {
+      const p = usePresence();
+      return (
+        <>
+          <button onClick={() => p.say('first')}>one</button>
+          <button onClick={() => p.say('second')}>two</button>
+        </>
+      );
+    }
+    render(
+      <PresenceProvider needs={0}>
+        <PresenceLine />
+        <Two />
+      </PresenceProvider>,
+    );
+    act(() => screen.getByText('one').click());
+    act(() => void vi.advanceTimersByTime(4000));
+    act(() => screen.getByText('two').click());
+    expect(screen.getByRole('status')).toHaveTextContent('second');
+    act(() => void vi.advanceTimersByTime(3000));
+    expect(screen.getByRole('status')).toHaveTextContent('second');
+    act(() => void vi.advanceTimersByTime(3100));
+    expect(screen.getByRole('status')).toHaveTextContent('');
+  });
+
+  it('nested work stays working until both disposers run; a disposer twice is harmless', () => {
+    const ends: Array<() => void> = [];
+    function Nest() {
+      const p = usePresence();
+      return <button onClick={() => ends.push(p.beginWork())}>begin</button>;
+    }
+    render(
+      <PresenceProvider needs={0}>
+        <PresenceLine />
+        <Nest />
+      </PresenceProvider>,
+    );
+    act(() => screen.getByText('begin').click());
+    act(() => screen.getByText('begin').click());
+    act(() => ends[0]?.());
+    act(() => ends[0]?.());
+    expect(mark()).toHaveAttribute('data-state', 'working');
+    act(() => ends[1]?.());
+    expect(mark()).toHaveAttribute('data-state', 'rest');
+  });
+
+  it('moves between rest and needs when the needs count changes', () => {
+    const ui = (n: number) => (
+      <PresenceProvider needs={n}>
+        <PresenceLine />
+      </PresenceProvider>
+    );
+    const { rerender } = render(ui(0));
+    expect(mark()).toHaveAttribute('data-state', 'rest');
+    rerender(ui(3));
+    expect(mark()).toHaveAttribute('data-state', 'needs');
+    rerender(ui(0));
+    expect(mark()).toHaveAttribute('data-state', 'rest');
+  });
+
+  it('a second pulse while responding restarts the turn and the ripple', () => {
+    mount();
+    act(() => screen.getByText('pulse').click());
+    const first = document.querySelector('.sq-ripple');
+    act(() => void vi.advanceTimersByTime(500));
+    act(() => screen.getByText('pulse').click());
+    expect(document.querySelector('.sq-ripple')).not.toBe(first);
+    expect(document.querySelector('.sq-mk-responding .sq-orbit')).not.toBeNull();
+    act(() => void vi.advanceTimersByTime(600));
+    expect(mark()).toHaveAttribute('data-state', 'responding');
+    act(() => void vi.advanceTimersByTime(400));
+    expect(mark()).toHaveAttribute('data-state', 'rest');
+  });
+
+  it('announces state changes through one polite live region without a second status role', () => {
+    mount(1);
+    expect(screen.getAllByRole('status')).toHaveLength(1);
+    expect(document.querySelector('.sq-sr[aria-live="polite"]')).toHaveTextContent(/needs you/i);
   });
 });
