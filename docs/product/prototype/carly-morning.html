@@ -1,0 +1,642 @@
+<title>Carly's Morning</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap">
+<style>
+/* Layout: presenter strip on top; app shell below = nav rail | conversation or workspace | sliding evidence drawer.
+   Single deliberate light look (the product's warm-white shell), with a dark focus panel for the officer's decision. */
+:root {
+  --ground: #f5f3ee; --surface: #ffffff; --sunk: #efebe3; --line: #e3ded3; --line-strong: #cfc8ba;
+  --ink: #161513; --ink-2: #4f4a42; --ink-3: #8a847a;
+  --ember: #f2643a; --ember-ink: #1c0c05; --ember-soft: #fde9e1;
+  --squad: #6a4cf5; --squad-ink: #3d2a9e; --squad-soft: #f2efff; --squad-line: #ddd5ff;
+  --ok: #217a4c; --ok-soft: #e4f3ea; --warn: #8f5a00; --warn-soft: #fbeed3; --bad: #a8261c; --bad-soft: #fbe6e1;
+  --night: #171614; --night-2: #23211e; --night-line: #3a3631; --night-ink: #f3efe8; --night-ink-2: #aaa398;
+  --f-ui: "Inter Tight", "Inter", system-ui, sans-serif; --f-mono: "Geist Mono", ui-monospace, monospace; --f-doc: "Newsreader", Georgia, serif;
+  --r: 14px; --shadow: 0 1px 2px rgba(22,21,19,.04), 0 8px 28px rgba(22,21,19,.07);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; background: var(--ground); color: var(--ink); font: 15px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--squad); outline-offset: 2px; border-radius: 6px; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* presenter strip */
+.strip { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--ink); color: #f3efe8;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--ink); }
+.strip .label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #a8a196; white-space: nowrap; }
+.dots { display: flex; gap: 6px; }
+.dot { width: 26px; height: 26px; border-radius: 13px; border: 1px solid #45413b; background: transparent; color: #a8a196; font-size: 12px; font-weight: 600; }
+.dot[aria-current="step"] { background: var(--ember); border-color: var(--ember); color: var(--ember-ink); }
+.dot.done { background: #2d2a26; color: #f3efe8; }
+.strip .hint { flex: 1 1 280px; min-width: 0; font-size: 14px; }
+.strip .hint b { color: #fff; }
+.strip .hint span { color: #bdb6aa; }
+.strip .nav { display: flex; gap: 6px; }
+.sbtn { height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid #45413b; background: transparent; color: #f3efe8; font-size: 13px; font-weight: 600; }
+.sbtn.primary { background: #f3efe8; color: var(--ink); border-color: #f3efe8; }
+
+/* shell */
+.app { flex: 1; min-height: 0; display: grid; grid-template-columns: 252px minmax(0, 1fr); }
+.rail { overflow-y: auto; }
+.rail { border-right: 1px solid var(--line); padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
+.who { display: flex; align-items: center; gap: 12px; padding: 4px 8px 18px; }
+.orb { width: 42px; height: 42px; border-radius: 21px; flex-shrink: 0; background: radial-gradient(circle at 34% 30%, #c3b5ff 0%, var(--squad) 55%, #34209a 100%); box-shadow: 0 0 0 4px var(--squad-soft); }
+.orb.sm { width: 28px; height: 28px; box-shadow: none; }
+.who b { display: block; font-size: 16px; }
+.status { font-size: 12px; color: var(--squad-ink); display: flex; align-items: center; gap: 6px; }
+.pulse { width: 7px; height: 7px; border-radius: 4px; background: var(--squad); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+.navitem { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; padding: 10px 12px; border-radius: 11px; border: 1px solid transparent; background: transparent; font-size: 14px; color: var(--ink); }
+.navitem:hover { background: var(--sunk); }
+.navitem[aria-current="page"] { background: var(--surface); border-color: var(--line); font-weight: 600; }
+.navgroup { font-size: 12px; font-weight: 600; color: var(--ink-3); padding: 14px 12px 4px; }
+.badge { min-width: 20px; height: 20px; border-radius: 10px; padding: 0 6px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.badge.ember { background: var(--ember); color: var(--ember-ink); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+.me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.avatar { width: 32px; height: 32px; border-radius: 16px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.me small { display: block; color: var(--ink-3); font-size: 12px; }
+
+.main { min-width: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+.pane { flex: 1; min-height: 0; overflow-y: auto; padding: 28px 32px 24px; }
+.col { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+
+/* messages */
+.msg { display: flex; gap: 12px; align-items: flex-start; }
+.msg.me-msg { justify-content: flex-end; }
+.bubble-me { max-width: 560px; background: #e9e5dc; border-radius: 16px 16px 4px 16px; padding: 12px 16px; }
+.msgbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.meta { font-size: 12px; color: var(--ink-3); }
+.meta b { color: var(--squad-ink); font-weight: 600; }
+.text { font-size: 16px; line-height: 1.55; margin: 0; text-wrap: pretty; }
+.anim { animation: rise .32s ease-out both; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .anim, .drawer, .toast { animation: none !important; transition: none !important; } .pulse { animation: none; } }
+.typing { display: inline-flex; gap: 4px; padding: 10px 14px; background: var(--squad-soft); border-radius: 12px; }
+.typing i { width: 6px; height: 6px; border-radius: 3px; background: var(--squad); animation: blink 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 50% { opacity: .25; } }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); }
+.pad { padding: 18px 20px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn { height: 42px; padding: 0 16px; border-radius: 11px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { border-color: var(--ink-3); }
+.btn.primary { background: var(--ember); border-color: var(--ember); color: var(--ember-ink); font-weight: 600; }
+.btn.primary:hover { filter: brightness(.97); }
+.btn.dark { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--squad-ink); font-weight: 600; padding: 0 8px; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.tag { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.tag.bad { background: var(--bad-soft); color: var(--bad); } .tag.warn { background: var(--warn-soft); color: var(--warn); } .tag.ok { background: var(--ok-soft); color: var(--ok); } .tag.squad { background: var(--squad-soft); color: var(--squad-ink); }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); font-size: 13px; }
+.chip.file { background: #fff; }
+.worklist { display: grid; gap: 8px; }
+.workitem { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); text-align: left; width: 100%; }
+.workitem:hover { border-color: var(--line-strong); }
+.workitem .n { font-family: var(--f-mono); color: var(--ink-3); font-size: 13px; }
+.workitem span.t { flex: 1; font-weight: 600; }
+.workitem small { color: var(--ink-3); }
+
+/* track record band */
+.trust { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 10px; background: var(--squad-soft); color: var(--squad-ink); font-size: 13px; }
+.trust b { font-variant-numeric: tabular-nums; }
+
+/* work trail */
+.trail { border: 1px solid var(--squad-line); border-radius: 14px; background: var(--surface); }
+.trail > button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 0; background: transparent; text-align: left; font-size: 13px; color: var(--ink-2); }
+.trail > button b { color: var(--squad-ink); }
+.trail ol { list-style: none; margin: 0; padding: 0 14px 8px; }
+.trail li { display: grid; grid-template-columns: 22px 150px minmax(0, 1fr) auto; gap: 10px; padding: 9px 0; border-top: 1px solid #f1eee8; font-size: 13px; align-items: start; animation: rise .3s ease-out both; }
+.trail li .k { font-family: var(--f-mono); color: var(--ink-3); }
+.trail li .ck { color: var(--ok); white-space: nowrap; }
+
+/* composer */
+.composer { padding: 12px 32px 22px; }
+.composer .box { max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1.5px dashed var(--line-strong); border-radius: 16px; padding: 7px 7px 7px 10px; transition: border-color .2s, background .2s; }
+.composer .box.over { border-color: var(--squad); background: var(--squad-soft); }
+.composer input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; height: 40px; font-size: 15px; }
+.iconbtn { width: 42px; height: 42px; border-radius: 11px; border: 1px solid var(--line); background: var(--surface); display: inline-flex; align-items: center; justify-content: center; }
+.iconbtn.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+/* portfolio */
+.ptitle { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+.ptitle h1 { margin: 0; font-size: 30px; letter-spacing: -.02em; text-wrap: balance; }
+.legend { margin-left: auto; font-size: 13px; color: var(--ink-2); display: flex; gap: 14px; flex-wrap: wrap; }
+.tablewrap { overflow-x: auto; }
+table.port { width: 100%; border-collapse: collapse; min-width: 820px; font-size: 14px; }
+.port th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-3); padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.port th.r, .port td.r { text-align: right; }
+.port td { padding: 13px 14px; border-bottom: 1px solid #f0ece5; vertical-align: middle; }
+.port tr.watch td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+.port tr.alert td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
+.port tr:hover td { background: #fbfaf7; }
+.co b { display: block; } .co small { color: var(--ink-3); }
+.rml { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.rml.bad { color: var(--bad); } .rml.warn { color: var(--warn); }
+.def { font-size: 12px; color: var(--ink-3); }
+
+/* review split */
+.split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0; }
+.page { background: #fbfaf6; border-right: 1px solid var(--line); padding: 28px 34px; font-family: var(--f-doc); font-size: 14px; color: #2b2925; display: flex; flex-direction: column; gap: 8px; border-radius: var(--r) 0 0 var(--r); }
+.page .ln { display: flex; justify-content: space-between; gap: 12px; padding: 2px 6px; border-radius: 3px; }
+.page .ln span:last-child { font-variant-numeric: tabular-nums; }
+.page .hl { outline: 2px solid var(--squad); outline-offset: 2px; background: var(--squad-soft); }
+.page .hl2 { outline: 2px solid var(--ember); outline-offset: 2px; background: var(--ember-soft); }
+.page .synth { margin-top: auto; text-align: center; font-family: var(--f-ui); font-size: 10px; letter-spacing: .1em; color: var(--ink-3); }
+.ask { padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
+.choice { display: flex; gap: 12px; align-items: flex-start; padding: 13px 15px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); }
+.choice:has(input:checked) { border-color: var(--ink); }
+.choice input { margin-top: 3px; accent-color: var(--ink); width: 17px; height: 17px; }
+.choice small { display: block; color: var(--ink-3); }
+.teach { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: var(--squad-soft); color: var(--squad-ink); font-size: 14px; }
+.teach input { accent-color: var(--squad); width: 17px; height: 17px; margin-top: 2px; }
+textarea.field { width: 100%; min-height: 84px; resize: vertical; border: 1px solid var(--line-strong); border-radius: 12px; padding: 12px 14px; background: var(--surface); font-size: 14px; line-height: 1.5; }
+label.lbl { font-size: 13px; font-weight: 600; }
+
+/* drawer */
+.scrim { position: absolute; inset: 0; background: rgba(22,21,19,.08); opacity: 0; pointer-events: none; transition: opacity .25s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+.drawer { position: absolute; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); border-left: 1px solid var(--line); box-shadow: -18px 0 40px rgba(22,21,19,.10); transform: translateX(104%); transition: transform .32s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; z-index: 20; }
+.drawer.on { transform: none; }
+.drawer header { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.drawer header b { flex: 1; }
+.drawer .body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+.clause { background: #fbfaf6; border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; font-family: var(--f-doc); font-size: 15px; line-height: 1.7; color: #2b2925; display: flex; flex-direction: column; gap: 10px; }
+.clause mark { background: var(--squad-soft); outline: 2px solid var(--squad); outline-offset: 3px; border-radius: 2px; color: inherit; }
+.verified { font-size: 12px; color: var(--ok); font-weight: 600; }
+.calc { font-family: var(--f-mono); font-size: 13px; line-height: 1.9; background: #fbfaf6; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.calc .tot { border-top: 1px solid var(--line-strong); margin-top: 4px; padding-top: 4px; font-weight: 600; }
+
+/* recommendation + email */
+.doc { font-family: var(--f-doc); font-size: 16px; line-height: 1.6; color: #2b2925; }
+.doc h3 { font-family: var(--f-ui); font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 0 0 6px; }
+.squadmark { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--squad-ink); }
+.email { border: 1.5px dashed var(--squad-line); border-radius: 14px; background: #fcfbff; }
+.email .hd { padding: 10px 14px; border-bottom: 1px solid var(--squad-line); font-size: 13px; color: var(--ink-2); display: flex; gap: 12px; flex-wrap: wrap; }
+.email textarea { border: 0; background: transparent; width: 100%; min-height: 110px; padding: 12px 14px; resize: vertical; font-size: 14px; line-height: 1.55; }
+
+/* officer */
+.night { background: var(--night); color: var(--night-ink); border-radius: 18px; padding: 26px 28px; display: flex; flex-direction: column; gap: 18px; }
+.night .k3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.night .k3 div { background: var(--night-2); border: 1px solid var(--night-line); border-radius: 12px; padding: 12px 14px; }
+.night .k3 small { color: var(--night-ink-2); display: block; font-size: 12px; }
+.night .k3 b { font-size: 26px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.night .opt { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--night-line); }
+.night .opt:has(input:checked) { border-color: var(--ember); }
+.night .opt input { accent-color: var(--ember); width: 17px; height: 17px; }
+.night textarea { background: var(--night-2); border-color: var(--night-line); color: var(--night-ink); }
+.night .muted { color: var(--night-ink-2); font-size: 13px; }
+.night .btn { background: transparent; color: var(--night-ink); border-color: var(--night-line); }
+.night .btn.primary { background: var(--ember); border-color: var(--ember); color: var(--ember-ink); }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; animation: rise .25s ease-out both; max-width: calc(100% - 32px); }
+.toast b { color: #9ee3b9; }
+
+.endcard { text-align: center; padding: 36px 24px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.endcard h2 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .rail { border-right: 0; border-bottom: 1px solid var(--line); flex-direction: row; flex-wrap: wrap; padding: 10px 12px; gap: 6px; }
+  .who { padding: 0 6px 0 0; } .navgroup, .me { display: none; }
+  .navitem { width: auto; }
+  .pane { padding: 20px 16px; } .composer { padding: 10px 16px 18px; }
+  .split { grid-template-columns: 1fr; } .page { border-right: 0; border-bottom: 1px solid var(--line); border-radius: var(--r) var(--r) 0 0; }
+  .trail li { grid-template-columns: 22px minmax(0, 1fr); } .trail li .who2, .trail li .ck { grid-column: 2; }
+  .night .k3 { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="strip" role="region" aria-label="Prototype steps">
+  <span class="label">Prototype · Carly's morning</span>
+  <div class="dots" id="dots"></div>
+  <div class="hint" id="hint" aria-live="polite"></div>
+  <div class="nav">
+    <button class="sbtn" id="prev" type="button">Back</button>
+    <button class="sbtn primary" id="next" type="button">Next step</button>
+    <button class="sbtn" id="restart" type="button">Restart</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="rail" id="rail" aria-label="Navigation"></aside>
+  <div class="main">
+    <div class="pane" id="pane"></div>
+    <div class="composer" id="composer"></div>
+    <div class="scrim" id="scrim"></div>
+    <aside class="drawer" id="drawer" aria-label="Evidence" aria-hidden="true"></aside>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---------- data (synthetic, invented names and figures) ----------
+  const PORTFOLIO = [
+    { co: "Dataflake Inc", sector: "Data infrastructure · Series A", cash: 4.6, burn: 0.65, cov: ["bad", "Min. cash miss"], next: "Series B extension, Dec", trend: [14, 12.4, 10.6, 9.0, 7.9, 7.1] },
+    { co: "Lumora Health", sector: "Digital health · Series B", cash: 4.0, burn: 0.42, cov: ["warn", "Reporting 12 days late"], next: "Q4 board, Dec", trend: [13.8, 12.9, 12.0, 11.1, 10.2, 9.5] },
+    { co: "Brightvane Energy", sector: "Climate hardware · Series A", cash: 5.5, burn: 0.45, cov: ["ok", "Compliant"], next: "Seed extension talks", trend: [16, 15.1, 14.2, 13.4, 12.8, 12.2] },
+    { co: "Mosswell Robotics", sector: "Robotics · Series A", cash: 7.8, burn: 0.60, cov: ["ok", "Compliant"], next: "—", trend: [17, 16.2, 15.1, 14.3, 13.6, 13.0] },
+    { co: "Halcyon Grid", sector: "Energy software · Seed+", cash: 2.6, burn: 0.20, cov: ["ok", "Compliant"], next: "Series A, Q1", trend: [15, 14.6, 14.1, 13.7, 13.3, 13.0] },
+    { co: "Quillon AI", sector: "Applied AI · Series B", cash: 12.0, burn: 0.80, cov: ["ok", "Compliant"], next: "—", trend: [19, 18.1, 17.2, 16.4, 15.7, 15.0] },
+    { co: "Kelvra Bio", sector: "Biotech tools · Series B", cash: 9.2, burn: 0.50, cov: ["ok", "Compliant"], next: "Milestone tranche, Feb", trend: [21, 20.4, 19.8, 19.2, 18.8, 18.4] },
+    { co: "Orbitline Systems", sector: "Space software · Series A", cash: 3.9, burn: 0.21, cov: ["ok", "Compliant"], next: "—", trend: [20, 19.6, 19.3, 19.0, 18.8, 18.6] },
+    { co: "Stripple Tech", sector: "Fintech infrastructure · Series B", cash: 6.6, burn: 0.30, cov: ["ok", "Compliant"], next: "ARR 8% ahead of plan", trend: [19.5, 20.1, 20.8, 21.3, 21.6, 22.0] },
+    { co: "Veridia Payments", sector: "Payments · Series C", cash: 14.0, burn: 0.55, cov: ["ok", "Compliant"], next: "—", trend: [24, 24.4, 24.8, 25.0, 25.3, 25.5] },
+    { co: "Tessaract Labs", sector: "Developer tools · Series B", cash: 11.0, burn: 0.40, cov: ["ok", "Compliant"], next: "—", trend: [26, 26.4, 26.8, 27.1, 27.3, 27.5] },
+    { co: "Pellucid Sensors", sector: "Industrial IoT · Series A", cash: 6.3, burn: 0.22, cov: ["ok", "Compliant"], next: "—", trend: [27, 27.5, 28.0, 28.3, 28.5, 28.6] },
+  ];
+  const WATCH = 12;
+  const rml = (c, b) => Math.round((c / b) * 10) / 10;   // cash only ÷ average monthly net burn (last 3 months)
+
+  const STEPS = [
+    { t: "Squad greets Carly", h: "Carly is a commercial credit analyst. Squad tells her what it did overnight and what needs her.", go: "Open <b>My Portfolio</b> in the left rail." },
+    { t: "My Portfolio, by RML", h: "Every company sorted by remaining months of liquidity (cash only). Under 12 months is on watch.", go: "Go back to <b>Squad</b> and drop Stripple Tech's October package." },
+    { t: "Upload: Intake files it", h: "Intake files what it can and holds what it cannot place. Squad drafts; Carly sends.", go: "Click <b>Review the 2 figures</b>." },
+    { t: "Review in place, teach once", h: "The figure sits beside its page. The track record says how far to trust Squad on this company.", go: "Pick a line and <b>Confirm</b>." },
+    { t: "Squad is wrong; Carly corrects", h: "A correction keeps the old figure in history, re-runs what depends on it, and teaches Squad.", go: "Click <b>That's wrong</b>, then <b>Correct it</b>." },
+    { t: "Investigate Dataflake Inc", h: "One message, the work trail one click below, the evidence in a drawer that closes when done.", go: "Open <b>How I got here</b>, then <b>Inspect the definition</b>." },
+    { t: "Prepare, message, route", h: "Squad drafts the recommendation and the borrower email. Carly adds her view, sends, and routes it.", go: "Click <b>Route to Helen</b>." },
+    { t: "Helen returns it; Carly finishes", h: "The credit officer decides with a reason. A return comes back to Carly's thread with the note.", go: "As Helen, choose <b>Return to Carly</b> and record it." },
+  ];
+
+  // ---------- state ----------
+  let step = 0;
+  let s = {};
+  const resetLocal = () => { s = { trail: false, drawer: false, line: "deferred", remember: true, wrong: false, fixed: false, sent: false, view: "", helen: "return", helenDone: false, back: false, approved: false, reqDraft: false, reqSent: false, uploaded: false }; };
+  resetLocal();
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  let toastTimer;
+  const toast = (html) => { document.querySelector(".toast")?.remove(); const t = document.createElement("div"); t.className = "toast"; t.innerHTML = html; t.setAttribute("role", "status"); document.body.appendChild(t); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.remove(), 3200); };
+
+  // ---------- pieces ----------
+  const ico = {
+    send: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    clip: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>',
+    file: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+    x: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  };
+  const squadMsg = (inner, meta = "Squad", anim = false) => `<div class="msg ${anim ? "anim" : ""}"><div class="orb sm" aria-hidden="true"></div><div class="msgbody"><div class="meta"><b>${meta}</b></div>${inner}</div></div>`;
+  const meMsg = (inner, anim = false) => `<div class="msg me-msg ${anim ? "anim" : ""}"><div class="bubble-me">${inner}</div></div>`;
+  const spark = (pts) => {
+    const w = 110, h = 30;
+    const lo = Math.min(...pts, WATCH), hi = Math.max(...pts, WATCH);
+    const pad = Math.max(0.5, (hi - lo) * 0.12);
+    const min = lo - pad, max = hi + pad;
+    const xs = pts.map((_, i) => (i / (pts.length - 1)) * (w - 6) + 3);
+    const ys = pts.map((v) => h - 3 - ((v - min) / (max - min)) * (h - 6));
+    const d = xs.map((x, i) => `${i ? "L" : "M"}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
+    const wy = h - 3 - ((WATCH - min) / (max - min)) * (h - 6);
+    const last = pts[pts.length - 1];
+    const col = last < WATCH ? (last < 9 ? "var(--bad)" : "var(--warn)") : "var(--ink-2)";
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="RML over six months, now ${last} months"><line x1="0" x2="${w}" y1="${wy}" y2="${wy}" stroke="var(--line-strong)" stroke-dasharray="3 3"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2"/><circle cx="${xs[xs.length - 1]}" cy="${ys[ys.length - 1]}" r="3" fill="${col}"/></svg>`;
+  };
+
+  // ---------- rail ----------
+  function rail() {
+    const helen = step === 7 && !s.helenDone;
+    const view = s.view || (step === 1 ? "portfolio" : "squad");
+    $("rail").innerHTML = `
+      <div class="who"><div class="orb" aria-hidden="true"></div><div><b>Squad</b><span class="status"><span class="pulse"></span>${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
+      ${helen ? `<button class="navitem" aria-current="page" type="button">Approvals <span class="badge ember">1</span></button>` : `
+      <button class="navitem" data-nav="squad" ${view === "squad" ? 'aria-current="page"' : ""} type="button">Squad <span class="badge ember">${step < 7 ? 3 : 1}</span></button>
+      <button class="navitem" data-nav="portfolio" ${view === "portfolio" ? 'aria-current="page"' : ""} type="button">My Portfolio <span class="badge warn">2</span></button>
+      <div class="navgroup">Side chats</div>
+      <button class="navitem" data-nav="squad" type="button">Dataflake Inc</button>
+      <button class="navitem" data-nav="squad" type="button">Stripple Tech · October</button>
+      <button class="navitem" data-nav="squad" type="button">Lumora Health</button>`}
+      <div class="me"><div class="avatar" style="${helen ? "" : "background:#2f6f8f"}">${helen ? "HS" : "CR"}</div><div><b style="font-size:14px">${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Commercial credit analyst"}</small></div></div>`;
+    $("rail").querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => {
+      const v = b.dataset.nav;
+      if (step === 0 && v === "portfolio") return go(1);
+      if (step === 1 && v === "squad") { s.view = "squad"; return render(); }
+      s.view = v; render();
+    }));
+  }
+
+  // ---------- composer ----------
+  function composer() {
+    const hide = step === 1 && s.view !== "squad" || step === 3 || step === 4 || (step === 7 && !s.helenDone);
+    if (hide) { $("composer").innerHTML = ""; return; }
+    const canDrop = (step === 1 && s.view === "squad") || (step === 2 && !s.uploaded);
+    $("composer").innerHTML = `<div class="box" id="dropbox">
+      <button class="iconbtn" type="button" id="attach" aria-label="Attach documents">${ico.clip}</button>
+      <label for="say" style="position:absolute;left:-9999px">Message Squad</label>
+      <input id="say" placeholder="${canDrop ? "Drop Stripple Tech's October package here, or click the paperclip" : "Talk to Squad, or drop documents…"}" autocomplete="off">
+      <button class="iconbtn dark" type="button" id="sendsay" aria-label="Send">${ico.send}</button></div>`;
+    const box = $("dropbox");
+    const doDrop = () => { if (step === 1 || (step === 2 && !s.uploaded)) { if (step === 1) { go(2); } s.uploaded = true; render(); } else toast("In this prototype, uploads happen in step 3."); };
+    $("attach").addEventListener("click", doDrop);
+    ["dragenter", "dragover"].forEach((e) => box.addEventListener(e, (ev) => { ev.preventDefault(); box.classList.add("over"); }));
+    ["dragleave", "drop"].forEach((e) => box.addEventListener(e, (ev) => { ev.preventDefault(); box.classList.remove("over"); if (e === "drop") doDrop(); }));
+    $("sendsay").addEventListener("click", () => { const v = $("say").value.trim(); if (v) { toast("This prototype follows a script; free questions come in the real build."); $("say").value = ""; } });
+  }
+
+  // ---------- thread history (what has happened before the current step) ----------
+  function greeting(anim) {
+    return squadMsg(`<p class="text">Good morning, Carly. Overnight I spread Stripple Tech's September figures and tested 11 companies' covenants. Three things need you.</p>
+      <div class="worklist">
+        <button class="workitem" type="button" data-act="w1"><span class="n">01</span><span class="t">Stripple Tech: 2 figures need your eye</span><small>~3 min</small></button>
+        <button class="workitem" type="button" data-act="w2"><span class="n">02</span><span class="t">Dataflake Inc missed its minimum cash covenant</span><small>I'm preparing the case</small></button>
+        <button class="workitem" type="button" data-act="w3"><span class="n">03</span><span class="t">Lumora Health is 12 days late with October reporting</span><small>chaser drafted</small></button>
+      </div>`, "Squad · 7:02 am", anim);
+  }
+  function uploadMsgs(anim) {
+    return meMsg(`<div style="display:flex;flex-direction:column;gap:8px">Stripple Tech's October package came in. Here it is.<div class="row"><span class="chip file">${ico.file}Stripple_Oct26_financials.pdf</span><span class="chip file">${ico.file}compliance_cert_oct.pdf</span><span class="chip file">${ico.file}mrr_export.xlsx</span></div></div>`, anim) +
+      squadMsg(`<p class="text">Two are what was due for October and are filed. One I can't place without you.</p>
+      <div class="card" style="overflow:hidden">
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid #f0ece5;align-items:center"><b style="font-size:14px">Stripple_Oct26_financials.pdf</b><span style="font-size:13px;color:var(--ink-2)">Monthly financials · October 2026 · names Stripple Tech</span><span class="tag ok">Filed</span></div>
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid #f0ece5;align-items:center"><b style="font-size:14px">compliance_cert_oct.pdf</b><span style="font-size:13px;color:var(--ink-2)">Compliance certificate · October · signed by the CFO</span><span class="tag ok">Filed</span></div>
+        <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;align-items:center;background:#fffaf0"><b style="font-size:14px">mrr_export.xlsx</b><span style="font-size:13px;color:var(--ink-2)">Looks like an MRR report, but it names no company and its month reads October 2025</span><span class="tag warn">Held</span></div>
+      </div>`, "Squad · Intake", anim);
+  }
+  function correctionDone() {
+    return squadMsg(`<p class="text">Thanks, Carly. Stripple Tech's October spread is complete: 199 of 199 figures checked on their pages. Your two answers are remembered for next month.</p>
+      <div class="trust">Track record on Stripple Tech <b>412 of 413</b> figures right over 7 months · corrected once, by you, today</div>`, "Squad · Spreading");
+  }
+  function dataflakeMsg(anim) {
+    return squadMsg(`<p class="text">Dataflake Inc missed its minimum cash covenant. Unrestricted cash is <b class="num">$4.6M</b> against a <b class="num">$5.0M</b> minimum, but they certified <b class="num">$5.3M</b>. The difference is <b class="num">$0.7M</b> pledged for a letter of credit, which the loan agreement excludes. RML is about <b class="num">7 months</b>; a Series B extension is signed and closing in December.</p>
+      <div class="trail" id="trail">
+        <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>4 specialists and code · 5 checks passed · 38 of 38 covenant tests right on Dataflake</span></button>
+        ${s.trail ? `<ol>
+          <li><span class="k">1</span><b class="who2">Intake</b><span>Filed the October compliance certificate; names Dataflake, period 31 Oct 2026</span><span class="ck">✓ borrower and period</span></li>
+          <li style="animation-delay:.06s"><span class="k">2</span><b class="who2">Certificate</b><span>Read reported cash of $5.3M on page 1</span><span class="ck">✓ found on the page</span></li>
+          <li style="animation-delay:.12s"><span class="k">3</span><b class="who2">Spreading</b><span>Read cash from the bank statements: $4.6M operating, $0.7M in a pledged account</span><span class="ck">✓ ties to statements</span></li>
+          <li style="animation-delay:.18s"><span class="k">4</span><b class="who2">Code</b><span>Applied the unrestricted cash definition; tested $4.6M against $5.0M</span><span class="ck">✓ exact decimals</span></li>
+          <li style="animation-delay:.24s"><span class="k">5</span><b class="who2">Terms</b><span>Found the definition in §1.1 that excludes pledged cash</span><span class="ck">✓ quote verified, p. 4</span></li>
+        </ol>` : ""}
+      </div>
+      <div class="row"><button class="btn dark" type="button" data-act="prep">Prepare the case</button><button class="btn ghost" type="button" data-act="drawer">Inspect the definition →</button></div>`, "Squad · 9:14 am", anim);
+  }
+
+  // ---------- views ----------
+  function viewPortfolio() {
+    const rows = PORTFOLIO.map((p) => ({ ...p, r: rml(p.cash, p.burn) })).sort((a, b) => a.r - b.r);
+    const watch = rows.filter((r) => r.r < WATCH).length;
+    return `<div class="col" style="max-width:1080px">
+      <div class="ptitle"><div><div class="meta" style="margin-bottom:6px">Carly Reyes · 12 companies · October 2026</div><h1>My Portfolio</h1></div>
+        <div class="legend"><span><b class="num">${watch}</b> on watch (RML under ${WATCH} months)</span><span>1 covenant miss</span><span>1 late with reporting</span></div></div>
+      <div class="card">
+        <div class="tablewrap"><table class="port">
+          <thead><tr><th>Company</th><th class="r">Unrestricted cash</th><th class="r">Net burn / mo</th><th class="r">RML</th><th>Last 6 months</th><th>Covenants</th><th>Next</th></tr></thead>
+          <tbody>${rows.map((p) => `<tr class="${p.r < 9 ? "alert" : p.r < WATCH ? "watch" : ""}">
+            <td class="co"><b>${esc(p.co)}</b><small>${esc(p.sector)}</small></td>
+            <td class="r num">$${p.cash.toFixed(1)}M</td><td class="r num">$${p.burn.toFixed(2)}M</td>
+            <td class="r"><span class="rml ${p.r < 9 ? "bad" : p.r < WATCH ? "warn" : ""}">${p.r.toFixed(1)}</span> <span class="def">mo</span></td>
+            <td>${spark(p.trend)}</td>
+            <td><span class="tag ${p.cov[0]}">${esc(p.cov[1])}</span></td>
+            <td style="font-size:13px;color:var(--ink-2)">${esc(p.next)}</td></tr>`).join("")}</tbody>
+        </table></div>
+      </div>
+      <div class="def">RML = unrestricted cash only ÷ average monthly net burn over the last 3 months. Dashed line on each chart = ${WATCH}-month watch level. Figures are stored facts; click any in the real build to see its source. All companies and figures here are invented.</div>
+      <div class="row"><button class="btn dark" type="button" data-act="back">Back to Squad</button></div>
+    </div>`;
+  }
+
+  function viewThread() {
+    let h = greeting(step === 0);
+    if (step >= 2 && (s.uploaded || step > 2)) {
+      h += uploadMsgs(step === 2);
+      if (step === 2) {
+        h += squadMsg(`<div class="card pad" style="display:flex;flex-direction:column;gap:12px">
+          <div class="row"><span class="tag warn">Your call · 1 minute</span><span class="meta">mrr_export.xlsx</span></div>
+          <div style="font-size:18px;font-weight:600;line-height:1.3">Is this Stripple Tech's MRR report, and is it really last year's?</div>
+          <div style="font-size:14px;color:var(--ink-2)">If it's last year's, the ARR-against-plan test would use stale numbers. I won't file it until you say.</div>
+          ${s.reqSent ? `<div class="trust">Sent by Carly at 8:41 · “Could you send the October 2026 MRR report? The file we received reads October 2025.” · <i>prototype: nothing was really sent</i></div>` :
+            s.reqDraft ? `<div class="email"><div class="hd"><span>To: finance@stripple.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span></div><label for="req" style="position:absolute;left:-9999px">Message</label><textarea id="req">Hi Priya,\n\nThanks for the October package. The MRR export we received reads October 2025. Could you send the October 2026 MRR report when you have a moment?\n\nThanks,\nCarly</textarea></div><div class="row"><button class="btn primary" type="button" data-act="reqsend">Send as Carly</button><button class="btn" type="button" data-act="reqcancel">Cancel</button></div>` :
+            `<div class="row"><button class="btn primary" type="button" data-act="reqdraft">Draft a request to Stripple Tech</button><button class="btn" type="button" data-act="typo">It's a typo, file it</button></div>`}
+        </div>`, "Squad · Intake", true);
+        h += squadMsg(`<p class="text">Spreading picked up the October financials: 197 of 199 figures checked on their pages. Two need your eye.</p>
+          <div class="row"><button class="btn dark" type="button" data-act="review">Review the 2 figures</button></div>`, "Squad · Spreading", true);
+      }
+    }
+    if (step >= 5) h += correctionDone();
+    if (step >= 5) h += dataflakeMsg(step === 5);
+    if (step === 6) h += viewPrepare();
+    if (step === 7 && s.helenDone) {
+      h += squadMsg(`<div class="card pad" style="display:flex;flex-direction:column;gap:10px">
+        <div class="row"><span class="tag warn">Returned by Helen Strand</span><span class="meta">Dataflake Inc · conditional waiver</span></div>
+        <div style="font-size:15px">“${esc(s.helenReason || "Add a cash case if the close slips to January.")}”</div></div>
+        <p class="text">I've added the case: if the extension closes in January instead of December, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum until it closes. Sources attached.</p>
+        ${s.approved ? `<div class="card pad" style="background:var(--ok-soft);border-color:#cbe8d6"><b style="color:var(--ok)">Approved by Helen Strand at 11:02.</b> One-time waiver, conditioned on the $8M extension closing by 15 December. Recorded on the ledger with both reasons.</div>
+          <div class="endcard"><div class="orb" aria-hidden="true"></div><h2>That's Carly's morning.</h2><p style="margin:0;color:var(--ink-2)">Two companies' work done, one correction taught, one waiver prepared and approved. <button class="btn ghost" type="button" data-act="restart">Run it again</button></p></div>` :
+          `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am", true);
+    }
+    return `<div class="col">${h}</div>`;
+  }
+
+  function viewReview() {
+    const isFix = step === 4;
+    return `<div class="col" style="max-width:1080px">
+      <div class="row"><button class="btn ghost" type="button" data-act="back" style="padding:0">← Squad</button><span class="meta">Stripple Tech · October financials · ${isFix ? "figure 2 of 2" : "figure 1 of 2"}</span></div>
+      <div class="trust">Track record on Stripple Tech <b>${s.fixed ? "412 of 413" : "412 of 412"}</b> figures right over ${s.fixed ? 7 : 6} months · ${s.fixed ? "corrected once, by you, today" : "you have corrected me 0 times"}</div>
+      <div class="card split">
+        <div class="page" aria-label="Source page">
+          <div style="text-align:center;font-weight:600;font-size:15px">Stripple Tech, Inc.</div>
+          <div style="text-align:center;font-size:13px;margin-bottom:10px">${isFix && !s.wrong ? "Notes to the financials" : "Balance sheet"} · October 31, 2026 (USD thousands) · page ${isFix && s.wrong ? 3 : 2}</div>
+          ${isFix && s.wrong ? `
+            <div class="ln"><span>Intangible assets</span><span></span></div>
+            <div class="ln ${s.fixed ? "hl" : "hl2"}"><span>&nbsp;&nbsp;Capitalised software, net</span><span>4,850</span></div>
+            <div class="ln"><span>&nbsp;&nbsp;Acquired technology</span><span>620</span></div>
+            <div class="ln"><span>Total intangible assets</span><span>5,470</span></div>` : isFix ? `
+            <div class="ln"><span>Cash flow note: investing activities</span><span></span></div>
+            <div class="ln"><span>&nbsp;&nbsp;Purchases of equipment</span><span>(210)</span></div>
+            <div class="ln hl"><span>&nbsp;&nbsp;Capitalised software development, year to date</span><span>(1,200)</span></div>
+            <div class="ln"><span>Net cash used in investing</span><span>(1,410)</span></div>` : `
+            <div class="ln"><span>Accounts payable</span><span>1,120</span></div>
+            <div class="ln"><span>Accrued expenses</span><span>860</span></div>
+            <div class="ln hl"><span>Contract liabilities</span><span>3,410</span></div>
+            <div class="ln"><span>Venture debt, current portion</span><span>1,000</span></div>
+            <div class="ln"><span>Total current liabilities</span><span>6,390</span></div>`}
+          <div class="synth">SYNTHETIC · FOR DEMONSTRATION</div>
+        </div>
+        <div class="ask">
+          ${isFix ? `
+            <div class="squadmark"><span class="orb sm" style="width:16px;height:16px"></span>Spreading asks</div>
+            ${s.fixed ? `<div style="font-size:20px;font-weight:600;line-height:1.3">Corrected. Capitalised software is now <span class="num">4,850</span>, from page 3.</div>
+              <div style="font-size:14px;color:var(--ink-2)">The old figure, 1,200, stays in the history with your reason. Ratios that used it were re-run. Learned: <b>Stripple Tech's capitalised software balance is on page 3, not the cash flow note.</b></div>
+              <div class="row"><button class="btn dark" type="button" data-act="toDataflake">Back to Squad →</button></div>` :
+            s.wrong ? `<div style="font-size:20px;font-weight:600;line-height:1.3">What's wrong with it?</div>
+              <label class="lbl" for="why">Your reason (kept on the ledger)</label>
+              <textarea class="field" id="why">That's the year-to-date spend from the cash flow note, not the balance. The balance is on page 3.</textarea>
+              <div class="row"><button class="btn primary" type="button" data-act="fix">Correct it</button><button class="btn" type="button" data-act="unwrong">Cancel</button></div>` :
+            `<div style="font-size:20px;font-weight:600;line-height:1.3">I filed capitalised software at <span class="num">1,200</span> under intangible assets.</div>
+              <div style="font-size:14px;color:var(--ink-2)">Taken from page 2. I'm confident in the number on the page, less so that it's the balance.</div>
+              <div class="row"><button class="btn" type="button" data-act="right">Looks right</button><button class="btn primary" type="button" data-act="wrong">That's wrong</button></div>`}` : `
+            <div class="squadmark"><span class="orb sm" style="width:16px;height:16px"></span>Spreading asks</div>
+            <div style="font-size:20px;font-weight:600;line-height:1.3">“Contract liabilities” is new for Stripple Tech. Where does it go?</div>
+            <div style="font-size:14px;color:var(--ink-2)">Code found <span class="mono">3,410</span> on page 2, current liabilities, October column, thousands.</div>
+            <label class="choice"><input type="radio" name="line" value="deferred" ${s.line === "deferred" ? "checked" : ""}><span><b>Deferred revenue, current</b><small>Most likely: subscription billed ahead</small></span></label>
+            <label class="choice"><input type="radio" name="line" value="other" ${s.line === "other" ? "checked" : ""}><span><b>Other current liabilities</b><small>If it isn't customer prepayments</small></span></label>
+            <label class="teach"><input type="checkbox" id="remember" ${s.remember ? "checked" : ""}><span>Remember for Stripple Tech. Next month this goes through without asking you.</span></label>
+            <div class="row"><button class="btn primary" type="button" data-act="confirm">Confirm</button><span class="meta">Recorded on the ledger with your name</span></div>`}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function viewPrepare() {
+    return `<div class="card pad anim" style="display:flex;flex-direction:column;gap:16px">
+      <div class="row"><span class="tag bad">Covenant miss</span><b>Dataflake Inc · minimum unrestricted cash</b><span class="meta" style="margin-left:auto">Analysts recommend; a credit officer decides</span></div>
+      <div class="doc"><h3>Drafted by Squad</h3>
+        Unrestricted cash at 31 October was <b>$4.6M</b> against a <b>$5.0M</b> minimum. The certificate's <b>$5.3M</b> includes <b>$0.7M</b> pledged for a letter of credit, which §1.1 excludes. Net burn averages <b>$0.65M</b> a month, so RML is about <b>7 months</b>. A Series B extension of <b>$8M</b> is signed and expected to close in December.
+        <div style="margin-top:8px;font-family:var(--f-ui);font-size:13px;color:var(--ink-2)">Options: one-time waiver conditioned on funding · reservation of rights · default notice</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px"><label class="lbl" for="view">Carly's view</label><textarea class="field" id="view">One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.</textarea></div>
+      <div class="email">
+        <div class="hd"><span>To: cfo@dataflake.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span>${s.sent ? '<span class="tag ok" style="margin-left:auto">Sent</span>' : ""}</div>
+        <label for="mail" style="position:absolute;left:-9999px">Email to Dataflake's CFO</label>
+        <textarea id="mail" ${s.sent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send the signed Series B extension term sheet and your November cash forecast? We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
+      </div>
+      <div class="row">${s.sent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button><span class="meta">Squad never sends to a borrower on its own</span></div>
+    </div>`;
+  }
+
+  function viewHelen() {
+    return `<div class="col" style="max-width:860px">
+      <div class="meta">Helen Strand · credit officer · 1 approval waiting</div>
+      <div class="night anim">
+        <div class="row"><span class="tag bad">Covenant miss</span><span class="muted">Dataflake Inc · routed by Carly Reyes at 9:52</span></div>
+        <div style="font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.15;text-wrap:balance">Grant Dataflake a one-time waiver, conditioned on the $8M extension closing by 15 December?</div>
+        <div class="k3"><div><small>Unrestricted cash</small><b>$4.6M</b></div><div><small>Minimum</small><b>$5.0M</b></div><div><small>RML</small><b>7.1 mo</b></div></div>
+        <div style="font-size:15px;color:#e1dbd0"><b style="color:#d7ccff">Carly recommends:</b> “One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.”</div>
+        <div class="muted">Prepared by Squad · checked by Carly · every figure sourced · <button class="btn ghost" type="button" data-act="drawer" style="color:#cfc3ff;height:auto;padding:0">see the evidence</button></div>
+        <fieldset style="border:0;margin:0;padding:0;display:grid;gap:8px"><legend class="muted" style="margin-bottom:8px">Your decision</legend>
+          <label class="opt"><input type="radio" name="hd" value="approve" ${s.helen === "approve" ? "checked" : ""}>Approve the conditional waiver</label>
+          <label class="opt"><input type="radio" name="hd" value="reserve" ${s.helen === "reserve" ? "checked" : ""}>Reserve rights</label>
+          <label class="opt"><input type="radio" name="hd" value="return" ${s.helen === "return" ? "checked" : ""}>Return to Carly</label></fieldset>
+        <label class="muted" for="hreason">Reason (required)</label>
+        <textarea class="field" id="hreason">Add a cash case if the close slips to January.</textarea>
+        <div class="row"><button class="btn primary" type="button" data-act="helenrecord">Record decision</button><span class="muted">Recorded on the ledger with your name and reason</span></div>
+      </div>
+    </div>`;
+  }
+
+  function drawer() {
+    const d = $("drawer");
+    d.innerHTML = `<header><b>Loan agreement · §1.1 Definitions · page 4</b><button class="iconbtn" type="button" data-act="closedrawer" aria-label="Close">${ico.x}</button></header>
+      <div class="body">
+        <div class="clause">
+          <div style="text-align:center;font-weight:600">LOAN AND SECURITY AGREEMENT</div>
+          <div>“Unrestricted Cash” means cash and cash equivalents of the Borrower held in deposit accounts subject to a control agreement in favour of the Bank, <mark>excluding any cash pledged, escrowed or otherwise restricted, including cash securing letters of credit</mark>.</div>
+          <div>7.10 <i>Minimum Unrestricted Cash.</i> The Borrower shall maintain Unrestricted Cash of not less than $5,000,000 at all times, tested monthly.</div>
+          <div style="margin-top:6px;text-align:center;font-family:var(--f-ui);font-size:10px;letter-spacing:.1em;color:var(--ink-3)">SYNTHETIC · FOR DEMONSTRATION</div>
+        </div>
+        <div class="verified">✓ Quote found on page 4 by code</div>
+        <div><div class="lbl" style="margin-bottom:6px">What it does to the test</div>
+          <div class="calc">Cash, operating accounts&nbsp;&nbsp;&nbsp;&nbsp;4.6<br>Cash, pledged for LC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.7<br>Certified total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.3<div class="tot">Unrestricted (§1.1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6 &lt; 5.0 minimum</div></div>
+          <div class="def" style="margin-top:6px">USD millions · calculated by code from stored facts</div></div>
+        <div class="trust">Still open: Dataflake's CFO hasn't explained why the certificate counted the pledged cash.</div>
+      </div>`;
+    d.classList.toggle("on", s.drawer);
+    d.setAttribute("aria-hidden", s.drawer ? "false" : "true");
+    $("scrim").classList.toggle("on", s.drawer);
+  }
+
+  // ---------- render ----------
+  function render() {
+    // strip
+    $("dots").innerHTML = STEPS.map((x, i) => `<button class="dot ${i < step ? "done" : ""}" type="button" data-step="${i}" ${i === step ? 'aria-current="step"' : ""} aria-label="Step ${i + 1}: ${esc(x.t)}">${i + 1}</button>`).join("");
+    $("hint").innerHTML = `<b>${step + 1} · ${STEPS[step].t}.</b> <span>${STEPS[step].h}</span> <b>Try:</b> <span>${STEPS[step].go}</span>`;
+    $("prev").disabled = step === 0;
+    $("next").textContent = step === STEPS.length - 1 ? "Finish" : "Next step";
+    rail();
+    let html;
+    if (step === 1 && s.view !== "squad") html = viewPortfolio();
+    else if (step === 3 || step === 4) html = viewReview();
+    else if (step === 7 && !s.helenDone) html = viewHelen();
+    else html = viewThread();
+    $("pane").innerHTML = html;
+    composer();
+    drawer();
+    if (step === 2 && s.uploaded || step === 5 || step === 6 || (step === 7 && s.helenDone)) requestAnimationFrame(() => { const p = $("pane"); p.scrollTop = p.scrollHeight; });
+    else $("pane").scrollTop = 0;
+  }
+  function go(n) {
+    n = Math.max(0, Math.min(STEPS.length - 1, n));
+    resetLocal();
+    step = n;
+    if (step >= 3) s.uploaded = true;
+    render();
+  }
+
+  // ---------- actions ----------
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-act],[data-step]");
+    if (!t) return;
+    if (t.dataset.step) return go(+t.dataset.step);
+    const a = t.dataset.act;
+    const val = (id) => ($(id) ? $(id).value : "");
+    switch (a) {
+      case "w1": return step === 0 ? go(3) : null;
+      case "w2": return go(5);
+      case "w3": return toast("Lumora Health's chaser is drafted in its side chat. Not part of this walk-through.");
+      case "back": if (step === 1) { s.view = "squad"; return render(); } return go(2);
+      case "reqdraft": s.reqDraft = true; return render();
+      case "reqcancel": s.reqDraft = false; return render();
+      case "reqsend": s.reqSent = true; render(); return toast("Request sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
+      case "typo": return toast("Filed as October 2026, with your note. Try “Draft a request” to see the safer path.");
+      case "review": return go(3);
+      case "confirm": {
+        const remember = $("remember")?.checked;
+        toast(`Filed as <b>${s.line === "deferred" ? "deferred revenue, current" : "other current liabilities"}</b>${remember ? " · remembered for Stripple Tech" : ""}`);
+        return setTimeout(() => go(4), 650);
+      }
+      case "right": return toast("In this walk-through Squad is wrong here. Try “That's wrong”.");
+      case "wrong": s.wrong = true; return render();
+      case "unwrong": s.wrong = false; return render();
+      case "fix": s.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
+      case "toDataflake": return go(5);
+      case "trail": s.trail = !s.trail; return render();
+      case "drawer": s.drawer = true; return drawer();
+      case "closedrawer": s.drawer = false; return drawer();
+      case "prep": return go(6);
+      case "sendmail": s.sent = true; render(); return toast("Email sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
+      case "route": toast("Routed to <b>Helen Strand</b>, credit officer · switching to Helen's view"); return setTimeout(() => go(7), 900);
+      case "helenrecord": {
+        const r = val("hreason").trim();
+        if (!r) return toast("A reason is required before the decision is recorded.");
+        const choice = document.querySelector('input[name="hd"]:checked')?.value || "return";
+        if (choice !== "return") { toast("In this walk-through Helen returns it first. Choose “Return to Carly”."); return; }
+        s.helenReason = r; s.helenDone = true; render();
+        return toast("Returned to <b>Carly</b> with your reason · back in Carly's view");
+      }
+      case "sendback": toast("Sent back to Helen · <b>Helen approves</b>"); return setTimeout(() => { s.approved = true; render(); }, 900);
+      case "restart": return go(0);
+    }
+  });
+  document.addEventListener("change", (e) => {
+    if (e.target.name === "line") s.line = e.target.value;
+    if (e.target.id === "remember") s.remember = e.target.checked;
+    if (e.target.name === "hd") s.helen = e.target.value;
+  });
+  $("scrim").addEventListener("click", () => { s.drawer = false; drawer(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && s.drawer) { s.drawer = false; drawer(); }
+    if (/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName)) return;
+    if (e.key === "ArrowRight") go(step + 1);
+    if (e.key === "ArrowLeft") go(step - 1);
+  });
+  $("prev").addEventListener("click", () => go(step - 1));
+  $("next").addEventListener("click", () => {
+    if (step === 1 && s.view !== "squad") { s.view = "squad"; return render(); }
+    if (step === 2 && !s.uploaded) { s.uploaded = true; return render(); }
+    if (step === 7 && !s.helenDone) { s.helenReason = "Add a cash case if the close slips to January."; s.helenDone = true; return render(); }
+    if (step === 7 && !s.approved) { s.approved = true; return render(); }
+    if (step === STEPS.length - 1) return go(0);
+    go(step + 1);
+  });
+  $("restart").addEventListener("click", () => go(0));
+  render();
+})();
+</script>
