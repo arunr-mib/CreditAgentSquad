@@ -204,3 +204,9 @@ def test_a_printed_optional_line_is_kept_and_absent_marking_does_not_make_it_zer
     assert kept.errors == [] and kept.values["saas.net_revenue_retention"] == D("112")
     marked = compute_statement(base, absent=["saas.net_new_arr"], statements=["saas"], template_id="vc-1")
     assert marked.errors == [] and "saas.net_new_arr" not in marked.values
+
+
+def test_counts_and_ratios_are_never_scaled_as_money():
+    from app.calc import template
+    assert {"saas.customers", "saas.net_revenue_retention"} <= template.UNSCALED
+    assert not ({"saas.mrr", "saas.arr", "saas.net_new_arr"} & template.UNSCALED)

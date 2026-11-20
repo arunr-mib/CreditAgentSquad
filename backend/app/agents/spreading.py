@@ -280,7 +280,8 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
             db, borrower_id=borrower.id, key=cell.key + suffix + part, period_end=period_end,
             months=_months_for(cell.key, months), document=document, page_number=cell.page,
             printed_figure=cell.printed_figure, printed_label=cell.printed_label,
-            column_header=cell.column_header, scale=scale, presentation_sign=_sign(cell.key), agent_run_id=run_id,
+            column_header=cell.column_header, scale=1 if cell.key in template.UNSCALED else scale,
+            presentation_sign=_sign(cell.key), agent_run_id=run_id,
             doubt_for=doubt_for, column_period=period_end, column_months=_months_for(cell.key, months))
         if fact is None or not check.ok:
             result.unverified.append({

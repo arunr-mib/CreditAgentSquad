@@ -25,6 +25,7 @@ OCT = date(2026, 10, 31)
     ("Monthly Recurring Revenue report", "mrr_report"),
     ("MRR report - October 2026", "mrr_report"),
     ("ARR report", "mrr_report"),
+    ("Dataflake Inc\nMRR report for the month ended October 31, 2026", "mrr_report"),
     ("Annual recurring revenue report", "mrr_report"),
     ("ARR waterfall", None),  # a bare acronym is not a title phrase: the agent reads it, code does not file it
     # an investor update or a monthly pack that mentions ARR on page one keeps its own type

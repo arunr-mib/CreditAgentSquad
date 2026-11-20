@@ -309,6 +309,10 @@ NEVER_NEGATIVE = frozenset({
 })
 
 
+# Lines that are counts or ratios, not money: a statement's "(in thousands)" never scales them.
+UNSCALED: frozenset[str] = frozenset({"saas.customers", "saas.net_revenue_retention"})
+
+
 def known_labels(key: str) -> tuple[str, ...]:
     """Every name a line is known by: the template's label first, then its synonyms."""
     return (ALL_LINE_BY_KEY[key].label, *SYNONYMS.get(key, ()))
