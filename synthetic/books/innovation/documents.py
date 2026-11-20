@@ -27,7 +27,8 @@ def month_name(end: date) -> str:
 
 
 def usd(value) -> str:
-    return f"${int(value):,}"
+    v = int(value)
+    return f"(${abs(v):,})" if v < 0 else f"${v:,}"
 
 
 def _received(rng: random.Random, end: date, low: int, high: int) -> date:

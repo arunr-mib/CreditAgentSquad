@@ -261,3 +261,11 @@ def test_ferrogate_agreement_prints_the_dscr_definition_and_covenant_verbatim(si
     for anchor in ("def_dscr", "cov_dscr"):
         quote = terms.agreement.cites[anchor]["quote"]
         assert common.squash(quote) in common.squash(pages[result["anchor_pages"][anchor] - 1]), anchor
+
+
+def test_documents_usd_prints_negatives_in_parentheses_like_the_renderer():
+    from synthetic.books.innovation.documents import usd
+    from synthetic.render.innovation import usd as printed
+
+    assert usd(-750_000) == "($750,000)" == printed(-750_000)
+    assert usd(750_000) == "$750,000" and usd(0) == "$0"

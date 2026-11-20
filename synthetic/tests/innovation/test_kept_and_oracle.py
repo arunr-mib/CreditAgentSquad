@@ -54,9 +54,20 @@ def test_regenerating_keeps_an_owner_signature_only_while_the_row_is_unchanged(t
     again = {(r["borrower_id"], r["kind"], r["item"]): r["owner_signed_off"] for r in csv.DictReader(oracle.open(newline=""))}
     assert again[("dataflake", "covenant_test", "min_unrestricted_cash")] == "yes"
     assert sum(1 for v in again.values() if v == "yes") == 1 + 16  # the signed row and the kept four's
-    generate(out, seed=7, oracle=oracle)  # a different seed changes values: the signature does not survive
+    # A signed row whose stored values no longer match what the generator now produces (here the owner's
+    # copy was signed against a different threshold) comes back unsigned.
+    rows = list(csv.DictReader(oracle.open(newline="")))
+    target = next(r for r in rows if r["borrower_id"] == "dataflake" and r["item"] == "min_unrestricted_cash")
+    assert target["owner_signed_off"] == "yes"
+    target["threshold"] = ">= 1"
+    with oracle.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+    generate(out, oracle=oracle)
     changed = {(r["borrower_id"], r["kind"], r["item"]): r["owner_signed_off"] for r in csv.DictReader(oracle.open(newline=""))}
-    assert changed[("dataflake", "covenant_test", "min_unrestricted_cash")] == "yes"  # the October figures are fixed
+    assert changed[("dataflake", "covenant_test", "min_unrestricted_cash")] == "no"
+    assert sum(1 for v in changed.values() if v == "yes") == 16  # only the kept four's rows stay signed
 
 
 def test_the_answer_key_lists_every_current_signal_from_the_truth(generated):

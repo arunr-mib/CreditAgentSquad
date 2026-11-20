@@ -33,6 +33,15 @@ TRUTH = {
     "briarstone-beverage": "4931dc641fdd5836a1228f68546ce075706d75e99f0144fda044bdb434525e3a",
     "pellham-grain": "eca053369d10b150700ac45e41eb5c2fa570cac412843210c6bd7f99b65d19fe",
 }  # fmt: skip
+ARTIFACTS = {
+    "oracle.csv": "52888418f50eefa585e9b82eaa719b83c087eae5f73acd00d4da60713b019064",
+    "out/manifest.json": "f3358516eb571703c79b60316796801b344c7e0d1cafbad70ae7b963b5c24f99",
+}  # fmt: skip
+
+
+@pytest.mark.parametrize("name", sorted(ARTIFACTS))
+def test_legacy_answer_key_and_manifest_are_unchanged(name):
+    assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == ARTIFACTS[name], f"synthetic/{name} changed"
 
 
 @pytest.mark.parametrize("name", sorted(SOURCES))
