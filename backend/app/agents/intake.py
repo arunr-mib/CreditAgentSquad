@@ -42,11 +42,16 @@ _RULES: list[tuple[str, re.Pattern[str]]] = [
     ("compliance_certificate", re.compile(r"compliance certificate|certificate of compliance", re.I)),
     ("amendment", re.compile(r"\b(?:first|second|third|fourth|fifth)\s+amendment\b|amendment no\.?\s*\d+ to", re.I)),
     ("waiver", re.compile(r"\bwaiver (?:letter|agreement)\b|\blimited waiver\b", re.I)),
-    ("credit_agreement", re.compile(r"\b(?:credit|loan)(?: and security)? agreement\b", re.I)),
     ("tax_return", re.compile(r"\bform\s+11(?:20|20-?s|65)\b|u\.s\. (?:corporation )?income tax return", re.I)),
+    # Specific titles come before credit_agreement, and credit_agreement is a heading line only: a bank
+    # statement note ("pledged under the venture loan agreement") or a term sheet condition ("where the loan
+    # agreement requires it") mentions the agreement without being one. An investor update says "term sheet
+    # signed", so it comes before term_sheet.
     ("bank_statement", re.compile(r"statement of account|account statement|bank statement", re.I)),
-    ("term_sheet", re.compile(r"term sheet|summary of terms", re.I)),
     ("investor_update", re.compile(r"investor update|letter to investors", re.I)),
+    ("term_sheet", re.compile(r"term sheet|summary of terms", re.I)),
+    ("credit_agreement", re.compile(
+        r"^[ \t]*(?:venture[ \t]+)?(?:credit|loan(?:[ \t]+and[ \t]+security)?)\s+agreement[ \t]*$", re.I | re.M)),
     # only a report title files an MRR report ("MRR report", "recurring revenue report"): a bare
     # "ARR", "MRR" or "monthly recurring revenue" is a KPI line on page one of an investor update or
     # a monthly pack. It comes before the monthly rule because an MRR report is headed "month ended" too.
