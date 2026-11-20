@@ -1,7 +1,7 @@
 # Evaluations
 
-The proof layer for Credit Agent Squad. It runs the live monitoring cycle over the 21 synthetic
-borrowers whose truth is known, grades the outcome with deterministic code (never a model judging
+The proof layer for Credit Agent Squad. It runs the live monitoring cycle over the synthetic
+borrowers of a book (21 in the legacy book, 20 in the innovation book) whose truth is known, grades the outcome with deterministic code (never a model judging
 a model), names each failure, and fails the build on the two failures that must never happen: an
 invented number and a false "compliant".
 
@@ -9,11 +9,13 @@ invented number and a false "compliant".
 
 ```bash
 service postgresql start                                   # cloud container
-uv run python -m synthetic.generate                        # build the book into synthetic/out/ (5 s)
+uv run python -m synthetic.generate                        # legacy book into synthetic/out/ (5 s)
+uv run python -m synthetic.books.innovation.generate       # innovation book (the default) into synthetic/books/innovation/out/
 export TEST_DATABASE_URL=postgresql+psycopg://squad:squad@localhost:5432/credit_agent_squad_test
 
-uv run python -m evals.run --mode standin                  # whole book, about two minutes
-uv run python -m evals.run --mode standin --only harrowgate-precision kestrel-bay-packaging
+uv run python -m evals.run --mode standin                  # whole innovation book, about two minutes
+uv run python -m evals.run --mode standin --book legacy    # --book legacy|innovation|both|<path>; both writes latest-legacy.* too
+uv run python -m evals.run --mode standin --book legacy --only harrowgate-precision kestrel-bay-packaging
 uv run python -m evals.run --mode standin --mutations      # also the mutation checks, one more minute
 uv run python -m evals.run --mode standin --no-decide      # stop at the first item that needs a person
 
@@ -34,7 +36,7 @@ The API serves the latest scorecard at `GET /api/v1/evals/latest` (and `/evals/r
 
 | Mode | Who answers the agents | Cost | Starts when |
 |---|---|---|---|
-| `standin` (default) | a perfect reader built from the book's ground truth | none | always |
+| `standin` (default; `--book` picks the book, innovation by default) | a perfect reader built from the book's ground truth | none | always |
 | `recorded` | saved model responses under `evals/recordings/` (`RecordedClient`) | none | recordings exist |
 | `live` | the model, through `app.agents.llm.client_for` | billable | every oracle row in scope is signed, and `--confirm-billable` |
 | `record` | the model, and each response is saved for replay | billable | as `live` |
@@ -45,8 +47,7 @@ run it produces has `llm_mode = standin` and `served_model = stand-in-perfect-re
 API adds a notice. The same runner runs a real model by changing one setting: `--mode live`.
 
 `live` and `record` print a cost warning and refuse to start while any row of
-`synthetic/oracle.csv` for the borrowers in scope has `owner_signed_off` other than `yes` (all 76
-are `no` today). `--allow-unsigned` is the deliberate exception and is stated in the output.
+the oracle that belongs to the book being run (`oracle.csv` beside its `out/`: `synthetic/oracle.csv` for legacy, `synthetic/books/innovation/oracle.csv` for innovation) for the borrowers in scope has `owner_signed_off` other than `yes` (check the file for the current count). `--allow-unsigned` is the deliberate exception and is stated in the output.
 Live runs are billable: ask the owner first. No test calls a model.
 
 ## What the stand-in answers

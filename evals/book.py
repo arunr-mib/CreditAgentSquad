@@ -14,8 +14,18 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-DEFAULT_BOOK = REPO / "synthetic" / "out"
-ORACLE = REPO / "synthetic" / "oracle.csv"
+BOOKS = {"legacy": REPO / "synthetic" / "out",
+         "innovation": REPO / "synthetic" / "books" / "innovation" / "out"}
+DEFAULT_BOOK = BOOKS["innovation"]
+ORACLE = REPO / "synthetic" / "oracle.csv"  # the legacy oracle; kept for old imports
+
+
+def oracle_for(root: Path | str) -> Path:
+    """The owner's oracle for the book generated into `root`: both generators write it beside `out/`."""
+    return Path(root).parent / "oracle.csv"
+
+
+_GENERATORS = {"legacy": "synthetic.generate", "innovation": "synthetic.books.innovation.generate"}
 
 # the book's document type names -> the product's
 DOC_TYPES = {"annual_financial_statements": "annual_statements",
@@ -177,9 +187,9 @@ def load_book(root: Path | str = DEFAULT_BOOK, only: list[str] | None = None) ->
     return Book(root, borrowers)
 
 
-def generate_book(out: Path | str) -> Path:
-    """Build the synthetic book into `out` (about five seconds)."""
-    subprocess.run([sys.executable, "-m", "synthetic.generate", "--out", str(out)], cwd=REPO, check=True,
+def generate_book(out: Path | str, book: str = "legacy") -> Path:
+    """Build a synthetic book into `out` (about five seconds). Its oracle is written beside `out`."""
+    subprocess.run([sys.executable, "-m", _GENERATORS[book], "--out", str(out)], cwd=REPO, check=True,
                    capture_output=True)
     return Path(out)
 

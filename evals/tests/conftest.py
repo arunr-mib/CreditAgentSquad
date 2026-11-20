@@ -35,9 +35,21 @@ def engine():
     eng.dispose()
 
 
+@pytest.fixture(scope="session", params=["legacy", "innovation"])
+def book_name(request):
+    return request.param
+
+
 @pytest.fixture(scope="session")
-def book_root(tmp_path_factory):
-    return generate_book(tmp_path_factory.mktemp("book"))
+def book_root(book_name, tmp_path_factory):
+    # `out` inside its own directory, so each book's oracle.csv lands beside it and the two never collide
+    return generate_book(tmp_path_factory.mktemp(f"book-{book_name}") / "out", book_name)
+
+
+@pytest.fixture(scope="session")
+def legacy_book_root(tmp_path_factory):
+    """The legacy book, for tests whose borrowers (SMALL, the mutation checks) are legacy ones."""
+    return generate_book(tmp_path_factory.mktemp("book-legacy-fixed") / "out", "legacy")
 
 
 @pytest.fixture(scope="session")
@@ -56,13 +68,13 @@ def file_store(tmp_path_factory):
 
 @pytest.fixture(scope="session")
 def suite(engine, book_root):
-    """The whole stand-in suite, run once: 21 borrowers through the live cycle (about two minutes)."""
+    """The whole stand-in suite, run once: every borrower of a book (21 legacy, 20 innovation) through the live cycle (about two minutes)."""
     return run_suite(mode="standin", book_root=book_root, engine=engine, decide=True, keep_recordings=True)
 
 
 @pytest.fixture(scope="session")
-def small(engine, book_root, file_store):
+def small(engine, legacy_book_root, file_store):
     """Recordings of four borrowers (about 25 seconds), for tests that tamper with a recording."""
-    book = load_book(book_root, SMALL)
+    book = load_book(legacy_book_root, SMALL)
     reader = StandInReader(book)
     return book, run_pass(engine, book, reader, decide=True)

@@ -82,8 +82,8 @@ EXPECTED = {
 
 
 @pytest.fixture(scope="module")
-def outcomes(engine, book_root, file_store):
-    book = load_book(book_root, sorted({m.borrower for m in MUTATIONS}))
+def outcomes(engine, legacy_book_root, file_store):
+    book = load_book(legacy_book_root, sorted({m.borrower for m in MUTATIONS}))
     return {o["name"]: o for o in run_mutations(engine, book)}
 
 

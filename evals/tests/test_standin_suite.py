@@ -1,7 +1,7 @@
 """The stand-in suite over the whole book: every borrower through the live monitoring cycle,
 graded against the truth, with the gate asserted.
 
-About two minutes (21 borrowers at five to seven seconds each, most of it loading history).
+About two minutes (each borrower at five to seven seconds each, most of it loading history).
 Deselect with: -m "not slow".
 
 A stand-in run proves the pipeline, the workflow and the grader. It is not model performance.
@@ -13,6 +13,7 @@ from app.domain.governance import EvalRun
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from evals.book import load_book
 from evals.grade import FAILURES, GATED, STAGES, STANDIN_UNANSWERED, load_known_findings
 from evals.run import STANDIN_LABEL, save_eval_run, write_results
 from evals.scorecard import render_markdown
@@ -40,8 +41,8 @@ def test_no_invented_number_and_no_false_compliant_in_any_pass(suite):
     assert set(suite["failure_counts"]) == set(FAILURES)
 
 
-def test_all_21_borrowers_ran_without_a_crash(suite):
-    assert suite["meta"]["borrowers"] == len(suite["borrowers"]) == 21
+def test_every_borrower_ran_without_a_crash(suite, book_root):
+    assert suite["meta"]["borrowers"] == len(suite["borrowers"]) == len(load_book(book_root))
     assert [c for c, g in suite["borrowers"].items() if g["error"]] == []
     assert all(g["ledger_ok"] for g in suite["borrowers"].values())
 

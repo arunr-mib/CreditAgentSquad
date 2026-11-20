@@ -31,7 +31,7 @@ from sqlalchemy import create_engine, inspect, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from evals.book import DEFAULT_BOOK, REPO, Book, Borrower, load_book, unsigned_oracle_rows
+from evals.book import BOOKS, DEFAULT_BOOK, REPO, Book, Borrower, load_book, oracle_for, unsigned_oracle_rows
 
 # The evaluation measures the automatic path: what the product does with a reading when no
 # person looks at it. A deployment defaults to "assisted", where a person confirms every reading.
@@ -373,7 +373,7 @@ def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tam
 
 
 def check_may_start(mode: str, codes: list[str], *, allow_unsigned: bool = False, confirm_billable: bool = False,
-                    recordings: Path = RECORDINGS_DIR, out=None) -> None:
+                    recordings: Path = RECORDINGS_DIR, out=None, oracle: Path | None = None) -> None:
     """Refuse a run that should not start. Raises RunRefused with the reason."""
     out = out or sys.stderr
     if mode not in MODES:
@@ -383,12 +383,12 @@ def check_may_start(mode: str, codes: list[str], *, allow_unsigned: bool = False
                          "(--mode record, billable) or use --mode standin")
     if mode in BILLABLE:
         print(COST_WARNING, file=out)
-        unsigned = unsigned_oracle_rows(codes)
+        unsigned = unsigned_oracle_rows(codes, oracle or oracle_for(DEFAULT_BOOK))
         if unsigned and not allow_unsigned:
             borrowers = sorted({r["borrower_id"] for r in unsigned})
             raise RunRefused(
                 f"{len(unsigned)} oracle row(s) for {len(borrowers)} borrower(s) in scope are not signed by the owner "
-                f"(synthetic/oracle.csv, owner_signed_off). A {mode} run grades a model against the oracle, so it "
+                f"(the book's oracle.csv, owner_signed_off). A {mode} run grades a model against the oracle, so it "
                 "refuses unsigned rows. Sign them, or pass --allow-unsigned for a deliberate exception.")
         if unsigned:
             print(f"NOTE: --allow-unsigned: {len(unsigned)} oracle row(s) in scope are not signed by the owner; "
@@ -460,8 +460,9 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
 
     book = load_book(book_root, only)
     codes = [b.code for b in book]
+    oracle = oracle_for(book_root)
     check_may_start(mode, codes, allow_unsigned=allow_unsigned, confirm_billable=confirm_billable,
-                    recordings=recordings)
+                    recordings=recordings, oracle=oracle)
     own_engine = engine is None
     engine = engine or create_engine(database_url or default_database_url())
     started = time.monotonic()
@@ -480,18 +481,18 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
     results = build_results(book, all_passes, mode=mode, decide=decide,
                             seconds=round(time.monotonic() - started, 1),
                             standin_disagreements=getattr(client, "disagreements", []),
-                            unsigned_oracle_rows=len(unsigned_oracle_rows(codes)), scope=only)
+                            unsigned_oracle_rows=len(unsigned_oracle_rows(codes, oracle)), scope=only)
     if keep_recordings:
         results["recordings"] = all_passes
     return results
 
 
-def write_results(results: dict[str, Any], out_dir: Path = RESULTS_DIR) -> tuple[Path, Path]:
+def write_results(results: dict[str, Any], out_dir: Path = RESULTS_DIR, stem: str = "latest") -> tuple[Path, Path]:
     from evals.scorecard import render_markdown
 
     out_dir.mkdir(parents=True, exist_ok=True)
     document = {k: v for k, v in results.items() if k != "recordings"}
-    json_path, md_path = out_dir / "latest.json", out_dir / "latest.md"
+    json_path, md_path = out_dir / f"{stem}.json", out_dir / f"{stem}.md"
     json_path.write_text(json.dumps(document, indent=1, sort_keys=False) + "\n")
     md_path.write_text(render_markdown(document))
     return json_path, md_path
@@ -515,7 +516,8 @@ def main(argv: list[str] | None = None) -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--mode", choices=MODES, default="standin")
     parser.add_argument("--only", nargs="*", metavar="ID", help="borrower ids to run (default: the whole book)")
-    parser.add_argument("--book", default=str(DEFAULT_BOOK), help="the generated book (default: synthetic/out)")
+    parser.add_argument("--book", default="innovation",
+                        help="legacy, innovation (default), both, or the path of a generated book")
     parser.add_argument("--decide", dest="decide", action="store_true", default=True,
                         help="apply a scripted decision where a person is needed, so the cycle continues (default)")
     parser.add_argument("--no-decide", dest="decide", action="store_false",
@@ -534,11 +536,21 @@ def main(argv: list[str] | None = None) -> int:
                         help="stand-in only: also run the mutation checks (about one minute) and add them to the scorecard")
     args = parser.parse_args(argv)
 
+    books = ["legacy", "innovation"] if args.book == "both" else [args.book]
+    worst = 0
+    for name in books:
+        root = BOOKS.get(name, Path(name))
+        stem = "latest-legacy" if (name == "legacy" and args.book == "both") else "latest"
+        worst = max(worst, _run_one(args, root, stem))
+    return worst
+
+
+def _run_one(args, root: Path, stem: str) -> int:
     url = args.database_url or default_database_url()
     engine = create_engine(url)
     try:
         results = run_suite(
-            mode=args.mode, book_root=args.book, only=args.only or None, decide=args.decide, passes=args.passes,
+            mode=args.mode, book_root=root, only=args.only or None, decide=args.decide, passes=args.passes,
             engine=engine, allow_unsigned=args.allow_unsigned, confirm_billable=args.confirm_billable,
             recordings=Path(args.recordings), progress=lambda line: print(line, flush=True),
             keep_recordings=bool(args.save_recordings))
@@ -553,7 +565,7 @@ def main(argv: list[str] | None = None) -> int:
         print("mutation checks (the stand-in's answers are tampered with on purpose)", flush=True)
         with scratch_file_store():
             results["mutations"] = run_mutations(
-                engine, load_book(args.book, sorted({m.borrower for m in MUTATIONS})),
+                engine, load_book(root, sorted({m.borrower for m in MUTATIONS})),
                 progress=lambda line: print(line, flush=True))
         slipped = [m["name"] for m in results["mutations"] if m["caught_by"] in ("SLIPPED", "NOT APPLIED")]
         if slipped:
@@ -561,7 +573,7 @@ def main(argv: list[str] | None = None) -> int:
             results["gate"]["reasons"].append("mutation(s) caught by neither the product nor the grader: " + ", ".join(slipped))
     if not args.no_eval_run:
         results["meta"]["eval_run_id"] = save_eval_run(engine, results)
-    json_path, md_path = write_results(results, Path(args.out))
+    json_path, md_path = write_results(results, Path(args.out), stem)
     engine.dispose()
 
     from evals.scorecard import render_summary
