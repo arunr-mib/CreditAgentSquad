@@ -12,6 +12,7 @@ from pathlib import Path
 import pytest
 from app.core import ledger
 from app.core.config import get_settings
+from app.core.ledger import LedgerEvent
 from app.domain import hooks  # noqa: F401
 from app.domain.credit import Borrower
 from app.domain.documents import Document
@@ -183,3 +184,40 @@ def test_the_ledger_chain_verifies_after_seeding_the_whole_book(seeded):
     db, _, _ = seeded
     ok, count, problem = ledger.verify_chain(db)
     assert ok and problem is None and count > 5000
+
+
+def test_stand_in_items_are_marked_as_seeded_and_never_block(seeded):
+    db, _, _ = seeded
+    stripple = borrower(db, "stripple-tech")
+    items = list(db.execute(select(WorkItem).where(
+        WorkItem.borrower_id == stripple.id,
+        WorkItem.item_type.in_(("intake.unclassified", "spread.value_unverified")))).scalars())
+    assert sorted(i.item_type for i in items) == ["intake.unclassified", "spread.value_unverified"]
+    for item in items:
+        assert item.evidence["seeded"] is True and item.blocks_stage is False
+        raised = db.execute(select(LedgerEvent).where(LedgerEvent.action == "work_item.raised",
+                                                      LedgerEvent.entity_id == str(item.id))).scalar_one()
+        assert (raised.actor_type, raised.actor_id) == ("system", "seed")
+
+
+def test_funding_evidence_belongs_to_the_borrower_and_each_event_is_recorded_once(seeded):
+    db, _, report = seeded
+    events = list(db.execute(select(FundingEvent)).scalars())
+    assert events and report.funding_evidence_skipped == 0
+    for event in events:
+        for doc_id in event.evidence_document_ids:
+            assert db.get(Document, doc_id).borrower_id == event.borrower_id
+        recorded = db.execute(select(LedgerEvent).where(LedgerEvent.action == "funding_event.recorded",
+                                                        LedgerEvent.entity_id == str(event.id))).scalars().all()
+        assert len(recorded) == 1
+
+
+def test_ferrogate_terms_are_v1_superseded_then_v2_approved(seeded):
+    db, _, _ = seeded
+    ferro = borrower(db, "ferrogate-cloud")
+    from app.domain.credit import Facility
+    rows = list(db.execute(select(TermsVersion).join(Facility, Facility.id == TermsVersion.facility_id).where(
+        Facility.borrower_id == ferro.id).order_by(TermsVersion.version)).scalars())
+    assert [(r.version, r.status) for r in rows] == [(1, "superseded"), (2, "approved")]
+    assert rows[0].effective_to == _day("2026-05-30") and rows[1].effective_from == _day("2026-05-31")
+

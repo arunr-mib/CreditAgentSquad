@@ -139,6 +139,7 @@ class SeedReport:
     funding_events: int = 0
     slipped_funding: int = 0
     skipped_documents: int = 0
+    funding_evidence_skipped: int = 0  # evidence documents a funding event names that were not ingested (e.g. --current none)
     provenance_warnings: dict[str, list[str]] = field(default_factory=dict)
 
 
@@ -274,6 +275,7 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
             borrower_id=borrower.id, kind=e["kind"], amount=_d(e["amount"]), expected_close=_day(e["expected_close"]),
             status=e["status"],
             evidence_document_ids=[str(documents[i].id) for i in e.get("evidence_document_ids", []) if i in documents])
+        report.funding_evidence_skipped += sum(1 for i in e.get("evidence_document_ids", []) if i not in documents)
         db.add(event)
         db.flush()
         ledger.record(db, actor_type=SEED_ACTOR[0], actor_id=SEED_ACTOR[1], action="funding_event.recorded",
@@ -359,7 +361,8 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         if is_current:
             chase_missing(db, borrower=borrower, cycle=cycle, today=as_of)
             for expected in truth["expected"]["exceptions"]:
-                if expected["type"] in SEEDED_ITEMS:
+                # stand-ins only in seeded mode: on a live run the agents raise the real items
+                if current == "seeded" and expected["type"] in SEEDED_ITEMS:
                     question, decisions, blocks = SEEDED_ITEMS[expected["type"]]
                     stage, permission = SEEDED_WHERE.get(expected["type"], ("spreading", "confirm_spread"))
                     raise_item(
