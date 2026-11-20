@@ -22,7 +22,7 @@ from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import get_page, read_file
 from app.domain.facts_service import add_fact, store_extracted_cell
 from app.domain.monitoring import Cycle
-from app.guardrails.numbers import extract_figures
+from app.guardrails.numbers import extract_figures, parse_printed_figure
 from app.guardrails.quotes import locate, quote_on_page, same_row, verify_cell
 from app.guardrails.units import scale_of, units_in
 
@@ -91,6 +91,17 @@ def _row_problem(row_label: str, covenant_id: str, names: dict[str, tuple[str, .
     return None
 
 
+def _unit_problem(unit: str, printed_unit: str) -> str | None:
+    """A percentage covenant is certified in percent and nothing else is: a figure printed with a
+    percent sign for any other covenant, or a percentage covenant printed without one, is a
+    disagreement about what the figure is, never rescaled quietly."""
+    if unit == "pct" and printed_unit != "%":
+        return "this covenant is a percentage but the figure is not printed with a percent sign"
+    if unit != "pct" and printed_unit == "%":
+        return f"the figure is printed as a percent but this covenant is measured in {unit}"
+    return None
+
+
 def read_certificate(db: Session, *, borrower: Borrower, document: Document, period_end: date, terms: Terms,
                      cycle: Cycle | None, llm: LLMClient) -> CertificateResult:
     result = CertificateResult()
@@ -136,6 +147,9 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
             located = verify_cell(page.words, printed_figure=row.actual_printed, printed_label=row.printed_label)
             if located.value is not None:
                 problem = _row_problem(located.row_label, row.covenant_id, names)
+            printed = parse_printed_figure(row.actual_printed)
+            if problem is None and printed is not None:
+                problem = _unit_problem(covenant.test.unit, printed.unit)
             if problem is None and units_in_doubt and covenant.test.unit == "usd":
                 problem = "the certificate prints an 'in thousands' phrase that was not reported, so dollar amounts cannot be scaled"
         if problem:
@@ -143,11 +157,13 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
             continue
         seen.add(row.covenant_id)
         unit = covenant.test.unit
+        per_cent = Decimal("0.01") if unit == "pct" else Decimal(1)  # the engine holds a percentage as a fraction
         fact, check = store_extracted_cell(
             db, borrower_id=borrower.id, key=f"cert.{covenant.id}.value", period_end=period_end, months=0,
             document=document, page_number=row.page, printed_figure=row.actual_printed,
             printed_label=row.printed_label, column_header=None, scale=scale if unit == "usd" else 1,
-            presentation_sign=1, agent_run_id=outcome.run.id, unit=unit, actor=("agent", "certificate_reader"))
+            presentation_sign=1, agent_run_id=outcome.run.id, unit=unit, unit_factor=per_cent,
+            actor=("agent", "certificate_reader"))
         if fact is None or not check.ok:
             result.unverified.append({"covenant_id": covenant.id, "reason": check.status, "detail": check.detail})
             continue
@@ -157,8 +173,11 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
                       agent_run_id=outcome.run.id, actor=("agent", "certificate_reader"))
         # the requirement and the compliance entry must sit on the covenant's own row
         figures = extract_figures(row.required_printed)
-        if len(figures) == 1 and _on_row(page, check.bbox, row.required_printed):
-            value = figures[0].value * (Decimal(scale) if unit == "usd" else Decimal(1))
+        if len(figures) == 1 and _unit_problem(unit, "%" if figures[0].kind == "percent" else "") is not None:
+            result.unverified.append({"covenant_id": covenant.id, "reason": "requirement_unverified",
+                                      "detail": _unit_problem(unit, "%" if figures[0].kind == "percent" else "")})
+        elif len(figures) == 1 and _on_row(page, check.bbox, row.required_printed):
+            value = figures[0].value * (Decimal(scale) if unit == "usd" else Decimal(1)) * per_cent
             add_fact(db, key=f"cert.{covenant.id}.threshold", value=value, unit=unit, quote=row.required_printed, **common)
         else:
             result.unverified.append({"covenant_id": covenant.id, "reason": "requirement_unverified",

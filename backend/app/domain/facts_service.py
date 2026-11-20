@@ -53,6 +53,7 @@ def store_extracted_cell(
     actor: tuple[str, str] = ("agent", "spreading"),
     doubt_for: Callable[[CellCheck, Decimal], str | None] | None = None,
     column_anchor: str | None = None, column_period: date | None = None, column_months: int = 0,
+    unit_factor: Decimal = Decimal(1),
 ) -> tuple[Fact | None, CellCheck]:
     """Verify one cell on its page and store it. The value comes from the page, never the model.
 
@@ -61,6 +62,8 @@ def store_extracted_cell(
     `doubt_for` is given what code found on the page (the row's label, the figure's place) and
     the value, and returns a reason to hold the cell for a person, or None; the label the reader
     reported is never what is judged.
+    `unit_factor` converts the printed unit to the stored one (a percentage printed "105.24%" is
+    stored as 1.0524); the quote still shows the figure as printed.
     With `column_period`, the column is decided from the page's own headers (see
     `guardrails.quotes.column_for_period`) and the header the reader reported is not used.
     """
@@ -74,7 +77,7 @@ def store_extracted_cell(
                         months=column_months)
     if check.value is None:
         return None, check
-    value = Decimal(presentation_sign) * check.value * Decimal(scale)
+    value = Decimal(presentation_sign) * check.value * Decimal(scale) * unit_factor
     doubt = doubt_for(check, value) if doubt_for is not None and check.ok else None
     fact = add_fact(
         db, borrower_id=borrower_id, key=key, period_end=period_end, months=months, value=value, unit=unit,
