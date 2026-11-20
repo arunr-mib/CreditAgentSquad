@@ -98,7 +98,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
                              "severity": i.severity, "status": i.status,
                              "allowed_decisions": offered(i.item_type, i.allowed_decisions),
                              # the briefing's own rule, for this viewer: the count and the button never disagree
-                             "needs_you": viewer is not None and rules.can_act(viewer, i),
+                             "needs_you": viewer is not None and rules.can_act(viewer, i, borrower),
                              "state_words": rules.state_words(i, names) if i.status == "open" else ""})
 
     for e in _events(db, "work_item.decided", item_ids):

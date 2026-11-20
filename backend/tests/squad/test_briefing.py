@@ -175,3 +175,58 @@ def test_an_unknown_required_permission_does_not_break_the_briefing(db, world):
     item.required_permission = "no_such_permission"
     db.flush()
     assert build_briefing(db, world["analyst"])["needs_you"] == 0
+
+
+def _tomas(db):
+    from app.domain.org import User
+    from sqlalchemy import select
+    return db.execute(select(User).where(User.email.like("tomas.keller@%"))).scalar_one()
+
+
+def test_an_unassigned_item_counts_only_for_the_clients_analyst(db, world):
+    tomas = _tomas(db)
+    world["borrower"].analyst_id = world["analyst"].id
+    item = _review(db, world["borrower"])
+    db.flush()
+    priya = build_briefing(db, world["analyst"])
+    other = build_briefing(db, tomas)
+    officer = build_briefing(db, world["officer"])
+    assert priya["needs_you"] == 1 and priya["items"][0]["state"] == "waiting for you"
+    mine = [i for i in other["items"] if i["work_item_id"] == str(item.id)]
+    assert other["needs_you"] == 0 and mine and mine[0]["needs_you"] is False and mine[0]["state"] == "with Priya Raman"
+    assert officer["needs_you"] == 1  # an officer is not an analyst; the assignment rule is the analysts'
+
+
+def test_a_client_with_no_analyst_counts_for_every_analyst(db, world):
+    _review(db, world["borrower"])
+    assert build_briefing(db, world["analyst"])["needs_you"] == 1
+    assert build_briefing(db, _tomas(db))["needs_you"] == 1
+
+
+def test_an_item_assigned_to_me_counts_whoever_the_clients_analyst_is(db, world):
+    tomas = _tomas(db)
+    world["borrower"].analyst_id = world["analyst"].id
+    item = _review(db, world["borrower"])
+    item.assigned_to = tomas.id
+    db.flush()
+    assert build_briefing(db, tomas)["needs_you"] == 1
+
+
+def test_overdue_reports_and_signals_count_only_for_the_clients_analyst(db, world):
+    from app.core import clock
+    from app.domain.monitoring import Signal
+    from app.domain.terms import ReportingObligation
+    tomas = _tomas(db)
+    world["borrower"].analyst_id = world["analyst"].id
+    f = _facility(db, world["borrower"])
+    today = clock.today(db)
+    db.add(ReportingObligation(borrower_id=world["borrower"].id, facility_id=f.id, requirement_id="q",
+                               document_type="quarterly_statements", period_end=today - timedelta(days=60),
+                               due_date=today - timedelta(days=5), status="overdue"))
+    db.add(Signal(borrower_id=world["borrower"].id, period_end=today, rule_id="dso_increase", rule_version="1",
+                  severity="high", status="open"))
+    db.flush()
+    priya, other, officer = (build_briefing(db, u) for u in (world["analyst"], tomas, world["officer"]))
+    assert priya["needs_you"] == 2
+    assert other["needs_you"] == 0 and len(other["items"]) == 2
+    assert officer["needs_you"] == 0 and len(officer["items"]) == 2

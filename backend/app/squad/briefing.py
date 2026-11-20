@@ -36,6 +36,10 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
     names = {u.id: u.name for u in db.execute(select(User)).scalars()}
     can_decide = can(user.role, Permission.DECIDE_WORK_ITEM)
 
+    def mine(borrower_id) -> bool:
+        """Overdue reports and signals are the client's analyst's to work; others see them listed."""
+        return can_decide and rules.is_clients_analyst(user, borrowers[borrower_id])
+
     def ref(borrower_id) -> dict[str, Any]:
         b = borrowers[borrower_id]
         return {"borrower_id": str(b.id), "borrower_code": b.code, "borrower_name": b.name}
@@ -52,10 +56,15 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         if w.status == "open":
             prepared_by_me = rules.prepared_by(user, w)
             second_person_blocked = rules.second_person_blocked(user, w)
-            if rules.can_act(user, w):
+            if rules.can_act(user, w, borrowers[w.borrower_id]):
                 state = "Squad asks" if kind == "question" else "waiting for you"
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": state, "needs_you": True,
                               "_due": w.due_date})
+            elif (rules.holds_permission(user, w) and not second_person_blocked and w.assigned_to is None
+                  and user.role == "analyst"):  # an analyst's colleague's client: listed, not counted
+                owner = names.get(borrowers[w.borrower_id].analyst_id, "a colleague")
+                items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": f"with {owner}",
+                              "needs_you": False, "_due": w.due_date})
             elif prepared_by_me and (second_person_blocked or (w.assigned_to and w.assigned_to != user.id)):
                 who = names.get(w.assigned_to, "a colleague") if w.assigned_to else "a second person"
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": f"with {who}",
@@ -70,7 +79,8 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
             days = (today - ob.due_date).days
             items.append({**ref(ob.borrower_id), "key": f"overdue:{ob.id}", "kind": "overdue_report",
                           "title": f"{ob.document_type.replace('_', ' ').capitalize()} for {ob.period_end:%B %Y} is overdue",
-                          "state": f"{days} days overdue", "severity": "medium", "needs_you": can_decide,
+                          "state": f"{days} days overdue", "severity": "medium",
+                          "needs_you": mine(ob.borrower_id),
                           "work_item_id": None, "_due": ob.due_date})
 
     seen_signals: set = set()
@@ -82,7 +92,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
             label = SIGNAL_LABELS.get(s.rule_id, s.rule_id.replace("_", " "))
             items.append({**ref(s.borrower_id), "key": f"signal:{s.borrower_id}", "kind": "signal",
                           "title": f"Signal: {label}", "state": "new signal", "severity": s.severity,
-                          "needs_you": can_decide, "work_item_id": None, "_due": None})
+                          "needs_you": mine(s.borrower_id), "work_item_id": None, "_due": None})
 
     horizon = today + timedelta(days=FUNDING_WINDOW_DAYS)
     for f in db.execute(select(FundingEvent).where(FundingEvent.status.in_(("expected", "signed")),
