@@ -27,3 +27,18 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 6. Phase 5 hosting pre-approved: a new Vercel project and a new `squad2` schema in the existing Supabase project, free tiers.
 7. The owner will start recruiting 4 analysts and 1 credit officer for the usability sessions.
 8. Git tags: approved, then skipped by the owner (the session cannot push tags). The pre-v2 version is commit 2292b38.
+
+## Waiting for you (end of Phase 1, 20 Nov)
+
+1. **Start Phases 2 and 4?** Phase 1 is done and verified. I paused before the two builds to stay within "not much beyond $10 while I'm out": Phase 2 is 10 tasks and Phase 4a is 15, each built and reviewed by separate agents. Say "go" and both start (Phase 4 in its own worktree).
+2. **Names to check against real companies** before anything is shown outside the team (no web search done): Stripple, Tessaract, Dataflake, Veridia, Halcyon, Quillon first; the full list of 16 companies and 16 officers is in the Phase 2 plan, Task 10.
+3. **Phase 2 choices I made where the spec was silent** (plan header, rulings table; overrule any):
+   - Figures for the four extra clients:
+     - Corvane: $8.4M cash, $0.60M burn, RML 14.0
+     - Nimbusfield: $3.3M cash, $0.40M burn, RML 8.3
+     - Tidewell: $4.3M cash after the restricted account, $0.35M burn, RML 12.3
+     - Ferrogate: $16.0M cash, burn −$0.25M (cash-flow positive)
+   - Due days: financials and certificate 30, MRR report 15, bank statements 7.
+   - Every client has a drawn Bank of Stoic venture term loan.
+   - Ferrogate gets a DSCR covenant from May 2026, per your earlier "have DSCR as well".
+4. **SaaS figures on monthly packs:** today every startup spread needs MRR, ARR and customer count. *Proposed: those come from the monthly MRR report, and a financial pack without them still spreads.* This will be built in Phase 2 unless you say otherwise.
