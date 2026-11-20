@@ -31,9 +31,12 @@ One row per financial covenant. `name` is the defined term as printed. `covenant
 - `min_liquidity`: a floor on cash, with or without unused availability (`include_availability`).
 - `max_capex`: a ceiling on capital expenditures.
 - `debt_to_tnw`: total liabilities divided by tangible net worth.
+- `min_unrestricted_cash`: a floor on cash the borrower holds free of pledges or restrictions (venture agreements). Unit `usd`, basis `point`.
+- `min_runway_months`: a floor on months of runway, cash divided by recent monthly net burn. Unit `months`, basis `t3m` (trailing three months of burn).
+- `revenue_vs_plan`: revenue or recurring revenue measured against an approved plan. Report the row, but know that the plan figures are not read from the agreement: a person approves them.
 - `other`: anything else. It will be sent to a person; do not force it into another archetype.
 
-Set fields that do not apply to the archetype to `not_applicable` or an empty list. `operator` is the direction of the test as the covenant is written: "not less than" is `>=`, "not to exceed" is `<=`. `unit` is `ratio` for a ratio and `usd` for a dollar amount. `basis` is `ttm` for a measure over four consecutive quarters, `point` for a balance at a date, `fy` for a fiscal year, `ytd` for the year to date. `frequency` is how often the covenant is tested.
+Set fields that do not apply to the archetype to `not_applicable` or an empty list. `operator` is the direction of the test as the covenant is written: "not less than" is `>=`, "not to exceed" is `<=`. `unit` is `ratio` for a ratio, `usd` for a dollar amount and `months` for a number of months. `basis` is `ttm` for a measure over four consecutive quarters, `t3m` for the trailing three months, `point` for a balance at a date, `fy` for a fiscal year, `ytd` for the year to date. `frequency` is how often the covenant is tested.
 
 A scheduled change in a covenant's level goes in `steps`: one row per change, with the date it applies from and the new level, both as printed in the quoted sentence.
 

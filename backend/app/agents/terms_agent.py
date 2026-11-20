@@ -41,13 +41,13 @@ from app.guardrails.narrative import check_narrative
 from app.guardrails.numbers import blank_non_figures, extract_figures, same_number
 from app.guardrails.quotes import dates_in, quote_on_page
 
-PREPARED_BY = ("agent", "terms@1")
+PREPARED_BY = ("agent", "terms@2")
 # The agreements state rounding in words; the convention applied here is shown to the approver.
-ROUNDING_DP = {"ratio": 2, "usd": 0, "pct": 2, "days": 0, "count": 0}
+ROUNDING_DP = {"ratio": 2, "usd": 0, "pct": 2, "days": 0, "count": 0, "months": 1}
 
 Operator = Literal[">=", "<=", ">", "<"]
-Unit = Literal["ratio", "usd", "pct", "days", "count"]
-Basis = Literal["ttm", "ytd", "point", "fy"]
+Unit = Literal["ratio", "usd", "pct", "days", "count", "months"]
+Basis = Literal["ttm", "ytd", "point", "fy", "t3m"]
 Frequency = Literal["monthly", "quarterly", "semiannual", "annual"]
 Collateral = Literal["accounts_receivable", "inventory", "other"]
 
@@ -64,7 +64,8 @@ class CovenantRow(BaseModel):
     covenant_id: str
     name: str
     archetype: Literal["coverage", "leverage", "current_ratio", "min_tangible_net_worth", "min_liquidity",
-                       "max_capex", "debt_to_tnw", "other"]
+                       "max_capex", "debt_to_tnw", "min_unrestricted_cash", "min_runway_months",
+                       "revenue_vs_plan", "other"]
     operator: Operator
     unit: Unit
     basis: Basis
@@ -154,7 +155,7 @@ class TermsReading(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="terms", version="1",
+    name="terms", version="2",
     purpose="Locate covenant terms in a credit agreement and its amendments; code verifies each clause and number.",
     prompt_file="terms.md", output_model=TermsReading, tools=(), effort="high", max_tokens=32000)
 
@@ -176,6 +177,8 @@ _REASONS = {
     "date_unverified": "the date could not be read from the quoted clause",
     "not_supported": "this term does not fit a formula code can calculate; a person must write it",
     "incomplete": "the row leaves out a choice its archetype needs",
+    "plan_needed": "a revenue-versus-plan covenant is measured against plan figures a person approves; "
+                   "they are not read from the agreement",
     "duplicate": "the same term was reported twice from one document",
     "covenant_missing": "the covenant this step belongs to is not in the terms",
     "amendment_not_applied": "something cited to this amendment could not be verified, so none of it was applied",
@@ -543,6 +546,8 @@ class _Draft:
     def _params(row: CovenantRow, step_up: _Reading | None) -> tuple[dict[str, Any], str | None]:
         if row.archetype == "other":
             return {}, "not_supported"
+        if row.archetype == "revenue_vs_plan":
+            return {}, "plan_needed"  # the plan months are approved separately, never typed from the agreement
         if row.archetype == "coverage":
             if row.earnings == "not_applicable" or not row.denominator:
                 return {}, "incomplete"
@@ -843,7 +848,7 @@ def extract_terms(db: Session, *, facility: Facility, documents: list[Document],
         item.guardrail_notes = result.notes
         result.version, result.work_item, result.terms = version, item, terms
         result.effective_from, result.source_document_ids = effective_from, sources
-    ledger.record(db, actor_type="agent", actor_id="terms@1", action="terms.extracted",
+    ledger.record(db, actor_type="agent", actor_id="terms@2", action="terms.extracted",
                   entity_type="facility", entity_id=facility.id,
                   payload={"status": result.status, "version": version.version if version else None,
                            "unverified": len(result.unverified), "left_out": list(dict.fromkeys(draft.left_out)),

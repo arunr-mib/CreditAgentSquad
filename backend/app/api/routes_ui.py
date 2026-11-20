@@ -371,7 +371,8 @@ def locate_quote(document_id: uuid.UUID, page_number: PageNumber, quote: str, db
 
 # ── calculations in plain words ──────────────────────────────────────────
 
-_BASIS = {"ttm": "trailing twelve months", "point": "at the period end", "ytd": "year to date", "quarter": "quarter"}
+_BASIS = {"ttm": "trailing twelve months", "point": "at the period end", "ytd": "year to date", "quarter": "quarter",
+          "t3m": "trailing three months"}
 
 
 def _line_name(key: str) -> str:

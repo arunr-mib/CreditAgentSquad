@@ -256,7 +256,7 @@ def test_agreement_alone_reproduces_the_books_terms_with_clean_citations(book, c
     assert result.version.effective_from == date.fromisoformat(tv["effective_from"])
     assert result.version.source_document_ids == tv["source_documents"]
     assert (result.version.status, result.version.prepared_by_type, result.version.prepared_by_id) == (
-        "proposed", "agent", "terms@1")
+        "proposed", "agent", "terms@2")
     assert result.version.agent_run_id == result.run_id
     # one call, with each document attached as a PDF and named by id
     assert len(llm.requests) == 1
@@ -553,3 +553,48 @@ def test_a_note_with_a_typed_figure_is_removed_and_the_model_has_no_field_for_a_
     rows = strict_schema(TermsReading)["$defs"]
     integers = {name for row in rows.values() for name, prop in row["properties"].items() if prop.get("type") == "integer"}
     assert integers == {"page", "definition_page"}
+
+
+# ---- the venture covenants -----------------------------------------------------------------
+
+def _row(archetype, *, unit, basis, operator=">="):
+    return {"covenant_id": archetype, "name": archetype.replace("_", " ").title(), "archetype": archetype,
+            "operator": operator, "unit": unit, "basis": basis, "frequency": "monthly", "earnings": "not_applicable",
+            "debt": "not_applicable", "deductions": [], "denominator": [], "include_availability": "not_applicable",
+            "threshold_printed": "9 months", "net_income_step_up_printed": "", "document_id": "d", "page": 1,
+            "section": "7.1", "quote": "q", "definition_document_id": "d", "definition_page": 1,
+            "definition_section": "1.1", "definition_quote": "q"}
+
+
+@pytest.mark.parametrize("archetype,unit,basis", [
+    ("min_unrestricted_cash", "usd", "point"), ("min_runway_months", "months", "t3m"),
+    ("revenue_vs_plan", "pct", "t3m"), ("revenue_vs_plan", "usd", "point")])
+def test_the_terms_agent_schema_accepts_the_venture_covenants(archetype, unit, basis):
+    from app.agents.terms_agent import CovenantRow
+    row = CovenantRow.model_validate(_row(archetype, unit=unit, basis=basis))
+    assert (row.archetype, row.unit, row.basis) == (archetype, unit, basis)
+    schema = json.dumps(strict_schema(TermsReading))
+    for word in (archetype, '"months"', '"t3m"'):
+        assert word in schema
+
+
+def test_a_venture_covenant_row_builds_parameter_free_terms_and_a_plan_covenant_is_left_for_a_person():
+    from app.agents.terms_agent import CovenantRow, _Draft
+    for archetype, unit, basis in (("min_unrestricted_cash", "usd", "point"), ("min_runway_months", "months", "t3m")):
+        row = CovenantRow.model_validate(_row(archetype, unit=unit, basis=basis))
+        assert _Draft._params(row, None) == ({}, None)
+    plan = CovenantRow.model_validate(_row("revenue_vs_plan", unit="pct", basis="t3m"))
+    assert _Draft._params(plan, None) == ({}, "plan_needed")
+
+
+def test_the_terms_agent_was_given_a_new_version_for_the_new_prompt():
+    from app.agents.terms_agent import SPEC
+    assert SPEC.version == "2"
+    prompt = (REPO / "backend" / "app" / "agents" / "specs" / "terms.md").read_text()
+    for word in ("min_unrestricted_cash", "min_runway_months", "revenue_vs_plan", "t3m", "months"):
+        assert word in prompt
+
+
+def test_the_workspace_has_plain_words_for_the_trailing_three_month_basis():
+    from app.api.routes_ui import _BASIS
+    assert _BASIS["t3m"] == "trailing three months"
