@@ -21,7 +21,7 @@ from app.core.roles import Permission
 from app.domain import corrections, facts_service, lessons, terms_service
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
-from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
+from app.domain.documents_service import DocumentRefused, ingest_document, read_file
 from app.domain.facts import CalcRun, Fact
 from app.domain.funding import KINDS as FUNDING_KINDS
 from app.domain.funding import FundingEvent, update_funding_event, valid_evidence
@@ -218,8 +218,8 @@ async def upload_document(
         raise HTTPException(413, f"The file is larger than the {MAX_UPLOAD_BYTES // (1024 * 1024)} MB limit "
                                  "for an upload.")
     try:
-        doc = ingest_pdf(db, borrower_id=borrower_id, data=data, file_name=file.filename or "upload.pdf",
-                         title=title, received_date=today(db), uploaded_by=user.id, actor=("user", str(user.id)))
+        doc = ingest_document(db, borrower_id=borrower_id, data=data, file_name=file.filename or "upload.pdf",
+                               title=title, received_date=today(db), uploaded_by=user.id, actor=("user", str(user.id)))
     except DocumentRefused as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()

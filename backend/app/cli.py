@@ -129,7 +129,7 @@ def restore_files(db: Session, root: str) -> int:
 
     wanted = {d.sha256: d for d in db.execute(select(Document)).scalars() if not Path(d.storage_path).exists()}
     restored = 0
-    for path in sorted(Path(root).rglob("*.pdf")):
+    for path in sorted(p for p in Path(root).rglob("*") if p.suffix.lower() in (".pdf", ".xlsx", ".csv")):
         data = path.read_bytes()
         document = wanted.pop(hashlib.sha256(data).hexdigest(), None)
         if document is not None:

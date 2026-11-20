@@ -120,7 +120,9 @@ class Borrower:
         return [d for d in docs if d.get("period_end") == period_end.isoformat()]
 
     def document_by_file(self, file_name: str) -> dict[str, Any] | None:
-        return next((d for d in self.truth["documents"] if Path(d["path"]).name == file_name), None)
+        docs = self.truth["documents"]
+        return next((d for d in docs if Path(d["path"]).name == file_name), None) or next(
+            (d for d in docs if (d.get("workbook") or {}).get("path", "").endswith("/" + file_name)), None)
 
     def document_by_sha(self, sha256: str) -> dict[str, Any] | None:
         if not self._sha:

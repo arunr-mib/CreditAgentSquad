@@ -51,7 +51,9 @@ _RULES: list[tuple[str, re.Pattern[str]]] = [
     ("investor_update", re.compile(r"investor update|letter to investors", re.I)),
     ("term_sheet", re.compile(r"term sheet|summary of terms", re.I)),
     ("credit_agreement", re.compile(
-        r"^[ \t]*(?:venture[ \t]+)?(?:credit|loan(?:[ \t]+and[ \t]+security)?)\s+agreement[ \t]*$", re.I | re.M)),
+        r"^[ \t]*(?:(?:first|second|third|fourth)[ \t]+)?(?:amended[ \t]+and[ \t]+restated[ \t]+)?"
+        r"(?:venture[ \t]+)?(?:credit|loan(?:[ \t]+and[ \t]+security)?)\s+agreement"
+        r"(?:[ \t]*$|[ \t]+(?:dated|among|between|by[ \t]+and)\b)", re.I | re.M)),
     # only a report title files an MRR report ("MRR report", "recurring revenue report"): a bare
     # "ARR", "MRR" or "monthly recurring revenue" is a KPI line on page one of an investor update or
     # a monthly pack. It comes before the monthly rule because an MRR report is headed "month ended" too.

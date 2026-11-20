@@ -161,13 +161,15 @@ def test_funding_events_are_seeded_and_only_nimbusfields_has_slipped(seeded):
                                                  WorkItem.item_type == "funding_slipped")).scalars().all()) == 1
 
 
-def test_the_stray_mrr_export_is_held_unclassified_and_the_workbook_is_not_filed(seeded):
+def test_the_stray_mrr_export_is_held_unclassified_and_the_workbook_is_what_arrives(seeded):
     db, _, report = seeded
     stripple = borrower(db, "stripple-tech")
     docs = list(db.execute(select(Document).where(Document.borrower_id == stripple.id)).scalars())
     held = [d for d in docs if d.meta.get("external_id") == "stripple-tech.mrr-export"]
     assert len(held) == 1 and held[0].doc_type is None and held[0].period_end is None
-    assert not [d for d in docs if d.file_name.endswith(".xlsx")] and report.skipped_documents == 1
+    assert held[0].file_name == "mrr_export.xlsx" and held[0].meta["format"] == "xlsx"
+    assert not [d for d in docs if d.file_name.endswith(".pdf") and d.file_name.startswith("mrr_export")]
+    assert report.skipped_documents == 1  # the PDF print of the workbook
 
 
 def test_venture_clients_run_monthly_cycles_and_the_kept_four_stay_quarterly(seeded):

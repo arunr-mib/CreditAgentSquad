@@ -8,7 +8,7 @@ from evals.book import generate_book, load_book
 from evals.run import LoadedBorrower, _settle, scratch_file_store
 from evals.standin import StandInReader
 
-STAGE_ORDER = ("awaiting_package", "spreading", "covenant_testing", "borrowing_base", "signals")
+STAGE_ORDER = ("awaiting_package", "intake", "spreading", "covenant_testing", "borrowing_base", "signals")
 
 
 @pytest.fixture(scope="session")

@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from app.core import ledger
 from app.core.config import get_settings
 from app.domain.documents import DOCUMENT_TYPES, Document, DocumentPage
+from app.domain.spreadsheets import spreadsheet_pages
 
 MIN_TEXT_CHARS = 20  # a page with less text than this is treated as an image
 
@@ -22,9 +23,9 @@ class DocumentRefused(Exception):
     pass
 
 
-def _store(data: bytes, sha: str) -> str:
+def _store(data: bytes, sha: str, suffix: str = ".pdf") -> str:
     root = Path(get_settings().file_store_dir)
-    path = root / sha[:2] / f"{sha}.pdf"
+    path = root / sha[:2] / f"{sha}{suffix}"
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():
         path.write_bytes(data)
@@ -87,6 +88,52 @@ def ingest_pdf(
     return doc
 
 
+def ingest_document(db: Session, *, borrower_id: uuid.UUID, data: bytes, file_name: str, **kwargs) -> Document:
+    """A PDF, an .xlsx workbook or a .csv file. Anything else is refused."""
+    name = file_name.lower()
+    if data.startswith(b"%PDF"):
+        return ingest_pdf(db, borrower_id=borrower_id, data=data, file_name=file_name, **kwargs)
+    if name.endswith(".csv") or (name.endswith(".xlsx") and data[:2] == b"PK"):
+        return _ingest_sheets(db, borrower_id=borrower_id, data=data, file_name=file_name, **kwargs)
+    raise DocumentRefused("Only PDF, Excel (.xlsx) and CSV files are accepted.")
+
+
+def _ingest_sheets(
+    db: Session, *, borrower_id: uuid.UUID, data: bytes, file_name: str, title: str | None = None,
+    facility_id: uuid.UUID | None = None, doc_type: str | None = None, doc_type_source: str = "unclassified",
+    period_end: date | None = None, received_date: date | None = None, effective_date: date | None = None,
+    source: str = "upload", uploaded_by: uuid.UUID | None = None, actor: tuple[str, str] = ("system", "intake"),
+) -> Document:
+    if doc_type is not None and doc_type not in DOCUMENT_TYPES:
+        raise DocumentRefused(f"Unknown document type {doc_type!r}.")
+    kind = "csv" if file_name.lower().endswith(".csv") else "xlsx"
+    try:
+        sheets = spreadsheet_pages(data, file_name)
+    except Exception as exc:  # noqa: BLE001
+        raise DocumentRefused(f"The file could not be read as a spreadsheet: {exc}") from exc
+    if not sheets:
+        raise DocumentRefused("The spreadsheet has no sheets.")
+    sha = hashlib.sha256(data).hexdigest()
+    doc = Document(
+        borrower_id=borrower_id, facility_id=facility_id, title=title or file_name, file_name=file_name,
+        storage_path=_store(data, sha, f".{kind}"), sha256=sha, page_count=len(sheets), doc_type=doc_type,
+        doc_type_source=doc_type_source if doc_type else "unclassified", period_end=period_end,
+        received_date=received_date, effective_date=effective_date, source=source, uploaded_by=uploaded_by)
+    db.add(doc)
+    db.flush()
+    for index, sheet in enumerate(sheets, start=1):
+        db.add(DocumentPage(document_id=doc.id, page_number=index, text="\n".join(sheet.lines), words=[],
+                            width=0.0, height=0.0, has_text=bool(sheet.lines)))
+    doc.meta = {"image_only_pages": [], "format": kind, "sheets": [s.name for s in sheets]}
+    doc.status = "indexed"
+    ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="document.received",
+                  entity_type="document", entity_id=doc.id,
+                  payload={"borrower_id": borrower_id, "file_name": file_name, "sha256": sha, "pages": doc.page_count,
+                           "image_only_pages": [], "format": kind, "source": source})
+    db.flush()
+    return doc
+
+
 def get_page(db: Session, document_id: uuid.UUID, page_number: int) -> DocumentPage | None:
     return db.execute(select(DocumentPage).where(
         DocumentPage.document_id == document_id, DocumentPage.page_number == page_number)).scalar_one_or_none()
@@ -102,7 +149,7 @@ def _fallback_file(sha256: str) -> Path | None:
     if not root:
         return None
     if _FALLBACK is None:
-        _FALLBACK = {hashlib.sha256(path.read_bytes()).hexdigest(): path for path in Path(root).rglob("*.pdf")}
+        _FALLBACK = {hashlib.sha256(path.read_bytes()).hexdigest(): path for path in Path(root).rglob("*") if path.suffix.lower() in (".pdf", ".xlsx", ".csv")}
     return _FALLBACK.get(sha256)
 
 

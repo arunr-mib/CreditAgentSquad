@@ -31,7 +31,7 @@ from app.domain.collateral_service import review_borrowing_base, store_line_avai
 from app.domain.covenant_service import run_covenant_tests
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document
-from app.domain.documents_service import ingest_pdf
+from app.domain.documents_service import ingest_document
 from app.domain.facts_service import add_fact
 from app.domain.funding import FundingEvent, check_funding_events
 from app.domain.monitoring import STAGES, Cycle
@@ -249,12 +249,18 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         path = docs_root / d["path"]
         if not path.exists():
             continue
-        if path.suffix.lower() != ".pdf":  # the workbook beside a held export: intake takes PDFs only
+        held = bool(d.get("held"))  # a file that cannot be placed arrives unclassified, in every mode
+        # Ruling: the truth lists the PDF print of a held export and names the real workbook under "workbook".
+        # The workbook is what arrives (intake ingests spreadsheets); the print is not loaded and is counted skipped.
+        workbook = d.get("workbook")
+        if workbook and held and (docs_root / workbook["path"]).exists():
+            path = docs_root / workbook["path"]
+            report.skipped_documents += 1
+        elif path.suffix.lower() != ".pdf":
             report.skipped_documents += 1
             continue
-        held = bool(d.get("held"))  # a file that cannot be placed arrives unclassified, in every mode
         filed = not held and not (is_current and current == "live")
-        doc = ingest_pdf(
+        doc = ingest_document(
             db, borrower_id=borrower.id, data=path.read_bytes(), file_name=path.name, title=d["title"],
             doc_type=doc_type(d["type"]) if filed else None, doc_type_source="system", period_end=period_end if filed else None,
             received_date=_day(d.get("received_date")),
@@ -263,11 +269,6 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         doc.meta = {**doc.meta, "external_id": d["id"]}
         documents[d["id"]] = doc
         report.documents += 1
-        # Ruling: the truth lists only the PDF print of a held export and names its workbook under "workbook";
-        # intake takes PDFs only, so that companion file is counted as skipped rather than filed.
-        workbook = d.get("workbook")
-        if workbook and (docs_root / workbook["path"]).exists() and not workbook["path"].lower().endswith(".pdf"):
-            report.skipped_documents += 1
     db.flush()
 
     for e in truth.get("funding_events", []):

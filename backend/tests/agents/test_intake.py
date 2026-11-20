@@ -204,3 +204,22 @@ def test_late_reporting_with_no_chaser_still_raises_the_early_warning(db, world)
     run_signals(db, borrower=borrower, period_end=PERIOD, as_of=date(2026, 12, 3), cycle=cycle)
     items = db.execute(select(WorkItem).where(WorkItem.status == "open")).scalars().all()
     assert [w.item_type for w in items] == ["signal.high"]
+
+
+@pytest.mark.parametrize("head", [
+    "AMENDED AND RESTATED CREDIT AGREEMENT\ndated as of March 1, 2024",
+    "Credit Agreement dated as of March 1, 2024",
+    "Second Amendment to Amended and Restated Credit Agreement",   # an amendment, not a credit agreement
+    "VENTURE LOAN AND SECURITY AGREEMENT",
+    "Loan and Security Agreement among Veridia Payments and Bank of Stoic",
+])
+def test_the_credit_agreement_heading_anchor_handles_real_titles(head):
+    from app.agents.intake import rule_type
+    expected = "amendment" if head.startswith("Second Amendment") else "credit_agreement"
+    assert rule_type(head) == expected
+
+
+def test_a_bank_statement_note_about_the_agreement_is_not_a_credit_agreement():
+    from app.agents.intake import rule_type
+    assert rule_type("Collateral account pledged under the venture loan agreement\nOpening balance") != "credit_agreement"
+    assert rule_type("Note: see the Credit Agreement dated March 1, 2024 for terms of the loan.") is None
