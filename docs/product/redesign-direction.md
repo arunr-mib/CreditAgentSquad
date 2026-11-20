@@ -28,6 +28,8 @@ Clickable demo: "Squad muse style demo" (`docs/product/prototype/carly-morning.h
 
 ## Behavioural design principles
 
+- **Muse in tone and conversation, command centre in numbers and evidence.** Squad can be talked to, interrupted and asked why; it shows its work while it works and asks the analyst real questions. Every figure it says stays cold and cited: the demo answers free questions only from a fixed evidence pack, code checks every number against that pack, retries once, then refuses and opens the evidence.
+
 - Design for **calibrated trust**, not engagement: make checking as easy as approving; keep deliberate friction where judgement is needed (reason required, second person); show the squad's measured accuracy per borrower and task.
 - Triggers are rare and earned. The investment loop is teaching the squad (briefs, autonomy per borrower, learned habits), with autonomy earned from measured accuracy.
 

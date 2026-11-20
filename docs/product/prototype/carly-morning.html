@@ -219,6 +219,19 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .endcard { text-align: center; padding: 36px 24px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .endcard h2 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
 
+/* free ask */
+.workline { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--squad-ink); }
+.checked { font-size: 12px; color: var(--ok); font-weight: 600; }
+.checked .proto { font-weight: 400; }
+.checked .gnote { color: var(--warn); }
+.chip.cite { height: 28px; font-size: 12px; color: var(--ink-2); background: #fbfaf6; }
+button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
+.askcard { border: 1px solid var(--squad-line); background: #fcfbff; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.askcard .q { font-size: 17px; font-weight: 600; line-height: 1.35; }
+.later { animation: rise .3s ease-out both; animation-delay: 3s; }
+.livetrail li { animation-duration: .35s; }
+@media (prefers-reduced-motion: reduce) { .later { animation: none; } }
+
 /* dive point into the command centre: one label everywhere */
 .cc { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; padding: 0; font-size: 13px; font-weight: 600; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
 .cc:hover { color: var(--ink); text-decoration-color: var(--ink); }
@@ -307,7 +320,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
     { t: "Upload: Intake files it", h: "Intake files what it can and holds what it cannot place. Squad drafts; Carly sends.", go: "Click <b>Review the 2 figures</b>." },
     { t: "Review in place, teach once", h: "The figure sits beside its page. The track record says how far to trust Squad on this company.", go: "Pick a line and <b>Confirm</b>." },
     { t: "Squad is wrong; Carly corrects", h: "A correction keeps the old figure in history, re-runs what depends on it, and teaches Squad.", go: "Click <b>That's wrong</b>, then <b>Correct it</b>." },
-    { t: "Investigate Dataflake Inc", h: "One message, the work trail one click below, the evidence in a drawer that closes when done.", go: "Open <b>How I got here</b>, then <b>Inspect the definition</b>." },
+    { t: "Investigate Dataflake Inc", h: "One message, the work trail one click below, the evidence in a drawer that closes when done.", go: "Watch Squad work. Ask it anything about Dataflake (try <b>why is the pledged cash excluded?</b>), then answer its question." },
     { t: "Prepare, message, route", h: "Squad drafts the recommendation and the borrower email. Carly adds her view, sends, and routes it.", go: "Click <b>Route to Helen</b>." },
     { t: "Helen returns it; Carly finishes", h: "The credit officer decides with a reason. A return comes back to Carly's thread with the note.", go: "As Helen, choose <b>Return to Carly</b> and record it; then send it back. <b>Finish</b> shows the summary." },
   ];
@@ -317,7 +330,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
   let s = {};
   let run = {};   // what Carly did in this run; survives step changes, cleared by Restart
   const resetLocal = () => { s = { trail: false, drawer: false, line: run.line || "deferred", remember: run.remember ?? true, wrong: false, fixed: false, view: "", stack: [], helen: "return", helenDone: false, approved: false, reqDraft: false, lumoraDraft: true, uploaded: false }; };
-  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: true, mailSent: false, lumoraSent: false, helenReason: "" }; };
+  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: true, mailSent: false, lumoraSent: false, helenReason: "", asks: [], certChoice: "", certAsked: false }; };
   resetRun(); resetLocal();
 
   const $ = (id) => document.getElementById(id);
@@ -386,14 +399,16 @@ label.lbl { font-size: 13px; font-weight: 600; }
     $("composer").innerHTML = `<div class="box" id="dropbox">
       <button class="iconbtn" type="button" id="attach" aria-label="Attach documents">${ico.clip}</button>
       <label for="say" style="position:absolute;left:-9999px">Message Squad</label>
-      <input id="say" placeholder="${canDrop ? "Drop Stripple Tech's October package here, or click the paperclip" : "Talk to Squad, or drop documents…"}" autocomplete="off">
+      <input id="say" placeholder="${canDrop ? "Drop Stripple Tech's October package here, or click the paperclip" : { dataflake: "Ask Squad anything about Dataflake…", stripple: "Ask Squad anything about Stripple Tech's October package…", lumora: "Ask Squad anything about Lumora Health…", portfolio: "Ask Squad about your portfolio…" }[ctxOf()]}" autocomplete="off">
       <button class="iconbtn dark" type="button" id="sendsay" aria-label="Send">${ico.send}</button></div>`;
     const box = $("dropbox");
     const doDrop = () => { if (canDrop) go(2); else toast("In this walk-through, the upload is the move from step 2 to step 3."); };
     $("attach").addEventListener("click", doDrop);
     ["dragenter", "dragover"].forEach((e) => box.addEventListener(e, (ev) => { ev.preventDefault(); box.classList.add("over"); }));
     ["dragleave", "drop"].forEach((e) => box.addEventListener(e, (ev) => { ev.preventDefault(); box.classList.remove("over"); if (e === "drop") doDrop(); }));
-    $("sendsay").addEventListener("click", () => { const v = $("say").value.trim(); if (v) { toast("This prototype follows a script; free questions come in the real build."); $("say").value = ""; } });
+    const send = () => { const v = $("say").value.trim(); if (!v) return; $("say").value = ""; ask(v.slice(0, 500)); };
+    $("sendsay").addEventListener("click", send);
+    $("say").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); send(); } });
   }
 
   // ---------- thread history (what has happened before the current step) ----------
@@ -420,7 +435,34 @@ label.lbl { font-size: 13px; font-weight: 600; }
       <div class="trust">Track record on Stripple Tech <b>412 of 413</b> figures right over 7 months · corrected once, by you, today</div>
       <div>${dive("co:Stripple Tech")}</div>`, "Squad · Spreading");
   }
+  function certQuestion() {
+    if (run.certChoice === "email") return `<div class="trust">You chose: recommend now and ask Dataflake about the pledged cash in the same email.</div><div class="row"><button class="btn dark" type="button" data-act="prep">Prepare the case</button><button class="btn" type="button" data-act="certundo">Change my mind</button></div>`;
+    if (run.certChoice === "first") return run.certAsked ?
+      `<div class="trust">Sent as Carly: “Could you tell us why the October certificate counted the $0.7M pledged for the letter of credit?” · <i>prototype: nothing was really sent</i></div><div class="row"><button class="btn dark" type="button" data-act="prep">Prepare the case</button></div>` :
+      `<div class="email"><div class="hd"><span>To: cfo@dataflake.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span></div><label for="certq" style="position:absolute;left:-9999px">Question to Dataflake</label><textarea id="certq">Hi Marcus,
+
+Quick one on the October certificate: it counts the $0.7M held for the letter of credit as cash. Could you tell us why? Under §1.1 we exclude pledged cash.
+
+Thanks,
+Carly</textarea></div>
+       <div class="row"><button class="btn primary" type="button" data-act="certsend">Send as Carly</button><button class="btn" type="button" data-act="certundo">Change my mind</button></div>`;
+    return `<div class="askcard"><div class="row"><span class="squadmark">${mark(16, "rest")}Squad asks</span></div>
+      <div class="q">Before I draft the case: the certificate counted the $0.7M pledged cash. Do you want to ask Dataflake why first, or recommend now and ask in the same email?</div>
+      <div class="row"><button class="btn primary" type="button" data-act="certemail">Recommend now, ask in the email</button><button class="btn" type="button" data-act="certfirst">Ask them first</button></div></div>`;
+  }
   function dataflakeMsg(anim) {
+    const live = s.live;
+    const steps = [
+      ["Intake", "Filed the October compliance certificate; names Dataflake, period 31 Oct 2026", "✓ borrower and period"],
+      ["Certificate", "Read reported cash of $5.3M on page 1", "✓ found on the page"],
+      ["Spreading", "Read cash from the bank statements: $4.6M operating, $0.7M in a pledged account", "✓ ties to statements"],
+      ["Code", "Applied the unrestricted cash definition; tested $4.6M against $5.0M", "✓ exact decimals"],
+      ["Terms", "Found the definition in §1.1 that excludes pledged cash", "✓ quote verified, p. 4"],
+    ];
+    if (live) return `<div class="msg">${mark(28, "work")}<div class="msgbody"><div class="meta"><b>Squad · working</b> <button class="btn ghost" type="button" data-act="skiplive" style="height:auto;padding:0 6px;font-size:12px">Skip</button></div>
+      <div class="workline"><span class="typing"><i></i><i></i><i></i></span>Checking Dataflake's October certificate…</div>
+      <div class="trail"><ol class="livetrail" style="padding-top:6px">${steps.map((x, i) => `<li style="animation-delay:${0.25 + i * 0.5}s"><span class="k">${i + 1}</span><b class="who2">${x[0]}</b><span>${x[1]}</span><span class="ck">${x[2]}</span></li>`).join("")}</ol></div></div></div>`;
+    const ask = step === 5 || (s.view === "chat:dataflake" && step < 6) ? certQuestion() : run.certChoice ? certQuestion().replace(/<div class="row">[\s\S]*$/, "") : "";
     return squadMsg(`<p class="text">Dataflake Inc missed its minimum cash covenant. Unrestricted cash is <b class="num">$4.6M</b> against a <b class="num">$5.0M</b> minimum, but they certified <b class="num">$5.3M</b>. The difference is <b class="num">$0.7M</b> pledged for a letter of credit, which the loan agreement excludes. RML is about <b class="num">7 months</b>; a Series B extension is signed and closing in December.</p>
       <div class="trail" id="trail">
         <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>4 specialists and code · 5 checks passed · 38 of 38 covenant tests right on Dataflake</span></button>
@@ -432,7 +474,8 @@ label.lbl { font-size: 13px; font-weight: 600; }
           <li style="animation-delay:.24s"><span class="k">5</span><b class="who2">Terms</b><span>Found the definition in §1.1 that excludes pledged cash</span><span class="ck">✓ quote verified, p. 4</span></li>
         </ol>` : ""}
       </div>
-      <div class="row"><button class="btn dark" type="button" data-act="prep">Prepare the case</button><button class="btn ghost" type="button" data-act="drawer">Inspect the definition →</button><span style="margin-left:auto">${dive("cov:dataflake")}</span></div>`, "Squad · 9:14 am · needs you", anim, true);
+      <div class="row"><button class="btn ghost" type="button" data-act="drawer" style="padding:0">Inspect the definition →</button><span style="margin-left:auto">${dive("cov:dataflake")}</span></div>
+      ${ask}`, "Squad · 9:14 am · needs you", anim, !run.certChoice);
   }
 
   // ---------- side chats ----------
@@ -458,6 +501,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
         ${run.lumoraSent ? `<div class="trust">Sent as Carly. I'll file the package when it arrives and tell you if anything is missing. · <i>prototype: nothing was really sent</i></div>` :
           `<div class="row"><button class="btn primary" type="button" data-act="lumorasend">Send as Carly</button><span class="meta">Squad never sends to a borrower on its own</span></div>`}`, "Squad · 7:02 am", false, !run.lumoraSent);
     }
+    h += asksHtml(id);
     return `<div class="col">${h}</div>`;
   }
 
@@ -524,12 +568,199 @@ label.lbl { font-size: 13px; font-weight: 600; }
       <div class="sumgrid">
         <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension closing by 15 December, with weekly cash reporting until then.</div><div>${dive("case:dataflake")}</div></section>
         <section><h3>The January cash case</h3><div>If the close slips to January, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum.</div></section>
-        <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Chaser to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li></ul><div class="proto">prototype: nothing was really sent</div></section>
+        <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Chaser to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li>${run.certAsked ? "<li>Question to Dataflake about the pledged cash: <b>sent</b></li>" : ""}</ul><div class="proto">prototype: nothing was really sent</div></section>
         <section><h3>What Carly taught Squad</h3><ul><li>Contract liabilities go to ${line}${(run.remember ?? true) ? ", remembered for Stripple Tech" : ""}</li><li>Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3</li><li>Track record on Stripple Tech: <b class="num">412 of 413</b>, corrected once today</li></ul></section>
+        ${run.asks.some((a) => a.status === "done") ? `<section style="grid-column:1/-1"><h3>What Carly asked</h3><ul>${run.asks.filter((a) => a.status === "done").map((a) => `<li>“${esc(a.q)}” · ${a.answerable === false ? "Squad said it couldn't answer from the evidence" : `answered with ${a.traced} figure${a.traced === 1 ? "" : "s"} traced`}</li>`).join("")}</ul></section>` : ""}
       </div>
       <div class="row"><button class="btn primary" type="button" data-act="restart">Run it again from step 1</button></div>
     </div>`;
   }
+
+  // ---------- the free ask: Squad answers only from the evidence pack; code checks every figure ----------
+  const PACKS = {
+    dataflake: {
+      who: "Dataflake Inc, October 2026 minimum unrestricted cash test",
+      facts: [
+        ["F1", "Cash in operating accounts, 31 October 2026", "$4.6M", "October bank statements"],
+        ["F2", "Cash in an account pledged for a letter of credit", "$0.7M", "October bank statements"],
+        ["F3", "Cash reported on the compliance certificate", "$5.3M", "compliance certificate p. 1"],
+        ["F4", "Minimum unrestricted cash", "$5.0M", "loan agreement §7.10, p. 4"],
+        ["F5", "Unrestricted cash under §1.1", "$4.6M", "calculated by code: operating cash only; the $0.7M pledged is excluded"],
+        ["F6", "Shortfall against the minimum", "$0.4M", "calculated by code: 5.0 − 4.6"],
+        ["F7", "Average monthly net burn, last 3 months", "$0.65M", "monthly financials"],
+        ["F8", "RML (remaining months of liquidity)", "7.1 months", "calculated by code: 4.6 ÷ 0.65"],
+        ["F9", "Series B extension", "$8M, signed, expected to close in December", "signed term sheet"],
+        ["F10", "Cash if the close slips to January", "near $3.3M", "calculated by code: 4.6 − 2 × 0.65"],
+        ["F11", "Squad's track record on Dataflake covenant tests", "38 of 38 right", "evaluation history"],
+      ],
+      clauses: [
+        ["C1", "Loan agreement §1.1, p. 4", "“Unrestricted Cash” means cash and cash equivalents of the Borrower held in deposit accounts subject to a control agreement in favour of the Bank, excluding any cash pledged, escrowed or otherwise restricted, including cash securing letters of credit."],
+        ["C2", "Loan agreement §7.10, p. 4", "Minimum Unrestricted Cash. The Borrower shall maintain Unrestricted Cash of not less than $5,000,000 at all times, tested monthly."],
+      ],
+      notes: [
+        ["N1", "Still open", "Dataflake's CFO hasn't explained why the certificate counted the pledged cash."],
+        ["N2", "Options on file", "One-time waiver conditioned on funding; reservation of rights; default notice. Analysts recommend; the credit officer, Helen Strand, decides."],
+        ["N3", "How Squad got here", "Intake filed the certificate; Certificate read $5.3M on page 1; Spreading read $4.6M operating and $0.7M pledged from the bank statements; Code applied §1.1 and tested $4.6M against $5.0M; Terms found the §1.1 definition on page 4."],
+      ],
+    },
+    stripple: {
+      who: "Stripple Tech, October 2026 package and spread",
+      facts: [
+        ["F1", "Contract liabilities (USD thousands)", "3,410", "October financials p. 2, current liabilities"],
+        ["F2", "Total current liabilities (USD thousands)", "6,390", "October financials p. 2"],
+        ["F3", "Capitalised software development, year to date (USD thousands)", "1,200", "cash flow note p. 2 (a spend, not a balance)"],
+        ["F4", "Capitalised software, net balance (USD thousands)", "4,850", "notes to the financials p. 3"],
+        ["F5", "Figures checked on their pages", "197 of 199 automatically; 2 sent to Carly", "Spreading"],
+        ["F6", "Squad's track record on Stripple figures", "412 of 413 right over 7 months, corrected once by Carly", "evaluation history"],
+        ["F7", "Unrestricted cash; net burn; RML", "$6.6M; $0.30M a month; 22.0 months", "October financials; calculated by code"],
+      ],
+      clauses: [],
+      notes: [
+        ["N1", "Held file", "mrr_export.xlsx looks like an MRR report but names no company and its month reads October 2025. It feeds the ARR-against-plan test, not the spread."],
+        ["N2", "Why contract liabilities was asked", "The line is new for Stripple Tech. Most likely deferred revenue (subscriptions billed ahead); otherwise other current liabilities."],
+      ],
+    },
+    lumora: {
+      who: "Lumora Health, October 2026 reporting",
+      facts: [
+        ["F1", "Unrestricted cash", "$4.0M", "September financials"],
+        ["F2", "Average monthly net burn, last 3 months", "$0.42M", "monthly financials"],
+        ["F3", "RML", "9.5 months", "calculated by code: 4.0 ÷ 0.42"],
+        ["F4", "October monthly financials and compliance certificate", "12 days late", "reporting calendar"],
+      ],
+      clauses: [],
+      notes: [["N1", "Next event", "Q4 board meeting in December."], ["N2", "Chaser", "Squad drafted a chaser for Carly to send; Squad never sends to a borrower on its own."]],
+    },
+  };
+  PACKS.portfolio = {
+    who: "Carly Reyes's portfolio, October 2026 (12 companies)",
+    facts: PORTFOLIO.map((p, i) => ["F" + (i + 1), p.co + " (" + p.sector + ")", `unrestricted cash $${p.cash.toFixed(1)}M; net burn $${p.burn.toFixed(2)}M a month; RML ${rml(p.cash, p.burn).toFixed(1)} months; covenants: ${p.cov[1]}; next: ${p.next}`, "stored facts; RML calculated by code"]),
+    clauses: [],
+    notes: [["N1", "RML", "Unrestricted cash only ÷ average monthly net burn over the last 3 months. Under 12 months is on watch."]],
+  };
+
+  const SCRIPTED = {
+    dataflake: [
+      [/pledg|exclud|restrict|letter of credit|\blc\b/i, "Because §1.1 defines Unrestricted Cash as excluding any cash pledged, escrowed or otherwise restricted, including cash securing letters of credit. The $0.7M sits in an account pledged for a letter of credit, so the $5.3M on the certificate becomes $4.6M.", ["C1", "F2", "F3", "F5"]],
+      [/certif|5\.3|cfo|count/i, "The certificate reports $5.3M, which includes the $0.7M pledged cash. Why they counted it is still open: Dataflake's CFO hasn't explained it yet.", ["F3", "F2", "N1"]],
+      [/short|how much|miss|below|gap|minimum/i, "Unrestricted cash is $4.6M against the $5.0M minimum in §7.10, a shortfall of $0.4M.", ["F5", "F4", "F6", "C2"]],
+      [/january|slip|delay|extension|series|close/i, "The $8M Series B extension is signed and expected to close in December. If it slips to January, two more months of burn leave cash near $3.3M, below the $5.0M minimum.", ["F9", "F10", "F4"]],
+      [/rml|runway|month|burn/i, "RML is 7.1 months: unrestricted cash of $4.6M divided by average monthly net burn of $0.65M.", ["F8", "F5", "F7"]],
+      [/waive|should|recommend|decide|option/i, "That's your call to recommend and Helen's to decide, not mine. The options on file are a one-time waiver conditioned on funding, a reservation of rights, or a default notice.", ["N2"]],
+      [/trust|sure|right|accura/i, "I've been right on 38 of 38 covenant tests for Dataflake. This one rests on the §1.1 quote, which code found on page 4, and on the bank statements.", ["F11", "C1"]],
+    ],
+    stripple: [
+      [/contract|deferred|liabilit/i, "Contract liabilities of 3,410 is a new line for Stripple Tech, on page 2. It's most likely deferred revenue, subscriptions billed ahead; that's why I asked you rather than guessing.", ["F1", "N2"]],
+      [/software|capitali|4,?850|1,?200|wrong/i, "I took 1,200 from the cash flow note, which is the year-to-date spend. The balance is 4,850 on page 3; you corrected it, and I'll look on page 3 next time.", ["F3", "F4"]],
+      [/mrr|held|xlsx|2025|arr/i, "mrr_export.xlsx names no company and its month reads October 2025, so I held it. It feeds the ARR-against-plan test, not the spread.", ["N1"]],
+      [/trust|track|right|accura/i, "412 of 413 figures right over 7 months on Stripple Tech, corrected once, by you.", ["F6"]],
+    ],
+    lumora: [
+      [/late|why|report|chaser|send/i, "Lumora Health's October financials and compliance certificate are 12 days late. I drafted a chaser; it goes only if you send it.", ["F4", "N2"]],
+      [/rml|runway|cash|burn|month/i, "RML is 9.5 months: $4.0M of unrestricted cash over $0.42M of average monthly net burn. That's under the 12-month watch level, with the Q4 board in December.", ["F3", "F1", "F2", "N1"]],
+    ],
+    portfolio: [
+      [/watch|risk|worst|lowest|which/i, "Two companies are under the 12-month watch level: Dataflake Inc at 7.1 months and Lumora Health at 9.5 months.", ["F1", "F2", "N1"]],
+      [/rml|runway|defin|mean/i, "RML is unrestricted cash only, divided by average monthly net burn over the last 3 months. Under 12 months is on watch.", ["N1"]],
+    ],
+  };
+
+  const normNum = (t) => String(Number(t.replace(/,/g, "")));
+  const numsIn = (txt) => (String(txt).match(/(?<![§\w.])\d[\d,]*(?:\.\d+)?/g) || []).map(normNum);   // skips section refs (§1.1) and labels (Q4)
+  const packText = (ctx) => JSON.stringify(PACKS[ctx]);
+  const allowed = (ctx) => new Set(numsIn(packText(ctx)).concat(["12"]));
+  function checkFigures(ctx, answer) {
+    const ok = allowed(ctx), found = numsIn(answer);
+    return { traced: found.length, bad: found.filter((n) => !ok.has(n)) };
+  }
+  function itemLabel(ctx, id) {
+    const p = PACKS[ctx];
+    const f = p.facts.find((x) => x[0] === id); if (f) return f[3] && /§|p\. ?\d/.test(f[3]) ? f[3] : f[1];
+    const c = p.clauses.find((x) => x[0] === id); if (c) return c[1];
+    const n = p.notes.find((x) => x[0] === id); if (n) return n[1];
+    return null;
+  }
+
+  function ctxOf() {
+    const v = s.view;
+    if (v.startsWith("chat:")) return v.slice(5);
+    if (v === "portfolio" || (step === 1 && v !== "squad")) return "portfolio";
+    if (step >= 5) return "dataflake";
+    if (step === 2) return "stripple";
+    return "portfolio";
+  }
+
+  let sampleFn; let sampleReady = false;
+  (async () => { try { sampleFn = window.claude ? await window.claude.use("sample") : null; } catch { sampleFn = null; } sampleReady = true; })();
+
+  function prompt(ctx, q, history, retryNote) {
+    return `You are Squad, the assistant of Carly Reyes, a commercial credit analyst at Bank of Stoic. Everything here is fictional demonstration data.
+Answer Carly's question using ONLY the evidence below (${PACKS[ctx].who}).
+Rules:
+- Every number you write must appear in the evidence exactly as given. Do not work out new numbers. If the answer needs a figure that isn't in the evidence, say you can't answer that from the evidence.
+- Don't recommend or make a credit decision: analysts recommend and the credit officer, Helen Strand, decides. You may set out the options in the evidence.
+- If the evidence doesn't answer the question, set "answerable" to false and say in one sentence what is missing.
+- Warm, plain and brief: one to three sentences, no markdown, no lists. Speak to Carly as "you".
+- "cites" lists the ids of the evidence items you relied on.
+${retryNote ? "- " + retryNote + "\n" : ""}Reply with only JSON: {"answer": string, "cites": [string], "answerable": boolean}
+
+Evidence:
+${packText(ctx)}
+${history.length ? "\nEarlier in this chat:\n" + history.map((h) => `Carly: ${h.q}\nSquad: ${h.answer}`).join("\n") + "\n" : ""}
+Carly's question: ${q}`;
+  }
+
+  function scripted(ctx, q) {
+    const hit = (SCRIPTED[ctx] || []).find(([re]) => re.test(q));
+    return hit ? { answer: hit[1], cites: hit[2], answerable: true } : { answer: "I can't answer that from the evidence I have here.", cites: [], answerable: false };
+  }
+
+  async function ask(q) {
+    const ctx = ctxOf();
+    const a = { ctx, q, status: "working", phase: "Reading the evidence", answer: "", cites: [], traced: 0, mode: "", note: "" };
+    run.asks.push(a); const i = run.asks.length - 1;
+    render();
+    const upd = () => { const el = $("ask-" + i); if (el) { el.outerHTML = askHtml(a, i); const p = $("pane"); p.scrollTop = p.scrollHeight; } };
+    const history = run.asks.filter((x, j) => j < i && x.ctx === ctx && x.status === "done").slice(-3);
+    let res = null, mode = "scripted", guard = "";
+    while (!sampleReady) await new Promise((r) => setTimeout(r, 100));
+    if (sampleFn) {
+      try {
+        res = await sampleFn.json(prompt(ctx, q, history), { modelTier: "quick" });
+        mode = "live";
+        a.phase = "Checking every figure against the evidence"; upd();
+        let chk = checkFigures(ctx, String(res?.answer || ""));
+        if (chk.bad.length) {
+          guard = `Retried once: ${chk.bad.join(", ")} did not trace to the evidence.`;
+          a.phase = "A figure didn't trace. Asking again"; upd();
+          res = await sampleFn.json(prompt(ctx, q, history, `Your last answer used numbers that are not in the evidence (${chk.bad.join(", ")}). Use only numbers exactly as they appear in the evidence, or say you can't answer.`), { modelTier: "quick", cache: false });
+          chk = checkFigures(ctx, String(res?.answer || ""));
+          if (chk.bad.length) { res = { answer: "I can't answer that without a figure I can't trace to the evidence, so here's the evidence instead.", cites: [], answerable: false }; guard = `Stopped: ${chk.bad.join(", ")} did not trace to the evidence after one retry.`; }
+        }
+      } catch (e) {
+        if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e?.code)) sampleFn = null;
+        if (e?.code === "rate_limited") { a.status = "done"; a.answer = "I'm being asked too much at once. Try again in a moment."; a.mode = "error"; return upd(); }
+        res = null;
+      }
+    }
+    if (!res) { await new Promise((r) => setTimeout(r, 700)); res = scripted(ctx, q); mode = "scripted"; }
+    const chk = checkFigures(ctx, String(res.answer || ""));
+    a.answer = String(res.answer || ""); a.answerable = res.answerable !== false;
+    a.cites = (Array.isArray(res.cites) ? res.cites : []).map(String).filter((id) => itemLabel(ctx, id));
+    a.traced = chk.traced; a.mode = mode; a.note = guard; a.status = "done";
+    upd();
+  }
+
+  function askHtml(a, i) {
+    const me = `<div class="msg me-msg"><div class="bubble-me">${esc(a.q)}</div></div>`;
+    if (a.status === "working") return `<div id="ask-${i}" class="askpair">${me}<div class="msg anim">${mark(28, "work")}<div class="msgbody"><div class="meta"><b>Squad · working</b></div><div class="workline"><span class="typing"><i></i><i></i><i></i></span>${esc(a.phase)}…</div></div></div></div>`;
+    const drawerable = a.ctx === "dataflake";
+    const chips = a.cites.map((id) => drawerable && /^(C1|C2|F2|F3|F5|F6)$/.test(id) ? `<button class="chip cite" type="button" data-act="drawer">${esc(itemLabel(a.ctx, id))}</button>` : `<span class="chip cite">${esc(itemLabel(a.ctx, id))}</span>`).join("");
+    const foot = a.mode === "error" ? "" : !a.answerable ? `<div class="row">${drawerable ? '<button class="btn" type="button" data-act="drawer">Open the evidence</button>' : ""}${dive(a.ctx === "portfolio" ? "queue" : "co:" + CHATS.find((c) => c.id === a.ctx).co)}</div>` : "";
+    const check = a.mode === "error" ? "" : `<div class="checked">${a.traced ? `✓ ${a.traced} figure${a.traced > 1 ? "s" : ""} traced to the evidence by code` : "No figures in this answer"}${a.note ? ` · <span class="gnote">${esc(a.note)}</span>` : ""} · <span class="proto">${a.mode === "live" ? "answered live by Claude from the evidence" : "prototype: scripted answer"}</span></div>`;
+    return `<div id="ask-${i}" class="askpair">${me}<div class="msg anim">${mark(28, "rest")}<div class="msgbody"><div class="meta"><b>Squad</b></div><p class="text">${esc(a.answer)}</p>${chips ? `<div class="row">${chips}</div>` : ""}${foot}${check}</div></div></div>`;
+  }
+  const asksHtml = (ctx) => run.asks.map((a, i) => a.ctx === ctx ? askHtml(a, i) : "").join("");
 
   // ---------- views ----------
   function viewPortfolio() {
@@ -585,6 +816,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
           `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am · needs you", true, !s.approved);
       if (s.approved) h += summary();
     }
+    h += asksHtml(ctxOf());
     return `<div class="col">${h}</div>`;
   }
 
@@ -651,7 +883,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
       <div class="email">
         <div class="hd"><span>To: cfo@dataflake.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span>${run.mailSent ? '<span class="tag ok" style="margin-left:auto">Sent</span>' : ""}</div>
         <label for="mail" style="position:absolute;left:-9999px">Email to Dataflake's CFO</label>
-        <textarea id="mail" ${run.mailSent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send the signed Series B extension term sheet and your November cash forecast? We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
+        <textarea id="mail" ${run.mailSent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send the signed Series B extension term sheet and your November cash forecast?${run.certChoice === "email" ? " Could you also tell us why the certificate counted the cash held for the letter of credit?" : ""} We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
       </div>
       ${run.mailSent ? '<div class="proto">Sent as Carly · prototype: nothing was really sent</div>' : ""}
       <div class="row">${run.mailSent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button><span class="meta">Squad never sends to a borrower on its own</span></div>
@@ -693,7 +925,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
         <div><div class="lbl" style="margin-bottom:6px">What it does to the test</div>
           <div class="calc">Cash, operating accounts&nbsp;&nbsp;&nbsp;&nbsp;4.6<br>Cash, pledged for LC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.7<br>Certified total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5.3<div class="tot">Unrestricted (§1.1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6 &lt; 5.0 minimum</div></div>
           <div class="def" style="margin-top:6px">USD millions · calculated by code from stored facts</div></div>
-        <div class="trust">Still open: Dataflake's CFO hasn't explained why the certificate counted the pledged cash.</div>
+        <div class="trust">${run.certAsked || (run.certChoice === "email" && run.mailSent) ? "Asked Dataflake's CFO why the certificate counted the pledged cash; waiting for the answer." : "Still open: Dataflake's CFO hasn't explained why the certificate counted the pledged cash."}</div>
         <div>${dive("cov:dataflake")}</div>
       </div>`;
     d.classList.toggle("on", s.drawer);
@@ -728,6 +960,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
   }
   function autosize(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; }
   document.addEventListener("input", (e) => { if (e.target.tagName === "TEXTAREA") autosize(e.target); });
+  let liveTimer;
   function open(v) { s.stack.push(s.view); s.view = v; s.drawer = false; render(); }
   function go(n) {
     n = Math.max(0, Math.min(STEPS.length - 1, n));
@@ -735,6 +968,11 @@ label.lbl { font-size: 13px; font-weight: 600; }
     resetLocal();
     step = n;
     if (step >= 2) s.uploaded = true;
+    clearTimeout(liveTimer);
+    if (step === 5 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      s.live = true;
+      liveTimer = setTimeout(() => { if (step === 5 && s.live) { s.live = false; s.trail = true; render(); } }, 3000);
+    }
     render();
   }
 
@@ -775,6 +1013,11 @@ label.lbl { font-size: 13px; font-weight: 600; }
       case "drawer": s.drawer = true; return drawer();
       case "closedrawer": s.drawer = false; return drawer();
       case "prep": return go(6);
+      case "skiplive": s.live = false; s.trail = true; return render();
+      case "certemail": run.certChoice = "email"; toast("Got it. I'll put the question in the email · drafting the case"); return setTimeout(() => go(6), 700);
+      case "certfirst": run.certChoice = "first"; return render();
+      case "certundo": run.certChoice = ""; return render();
+      case "certsend": run.certAsked = true; render(); return toast("Question sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
       case "sendmail": run.mailSent = true; render(); return toast("Email sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
       case "route": toast("Routed to <b>Helen Strand</b>, credit officer · switching to Helen's view"); return setTimeout(() => go(7), 900);
       case "helenrecord": {
