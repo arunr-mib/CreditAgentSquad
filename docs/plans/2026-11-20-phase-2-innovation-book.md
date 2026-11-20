@@ -3593,7 +3593,7 @@ uv run pytest synthetic/tests -v
 uv run ruff check .
 ```
 
-Expected: `20 borrowers, 301 documents, 854 pages written to synthetic/books/innovation/out in ~4s`; `git status` shows nothing under `synthetic/out` or `synthetic/oracle.csv` (the v1 book is untouched); the whole synthetic suite passes (about 127 tests, including every legacy test); ruff clean. Open `synthetic/books/innovation/oracle.csv`: 16 rows `yes` (the kept four), 63 rows `no` (62 plus Ferrogate's DSCR test).
+Expected: `20 borrowers, 301 documents, 917 pages written to synthetic/books/innovation/out in ~4s`; `git status` shows nothing under `synthetic/out` or `synthetic/oracle.csv` (the v1 book is untouched); the whole synthetic suite passes (about 127 tests, including every legacy test); ruff clean. Open `synthetic/books/innovation/oracle.csv`: 16 rows `yes` (the kept four), 94 rows `no` (63 plus 31 current-period signals).
 
 - [ ] **Step 5: Commit**
 
@@ -4424,7 +4424,7 @@ Append after item 7 in the "Added while you were away" section (numbers continue
 12. **Tidewell's cash mismatch.** The calculation records a passing variance on the ledger only, so no item is raised today. The answer key expects an exception `cash.statement_mismatch` (statements to certificate), which needs a reconciliation step built in Phase 3. *Taken: the key expects it; the tests pin it as pending.*
 13. **Corvane's plan miss is a breach.** Revenue is under 80 percent of the approved plan in September and October; the certificate says so honestly, so the exception is `covenant.breach`. *Taken: as described.*
 14. **Figures the spec left open for the four extra clients** (cash, burn, runway at 31 October 2026): Corvane $8.4M / $0.60M / 14.0; Nimbusfield $3.3M / $0.40M / 8.3; Tidewell $4.3M after the newly restricted account / $0.35M / 12.3; Ferrogate $16.0M / net burn −$0.25M / not meaningful. *Taken: as stated.*
-15. **Sign the new answer key.** `synthetic/books/innovation/oracle.csv` has 63 unsigned rows (62 plus Ferrogate's DSCR test) for the 16 innovation clients (covenant tests, funding events and expected exceptions); the 16 rows for the four kept borrowers are the v1 rows and stay signed. It will arrive as one short table (standing approval 3).
+15. **Sign the new answer key.** `synthetic/books/innovation/oracle.csv` has 94 unsigned rows for the 16 innovation clients (covenant tests, funding events, expected exceptions and 31 current-period signals); the 16 rows for the four kept borrowers are the v1 rows and stay signed. It will arrive as one short table (standing approval 3).
 ```
 
 - [ ] **Step 3: Update `CLAUDE.md` Commands**
@@ -4447,7 +4447,7 @@ In the comment on line 4 replace `python -m synthetic.generate && python -m app.
 Directly under the "Where things stand" heading add:
 
 ```markdown
-**Phase 2 (v2 innovation book, 20 November 2026):** `synthetic/books/innovation/` holds the 20-borrower book (16 venture-backed clients on a monthly cadence plus the four kept C&I borrowers, byte-identical to v1). The v1 generator and `synthetic/out/` are frozen and pinned by digest. The answer key `synthetic/books/innovation/oracle.csv` has 63 rows waiting for the owner's signature. `python -m app.seed_book` now loads the innovation book by default (`--book legacy` for v1). Expected values are computed independently of `app/calc`; `backend/tests/calc/test_synthetic_innovation_truth.py` runs the book through the engine. The stand-in reader for the new document types, recordings and the live run are Phase 3; the Tidewell reconciliation exception is pending until then.
+**Phase 2 (v2 innovation book, 20 November 2026):** `synthetic/books/innovation/` holds the 20-borrower book (16 venture-backed clients on a monthly cadence plus the four kept C&I borrowers, byte-identical to v1). The v1 generator and `synthetic/out/` are frozen and pinned by digest. The answer key `synthetic/books/innovation/oracle.csv` has 94 rows waiting for the owner's signature. `python -m app.seed_book` now loads the innovation book by default (`--book legacy` for v1). Expected values are computed independently of `app/calc`; `backend/tests/calc/test_synthetic_innovation_truth.py` runs the book through the engine. The stand-in reader for the new document types, recordings and the live run are Phase 3; the Tidewell reconciliation exception is pending until then.
 ```
 
 - [ ] **Step 6: Whole-suite check**

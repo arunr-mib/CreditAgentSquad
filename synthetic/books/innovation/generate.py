@@ -125,6 +125,15 @@ def _client_oracle_rows(book: ClientBook) -> list[dict]:
                      "expected_value": "" if test["value"] is None else format(test["value"], "f"),
                      "threshold": f"{test['operator']} {format(test['threshold'], 'f')}", "expected_outcome": outcome,
                      "terms_version": test["terms_version_id"]})  # fmt: skip
+    for signal in book.expected["signals"]:  # every signal the rules fire for the current period, from the truth
+        if signal["period_end"] != CURRENT_PERIOD:
+            continue
+        detail = signal["detail"].get("covenant_id") or signal["detail"].get("requirement")
+        item = signal["rule"] + (f":{detail}" if detail else "")
+        value = signal["value"]
+        rows.append({**base, "kind": "signal", "item": item,
+                     "expected_value": "" if value is None else format(value, "f"),
+                     "expected_outcome": signal["severity"]})
     for event in book.funding_events:
         past = event["status"] in ("expected", "signed") and event["expected_close"] < AS_OF
         rows.append({**base, "kind": "funding_event", "item": f"{event['kind']}:{event['expected_close'].isoformat()}",

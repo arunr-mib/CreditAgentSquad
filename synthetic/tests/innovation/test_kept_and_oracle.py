@@ -35,7 +35,7 @@ def test_kept_rows_stay_signed_and_new_rows_come_unsigned(generated):
 
     assert sorted(kept, key=key) == sorted(legacy, key=key) and all(r["owner_signed_off"] == "yes" for r in kept)
     assert len({r["borrower_id"] for r in new}) == 16 and all(r["owner_signed_off"] == "no" for r in new)
-    assert {r["kind"] for r in new} == {"covenant_test", "funding_event", "exception"}
+    assert {r["kind"] for r in new} == {"covenant_test", "funding_event", "exception", "signal"}
 
 
 def test_regenerating_keeps_an_owner_signature_only_while_the_row_is_unchanged(tmp_path):
@@ -57,3 +57,25 @@ def test_regenerating_keeps_an_owner_signature_only_while_the_row_is_unchanged(t
     generate(out, seed=7, oracle=oracle)  # a different seed changes values: the signature does not survive
     changed = {(r["borrower_id"], r["kind"], r["item"]): r["owner_signed_off"] for r in csv.DictReader(oracle.open(newline=""))}
     assert changed[("dataflake", "covenant_test", "min_unrestricted_cash")] == "yes"  # the October figures are fixed
+
+
+def test_the_answer_key_lists_every_current_signal_from_the_truth(generated):
+    rows = [r for r in csv.DictReader(generated.oracle.open(newline="")) if r["kind"] == "signal"]
+    assert all(r["owner_signed_off"] == "no" and r["period_end"] == "2026-10-31" for r in rows)
+    by_client = {}
+    for r in rows:
+        by_client.setdefault(r["borrower_id"], {})[r["item"]] = r["expected_outcome"]
+    fired = 0
+    for borrower_id, truth in generated.truths.items():
+        if borrower_id in KEPT_IDS:
+            continue
+        now = [s for s in truth["expected"]["signals"] if s["period_end"] == "2026-10-31"]
+        fired += len(now)
+        assert len(by_client.get(borrower_id, {})) == len(now), borrower_id
+        for s in now:
+            assert by_client[borrower_id][s["rule"] + (f":{s['detail']['covenant_id']}" if "covenant_id" in s["detail"] else "")] == s["severity"]
+    assert fired == len(rows) == 31
+    assert by_client["brightvane-energy"]["runway_falling"] == "medium"
+    assert by_client["corvane-analytics"]["revenue_below_plan"] == "medium"
+    assert by_client["nimbusfield-security"]["runway_below_watch"] == "high"
+    assert by_client["dataflake"]["runway_below_watch"] == "high"
