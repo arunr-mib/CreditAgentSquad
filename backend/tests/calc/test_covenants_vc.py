@@ -260,3 +260,29 @@ def test_arr_plan_path_compares_the_point_arr_with_the_months_plan():
     plan_missing = {"metric": "arr", "plan": [{"period_end": "2026-09-30", "amount": "5000000"}]}
     cannot = test_covenant(_cov("revenue_vs_plan", plan_missing, "0.90", "ratio", basis="point"), OCT, provider)
     assert cannot.passed is None and cannot.errors[0].code == "missing_parameter"
+
+
+def test_a_certificate_that_prints_not_meaningful_against_a_finite_computed_runway_is_a_variance():
+    result = CovenantTestResult("min_runway_months", OCT, passed=True, value=D("7.1"), threshold=D("6"))
+    entry = {"value": None, "threshold": "6", "in_compliance": True, "not_meaningful": True}
+    outcome = determine_outcome(result, entry, D("0.1"))
+    assert outcome.outcome == COMPLIANT_VARIANCE
+    assert [(v.field, v.computed, v.reported) for v in outcome.variances] == [("value", D("7.1"), None)]
+
+
+def test_not_meaningful_on_both_sides_agrees_and_a_value_on_both_sides_is_unchanged():
+    nm = CovenantTestResult("min_runway_months", OCT, passed=True, threshold=D("6"),
+                            note="not_meaningful_cash_flow_positive")
+    agree = determine_outcome(nm, {"value": None, "threshold": "6", "in_compliance": True, "not_meaningful": True}, D("0.1"))
+    assert agree.outcome == COMPLIANT and agree.variances == []
+    finite = CovenantTestResult("min_runway_months", OCT, passed=True, value=D("7.1"), threshold=D("6"))
+    same = determine_outcome(finite, {"value": "7.1", "threshold": "6", "in_compliance": True}, D("0.1"))
+    assert same.outcome == COMPLIANT
+
+
+def test_a_certified_figure_against_a_not_meaningful_computed_runway_stays_ignored():
+    # the opposite direction is the recorded design (test_not_meaningful_rml_ignores_certificate_value): the
+    # certificate's figure is not a covenant input when the computed runway has no value
+    nm = CovenantTestResult("min_runway_months", OCT, passed=True, threshold=D("6"),
+                            note="not_meaningful_cash_flow_positive")
+    assert determine_outcome(nm, {"value": "24.0", "threshold": "6", "in_compliance": True}, D("0.1")).variances == []

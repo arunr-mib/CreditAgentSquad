@@ -64,11 +64,12 @@ def _reported(db: Session, borrower_id: uuid.UUID, covenant_id: str, period_end:
     value = current_fact(db, borrower_id, f"cert.{covenant_id}.value", period_end, 0)
     threshold = current_fact(db, borrower_id, f"cert.{covenant_id}.threshold", period_end, 0)
     flag = current_fact(db, borrower_id, f"cert.{covenant_id}.in_compliance", period_end, 0)
-    if value is None and threshold is None and flag is None:
+    not_meaningful = current_fact(db, borrower_id, f"cert.{covenant_id}.not_meaningful", period_end, 0)
+    if value is None and threshold is None and flag is None and not_meaningful is None:
         return None, None
     entry = calc_cov.CertificateEntry(
         value.value if value else None, threshold.value if threshold else None,
-        None if flag is None else flag.value == 1)
+        None if flag is None else flag.value == 1, not_meaningful is not None and not_meaningful.value == 1)
     return entry, value
 
 

@@ -336,6 +336,7 @@ class CertificateEntry:
     value: Decimal | None
     threshold: Decimal | None
     in_compliance: bool | None
+    not_meaningful: bool = False  # the certificate prints "Not meaningful" instead of a figure
 
     def __post_init__(self) -> None:
         for name in ("value", "threshold"):
@@ -344,15 +345,18 @@ class CertificateEntry:
                 raise TypeError(f"certificate {name} must be a Decimal or None")
         if self.in_compliance is not None and type(self.in_compliance) is not bool:
             raise TypeError("certificate in_compliance must be a bool or None")
+        if type(self.not_meaningful) is not bool:
+            raise TypeError("certificate not_meaningful must be a bool")
 
     @classmethod
     def from_mapping(cls, data: Mapping[str, Any]) -> CertificateEntry:
         """Parse {"value": "1.25", "threshold": "1.20", "in_compliance": true}; decimals as strings."""
-        if set(data) != {"value", "threshold", "in_compliance"}:
-            raise ValueError(f"certificate entry must have exactly value, threshold and in_compliance, got {sorted(data)}")
+        if not {"value", "threshold", "in_compliance"} <= set(data) <= {"value", "threshold", "in_compliance", "not_meaningful"}:
+            raise ValueError(f"certificate entry must have value, threshold and in_compliance (and optionally "
+                             f"not_meaningful), got {sorted(data)}")
         value = None if data["value"] is None else to_decimal(data["value"])
         threshold = None if data["threshold"] is None else to_decimal(data["threshold"])
-        return cls(value, threshold, data["in_compliance"])
+        return cls(value, threshold, data["in_compliance"], data.get("not_meaningful", False))
 
 
 @dataclass(frozen=True)
@@ -399,6 +403,9 @@ def determine_outcome(
         if (entry.value is not None and test_result.value is not None
                 and test_result.note != NOT_MEANINGFUL_CASH_FLOW_POSITIVE and abs(test_result.value - entry.value) > tolerance):
             variances.append(Variance("value", test_result.value, entry.value))
+        if entry.not_meaningful and test_result.value is not None:
+            # the borrower certifies the metric as not meaningful where the bank measures a figure
+            variances.append(Variance("value", test_result.value, None))
         if entry.threshold is not None and entry.threshold != test_result.threshold:
             variances.append(Variance("threshold", test_result.threshold, entry.threshold))
         if entry.in_compliance is not None and entry.in_compliance != test_result.passed:

@@ -129,3 +129,15 @@ def test_a_ratio_requirement_printed_as_to_one_wraps_and_is_still_one_figure(boo
     result, get = run(book, unit="ratio", actual="6.54 to 1.00", required="Not less than 1.25 to 1.00",
                       cid="dscr", name="DSCR", threshold=D("1.25"), required_lines=("Not less than 1.25 to", "1.00"))
     assert result.unverified == [] and get("threshold").value == D("1.25")
+
+
+def test_a_not_meaningful_actual_leaves_a_fact_the_comparison_can_read(book):  # noqa: F811
+    from app.domain.covenant_service import _reported
+    result, get = run(book, unit="months", actual="Not meaningful", required="Not less than 6.0 months",
+                      cid="min_runway_months", name="Minimum Runway", required_lines=("", "Not less than 6.0 months"))
+    flag = get("not_meaningful")
+    assert flag.value == 1 and flag.quote == "Not meaningful" and flag.label_text == "Minimum Runway"
+    db, _ = book
+    borrower = db.execute(select(Borrower).where(Borrower.code == "pellham-grain")).scalar_one()
+    entry, value_fact = _reported(db, borrower.id, "min_runway_months", PERIOD)
+    assert entry.not_meaningful is True and entry.value is None and entry.in_compliance is True and value_fact is None

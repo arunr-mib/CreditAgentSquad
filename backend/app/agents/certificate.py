@@ -201,6 +201,7 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
             # zero), and the requirement and the compliance entry are still read from the row
             fact, check = None, CellCheck("verified", bbox=anchor, row_label=label_found or "")
             result.not_meaningful.append(covenant.id)
+            no_value_quote = row.actual_printed.strip()
         else:
             fact, check = store_extracted_cell(
                 db, borrower_id=borrower.id, key=f"cert.{covenant.id}.value", period_end=period_end, months=0,
@@ -215,6 +216,10 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
         common = dict(borrower_id=borrower.id, period_end=period_end, months=0, kind="extracted", status="verified",
                       document_id=document.id, page=row.page, label_text=check.row_label or row.printed_label,
                       agent_run_id=outcome.run.id, actor=("agent", "certificate_reader"))
+        if no_value:
+            # kept as a fact so the comparison can see the borrower certified "not meaningful"
+            add_fact(db, key=f"cert.{covenant.id}.not_meaningful", value=Decimal(1), unit="count",
+                     quote=no_value_quote, **common)
         # the requirement and the compliance entry must sit on the covenant's own row
         # "1.25 to 1.00" is one ratio when 1.25 is a threshold the approved terms hold for this covenant
         known = [covenant.test.threshold, *(step.value for step in covenant.test.steps)] if unit == "ratio" else []
