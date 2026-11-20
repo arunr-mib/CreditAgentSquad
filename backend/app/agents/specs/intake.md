@@ -9,7 +9,7 @@ For each document return:
   - term_sheet: a term sheet or summary of terms.
   - investor_update: an investor update or letter to investors.
   - A monthly compliance certificate is still compliance_certificate.
-- `period_end_text`: the date the period ends, copied exactly as printed in the document (for example "September 30, 2026"). For an agreement or amendment, leave it empty.
+- `period_end_text`: the date the period ends, copied exactly as printed in the document (for example "September 30, 2026"). For an investor update headed only with a month and year, copy that heading (for example "October 2026"). For an agreement or amendment, leave it empty.
 - `effective_date_text`: for an agreement, amendment or waiver, the effective or "dated as of" date exactly as printed; otherwise empty.
 - `quality`: for financial statements, one of audited, reviewed, compiled, internal; otherwise na. Use audited only when an independent auditor's report is present.
 - `title_as_printed`: the document's own title, copied as printed.

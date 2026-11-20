@@ -154,6 +154,10 @@ class StandInReader:
             if meta.get("period_end"):
                 wanted = long_date(date.fromisoformat(meta["period_end"]))
                 period_text = wanted if squash(wanted) in flat else ""
+                if not period_text and doc_type == "investor_update":
+                    # an investor update is headed with the month only: the reader copies that heading
+                    month_year = date.fromisoformat(meta["period_end"]).strftime("%B %Y")
+                    period_text = month_year if any(line.strip() == month_year for line in head.split("\n")) else ""
             elif meta.get("document_date"):
                 wanted = long_date(date.fromisoformat(meta["document_date"]))
                 effective_text = wanted if squash(wanted) in flat else ""

@@ -4,7 +4,7 @@ work item for anything that does not check out or is still missing."""
 import re
 import uuid
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from typing import Any, Literal
 
 from pydantic import BaseModel
@@ -95,7 +95,7 @@ class IntakeAnswer(BaseModel):
     documents: list[Classified]
 
 
-SPEC = AgentSpec(name="intake", version="3", purpose="Classify received documents and identify their period.",
+SPEC = AgentSpec(name="intake", version="4", purpose="Classify received documents and identify their period.",
                  prompt_file="intake.md", output_model=IntakeAnswer, tools=(), effort="low", max_tokens=8000)
 
 
@@ -120,6 +120,25 @@ def _one_date(text: str, head: str) -> date | None:
         return None
     found = dates_in(text)
     return found[0] if len(found) == 1 else None
+
+
+_MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august", "september",
+           "october", "november", "december")
+_MONTH_YEAR = re.compile(r"^\s*([A-Za-z]{3,9})\.?\s+((?:19|20)\d{2})\s*$")
+
+
+def _month_end(text: str, head: str) -> date | None:
+    """An investor update is headed with a month ("October 2026"). The period is that month's end,
+    and only when the agent's text is on the page and is nothing but a month and a year."""
+    match = _MONTH_YEAR.match(text)
+    if match is None or not quote_on_page(head, text):
+        return None
+    month = next((i for i, name in enumerate(_MONTHS, start=1) if name.startswith(match.group(1).lower()[:3])
+                  and len(match.group(1)) >= 3), None)
+    if month is None:
+        return None
+    year = int(match.group(2))
+    return date(year + (month == 12), month % 12 + 1, 1) - timedelta(days=1)
 
 
 def classify_documents(
@@ -163,6 +182,8 @@ def classify_documents(
             needs_period = answer.doc_type not in ("credit_agreement", "amendment", "waiver", "other",
                                                    "term_sheet", "investor_update")
             period_end = _one_date(answer.period_end_text, head)
+            if period_end is None and answer.doc_type == "investor_update":
+                period_end = _month_end(answer.period_end_text, head)
             effective = _one_date(answer.effective_date_text, head)
             if needs_period and period_end is None:
                 problem = "the period end the Intake Agent reported is not on the first pages as a single date"

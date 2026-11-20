@@ -90,3 +90,34 @@ def test_a_term_sheet_needs_no_period(db, world):  # noqa: F811
     llm = answer(dict(doc_type="term_sheet", period_end_text="", quality="na", title_as_printed="Series B Term Sheet"))
     result = classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="m4")
     assert result.work_items == [] and doc.doc_type == "term_sheet"
+
+
+def test_an_investor_update_headed_with_a_month_is_filed_at_that_month_end(db, world):  # noqa: F811
+    borrower, _ = world
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=OCT, months=1)
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="iu.pdf", data=pdf(
+        "INVESTOR UPDATE", "Harrowgate Tool & Die, Inc.", "October 2026", "Highlights"))
+    llm = answer(dict(doc_type="investor_update", period_end_text="October 2026", quality="na",
+                      title_as_printed="INVESTOR UPDATE"))
+    result = classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="iu1")
+    assert result.work_items == [] and doc.doc_type == "investor_update" and doc.period_end == OCT
+
+
+def test_an_investor_update_with_no_period_is_still_filed_without_one(db, world):  # noqa: F811
+    borrower, _ = world
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=OCT, months=1)
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="iu2.pdf", data=pdf(
+        "Q3 Investor Update", "Harrowgate Tool & Die, Inc.", "Highlights"))
+    llm = answer(dict(doc_type="investor_update", period_end_text="", quality="na", title_as_printed="Q3 Investor Update"))
+    result = classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="iu2")
+    assert result.work_items == [] and doc.period_end is None
+
+
+def test_a_month_that_is_not_printed_on_the_page_is_not_taken_as_a_period(db, world):  # noqa: F811
+    borrower, _ = world
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=OCT, months=1)
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="iu3.pdf", data=pdf(
+        "INVESTOR UPDATE", "Harrowgate Tool & Die, Inc.", "Highlights"))
+    llm = answer(dict(doc_type="investor_update", period_end_text="October 2026", quality="na", title_as_printed="x"))
+    classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="iu3")
+    assert doc.period_end is None
