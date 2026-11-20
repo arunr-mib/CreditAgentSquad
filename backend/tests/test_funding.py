@@ -256,3 +256,9 @@ def test_a_closed_event_cannot_be_edited(client, lifecycle):
     assert client.patch(url, json={"status": "closed"}).status_code == 200
     r = client.patch(url, json={"expected_close": "2027-06-30"})
     assert r.status_code == 422 and "final" in r.text
+
+
+def test_the_slipped_title_prints_the_amount_as_dollars_not_a_raw_decimal(db):
+    item = _slipped_item(db)
+    assert item.title == "Expected equity round of $8,000,000 has slipped"
+    assert ".00" not in item.title
