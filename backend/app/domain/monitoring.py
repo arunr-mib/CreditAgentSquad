@@ -131,6 +131,7 @@ class CovenantTest(Base, IdMixin, CreatedMixin):
     reported_fact_id: Mapped[uuid.UUID | None] = fk("facts.id", nullable=True, index=False)
     outcome: Mapped[str] = mapped_column(String(32))
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    note: Mapped[str | None] = mapped_column(String(64), nullable=True)  # e.g. not_meaningful_cash_flow_positive
     origin: Mapped[str] = mapped_column(String(16), default="live")  # live | seeded
     superseded: Mapped[bool] = mapped_column(default=False)
 

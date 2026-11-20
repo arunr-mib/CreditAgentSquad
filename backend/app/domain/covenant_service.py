@@ -80,7 +80,7 @@ def _calc_run(db, borrower, version_row, covenant, period_end, result, calc_id, 
         inputs=[i.to_dict() for i in result.trace.inputs],
         outputs={"value": result.value, "raw_value": result.raw_value, "threshold": result.threshold,
                  "operator": result.operator, "passed": result.passed, "headroom": result.headroom,
-                 "headroom_pct": result.headroom_pct},
+                 "headroom_pct": result.headroom_pct, "note": result.note, "avg_net_burn": result.avg_net_burn},
         trace={"expression": result.expression,
                "addbacks": [{"name": a.name, "raw": a.raw, "cap_type": a.cap_type, "cap_value": a.cap_value,
                              "cap_limit": a.cap_limit, "applied": a.applied, "capped": a.capped}
@@ -164,14 +164,15 @@ def run_covenant_tests(
             reported_value=entry.value if entry else None,
             reported_in_compliance=entry.in_compliance if entry else None,
             reported_fact_id=reported_fact.id if reported_fact else None, outcome=outcome.outcome,
-            error="; ".join(e.message for e in outcome.errors) or None, origin=origin)
+            error="; ".join(e.message for e in outcome.errors) or None, note=result.note, origin=origin)
         db.add(test)
         db.flush()
         ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="covenant.tested",
                       entity_type="covenant_test", entity_id=test.id,
                       payload={"covenant": covenant.id, "period_end": period_end, "value": result.value,
                                "threshold": result.threshold, "outcome": outcome.outcome, "calc_id": calc.id,
-                               "terms_version": version_row.version,
+                               "terms_version": version_row.version, "note": result.note,
+                               "avg_net_burn": result.avg_net_burn,
                                "variances": [{"field": v.field, "computed": v.computed, "reported": v.reported}
                                              for v in outcome.variances]})
         tests.append(test)

@@ -166,6 +166,7 @@ class CovenantTestResult:
     errors: list[CalcError] = field(default_factory=list)
     expression: dict[str, Any] | None = None
     note: str | None = None  # e.g. not_meaningful_cash_flow_positive
+    avg_net_burn: Decimal | None = None  # runway tests only: average monthly net burn over the last three months
     calc_id: str | None = None
     engine_version: str = ENGINE_VERSION
 
@@ -297,6 +298,7 @@ def _test_rml(cov: Covenant, result: CovenantTestResult, period_end: date, provi
     rml = compute_rml(period_end, provider, fye_month)
     result.trace = rml.trace
     result.errors.extend(rml.errors)
+    result.avg_net_burn = rml.burn
     result.threshold = threshold_in_force(cov.test, period_end)
     if result.errors:
         return result

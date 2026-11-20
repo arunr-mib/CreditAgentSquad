@@ -237,3 +237,37 @@ def test_vc_adjusted_ebitda_covenant_is_cannot_test_with_its_own_error_code(db):
     assert test.outcome == "cannot_test"
     calc = db.get(CalcRun, test.calc_run_id)
     assert calc.error and "venture template" in calc.error
+
+
+def runway_terms():
+    body = dscr_terms()
+    body["covenants"] = [{
+        "id": "runway", "name": "Minimum runway", "archetype": "min_runway_months", "params": {},
+        "test": {"operator": ">=", "threshold": "9", "unit": "months"},
+        "measurement": {"basis": "t3m", "frequency": "monthly"},
+        "rounding": {"dp": 1, "mode": "half_up"}, "citations": cite("7.14")}]
+    return body
+
+
+def test_cash_flow_positive_runway_is_stored_compliant_with_note_and_burn(db):
+    from app.core.ledger import LedgerEvent
+    borrower, facility, approver = vc_world(db)
+    approve(db, facility, approver, runway_terms())
+    oct_, jul = date(2026, 10, 31), date(2026, 7, 31)
+    for key, end, months, value in [
+            ("bs.cash_unrestricted", oct_, 0, "9000000"),
+            ("cf.vc_operating_cash_flow", oct_, 10, "300000"), ("cf.vc_operating_cash_flow", jul, 7, "0"),
+            ("cf.vc_capex", oct_, 10, "0"), ("cf.vc_capex", jul, 7, "0"),
+            ("cf.capitalised_software_spend", oct_, 10, "0"), ("cf.capitalised_software_spend", jul, 7, "0")]:
+        add_fact(db, borrower_id=borrower.id, key=key, period_end=end, months=months, value=D(value), kind="seeded")
+    (test,) = run_covenant_tests(db, borrower=borrower, facility=facility, period_end=oct_)
+    # net burn over Aug-Oct = 0 - 300,000 = -300,000; average -100,000 (cash flow positive)
+    assert test.error is None, test.error
+    assert test.outcome == "compliant" and test.passed is True and test.value is None
+    assert test.note == "not_meaningful_cash_flow_positive"
+    calc = db.get(CalcRun, test.calc_run_id)
+    assert calc.outputs["note"] == "not_meaningful_cash_flow_positive" and D(calc.outputs["avg_net_burn"]) == D("-100000")
+    event = db.execute(select(LedgerEvent).where(LedgerEvent.action == "covenant.tested",
+                                                 LedgerEvent.entity_id == str(test.id))).scalar_one()
+    assert event.payload["note"] == "not_meaningful_cash_flow_positive"
+    assert D(str(event.payload["avg_net_burn"])) == D("-100000")
