@@ -1,6 +1,32 @@
 # Handoff
 
-Current state of the build, for whoever (person or agent) continues it. Updated 2026-11-18.
+Current state of the build, for whoever (person or agent) continues it. Updated 2026-11-20.
+
+## v2 "Credit Squad" (from 20 November 2026)
+
+The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-squad-experience-design.md`) on a book of 16 innovation-banking clients plus 4 kept C&I clients (`docs/specs/2026-11-20-innovation-book-and-lending-layer-design.md`). The clickable demo `https://c-squad.vercel.app` is frozen (`docs/DEPLOY.md`). The version before v2 work is commit 2292b38 (no tag: owner skipped it). Owner questions, answers and standing approvals: `docs/owner-questions.md`.
+
+| Phase | State |
+|---|---|
+| 0 Freeze and specs | Done |
+| 1 Lending layer (`docs/plans/2026-11-20-phase-1-lending-layer.md`) | Done: tasks 1–9, per-task reviews, a final whole-branch review and one fix wave, re-reviewed and approved |
+| 2 Innovation book (`docs/plans/2026-11-20-phase-2-innovation-book.md`, 10 tasks) | Plan written, not started |
+| 3 Evals | Not planned yet; live run approved up to about $15 (estimate) after the stand-in gate and the owner's sign-off of the new answer key |
+| 4 Squad experience (`docs/plans/2026-11-20-phase-4-squad-experience.md`, 4a: 15 tasks; 4b outlined) | Plan written, not started; runs in a separate worktree beside 2–3 |
+| 5 Hosted release (new Vercel project, schema `squad2`) and usability sessions | Pre-approved, not started |
+
+**What Phase 1 added** (C&I behaviour unchanged; the legacy 21-borrower book and its tests stay green):
+
+- Template registry: `ci-1` and the venture template `vc-1` (SaaS lines; standard-spread sections, `calc/TEMPLATES.md`); every borrower names its template (`borrowers.template_id`, migration 0004). Optional memo/metric lines sit outside every total; counts and ratios (customers, net revenue retention) are never scaled by "(in thousands)".
+- Flows are stored year-to-date; trailing three months (`t3m`) is derived from YTD differences, across a fiscal year end, and a missing month is an error.
+- Covenants: `min_unrestricted_cash` (pledged/restricted cash excluded), `min_runway_months` (RML = unrestricted cash ÷ average three-month net burn; burn ≤ 0 is "not meaningful: cash-flow positive", stored as a note on the test, migration 0005), `revenue_vs_plan` (plan figures are approved terms data), DSCR for venture borrowers. The terms agent (`terms@2`) knows the new archetypes; a revenue-vs-plan row is left for a person because the plan is approved separately.
+- Signals: runway below watch (high < 9, medium < 12), runway falling (three monthly declines), burn rising (> 20%), revenue below plan; `net_loss` off for `vc-1`; going concern, line usage and availability apply to both templates.
+- Funding events: record, update (legal status changes only; a slipped round comes back only with a future close; a closed event is final), evidence must belong to the borrower; the worker marks passed dates slipped and raises one item with four responses (ask for a new timeline (default), note and watch, reserve rights, escalate); reserve rights and escalate need `decide_breach`.
+- Lessons: `POST /api/v1/lessons` writes a person's own words.
+- Monthly reporting: intake files monthly packs, MRR/ARR reports (title only), bank statements, term sheets, investor updates; the quote guardrail reads "one … eleven months ended" and "month ended"; cycles open per reporting frequency; spreading, corrections, publishing, Copilot and routes follow the borrower's template; a line from the other template is refused and asked about.
+
+**Known gaps carried to later phases:** revenue-below-plan signal gets no plan until Phase 2 wires approved plan figures in; every `vc-1` spread currently requires MRR, ARR and customers, so a financial pack without them cannot finalise (decide in Phase 2: SaaS lines likely from the MRR report); waiver conditions that reference a funding event (Phase 4b approvals); venture metrics in publishing packages; quarterly-reporting venture borrowers use quarter windows for runway-falling and burn-rising; `pytest-xdist` deferred (needs one test database per worker).
+
 
 ## Where things stand
 
