@@ -63,14 +63,35 @@ def test_not_meaningful_runway_never_fires():
     assert all(n.reason == "not_meaningful" for n in out.not_evaluated if n.rule_id.startswith("runway"))
 
 
-def test_runway_falling_three_falling_months():
+def test_runway_falling_needs_more_than_a_month_lost_per_month_three_times():
     entries = [_entry(3, rml="20"), _entry(2, rml="18"), _entry(1, rml="16"), _entry(0, rml="14")]
-    assert _names(_run(entries)) == ["runway_falling"]
+    out = _run(entries)
+    assert _names(out) == ["runway_falling"] and out.signals[0].severity == "medium"
+
+
+def test_runway_losing_exactly_a_month_a_month_is_the_calendar_not_a_signal():
+    entries = [_entry(3, rml="20"), _entry(2, rml="19"), _entry(1, rml="18"), _entry(0, rml="17")]
+    assert _names(_run(entries)) == []
+
+
+def test_runway_one_slow_step_in_the_window_does_not_fire():
+    entries = [_entry(3, rml="20"), _entry(2, rml="18"), _entry(1, rml="17.5"), _entry(0, rml="15")]
+    assert _names(_run(entries)) == []
 
 
 def test_runway_not_falling_when_it_ticks_up():
     entries = [_entry(3, rml="20"), _entry(2, rml="18"), _entry(1, rml="19"), _entry(0, rml="14")]
     assert _names(_run(entries)) == []
+
+
+def test_runway_falling_needs_four_meaningful_points():
+    entries = [_entry(3, rml=None, rml_not_meaningful="1"), _entry(2, rml="18"), _entry(1, rml="16"),
+               _entry(0, rml="14")]
+    out = _run(entries)
+    assert _names(out) == [] and any(n.rule_id == "runway_falling" and n.reason == "not_meaningful"
+                                     for n in out.not_evaluated)
+    missing = [_entry(3, rml="20"), _entry(2, rml=None), _entry(1, rml="16"), _entry(0, rml="14")]
+    assert _names(_run(missing)) == []
 
 
 def test_burn_rising_against_three_months_earlier():

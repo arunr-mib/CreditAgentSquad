@@ -29,7 +29,7 @@ SCENARIOS: dict[str, str] = {
         "Late monthly package: the October bank statements and MRR report have not arrived, 12 and 4 days "
         "after their due dates; October cannot be tested yet."
     ),
-    "runway_falling": "Runway falling: burn is rising and runway has fallen three months running, still above 12 months.",
+    "runway_falling": "Runway falling: burn is rising and runway has lost more than a month in each of three months running, still above 12 months.",
     "funding_expected": "Clean book with an expected funding event the bank is tracking.",
     "stripple_package": (
         "Awkward October package: a new balance-sheet line (contract liabilities), capitalised software that can be "

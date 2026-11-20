@@ -94,10 +94,10 @@ def test_ferrogate_generates_cash_and_runway_is_not_meaningful(sims):
     assert series.avg_burn(model.LAST) == -250_000 and series.rml(model.LAST) is None
 
 
-def test_clean_clients_do_not_trip_runway_falling_and_brightvane_does(sims):
+def test_only_brightvane_trips_runway_falling(sims):
     def falling(series: Series) -> bool:
         points = [series.rml(i) for i in range(model.LAST - 3, model.LAST + 1)]
-        return all(b < a for a, b in zip(points, points[1:], strict=False))
+        return None not in points and all(a - b > 1 for a, b in zip(points, points[1:], strict=False))
 
     for client_id in (
         "mosswell-robotics",
@@ -111,6 +111,8 @@ def test_clean_clients_do_not_trip_runway_falling_and_brightvane_does(sims):
         "stripple-tech",
         "corvane-analytics",
     ):
+        assert not falling(sims[client_id].series), client_id
+    for client_id in ("dataflake", "lumora-health", "nimbusfield-security", "tidewell-medical", "ferrogate-cloud"):
         assert not falling(sims[client_id].series), client_id
     assert falling(sims["brightvane-energy"].series)
 

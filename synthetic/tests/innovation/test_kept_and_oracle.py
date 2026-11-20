@@ -85,7 +85,7 @@ def test_the_answer_key_lists_every_current_signal_from_the_truth(generated):
         assert len(by_client.get(borrower_id, {})) == len(now), borrower_id
         for s in now:
             assert by_client[borrower_id][s["rule"] + (f":{s['detail']['covenant_id']}" if "covenant_id" in s["detail"] else "")] == s["severity"]
-    assert fired == len(rows) == 31
+    assert fired == len(rows) == 28
     assert by_client["brightvane-energy"]["runway_falling"] == "medium"
     assert by_client["corvane-analytics"]["revenue_below_plan"] == "medium"
     assert by_client["nimbusfield-security"]["runway_below_watch"] == "high"

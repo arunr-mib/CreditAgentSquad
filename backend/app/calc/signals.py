@@ -76,7 +76,8 @@ RULES: tuple[SignalRule, ...] = (
     SignalRule("auditor_opinion", "high", "auditor_opinion", {"opinions": ("qualified", "going_concern")}, BOTH),
     # startup rules (vc-1): monthly series of rml, avg_net_burn and plan_ratio
     SignalRule("runway_below_watch", "high", "rml_below", {"watch": Decimal("12"), "high_below": Decimal("9")}, VC),
-    SignalRule("runway_falling", "medium", "rml_falling", {"periods": 3}, VC),
+    # runway shrinking faster than the calendar: more than `min_fall` months lost in each of `periods` monthly steps
+    SignalRule("runway_falling", "medium", "rml_falling", {"periods": 3, "min_fall": Decimal("1.0")}, VC),
     SignalRule("burn_rising", "medium", "pct_increase",
                {"metric": "avg_net_burn", "threshold": Decimal("0.20"), "compare_months": 3, "dp": 4}, VC),
     SignalRule("revenue_below_plan", "medium", "plan_ratio_below", {"threshold": Decimal("1.00"), "dp": 4}, VC),
@@ -317,8 +318,9 @@ class _Evaluation:
         points = [self._rml(rule, e) for e in window]
         if not all(points):
             return
-        if all(later["value"] < earlier["value"] for earlier, later in zip(points, points[1:], strict=False)):
-            self.fire(rule, {"metric": "rml", "values": points})
+        floor = rule.params["min_fall"]
+        if all(earlier["value"] - later["value"] > floor for earlier, later in zip(points, points[1:], strict=False)):
+            self.fire(rule, {"metric": "rml", "values": points, "min_fall": floor})
 
     def pct_increase(self, rule: SignalRule) -> None:
         metric = rule.params["metric"]

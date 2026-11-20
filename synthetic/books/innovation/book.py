@@ -343,7 +343,8 @@ def verify(book: ClientBook) -> None:
         need(not any(d.period_end == CURRENT_PERIOD for d in book.documents), "no October document should exist")
     if spec.scenario == "runway_falling":
         points = [series.rml(i) for i in range(LAST - 3, LAST + 1)]
-        need(all(b < a for a, b in zip(points, points[1:], strict=False)), "runway should fall three months running")
+        need(all(a - b > 1 for a, b in zip(points, points[1:], strict=False)),
+             "runway should lose more than a month in each of three months running")
         need(points[-1] >= 12, "runway should still be above the watch level")
         need(any(s["rule"] == "runway_falling" for s in now_signals), "runway_falling should fire")
         need(not any(s["rule"] == "burn_rising" for s in now_signals), "burn_rising should not fire")

@@ -226,8 +226,9 @@ def compute_signals(
     if runway is not None and runway < 12:
         add("runway_below_watch", q(runway, 2), "high" if runway < 9 else "medium")
     points = [series.rml(j) for j in range(i - 3, i + 1)]
+    # four meaningful points, and more than one month of runway lost in each of the three steps
     if None not in points and all(
-        later < earlier for earlier, later in zip(points, points[1:], strict=False)
+        earlier - later > 1 for earlier, later in zip(points, points[1:], strict=False)
     ):
         add("runway_falling", q(runway, 2))
     prior = series.avg_burn(i - 3)
