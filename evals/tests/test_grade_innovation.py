@@ -29,3 +29,4 @@ def test_a_not_meaningful_runway_has_no_expected_numeric_certificate_value():
 def test_funding_and_cash_exceptions_map_to_stages():
     assert STAGE_OF_ITEM["funding_slipped"] == "signals"
     assert STAGE_OF_ITEM["cash"] == "covenant_testing"
+

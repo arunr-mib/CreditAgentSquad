@@ -299,7 +299,7 @@ class LoadedBorrower:
         recording["covenant_tests"] = [
             {"covenant_id": t.covenant_id, "period_end": plain(t.period_end), "value": plain(t.value),
              "threshold": plain(t.threshold), "operator": t.operator, "unit": t.unit, "passed": t.passed,
-             "outcome": t.outcome, "reported_value": plain(t.reported_value),
+             "outcome": t.outcome, "note": t.note, "reported_value": plain(t.reported_value),
              "reported_in_compliance": t.reported_in_compliance, "error": t.error,
              "terms_version": versions[t.terms_version_id].version if t.terms_version_id in versions else None,
              "terms_status": versions[t.terms_version_id].status if t.terms_version_id in versions else None,
@@ -581,8 +581,10 @@ def _run_one(args, root: Path, stem: str) -> int:
 
         print("mutation checks (the stand-in's answers are tampered with on purpose)", flush=True)
         with scratch_file_store():
+            whole = load_book(root)
+            here = [m for m in MUTATIONS if whole.get(m.borrower) is not None]  # each book runs its own borrowers' mutations
             results["mutations"] = run_mutations(
-                engine, load_book(root, sorted({m.borrower for m in MUTATIONS})),
+                engine, load_book(root, sorted({m.borrower for m in here})), [m.name for m in here],
                 progress=lambda line: print(line, flush=True))
         slipped = [m["name"] for m in results["mutations"] if m["caught_by"] in ("SLIPPED", "NOT APPLIED")]
         if slipped:

@@ -78,13 +78,25 @@ EXPECTED = {
     "bb-affiliate-note-and-lines-dropped": "product",
     "bb-contra-note-and-lines-dropped": "product",
     "bb-letters-of-credit-from-an-empty-row": "product",
+    "cert-runway-reported-as-a-number": "grader",  # innovation book; see its own test below
 }
 
 
 @pytest.fixture(scope="module")
 def outcomes(engine, legacy_book_root, file_store):
-    book = load_book(legacy_book_root, sorted({m.borrower for m in MUTATIONS}))
-    return {o["name"]: o for o in run_mutations(engine, book)}
+    legacy = [m for m in MUTATIONS if m.book == "legacy"]
+    book = load_book(legacy_book_root, sorted({m.borrower for m in legacy}))
+    return {o["name"]: o for o in run_mutations(engine, book, [m.name for m in legacy])}
+
+
+def test_a_numeric_runway_for_a_not_meaningful_period_is_caught(engine, file_store, tmp_path_factory):
+    from evals.book import BOOKS
+    book = load_book(BOOKS["innovation"], ["ferrogate-cloud"])
+    outcome = run_mutations(engine, book, ["cert-runway-reported-as-a-number"])[0]
+    if not outcome["applied"]:  # the stand-in cannot yet carry an innovation borrower past spreading (Task 3)
+        pytest.skip("the certificate agent is never asked: the stand-in stops at spreading on this book")
+    assert not outcome["error"], outcome
+    assert outcome["caught_by"] != "SLIPPED", outcome["evidence"]
 
 
 def test_every_mutation_has_a_recorded_expectation():
@@ -99,7 +111,7 @@ def test_nothing_slips_through_both_the_product_and_the_grader(outcomes):
     assert [n for n, o in outcomes.items() if o["caught_by"] == "SLIPPED"] == []
 
 
-@pytest.mark.parametrize("name", sorted(EXPECTED))
+@pytest.mark.parametrize("name", sorted(set(EXPECTED) - {"cert-runway-reported-as-a-number"}))
 def test_mutation_is_caught_where_expected(outcomes, name):
     assert outcomes[name]["caught_by"] == EXPECTED[name], outcomes[name]["evidence"]
 

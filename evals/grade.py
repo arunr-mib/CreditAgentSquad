@@ -110,7 +110,10 @@ class Truth:
         self.end = borrower.current_period
         self.period = borrower.period(self.end) or {"values": {}}
         self.docs = borrower.documents(self.end)
-        self.statements = next((d for d in self.docs if d["type"] in PACK_TYPES and "figures" in d), None)
+        packs = [d for d in self.docs if d["type"] in PACK_TYPES and "figures" in d]
+        if len(packs) > 1:
+            raise ValueError(f"{borrower.code} has {len(packs)} financial packs for {self.end}; the book must hold one")
+        self.statements = packs[0] if packs else None
         self.cert = borrower.certificate(self.end)
         self.bb = borrower.borrowing_base(self.end)
         self.tests = {t["covenant_id"]: t for t in borrower.expected_tests(self.end)}
@@ -385,6 +388,18 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
                 fail("wrong-abstain", item, f"truth {want['outcome']} at {want.get('value')}; the product "
                                             + (f"cannot test: {got['error']}" if got else "recorded no test"))
             continue
+        if want.get("value") is None and want.get("note"):
+            # a not-meaningful measure (cash-flow-positive runway) has no number: any figure the
+            # product holds for it was invented, whatever the reader said
+            if got["value"] is not None or got.get("reported_value") is not None:
+                fail("invented-number", item, f"the truth is '{want['note']}' (no figure); recorded value "
+                                              f"{got['value']}, reported value {got.get('reported_value')}")
+            for fact in rec["facts"]:
+                if fact["period_end"] == end and fact["key"] in (f"cert.{covenant_id}.value", f"cov.{covenant_id}.value"):
+                    fail("invented-number", item, f"a figure {fact['value']} is stored ({fact['key']}) where the truth is '{want['note']}'")
+            if got.get("note") != want["note"]:
+                disagreements.append({"kind": "covenant-outcome", "item": item,
+                                      "detail": f"recorded note {got.get('note')!r}, truth {want['note']!r}"})
         if want["outcome"] == "cannot_test":
             fail("missed-abstain", item, f"recorded {got['outcome']} where the truth says the period cannot be tested")
             continue

@@ -40,6 +40,7 @@ class Mutation:
     # True when code no longer depends on the tampered part of the answer (it reads it from the
     # page itself), so the right result is reached anyway and there is nothing to catch
     recovers: bool = False
+    book: str = "legacy"  # which book the borrower belongs to
 
 
 def _cell(answer: Answer, key: str, column: str = "cells") -> dict[str, Any]:
@@ -202,6 +203,18 @@ def certificate_units_omitted(answer: Answer) -> Answer:
     return answer
 
 
+def runway_reported_as_a_number(answer: Answer) -> Answer:
+    """A not-meaningful runway (cash-flow positive) read as if the certificate printed a figure."""
+    row = next((r for r in answer["rows"] if r["covenant_id"] == "min_runway_months"), None)
+    if row is None:  # the reader reports only rows that print a figure; this one invents the figure
+        template = answer["rows"][0]
+        row = {**template, "covenant_id": "min_runway_months", "printed_label": "Minimum Runway",
+               "required_printed": "6.0", "compliance_printed": "Yes"}
+        answer["rows"] = [*answer["rows"], row]
+    row["actual_printed"] = "9.5"
+    return answer
+
+
 def certificate_rows_swapped(answer: Answer) -> Answer:
     a, b = _row(answer, "fccr"), _row(answer, "total_leverage")
     a["covenant_id"], b["covenant_id"] = "total_leverage", "fccr"
@@ -344,6 +357,8 @@ REPORTED_BREACH = "pellham-grain"  # fixed charge coverage fails and the certifi
 DOLLARS = "sablewood-dental"  # clean, statements in whole dollars
 HIDDEN_BREACH = "kestrel-bay-packaging"  # leverage fails; the certificate claims compliance
 
+NOT_MEANINGFUL = "ferrogate-cloud"  # innovation book: cash-flow positive, its runway is "Not meaningful"
+
 MUTATIONS: tuple[Mutation, ...] = (
     Mutation("spread-wrong-figure", "a figure with one digit wrong (it still parses)", CLEAN_BB, "spreading", wrong_figure),
     Mutation("spread-figure-from-another-row", "a real figure from the wrong row", CLEAN_BB, "spreading", figure_from_another_row),
@@ -369,6 +384,7 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("cert-claims-compliance", "a certificate read as claiming compliance where it reports a breach", REPORTED_BREACH, "certificate", certificate_claims_compliance),
     Mutation("cert-breach-read-as-passing-value", "the breaching covenant's reported value read as a passing one", REPORTED_BREACH, "certificate", breach_reported_as_a_passing_value),
     Mutation("cert-flag-from-the-next-row", "the compliance entry taken from a neighbouring row, with a label fragment found on every row", REPORTED_BREACH, "certificate", compliance_flag_from_the_next_row),
+    Mutation("cert-runway-reported-as-a-number", "a not-meaningful runway reported with a figure", NOT_MEANINGFUL, "certificate", runway_reported_as_a_number, book="innovation"),
     Mutation("cert-misread-threshold", "a threshold misread (1.05x read as 1.50x)", CLEAN_BB, "certificate", misread_threshold),
     Mutation("cert-threshold-from-another-row", "a threshold taken from another covenant's row", CLEAN_BB, "certificate", threshold_from_another_row),
     Mutation("cert-units-omitted", "the certificate's 'in thousands' phrase not reported", CLEAN_BB, "certificate", certificate_units_omitted),
