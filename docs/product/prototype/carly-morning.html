@@ -193,6 +193,8 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .drawer.on { transform: none; }
 .drawer header { display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
 .drawer header b { flex: 1; }
+.grip { position: absolute; left: -5px; top: 0; bottom: 0; width: 10px; cursor: col-resize; z-index: 2; }
+.grip::after { content: ""; position: absolute; left: 3px; top: 50%; width: 4px; height: 40px; margin-top: -20px; border-radius: 2px; background: var(--line-strong); }
 .drawer .body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 .clause { background: var(--paper); color: var(--paper-ink); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; font-family: var(--f-doc); font-size: 15px; line-height: 1.7; display: flex; flex-direction: column; gap: 10px; }
 .clause mark { background: var(--squad-soft); outline: 2px solid var(--squad); outline-offset: 3px; border-radius: 2px; color: inherit; }
@@ -291,7 +293,10 @@ body.railc .whobtn .badge { position: absolute; top: 0; right: -2px; min-width: 
 .me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: transparent; border: 0; }
 .me b { display: block; font-size: 13px; } .me small { display: block; font-size: 11px; color: var(--ink-3); }
 /* presence: Squad's state, centred above the conversation */
-.presence { display: flex; justify-content: center; padding: 10px 32px 2px; }
+.presence { display: flex; flex-direction: column; align-items: center; padding: 10px 32px 2px; }
+.say { height: 22px; margin-top: 2px; font-size: 12.5px; color: var(--ink-2); text-align: center; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.say span { animation: rise .25s ease-out both; }
+.say b { color: var(--ok); }
 .pres { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
 .pres b { font-size: 12px; font-weight: 600; letter-spacing: .01em; color: var(--ink); }
 .mk .dots, .mk .cr { transform-box: view-box; transform-origin: 50% 50%; }
@@ -375,6 +380,8 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
 .sumgrid h3 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
 .sumgrid ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
 .proto { font-size: 12px; color: var(--ink-3); font-style: italic; }
+:root[data-look="night"] .proto { color: var(--ink-2); }
+.trailnote { margin: 0 14px 12px; padding: 10px 12px; border-radius: 10px; background: var(--squad-soft); color: var(--squad-ink); font-size: 13px; }
 @media (max-width: 760px) { .sumgrid { grid-template-columns: 1fr; } .ledger li { grid-template-columns: 56px minmax(0, 1fr); } .ledger li span:last-child { grid-column: 2; } }
 
 @media (max-width: 900px) {
@@ -409,7 +416,6 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   <div class="main">
     <div class="presence" id="presence" aria-live="polite"></div>
     <div class="pane" id="pane"></div>
-    <div class="statusline" id="statusline" role="status" aria-live="polite"></div>
     <div class="composer" id="composer"></div>
     <div class="scrim" id="scrim"></div>
     <aside class="drawer" id="drawer" aria-label="Evidence" aria-hidden="true"></aside>
@@ -437,7 +443,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   const LOOKS = [["warm", "Warm paper", "#f5f3ee", "#161513"], ["cool", "Cool slate", "#f1f3f6", "#33557a"], ["lavender", "Lavender mist", "#f4f2fb", "#4a35b8"], ["sage", "Sage", "#f0f3ee", "#3f6b4a"], ["night", "Night", "#141318", "#a493ff"]];
   const pref = (k, d) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
   const savePref = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
-  let look = pref("squad-look", "warm"); let railC = pref("squad-rail", "open") === "closed";
+  let look = pref("squad-look2", "night"); let railC = pref("squad-rail2", "closed") === "closed";
   const applyChrome = () => { document.documentElement.dataset.look = look; document.body.classList.toggle("railc", railC); };
   const WATCH = 12;
   const SUGGESTED_VIEW = "One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.";
@@ -459,13 +465,14 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   let s = {};
   let run = {};   // what Carly did in this run; survives step changes, cleared by Restart
   const resetLocal = () => { s = { trail: false, drawer: false, line: run.line || "", remember: run.remember === true, wrong: false, fixed: false, view: "", stack: [], helen: "", helenDone: false, sentBack: false, approved: false, summary: false, routed: false, reqDraft: false, lumoraDraft: true, uploaded: false }; };
-  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: false, mailSent: false, lumoraSent: false, helenReason: "", approveReason: "", view: "", asks: [], certChoice: "", certAsked: false }; };
+  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: false, mailSent: false, lumoraSent: false, helenReason: "", approveReason: "", view: "", asks: [], fixed: false, certChoice: "", certAsked: false }; };
   resetRun(); resetLocal();
 
   const $ = (id) => document.getElementById(id);
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let toastTimer;
-  const toast = (html) => { const el = $("statusline"); if (!el) return; el.innerHTML = `<span>${html}</span>`; el.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("on"), 3600); };
+  let sayText = "";
+  const toast = (html) => { sayText = html; clearTimeout(toastTimer); if (typeof presence === "function") presence(); toastTimer = setTimeout(() => { sayText = ""; presence(); }, 4000); };
 
   // ---------- pieces ----------
   const ico = {
@@ -519,19 +526,19 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     collapse: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
     expand: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
   };
-  let lookOpen = false; let tempRail = false; let speakUntil = 0;
+  let lookOpen = false; let tempRail = false; let userDw = 0; let speakUntil = 0;
   // Squad "responds": the ring turns one step and the core pops when a new Squad message arrives.
   const speak = () => { speakUntil = Date.now() + 950; presence(); setTimeout(() => { if (Date.now() >= speakUntil) presence(); }, 1000); };
   // What still needs Carly at this point in the morning: Stripple's two figures, the Dataflake case, Lumora's chaser.
   function needsYou() {
-    const stripple = step < 5;
+    const stripple = step < 5 || !run.line || !run.fixed;
     const dataflake = step <= 6 ? !s.routed : (s.helenDone && !s.sentBack);
     const lumora = !run.lumoraSent;
     return [stripple, dataflake, lumora].filter(Boolean).length;
   }
   // Clients with something still open; a side chat leaves the nav when its case closes.
   function openChats() {
-    const open = { stripple: step < 5, dataflake: !(step === 7 && s.approved), lumora: true };
+    const open = { stripple: step < 5 || !run.line || !run.fixed, dataflake: !(step === 7 && s.approved), lumora: true };
     return CHATS.filter((c) => open[c.id] || s.view === "chat:" + c.id);
   }
   function presence() {
@@ -540,7 +547,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const n = needsYou();
     const state = working ? "work" : helen || n ? "needs" : "rest";
     const text = helen ? "1 decision waiting for you" : s.live ? "working · checking Dataflake's October certificate" : working ? "working on your question" : n ? `${n} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} you · watching 12 clients` : "all clear · watching 12 clients";
-    $("presence").innerHTML = `<div class="pres ${Date.now() < speakUntil ? "speak" : ""}" title="Squad · ${text}">${mark(42, state)}<b>Squad</b><span class="sr">: ${text}</span></div>`;
+    $("presence").innerHTML = `<div class="pres ${Date.now() < speakUntil ? "speak" : ""}" title="Squad · ${text}">${mark(42, state)}<b>Squad</b><span class="sr">: ${text}</span></div><div class="say" role="status" aria-live="polite">${sayText ? `<span>${sayText}</span>` : ""}</div>`;
   }
   function rail() {
     const helen = helenView();
@@ -609,8 +616,16 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
       </div>`, "Squad · Intake agent", anim);
   }
   function correctionDone() {
-    return squadMsg(`<p class="text">Thanks, Carly. Stripple Tech's October spread is complete: 199 of 199 figures checked on their pages. Your two answers are remembered for next month.</p>
-      <div class="trust">Track record on Stripple Tech: <b>197 of 200</b> figures you checked were right · you've corrected me 3 times, once today</div>
+    const lineOk = !!run.line, fixOk = !!run.fixed;
+    if (!lineOk || !fixOk) {
+      const waiting = [!lineOk && "where contract liabilities goes (figure 1)", !fixOk && "capitalised software (figure 2)"].filter(Boolean);
+      return squadMsg(`<p class="text">Stripple Tech's October spread is waiting on ${waiting.length === 1 ? "one answer" : "two answers"} from you: ${waiting.join(" and ")}. <b class="num">${197 + (lineOk ? 1 : 0)} of 199</b> figures in this month's spread are checked against their pages.</p>
+        <div class="row"><button class="btn dark" type="button" data-act="${lineOk ? "reviewfix" : "review"}">Review ${waiting.length === 1 ? "it" : "them"}</button></div>
+        <div class="trust">Track record on Stripple Tech, over 7 months: <b>196 of 198</b> figures you checked were right · you've corrected me twice</div>`, "Squad · Spreading agent");
+    }
+    const remembered = run.remember ? "Where contract liabilities goes is remembered for next month." : "You didn't tick Remember, so I'll ask again next month where contract liabilities goes.";
+    return squadMsg(`<p class="text">Thanks, Carly. Stripple Tech's October spread is complete: <b class="num">199 of 199</b> figures in this month's spread checked against their pages. ${remembered} I've learned that the capitalised software balance is on page 3.</p>
+      <div class="trust">Track record on Stripple Tech, over 7 months: <b>197 of 200</b> figures you checked were right · you've corrected me 3 times, once today</div>
       <div>${dive("co:Stripple Tech")}</div>`, "Squad · Spreading agent");
   }
   function certQuestion() {
@@ -640,7 +655,7 @@ Carly</textarea></div>
         <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>3 agents and code · 5 checks passed · 37 of 38 covenant tests right on Dataflake</span></button>
         ${s.trail ? `<ol>
           ${TRAIL.map((x, i) => trailLi(x, i, i * 0.06)).join("")}
-        </ol>` : ""}
+        </ol><div class="trailnote">Track record: <b>37 of 38</b> covenant tests right on Dataflake. The one I got wrong was June's minimum cash test: I counted a deposit that was restricted. You corrected it, and since then I check every account for restrictions, which is how I caught the pledged $0.7M today.</div>` : ""}
       </div>
       <div class="row"><button class="btn ghost" type="button" data-act="drawer" style="padding:0">Inspect the definition →</button><span style="margin-left:auto">${dive("cov:dataflake")}</span></div>
       ${ask}`, "Squad · 9:14 am · needs you", anim, !run.certChoice);
@@ -718,9 +733,9 @@ Carly</textarea></div>
       body = `<div class="row"><h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Casefile · Dataflake Inc · conditional waiver</h1><span class="tag ${status[0]}">${status[1]}</span></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Ledger (append-only)</div><ul class="ledger">
           <li><span class="mono">9:14</span><b>Squad · Covenant agent</b><span>Tested minimum unrestricted cash: $4.6M against $5.0M · miss</span></li>
-          ${run.mailSent ? `<li><span class="mono">—</span><b>Carly Reyes</b><span>Emailed Dataflake's CFO for the term sheet and November forecast <span class="proto">prototype: nothing was really sent</span></span></li>` : ""}
+          ${run.mailSent ? `<li><span class="mono">9:47</span><b>Carly Reyes</b><span>Emailed Dataflake's CFO for the term sheet and November forecast <span class="proto">prototype: nothing was really sent</span></span></li>` : ""}
           ${step >= 7 ? `<li><span class="mono">9:52</span><b>Carly Reyes</b><span>Routed to Helen Strand: “${esc(run.view || SUGGESTED_VIEW)}”</span></li>` : ""}
-          ${step >= 7 && s.helenDone ? `<li><span class="mono">—</span><b>Helen Strand</b><span>Returned to Carly: “${esc(reason)}”</span></li><li><span class="mono">10:48</span><b>Squad</b><span>Added the January cash case: 4.6 − 2 × 0.65 = $3.3M, below the $5.0M minimum</span></li>` : ""}
+          ${step >= 7 && s.helenDone ? `<li><span class="mono">10:31</span><b>Helen Strand</b><span>Returned to Carly: “${esc(reason)}”</span></li><li><span class="mono">10:48</span><b>Squad</b><span>Added the January cash case: 4.6 − 2 × 0.65 = $3.3M, below the $5.0M minimum</span></li>` : ""}
           ${s.sentBack ? `<li><span class="mono">10:52</span><b>Carly Reyes</b><span>Sent back to Helen Strand with the January case</span></li>` : ""}
           ${s.approved ? `<li><span class="mono">11:02</span><b>Helen Strand</b><span>Approved the one-time waiver, conditioned on the extension closing by 15 December: “${esc(s.approveReason)}”</span></li>` : ""}
         </ul></div>`;
@@ -738,7 +753,7 @@ Carly</textarea></div>
         <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension closing by 15 December, on her second pass.</div><div>${dive("case:dataflake")}</div></section>
         <section><h3>The January cash case</h3><div>If the close slips to January, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum.</div></section>
         <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Chaser to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li>${run.certAsked ? "<li>Question to Dataflake about the pledged cash: <b>sent</b></li>" : ""}</ul><div class="proto">prototype: nothing was really sent</div></section>
-        <section><h3>What Carly taught Squad</h3><ul><li>${line ? `Contract liabilities go to ${line}${run.remember ? ", remembered for Stripple Tech" : ", not remembered (you'll be asked again)"}` : "Contract liabilities: not answered in this run"}</li><li>Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3</li><li>Track record on Stripple Tech: <b class="num">197 of 200</b> figures right, corrected 3 times (once today)</li></ul></section>
+        <section><h3>What Carly taught Squad</h3><ul><li>${line ? `Contract liabilities go to ${line}${run.remember ? ", remembered for Stripple Tech" : ", not remembered (you'll be asked again)"}` : "Contract liabilities: not answered in this run"}</li><li>${run.fixed ? 'Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3' : "Capitalised software: not corrected in this run"}</li><li>Track record on Stripple Tech: <b class="num">${run.fixed ? "197 of 200" : "196 of 198"}</b> figures right${run.fixed ? ", corrected 3 times (once today)" : ", corrected twice"}</li></ul></section>
         ${run.asks.some((a) => a.status === "done") ? `<section style="grid-column:1/-1"><h3>What Carly asked</h3><ul>${run.asks.filter((a) => a.status === "done").map((a) => `<li>“${esc(a.q)}” · ${a.answerable === false ? "Squad said it couldn't answer from the evidence" : `answered with ${a.traced} figure${a.traced === 1 ? "" : "s"} traced`}</li>`).join("")}</ul></section>` : ""}
       </div>
       <div class="row"><button class="btn primary" type="button" data-act="restart">Run it again from step 1</button></div>
@@ -861,6 +876,14 @@ Carly</textarea></div>
   }
 
   let sampleFn; let sampleReady = false;
+  // Outside Claude (the public demo site), live answers come from the site's own /api/ask, which builds the same prompt server-side.
+  let serverOk = !window.claude && /^https?:$/.test(location.protocol);
+  async function serverAsk(ctx, q, history, retryNote) {
+    const r = await fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ctx, q, history: history.map((h) => ({ q: h.q, answer: h.answer })), retryNote: retryNote || "" }) });
+    if (r.status === 429) throw { code: "rate_limited" };
+    if (!r.ok) throw { code: r.status === 404 || r.status === 503 ? "unavailable" : "upstream_error" };
+    return r.json();
+  }
   (async () => { try { sampleFn = window.claude ? await window.claude.use("sample") : null; } catch { sampleFn = null; } sampleReady = true; })();
 
   function prompt(ctx, q, history, retryNote) {
@@ -894,21 +917,24 @@ Carly's question: ${q}`;
     const history = run.asks.filter((x, j) => j < i && x.ctx === ctx && x.status === "done").slice(-3);
     let res = null, mode = "scripted", guard = "";
     while (!sampleReady) await new Promise((r) => setTimeout(r, 100));
-    if (sampleFn) {
+    const live = sampleFn ? (note) => sampleFn.json(prompt(ctx, q, history, note), note ? { modelTier: "quick", cache: false } : { modelTier: "quick" })
+      : serverOk ? (note) => serverAsk(ctx, q, history, note) : null;
+    if (live) {
       try {
-        res = await sampleFn.json(prompt(ctx, q, history), { modelTier: "quick" });
+        res = await live("");
         mode = "live";
         a.phase = "Checking every figure against the evidence"; upd();
         let chk = checkFigures(ctx, String(res?.answer || ""));
         if (chk.bad.length) {
           guard = `Retried once: ${chk.bad.join(", ")} did not trace to the evidence.`;
           a.phase = "A figure didn't trace. Asking again"; upd();
-          res = await sampleFn.json(prompt(ctx, q, history, `Your last answer used numbers that are not in the evidence (${chk.bad.join(", ")}). Use only numbers exactly as they appear in the evidence, or say you can't answer.`), { modelTier: "quick", cache: false });
+          res = await live(`Your last answer used numbers that are not in the evidence (${chk.bad.join(", ")}). Use only numbers exactly as they appear in the evidence, or say you can't answer.`);
           chk = checkFigures(ctx, String(res?.answer || ""));
           if (chk.bad.length) { res = { answer: "I can't answer that without a figure I can't trace to the evidence, so here's the evidence instead.", cites: [], answerable: false }; guard = `Stopped: ${chk.bad.join(", ")} did not trace to the evidence after one retry.`; }
         }
       } catch (e) {
         if (["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e?.code)) sampleFn = null;
+        if (e?.code === "unavailable") serverOk = false;
         if (e?.code === "rate_limited") { a.status = "done"; a.answer = "I'm being asked too much at once. Try again in a moment."; a.mode = "error"; return upd(); }
         res = null;
       }
@@ -1076,7 +1102,7 @@ Carly's question: ${q}`;
     const tab = s.tab || "ask";
     return `<div class="col" style="max-width:1240px">
       <div class="row"><button class="btn ghost" type="button" data-act="back" style="padding:0">← Squad</button><span class="meta">Stripple Tech · October financials · ${isFix ? "figure 2 of 2" : "figure 1 of 2"}</span></div>
-      <div class="trust">Track record on Stripple Tech: <b>${s.fixed ? "197 of 200" : "196 of 198"}</b> figures you checked were right · ${s.fixed ? "you've corrected me 3 times, once today" : "you've corrected me twice"}</div>
+      <div class="trust">Track record on Stripple Tech: <b>${s.fixed || run.fixed ? "197 of 200" : "196 of 198"}</b> figures you checked were right, over 7 months · ${s.fixed || run.fixed ? "you've corrected me 3 times, once today" : "you've corrected me twice"}</div>
       <div class="card split">
         ${viewDoc()}
         <div class="rside">
@@ -1160,7 +1186,7 @@ Carly's question: ${q}`;
 
   function drawer() {
     const d = $("drawer");
-    d.innerHTML = `<header><b>Loan agreement · §1.1 Definitions · page 4</b><button class="iconbtn" type="button" data-act="closedrawer" aria-label="Close">${ico.x}</button></header>
+    d.innerHTML = `<div class="grip" title="Drag to resize" aria-hidden="true"></div><header><b>Loan agreement · §1.1 Definitions · page 4</b><button class="iconbtn" type="button" data-act="closedrawer" aria-label="Close">${ico.x}</button></header>
       <div class="body">
         <div class="clause">
           <div style="text-align:center;font-weight:600">LOAN AND SECURITY AGREEMENT</div>
@@ -1182,7 +1208,7 @@ Carly's question: ${q}`;
       const railW = (c) => (c ? 72 : 252);
       if (!railC && vw - railW(false) - 420 < 480) { tempRail = true; document.body.classList.add("railc"); }
       const main = vw - railW(railC || tempRail);
-      const dw = Math.round(Math.max(400, Math.min(560, main * 0.45)));
+      const dw = userDw ? Math.round(Math.max(340, Math.min(main - 360, userDw))) : Math.round(Math.max(380, Math.min(560, main * 0.42)));
       document.documentElement.style.setProperty("--dw", dw + "px");
       document.querySelector(".main").classList.toggle("push", main - dw >= 440);
     } else {
@@ -1210,7 +1236,9 @@ Carly's question: ${q}`;
     else if (step === 3 || step === 4) html = viewReview();
     else if (helenView()) html = viewHelen();
     else html = viewThread();
+    const typed = {}; $("pane").querySelectorAll("textarea[id]").forEach((t) => { if (!t.readOnly) typed[t.id] = t.value; });
     $("pane").innerHTML = html;
+    $("pane").querySelectorAll("textarea[id]").forEach((t) => { if (!t.readOnly && t.id in typed) t.value = typed[t.id]; });
     composer();
     drawer();
     $("pane").querySelectorAll("textarea").forEach(autosize);
@@ -1272,8 +1300,9 @@ Carly's question: ${q}`;
       case "right": return toast("In this walk-through Squad is wrong here. Try “That's wrong”.");
       case "wrong": s.wrong = true; s.page = 0; s.hl = ""; return render();
       case "unwrong": s.wrong = false; return render();
-      case "fix": s.page = 0; s.hl = ""; if (!val("why").trim()) { toast("Say what's wrong first. That's what Squad learns from."); return $("why").focus(); } s.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
+      case "fix": s.page = 0; s.hl = ""; if (!val("why").trim()) { toast("Say what's wrong first. That's what Squad learns from."); return $("why").focus(); } s.fixed = true; run.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
       case "toDataflake": return go(5);
+      case "reviewfix": return go(4);
       case "trail": s.trail = !s.trail; return render();
       case "drawer": s.drawer = true; return drawer();
       case "closedrawer": s.drawer = false; return drawer();
@@ -1283,7 +1312,7 @@ Carly's question: ${q}`;
       case "certfirst": run.certChoice = "first"; render(); return speak();
       case "certundo": run.certChoice = ""; return render();
       case "certsend": run.certAsked = true; render(); return toast("Question sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
-      case "sendmail": run.mailSent = true; render(); return toast("Email sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
+      case "sendmail": if ($("view")) run.view = $("view").value; run.mailSent = true; render(); return toast("Email sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
       case "route": {
         const v = val("view").trim();
         if (!v) { toast("Add your view before routing. You can start from Squad's suggestion."); return $("view").focus(); }
@@ -1293,9 +1322,9 @@ Carly's question: ${q}`;
       case "tab": if ($("why")) s.why = $("why").value; s.tab = t.dataset.tab; return render();
       case "srow": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = t.dataset.hl; render(); return $("docfocus")?.scrollIntoView({ block: "center" });
       case "page": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = ""; return render();
-      case "look": look = t.dataset.look; lookOpen = false; savePref("squad-look", look); applyChrome(); return lookMenu();
+      case "look": look = t.dataset.look; lookOpen = false; savePref("squad-look2", look); applyChrome(); return lookMenu();
       case "lookmenu": lookOpen = !lookOpen; return lookMenu();
-      case "railc": railC = !railC; lookOpen = false; savePref("squad-rail", railC ? "closed" : "open"); applyChrome(); return rail();
+      case "railc": railC = !railC; lookOpen = false; savePref("squad-rail2", railC ? "closed" : "open"); applyChrome(); return rail();
       case "showsummary": s.summary = true; render(); return speak();
       case "fill": { const el = $(t.dataset.to); if (el) { el.value = t.dataset.text; autosize(el); el.focus(); } return; }
       case "helenrecord": {
@@ -1322,6 +1351,14 @@ Carly's question: ${q}`;
     if (e.target.id === "remember") s.remember = e.target.checked;
     if (e.target.name === "hd") s.helen = e.target.value;
   });
+  // drag the drawer's left edge to resize it
+  document.addEventListener("pointerdown", (e) => {
+    if (!e.target.classList?.contains("grip")) return;
+    e.preventDefault();
+    const move = (ev) => { userDw = innerWidth - ev.clientX; drawer(); };
+    const up = () => { removeEventListener("pointermove", move); removeEventListener("pointerup", up); };
+    addEventListener("pointermove", move); addEventListener("pointerup", up);
+  });
   $("scrim").addEventListener("click", () => { s.drawer = false; drawer(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && lookOpen) { lookOpen = false; lookMenu(); }
@@ -1343,12 +1380,12 @@ Carly's question: ${q}`;
   $("restart").addEventListener("click", () => go(0));
   applyChrome();
   const setStripH = () => document.documentElement.style.setProperty("--striph", (document.body.classList.contains("noguide") ? 0 : document.querySelector(".strip").offsetHeight) + "px");
-  const setGuide = (on) => { document.body.classList.toggle("noguide", !on); try { localStorage.setItem("squad-guide", on ? "on" : "off"); } catch {} setStripH(); };
+  const setGuide = (on) => { document.body.classList.toggle("noguide", !on); try { localStorage.setItem("squad-guide2", on ? "on" : "off"); } catch {} setStripH(); };
   $("hideguide").addEventListener("click", () => setGuide(false));
   $("showguide").addEventListener("click", () => setGuide(true));
   addEventListener("resize", setStripH);
   render(); speak();
-  setGuide(pref("squad-guide", "off") === "on");
+  setGuide(pref("squad-guide2", "off") === "on");
   setStripH();
 })();
 </script>

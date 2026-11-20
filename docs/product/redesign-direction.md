@@ -17,7 +17,7 @@ Working notes from the owner's brainstorm after colleagues' feedback on the cock
 
 ## Direction being prototyped (Carly's morning)
 
-Clickable demo: "Squad - Credit Analyst agent demo" (`docs/product/prototype/carly-morning.html`). It is a prototype only and does not touch the live app. Public copy for demos outside Claude: https://squad-analyst-demo.vercel.app (its own Vercel project, not the live app; free questions use the scripted answers there, because live answers run only inside Claude; not indexed by search engines). The live app's demo analyst (Priya Raman) is unchanged for now.
+Clickable demo: "Squad - Credit Analyst agent demo" (`docs/product/prototype/carly-morning.html`). It is a prototype only and does not touch the live app. Public copy for demos outside Claude: https://c-squad.vercel.app (Vercel project `csquad`, not the live app; live answers through its own server function on the owner's Anthropic key, rate-limited; not indexed by search engines; source in `docs/product/prototype/site/`). (csquad.vercel.app was already taken by someone else.) The live app's demo analyst (Priya Raman) is unchanged for now.
 
 1. Squad greets the analyst with her work, not a dashboard.
 2. Upload: the Intake Agent files what it can and holds what it cannot place, with one question.
