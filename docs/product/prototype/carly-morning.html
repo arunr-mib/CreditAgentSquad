@@ -19,16 +19,13 @@
   color-scheme: light;
 }
 /* colour variants: same meanings (red breach, amber attention, green verified, lavender = Squad), different grounds */
-:root[data-look="cool"] { --ground: #f1f3f6; --sunk: #e7ebf0; --line: #dce1e8; --line-strong: #c3cad4; --ink: #13161b; --ink-2: #49505b; --ink-3: #848c98; --paper: #fafbfc; --hair: #edf0f4; --bubble: #e1e6ee; --hover: #f7f9fb; --me: #33557a; }
-:root[data-look="lavender"] { --ground: #f4f2fb; --sunk: #ebe7f7; --line: #e0dbf0; --line-strong: #c9c1e4; --ink: #1a1726; --ink-2: #4d4862; --ink-3: #8a84a0; --paper: #fcfbff; --hair: #efecf8; --bubble: #e4def6; --hover: #f8f6fd; --me: #4a35b8; }
-:root[data-look="sage"] { --ground: #f0f3ee; --sunk: #e5eae1; --line: #d9e0d4; --line-strong: #c0cab9; --ink: #151a14; --ink-2: #4a5347; --ink-3: #858f80; --paper: #fbfcfa; --hair: #ecf0e9; --bubble: #dfe7da; --hover: #f7f9f5; --me: #3f6b4a; }
+:root[data-look="cool"] { --ground: #f1f3f6; --sunk: #e7ebf0; --line: #dce1e8; --line-strong: #c3cad4; --ink: #13161b; --ink-2: #49505b; --ink-3: #737b87; --paper: #fafbfc; --hair: #edf0f4; --bubble: #e1e6ee; --hover: #f7f9fb; --me: #33557a; }
+:root[data-look="lavender"] { --ground: #f4f2fb; --sunk: #ebe7f7; --line: #e0dbf0; --line-strong: #c9c1e4; --ink: #1a1726; --ink-2: #4d4862; --ink-3: #77718d; --paper: #fcfbff; --hair: #efecf8; --bubble: #e4def6; --hover: #f8f6fd; --me: #4a35b8; }
+:root[data-look="sage"] { --ground: #f0f3ee; --sunk: #e5eae1; --line: #d9e0d4; --line-strong: #c0cab9; --ink: #151a14; --ink-2: #4a5347; --ink-3: #717b6c; --paper: #fbfcfa; --hair: #ecf0e9; --bubble: #dfe7da; --hover: #f7f9f5; --me: #3f6b4a; }
 :root[data-look="night"] { color-scheme: dark; --ground: #141318; --surface: #1d1c22; --sunk: #25242b; --line: #2f2e36; --line-strong: #46444f; --ink: #f1eff5; --ink-2: #bbb7c6; --ink-3: #8a8695; --on-ink: #141318;
   --hair: #29282f; --tint: #211e2b; --bubble: #2d2b35; --hover: #232229; --me: #8f7bf0;
   --squad: #a493ff; --squad-ink: #cbbfff; --squad-soft: #262140; --squad-line: #3d3561;
-  --ok: #7fd3a0; --ok-soft: #17301f; --warn: #f0c06a; --warn-soft: #36290f; --bad: #ff9b8f; --bad-soft: #3a1b17; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px rgba(0,0,0,.35); }
-.looks { display: flex; align-items: center; gap: 6px; padding: 8px 10px 4px; font-size: 12px; color: var(--ink-3); }
-.looks button { width: 20px; height: 20px; border-radius: 10px; border: 1px solid var(--line-strong); padding: 0; }
-.looks button[aria-pressed="true"] { outline: 2px solid var(--squad); outline-offset: 2px; }
+  --ok: #7fd3a0; --ok-soft: #17301f; --warn: #f0c06a; --warn-soft: #36290f; --bad: #ff9b8f; --bad-soft: #3a1b17; --night: #201e26; --night-2: #2a2831; --night-line: #423f4b; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px rgba(0,0,0,.35); }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body { display: flex; flex-direction: column; background: var(--ground); color: var(--ink); font: 15px/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
@@ -222,7 +219,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .night textarea { background: var(--night-2); border-color: var(--night-line); color: var(--night-ink); }
 .night .muted { color: var(--night-ink-2); font-size: 13px; }
 .night .btn { background: transparent; color: var(--night-ink); border-color: var(--night-line); }
-.night .btn.primary { background: var(--night-ink); border-color: var(--night-ink); color: var(--ink); }
+.night .btn.primary { background: var(--night-ink); border-color: var(--night-ink); color: #161513; }
 
 /* toast */
 .toast { position: fixed; left: 50%; top: calc(var(--striph, 0px) + 14px); transform: translateX(-50%); background: var(--ink); color: var(--on-ink); padding: 11px 16px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; animation: rise .25s ease-out both; max-width: calc(100% - 32px); }
@@ -265,22 +262,34 @@ label.lbl { font-size: 13px; font-weight: 600; }
 /* drawer pushes the case aside where there is room */
 .main .pane, .main .composer { transition: padding-right .24s ease; }
 @media (min-width: 1200px) { .main.push .pane, .main.push .composer { padding-right: 592px; } .main.push .scrim { display: none; } }
-/* collapsible rail */
-.railtop { display: flex; align-items: center; gap: 8px; }
-.railtop .who { flex: 1; min-width: 0; }
-.collapse { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-body.railc .app { grid-template-columns: 76px minmax(0, 1fr); }
+/* rail: icons, collapse, look menu */
+.navitem { justify-content: flex-start; gap: 10px; }
+.navitem .badge { margin-left: auto; }
+.ni { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; color: var(--ink-2); flex-shrink: 0; }
+.navitem[aria-current="page"] .ni { color: var(--ink); }
+.tile { width: 24px; height: 24px; border-radius: 7px; background: var(--sunk); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 9.5px; font-weight: 700; letter-spacing: .02em; color: var(--ink-2); }
+.railfoot { margin-top: auto; display: flex; flex-direction: column; gap: 2px; padding-top: 10px; }
+.railfoot .navitem { color: var(--ink-2); font-size: 13px; }
+.railfoot .me { margin-top: 8px; }
+.looks { position: relative; }
+.lookpop { position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 60; min-width: 190px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.lookpop button { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; font-size: 13px; text-align: left; }
+.lookpop button:hover { background: var(--sunk); }
+.lookpop button[aria-pressed="true"] { background: var(--squad-soft); color: var(--squad-ink); font-weight: 600; }
+.sw { width: 18px; height: 18px; border-radius: 9px; border: 1px solid var(--line-strong); flex-shrink: 0; }
+body.railc .app { grid-template-columns: 72px minmax(0, 1fr); }
 body.railc .rail { padding: 16px 10px; align-items: center; }
-body.railc .railtop { flex-direction: column; }
-body.railc .who > div, body.railc .navgroup, body.railc .me > div, body.railc .looks .lk { display: none; }
-body.railc .who { padding: 4px 0 10px; }
-body.railc .navitem { width: 52px; justify-content: center; padding: 10px 0; position: relative; }
-body.railc .navitem .nl { display: none; }
-body.railc .navitem::before { content: attr(data-short); font-weight: 700; font-size: 13px; }
-body.railc .navitem .badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; font-size: 10px; }
-body.railc .me { padding: 6px; background: transparent; border: 0; }
-body.railc .looks { flex-direction: column; padding: 8px 0; }
-@media (max-width: 900px) { .collapse { display: none; } body.railc .app { grid-template-columns: 1fr; } }
+body.railc .who { padding: 4px 0 14px; }
+body.railc .who > div, body.railc .navgroup, body.railc .nl, body.railc .me > div:not(.avatar) { display: none; }
+body.railc .rail { overflow: visible; position: relative; z-index: 25; }
+body.railc .navgroup + .navitem { margin-top: 10px; position: relative; }
+body.railc .navgroup + .navitem::before { content: ""; position: absolute; top: -7px; left: 12px; right: 12px; border-top: 1px solid var(--line); }
+body.railc .navitem { width: 48px; height: 44px; padding: 0; justify-content: center; position: relative; }
+body.railc .navitem .badge { position: absolute; top: 2px; right: 0; min-width: 17px; height: 17px; font-size: 10px; padding: 0 4px; }
+body.railc .railfoot { align-items: center; }
+body.railc .me { padding: 0; background: transparent; border: 0; }
+body.railc .lookpop { left: calc(100% + 10px); bottom: 0; }
+@media (max-width: 900px) { [data-act="railc"] { display: none !important; } body.railc .app { grid-template-columns: 1fr; } .railfoot { margin-top: 0; flex-direction: row; } .railfoot .me { display: none; } .lookpop { bottom: auto; top: calc(100% + 6px); } }
 
 /* guide toggle */
 body.noguide .strip { display: none; }
@@ -451,19 +460,34 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   };
 
   // ---------- rail ----------
+  const NAVI = {
+    squad: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+    portfolio: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+    approvals: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.5L16 9.5"/></svg>',
+    palette: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H17a4 4 0 0 0 4-4c0-4.4-4-8.2-9-8.2z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg>',
+    collapse: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+    expand: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
+  };
+  let lookOpen = false;
   function rail() {
     const helen = helenView();
     const view = s.view.startsWith("cc:") ? (s.stack.filter((v) => v && !v.startsWith("cc:")).pop() || (step === 1 ? "portfolio" : "squad")) : (s.view || (step === 1 ? "portfolio" : "squad"));
+    const item = (nav, icon, label, badge, current) => `<button class="navitem" ${nav ? `data-nav="${nav}"` : ""} ${current ? 'aria-current="page"' : ""} title="${esc(label)}" aria-label="${esc(label)}" type="button"><span class="ni">${icon}</span><span class="nl">${label}</span>${badge || ""}</button>`;
     $("rail").innerHTML = `
-      <div class="railtop"><div class="who">${mark(42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
-        <button class="collapse" type="button" data-act="railc" aria-label="${railC ? "Expand" : "Collapse"} navigation" title="${railC ? "Expand" : "Collapse"} navigation">${railC ? "»" : "«"}</button></div>
-      ${helen ? `<button class="navitem" data-short="A" aria-current="page" type="button" title="Approvals"><span class="nl">Approvals</span> <span class="badge ember">1</span></button>` : `
-      <button class="navitem" data-short="Sq" title="Squad" data-nav="squad" ${view === "squad" ? 'aria-current="page"' : ""} type="button"><span class="nl">Squad</span> <span class="badge ember">${step < 7 ? 3 : 1}</span></button>
-      <button class="navitem" data-short="MP" title="My Portfolio" data-nav="portfolio" ${view === "portfolio" ? 'aria-current="page"' : ""} type="button"><span class="nl">My Portfolio</span> <span class="badge warn">2</span></button>
+      <div class="who">${mark(railC ? 34 : 42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
+      ${helen ? item("", NAVI.approvals, "Approvals", '<span class="badge ember">1</span>', true) : `
+      ${item("squad", NAVI.squad, "Squad", `<span class="badge ember">${step < 7 ? 3 : 1}</span>`, view === "squad")}
+      ${item("portfolio", NAVI.portfolio, "My Portfolio", '<span class="badge warn">2</span>', view === "portfolio")}
       <div class="navgroup">Side chats</div>
-      ${CHATS.map((c) => `<button class="navitem" data-short="${c.short}" title="${esc(c.label)}" data-nav="chat:${c.id}" ${view === "chat:" + c.id ? 'aria-current="page"' : ""} type="button"><span class="nl">${c.label}</span></button>`).join("")}`}
-      <div class="looks" role="group" aria-label="Colour variant"><span class="lk">Look</span>${LOOKS.map(([k, label, a, b]) => `<button type="button" data-act="look" data-look="${k}" aria-pressed="${look === k}" title="${label}" aria-label="${label}" style="background:linear-gradient(135deg, ${a} 50%, ${b} 50%)"></button>`).join("")}</div>
-      <div class="me"><div class="avatar" style="${helen ? "" : "background:var(--me);color:#fff"}">${helen ? "HS" : "CR"}</div><div><b style="font-size:14px">${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Commercial credit analyst"}</small></div></div>`;
+      ${CHATS.map((c) => item("chat:" + c.id, `<span class="tile">${c.short}</span>`, c.label, "", view === "chat:" + c.id)).join("")}`}
+      <div class="railfoot">
+        <div class="looks" role="group" aria-label="Colour variant">
+          <button class="navitem lookbtn" type="button" data-act="lookmenu" aria-expanded="${lookOpen}" title="Colour variant" aria-label="Colour variant"><span class="ni">${NAVI.palette}</span><span class="nl">Look · ${LOOKS.find((l) => l[0] === look)[1]}</span></button>
+          ${lookOpen ? `<div class="lookpop">${LOOKS.map(([k, label, a, b]) => `<button type="button" data-act="look" data-look="${k}" aria-pressed="${look === k}"><span class="sw" style="background:linear-gradient(135deg, ${a} 50%, ${b} 50%)"></span>${label}</button>`).join("")}</div>` : ""}
+        </div>
+        <button class="navitem" type="button" data-act="railc" title="${railC ? "Expand" : "Collapse"} navigation" aria-label="${railC ? "Expand" : "Collapse"} navigation"><span class="ni">${railC ? NAVI.expand : NAVI.collapse}</span><span class="nl">Collapse</span></button>
+        <div class="me"><div class="avatar" style="${helen ? "" : "background:var(--me);color:#fff"}">${helen ? "HS" : "CR"}</div><div><b style="font-size:14px">${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Commercial credit analyst"}</small></div></div>
+      </div>`;
     $("rail").querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => {
       const v = b.dataset.nav;
       if (step === 0 && v === "portfolio") return go(1);
@@ -1140,6 +1164,7 @@ Carly's question: ${q}`;
 
   // ---------- actions ----------
   document.addEventListener("click", (e) => {
+    if (lookOpen && !e.target.closest(".looks")) { lookOpen = false; rail(); }
     const t = e.target.closest("[data-act],[data-step]");
     if (!t) return;
     if (t.dataset.step) return go(+t.dataset.step);
@@ -1191,8 +1216,9 @@ Carly's question: ${q}`;
       case "tab": if ($("why")) s.why = $("why").value; s.tab = t.dataset.tab; return render();
       case "srow": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = t.dataset.hl; render(); return $("docfocus")?.scrollIntoView({ block: "center" });
       case "page": if ($("why")) s.why = $("why").value; s.page = +t.dataset.page; s.hl = ""; return render();
-      case "look": look = t.dataset.look; savePref("squad-look", look); applyChrome(); return rail();
-      case "railc": railC = !railC; savePref("squad-rail", railC ? "closed" : "open"); applyChrome(); return rail();
+      case "look": look = t.dataset.look; lookOpen = false; savePref("squad-look", look); applyChrome(); return rail();
+      case "lookmenu": lookOpen = !lookOpen; return rail();
+      case "railc": railC = !railC; lookOpen = false; savePref("squad-rail", railC ? "closed" : "open"); applyChrome(); return rail();
       case "showsummary": s.summary = true; return render();
       case "fill": { const el = $(t.dataset.to); if (el) { el.value = t.dataset.text; autosize(el); el.focus(); } return; }
       case "helenrecord": {
@@ -1221,6 +1247,7 @@ Carly's question: ${q}`;
   });
   $("scrim").addEventListener("click", () => { s.drawer = false; drawer(); });
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && lookOpen) { lookOpen = false; rail(); }
     if (e.key === "Escape" && s.drawer) { s.drawer = false; drawer(); }
     if (/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName)) return;
     if (e.key === "ArrowRight") go(step + 1);
