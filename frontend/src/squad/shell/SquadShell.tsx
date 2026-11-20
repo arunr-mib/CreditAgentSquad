@@ -7,6 +7,7 @@ import { defaultCopilotScope, useWorkspaceDrawer } from '@/drawer/context';
 import { WorkspaceDrawer } from '@/drawer/WorkspaceDrawer';
 import { useBorrowers } from '@/api/hooks';
 import { useBriefing } from '../api/hooks';
+import { useLedgerHeartbeat } from '../api/polling';
 import { LookProvider, useLook } from '../useLook';
 import { PresenceLine, PresenceProvider } from '../presence/Presence';
 import { buildCommands } from './commands';
@@ -23,6 +24,7 @@ function storedCollapsed(): boolean {
 
 function Frame() {
   const { user, signOut } = useAuth();
+  useLedgerHeartbeat({ enabled: Boolean(user) });
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const briefing = useBriefing();
