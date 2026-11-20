@@ -120,3 +120,21 @@ def test_each_client_has_the_documents_the_agreement_requires(generated):
         assert counts == dict.fromkeys(MONTHLY, 2 if cid == "lumora-health" else 3), cid  # three months on file
         for d in by_type["monthly_financials"]:
             assert d["received_date"] <= truth["as_of"]
+
+
+def test_every_innovation_client_prints_the_supplemental_note_and_an_interest_only_loan(generated):
+    checked = 0
+    for truth in generated.truths.values():
+        if truth["borrower"].get("template_id") != "vc-1":
+            continue
+        periods = {p["period_end"]: p for p in truth["periods"]}
+        for doc in (d for d in truth["documents"] if d["type"] in ("monthly_financials", "annual_financial_statements")):
+            for key in ("sup.cash_interest_paid", "sup.scheduled_principal"):
+                figure = doc["figures"][key]
+                assert figure["printed"] in generated.text(doc["id"])[figure["page"] - 1], (doc["id"], key)
+                checked += 1
+        values = periods[max(periods)]["values"]
+        assert values["sup.scheduled_principal"] == 0 and values["bs.venture_debt_current"] == 0
+        agreement = next(d for d in truth["documents"] if d["type"] == "credit_agreement")
+        assert "interest-only through December 31, 2027" in " ".join(generated.text(agreement["id"]))
+    assert checked == (16 * 4 - 1) * 2  # one client has not yet sent its October package

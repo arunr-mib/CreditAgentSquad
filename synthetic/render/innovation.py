@@ -8,7 +8,7 @@ from pathlib import Path
 from reportlab.lib.units import inch
 from reportlab.platypus import KeepTogether, PageBreak, Spacer, Table, TableStyle
 
-from synthetic.books.innovation.layout import BALANCE, CASHFLOW, INCOME, LABELS, OUTFLOWS
+from synthetic.books.innovation.layout import BALANCE, CASHFLOW, INCOME, LABELS, OUTFLOWS, SUPPLEMENTAL
 from synthetic.render import common
 from synthetic.render.common import (
     COVER_LINE,
@@ -96,6 +96,17 @@ def _head(spec_name: str, statement: str, line: str) -> list:
             para("(in U.S. dollars)", SMALL), Spacer(1, 8)]
 
 
+def _supplemental_page(spec, sheet: _Sheet, line: str, heading: str, head_now: str, head_before: str,
+                       now: dict, before: dict) -> list:
+    """Cash paid for interest and scheduled principal, so a reader can map them to the sup.* lines."""
+    story = _head(spec.name, heading, line)
+    story += sheet.table("supplemental", SUPPLEMENTAL, (head_now, head_before), now, before)
+    story += [Spacer(1, 10), para("Scheduled principal payments are the contractual installments paid on the venture term "
+                                  "loan during the period and exclude voluntary prepayments. The venture term loan is "
+                                  "interest-only, so none is scheduled in these periods. A dash indicates nil.", SMALL)]
+    return story
+
+
 def render_monthly_financials(path: Path, spec, payload: dict, title: str) -> dict:
     end, months = payload["end"], payload["months"]
     sheet = _Sheet(payload.get("labels", {}))
@@ -111,6 +122,9 @@ def render_monthly_financials(path: Path, spec, payload: dict, title: str) -> di
     story.append(PageBreak())
     story += _head(spec.name, "Statement of Cash Flows", line)
     story += sheet.table("cash_flow", CASHFLOW, (ytd_head, month_head), payload["ytd"], payload["month"])
+    story.append(PageBreak())
+    story += _supplemental_page(spec, sheet, line, "Supplemental cash flow information", ytd_head, month_head,
+                                payload["ytd"], payload["month"])
     story.append(PageBreak())
     roll = payload["software_roll"]
     story += _head(spec.name, "Note 1 - Capitalised software", line)
@@ -140,6 +154,9 @@ def render_annual_statements(path: Path, spec, payload: dict, title: str) -> dic
     story += _head(spec.name, "Statements of Operations", line) + sheet.table("income_statement", INCOME, head, payload["flows"], payload["prior_flows"])
     story.append(PageBreak())
     story += _head(spec.name, "Statements of Cash Flows", line) + sheet.table("cash_flow", CASHFLOW, head, payload["flows"], payload["prior_flows"])
+    story.append(PageBreak())
+    story += _supplemental_page(spec, sheet, line, "Note 1 - Supplemental cash flow information", *head,
+                                payload["flows"], payload["prior_flows"])
     pages = common.build_pdf(path, title, f"{spec.name} | FY{end.year}", spec.name, story)
     return {"pages": pages, "extra": {"scale": 1, "quality": "audited", "page_map": dict(sheet.marks),
                                       "figures": sheet.figures(), "comparative_period_end": prior}}

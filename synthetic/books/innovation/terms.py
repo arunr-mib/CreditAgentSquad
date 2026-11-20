@@ -21,6 +21,7 @@ FERROGATE = "ferrogate-cloud"
 PLAN_MONTHS = MONTHS[4:]
 DSCR_EFFECTIVE = date(2026, 5, 31)  # Ferrogate adds a trailing-twelve-month DSCR covenant from this month end
 DSCR_MIN = "1.25"
+INTEREST_ONLY_THROUGH = date(2027, 12, 31)  # no scheduled principal within twelve months of any balance sheet in the book
 
 
 @dataclass
@@ -129,7 +130,9 @@ def build_agreement(spec: ClientSpec) -> LegalDoc:
                                 "facility",
                                 "2.1",
                                 f"The Lender has made a venture term loan to the Borrower in the aggregate principal amount of "
-                                f"{money(spec.venture_debt)}, bearing interest at the rate of Prime plus 3.50 percent.",
+                                f"{money(spec.venture_debt)}, bearing interest at the rate of Prime plus 3.50 percent. The venture term loan is interest-only through "
+                                f"{long_date(INTEREST_ONLY_THROUGH)}; no principal is scheduled before then, and principal is "
+                                "repayable in equal monthly installments after that date.",
                             ),
                             ("facility",),
                         )

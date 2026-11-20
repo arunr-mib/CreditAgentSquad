@@ -230,7 +230,7 @@ def simulate(spec: ClientSpec, seed: int = DEFAULT_SEED) -> tuple[Month, list[Mo
         preferred[i] = preferred[i - 1] + equity[i]
 
     def balances(i: int) -> dict[str, int]:
-        current = rnd(D(venture[i]) * D("0.25"))
+        current = 0  # interest-only: no principal falls due within twelve months of any month end (see terms.py)
         return {
             "bs.cash_unrestricted": cash[i], "bs.cash_restricted": restricted[i],
             "bs.short_term_investments": spec.sti, "bs.accounts_receivable": receivable[i],

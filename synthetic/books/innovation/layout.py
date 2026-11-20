@@ -27,7 +27,10 @@ CASHFLOW = (
     ("head", "Financing activities"), ("line", "cf.equity_raised"), ("line", "cf.debt_raised"),
     ("line", "cf.vc_other_financing"), ("grand", "cf.vc_net_change_in_cash"),
 )
+SUPPLEMENTAL = (("line", "sup.cash_interest_paid"), ("line", "sup.scheduled_principal"))
 LABELS = {
+    "sup.cash_interest_paid": "Cash paid for interest",
+    "sup.scheduled_principal": "Scheduled principal payments on term debt",
     "is.subscription_revenue": "Subscription revenue", "is.services_revenue": "Services revenue",
     "is.total_revenue": "Total revenue", "is.cost_of_revenue": "Cost of revenue", "is.vc_gross_profit": "Gross profit",
     "is.rnd": "Research and development", "is.sales_marketing": "Sales and marketing",
