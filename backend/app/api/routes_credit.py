@@ -18,7 +18,7 @@ from app.core.clock import today
 from app.core.config import MAX_UPLOAD_BYTES
 from app.core.db import get_db
 from app.core.roles import Permission
-from app.domain import corrections, facts_service, terms_service
+from app.domain import corrections, facts_service, lessons, terms_service
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
@@ -139,6 +139,31 @@ def record_funding_event(borrower_id: uuid.UUID, body: FundingEventIn, db: Sessi
                            "expected_close": event.expected_close})
     db.commit()
     return row(event)
+
+
+class LessonIn(BaseModel):
+    borrower_id: uuid.UUID
+    topic: str = Field(min_length=1, max_length=48)
+    text: str
+    work_item_id: uuid.UUID | None = None
+    tag: str | None = Field(default=None, max_length=48)
+
+
+@router.post("/lessons", status_code=201)
+def record_lesson_route(body: LessonIn, db: Session = Depends(get_db),
+                        user: User = Depends(require(Permission.DECIDE_WORK_ITEM))) -> dict:
+    """A person teaches once: their own words become precedent for later cases. The author is the
+    signed-in user, never named in the body."""
+    _borrower_or_404(db, body.borrower_id)
+    if body.work_item_id is not None and db.get(WorkItem, body.work_item_id) is None:
+        raise HTTPException(404, "Work item not found.")
+    try:
+        lesson = lessons.record_lesson(db, borrower_id=body.borrower_id, topic=body.topic, text=body.text,
+                                       written_by=user.id, work_item_id=body.work_item_id, tag=body.tag)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    db.commit()
+    return {"id": str(lesson.id)}
 
 
 @router.get("/borrowers/{borrower_id}/documents")
