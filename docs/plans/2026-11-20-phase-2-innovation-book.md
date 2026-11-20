@@ -4424,7 +4424,7 @@ Append after item 7 in the "Added while you were away" section (numbers continue
 12. **Tidewell's cash mismatch.** The calculation records a passing variance on the ledger only, so no item is raised today. The answer key expects an exception `cash.statement_mismatch` (statements to certificate), which needs a reconciliation step built in Phase 3. *Taken: the key expects it; the tests pin it as pending.*
 13. **Corvane's plan miss is a breach.** Revenue is under 80 percent of the approved plan in September and October; the certificate says so honestly, so the exception is `covenant.breach`. *Taken: as described.*
 14. **Figures the spec left open for the four extra clients** (cash, burn, runway at 31 October 2026): Corvane $8.4M / $0.60M / 14.0; Nimbusfield $3.3M / $0.40M / 8.3; Tidewell $4.3M after the newly restricted account / $0.35M / 12.3; Ferrogate $16.0M / net burn −$0.25M / not meaningful. *Taken: as stated.*
-15. **Sign the new answer key.** `synthetic/books/innovation/oracle.csv` has 62 unsigned rows for the 16 innovation clients (covenant tests, funding events and expected exceptions); the 16 rows for the four kept borrowers are the v1 rows and stay signed. It will arrive as one short table (standing approval 3).
+15. **Sign the new answer key.** `synthetic/books/innovation/oracle.csv` has 63 unsigned rows (62 plus Ferrogate's DSCR test) for the 16 innovation clients (covenant tests, funding events and expected exceptions); the 16 rows for the four kept borrowers are the v1 rows and stay signed. It will arrive as one short table (standing approval 3).
 ```
 
 - [ ] **Step 3: Update `CLAUDE.md` Commands**
