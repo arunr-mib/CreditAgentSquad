@@ -93,3 +93,36 @@ def test_certificate_prints_a_ratio_line_and_mrr_figures_use_engine_keys(tmp_pat
     figures = result["extra"]["figures"]
     assert set(figures) == {"saas.mrr", "saas.arr", "saas.customers", "saas.net_new_arr", "saas.net_revenue_retention"}
     assert figures["saas.net_revenue_retention"]["printed"] == "108%" and figures["saas.customers"]["printed"] == "140"
+
+
+def test_certificate_columns_do_not_overprint_and_carry_the_units_line(tmp_path):
+    import pymupdf
+
+    reported = {"min_runway_months": {"required_text": "Not less than 6.0 months",
+                                      "actual_text": "Not meaningful (cash-flow positive)", "in_compliance": True,
+                                      "calculation": [("Unrestricted Cash", "$6,100,000")]}}  # fmt: skip
+    path = tmp_path / "cc.pdf"
+    render.render_monthly_certificate(path, SPEC, {
+        "end": END, "document_date": date(2026, 11, 12), "signed_by": "Imogen Farrow", "reported": reported,
+        "names": {"min_runway_months": "Minimum Runway"}}, "cc")
+    assert "Dollar amounts in this certificate are presented in whole U.S. dollars." in text(path)
+    with pymupdf.open(path) as pdf:
+        page = pdf[0]
+        required = pymupdf.Rect(page.search_for("Not less than 6.0 months")[0])
+        actual = [pymupdf.Rect(r) for r in page.search_for("Not meaningful")]
+        assert actual and not any(required.intersects(r) for r in actual)
+
+
+def test_unmeasured_values_print_n_a_not_none(tmp_path):
+    result = render.render_mrr_report(tmp_path / "mrr.pdf", SPEC, {
+        "end": END, "mrr": 640_000, "arr": 7_680_000, "net_new_arr": None, "customers": 140, "nrr": None,
+        "opening": 620_000, "new": 20_000, "expansion": 7_000, "contraction": 2_000, "churn": 5_000,
+        "trend": [("May 2026", 500_000, 120)]}, "mrr")  # fmt: skip
+    body = text(tmp_path / "mrr.pdf")
+    assert "None" not in body and "n/a" in body
+    assert "saas.nrr" not in result["extra"]["figures"] and "saas.net_revenue_retention" not in result["extra"]["figures"]
+    assert "saas.net_new_arr" not in result["extra"]["figures"]
+    accounts = [{"name": "Operating account", "tail": "4417", "restricted": False, "opening": None, "credits": 1,
+                 "debits": 1, "closing": None}]  # fmt: skip
+    bank = render.render_bank_statement(tmp_path / "bank.pdf", SPEC, {"end": END, "accounts": accounts, "notes": []}, "b")
+    assert "None" not in text(tmp_path / "bank.pdf") and "bs.cash_unrestricted" not in bank["extra"]["figures"]

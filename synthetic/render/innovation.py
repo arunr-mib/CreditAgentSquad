@@ -21,10 +21,12 @@ from synthetic.render.common import (
     Mark,
     accounting,
     para,
+    style,
 )
 from synthetic.render.statements import _auditor_report
 
 D = Decimal
+CELL = style("cell", size=8.5, leading=10.5)
 LENDER = "Bank of Stoic"
 WORDS = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight", 9: "Nine", 10: "Ten",
          11: "Eleven", 12: "Twelve"}
@@ -143,12 +145,16 @@ def render_annual_statements(path: Path, spec, payload: dict, title: str) -> dic
                                       "figures": sheet.figures(), "comparative_period_end": prior}}
 
 
+def _opt(value, fmt) -> str:
+    return "n/a" if value is None else fmt(value)
+
+
 def render_mrr_report(path: Path, spec, payload: dict, title: str) -> dict:
     end, marks = payload["end"], {}
     w = [3.4 * inch, 1.6 * inch]
     summary = [["Metric", f"As of {long_date(end)}"], ["Monthly recurring revenue (MRR)", usd(payload["mrr"])],
-               ["Annual recurring revenue (ARR)", usd(payload["arr"])], ["Net new ARR in the month", usd(payload["net_new_arr"])],
-               ["Customers", f"{payload['customers']:,}"], ["Net revenue retention, trailing 12 months", f"{payload['nrr']}%"]]
+               ["Annual recurring revenue (ARR)", usd(payload["arr"])], ["Net new ARR in the month", _opt(payload["net_new_arr"], usd)],
+               ["Customers", f"{payload['customers']:,}"], ["Net revenue retention, trailing 12 months", _opt(payload["nrr"], lambda v: f"{v}%")]]
     bridge = [["MRR bridge", "Month ended"], ["Opening MRR", usd(payload["opening"])], ["New customers", usd(payload["new"])],
               ["Expansion", usd(payload["expansion"])], ["Contraction", usd(-payload["contraction"])],
               ["Churn", usd(-payload["churn"])], ["Closing MRR", usd(payload["mrr"])]]
@@ -162,10 +168,13 @@ def render_mrr_report(path: Path, spec, payload: dict, title: str) -> dict:
     pages = common.build_pdf(path, title, f"{spec.name} | MRR report {end.isoformat()}", spec.name, story)
     figs = {"saas.mrr": {"page": marks["summary"], "label": "Monthly recurring revenue (MRR)", "printed": usd(payload["mrr"])},
             "saas.arr": {"page": marks["summary"], "label": "Annual recurring revenue (ARR)", "printed": usd(payload["arr"])},
-            "saas.customers": {"page": marks["summary"], "label": "Customers", "printed": f"{payload['customers']:,}"},
-            "saas.net_new_arr": {"page": marks["summary"], "label": "Net new ARR in the month", "printed": usd(payload["net_new_arr"])},
-            "saas.net_revenue_retention": {"page": marks["summary"], "label": "Net revenue retention, trailing 12 months",
-                                           "printed": f"{payload['nrr']}%"}}
+            "saas.customers": {"page": marks["summary"], "label": "Customers", "printed": f"{payload['customers']:,}"}}
+    if payload["net_new_arr"] is not None:
+        figs["saas.net_new_arr"] = {"page": marks["summary"], "label": "Net new ARR in the month",
+                                    "printed": usd(payload["net_new_arr"])}
+    if payload["nrr"] is not None:
+        figs["saas.net_revenue_retention"] = {"page": marks["summary"], "label": "Net revenue retention, trailing 12 months",
+                                              "printed": f"{payload['nrr']}%"}
     return {"pages": pages, "extra": {"page_map": marks, "figures": figs}}
 
 
@@ -175,11 +184,16 @@ def render_bank_statement(path: Path, spec, payload: dict, title: str) -> dict:
     rows = [["Account", "Opening", "Credits", "Debits", "Closing"]]
     for a in payload["accounts"]:
         rows.append([f"{a['name']} (ending {a['tail']})" + (" - RESTRICTED" if a["restricted"] else ""),
-                     usd(a["opening"]), usd(a["credits"]), usd(-a["debits"]), usd(a["closing"])])
-    free = sum(a["closing"] for a in payload["accounts"] if not a["restricted"])
-    held = sum(a["closing"] for a in payload["accounts"] if a["restricted"])
-    totals = [["Total operating accounts (unrestricted)", usd(free)], ["Total pledged and restricted accounts", usd(held)],
-              ["Total balances on deposit", usd(free + held)]]
+                     _opt(a["opening"], usd), _opt(a["credits"], usd), _opt(a["debits"], lambda v: usd(-v)),
+                     _opt(a["closing"], usd)])
+    def total(restricted: bool):
+        closings = [a["closing"] for a in payload["accounts"] if a["restricted"] == restricted]
+        return None if any(c is None for c in closings) else sum(closings)
+
+    free, held = total(False), total(True)
+    both = None if free is None or held is None else free + held
+    totals = [["Total operating accounts (unrestricted)", _opt(free, usd)],
+              ["Total pledged and restricted accounts", _opt(held, usd)], ["Total balances on deposit", _opt(both, usd)]]
     story = [Mark(marks, "summary"), para("STATEMENT OF ACCOUNT", TITLE), para(f"{LENDER} - Business Banking", SUBTITLE),
              para(f"Account holder: {spec.name}", SUBTITLE),
              para(f"Statement period: {long_date(first)} to {long_date(end)}", SUBTITLE), Spacer(1, 8),
@@ -189,8 +203,13 @@ def render_bank_statement(path: Path, spec, payload: dict, title: str) -> dict:
     for note in payload["notes"]:
         story += [Spacer(1, 8), para(note, SMALL)]
     pages = common.build_pdf(path, title, f"{spec.name} | Account statement {end.isoformat()}", LENDER, story)
-    figs = {"bs.cash_unrestricted": {"page": marks["totals"], "label": "Total operating accounts (unrestricted)", "printed": usd(free)},
-            "bs.cash_restricted": {"page": marks["totals"], "label": "Total pledged and restricted accounts", "printed": usd(held)}}
+    figs = {}
+    if free is not None:
+        figs["bs.cash_unrestricted"] = {"page": marks["totals"], "label": "Total operating accounts (unrestricted)",
+                                        "printed": usd(free)}
+    if held is not None:
+        figs["bs.cash_restricted"] = {"page": marks["totals"], "label": "Total pledged and restricted accounts",
+                                      "printed": usd(held)}
     return {"pages": pages, "extra": {"page_map": marks, "figures": figs}}
 
 
@@ -204,15 +223,17 @@ def render_monthly_certificate(path: Path, spec, payload: dict, title: str) -> d
                  "forth in Article 6 of the Credit Agreement.")
     rows = [["Covenant", "Section", "Required", "Actual", "In compliance"]]
     for i, (cid, r) in enumerate(reported.items(), start=1):
-        rows.append([payload["names"][cid], f"6.{i}", r["required_text"], r["actual_text"], "Yes" if r["in_compliance"] else "No"])
+        rows.append([para(payload["names"][cid], CELL), f"6.{i}", para(r["required_text"], CELL),
+                     para(r["actual_text"], CELL), "Yes" if r["in_compliance"] else "No"])
     story = [Mark(marks, "summary"), para("MONTHLY COMPLIANCE CERTIFICATE", TITLE), para(spec.name, SUBTITLE),
              para(f"For the month ended {long_date(end)}", SUBTITLE), Spacer(1, 8), para(f"To: {LENDER}"),
              para(f"Date: {long_date(payload['document_date'])}"),
              para("This certificate is delivered under Section 5.1(c) of the Credit Agreement. The undersigned, the chief "
                   "financial officer of the Borrower, certifies that the covenant calculations in Schedule 1 are true and correct."),
              para(statement), Spacer(1, 6),
-             Table(rows, colWidths=[2.0 * inch, 0.65 * inch, 1.65 * inch, 1.45 * inch, 0.95 * inch], hAlign="LEFT",
-                   style=TableStyle(_grid(size=8.5))), Spacer(1, 16), para(spec.name.upper()),
+             Table(rows, colWidths=[1.9 * inch, 0.5 * inch, 1.5 * inch, 2.0 * inch, 0.7 * inch], hAlign="LEFT",
+                   style=TableStyle(_grid(size=8.5))), Spacer(1, 6),
+             para("Dollar amounts in this certificate are presented in whole U.S. dollars.", SMALL), Spacer(1, 10), para(spec.name.upper()),
              para(f"By: /s/ {payload['signed_by']}"), para("Title: Chief Financial Officer"), PageBreak(),
              Mark(marks, "calculations"), para("Schedule 1 - Covenant Calculations", TITLE),
              para(f"{spec.name} - as of and for the month ended {long_date(end)}", SUBTITLE), Spacer(1, 6)]
