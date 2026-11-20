@@ -10,7 +10,7 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 |---|---|
 | 0 Freeze and specs | Done |
 | 1 Lending layer (`docs/plans/2026-11-20-phase-1-lending-layer.md`) | Done: tasks 1–9, per-task reviews, a final whole-branch review and one fix wave, re-reviewed and approved |
-| 2 Innovation book (`docs/plans/2026-11-20-phase-2-innovation-book.md`, 10 tasks) | Plan written, not started |
+| 2 Innovation book (`docs/plans/2026-11-20-phase-2-innovation-book.md`, 10 tasks) | Done: tasks 1–10; full suite, `ruff` and the legacy stand-in evaluation pass (21 November) |
 | 3 Evals | Not planned yet; live run approved up to about $15 (estimate) after the stand-in gate and the owner's sign-off of the new answer key |
 | 4 Squad experience (`docs/plans/2026-11-20-phase-4-squad-experience.md`, 4a: 15 tasks; 4b outlined) | Plan written, not started; runs in a separate worktree beside 2–3 |
 | 5 Hosted release (new Vercel project, schema `squad2`) and usability sessions | Pre-approved, not started |
@@ -27,10 +27,16 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 
 **Verified at Phase 1 close (20 November 2026):** full test suite passed; `ruff` clean; migration 0005 upgraded, downgraded and re-upgraded on a scratch Postgres database; stand-in evaluation on the legacy book unchanged from v1: 21 borrowers, extraction 2,677 of 2,677, covenant outcomes 100%, exception precision and recall 100%, gate passed (stand-in reader, not model performance). Nothing has been run with a real model in v2.
 
-**Known gaps carried to later phases:** revenue-below-plan signal gets no plan until Phase 2 wires approved plan figures in; every `vc-1` spread currently requires MRR, ARR and customers, so a financial pack without them cannot finalise (decide in Phase 2: SaaS lines likely from the MRR report); waiver conditions that reference a funding event (Phase 4b approvals); venture metrics in publishing packages; quarterly-reporting venture borrowers use quarter windows for runway-falling and burn-rising; `pytest-xdist` deferred (needs one test database per worker).
+**Known gaps carried to later phases:** waiver conditions that reference a funding event (Phase 4b approvals); venture metrics in publishing packages; quarterly-reporting venture borrowers use quarter windows for runway-falling and burn-rising; `pytest-xdist` deferred (needs one test database per worker).
 
 
 ## Where things stand
+
+**Phase 2 (v2 innovation book, done 21 November 2026):** `synthetic/books/innovation/` holds the 20-borrower book: 16 venture-backed clients on a monthly cadence plus the four kept C&I borrowers, byte-identical to v1. The v1 generator and `synthetic/out/` are frozen and pinned by digest. `python -m app.seed_book` loads the innovation book by default (`--book legacy` for v1, unchanged); the innovation seed takes about 3 minutes. SaaS lines come from the monthly MRR report (a pack without them still spreads) and revenue-vs-plan reads the approved plan. Expected values are computed independently of `app/calc`; `backend/tests/calc/test_synthetic_innovation_truth.py` runs the book through the engine.
+
+- **Verified counts:** 20 borrowers, 301 documents, 854 pages. Answer key `synthetic/books/innovation/oracle.csv`: 79 rows = 16 signed (the kept borrowers' v1 rows) + 63 unsigned, waiting for the owner's signature. 726 covenant tests agree exactly with `app.calc`.
+- **Not built (Phase 3):** the stand-in reader for the new document types, recordings and the live run; `python -m evals.run --mode standin` still runs the legacy book only. Tidewell's reconciliation exception (`cash.statement_mismatch`) is pending until then. Intake does not accept spreadsheets (Stripple's MRR export is held as a PDF print).
+- **Decisions:** Ferrogate has a TTM DSCR of at least 1.25x from 2026-05-31 (second terms version); Corvane's plan miss is a breach; Lumora's October tests are `cannot_test` (late package). All in `docs/owner-questions.md`.
 
 Branch `slice-1/monitoring-cycle`. `main` holds only the README and licence.
 
