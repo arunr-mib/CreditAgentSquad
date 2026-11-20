@@ -14,7 +14,7 @@ from typing import Any
 from pydantic import BaseModel, ValidationError
 from sqlalchemy.orm import Session
 
-from app.agents.llm import LLMClient, LLMRequest, LLMResponse
+from app.agents.llm import LLMClient, LLMRequest, LLMResponse, spec_stamp
 from app.agents.schema import strict_schema
 from app.agents.tools import Scope, ToolContext, ToolGateway, _next_n, summarise
 from app.core import ledger
@@ -150,6 +150,9 @@ def run_agent(
     messages: list[dict[str, Any]] = [{"role": "user", "content": content}]
     tools = gateway.definitions(spec.tools)
     schema = strict_schema(spec.output_model)
+    system = spec.prompt()
+    stamp, prompt_hash = spec_stamp(spec.name, spec.version, system=system, tools=tools, schema=schema,
+                                    effort=spec.effort, max_tokens=spec.max_tokens, model=run.model)
     retried_shape = False
     retried_prose = False
     exchange = 0
@@ -157,10 +160,10 @@ def run_agent(
     while True:
         exchange += 1
         request = LLMRequest(
-            model=run.model, system=spec.prompt(), messages=list(messages), tools=list(tools),
+            model=run.model, system=system, messages=list(messages), tools=list(tools),
             output_schema=schema,
             effort=spec.effort, max_tokens=spec.max_tokens, record_key=f"{record_key}/{exchange:02d}",
-            spec=f"{spec.name}@{spec.version}:{spec.prompt_sha256()[:12]}")
+            spec=stamp, spec_prompt=prompt_hash)
         try:
             response = llm.create(request)
         except Exception as exc:  # noqa: BLE001 - a failure never reads as a recommendation

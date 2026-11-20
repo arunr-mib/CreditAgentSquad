@@ -53,6 +53,9 @@ def render_markdown(results: dict[str, Any]) -> str:
     out.append(f"- Oracle rows in scope not signed by the owner: {_num(meta['unsigned_oracle_rows'])}.")
     if meta.get("accepted_stale"):
         out.append(f"- Stale recordings replayed by choice: {', '.join(meta['accepted_stale'])}.")
+    if meta.get("prompt_only_verified"):
+        out.append(f"- {meta['prompt_only_verified']} recording(s) verified on prompt only (stamped from git history; "
+                   "tools, output schema and settings were not checked).")
     out.append("- Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.")
     out.append("")
     out.append(f"## Gate: {'PASSED' if gate['passed'] else 'FAILED'}")

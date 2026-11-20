@@ -8,6 +8,7 @@ from app.agents.llm import (
     RecordingClient,
     RecordingStale,
     ScriptedClient,
+    spec_stamp,
 )
 
 
@@ -58,6 +59,43 @@ def test_a_stale_stamped_recording_is_accepted_by_the_directory_name_too(tmp_pat
     assert RecordedClient(tmp_path, accept_stale=frozenset({"certificate_reader"})).create(stale).stop_reason == "end_turn"
 
 
-def test_a_request_with_no_spec_skips_the_check(tmp_path):
+def test_a_recorded_request_with_no_spec_is_an_error_not_a_silent_skip(tmp_path):
     RecordingClient(ScriptedClient([_response()]), tmp_path).create(_request(""))
-    assert RecordedClient(tmp_path).create(_request("")).stop_reason == "end_turn"
+    with pytest.raises(ValueError, match="no spec"):
+        RecordedClient(tmp_path).create(_request(""))
+
+
+def test_a_prompt_only_stamp_is_compared_on_the_prompt_alone_and_counted(tmp_path):
+    path = tmp_path / "spreading/b/2026-09-30/abc/01.json"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({**_response().to_json(), "_spec": "spreading@3:pppppppppppp", "_basis": "prompt-only"}))
+    client = RecordedClient(tmp_path)
+    same_prompt = _request("spreading@3:zzzzzzzzzzzz")  # other tools/schema: not checkable, not stale
+    same_prompt.spec_prompt = "pppppppppppp"
+    assert client.create(same_prompt).stop_reason == "end_turn" and client.prompt_only_verified == 1
+    other = _request("spreading@3:zzzzzzzzzzzz")
+    other.spec_prompt = "qqqqqqqqqqqq"
+    with pytest.raises(RecordingStale):
+        client.create(other)
+    bumped = _request("spreading@4:zzzzzzzzzzzz")
+    bumped.spec_prompt = "pppppppppppp"
+    with pytest.raises(RecordingStale):
+        client.create(bumped)
+
+
+def _stamp(**changes):
+    args = {"system": "p", "tools": [{"name": "t", "input_schema": {"type": "object"}}],
+            "schema": {"type": "object", "properties": {"a": {"type": "string"}}}, "effort": "high",
+            "max_tokens": 100, "model": "m"}
+    return spec_stamp("spreading", "4", **{**args, **changes})[0]
+
+
+def test_a_tool_schema_or_output_schema_edit_without_a_version_bump_makes_a_recording_stale(tmp_path):
+    RecordingClient(ScriptedClient([_response()]), tmp_path).create(_request(_stamp()))
+    assert RecordedClient(tmp_path).create(_request(_stamp())).stop_reason == "end_turn"
+    edited_tool = _stamp(tools=[{"name": "t", "input_schema": {"type": "object", "required": ["x"]}}])
+    edited_schema = _stamp(schema={"type": "object", "properties": {"a": {"type": "number"}}})
+    assert len({_stamp(), edited_tool, edited_schema}) == 3
+    for stamp in (edited_tool, edited_schema, _stamp(effort="low"), _stamp(max_tokens=5), _stamp(model="n")):
+        with pytest.raises(RecordingStale):
+            RecordedClient(tmp_path).create(_request(stamp))

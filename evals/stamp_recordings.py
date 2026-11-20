@@ -2,7 +2,12 @@
 
 For each unstamped recording, find the last commit that wrote it (a recording re-recorded later was
 made under the later spec), read the agent file and prompt as they were in that commit, and write
-"<agent>@<version>:<prompt sha>" into the file."""
+"<agent>@<version>:<prompt sha>" into the file, marked `_basis: "prompt-only"`.
+
+BEST EFFORT: a recording does not store the request it answered, and git history only shows what the agent
+file and prompt said in the commit that wrote it. Tool definitions, output schema, effort and model cannot be
+recovered, so these stamps verify the prompt text and agent version only. Replay compares them on that basis
+and the scorecard counts them."""
 import hashlib
 import json
 import re
@@ -41,6 +46,7 @@ def stamp(recordings: Path, repo: Path = REPO) -> list[str]:
         if not found:
             raise RuntimeError(f"{code_file} at {commits[0]} does not declare name=..., version=... in one place")
         prompt = _git(repo, "show", f"{commits[0]}:backend/app/agents/specs/{prompt_file}")
+        data["_basis"] = "prompt-only"
         data["_spec"] = f"{found.group(1)}@{found.group(2)}:{hashlib.sha256(prompt.encode()).hexdigest()[:12]}"
         path.write_text(json.dumps(data, indent=1, sort_keys=True))
         done.append(f"{path.relative_to(recordings)} -> {data['_spec']} (commit {commits[0][:7]})")

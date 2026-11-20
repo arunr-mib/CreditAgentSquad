@@ -488,6 +488,7 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
                             standin_disagreements=getattr(client, "disagreements", []),
                             unsigned_oracle_rows=len(unsigned_oracle_rows(codes, oracle)), scope=only)
     results["meta"]["accepted_stale"] = sorted(accept_stale)
+    results["meta"]["prompt_only_verified"] = getattr(client, "prompt_only_verified", 0)
     if keep_recordings:
         results["recordings"] = all_passes
     return results

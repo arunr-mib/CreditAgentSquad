@@ -5,6 +5,7 @@
 - RecordedClient replays saved responses, so tests and CI never call a model.
 - ScriptedClient returns responses given in code (unit tests).
 """
+import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -25,7 +26,8 @@ class LLMRequest:
     effort: str = "high"
     max_tokens: int = 32000
     record_key: str = ""  # where a recording of this exchange lives: "<agent>/<task key>/<step>"
-    spec: str = ""  # "<agent>@<version>:<prompt sha-256, 12 hex>": what a recording was made under
+    spec: str = ""  # "<agent>@<version>:<sha-256 of everything the model sees, 12 hex>": see spec_stamp
+    spec_prompt: str = ""  # the system prompt's own sha-256, 12 hex (for recordings stamped on the prompt only)
 
 
 @dataclass
@@ -62,6 +64,17 @@ class LLMClient(Protocol):
 
 class RecordingMissing(Exception):
     """Raised in recorded mode when no saved response exists for a request."""
+
+
+def spec_stamp(name: str, version: str, *, system: str, tools: list, schema: Any, effort: str, max_tokens: int,
+               model: str) -> tuple[str, str]:
+    """What a recording was made under: the agent and version, and a hash of every request value that is the
+    agent's own (system prompt, tool definitions as sent, output schema, effort, max tokens, model).
+    Returns (stamp, prompt hash)."""
+    body = {"system": system, "tools": tools, "schema": schema, "effort": effort, "max_tokens": max_tokens,
+            "model": model}
+    digest = hashlib.sha256(json.dumps(body, sort_keys=True, default=str).encode()).hexdigest()[:12]
+    return f"{name}@{version}:{digest}", hashlib.sha256(system.encode()).hexdigest()[:12]
 
 
 class RecordingStale(Exception):
@@ -132,20 +145,31 @@ class RecordedClient:
     def __init__(self, root: str | Path | None = None, accept_stale: frozenset[str] = frozenset()):
         self.root = Path(root or get_settings().squad_recordings_dir)
         self.accept_stale = frozenset(accept_stale)
+        self.prompt_only_verified = 0  # recordings replayed on a prompt-only stamp
 
     def create(self, request: LLMRequest) -> LLMResponse:
         path = _recording_path(self.root, request.record_key)
         if not path.exists():
             raise RecordingMissing(f"no recorded model response at {path}")
         data = json.loads(path.read_text())
+        if not request.spec:
+            raise ValueError(f"a recorded-mode request for {request.record_key} carries no spec: it cannot be checked")
         stamp = data.get("_spec")
-        if request.spec and stamp != request.spec:
+        if data.get("_basis") == "prompt-only":
+            # stamped from git history (best effort): only the prompt could be recovered, so only it is compared
+            wanted = f"{request.spec.split(':', 1)[0]}:{request.spec_prompt}"
+            ok = stamp == wanted
+            if ok:
+                self.prompt_only_verified += 1
+        else:
+            ok = stamp == request.spec
+        if not ok:
             # an agent is named by its spec name or by its recordings directory (they can differ)
             names = {request.spec.split("@", 1)[0], request.record_key.split("/", 1)[0]}
             if not names & self.accept_stale:
                 raise RecordingStale(f"{path} was recorded under {stamp or 'no stamp'}, this request is {request.spec}"
                                      + ("" if stamp else " (no stamp: an old recording)"))
-        return LLMResponse.from_json({k: v for k, v in data.items() if k != "_spec"})
+        return LLMResponse.from_json({k: v for k, v in data.items() if not k.startswith("_")})
 
 
 class RecordingClient:
@@ -159,7 +183,7 @@ class RecordingClient:
         response = self.inner.create(request)
         path = _recording_path(self.root, request.record_key)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({**response.to_json(), "_spec": request.spec}, indent=1, sort_keys=True))
+        path.write_text(json.dumps({**response.to_json(), "_spec": request.spec, "_basis": "full"}, indent=1, sort_keys=True))
         return response
 
 
