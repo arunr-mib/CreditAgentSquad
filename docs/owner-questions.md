@@ -80,7 +80,7 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 
 ## Added in Phase 2 (21 November)
 
-5. **MRR export for Stripple.** The file is delivered as the real `mrr_export.xlsx` and as a PDF print of the same sheet, because intake accepts PDFs only. *Taken: both exist; the print is the file that is held.* **Owner: should intake accept spreadsheets directly?**
+5. **MRR export for Stripple.** The file is delivered as the real `mrr_export.xlsx` and as a PDF print of the same sheet, because intake accepts PDFs only. *Taken: both exist; the print is the file that is held.* **Owner (20 Nov): accept spreadsheets.** Planned in Phase 3: intake takes .xlsx (and .csv) as documents with cell-level citations; the Stripple export is ingested and held with one question.
 6. **Due days for the monthly package:** financials and certificate 30 days (spec section 3); MRR report 15; bank statements 7. The 7 and 15 are mine: "Lumora October reporting 12 days late" at an as-of of 19 November needs an item due on 7 November. *Taken: as stated.*
 7. **Tidewell's cash mismatch.** The calculation records a passing variance on the ledger only, so no item is raised today. The answer key expects an exception `cash.statement_mismatch` (statements to certificate), which needs a reconciliation step built in Phase 3. *Taken: the key expects it; the tests pin it as pending until Phase 3.*
 8. **Corvane's plan miss is a breach.** Revenue is under 80 percent of the approved plan in September and October; the certificate says so honestly, so the exception is `covenant.breach`. *Taken: as described.*
