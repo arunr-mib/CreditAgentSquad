@@ -92,8 +92,8 @@ Updates the cockpit rules where the demo proved better: ink primary buttons (emb
 
 Unit tests for the new endpoints; component tests; end-to-end journeys for every entry point of every client (home item, nav, portfolio row, Squad asks, officer screens); contrast scan in all looks; accessibility checks; the eval gate stays green.
 
-## 15. Open questions for the owner
+## 15. Owner decisions (20 November 2026)
 
-1. The product name on screen: "Credit Squad" for the presence label only, or for the product too?
-2. Should "Client file" detail views be redesigned in this phase, or start from the existing screens restyled?
-3. Default look Night for everyone, or Night for analysts and Warm paper for officers?
+1. **Product name:** "Credit Squad" is the product name on screen as well as the presence label, for now; it may change after market research. (Squad remains how the agent refers to itself in conversation.)
+2. **Client file:** the detail views are redesigned in this phase, not restyled versions of the cockpit screens.
+3. **Default look:** Night for analysts, Warm paper for credit officers; anyone can switch.
