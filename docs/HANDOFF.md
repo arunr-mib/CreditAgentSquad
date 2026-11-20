@@ -12,7 +12,7 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 | 1 Lending layer (`docs/plans/2026-11-20-phase-1-lending-layer.md`) | Done: tasks 1–9, per-task reviews, a final whole-branch review and one fix wave, re-reviewed and approved |
 | 2 Innovation book (`docs/plans/2026-11-20-phase-2-innovation-book.md`, 10 tasks) | Done: tasks 1–10; full suite, `ruff` and the legacy stand-in evaluation pass (21 November) |
 | 3 Evals | Not planned yet; live run approved up to about $15 (estimate) after the stand-in gate and the owner's sign-off of the new answer key |
-| 4 Squad experience (`docs/plans/2026-11-20-phase-4-squad-experience.md`, 4a: 15 tasks; 4b outlined) | Plan written, not started; runs in a separate worktree beside 2–3 |
+| 4 Squad experience (`docs/plans/2026-11-20-phase-4-squad-experience.md`, 4a: 15 tasks; 4b outlined) | 4a done and merged (20 Nov): per-task reviews, final review, one fix wave, re-review approved; merged suite green, vitest 570, browser journeys 14/14 on the innovation book. First-look findings for 4b: `docs/product/v2-first-look-findings.md`. 4b plan not written yet |
 | 5 Hosted release (new Vercel project, schema `squad2`) and usability sessions | Pre-approved, not started |
 
 **What Phase 1 added** (C&I behaviour unchanged; the legacy 21-borrower book and its tests stay green):
