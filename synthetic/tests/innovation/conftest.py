@@ -1,4 +1,4 @@
-"""Fixtures for the innovation book: every client simulated, nothing else built."""
+"""Fixtures for the innovation book: every client simulated, and every client built."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import pytest
 
 from synthetic.books.innovation import model
+from synthetic.books.innovation.book import ClientBook, build_clients
 from synthetic.books.innovation.expected import Series
 from synthetic.books.innovation.roster import CLIENTS, ClientSpec
 
@@ -29,3 +30,8 @@ def sims() -> dict[str, Sim]:
         opening, months = model.simulate(spec)
         out[spec.id] = Sim(spec, opening, months, model.build_periods(months), Series(months))
     return out
+
+
+@pytest.fixture(scope="session")
+def clients() -> dict[str, ClientBook]:
+    return {book.spec.id: book for book in build_clients()}

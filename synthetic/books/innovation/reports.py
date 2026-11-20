@@ -63,6 +63,8 @@ def format_actual(unit: str, value: Decimal | None) -> str:
         return f"${int(value):,}"
     if unit == "months":
         return f"{value:.1f} months"
+    if unit == "ratio":
+        return f"{value:.2f} to 1.00"
     return f"{value * 100:.2f}%"
 
 
