@@ -48,3 +48,8 @@ The engine carries over unchanged (agents, guardrails, ledger, workflow, four-ey
 2. Test it with about five analysts and officers on three tasks: find what needs you, handle the covenant miss, check whether you trust the number. Watch whether they open the evidence before approving.
 3. Field research at a month-end, if it can be arranged.
 4. Then the redesign spec, including the innovation banking change above.
+
+## Demo backlog (owner, 20 November)
+
+- "A month later" epilogue: Squad files November and asks only what it hasn't learned ("page 3 again, same as last time?").
+- "Change my mind" on Carly's other choices before routing (it exists today only on Squad's pledged-cash question).

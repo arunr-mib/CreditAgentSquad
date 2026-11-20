@@ -213,11 +213,22 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .night .btn.primary { background: var(--night-ink); border-color: var(--night-ink); color: var(--ink); }
 
 /* toast */
-.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; animation: rise .25s ease-out both; max-width: calc(100% - 32px); }
+.toast { position: fixed; left: 50%; top: calc(var(--striph, 0px) + 14px); transform: translateX(-50%); background: var(--ink); color: #fff; padding: 11px 16px; border-radius: 12px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; animation: rise .25s ease-out both; max-width: calc(100% - 32px); }
 .toast b { color: #9ee3b9; }
 
 .endcard { text-align: center; padding: 36px 24px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .endcard h2 { margin: 0; font-size: 26px; letter-spacing: -.02em; }
+
+/* drawer pushes the case aside where there is room */
+.main .pane, .main .composer { transition: padding-right .24s ease; }
+@media (min-width: 1200px) { .main.push .pane, .main.push .composer { padding-right: 592px; } .main.push .scrim { display: none; } }
+/* guide toggle */
+body.noguide .strip { display: none; }
+#showguide { position: fixed; top: 10px; right: 12px; z-index: 45; display: none; height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 12px; font-weight: 600; box-shadow: var(--shadow); }
+body.noguide #showguide { display: inline-flex; align-items: center; }
+.suggest { align-self: flex-start; border: 1px dashed var(--squad-line); background: #fcfbff; color: var(--squad-ink); border-radius: 9px; height: 30px; padding: 0 10px; font-size: 12px; font-weight: 600; }
+.night .suggest { background: transparent; color: #cfc3ff; border-color: #5a5270; }
+.btn.primary[disabled] { opacity: .35; }
 
 /* free ask */
 .workline { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--squad-ink); }
@@ -280,9 +291,11 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     <button class="sbtn" id="prev" type="button">Back</button>
     <button class="sbtn primary" id="next" type="button">Next step</button>
     <button class="sbtn" id="restart" type="button">Restart</button>
+    <button class="sbtn" id="hideguide" type="button" title="Hide the step guide and use the app on its own">Hide guide</button>
   </div>
 </div>
 
+<button id="showguide" type="button">Show guide</button>
 <div class="app">
   <aside class="rail" id="rail" aria-label="Navigation"></aside>
   <div class="main">
@@ -312,6 +325,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   ];
   const CHATS = [{ id: "dataflake", label: "Dataflake Inc", co: "Dataflake Inc" }, { id: "stripple", label: "Stripple Tech · October", co: "Stripple Tech" }, { id: "lumora", label: "Lumora Health", co: "Lumora Health" }];
   const WATCH = 12;
+  const SUGGESTED_VIEW = "One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.";
   const rml = (c, b) => Math.round((c / b) * 10) / 10;   // cash only ÷ average monthly net burn (last 3 months)
 
   const STEPS = [
@@ -321,16 +335,16 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     { t: "Review in place, teach once", h: "The figure sits beside its page. The track record says how far to trust Squad on this company.", go: "Pick a line and <b>Confirm</b>." },
     { t: "Squad is wrong; Carly corrects", h: "A correction keeps the old figure in history, re-runs what depends on it, and teaches Squad.", go: "Click <b>That's wrong</b>, then <b>Correct it</b>." },
     { t: "Investigate Dataflake Inc", h: "One message, the work trail one click below, the evidence in a drawer that closes when done.", go: "Watch Squad work. Ask it anything about Dataflake (try <b>why is the pledged cash excluded?</b>), then answer its question." },
-    { t: "Prepare, message, route", h: "Squad drafts the recommendation and the borrower email. Carly adds her view, sends, and routes it.", go: "Click <b>Route to Helen</b>." },
-    { t: "Helen returns it; Carly finishes", h: "The credit officer decides with a reason. A return comes back to Carly's thread with the note.", go: "As Helen, choose <b>Return to Carly</b> and record it; then send it back. <b>Finish</b> shows the summary." },
+    { t: "Prepare, message, route", h: "Squad drafts the recommendation and the borrower email. Carly adds her view, sends, and routes it.", go: "Write your view (or start from Squad's suggestion), then <b>Route to Helen Strand</b>." },
+    { t: "Helen decides, twice", h: "The credit officer decides with a reason. A return comes back to Carly's thread; Squad adds what was asked; Helen decides again.", go: "As Helen, <b>Return to Carly</b> with a reason. Carly sends it back; Helen approves on the second pass. <b>Finish</b> skips to the summary." },
   ];
 
   // ---------- state ----------
   let step = 0;
   let s = {};
   let run = {};   // what Carly did in this run; survives step changes, cleared by Restart
-  const resetLocal = () => { s = { trail: false, drawer: false, line: run.line || "deferred", remember: run.remember ?? true, wrong: false, fixed: false, view: "", stack: [], helen: "return", helenDone: false, approved: false, reqDraft: false, lumoraDraft: true, uploaded: false }; };
-  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: true, mailSent: false, lumoraSent: false, helenReason: "", asks: [], certChoice: "", certAsked: false }; };
+  const resetLocal = () => { s = { trail: false, drawer: false, line: run.line || "", remember: run.remember === true, wrong: false, fixed: false, view: "", stack: [], helen: "", helenDone: false, sentBack: false, approved: false, summary: false, routed: false, reqDraft: false, lumoraDraft: true, uploaded: false }; };
+  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: false, mailSent: false, lumoraSent: false, helenReason: "", approveReason: "", view: "", asks: [], certChoice: "", certAsked: false }; };
   resetRun(); resetLocal();
 
   const $ = (id) => document.getElementById(id);
@@ -373,7 +387,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
 
   // ---------- rail ----------
   function rail() {
-    const helen = step === 7 && !s.helenDone;
+    const helen = helenView();
     const view = s.view.startsWith("cc:") ? (s.stack.filter((v) => v && !v.startsWith("cc:")).pop() || (step === 1 ? "portfolio" : "squad")) : (s.view || (step === 1 ? "portfolio" : "squad"));
     $("rail").innerHTML = `
       <div class="who">${mark(42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
@@ -393,7 +407,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   // ---------- composer ----------
   function composer() {
     const v = s.view;
-    const hide = v.startsWith("cc:") || v === "portfolio" || (!v.startsWith("chat:") && (step === 1 && v !== "squad" || step === 3 || step === 4 || (step === 7 && !s.helenDone)));
+    const hide = v.startsWith("cc:") || v === "portfolio" || (!v.startsWith("chat:") && (step === 1 && v !== "squad" || step === 3 || step === 4 || helenView()));
     if (hide) { $("composer").innerHTML = ""; return; }
     const canDrop = step === 1 && s.view === "squad";
     $("composer").innerHTML = `<div class="box" id="dropbox">
@@ -413,7 +427,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
 
   // ---------- thread history (what has happened before the current step) ----------
   function greeting(anim) {
-    return squadMsg(`<p class="text">Good morning, Carly. Overnight I spread Stripple Tech's September figures and tested 11 companies' covenants. Three things need you.</p>
+    return squadMsg(`<p class="text">Good morning, Carly. Overnight I spread Stripple Tech's September figures and tested covenants for 11 of your 12 companies; Lumora Health's October package hasn't arrived, so I couldn't test it. Three things need you.</p>
       <div class="worklist">
         <button class="workitem" type="button" data-act="w1"><span class="n">01</span><span class="t">Stripple Tech: 2 figures need your eye</span><small>~3 min</small></button>
         <button class="workitem" type="button" data-act="w2"><span class="n">02</span><span class="t">Dataflake Inc missed its minimum cash covenant</span><small>I'm preparing the case</small></button>
@@ -530,7 +544,7 @@ Carly</textarea></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Lineage</div><ul class="ledger">
           <li><span class="mono">p. 2</span><b>Code</b><span>Found “Contract liabilities 3,410” in current liabilities, October column, thousands</span></li>
           <li><span class="mono">—</span><b>Spreading</b><span>New line for Stripple Tech; asked Carly where it goes</span></li>
-          <li><span class="mono">—</span><b>Carly Reyes</b><span>${step >= 4 ? `Filed it under ${other ? "other current liabilities" : "deferred revenue, current"}${(run.remember ?? true) ? "; remembered for Stripple Tech" : ""}` : "Waiting for Carly's answer"}</span></li>
+          <li><span class="mono">—</span><b>Carly Reyes</b><span>${step >= 4 ? `Filed it under ${other ? "other current liabilities" : "deferred revenue, current"}${run.remember ? "; remembered for Stripple Tech" : ""}` : "Waiting for Carly's answer"}</span></li>
           <li><span class="mono">p. 2</span><b>Code</b><span>Total current liabilities 6,390 ties to the page</span></li></ul></div>`;
     } else if (key === "fig:capsoft") {
       const fixed = s.fixed || step >= 5;
@@ -545,15 +559,16 @@ Carly</textarea></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Calculation, by code from stored facts (USD millions)</div><div class="calc">Cash, operating accounts&nbsp;&nbsp;&nbsp;&nbsp;4.6&nbsp;&nbsp;&nbsp;bank statements<br>Cash, pledged for LC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.7&nbsp;&nbsp;&nbsp;excluded by §1.1, p. 4<div class="tot">Unrestricted&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.6 &lt; 5.0 minimum</div></div>
           <div class="def" style="margin-top:8px">Sources: compliance certificate p. 1 · October bank statements · loan agreement §1.1 and §7.10, p. 4</div></div>`;
     } else if (key === "case:dataflake") {
-      const status = s.approved ? ["ok", "Approved"] : step >= 7 && s.helenDone ? ["warn", "Returned to Carly"] : step >= 7 ? ["warn", "With Helen Strand"] : ["warn", "In preparation"];
+      const status = s.approved ? ["ok", "Approved"] : s.sentBack ? ["warn", "Back with Helen Strand"] : step >= 7 && s.helenDone ? ["warn", "Returned to Carly"] : step >= 7 ? ["warn", "With Helen Strand"] : ["warn", "In preparation"];
       const reason = s.helenReason || run.helenReason || "Add a cash case if the close slips to January.";
       body = `<div class="row"><h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Casefile · Dataflake Inc · conditional waiver</h1><span class="tag ${status[0]}">${status[1]}</span></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Ledger (append-only)</div><ul class="ledger">
           <li><span class="mono">9:14</span><b>Squad · Covenant</b><span>Tested minimum unrestricted cash: $4.6M against $5.0M · miss</span></li>
           ${run.mailSent ? `<li><span class="mono">—</span><b>Carly Reyes</b><span>Emailed Dataflake's CFO for the term sheet and November forecast <span class="proto">prototype: nothing was really sent</span></span></li>` : ""}
-          ${step >= 7 ? `<li><span class="mono">9:52</span><b>Carly Reyes</b><span>Routed to Helen Strand: “One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.”</span></li>` : ""}
+          ${step >= 7 ? `<li><span class="mono">9:52</span><b>Carly Reyes</b><span>Routed to Helen Strand: “${esc(run.view || SUGGESTED_VIEW)}”</span></li>` : ""}
           ${step >= 7 && s.helenDone ? `<li><span class="mono">—</span><b>Helen Strand</b><span>Returned to Carly: “${esc(reason)}”</span></li><li><span class="mono">10:48</span><b>Squad</b><span>Added the January cash case: 4.6 − 2 × 0.65 = $3.3M, below the $5.0M minimum</span></li>` : ""}
-          ${s.approved ? `<li><span class="mono">11:02</span><b>Helen Strand</b><span>Approved the one-time waiver, conditioned on the extension closing by 15 December</span></li>` : ""}
+          ${s.sentBack ? `<li><span class="mono">10:52</span><b>Carly Reyes</b><span>Sent back to Helen Strand with the January case</span></li>` : ""}
+          ${s.approved ? `<li><span class="mono">11:02</span><b>Helen Strand</b><span>Approved the one-time waiver, conditioned on the extension closing by 15 December: “${esc(s.approveReason)}”</span></li>` : ""}
         </ul></div>`;
     }
     return `<div class="col" style="max-width:1080px">${bar}${body}</div>`;
@@ -561,15 +576,15 @@ Carly</textarea></div>
 
   // ---------- end of the walk-through ----------
   function summary() {
-    const line = (run.line || s.line) === "other" ? "other current liabilities" : "deferred revenue, current";
+    const line = run.line === "other" ? "other current liabilities" : run.line === "deferred" ? "deferred revenue, current" : "";
     const stripple = run.reqSent ? "MRR request to Stripple Tech: <b>sent</b>" : run.typo ? "MRR report filed as October 2026 on your word; no request sent" : "MRR request to Stripple Tech: not sent in this run";
     return `<div class="summary anim" id="summary">
       <div class="row">${mark(40, "rest")}<h2>That's Carly's morning.</h2></div>
       <div class="sumgrid">
-        <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension closing by 15 December, with weekly cash reporting until then.</div><div>${dive("case:dataflake")}</div></section>
+        <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension closing by 15 December, on her second pass.</div><div>${dive("case:dataflake")}</div></section>
         <section><h3>The January cash case</h3><div>If the close slips to January, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum.</div></section>
         <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Chaser to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li>${run.certAsked ? "<li>Question to Dataflake about the pledged cash: <b>sent</b></li>" : ""}</ul><div class="proto">prototype: nothing was really sent</div></section>
-        <section><h3>What Carly taught Squad</h3><ul><li>Contract liabilities go to ${line}${(run.remember ?? true) ? ", remembered for Stripple Tech" : ""}</li><li>Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3</li><li>Track record on Stripple Tech: <b class="num">412 of 413</b>, corrected once today</li></ul></section>
+        <section><h3>What Carly taught Squad</h3><ul><li>${line ? `Contract liabilities go to ${line}${run.remember ? ", remembered for Stripple Tech" : ", not remembered (you'll be asked again)"}` : "Contract liabilities: not answered in this run"}</li><li>Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3</li><li>Track record on Stripple Tech: <b class="num">412 of 413</b>, corrected once today</li></ul></section>
         ${run.asks.some((a) => a.status === "done") ? `<section style="grid-column:1/-1"><h3>What Carly asked</h3><ul>${run.asks.filter((a) => a.status === "done").map((a) => `<li>“${esc(a.q)}” · ${a.answerable === false ? "Squad said it couldn't answer from the evidence" : `answered with ${a.traced} figure${a.traced === 1 ? "" : "s"} traced`}</li>`).join("")}</ul></section>` : ""}
       </div>
       <div class="row"><button class="btn primary" type="button" data-act="restart">Run it again from step 1</button></div>
@@ -671,7 +686,8 @@ Carly</textarea></div>
   const allowed = (ctx) => new Set(numsIn(packText(ctx)).concat(["12"]));
   function checkFigures(ctx, answer) {
     const ok = allowed(ctx), found = numsIn(answer);
-    return { traced: found.length, bad: found.filter((n) => !ok.has(n)) };
+    const raw = [...new Set((String(answer).match(/(?<![§\w.])\$?\d[\d,]*(?:\.\d+)?M?/g) || []))];
+    return { traced: new Set(found).size, list: raw, bad: [...new Set(found.filter((n) => !ok.has(n)))] };
   }
   function itemLabel(ctx, id) {
     const p = PACKS[ctx];
@@ -746,8 +762,9 @@ Carly's question: ${q}`;
     if (!res) { await new Promise((r) => setTimeout(r, 700)); res = scripted(ctx, q); mode = "scripted"; }
     const chk = checkFigures(ctx, String(res.answer || ""));
     a.answer = String(res.answer || ""); a.answerable = res.answerable !== false;
-    a.cites = (Array.isArray(res.cites) ? res.cites : []).map(String).filter((id) => itemLabel(ctx, id));
-    a.traced = chk.traced; a.mode = mode; a.note = guard; a.status = "done";
+    const seen = new Set();
+    a.cites = (Array.isArray(res.cites) ? res.cites : []).map(String).filter((id) => { const l = itemLabel(ctx, id); if (!l || seen.has(l.toLowerCase())) return false; seen.add(l.toLowerCase()); return true; });
+    a.traced = chk.traced; a.list = chk.list; a.mode = mode; a.note = guard; a.status = "done";
     upd();
   }
 
@@ -757,8 +774,8 @@ Carly's question: ${q}`;
     const drawerable = a.ctx === "dataflake";
     const chips = a.cites.map((id) => drawerable && /^(C1|C2|F2|F3|F5|F6)$/.test(id) ? `<button class="chip cite" type="button" data-act="drawer">${esc(itemLabel(a.ctx, id))}</button>` : `<span class="chip cite">${esc(itemLabel(a.ctx, id))}</span>`).join("");
     const foot = a.mode === "error" ? "" : !a.answerable ? `<div class="row">${drawerable ? '<button class="btn" type="button" data-act="drawer">Open the evidence</button>' : ""}${dive(a.ctx === "portfolio" ? "queue" : "co:" + CHATS.find((c) => c.id === a.ctx).co)}</div>` : "";
-    const check = a.mode === "error" ? "" : `<div class="checked">${a.traced ? `✓ ${a.traced} figure${a.traced > 1 ? "s" : ""} traced to the evidence by code` : "No figures in this answer"}${a.note ? ` · <span class="gnote">${esc(a.note)}</span>` : ""} · <span class="proto">${a.mode === "live" ? "answered live by Claude from the evidence" : "prototype: scripted answer"}</span></div>`;
-    return `<div id="ask-${i}" class="askpair">${me}<div class="msg anim">${mark(28, "rest")}<div class="msgbody"><div class="meta"><b>Squad</b></div><p class="text">${esc(a.answer)}</p>${chips ? `<div class="row">${chips}</div>` : ""}${foot}${check}</div></div></div>`;
+    const check = a.mode === "error" ? "" : `<div class="checked">${a.traced ? `✓ Code checked ${a.traced === 1 ? "the figure" : `all ${a.traced} figures`} against the evidence: ${esc(a.list.join(", "))}` : "No figures in this answer"}${a.note ? ` · <span class="gnote">${esc(a.note)}</span>` : ""} · <span class="proto">${a.mode === "live" ? "answered live by Claude from the evidence" : "prototype: scripted answer"}</span></div>`;
+    return `<div id="ask-${i}" class="askpair">${me}<div class="msg anim">${mark(28, "rest")}<div class="msgbody"><div class="meta"><b>Squad</b></div><p class="text">${esc(a.answer)}</p>${chips ? `<div class="row"><span class="meta">Sources</span>${chips}</div>` : ""}${foot}${check}</div></div></div>`;
   }
   const asksHtml = (ctx) => run.asks.map((a, i) => a.ctx === ctx ? askHtml(a, i) : "").join("");
 
@@ -807,14 +824,17 @@ Carly's question: ${q}`;
     if (step >= 5) h += correctionDone();
     if (step >= 5) h += dataflakeMsg(step === 5);
     if (step === 6) h += viewPrepare();
+    if (step === 6 && s.routed) h += routedMsg();
     if (step === 7 && s.helenDone) {
       h += squadMsg(`<div class="card pad" style="display:flex;flex-direction:column;gap:10px">
         <div class="row"><span class="tag warn">Returned by Helen Strand</span><span class="meta">Dataflake Inc · conditional waiver</span></div>
         <div style="font-size:15px">“${esc(s.helenReason || run.helenReason || "Add a cash case if the close slips to January.")}”</div></div>
         <p class="text">I've added the case: if the extension closes in January instead of December, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum until it closes. Sources attached.</p>
-        ${s.approved ? `<div class="card pad" style="background:var(--ok-soft);border-color:#cbe8d6;display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02.</b> One-time waiver, conditioned on the $8M extension closing by 15 December. Recorded on the ledger with both reasons.</div><div>${dive("case:dataflake")}</div></div>` :
-          `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am · needs you", true, !s.approved);
-      if (s.approved) h += summary();
+        ${s.sentBack ? `<div class="trust">You sent it back to Helen at 10:52.</div>` : `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am", !s.approved, !s.sentBack);
+      if (s.approved) h += squadMsg(`<div class="card pad" style="background:var(--ok-soft);border-color:#cbe8d6;display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02:</b> one-time waiver, conditioned on the $8M extension closing by 15 December.</div><div style="font-size:14px">Her reason: “${esc(s.approveReason)}”</div><div>${dive("case:dataflake")}</div></div>
+        <p class="text">That's everything that needed you this morning. I'll watch for the extension closing and the weekly cash reports.</p>
+        ${s.summary ? "" : `<div class="row"><button class="btn dark" type="button" data-act="showsummary">See the morning's summary</button></div>`}`, "Squad · 11:02 am", !s.summary);
+      if (s.summary) h += summary();
     }
     h += asksHtml(ctxOf());
     return `<div class="col">${h}</div>`;
@@ -853,7 +873,8 @@ Carly's question: ${q}`;
               <div class="row"><button class="btn dark" type="button" data-act="toDataflake">Back to Squad →</button>${dive("fig:capsoft")}</div>` :
             s.wrong ? `<div style="font-size:20px;font-weight:600;line-height:1.3">What's wrong with it?</div>
               <label class="lbl" for="why">Your reason (kept on the ledger)</label>
-              <textarea class="field" id="why">That's the year-to-date spend from the cash flow note, not the balance. The balance is on page 3.</textarea>
+              <textarea class="field" id="why" placeholder="Say what's wrong, in your words. Squad learns from this."></textarea>
+              <button class="suggest" type="button" data-act="fill" data-to="why" data-text="That's the year-to-date spend from the cash flow note, not the balance. The balance is on page 3.">Demo: use a sample reason</button>
               <div class="row"><button class="btn primary" type="button" data-act="fix">Correct it</button><button class="btn" type="button" data-act="unwrong">Cancel</button></div>` :
             `<div style="font-size:20px;font-weight:600;line-height:1.3">I filed capitalised software at <span class="num">1,200</span> under intangible assets.</div>
               <div style="font-size:14px;color:var(--ink-2)">Taken from page 2. I'm confident in the number on the page, less so that it's the balance.</div>
@@ -862,10 +883,10 @@ Carly's question: ${q}`;
             <div class="squadmark">${mark(16, "rest")}Spreading asks</div>
             <div style="font-size:20px;font-weight:600;line-height:1.3">“Contract liabilities” is new for Stripple Tech. Where does it go?</div>
             <div style="font-size:14px;color:var(--ink-2)">Code found <span class="mono">3,410</span> on page 2, current liabilities, October column, thousands.</div>
-            <label class="choice"><input type="radio" name="line" value="deferred" ${s.line === "deferred" ? "checked" : ""}><span><b>Deferred revenue, current</b><small>Most likely: subscription billed ahead</small></span></label>
+            <label class="choice"><input type="radio" name="line" value="deferred" ${s.line === "deferred" ? "checked" : ""}><span><b>Deferred revenue, current</b><small><span class="tag squad" style="height:20px;font-size:11px;margin-right:6px">Squad's guess</span>Most likely: subscription billed ahead</small></span></label>
             <label class="choice"><input type="radio" name="line" value="other" ${s.line === "other" ? "checked" : ""}><span><b>Other current liabilities</b><small>If it isn't customer prepayments</small></span></label>
             <label class="teach"><input type="checkbox" id="remember" ${s.remember ? "checked" : ""}><span>Remember for Stripple Tech. Next month this goes through without asking you.</span></label>
-            <div class="row"><button class="btn primary" type="button" data-act="confirm">Confirm</button><span class="meta">Recorded on the ledger with your name</span></div>
+            <div class="row"><button class="btn primary" type="button" data-act="confirm" id="confirmbtn" ${s.line ? "" : "disabled"}>Confirm</button><span class="meta">Recorded on the ledger with your name</span></div>
             <div>${dive("fig:contract")}</div>`}
         </div>
       </div>
@@ -879,32 +900,39 @@ Carly's question: ${q}`;
         Unrestricted cash at 31 October was <b>$4.6M</b> against a <b>$5.0M</b> minimum. The certificate's <b>$5.3M</b> includes <b>$0.7M</b> pledged for a letter of credit, which §1.1 excludes. Net burn averages <b>$0.65M</b> a month, so RML is about <b>7 months</b>. A Series B extension of <b>$8M</b> is signed and expected to close in December.
         <div style="margin-top:8px;font-family:var(--f-ui);font-size:13px;color:var(--ink-2)">Options: one-time waiver conditioned on funding · reservation of rights · default notice</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px"><label class="lbl" for="view">Carly's view</label><textarea class="field" id="view">One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.</textarea></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><label class="lbl" for="view">Your view (required to route)</label><textarea class="field" id="view" placeholder="What do you recommend, and why?" ${s.routed ? "readonly" : ""}>${esc(run.view)}</textarea>${s.routed ? "" : `<button class="suggest" type="button" data-act="fill" data-to="view" data-text="${esc(SUGGESTED_VIEW)}">Start from Squad's suggestion</button>`}</div>
       <div class="email">
         <div class="hd"><span>To: cfo@dataflake.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span>${run.mailSent ? '<span class="tag ok" style="margin-left:auto">Sent</span>' : ""}</div>
         <label for="mail" style="position:absolute;left:-9999px">Email to Dataflake's CFO</label>
         <textarea id="mail" ${run.mailSent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send the signed Series B extension term sheet and your November cash forecast?${run.certChoice === "email" ? " Could you also tell us why the certificate counted the cash held for the letter of credit?" : ""} We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
       </div>
       ${run.mailSent ? '<div class="proto">Sent as Carly · prototype: nothing was really sent</div>' : ""}
-      <div class="row">${run.mailSent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button><span class="meta">Squad never sends to a borrower on its own</span></div>
+      <div class="row">${run.mailSent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}${s.routed ? "" : '<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button>'}<span class="meta">Squad never sends to a borrower on its own</span></div>
     </div>`;
   }
 
+  function routedMsg() {
+    return squadMsg(`<p class="text">Routed to Helen Strand at 9:52 with your view. I'll tell you when she decides.</p>
+      <div class="row"><button class="btn dark" type="button" data-act="toHelen">See it as Helen →</button><span class="meta">The demo switches to the credit officer</span></div>`, "Squad · 9:52 am", true);
+  }
   function viewHelen() {
+    const second = s.sentBack;
     return `<div class="col" style="max-width:860px">
-      <div class="meta">Helen Strand · credit officer · 1 approval waiting</div>
+      <div class="meta">Helen Strand · credit officer · 1 approval waiting${second ? " · back from Carly" : ""}</div>
       <div class="night anim">
-        <div class="row"><span class="tag bad">Covenant miss</span><span class="muted">Dataflake Inc · routed by Carly Reyes at 9:52</span></div>
+        <div class="row"><span class="tag bad">Covenant miss</span><span class="muted">Dataflake Inc · ${second ? "sent back by Carly Reyes at 10:52" : "routed by Carly Reyes at 9:52"}</span></div>
         <div style="font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.15;text-wrap:balance">Grant Dataflake a one-time waiver, conditioned on the $8M extension closing by 15 December?</div>
         <div class="k3"><div><small>Unrestricted cash</small><b>$4.6M</b></div><div><small>Minimum</small><b>$5.0M</b></div><div><small>RML</small><b>7.1 mo</b></div></div>
-        <div style="font-size:15px;color:#e1dbd0"><b style="color:#d7ccff">Carly recommends:</b> “One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.”</div>
+        <div style="font-size:15px;color:#e1dbd0"><b style="color:#d7ccff">Carly recommends:</b> “${esc(run.view || SUGGESTED_VIEW)}”</div>
+        ${second ? `<div style="font-size:15px;color:#e1dbd0;border-top:1px solid var(--night-line);padding-top:14px"><b style="color:#d7ccff">You returned it:</b> “${esc(s.helenReason || run.helenReason)}”<br><b style="color:#d7ccff">Added since:</b> if the close slips to January, unrestricted cash is near <b>$3.3M</b> (4.6 − 2 × 0.65), below the <b>$5.0M</b> minimum until it closes.</div>` : ""}
         <div class="muted">Prepared by Squad · checked by Carly · every figure sourced · <button class="btn ghost" type="button" data-act="drawer" style="color:#cfc3ff;height:auto;padding:0">see the evidence</button></div>
         <fieldset style="border:0;margin:0;padding:0;display:grid;gap:8px"><legend class="muted" style="margin-bottom:8px">Your decision</legend>
           <label class="opt"><input type="radio" name="hd" value="approve" ${s.helen === "approve" ? "checked" : ""}>Approve the conditional waiver</label>
           <label class="opt"><input type="radio" name="hd" value="reserve" ${s.helen === "reserve" ? "checked" : ""}>Reserve rights</label>
           <label class="opt"><input type="radio" name="hd" value="return" ${s.helen === "return" ? "checked" : ""}>Return to Carly</label></fieldset>
         <label class="muted" for="hreason">Reason (required)</label>
-        <textarea class="field" id="hreason">Add a cash case if the close slips to January.</textarea>
+        <textarea class="field" id="hreason" placeholder="Your reason goes on the ledger with the decision"></textarea>
+        <button class="suggest" type="button" data-act="fill" data-to="hreason" data-text="${second ? "January case accepted; the condition and weekly cash reporting cover the risk." : "Add a cash case if the close slips to January."}">Demo: use a sample reason</button>
         <div class="row"><button class="btn primary" type="button" data-act="helenrecord">Record decision</button><span class="muted">Recorded on the ledger with your name and reason</span></div>
         <div>${dive("case:dataflake")}</div>
       </div>
@@ -929,6 +957,7 @@ Carly's question: ${q}`;
         <div>${dive("cov:dataflake")}</div>
       </div>`;
     d.classList.toggle("on", s.drawer);
+    document.querySelector(".main").classList.toggle("push", s.drawer);
     d.setAttribute("aria-hidden", s.drawer ? "false" : "true");
     $("scrim").classList.toggle("on", s.drawer);
   }
@@ -939,7 +968,7 @@ Carly's question: ${q}`;
     $("dots").innerHTML = STEPS.map((x, i) => `<button class="dot ${i < step ? "done" : ""}" type="button" data-step="${i}" ${i === step ? 'aria-current="step"' : ""} aria-label="Step ${i + 1}: ${esc(x.t)}">${i + 1}</button>`).join("");
     $("hint").innerHTML = `<b>${step + 1} · ${STEPS[step].t}.</b> <span>${STEPS[step].h}</span> <b>Try:</b> <span>${STEPS[step].go}</span>`;
     $("prev").disabled = step === 0;
-    $("next").textContent = step === STEPS.length - 1 ? (s.approved ? "Start over" : "Finish") : "Next step";
+    $("next").textContent = step === STEPS.length - 1 ? (s.summary ? "Start over" : "Finish") : "Next step";
     rail();
     let html;
     const v = s.view;
@@ -947,20 +976,21 @@ Carly's question: ${q}`;
     else if (v.startsWith("chat:")) html = viewChat(v.slice(5));
     else if (v === "portfolio" || (step === 1 && v !== "squad")) html = viewPortfolio();
     else if (step === 3 || step === 4) html = viewReview();
-    else if (step === 7 && !s.helenDone) html = viewHelen();
+    else if (helenView()) html = viewHelen();
     else html = viewThread();
     $("pane").innerHTML = html;
     composer();
     drawer();
     $("pane").querySelectorAll("textarea").forEach(autosize);
     const thread = !v.includes(":") && v !== "portfolio";
-    if (thread && step === 7 && s.approved) requestAnimationFrame(() => { const p = $("pane"), el = $("summary"); if (el) p.scrollTop = el.offsetTop - 24; });
+    if (thread && step === 7 && s.summary) requestAnimationFrame(() => { const p = $("pane"), el = $("summary"); if (el) p.scrollTop = el.offsetTop - 24; });
     else if (thread && (step === 2 || step === 5 || step === 6 || (step === 7 && s.helenDone))) requestAnimationFrame(() => { const p = $("pane"); p.scrollTop = p.scrollHeight; });
     else $("pane").scrollTop = 0;
   }
   function autosize(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; }
   document.addEventListener("input", (e) => { if (e.target.tagName === "TEXTAREA") autosize(e.target); });
   let liveTimer;
+  function helenView() { return step === 7 && (!s.helenDone || (s.sentBack && !s.approved)) && !s.view.startsWith("cc:"); }
   function open(v) { s.stack.push(s.view); s.view = v; s.drawer = false; render(); }
   function go(n) {
     n = Math.max(0, Math.min(STEPS.length - 1, n));
@@ -999,6 +1029,7 @@ Carly's question: ${q}`;
       case "typo": run.typo = true; render(); return toast("Filed <b>mrr_export.xlsx</b> as October 2026, with your note");
       case "review": return go(3);
       case "confirm": {
+        if (!s.line) return toast("Pick where it goes first.");
         const remember = $("remember")?.checked;
         run.line = s.line; run.remember = !!remember;
         toast(`Filed as <b>${s.line === "deferred" ? "deferred revenue, current" : "other current liabilities"}</b>${remember ? " · remembered for Stripple Tech" : ""}`);
@@ -1007,7 +1038,7 @@ Carly's question: ${q}`;
       case "right": return toast("In this walk-through Squad is wrong here. Try “That's wrong”.");
       case "wrong": s.wrong = true; return render();
       case "unwrong": s.wrong = false; return render();
-      case "fix": s.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
+      case "fix": if (!val("why").trim()) { toast("Say what's wrong first. That's what Squad learns from."); return $("why").focus(); } s.fixed = true; render(); return toast("Corrected · old figure kept in history · <b>ratios re-run</b>");
       case "toDataflake": return go(5);
       case "trail": s.trail = !s.trail; return render();
       case "drawer": s.drawer = true; return drawer();
@@ -1019,21 +1050,35 @@ Carly's question: ${q}`;
       case "certundo": run.certChoice = ""; return render();
       case "certsend": run.certAsked = true; render(); return toast("Question sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
       case "sendmail": run.mailSent = true; render(); return toast("Email sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
-      case "route": toast("Routed to <b>Helen Strand</b>, credit officer · switching to Helen's view"); return setTimeout(() => go(7), 900);
+      case "route": {
+        const v = val("view").trim();
+        if (!v) { toast("Add your view before routing. You can start from Squad's suggestion."); return $("view").focus(); }
+        run.view = v; s.routed = true; return render();
+      }
+      case "toHelen": return go(7);
+      case "showsummary": s.summary = true; return render();
+      case "fill": { const el = $(t.dataset.to); if (el) { el.value = t.dataset.text; autosize(el); el.focus(); } return; }
       case "helenrecord": {
         const r = val("hreason").trim();
         if (!r) return toast("A reason is required before the decision is recorded.");
-        const choice = document.querySelector('input[name="hd"]:checked')?.value || "return";
-        if (choice !== "return") { toast("In this walk-through Helen returns it first. Choose “Return to Carly”."); return; }
-        s.helenReason = r; run.helenReason = r; s.helenDone = true; render();
-        return toast("Returned to <b>Carly</b> with your reason · back in Carly's view");
+        const choice = document.querySelector('input[name="hd"]:checked')?.value;
+        if (!choice) return toast("Choose a decision first.");
+        if (!r) { toast("A reason is required before the decision is recorded."); return $("hreason").focus(); }
+        if (!s.sentBack) {
+          if (choice !== "return") return toast("In this walk-through Helen returns it first. Choose “Return to Carly”.");
+          s.helenReason = r; run.helenReason = r; s.helenDone = true; s.helen = ""; render();
+          return toast("Returned to <b>Carly</b> with your reason · back in Carly's view");
+        }
+        if (choice !== "approve") return toast("In this walk-through Helen approves on the second pass. Choose “Approve the conditional waiver”.");
+        s.approveReason = r; s.approved = true; render();
+        return toast("Approved · <b>recorded</b> with your reason · back in Carly's view");
       }
-      case "sendback": toast("Sent back to Helen · <b>Helen approves</b>"); return setTimeout(() => { if (step === 7) { s.approved = true; render(); } }, 900);
+      case "sendback": s.sentBack = true; s.helen = ""; render(); return toast("Sent back to <b>Helen Strand</b> with the January case · switching to Helen's view");
       case "restart": return go(0);
     }
   });
   document.addEventListener("change", (e) => {
-    if (e.target.name === "line") s.line = e.target.value;
+    if (e.target.name === "line") { s.line = e.target.value; if ($("confirmbtn")) $("confirmbtn").disabled = false; }
     if (e.target.id === "remember") s.remember = e.target.checked;
     if (e.target.name === "hd") s.helen = e.target.value;
   });
@@ -1047,13 +1092,21 @@ Carly's question: ${q}`;
   $("prev").addEventListener("click", () => go(step - 1));
   $("next").addEventListener("click", () => {
     if (step === STEPS.length - 1) {
-      if (s.approved) return go(0);
+      if (s.summary) return go(0);
       s.helenReason = s.helenReason || run.helenReason || "Add a cash case if the close slips to January.";
-      s.helenDone = true; s.approved = true; s.view = ""; s.stack = []; s.drawer = false; return render();
+      s.approveReason = s.approveReason || "January case accepted; the condition and weekly cash reporting cover the risk.";
+      s.helenDone = true; s.sentBack = true; s.approved = true; s.summary = true; s.view = ""; s.stack = []; s.drawer = false; return render();
     }
     go(step + 1);
   });
   $("restart").addEventListener("click", () => go(0));
+  const setStripH = () => document.documentElement.style.setProperty("--striph", (document.body.classList.contains("noguide") ? 0 : document.querySelector(".strip").offsetHeight) + "px");
+  const setGuide = (on) => { document.body.classList.toggle("noguide", !on); try { localStorage.setItem("squad-guide", on ? "on" : "off"); } catch {} setStripH(); };
+  $("hideguide").addEventListener("click", () => setGuide(false));
+  $("showguide").addEventListener("click", () => setGuide(true));
+  addEventListener("resize", setStripH);
   render();
+  try { if (localStorage.getItem("squad-guide") === "off") setGuide(false); } catch {}
+  setStripH();
 })();
 </script>
