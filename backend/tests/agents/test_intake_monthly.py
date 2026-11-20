@@ -23,7 +23,14 @@ OCT = date(2026, 10, 31)
     ("Quarter ended September 30, 2026", "interim_statements"),
     ("Year ended December 31, 2025", "annual_statements"),
     ("Monthly Recurring Revenue report", "mrr_report"),
-    ("ARR waterfall", "mrr_report"),
+    ("MRR report - October 2026", "mrr_report"),
+    ("ARR report", "mrr_report"),
+    ("Annual recurring revenue report", "mrr_report"),
+    ("ARR waterfall", None),  # a bare acronym is not a title phrase: the agent reads it, code does not file it
+    # an investor update or a monthly pack that mentions ARR on page one keeps its own type
+    ("Q3 Investor Update\nARR grew 40% to $4.8M; MRR $400k", "investor_update"),
+    ("Harrowgate Labs\nFor the month ended October 31, 2026\nARR 4,800 MRR 400", "monthly_financials"),
+    ("Harrowgate Labs\nFor the ten months ended October 31, 2026\nMonthly recurring revenue 400", "monthly_financials"),
     ("Statement of account", "bank_statement"),
     ("Bank statement - operating", "bank_statement"),
     ("Series B term sheet", "term_sheet"),

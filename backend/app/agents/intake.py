@@ -44,12 +44,15 @@ _RULES: list[tuple[str, re.Pattern[str]]] = [
     ("waiver", re.compile(r"\bwaiver (?:letter|agreement)\b|\blimited waiver\b", re.I)),
     ("credit_agreement", re.compile(r"\b(?:credit|loan)(?: and security)? agreement\b", re.I)),
     ("tax_return", re.compile(r"\bform\s+11(?:20|20-?s|65)\b|u\.s\. (?:corporation )?income tax return", re.I)),
-    ("mrr_report", re.compile(r"monthly recurring revenue|(?-i:\b(?:MRR|ARR)\b)", re.I)),
     ("bank_statement", re.compile(r"statement of account|account statement|bank statement", re.I)),
     ("term_sheet", re.compile(r"term sheet|summary of terms", re.I)),
     ("investor_update", re.compile(r"investor update|letter to investors", re.I)),
     ("monthly_financials", re.compile(
         r"\bmonth ended\b|\bfor the month of\b|\b(?:one|two|four|five|seven|eight|ten|eleven) months ended\b", re.I)),
+    # only a title phrase files an MRR report: "ARR" or "MRR" alone is mentioned on page one of an
+    # investor update or a monthly pack, so it comes after those and is not a bare acronym
+    ("mrr_report", re.compile(
+        r"\b(?:mrr|arr) report\b|monthly recurring revenue|annual recurring revenue report", re.I)),
     ("annual_statements", re.compile(r"independent auditor'?s'? report|for the years? ended|year ended", re.I)),
     ("interim_statements", re.compile(r"\b(?:three|six|nine) months ended\b|\bquarter ended\b", re.I)),
     ("receivables_aging", re.compile(r"\baccounts receivable aging\b|\baged receivables\b", re.I)),
