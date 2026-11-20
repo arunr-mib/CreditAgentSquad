@@ -3,6 +3,7 @@ from datetime import date
 from decimal import Decimal as D
 
 import pytest
+from app.calc import template
 from app.domain import corrections
 from app.domain.credit import Borrower
 from app.domain.facts_service import add_fact, current_fact
@@ -70,3 +71,24 @@ def test_publishing_spread_for_a_vc_borrower(db, vc):
     _revenue(db, vc)
     out = _spread(db, Registry(db), vc, END)
     assert out["template"] == "vc-1" and "is.subscription_revenue" in out["cells"]
+
+
+def test_accept_as_reported_on_a_venture_borrower_creates_the_venture_stated_totals(db, vc):
+    from app.domain import hooks
+    from app.domain.monitoring import WorkItem
+    user = _user(db)
+    cycle_months = 9
+    add_fact(db, borrower_id=vc.id, key=template.STATED_PREFIX + "bs.vc_total_assets", period_end=END,
+             months=0, value=D("8200000"), kind="seeded")
+    add_fact(db, borrower_id=vc.id, key=template.STATED_PREFIX + "is.vc_net_loss", period_end=END,
+             months=cycle_months, value=D("-3250000"), kind="seeded")
+    item = WorkItem(borrower_id=vc.id, item_type="spread.does_not_foot", severity="high", title="t", stage="spreading",
+                    question="Which figure is wrong?", allowed_decisions=["accept_as_reported"],
+                    evidence={"spread": {"period_end": END.isoformat(), "months": cycle_months, "scale": 1,
+                                         "absent": []}})
+    db.add(item)
+    db.flush()
+    hooks.on_spread_decision(db, item, user, "accept_as_reported", "the printed totals are right")
+    assert current_fact(db, vc.id, "bs.vc_total_assets", END, 0).value == D("8200000")
+    assert current_fact(db, vc.id, "is.vc_net_loss", END, cycle_months).value == D("-3250000")
+    assert current_fact(db, vc.id, "bs.total_assets", END, 0) is None  # no commercial total on a venture spread

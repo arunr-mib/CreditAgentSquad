@@ -197,3 +197,21 @@ def test_line_usage_and_availability_fire_for_a_venture_borrower_with_a_venture_
     row = SystemRow(OCT, D("4600000"), D("5000000"), 0)
     out = _run([_entry(0, rml="20", availability="100000")], system_rows=[row])
     assert set(_names(out)) == {"line_usage_high", "availability_low"}
+
+
+# ---- boundaries (Phase 1 final review) -------------------------------------------------------
+
+def test_runway_exactly_nine_is_medium_and_exactly_twelve_is_quiet():
+    at_nine = _run([_entry(0, rml="9")])
+    assert _names(at_nine) == ["runway_below_watch"] and at_nine.signals[0].severity == "medium"
+    assert _names(_run([_entry(0, rml="12")])) == []
+    just_under_nine = _run([_entry(0, rml="8.9")])
+    assert just_under_nine.signals[0].severity == "high"
+    just_under_twelve = _run([_entry(0, rml="11.9")])
+    assert just_under_twelve.signals[0].severity == "medium"
+
+
+def test_burn_up_exactly_twenty_percent_does_not_fire_but_just_over_does():
+    assert _names(_run([_entry(3, avg_net_burn="500000"), _entry(0, avg_net_burn="600000")])) == []
+    assert _names(_run([_entry(3, avg_net_burn="500000"), _entry(0, avg_net_burn="600001")])) == []  # 0.200002 -> 20.00%
+    assert _names(_run([_entry(3, avg_net_burn="500000"), _entry(0, avg_net_burn="601000")])) == ["burn_rising"]
