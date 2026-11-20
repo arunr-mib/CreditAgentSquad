@@ -134,6 +134,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .trail ol { list-style: none; margin: 0; padding: 0 14px 8px; }
 .trail li { display: grid; grid-template-columns: 22px 150px minmax(0, 1fr) auto; gap: 10px; padding: 9px 0; border-top: 1px solid var(--hair); font-size: 13px; align-items: start; animation: rise .3s ease-out both; }
 .trail li .k { font-family: var(--f-mono); color: var(--ink-3); }
+.trail li .who2 b { display: block; } .trail li .who2 small { display: block; font-size: 11px; color: var(--ink-3); line-height: 1.3; }
 .trail li .ck { color: var(--ok); white-space: nowrap; }
 
 /* composer */
@@ -259,9 +260,18 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .spread tr.st-warn td { background: var(--warn-soft); } .spread tr.st-bad td.r { color: var(--bad); font-weight: 700; }
 .spread tr.bal td { padding: 10px 6px; font-weight: 600; } .spread tr.bal.ok td { color: var(--ok); } .spread tr.bal.bad td { color: var(--bad); }
 
+/* status line: takes its own space above the message box, never covers content */
+.statusline { max-height: 0; overflow: hidden; transition: max-height .2s ease, padding .2s ease; padding: 0 32px; display: flex; justify-content: center; }
+.statusline.on { max-height: 64px; padding: 8px 32px 0; }
+.statusline span { background: var(--ink); color: var(--on-ink); border-radius: 10px; padding: 8px 14px; font-size: 13px; max-width: 780px; }
+.statusline b { color: #9ee3b9; }
+:root[data-look="night"] .statusline b { color: #17603a; }
+.main.push .statusline { padding-right: calc(var(--dw, 560px) + 32px); }
+
 /* drawer pushes the case aside where there is room */
 .main .pane, .main .composer { transition: padding-right .24s ease; }
-@media (min-width: 1200px) { .main.push .pane, .main.push .composer { padding-right: 592px; } .main.push .scrim { display: none; } }
+.main.push .pane, .main.push .composer { padding-right: calc(var(--dw, 560px) + 32px); } .main.push .scrim { display: none; }
+.drawer { width: var(--dw, min(560px, 100%)); }
 /* rail: icons, collapse, look menu */
 .navitem { justify-content: flex-start; gap: 10px; }
 .navitem .badge { margin-left: auto; }
@@ -369,6 +379,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   <aside class="rail" id="rail" aria-label="Navigation"></aside>
   <div class="main">
     <div class="pane" id="pane"></div>
+    <div class="statusline" id="statusline" role="status" aria-live="polite"></div>
     <div class="composer" id="composer"></div>
     <div class="scrim" id="scrim"></div>
     <aside class="drawer" id="drawer" aria-label="Evidence" aria-hidden="true"></aside>
@@ -405,7 +416,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   const STEPS = [
     { t: "Squad greets Carly", h: "Carly is a commercial credit analyst. Squad tells her what it did overnight and what needs her.", go: "Open <b>My Portfolio</b> in the left rail." },
     { t: "My Portfolio, by RML", h: "Every company sorted by remaining months of liquidity (cash only). Under 12 months is on watch.", go: "Click a company to open its chat, or go back to <b>Squad</b> and drop Stripple Tech's October package." },
-    { t: "Upload: Intake files it", h: "Intake files what it can and holds what it cannot place. Squad drafts; Carly sends.", go: "Click <b>Review the 2 figures</b>." },
+    { t: "Upload: Intake files it", h: "The Intake agent files what it can and holds what it cannot place. Squad drafts; Carly sends.", go: "Click <b>Review the 2 figures</b>." },
     { t: "Review in place, teach once", h: "The figure sits beside its page. The track record says how far to trust Squad on this company.", go: "Pick a line and <b>Confirm</b>." },
     { t: "Squad is wrong; Carly corrects", h: "A correction keeps the old figure in history, re-runs what depends on it, and teaches Squad.", go: "Click <b>That's wrong</b>, then <b>Correct it</b>." },
     { t: "Investigate Dataflake Inc", h: "One message, the work trail one click below, the evidence in a drawer that closes when done.", go: "Watch Squad work. Ask it anything about Dataflake (try <b>why is the pledged cash excluded?</b>), then answer its question." },
@@ -424,7 +435,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   const $ = (id) => document.getElementById(id);
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   let toastTimer;
-  const toast = (html) => { document.querySelector(".toast")?.remove(); const t = document.createElement("div"); t.className = "toast"; t.innerHTML = html; t.setAttribute("role", "status"); document.body.appendChild(t); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.remove(), 3200); };
+  const toast = (html) => { const el = $("statusline"); if (!el) return; el.innerHTML = `<span>${html}</span>`; el.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("on"), 3600); };
 
   // ---------- pieces ----------
   const ico = {
@@ -441,6 +452,15 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const lift = state === "needs" ? `<circle cx="50" cy="${small ? 12 : 11}" r="${small ? 12 : 9}" fill="var(--ember)"/>` : "";
     return `<svg class="mk" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><g class="${state === "work" ? "orbit" : ""}" fill="#8f7bf0">${dots}</g>${lift}<circle class="${state === "work" ? "core" : ""}" cx="50" cy="50" r="${core}" fill="#4a35b8"/></svg>`;
   };
+  // The work trail: which agent did what, in plain words. Agents are Squad's specialists; "Code" is plain calculation, no AI.
+  const TRAIL = [
+    ["Intake agent", "files incoming documents", "Filed Dataflake's October compliance certificate (the monthly form where the CFO reports the covenant figures and signs that they comply). Checked it is Dataflake's, for October.", "✓ right company and month"],
+    ["Spreading agent", "reads figures from documents", "Read the cash Dataflake reported on the certificate: $5.3M, page 1.", "✓ found on the page"],
+    ["Spreading agent", "reads figures from documents", "Read cash from Dataflake's October bank statements: $4.6M in operating accounts and $0.7M in an account pledged for a letter of credit.", "✓ matches the statements"],
+    ["Covenant agent", "tests covenants against the loan terms", "Applied the approved loan terms: §1.1 says cash pledged for a letter of credit doesn't count as unrestricted cash.", "✓ quote found on p. 4"],
+    ["Code", "calculation, no AI", "Applied that rule and tested $4.6M against the $5.0M minimum in §7.10: a miss.", "✓ exact arithmetic"],
+  ];
+  const trailLi = (x, i, delay) => `<li style="animation-delay:${delay}s"><span class="k">${i + 1}</span><span class="who2"><b>${x[0]}</b><small>${x[1]}</small></span><span>${x[2]}</span><span class="ck">${x[3]}</span></li>`;
   const squadMsg = (inner, meta = "Squad", anim = false, needs = false) => `<div class="msg ${anim ? "anim" : ""}">${mark(28, needs ? "needs" : "rest")}<div class="msgbody"><div class="meta"><b>${meta}</b></div>${inner}</div></div>`;
   const ccIco = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>';
   const dive = (target) => `<button class="cc" type="button" data-act="cc" data-cc="${target}">Open in Command Centre ${ccIco}</button>`;
@@ -468,15 +488,22 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     collapse: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
     expand: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
   };
-  let lookOpen = false;
+  let lookOpen = false; let tempRail = false;
+  // What still needs Carly at this point in the morning: Stripple's two figures, the Dataflake case, Lumora's chaser.
+  function needsYou() {
+    const stripple = step < 5;
+    const dataflake = step <= 6 ? !s.routed : (s.helenDone && !s.sentBack);
+    const lumora = !run.lumoraSent;
+    return [stripple, dataflake, lumora].filter(Boolean).length;
+  }
   function rail() {
     const helen = helenView();
     const view = s.view.startsWith("cc:") ? (s.stack.filter((v) => v && !v.startsWith("cc:")).pop() || (step === 1 ? "portfolio" : "squad")) : (s.view || (step === 1 ? "portfolio" : "squad"));
     const item = (nav, icon, label, badge, current) => `<button class="navitem" ${nav ? `data-nav="${nav}"` : ""} ${current ? 'aria-current="page"' : ""} title="${esc(label)}" aria-label="${esc(label)}" type="button"><span class="ni">${icon}</span><span class="nl">${label}</span>${badge || ""}</button>`;
     $("rail").innerHTML = `
-      <div class="who">${mark(railC ? 34 : 42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 item for you" : "working on 2 things"}</span></div></div>
+      <div class="who">${mark(railC ? 34 : 42, helen ? "needs" : "work")}<div><b>Squad</b><span class="status">${helen ? "1 decision waiting" : "watching 12 companies"}</span></div></div>
       ${helen ? item("", NAVI.approvals, "Approvals", '<span class="badge ember">1</span>', true) : `
-      ${item("squad", NAVI.squad, "Squad", `<span class="badge ember">${step < 7 ? 3 : 1}</span>`, view === "squad")}
+      ${item("squad", NAVI.squad, "Squad", needsYou() ? `<span class="badge ember" title="${needsYou()} need${needsYou() === 1 ? "s" : ""} you">${needsYou()}</span>` : "", view === "squad")}
       ${item("portfolio", NAVI.portfolio, "My Portfolio", '<span class="badge warn">2</span>', view === "portfolio")}
       <div class="navgroup">Side chats</div>
       ${CHATS.map((c) => item("chat:" + c.id, `<span class="tile">${c.short}</span>`, c.label, "", view === "chat:" + c.id)).join("")}`}
@@ -533,12 +560,12 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
         <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--hair);align-items:center"><b style="font-size:14px">Stripple_Oct26_financials.pdf</b><span style="font-size:13px;color:var(--ink-2)">Monthly financials · October 2026 · names Stripple Tech</span><span class="tag ok">Filed</span></div>
         <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--hair);align-items:center"><b style="font-size:14px">compliance_cert_oct.pdf</b><span style="font-size:13px;color:var(--ink-2)">Compliance certificate · October · signed by the CFO</span><span class="tag ok">Filed</span></div>
         <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:12px;padding:12px 16px;align-items:center;background:var(--warn-soft)"><b style="font-size:14px">mrr_export.xlsx</b><span style="font-size:13px;color:var(--ink-2)">${run.typo ? "MRR report · filed as October 2026 by Carly: “the date is a typo”" : "Looks like an MRR report, but it names no company and its month reads October 2025"}</span><span class="tag ${run.typo ? "ok" : "warn"}">${run.typo ? "Filed" : "Held"}</span></div>
-      </div>`, "Squad · Intake", anim);
+      </div>`, "Squad · Intake agent", anim);
   }
   function correctionDone() {
     return squadMsg(`<p class="text">Thanks, Carly. Stripple Tech's October spread is complete: 199 of 199 figures checked on their pages. Your two answers are remembered for next month.</p>
       <div class="trust">Track record on Stripple Tech: <b>197 of 200</b> figures you checked were right · you've corrected me 3 times, once today</div>
-      <div>${dive("co:Stripple Tech")}</div>`, "Squad · Spreading");
+      <div>${dive("co:Stripple Tech")}</div>`, "Squad · Spreading agent");
   }
   function certQuestion() {
     if (run.certChoice === "email") return `<div class="trust">You chose: recommend now and ask Dataflake about the pledged cash in the same email.</div><div class="row"><button class="btn dark" type="button" data-act="prep">Prepare the case</button><button class="btn" type="button" data-act="certundo">Change my mind</button></div>`;
@@ -557,26 +584,16 @@ Carly</textarea></div>
   }
   function dataflakeMsg(anim) {
     const live = s.live;
-    const steps = [
-      ["Intake", "Filed the October compliance certificate; names Dataflake, period 31 Oct 2026", "✓ borrower and period"],
-      ["Certificate", "Read reported cash of $5.3M on page 1", "✓ found on the page"],
-      ["Spreading", "Read cash from the bank statements: $4.6M operating, $0.7M in a pledged account", "✓ ties to statements"],
-      ["Code", "Applied the unrestricted cash definition; tested $4.6M against $5.0M", "✓ exact decimals"],
-      ["Terms", "Found the definition in §1.1 that excludes pledged cash", "✓ quote verified, p. 4"],
-    ];
+    const steps = TRAIL;
     if (live) return `<div class="msg">${mark(28, "work")}<div class="msgbody"><div class="meta"><b>Squad · working</b> <button class="btn ghost" type="button" data-act="skiplive" style="height:auto;padding:0 6px;font-size:12px">Skip</button></div>
       <div class="workline"><span class="typing"><i></i><i></i><i></i></span>Checking Dataflake's October certificate…</div>
-      <div class="trail"><ol class="livetrail" style="padding-top:6px">${steps.map((x, i) => `<li style="animation-delay:${0.25 + i * 0.5}s"><span class="k">${i + 1}</span><b class="who2">${x[0]}</b><span>${x[1]}</span><span class="ck">${x[2]}</span></li>`).join("")}</ol></div></div></div>`;
+      <div class="trail"><ol class="livetrail" style="padding-top:6px">${steps.map((x, i) => trailLi(x, i, 0.25 + i * 0.5)).join("")}</ol></div></div></div>`;
     const ask = step === 5 || (s.view === "chat:dataflake" && step < 6) ? certQuestion() : run.certChoice ? certQuestion().replace(/<div class="row">[\s\S]*$/, "") : "";
     return squadMsg(`<p class="text">Dataflake Inc missed its minimum cash covenant. Unrestricted cash is <b class="num">$4.6M</b> against a <b class="num">$5.0M</b> minimum, but they certified <b class="num">$5.3M</b>. The difference is <b class="num">$0.7M</b> pledged for a letter of credit, which the loan agreement excludes. RML is about <b class="num">7 months</b>; a Series B extension is signed and closing in December.</p>
       <div class="trail" id="trail">
-        <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>4 specialists and code · 5 checks passed · 37 of 38 covenant tests right on Dataflake</span></button>
+        <button type="button" data-act="trail" aria-expanded="${s.trail}"><b>${s.trail ? "▾" : "▸"} How I got here</b><span>3 agents and code · 5 checks passed · 37 of 38 covenant tests right on Dataflake</span></button>
         ${s.trail ? `<ol>
-          <li><span class="k">1</span><b class="who2">Intake</b><span>Filed the October compliance certificate; names Dataflake, period 31 Oct 2026</span><span class="ck">✓ borrower and period</span></li>
-          <li style="animation-delay:.06s"><span class="k">2</span><b class="who2">Certificate</b><span>Read reported cash of $5.3M on page 1</span><span class="ck">✓ found on the page</span></li>
-          <li style="animation-delay:.12s"><span class="k">3</span><b class="who2">Spreading</b><span>Read cash from the bank statements: $4.6M operating, $0.7M in a pledged account</span><span class="ck">✓ ties to statements</span></li>
-          <li style="animation-delay:.18s"><span class="k">4</span><b class="who2">Code</b><span>Applied the unrestricted cash definition; tested $4.6M against $5.0M</span><span class="ck">✓ exact decimals</span></li>
-          <li style="animation-delay:.24s"><span class="k">5</span><b class="who2">Terms</b><span>Found the definition in §1.1 that excludes pledged cash</span><span class="ck">✓ quote verified, p. 4</span></li>
+          ${TRAIL.map((x, i) => trailLi(x, i, i * 0.06)).join("")}
         </ol>` : ""}
       </div>
       <div class="row"><button class="btn ghost" type="button" data-act="drawer" style="padding:0">Inspect the definition →</button><span style="margin-left:auto">${dive("cov:dataflake")}</span></div>
@@ -595,7 +612,7 @@ Carly</textarea></div>
       if (step < 2) h += squadMsg(`<p class="text">Overnight I spread Stripple Tech's September figures. October's package isn't in yet; drop it in the Squad chat when it arrives and I'll file it.</p>`, "Squad · 7:02 am");
       else {
         h += uploadMsgs(false);
-        h += step >= 5 ? correctionDone() : squadMsg(`<p class="text">Two figures from the October financials are waiting for you.</p><div class="row"><button class="btn dark" type="button" data-act="review">Review the 2 figures</button></div>`, "Squad · Spreading");
+        h += step >= 5 ? correctionDone() : squadMsg(`<p class="text">Two figures from the October financials are waiting for you.</p><div class="row"><button class="btn dark" type="button" data-act="review">Review the 2 figures</button></div>`, "Squad · Spreading agent");
       }
     }
     if (id === "lumora") {
@@ -634,7 +651,7 @@ Carly</textarea></div>
         <div class="kv"><div><small>Value (USD thousands)</small><b>3,410</b></div><div><small>Filed under</small><b style="font-size:16px">${other ? "Other current liabilities" : "Deferred revenue, current"}</b></div><div><small>Source</small><b style="font-size:16px">Stripple_Oct26_financials.pdf · p. 2</b></div></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Lineage</div><ul class="ledger">
           <li><span class="mono">p. 2</span><b>Code</b><span>Found “Contract liabilities 3,410” in current liabilities, October column, thousands</span></li>
-          <li><span class="mono">—</span><b>Spreading</b><span>New line for Stripple Tech; asked Carly where it goes</span></li>
+          <li><span class="mono">—</span><b>Spreading agent</b><span>New line for Stripple Tech; asked Carly where it goes</span></li>
           <li><span class="mono">—</span><b>Carly Reyes</b><span>${step >= 4 ? `Filed it under ${other ? "other current liabilities" : "deferred revenue, current"}${run.remember ? "; remembered for Stripple Tech" : ""}` : "Waiting for Carly's answer"}</span></li>
           <li><span class="mono">p. 2</span><b>Code</b><span>Total current liabilities 6,390 ties to the page</span></li></ul></div>`;
     } else if (key === "fig:capsoft") {
@@ -642,7 +659,7 @@ Carly</textarea></div>
       body = `<h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Stripple Tech · October 2026 spread · Capitalised software, net</h1>
         <div class="kv"><div><small>Current value (USD thousands)</small><b>${fixed ? "4,850" : "1,200"}</b></div><div><small>Source</small><b style="font-size:16px">${fixed ? "Note 6, intangible assets · p. 3" : "Cash flow statement · p. 5"}</b></div><div><small>Status</small><span class="tag ${fixed ? "ok" : "warn"}" style="margin-top:6px">${fixed ? "Corrected by Carly" : "Under review"}</span></div></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">History (nothing is overwritten)</div><ul class="ledger">
-          <li><span class="mono">v1</span><b>Spreading</b><span>1,200 from page 5, “Capitalised software development”, year to date${fixed ? " · superseded" : ""}</span></li>
+          <li><span class="mono">v1</span><b>Spreading agent</b><span>1,200 from page 5, “Capitalised software development”, year to date${fixed ? " · superseded" : ""}</span></li>
           ${fixed ? `<li><span class="mono">v2</span><b>Carly Reyes</b><span>4,850 from page 3. Reason: “That's the year-to-date spend from the cash flow note, not the balance. The balance is on page 3.” Ratios that used it were re-run.</span></li>` : ""}</ul></div>`;
     } else if (key === "cov:dataflake") {
       body = `<h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Dataflake Inc · Minimum unrestricted cash · October 2026</h1>
@@ -654,7 +671,7 @@ Carly</textarea></div>
       const reason = s.helenReason || run.helenReason || "Add a cash case if the close slips to January.";
       body = `<div class="row"><h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Casefile · Dataflake Inc · conditional waiver</h1><span class="tag ${status[0]}">${status[1]}</span></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Ledger (append-only)</div><ul class="ledger">
-          <li><span class="mono">9:14</span><b>Squad · Covenant</b><span>Tested minimum unrestricted cash: $4.6M against $5.0M · miss</span></li>
+          <li><span class="mono">9:14</span><b>Squad · Covenant agent</b><span>Tested minimum unrestricted cash: $4.6M against $5.0M · miss</span></li>
           ${run.mailSent ? `<li><span class="mono">—</span><b>Carly Reyes</b><span>Emailed Dataflake's CFO for the term sheet and November forecast <span class="proto">prototype: nothing was really sent</span></span></li>` : ""}
           ${step >= 7 ? `<li><span class="mono">9:52</span><b>Carly Reyes</b><span>Routed to Helen Strand: “${esc(run.view || SUGGESTED_VIEW)}”</span></li>` : ""}
           ${step >= 7 && s.helenDone ? `<li><span class="mono">—</span><b>Helen Strand</b><span>Returned to Carly: “${esc(reason)}”</span></li><li><span class="mono">10:48</span><b>Squad</b><span>Added the January cash case: 4.6 − 2 × 0.65 = $3.3M, below the $5.0M minimum</span></li>` : ""}
@@ -706,7 +723,7 @@ Carly</textarea></div>
       notes: [
         ["N1", "Still open", "Dataflake's CFO hasn't explained why the certificate counted the pledged cash."],
         ["N2", "Options on file", "One-time waiver conditioned on funding; reservation of rights; default notice. Analysts recommend; the credit officer, Helen Strand, decides."],
-        ["N3", "How Squad got here", "Intake filed the certificate; Certificate read $5.3M on page 1; Spreading read $4.6M operating and $0.7M pledged from the bank statements; Code applied §1.1 and tested $4.6M against $5.0M; Terms found the §1.1 definition on page 4."],
+        ["N3", "How Squad got here", "The Intake agent filed Dataflake's October compliance certificate; the Spreading agent read the $5.3M Dataflake reported on page 1, then read $4.6M operating and $0.7M pledged cash from the bank statements; the Covenant agent applied the §1.1 rule from the approved loan terms; code tested $4.6M against $5.0M; Terms found the §1.1 definition on page 4."],
       ],
     },
     stripple: {
@@ -716,7 +733,7 @@ Carly</textarea></div>
         ["F2", "Total current liabilities (USD thousands)", "6,390", "October financials p. 2"],
         ["F3", "Capitalised software development, year to date (USD thousands)", "1,200", "cash flow statement p. 5 (a year-to-date spend, not a balance)"],
         ["F4", "Capitalised software, net balance (USD thousands)", "4,850", "notes to the financials p. 3"],
-        ["F5", "Figures checked on their pages", "197 of 199 automatically; 2 sent to Carly", "Spreading"],
+        ["F5", "Figures checked on their pages", "197 of 199 automatically; 2 sent to Carly", "Spreading agent"],
         ["F6", "Squad's track record on Stripple figures", "197 of 200 figures Carly checked were right; corrected 3 times, once today", "evaluation history"],
         ["F7", "Unrestricted cash; net burn; RML", "$6.6M; $0.30M a month; 22.0 months", "October financials; calculated by code"],
       ],
@@ -983,9 +1000,9 @@ Carly's question: ${q}`;
             run.reqSent ? `<div class="trust">Sent by Carly at 8:41 · “Could you send the October 2026 MRR report? The file we received reads October 2025.” · <i>prototype: nothing was really sent</i></div>` :
             s.reqDraft ? `<div class="email"><div class="hd"><span>To: finance@stripple.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span></div><label for="req" style="position:absolute;left:-9999px">Message</label><textarea id="req">Hi Priya,\n\nThanks for the October package. The MRR export we received reads October 2025. Could you send the October 2026 MRR report when you have a moment?\n\nThanks,\nCarly</textarea></div><div class="row"><button class="btn primary" type="button" data-act="reqsend">Send as Carly</button><button class="btn" type="button" data-act="reqcancel">Cancel</button></div>` :
             `<div class="row"><button class="btn primary" type="button" data-act="reqdraft">Draft a request to Stripple Tech</button><button class="btn" type="button" data-act="typo">It's a typo, file it</button></div>`}
-        </div>`, "Squad · Intake", true);
-        h += squadMsg(`<p class="text">Spreading picked up the October financials: 197 of 199 figures checked on their pages. Two need your eye.${run.typo ? " The MRR report feeds the ARR-against-plan test, not the spread, so this count doesn't change." : ""}</p>
-          <div class="row"><button class="btn dark" type="button" data-act="review">Review the 2 figures</button></div>`, "Squad · Spreading", true);
+        </div>`, "Squad · Intake agent", true);
+        h += squadMsg(`<p class="text">The Spreading agent picked up the October financials: 197 of 199 figures checked on their pages. Two need your eye.${run.typo ? " The MRR report feeds the ARR-against-plan test, not the spread, so this count doesn't change." : ""}</p>
+          <div class="row"><button class="btn dark" type="button" data-act="review">Review the 2 figures</button></div>`, "Squad · Spreading agent", true);
       }
     }
     if (step >= 5) h += correctionDone();
@@ -1021,7 +1038,7 @@ Carly's question: ${q}`;
           ${tab === "spread" ? viewSpread() : `
         <div class="ask">
           ${isFix ? `
-            <div class="squadmark">${mark(16, "rest")}Spreading asks</div>
+            <div class="squadmark">${mark(16, "rest")}Spreading agent asks</div>
             ${s.fixed ? `<div style="font-size:20px;font-weight:600;line-height:1.3">Corrected. Capitalised software is now <span class="num">4,850</span>, from page 3.</div>
               <div style="font-size:14px;color:var(--ink-2)">The old figure, 1,200, stays in the history with your reason. Ratios that used it were re-run. Learned: <b>Stripple Tech's capitalised software balance is on page 3, not the cash flow note.</b></div>
               <div class="row"><button class="btn dark" type="button" data-act="toDataflake">Back to Squad →</button>${dive("fig:capsoft")}</div>` :
@@ -1034,7 +1051,7 @@ Carly's question: ${q}`;
               <div style="font-size:14px;color:var(--ink-2)">Taken from page 5, the cash flow statement. I'm confident in the number on the page, less so that it's the balance: with it, intangibles add up to <span class="num">1,820</span>, but page 2 says <span class="num">5,470</span>.</div>
               <div class="row"><button class="btn" type="button" data-act="right">Looks right</button><button class="btn primary" type="button" data-act="wrong">That's wrong</button></div>
               <div>${dive("fig:capsoft")}</div>`}` : `
-            <div class="squadmark">${mark(16, "rest")}Spreading asks</div>
+            <div class="squadmark">${mark(16, "rest")}Spreading agent asks</div>
             <div style="font-size:20px;font-weight:600;line-height:1.3">“Contract liabilities” is new for Stripple Tech. Where does it go?</div>
             <div style="font-size:14px;color:var(--ink-2)">Code found <span class="mono">3,410</span> on page 2, current liabilities, October column, thousands.</div>
             <label class="choice"><input type="radio" name="line" value="deferred" ${s.line === "deferred" ? "checked" : ""}><span><b>Deferred revenue, current</b><small><span class="tag squad" style="height:20px;font-size:11px;margin-right:6px">Squad's guess</span>Most likely: subscription billed ahead</small></span></label>
@@ -1113,7 +1130,20 @@ Carly's question: ${q}`;
         <div>${dive("cov:dataflake")}</div>
       </div>`;
     d.classList.toggle("on", s.drawer);
-    document.querySelector(".main").classList.toggle("push", s.drawer);
+    // Push the case aside when there is room; on narrower screens fold the nav away to make room; overlay only on phones.
+    const vw = innerWidth;
+    if (s.drawer && vw > 900) {
+      const railW = (c) => (c ? 72 : 252);
+      if (!railC && vw - railW(false) - 420 < 480) { tempRail = true; document.body.classList.add("railc"); }
+      const main = vw - railW(railC || tempRail);
+      const dw = Math.round(Math.max(400, Math.min(560, main * 0.45)));
+      document.documentElement.style.setProperty("--dw", dw + "px");
+      document.querySelector(".main").classList.toggle("push", main - dw >= 440);
+    } else {
+      document.querySelector(".main").classList.remove("push");
+      document.documentElement.style.removeProperty("--dw");
+      if (tempRail) { tempRail = false; document.body.classList.toggle("railc", railC); }
+    }
     d.setAttribute("aria-hidden", s.drawer ? "false" : "true");
     $("scrim").classList.toggle("on", s.drawer);
   }
