@@ -24,7 +24,7 @@ from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
 from app.domain.facts import CalcRun, Fact
 from app.domain.funding import KINDS as FUNDING_KINDS
-from app.domain.funding import FundingEvent
+from app.domain.funding import FundingEvent, update_funding_event, valid_evidence
 from app.domain.monitoring import CovenantTest, Cycle, Signal, WorkItem
 from app.domain.org import User
 
@@ -128,15 +128,43 @@ def record_funding_event(borrower_id: uuid.UUID, body: FundingEventIn, db: Sessi
     _borrower_or_404(db, borrower_id)
     if body.kind not in FUNDING_KINDS:
         raise HTTPException(422, f"Funding kind must be one of: {', '.join(FUNDING_KINDS)}.")
+    try:
+        evidence = valid_evidence(db, borrower_id, body.evidence_document_ids)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
     event = FundingEvent(borrower_id=borrower_id, kind=body.kind, amount=body.amount,
                          expected_close=body.expected_close, status="expected",
-                         evidence_document_ids=body.evidence_document_ids)
+                         evidence_document_ids=evidence)
     db.add(event)
     db.flush()
     ledger.record(db, actor_type="user", actor_id=str(user.id), action="funding_event.recorded",
                   entity_type="funding_event", entity_id=event.id,
                   payload={"borrower_id": borrower_id, "kind": event.kind, "amount": event.amount,
                            "expected_close": event.expected_close})
+    db.commit()
+    return row(event)
+
+
+class FundingEventPatch(BaseModel):
+    status: str | None = None
+    expected_close: date | None = None
+    evidence_document_ids: list[str] = Field(default_factory=list)  # added to what is there
+
+
+@router.patch("/borrowers/{borrower_id}/funding-events/{event_id}")
+def update_funding_event_route(borrower_id: uuid.UUID, event_id: uuid.UUID, body: FundingEventPatch,
+                               db: Session = Depends(get_db),
+                               user: User = Depends(require(Permission.PREPARE_TERMS))) -> dict:
+    """Move an event along its lifecycle, change its close date, or add evidence. Closed is final."""
+    _borrower_or_404(db, borrower_id)
+    event = db.get(FundingEvent, event_id)
+    if event is None or event.borrower_id != borrower_id:
+        raise HTTPException(404, "Funding event not found.")
+    try:
+        update_funding_event(db, event, status=body.status, expected_close=body.expected_close,
+                             add_evidence=body.evidence_document_ids, actor=("user", str(user.id)))
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
     db.commit()
     return row(event)
 

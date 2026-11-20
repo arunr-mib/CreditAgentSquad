@@ -302,6 +302,15 @@ ITEM_TYPES_NEEDING_REASON = frozenset({
 })
 
 
+# Some decisions on an item need more than the item's own permission. A slipped funding round is
+# decided by an analyst (ask for a timeline, note and watch), but reserving the bank's rights or
+# escalating it is the same call as the equivalent breach response and needs `decide_breach`.
+DECISION_PERMISSIONS: dict[tuple[str, str], str] = {
+    ("funding_slipped", "reserve_rights"): "decide_breach",
+    ("funding_slipped", "escalate"): "decide_breach",
+}
+
+
 def needs_reason(item_type: str, decision: str) -> bool:
     return decision in DECISIONS_NEEDING_REASON or item_type in ITEM_TYPES_NEEDING_REASON
 
@@ -319,6 +328,9 @@ def decide_work_item(
         raise ValueError(f"{decision!r} is not one of the allowed decisions: {allowed}")
     if not can(user_role, Permission(item.required_permission)):
         raise PermissionError(f"your role cannot decide this item ({item.required_permission})")
+    extra = DECISION_PERMISSIONS.get((item.item_type, decision))
+    if extra is not None and not can(user_role, Permission(extra)):
+        raise PermissionError(f"your role cannot take the decision {decision!r} on this item ({extra})")
     reason = (reason or "").strip()
     if needs_reason(item.item_type, decision) and not reason:
         raise ValueError("this decision needs a reason")

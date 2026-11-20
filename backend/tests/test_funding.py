@@ -94,26 +94,39 @@ def test_the_slipped_item_offers_four_responses_in_order(db):
     assert "has not closed. What should we do:" in item.question
 
 
-@pytest.mark.parametrize("decision,reason", [("ask_for_new_timeline", ""), ("note_and_watch", ""),
-                                             ("reserve_rights", "rights reserved under the loan agreement"),
-                                             ("escalate", "needs the credit officer")])
-def test_each_response_can_be_recorded_by_an_analyst_and_closes_the_item(db, decision, reason):
+@pytest.mark.parametrize("role,decision,reason", [
+    ("analyst", "ask_for_new_timeline", ""), ("analyst", "note_and_watch", ""),
+    ("credit_officer", "reserve_rights", "rights reserved under the loan agreement"),
+    ("credit_officer", "escalate", "needs the credit officer")])
+def test_each_response_can_be_recorded_by_the_right_role_and_closes_the_item(db, role, decision, reason):
+    from app.domain import workflow
+    seed_users(db, password="pw")
+    person = db.execute(select(User).where(User.role == role)).scalars().first()
+    item = _slipped_item(db)
+    workflow.decide_work_item(db, item, user_id=person.id, user_role=person.role, decision=decision, reason=reason)
+    assert item.status == "decided" and item.decision == decision
+
+
+@pytest.mark.parametrize("decision", ["reserve_rights", "escalate"])
+def test_an_analyst_cannot_reserve_rights_or_escalate_a_slipped_round(db, decision):
     from app.domain import workflow
     seed_users(db, password="pw")
     analyst = db.execute(select(User).where(User.role == "analyst")).scalars().first()
     item = _slipped_item(db)
-    workflow.decide_work_item(db, item, user_id=analyst.id, user_role=analyst.role, decision=decision, reason=reason)
-    assert item.status == "decided" and item.decision == decision
+    with pytest.raises(PermissionError, match="decide_breach"):
+        workflow.decide_work_item(db, item, user_id=analyst.id, user_role=analyst.role, decision=decision,
+                                  reason="a reason")
+    assert item.status == "open"
 
 
 def test_reserving_rights_and_escalating_need_a_reason(db):
     from app.domain import workflow
     seed_users(db, password="pw")
-    analyst = db.execute(select(User).where(User.role == "analyst")).scalars().first()
+    officer = db.execute(select(User).where(User.role == "credit_officer")).scalars().first()
     for decision in ("reserve_rights", "escalate"):
         with pytest.raises(ValueError, match="reason"):
-            workflow.decide_work_item(db, _slipped_item_for(db, decision), user_id=analyst.id,
-                                      user_role=analyst.role, decision=decision)
+            workflow.decide_work_item(db, _slipped_item_for(db, decision), user_id=officer.id,
+                                      user_role=officer.role, decision=decision)
 
 
 def _slipped_item_for(db, code):
@@ -124,3 +137,101 @@ def _slipped_item_for(db, code):
     check_funding_events(db, date(2026, 12, 13))
     return db.execute(select(WorkItem).where(WorkItem.item_type == "funding_slipped",
                                              WorkItem.borrower_id == b.id)).scalar_one()
+
+
+# ---- lifecycle: PATCH /borrowers/{id}/funding-events/{event_id} ---------------------------------
+
+def _doc(db, borrower, name="term-sheet.pdf"):
+    from app.domain.documents import Document
+    d = Document(borrower_id=borrower.id, title=name, file_name=name, storage_path=name, sha256=name.ljust(64, "0"),
+                 page_count=1)
+    db.add(d)
+    db.flush()
+    return d
+
+
+@pytest.fixture()
+def lifecycle(client, db):
+    seed_users(db, password="pw")
+    b = make_borrower(db, template_id="vc-1")
+    event = FundingEvent(borrower_id=b.id, kind="equity_round", amount=D("5000000"),
+                         expected_close=date(2027, 1, 31), status="expected")
+    db.add(event)
+    db.flush()
+    db.commit()
+    _sign_in(client, "priya.raman")
+    return b, event, f"/api/v1/borrowers/{b.id}/funding-events/{event.id}"
+
+
+@pytest.mark.parametrize("path", [
+    ["signed", "closed"], ["slipped", "expected", "signed", "slipped", "signed", "closed"], ["closed"],
+    ["signed", "slipped", "closed"]])
+def test_legal_status_transitions(client, lifecycle, path):
+    _, _, url = lifecycle
+    for status in path:
+        r = client.patch(url, json={"status": status})
+        assert r.status_code == 200 and r.json()["status"] == status, r.text
+
+
+@pytest.mark.parametrize("start,target", [
+    ("expected", "expected"), ("signed", "expected"), ("closed", "signed"), ("closed", "slipped"),
+    ("closed", "expected"), ("expected", "open")])
+def test_illegal_status_transitions_are_refused(client, db, lifecycle, start, target):
+    _, event, url = lifecycle
+    if start != "expected":
+        path = {"signed": ["signed"], "closed": ["closed"]}[start]
+        for status in path:
+            assert client.patch(url, json={"status": status}).status_code == 200
+    r = client.patch(url, json={"status": target})
+    assert r.status_code == 422, r.text
+    assert client.get(url.rsplit("/", 1)[0]).json()[0]["status"] == start
+
+
+def test_a_new_timeline_changes_the_close_date_and_the_ledger_keeps_before_and_after(client, db, lifecycle):
+    _, event, url = lifecycle
+    assert client.patch(url, json={"status": "slipped"}).status_code == 200
+    r = client.patch(url, json={"status": "expected", "expected_close": "2027-03-31"})
+    assert r.status_code == 200 and r.json()["expected_close"] == "2027-03-31"
+    last = db.execute(select(LedgerEvent).where(LedgerEvent.action == "funding_event.updated")
+                      .order_by(LedgerEvent.seq.desc())).scalars().first()
+    assert last.payload["before"]["status"] == "slipped" and last.payload["after"]["status"] == "expected"
+    assert last.payload["before"]["expected_close"] == "2027-01-31"
+    assert last.payload["after"]["expected_close"] == "2027-03-31"
+
+
+def test_evidence_documents_are_appended_and_must_belong_to_the_borrower(client, db, lifecycle):
+    b, event, url = lifecycle
+    mine = _doc(db, b)
+    other = _doc(db, make_borrower(db, code="OTH"), "other.pdf")
+    db.commit()
+    r = client.patch(url, json={"evidence_document_ids": [str(mine.id)]})
+    assert r.status_code == 200 and r.json()["evidence_document_ids"] == [str(mine.id)]
+    r = client.patch(url, json={"evidence_document_ids": [str(mine.id)]})  # not added twice
+    assert r.json()["evidence_document_ids"] == [str(mine.id)]
+    assert client.patch(url, json={"evidence_document_ids": [str(other.id)]}).status_code == 422
+    assert client.patch(url, json={"evidence_document_ids": ["not-a-uuid"]}).status_code == 422
+    assert client.patch(url, json={"evidence_document_ids": ["00000000-0000-4000-8000-000000000000"]}).status_code == 422
+    assert client.patch(url, json={}).status_code == 422
+
+
+def test_posting_an_event_validates_evidence_too(client, db, lifecycle):
+    b, _, url = lifecycle
+    base = url.rsplit("/", 1)[0]
+    other = _doc(db, make_borrower(db, code="OT2"), "other.pdf")
+    db.commit()
+    body = {"kind": "extension", "amount": "1000", "expected_close": "2027-02-28"}
+    assert client.post(base, json={**body, "evidence_document_ids": [str(other.id)]}).status_code == 422
+    mine = _doc(db, b)
+    db.commit()
+    r = client.post(base, json={**body, "evidence_document_ids": [str(mine.id)]})
+    assert r.status_code == 201 and r.json()["evidence_document_ids"] == [str(mine.id)]
+
+
+def test_patching_needs_the_prepare_permission_and_an_event_of_this_borrower(client, db, lifecycle):
+    b, event, url = lifecycle
+    other = make_borrower(db, code="OT3")
+    db.commit()
+    assert client.patch(f"/api/v1/borrowers/{other.id}/funding-events/{event.id}",
+                        json={"status": "signed"}).status_code == 404
+    _sign_in(client, "ruth.calloway")  # view only
+    assert client.patch(url, json={"status": "signed"}).status_code == 403
