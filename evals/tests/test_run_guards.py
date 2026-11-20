@@ -77,8 +77,9 @@ def test_stand_in_needs_no_signature_and_no_flag():
 def test_the_other_modes_go_through_client_for_with_one_setting_changed(tmp_path, monkeypatch):
     book = load_book(only=["dataflake"])
     assert make_client("standin", book).mode == "standin"
-    recorded = make_client("recorded", book, recordings=tmp_path)
+    recorded = make_client("recorded", book, recordings=tmp_path, accept_stale=frozenset({"intake"}))
     assert isinstance(recorded, RecordedClient) and recorded.root == tmp_path
+    assert recorded.accept_stale == frozenset({"intake"})
     seen = []
     monkeypatch.setattr("app.agents.llm.client_for", lambda settings: seen.append(settings.squad_llm_mode) or "client")
     assert make_client("live", book) == "client" and make_client("record", book) == "client"

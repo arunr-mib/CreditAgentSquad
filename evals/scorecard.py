@@ -51,6 +51,8 @@ def render_markdown(results: dict[str, Any]) -> str:
                f"run time {meta['seconds']} seconds.")
     out.append(f"- Scripted decisions where a person is needed: {'yes' if meta['decide'] else 'no'}.")
     out.append(f"- Oracle rows in scope not signed by the owner: {_num(meta['unsigned_oracle_rows'])}.")
+    if meta.get("accepted_stale"):
+        out.append(f"- Stale recordings replayed by choice: {', '.join(meta['accepted_stale'])}.")
     out.append("- Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.")
     out.append("")
     out.append(f"## Gate: {'PASSED' if gate['passed'] else 'FAILED'}")

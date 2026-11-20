@@ -159,7 +159,8 @@ def run_agent(
         request = LLMRequest(
             model=run.model, system=spec.prompt(), messages=list(messages), tools=list(tools),
             output_schema=schema,
-            effort=spec.effort, max_tokens=spec.max_tokens, record_key=f"{record_key}/{exchange:02d}")
+            effort=spec.effort, max_tokens=spec.max_tokens, record_key=f"{record_key}/{exchange:02d}",
+            spec=f"{spec.name}@{spec.version}:{spec.prompt_sha256()[:12]}")
         try:
             response = llm.create(request)
         except Exception as exc:  # noqa: BLE001 - a failure never reads as a recommendation

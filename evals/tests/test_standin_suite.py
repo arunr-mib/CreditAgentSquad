@@ -123,6 +123,13 @@ def test_scorecard_says_in_its_first_lines_that_it_is_a_stand_in(suite, tmp_path
         assert f"`{code}`" in body and graded["scenario"] in body
 
 
+def test_scorecard_lists_the_stale_recordings_replayed_by_choice(suite):
+    document = json.loads(json.dumps(suite))
+    assert "Stale recordings replayed" not in render_markdown(document)
+    document["meta"]["accepted_stale"] = ["intake", "spreading"]
+    assert "Stale recordings replayed by choice: intake, spreading." in render_markdown(document)
+
+
 def test_the_run_is_stored_as_an_eval_run_row(suite, engine):
     run_id = save_eval_run(engine, suite)
     with Session(engine) as db:

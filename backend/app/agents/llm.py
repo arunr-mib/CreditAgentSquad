@@ -25,6 +25,7 @@ class LLMRequest:
     effort: str = "high"
     max_tokens: int = 32000
     record_key: str = ""  # where a recording of this exchange lives: "<agent>/<task key>/<step>"
+    spec: str = ""  # "<agent>@<version>:<prompt sha-256, 12 hex>": what a recording was made under
 
 
 @dataclass
@@ -61,6 +62,10 @@ class LLMClient(Protocol):
 
 class RecordingMissing(Exception):
     """Raised in recorded mode when no saved response exists for a request."""
+
+
+class RecordingStale(Exception):
+    """A saved model response was made under another version or prompt of the agent than the one asking."""
 
 
 class LiveClient:
@@ -124,14 +129,23 @@ def _recording_path(root: Path, record_key: str) -> Path:
 class RecordedClient:
     mode = "recorded"
 
-    def __init__(self, root: str | Path | None = None):
+    def __init__(self, root: str | Path | None = None, accept_stale: frozenset[str] = frozenset()):
         self.root = Path(root or get_settings().squad_recordings_dir)
+        self.accept_stale = frozenset(accept_stale)
 
     def create(self, request: LLMRequest) -> LLMResponse:
         path = _recording_path(self.root, request.record_key)
         if not path.exists():
             raise RecordingMissing(f"no recorded model response at {path}")
-        return LLMResponse.from_json(json.loads(path.read_text()))
+        data = json.loads(path.read_text())
+        stamp = data.get("_spec")
+        if request.spec and stamp != request.spec:
+            # an agent is named by its spec name or by its recordings directory (they can differ)
+            names = {request.spec.split("@", 1)[0], request.record_key.split("/", 1)[0]}
+            if not names & self.accept_stale:
+                raise RecordingStale(f"{path} was recorded under {stamp or 'no stamp'}, this request is {request.spec}"
+                                     + ("" if stamp else " (no stamp: an old recording)"))
+        return LLMResponse.from_json({k: v for k, v in data.items() if k != "_spec"})
 
 
 class RecordingClient:
@@ -145,7 +159,7 @@ class RecordingClient:
         response = self.inner.create(request)
         path = _recording_path(self.root, request.record_key)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(response.to_json(), indent=1, sort_keys=True))
+        path.write_text(json.dumps({**response.to_json(), "_spec": request.spec}, indent=1, sort_keys=True))
         return response
 
 

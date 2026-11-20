@@ -362,15 +362,18 @@ def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Ca
 # ---- the suite ------------------------------------------------------------------------------------
 
 
-def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tamper=None):
+def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tamper=None,
+                accept_stale: frozenset[str] = frozenset()):
     """The model client for a mode. Stand-in and recorded never call a model."""
     if mode == "standin":
         from evals.standin import StandInReader
 
         return StandInReader(book, tamper=tamper)
-    from app.agents.llm import client_for
+    from app.agents.llm import RecordedClient, client_for
     from app.core.config import Settings
 
+    if mode == "recorded":
+        return RecordedClient(recordings, accept_stale)
     return client_for(Settings(squad_llm_mode=mode, squad_recordings_dir=str(recordings)))
 
 
@@ -456,7 +459,7 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
               decide: bool = True, passes: int = 1, database_url: str | None = None, engine: Engine | None = None,
               allow_unsigned: bool = False, confirm_billable: bool = False, recordings: Path = RECORDINGS_DIR,
               tamper=None, progress: Callable[[str], None] | None = None, keep_recordings: bool = False,
-              ) -> dict[str, Any]:
+              accept_stale: frozenset[str] = frozenset()) -> dict[str, Any]:
     """Run and grade the suite. Returns the results document (see evals/README.md)."""
     from evals.grade import build_results
 
@@ -471,7 +474,7 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
     try:
         with scratch_file_store():
             ensure_schema(engine)
-            client = make_client(mode, book, recordings=recordings, tamper=tamper)
+            client = make_client(mode, book, recordings=recordings, tamper=tamper, accept_stale=accept_stale)
             all_passes = []
             for n in range(1, passes + 1):
                 if progress:
@@ -484,6 +487,7 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
                             seconds=round(time.monotonic() - started, 1),
                             standin_disagreements=getattr(client, "disagreements", []),
                             unsigned_oracle_rows=len(unsigned_oracle_rows(codes, oracle)), scope=only)
+    results["meta"]["accepted_stale"] = sorted(accept_stale)
     if keep_recordings:
         results["recordings"] = all_passes
     return results
@@ -527,6 +531,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--passes", type=int, default=1, help="repeat the suite; the gate checks every pass")
     parser.add_argument("--database-url", help="scratch database (default: EVAL_DATABASE_URL, then TEST_DATABASE_URL)")
     parser.add_argument("--recordings", default=str(RECORDINGS_DIR))
+    parser.add_argument("--accept-stale", nargs="*", default=[], metavar="AGENT",
+                        help="recorded mode: replay stale recordings of these agents (printed in the scorecard)")
     parser.add_argument("--allow-unsigned", action="store_true",
                         help="live/record only: run although oracle rows in scope are not signed by the owner")
     parser.add_argument("--confirm-billable", action="store_true",
@@ -570,7 +576,7 @@ def _run_one(args, root: Path, stem: str) -> int:
             mode=args.mode, book_root=root, only=args.only or None, decide=args.decide, passes=args.passes,
             engine=engine, allow_unsigned=args.allow_unsigned, confirm_billable=args.confirm_billable,
             recordings=Path(args.recordings), progress=lambda line: print(line, flush=True),
-            keep_recordings=bool(args.save_recordings))
+            keep_recordings=bool(args.save_recordings), accept_stale=frozenset(args.accept_stale))
     except (RunRefused, FileNotFoundError, KeyError) as exc:
         print(f"Not started: {exc}", file=sys.stderr)
         return 2
