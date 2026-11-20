@@ -467,7 +467,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   let s = {};
   let run = {};   // what Carly did in this run; survives step changes, cleared by Restart
   const resetLocal = () => { s = { trail: false, drawer: false, line: run.line || "", remember: run.remember === true, wrong: false, fixed: false, view: "", stack: [], helen: "", helenDone: false, sentBack: false, approved: false, summary: false, routed: false, reqDraft: false, lumoraDraft: true, uploaded: false }; };
-  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: false, mailSent: false, lumoraSent: false, helenReason: "", approveReason: "", view: "", asks: [], fixed: false, certChoice: "", certAsked: false }; };
+  const resetRun = () => { run = { reqSent: false, typo: false, line: "", remember: false, mailSent: false, lumoraSent: false, helenReason: "", approveReason: "", view: "", asks: [], fixed: false, caseChat: false, certChoice: "", certAsked: false }; };
   resetRun(); resetLocal();
 
   const $ = (id) => document.getElementById(id);
@@ -567,7 +567,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     $("rail").querySelectorAll("[data-nav]").forEach((b) => b.addEventListener("click", () => {
       const v = b.dataset.nav;
       if (step === 0 && v === "portfolio") return go(1);
-      s.stack = []; s.view = v; render();
+      s.stack = []; s.view = v; run.caseChat = v === "chat:dataflake"; render();
     }));
     presence();
   }
@@ -602,9 +602,9 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   function greeting(anim) {
     return squadMsg(`<p class="text">Good morning, Carly. Overnight I spread Stripple Tech's September figures and tested covenants for 11 of your 12 clients; Lumora Health's October package hasn't arrived, so I couldn't test it. Three things need you.</p>
       <div class="worklist">
-        <button class="workitem" type="button" data-act="w1"><span class="n">01</span><span class="t">Stripple Tech: 2 figures need your eye</span><small>~3 min</small></button>
-        <button class="workitem" type="button" data-act="w2"><span class="n">02</span><span class="t">Dataflake Inc missed its minimum cash covenant</span><small>I'm preparing the case</small></button>
-        <button class="workitem" type="button" data-act="w3"><span class="n">03</span><span class="t">Lumora Health is 12 days late with October reporting</span><small>reminder drafted</small></button>
+        <button class="workitem" type="button" data-act="w1"><span class="n">01</span><span class="t">Stripple Tech's October package is due today</span><small>${run.line && run.fixed ? "spread complete" : step >= 2 ? "2 figures need your eye" : "forward it to me when it lands"}</small></button>
+        <button class="workitem" type="button" data-act="w2"><span class="n">02</span><span class="t">Dataflake Inc missed its minimum cash covenant</span><small>${s.approved ? "approved by Helen" : step >= 7 || s.routed ? "with Helen" : "I'm preparing the case"}</small></button>
+        <button class="workitem" type="button" data-act="w3"><span class="n">03</span><span class="t">Lumora Health is 12 days late with October reporting</span><small>${run.lumoraSent ? "reminder sent" : "reminder drafted"}</small></button>
       </div>
       <div>${dive("queue")}</div>`, "Squad · 7:02 am", anim);
   }
@@ -660,7 +660,7 @@ Carly</textarea></div>
         </ol><div class="trailnote">Track record: <b>37 of 38</b> covenant tests right on Dataflake. The one I got wrong was June's minimum cash test: I counted a deposit that was restricted. You corrected it, and since then I check every account for restrictions, which is how I caught the pledged $0.7M today.</div>` : ""}
       </div>
       <div class="row"><button class="btn ghost" type="button" data-act="drawer" style="padding:0">Inspect the definition →</button><span style="margin-left:auto">${dive("cov:dataflake")}</span></div>
-      ${ask}`, "Squad · 9:14 am · needs you", anim, !run.certChoice);
+      ${ask}`, run.certChoice || step >= 6 ? "Squad · 9:14 am" : "Squad · 9:14 am · needs you", anim, !run.certChoice && step < 6);
   }
 
   // ---------- side chats ----------
@@ -668,11 +668,11 @@ Carly</textarea></div>
     const c = CHATS.find((x) => x.id === id);
     let h = `<div class="row">${s.stack.length ? '<button class="btn ghost" type="button" data-act="home" style="padding:0">← Back</button>' : ""}<span class="meta">Side chat · ${esc(c.co)}</span><span style="margin-left:auto">${dive("co:" + c.co)}</span></div>`;
     if (id === "dataflake") {
-      h += dataflakeMsg(false);
-      if (step >= 7 && s.approved) h += squadMsg(`<p class="text">Helen approved the conditional waiver at 11:02. I'll confirm when the $8M arrives; the deadline is 15 December.</p>`, "Squad · 11:03 am");
+      h += step >= 5 ? dataflakeCase() : dataflakeMsg(false);
     }
     if (id === "stripple") {
-      if (step < 2) h += squadMsg(`<p class="text">Overnight I spread Stripple Tech's September figures. October's package isn't in yet; drop it in the Squad chat when it arrives and I'll file it.</p>`, "Squad · 7:02 am");
+      if (step < 2) h += squadMsg(`<p class="text">Overnight I spread Stripple Tech's September figures. October's package is due today. When it lands, forward it to me and I'll file it.</p>
+        <div class="row"><button class="btn dark" type="button" data-act="w1">Forward the October package</button><span class="meta">The demo plays the email arriving</span></div>`, "Squad · 7:02 am");
       else {
         h += uploadMsgs(false);
         h += step >= 5 ? correctionDone() : squadMsg(`<p class="text">Two figures from the October financials are waiting for you.</p><div class="row"><button class="btn dark" type="button" data-act="review">Review the 2 figures</button></div>`, "Squad · Spreading agent");
@@ -684,7 +684,7 @@ Carly</textarea></div>
           <label for="lumoramail" style="position:absolute;left:-9999px">Reminder to Lumora Health</label>
           <textarea id="lumoramail" ${run.lumoraSent ? "readonly" : ""}>Hi Ana,\n\nWe haven't yet received Lumora Health's October monthly financials and compliance certificate. Could you send them this week? If something is holding them up, let me know and we can talk it through.\n\nThanks,\nCarly</textarea></div>
         ${run.lumoraSent ? `<div class="trust">Sent as Carly. I'll file the package when it arrives and tell you if anything is missing. · <i>prototype: nothing was really sent</i></div>` :
-          `<div class="row"><button class="btn primary" type="button" data-act="lumorasend">Send as Carly</button><span class="meta">Squad never sends to a borrower on its own</span></div>`}`, "Squad · 7:02 am", false, !run.lumoraSent);
+          `<div class="row"><button class="btn primary" type="button" data-act="lumorasend">Send as Carly</button><span class="meta">Squad never sends to a client on its own</span></div>`}`, "Squad · 7:02 am", false, !run.lumoraSent);
     }
     h += asksHtml(id);
     return `<div class="col">${h}</div>`;
@@ -693,7 +693,7 @@ Carly</textarea></div>
   // ---------- command centre (stand-in for the detail screens of Credit Agent Squad) ----------
   function viewCC(key) {
     const route = { queue: "/work", cov: "/covenants/dataflake/min-cash/2026-10", case: "/cases/dataflake/waiver", fig: "/spreads/stripple/2026-10" }[key.split(":")[0]] || "/borrowers/" + key.slice(3).toLowerCase().replace(/[^a-z]+/g, "-");
-    const bar = `<div class="ccbar"><button class="btn ghost" type="button" data-act="home" style="padding:0;height:auto">← Back to Squad</button><span>·</span><b>Command Centre</b><span class="mono">${esc(route)}</span><span class="proto" style="margin-left:auto">prototype stand-in for the Credit Agent Squad detail screen</span></div>`;
+    const bar = `<div class="ccbar"><button class="btn ghost" type="button" data-act="home" style="padding:0;height:auto">← Back</button><span>·</span><b>Command Centre</b><span class="mono">${esc(route)}</span><span class="proto" style="margin-left:auto">prototype stand-in for the Credit Agent Squad detail screen</span></div>`;
     let body = "";
     if (key === "queue") {
       body = `<h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Work queue · Carly Reyes</h1>
@@ -1061,6 +1061,27 @@ Carly's question: ${q}`;
     </div>`;
   }
 
+  // The Dataflake case from step 6 on: the same messages in the main Squad thread and in Dataflake's own chat.
+  function dataflakeCase() {
+    let h = "";
+    h += dataflakeMsg(step === 5);
+    if (step === 6) h += viewPrepare();
+    if (step === 6 && s.routed) h += routedMsg();
+    if (step === 7 && s.helenDone) {
+      h += squadMsg(`<div class="card pad" style="display:flex;flex-direction:column;gap:10px">
+        <div class="row"><span class="tag warn">Returned by Helen Strand</span><span class="meta">Dataflake Inc · conditional waiver</span></div>
+        <div style="font-size:15px">“${esc(s.helenReason || run.helenReason || RETURN_REASON)}”</div></div>
+        <p class="text">Marcus, Dataflake's CFO, replied at 10:40 with the signed term sheet: <b class="num">$8M</b> from the two existing investors, closing 12 December. The Intake agent checked it names Dataflake and that the amount matches. It's attached to the case.</p>
+        <div class="row"><button class="chip cite" type="button" data-act="termsheet">${ico.file} Series B extension term sheet, signed · 3 pages</button></div>
+        ${s.sentBack ? `<div class="trust">You sent it back to Helen at 10:52.</div>` : `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am", !s.approved, !s.sentBack);
+      if (s.approved) h += squadMsg(`<div class="card pad" style="background:var(--ok-soft);border-color:var(--line);display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02:</b> one-time waiver, conditioned on the $8M extension closing by 15 December.</div><div style="font-size:14px">Her reason: “${esc(s.approveReason)}”</div><div>${dive("case:dataflake")}</div></div>
+        <p class="text">That's everything that needed you this morning. I'll confirm when the $8M arrives; the deadline is 15 December.</p>
+        ${s.summary ? "" : `<div class="row"><button class="btn dark" type="button" data-act="showsummary">See the morning's summary</button></div>`}`, "Squad · 11:02 am", !s.summary);
+      if (s.summary) h += summary();
+    }
+    return h;
+  }
+
   function viewThread() {
     let h = greeting(step === 0);
     if (step >= 2 && (s.uploaded || step > 2)) {
@@ -1080,21 +1101,7 @@ Carly's question: ${q}`;
       }
     }
     if (step >= 5) h += correctionDone();
-    if (step >= 5) h += dataflakeMsg(step === 5);
-    if (step === 6) h += viewPrepare();
-    if (step === 6 && s.routed) h += routedMsg();
-    if (step === 7 && s.helenDone) {
-      h += squadMsg(`<div class="card pad" style="display:flex;flex-direction:column;gap:10px">
-        <div class="row"><span class="tag warn">Returned by Helen Strand</span><span class="meta">Dataflake Inc · conditional waiver</span></div>
-        <div style="font-size:15px">“${esc(s.helenReason || run.helenReason || RETURN_REASON)}”</div></div>
-        <p class="text">Marcus, Dataflake's CFO, replied at 10:40 with the signed term sheet: <b class="num">$8M</b> from the two existing investors, closing 12 December. The Intake agent checked it names Dataflake and that the amount matches. It's attached to the case.</p>
-        <div class="row"><button class="chip cite" type="button" data-act="termsheet">${ico.file} Series B extension term sheet, signed · 3 pages</button></div>
-        ${s.sentBack ? `<div class="trust">You sent it back to Helen at 10:52.</div>` : `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am", !s.approved, !s.sentBack);
-      if (s.approved) h += squadMsg(`<div class="card pad" style="background:var(--ok-soft);border-color:var(--line);display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02:</b> one-time waiver, conditioned on the $8M extension closing by 15 December.</div><div style="font-size:14px">Her reason: “${esc(s.approveReason)}”</div><div>${dive("case:dataflake")}</div></div>
-        <p class="text">That's everything that needed you this morning. I'll confirm when the $8M arrives; the deadline is 15 December.</p>
-        ${s.summary ? "" : `<div class="row"><button class="btn dark" type="button" data-act="showsummary">See the morning's summary</button></div>`}`, "Squad · 11:02 am", !s.summary);
-      if (s.summary) h += summary();
-    }
+    if (step >= 5) h += dataflakeCase();
     h += asksHtml(ctxOf());
     return `<div class="col">${h}</div>`;
   }
@@ -1155,7 +1162,7 @@ Carly's question: ${q}`;
         <textarea id="mail" ${run.mailSent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send us the signed Series B extension term sheet?${run.certChoice === "email" ? " Could you also tell us why the certificate counted the cash held for the letter of credit?" : ""} We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
       </div>
       ${run.mailSent ? '<div class="proto">Sent as Carly · prototype: nothing was really sent</div>' : ""}
-      <div class="row">${run.mailSent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}${s.routed ? "" : '<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button>'}<span class="meta">Squad never sends to a borrower on its own</span></div>
+      <div class="row">${run.mailSent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}${s.routed ? "" : '<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button>'}<span class="meta">Squad never sends to a client on its own</span></div>
     </div>`;
   }
 
@@ -1250,6 +1257,7 @@ Carly's question: ${q}`;
     let html;
     const v = s.view;
     if (v.startsWith("cc:")) html = viewCC(v.slice(3));
+    else if (helenView()) html = viewHelen();
     else if (v.startsWith("chat:")) html = viewChat(v.slice(5));
     else if (v === "portfolio" || (step === 1 && v !== "squad")) html = viewPortfolio();
     else if (step === 3 || step === 4) html = viewReview();
@@ -1273,7 +1281,7 @@ Carly's question: ${q}`;
   function autosize(el) { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; }
   document.addEventListener("input", (e) => { if (e.target.tagName === "TEXTAREA") autosize(e.target); });
   let liveTimer;
-  function helenView() { return step === 7 && (!s.helenDone || (s.sentBack && !s.approved)) && !s.view.startsWith("cc:"); }
+  function helenView() { return step === 7 && (!s.helenDone || (s.sentBack && !s.approved)) && !s.view.startsWith("cc:") && s.view !== "chat:lumora" && s.view !== "chat:stripple" && s.view !== "portfolio"; }
   function open(v) { s.stack.push(s.view); s.view = v; s.drawer = false; render(); }
   function go(n) {
     n = Math.max(0, Math.min(STEPS.length - 1, n));
@@ -1281,6 +1289,7 @@ Carly's question: ${q}`;
     resetLocal();
     step = n;
     if (step >= 2) s.uploaded = true;
+    if (run.caseChat && step >= 5) s.view = "chat:dataflake";   // a case opened in Dataflake's chat stays there
     setTimeout(speak, 0);
     clearTimeout(liveTimer);
     if (step === 5 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -1299,8 +1308,8 @@ Carly's question: ${q}`;
     const a = t.dataset.act;
     const val = (id) => ($(id) ? $(id).value : "");
     switch (a) {
-      case "w1": return step === 0 ? go(3) : null;
-      case "w2": return go(5);
+      case "w1": run.caseChat = false; if (step < 2) return go(2); if (!run.line) return go(3); if (!run.fixed) return go(4); s.stack = []; s.view = "chat:stripple"; return render();
+      case "w2": run.caseChat = true; if (step >= 5) { s.stack = []; s.view = "chat:dataflake"; return render(); } return go(5);   // open the case on its own, not the whole morning
       case "w3": return open("chat:lumora");
       case "co": { const c = CHATS.find((x) => x.co === t.dataset.co); return open(c ? "chat:" + c.id : "cc:co:" + t.dataset.co); }
       case "openchat": return open("chat:" + t.dataset.chat);
@@ -1349,7 +1358,7 @@ Carly's question: ${q}`;
       case "look": look = t.dataset.look; lookOpen = false; savePref("squad-look2", look); applyChrome(); return lookMenu();
       case "lookmenu": lookOpen = !lookOpen; return lookMenu();
       case "railc": railC = !railC; lookOpen = false; savePref("squad-rail2", railC ? "closed" : "open"); applyChrome(); return rail();
-      case "showsummary": s.summary = true; render(); return speak();
+      case "showsummary": s.summary = true; s.view = ""; s.stack = []; run.caseChat = false; render(); return speak();   // the morning's summary lives in the main Squad thread
       case "fill": { const el = $(t.dataset.to); if (el) { el.value = t.dataset.text; autosize(el); el.focus(); } return; }
       case "helenrecord": {
         const r = val("hreason").trim();
