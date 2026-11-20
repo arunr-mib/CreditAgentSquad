@@ -13,7 +13,7 @@ Working notes from the owner's brainstorm after colleagues' feedback on the cock
 | Agent presence | **One agent on the surface** ("Squad"), with the specialists and code shown in a collapsible **work trail** under each message: friendly on top, auditable underneath. |
 | Disclosure | Chat-first with progressive disclosure: decision cards in the conversation; a drawer that opens only the evidence the question needs and closes when it is settled; today's screens remain as "detail screens". |
 
-## Direction being prototyped (Naomi's morning)
+## Direction being prototyped (Carly's morning)
 
 1. Squad greets the analyst with her work, not a dashboard.
 2. Upload: the Intake Agent files what it can and holds what it cannot place, with one question.
@@ -38,7 +38,7 @@ The engine carries over unchanged (agents, guardrails, ledger, workflow, four-ey
 
 ## Next steps
 
-1. Clickable prototype of Naomi's morning (estimate: two to three hours of build).
+1. Clickable prototype of Carly's morning (estimate: two to three hours of build).
 2. Test it with about five analysts and officers on three tasks: find what needs you, handle the covenant miss, check whether you trust the number. Watch whether they open the evidence before approving.
 3. Field research at a month-end, if it can be arranged.
 4. Then the redesign spec, including the innovation banking change above.
