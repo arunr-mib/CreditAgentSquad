@@ -171,7 +171,7 @@ class _Book:
                 self.header(ws, row, [""] + [MONTH_WORDS.get(p["months"], "") for p in periods])
             ws.freeze_panes = ws.cell(row=row + 1, column=2)
             seen_sup = False
-            for line in template.LINES:
+            for line in template.template_lines(spread["template"]):
                 if line.statement not in statements:
                     continue
                 if line.statement == "sup" and not seen_sup:

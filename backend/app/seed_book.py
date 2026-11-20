@@ -145,7 +145,7 @@ def ensure_user(db: Session, name: str, role: Role, title: str, password_hash: s
 def _seed_facts(db: Session, borrower: Borrower, period: dict[str, Any]) -> int:
     end, months, count = _day(period["period_end"]), period["months"], 0
     for key, value in period["values"].items():
-        line = template.LINE_BY_KEY.get(key)
+        line = template.ALL_LINE_BY_KEY.get(key) if template.in_template(key, borrower.template_id) else None
         if line is None:
             continue
         add_fact(db, borrower_id=borrower.id, key=key, period_end=end, months=months if line.flow else 0,
@@ -202,7 +202,7 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
     rm = ensure_user(db, info["relationship_manager"], Role.PORTFOLIO_MANAGER, "Relationship Manager", password_hash)
     analyst = ensure_user(db, info["analyst"], Role.ANALYST, "Credit Analyst", password_hash)
     borrower = Borrower(
-        code=info["id"], name=info["name"], industry=info["industry"],
+        code=info["id"], name=info["name"], industry=info["industry"], template_id=info.get("template_id", "ci-1"),
         fiscal_year_end_month=info["fiscal_year_end_month"], risk_rating=info["risk_rating"],
         relationship_manager_id=rm.id, analyst_id=analyst.id,
         profile={k: info[k] for k in ("legal_form", "city", "state", "chief_financial_officer", "auditor",

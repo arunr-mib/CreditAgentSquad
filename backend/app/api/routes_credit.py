@@ -259,7 +259,7 @@ def get_fact(fact_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depend
 @router.get("/borrowers/{borrower_id}/spread")
 def get_spread(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
     """The spread grid: template lines down, periods across, one current fact per cell."""
-    _borrower_or_404(db, borrower_id)
+    borrower = _borrower_or_404(db, borrower_id)
     facts = db.execute(select(Fact).where(
         Fact.borrower_id == borrower_id, Fact.status.in_(("verified", "confirmed", "proposed")))
         .order_by(Fact.seq)).scalars()
@@ -267,7 +267,7 @@ def get_spread(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = 
     periods: set[tuple[date, int]] = set()
     for f in facts:
         base = f.key[len(template.STATED_PREFIX):] if f.key.startswith(template.STATED_PREFIX) else f.key
-        if base not in template.LINE_BY_KEY or f.key.startswith(template.STATED_PREFIX):
+        if not template.in_template(base, borrower.template_id) or f.key.startswith(template.STATED_PREFIX):
             continue
         usable = f.status in ("verified", "confirmed")
         period_key = f.period_end.isoformat()
@@ -278,10 +278,10 @@ def get_spread(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = 
         if f.months:
             periods.add((f.period_end, f.months))
     return {
-        "template": template.TEMPLATE_ID,
+        "template": borrower.template_id,
         "periods": [{"period_end": p.isoformat(), "months": m} for p, m in sorted(periods)],
         "lines": [{"key": line.key, "label": line.label, "statement": line.statement, "computed": line.computed,
-                   "cells": cells.get(line.key, {})} for line in template.LINES],
+                   "cells": cells.get(line.key, {})} for line in template.template_lines(borrower.template_id)],
     }
 
 
@@ -423,8 +423,8 @@ def reject_fact_route(fact_id: uuid.UUID, body: FactReasonIn, db: Session = Depe
 def enter_fact(borrower_id: uuid.UUID, body: ManualFactIn, db: Session = Depends(get_db),
                user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
     """A person keys a statement figure by hand: a template input line, with a reason."""
-    _borrower_or_404(db, borrower_id)
-    line = template.LINE_BY_KEY.get(body.key)
+    borrower = _borrower_or_404(db, borrower_id)
+    line = next((ln for ln in template.template_lines(borrower.template_id) if ln.key == body.key), None)
     if line is None or line.computed:
         raise HTTPException(422, "Only input lines of the spreading template can be entered; totals are calculated.")
     if not body.reason.strip():

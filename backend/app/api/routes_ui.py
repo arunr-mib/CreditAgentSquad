@@ -83,7 +83,7 @@ class _Labels:
         if key in SYSTEM_LABELS:
             return SYSTEM_LABELS[key]
         stated = key.startswith(template.STATED_PREFIX)
-        line = template.LINE_BY_KEY.get(key[len(template.STATED_PREFIX):] if stated else key)
+        line = template.ALL_LINE_BY_KEY.get(key[len(template.STATED_PREFIX):] if stated else key)
         if line is not None:
             return f"{line.label}, as stated" if stated else line.label
         parts = key.split(".")

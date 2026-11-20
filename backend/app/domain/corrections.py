@@ -54,14 +54,23 @@ def dependents(db: Session, roots: list[Fact]) -> list[Fact]:
     return sorted((f for f in found.values() if f.status in USABLE_STATUSES), key=lambda f: f.seq)
 
 
+_REVENUE_KEY = {"ci-1": "is.revenue", "vc-1": "is.total_revenue"}
+
+
+def _template_id(db: Session, borrower_id: uuid.UUID) -> str:
+    borrower = db.get(Borrower, borrower_id)
+    return borrower.template_id if borrower is not None else template.TEMPLATE_ID
+
+
 def _statement_totals(db: Session, fact: Fact) -> list[Fact]:
     """The stored totals for the statement period a line belongs to, however they were stored.
     History loaded from a system of record has totals with no calculation naming their inputs,
     so they are found by period, not by lineage."""
     key = fact.key.removeprefix(template.STATED_PREFIX)
-    if key not in template.LINE_BY_KEY:
+    template_id = _template_id(db, fact.borrower_id)
+    if not template.in_template(key, template_id):
         return []
-    computed = [line.key for line in template.LINES if line.computed]
+    computed = [line.key for line in template.template_lines(template_id) if line.computed]
     return list(db.execute(select(Fact).where(
         Fact.borrower_id == fact.borrower_id, Fact.period_end == fact.period_end, Fact.key.in_(computed),
         Fact.status.in_(USABLE_STATUSES))).scalars())
@@ -75,14 +84,15 @@ def _cycle(db: Session, borrower_id: uuid.UUID, period_end: date) -> Cycle | Non
 def _flow_months(db: Session, old: Fact, stale: list[Fact], cycle: Cycle | None) -> int | None:
     if old.months:
         return old.months
+    template_id = _template_id(db, old.borrower_id)
     flows = [f.months for f in stale if f.period_end == old.period_end and f.months
-             and f.key in template.LINE_BY_KEY]
+             and template.in_template(f.key, template_id)]
     if flows:
         return max(flows)
     if cycle is not None:
         return cycle.months
     months = db.execute(select(Fact.months).where(
-        Fact.borrower_id == old.borrower_id, Fact.period_end == old.period_end, Fact.key == "is.revenue",
+        Fact.borrower_id == old.borrower_id, Fact.period_end == old.period_end, Fact.key == _REVENUE_KEY[template_id],
         Fact.status.in_(USABLE_STATUSES)).order_by(Fact.months.desc())).scalars().first()
     return months or None
 
@@ -96,9 +106,10 @@ def _current_tests(db: Session, facility_id: uuid.UUID, period_end: date) -> dic
 def _totals_were_stored(db: Session, old: Fact) -> bool:
     """True when this statement period once had totals, even if none is in use now (they are
     withheld while corrected figures do not foot)."""
-    if old.key.removeprefix(template.STATED_PREFIX) not in template.LINE_BY_KEY:
+    template_id = _template_id(db, old.borrower_id)
+    if not template.in_template(old.key.removeprefix(template.STATED_PREFIX), template_id):
         return False
-    computed = [line.key for line in template.LINES if line.computed]
+    computed = [line.key for line in template.template_lines(template_id) if line.computed]
     return db.execute(select(Fact.id).where(
         Fact.borrower_id == old.borrower_id, Fact.period_end == old.period_end, Fact.key.in_(computed),
         Fact.status == "superseded").limit(1)).first() is not None
@@ -314,6 +325,8 @@ def enter(db: Session, *, borrower_id: uuid.UUID, key: str, period_end: date, mo
     the new figure then cites the same document and page, so its source still opens."""
     if not value.is_finite():
         raise ValueError("a figure must be a finite number")
+    if not template.in_template(key, _template_id(db, borrower_id)):
+        raise ValueError(f"{key} is not a line of this borrower's spreading template")
     existing = facts_service.current_fact(db, borrower_id, key, period_end, months)
     if existing is not None and existing.kind != "calculated":
         return correct(db, existing, value=value, user_id=user_id, reason=reason)

@@ -448,16 +448,16 @@ def _spread(db: Session, reg: Registry, borrower: Borrower, end: date) -> dict[s
     cells: dict[str, dict[str, str]] = {}
     periods: dict[str, int] = {}
     facts = db.execute(select(Fact).where(
-        Fact.borrower_id == borrower.id, Fact.key.in_(list(template.LINE_BY_KEY)), Fact.period_end <= end,
+        Fact.borrower_id == borrower.id, Fact.key.in_([ln.key for ln in template.template_lines(borrower.template_id)]), Fact.period_end <= end,
         Fact.status.in_(USABLE_STATUSES)).order_by(Fact.seq)).scalars()
     for f in facts:
-        line = template.LINE_BY_KEY[f.key]
+        line = template.ALL_LINE_BY_KEY[f.key]
         iso = f.period_end.isoformat()
         reg.add(f, f"{line.label}, {day(f.period_end)}")
         cells.setdefault(f.key, {})[iso] = str(f.id)  # later facts replace earlier ones
         if line.flow:
             periods[iso] = f.months
-    return {"template": template.TEMPLATE_ID,
+    return {"template": borrower.template_id,
             "periods": [{"period_end": iso, "months": months} for iso, months in sorted(periods.items())],
             "cells": cells}
 
