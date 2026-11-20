@@ -198,13 +198,50 @@ def test_the_gate_checks_every_pass_separately(small):
         assert not gate["passed"] and any("pass 2" in r and "false-compliant" in r for r in gate["reasons"])
 
 
+def test_a_cycle_that_failed_on_an_error_fails_the_gate_in_every_mode(small):
+    book, recordings = small
+    for mode in ("recorded", "live", "standin"):
+        broken = copy.deepcopy(recordings)
+        broken["harrowgate-precision"] = {"error": "RecordingStale: intake recorded under intake@2, request is intake@4"}
+        gate = evaluate_gate([grade_pass(book, broken)], mode=mode, complete_book=False)
+        assert not gate["passed"] and gate["reasons"][0].startswith("run-error:") and "RecordingStale" in gate["reasons"][0]
+    # a stage that failed inside a cycle (the stale recording refused at intake) is the same
+    stale = copy.deepcopy(recordings)
+    stage = stale["kestrel-bay-packaging"]["cycle"]["stages"][0]
+    stage["status"], stage["detail"] = "failed", {"error": "RecordingStale: intake@2 vs intake@4"}
+    gate = evaluate_gate([grade_pass(book, stale)], mode="recorded", complete_book=False)
+    assert not gate["passed"] and gate["run_errors"][0]["borrower"] == "kestrel-bay-packaging"
+    # an agent run that failed on an exception (what a refused stale recording looks like) is the same
+    failed = copy.deepcopy(recordings)
+    run = failed["kestrel-bay-packaging"]["agent_runs"][0]
+    run["status"], run["error"] = "failed", "RecordingStale: x was recorded under intake@2, this request is intake@4"
+    run["llm_mode"] = "recorded"
+    gate = evaluate_gate([grade_pass(book, failed)], mode="recorded", complete_book=False)
+    assert not gate["passed"] and "RecordingStale" in gate["reasons"][0]
+
+
+def test_a_run_that_extracted_no_facts_cannot_pass(small):
+    book, recordings = small
+    empty = copy.deepcopy(recordings)
+    for rec in empty.values():
+        rec["facts"] = []
+    graded = grade_pass(book, empty)
+    assert graded["metrics"]["extraction_facts_correct"] == 0 and graded["metrics"]["extraction_facts_expected"] > 0
+    for mode in ("recorded", "live", "standin"):
+        assert not evaluate_gate([graded], mode=mode, complete_book=False)["passed"]
+    gate = evaluate_gate([graded], mode="recorded", complete_book=False)
+    assert any("extraction coverage is not complete" in r for r in gate["reasons"])
+
+
 def test_a_live_run_is_gated_on_the_two_failures_only_and_its_accuracy_is_reported_not_gated(small):
     book, recordings = small
     worse = copy.deepcopy(recordings)
     worse["harrowgate-precision"]["facts"] = [f for f in worse["harrowgate-precision"]["facts"] if f["key"] != "bs.cash"]
     graded = grade_pass(book, worse)
     assert graded["metrics"]["extraction_accuracy"] < 1
-    assert evaluate_gate([graded], mode="live")["passed"]
+    # accuracy of a wrong value is reported; a fact with no usable fact at all fails the coverage rule
+    gate = evaluate_gate([graded], mode="live")
+    assert not gate["passed"] and all("coverage" in r for r in gate["reasons"])
     assert not evaluate_gate([graded], mode="standin", complete_book=False)["passed"]
 
 
