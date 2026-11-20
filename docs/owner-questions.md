@@ -31,14 +31,58 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 ## Waiting for you (end of Phase 1, 20 Nov)
 
 1. **Start Phases 2 and 4?** Phase 1 is done and verified. I paused before the two builds to stay within "not much beyond $10 while I'm out": Phase 2 is 10 tasks and Phase 4a is 15, each built and reviewed by separate agents. Say "go" and both start (Phase 4 in its own worktree).
-2. **Names to check against real companies** before anything is shown outside the team (no web search done): Stripple, Tessaract, Dataflake, Veridia, Halcyon, Quillon first; the full list of 16 companies and 16 officers is in the Phase 2 plan, Task 10.
+2. **Names to check against real companies** before anything is shown outside the team. No web search was done; the table says what to check, not what was found. Check Stripple, Tessaract, Dataflake, Veridia, Halcyon and Quillon first. *Taken: names stay as the spec lists them.* **Owner: to check.**
+
+   | Kind | Name | Where | Check first because |
+   |---|---|---|---|
+   | company | Dataflake Inc | Data infrastructure | data-infrastructure names are crowded |
+   | company | Lumora Health | Digital health | - |
+   | company | Brightvane Energy | Climate hardware | - |
+   | company | Mosswell Robotics | Robotics | - |
+   | company | Halcyon Grid | Energy software | a common word used by many companies |
+   | company | Quillon AI | Applied AI | close to other 'Quill' product names |
+   | company | Kelvra Bio | Biotech tools | - |
+   | company | Orbitline Systems | Space software | - |
+   | company | Stripple Tech | Fintech infrastructure | close in sound to a well-known payments company |
+   | company | Veridia Payments | Payments | close to 'Veridian', used by several companies |
+   | company | Tessaract Labs | Developer tools | a spelling variant of a common word used by many products |
+   | company | Pellucid Sensors | Industrial IoT | - |
+   | company | Corvane Analytics | B2B SaaS | - |
+   | company | Nimbusfield Security | Cybersecurity | - |
+   | company | Tidewell Medical | Medical devices | - |
+   | company | Ferrogate Cloud | Cloud infrastructure | - |
+   | person | Imogen Farrow | chief financial officer, Dataflake Inc | - |
+   | person | Tobias Wenlock | chief financial officer, Lumora Health | - |
+   | person | Odalys Prentiss | chief financial officer, Brightvane Energy | - |
+   | person | Reuben Castellane | chief financial officer, Mosswell Robotics | - |
+   | person | Marguerite Oyelowo | chief financial officer, Halcyon Grid | - |
+   | person | Sunniva Hartigan | chief financial officer, Quillon AI | - |
+   | person | Lysander Boateng | chief financial officer, Kelvra Bio | - |
+   | person | Evander Pruitt | chief financial officer, Orbitline Systems | - |
+   | person | Cosima Aldridge | chief financial officer, Stripple Tech | - |
+   | person | Anselm Okonkwo-Reyes | chief financial officer, Veridia Payments | - |
+   | person | Philippa Strand | chief financial officer, Tessaract Labs | - |
+   | person | Garrick Lindahl | chief financial officer, Pellucid Sensors | - |
+   | person | Henrietta Voss | chief financial officer, Corvane Analytics | - |
+   | person | Wilhelmina Achterberg | chief financial officer, Nimbusfield Security | - |
+   | person | Barnaby Ekwueme | chief financial officer, Tidewell Medical | - |
+   | person | Ignatius Valcourt | chief financial officer, Ferrogate Cloud | - |
+
 3. **Phase 2 choices I made where the spec was silent** (plan header, rulings table; overrule any):
    - Figures for the four extra clients:
      - Corvane: $8.4M cash, $0.60M burn, RML 14.0
      - Nimbusfield: $3.3M cash, $0.40M burn, RML 8.3
      - Tidewell: $4.3M cash after the restricted account, $0.35M burn, RML 12.3
      - Ferrogate: $16.0M cash, burn −$0.25M (cash-flow positive)
-   - Due days: financials and certificate 30, MRR report 15, bank statements 7.
    - Every client has a drawn Bank of Stoic venture term loan.
-   - Ferrogate gets a DSCR covenant from May 2026, per your earlier "have DSCR as well".
-4. **SaaS figures on monthly packs:** today every startup spread needs MRR, ARR and customer count. *Proposed: those come from the monthly MRR report, and a financial pack without them still spreads.* This will be built in Phase 2 unless you say otherwise.
+   - Ferrogate (the only client with positive EBITDA) has a DSCR covenant: DSCR of at least 1.25x on a trailing-twelve-months basis from 2026-05-31, as a second terms version, per your earlier "have DSCR as well". *Decision taken, not a question.* A trailing-twelve-months test needs twelve published months, so May 2026 is the first possible test; an earlier start would leave "cannot test" rows through the history. None of the other 15 has a DSCR covenant.
+4. **SaaS figures on monthly packs:** *Built in Phase 2 Task 7.* SaaS lines (MRR, ARR, customers) come from the monthly MRR report, and a financial pack without them still spreads.
+
+## Added in Phase 2 (21 November)
+
+5. **MRR export for Stripple.** The file is delivered as the real `mrr_export.xlsx` and as a PDF print of the same sheet, because intake accepts PDFs only. *Taken: both exist; the print is the file that is held.* **Owner: should intake accept spreadsheets directly?**
+6. **Due days for the monthly package:** financials and certificate 30 days (spec section 3); MRR report 15; bank statements 7. The 7 and 15 are mine: "Lumora October reporting 12 days late" at an as-of of 19 November needs an item due on 7 November. *Taken: as stated.*
+7. **Tidewell's cash mismatch.** The calculation records a passing variance on the ledger only, so no item is raised today. The answer key expects an exception `cash.statement_mismatch` (statements to certificate), which needs a reconciliation step built in Phase 3. *Taken: the key expects it; the tests pin it as pending until Phase 3.*
+8. **Corvane's plan miss is a breach.** Revenue is under 80 percent of the approved plan in September and October; the certificate says so honestly, so the exception is `covenant.breach`. *Taken: as described.*
+9. **Sign the new answer key.** `synthetic/books/innovation/oracle.csv` has 79 rows: 63 unsigned (62 plus Ferrogate's DSCR test: covenant tests, funding events and expected exceptions for the 16 innovation clients) and 16 signed (the four kept borrowers' v1 rows, unchanged). It will arrive as one short table (standing approval 3).
+10. **Lumora's October tests are `cannot_test`.** Lumora's October package is late (the scenario is "October reporting 12 days late"), so the October covenant tests have no figures and the key records `cannot_test`, with `intake.missing_document` exceptions for the missing bank statements and MRR report. *Taken: as stated.* Overrule if you would rather the repaired pack test cleanly.

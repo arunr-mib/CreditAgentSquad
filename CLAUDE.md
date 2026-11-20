@@ -32,7 +32,9 @@ uv sync                                   # install
 uv run pytest                             # all Python tests
 uv run pytest backend/tests/calc -q       # pure calculation tests
 uv run ruff check .                       # lint
-uv run python -m synthetic.generate       # build the synthetic book into synthetic/out/
+uv run python -m synthetic.generate       # legacy C&I book into synthetic/out/ (frozen; engine tests run on it)
+uv run python -m synthetic.books.innovation.generate  # build the innovation book into synthetic/books/innovation/out/ (v2 default)
+PYTHONPATH=backend uv run python -m app.seed_book     # seed the innovation book; add --book legacy for the v1 book
 service postgresql start                  # local Postgres 16 in the cloud container
 uv run python -m evals.run --mode standin # all borrowers through the live cycle with a stand-in reader
 PYTHONPATH=backend uv run python -m app.worker   # background worker

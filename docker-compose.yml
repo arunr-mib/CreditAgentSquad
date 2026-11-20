@@ -1,7 +1,7 @@
 # Local stack: database, API, background worker and workspace.
 #   cp .env.example .env    (set SESSION_SECRET and RUNTIME_DATABASE_PASSWORD; ANTHROPIC_API_KEY only for live model runs)
 #   docker compose up --build
-#   docker compose exec api sh -c "cd /srv && python -m synthetic.generate && python -m app.seed_book"
+#   docker compose exec api sh -c "cd /srv && python -m synthetic.books.innovation.generate && python -m app.seed_book"
 # Workspace: http://localhost:8080   API: http://localhost:8000/api/v1/health
 #
 # Two database roles. `squad` owns the tables and is used only by the `migrate` service, which
