@@ -19,6 +19,7 @@ from app.domain.facts_service import current_fact
 from app.domain.monitoring import CovenantTest, Cycle, Signal, WorkItem
 from app.domain.terms import ReportingObligation
 from app.domain.work_items import raise_item
+from app.guardrails.numbers import same_number
 
 HISTORY_QUARTERS = 8
 HISTORY_MONTHS = 14  # a venture borrower's history: the month and the thirteen before it
@@ -215,6 +216,48 @@ def _one_per_period(fired: list[sig.Signal]) -> list[sig.Signal]:
 _RULES = {rule.id: rule for rule in sig.RULES}
 
 
+# the stored metric behind each venture rule's figures ("plan_ratio" is stored by `store_plan_ratio`)
+VENTURE_RULE_METRIC = {"runway_below_watch": "rml", "runway_falling": "rml", "burn_rising": "avg_net_burn",
+                       "revenue_below_plan": "plan_ratio"}
+
+
+def _venture_source_facts(db: Session, borrower: Borrower, period_end: date, fired: sig.Signal) -> dict[str, Any]:
+    """Store each figure of a venture signal as a calculated fact and carry its id on the figure, so the basis
+    shows nothing without a source. A figure whose stored fact disagrees with it is left unlinked, never forced."""
+    from app.domain.metrics_service import store_metric, store_plan_ratio
+
+    metric = VENTURE_RULE_METRIC[fired.rule_id]
+    plan = approved_plan(db, borrower, period_end) if metric == "plan_ratio" else None
+
+    def link(point: dict[str, Any] | None) -> dict[str, Any] | None:
+        if not isinstance(point, dict) or "value" not in point:
+            return point
+        end = point["period_end"]
+        if metric == "plan_ratio":
+            planned = sum((plan[m] for m in monthly_ends(end, 3)), Decimal(0)) if plan else None
+            fact = store_plan_ratio(db, borrower, end, planned) if planned else None
+        else:
+            fact = store_metric(db, borrower, metric, end)
+        if fact is None or not same_number(fact.value, Decimal(str(point["value"]))):
+            return point
+        return {**point, "fact_id": str(fact.id)}
+
+    basis, ids = fired.basis, {}
+    out: dict[str, Any] = {}
+    for name in ("current", "prior"):
+        if name in basis:
+            out[name] = link(basis[name])
+            if out[name] and out[name].get("fact_id"):
+                ids[name] = out[name]["fact_id"]
+    if "values" in basis:
+        out["values"] = [link(p) for p in basis["values"]]
+        ids.update({p["period_end"].isoformat(): p["fact_id"] for p in out["values"] if p and p.get("fact_id")})
+        if out["values"] and out["values"][-1] and out["values"][-1].get("fact_id"):
+            ids["current"] = out["values"][-1]["fact_id"]
+    out["metric_fact_ids"] = ids
+    return out
+
+
 def _source_facts(db: Session, borrower: Borrower, period_end: date, fired: sig.Signal) -> dict[str, Any]:
     """Stored facts behind a signal's figures: the metric at the period and a year earlier, or the
     system-of-record balances on the row's date. A figure shown to a person must have a source."""
@@ -223,7 +266,11 @@ def _source_facts(db: Session, borrower: Borrower, period_end: date, fired: sig.
     from app.domain.metrics_service import EXTRA, store_metric
 
     out: dict[str, Any] = {}
-    metric = _RULES[fired.rule_id].params.get("metric") if fired.rule_id in _RULES else None
+    if borrower.template_id == "vc-1" and fired.rule_id in VENTURE_RULE_METRIC:
+        out.update(_venture_source_facts(db, borrower, period_end, fired))
+        metric = None
+    else:
+        metric = _RULES[fired.rule_id].params.get("metric") if fired.rule_id in _RULES else None
     if metric and (metric in EXTRA or metric in lib.METRICS):
         ids = {}
         for label, end in (("current", period_end), ("year_earlier", same_period_prior_year(period_end))):

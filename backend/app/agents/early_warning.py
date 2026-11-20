@@ -36,10 +36,12 @@ ACTOR = ("system", "early_warning")
 SEVERITY_ORDER = {"high": 0, "medium": 1, "low": 2}
 RULES = {rule.id: rule for rule in sig.RULES}
 METRIC_UNITS = {"revenue_ttm": "usd", "net_income_ttm": "usd", "cash": "usd", "ebitda_margin": "pct",
-                "dso": "days", "dpo": "days", "leverage": "ratio"}
+                "dso": "days", "dpo": "days", "leverage": "ratio", "rml": "count", "avg_net_burn": "usd", "plan_ratio": "ratio"}
 METRIC_WORDS = {"revenue_ttm": "revenue, trailing twelve months", "net_income_ttm": "net income, trailing twelve months",
                 "cash": "cash", "ebitda_margin": "EBITDA margin", "dso": "days sales outstanding",
-                "dpo": "days payables outstanding", "leverage": "debt to EBITDA"}
+                "dpo": "days payables outstanding", "leverage": "debt to EBITDA",
+                "rml": "runway in months", "avg_net_burn": "average monthly net burn",
+                "plan_ratio": "revenue as a share of plan"}
 SYSTEM_KEYS = {"revolver_outstanding": ("sys.revolver_outstanding", "revolver balance in the loan system"),
                "commitment": ("sys.commitment", "revolver commitment in the loan system"),
                "past_due_days": ("sys.past_due_days", "days past due in the loan system")}
@@ -160,10 +162,11 @@ class _Gatherer:
         elif metric:
             given = basis.get("metric_fact_ids") or {}
             found: list[Fact | None] = []
+            points = [(f"v{i}", p) for i, p in enumerate(basis.get("values") or []) if isinstance(p, dict)]
             for name, given_as in (("current", "current"), ("prior", "year_earlier")):
                 point = basis.get(name)
-                if given.get(given_as):
-                    fact = self._own(given[given_as])
+                if given.get(given_as) or (name == "prior" and given.get("prior")):  # venture: a month, not a year
+                    fact = self._own(given.get(given_as) or given["prior"])
                 elif isinstance(point, dict):
                     fact = self._metric(metric, point)
                 else:
@@ -171,8 +174,12 @@ class _Gatherer:
                 found.append(fact)
                 if fact is not None:
                     out.append((f"{METRIC_WORDS.get(metric, metric)} at {fact.period_end.isoformat()}", fact))
+            for _name, point in points:  # a venture series of monthly points, each carrying its fact
+                fact = self._metric(metric, point)
+                if fact is not None:
+                    out.append((f"{METRIC_WORDS.get(metric, metric)} at {fact.period_end.isoformat()}", fact))
             if basis.get("change") is not None and len(found) == 2 and all(f is not None for f in found):
-                unit = "pct" if rule is not None and rule.kind == "pct_decrease" else METRIC_UNITS.get(metric, "count")
+                unit = "pct" if rule is not None and rule.kind in ("pct_decrease", "pct_increase") else METRIC_UNITS.get(metric, "count")
                 change = self._derived(
                     key=f"signal.{signal.rule_id}.change", end=signal.period_end, value=Decimal(str(basis["change"])),
                     unit=unit, formula_key=f"signal.{signal.rule_id}",
