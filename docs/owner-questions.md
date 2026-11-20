@@ -16,3 +16,14 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 5. **Monthly vs quarterly packs.** A pack whose heading says one/two/four/five/seven/eight/ten/eleven months, or "month ended", is filed as monthly financials; three/six/nine months stay quarterly interim statements. *Taken: as described; the Intake agent can still disagree and a person resolves it.* **Owner: yes.**
 6. **Startup DSCR deductions.** Startups have no tax-paid or distributions lines, so a DSCR covenant that names those deductions on a startup can't be tested (shown as missing data). *Taken: as described.* **Owner: yes.**
 7. **A cash-flow-positive startup whose certificate says it's not in compliance.** Runway is "not meaningful", so the bank's result is compliant; the certificate's own runway figure is ignored, but its "not in compliance" flag is still reported as a disagreement. *Taken: as described.* **Owner: agreed.**
+
+## Standing approvals (owner, 20 Nov)
+
+1. Phase plans are pre-approved: each plan is written, the owner is told, and building starts after a 10-minute objection window.
+2. Live evaluation run in Phase 3 approved up to about $15 (estimate), once the stand-in gate passes and the answer key is signed.
+3. The owner will sign the new answer key; it will come as one short table.
+4. Phase 4 (experience) runs in parallel with Phases 2–3 in a separate worktree.
+5. The test suite may be parallelised (dev-only `pytest-xdist`).
+6. Phase 5 hosting pre-approved: a new Vercel project and a new `squad2` schema in the existing Supabase project, free tiers.
+7. The owner will start recruiting 4 analysts and 1 credit officer for the usability sessions.
+8. Git tags: **not** approved; no tags.
