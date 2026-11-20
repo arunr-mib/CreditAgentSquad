@@ -46,6 +46,15 @@ describe('Composer', () => {
     await waitFor(() => expect(screen.getByLabelText(/ask squad about/i)).toHaveValue(''));
   });
 
+  it('sends with Ctrl+Enter, and plain Enter only makes a new line', async () => {
+    calls.ask.mockResolvedValue({ status: 'answered', answer: 'x' });
+    mount(<Composer borrowerId="b1" borrowerName="Q" />);
+    await userEvent.type(screen.getByLabelText(/ask squad about/i), 'Line one{Enter}two');
+    expect(calls.ask).not.toHaveBeenCalled();
+    await userEvent.type(screen.getByLabelText(/ask squad about/i), '{Control>}{Enter}{/Control}');
+    expect(calls.ask).toHaveBeenCalledWith({ question: 'Line one\ntwo', borrower_id: 'b1' });
+  });
+
   it('does not send an empty question', async () => {
     mount(<Composer borrowerId="b1" borrowerName="Q" />);
     expect(screen.getByRole('button', { name: /^ask$/i })).toBeDisabled();

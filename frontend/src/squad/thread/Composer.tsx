@@ -30,7 +30,8 @@ export function Composer({ borrowerId, borrowerName }: { borrowerId: string; bor
   return (
     <form onSubmit={(e) => void submit(e)} className="sq-composer">
       <label htmlFor={id} className="sq-sr">Ask Squad about {borrowerName}</label>
-      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} rows={2} placeholder={`Ask Squad about ${borrowerName}`} />
+      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={`Ask Squad about ${borrowerName}`} />
+      <small id={`${id}-hint`} className="sq-faint">Ctrl or Cmd + Enter to send</small>
       <button type="submit" className="sq-btn sq-btn-primary" disabled={!text.trim() || ask.isPending}>Ask</button>
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
     </form>
