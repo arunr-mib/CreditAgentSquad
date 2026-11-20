@@ -12,6 +12,7 @@ Working notes from the owner's brainstorm after colleagues' feedback on the cock
 | Interface | A standalone interface first; channels (email, team chat, phone, committee) later. |
 | Agent presence | **One agent on the surface** ("Squad"), with the specialists and code shown in a collapsible **work trail** under each message: friendly on top, auditable underneath. |
 | Disclosure | Chat-first with progressive disclosure: decision cards in the conversation; a drawer that opens only the evidence the question needs and closes when it is settled; today's screens remain as "detail screens". |
+| Name and mark | **Squad** (chosen over C-Squad, Quorum, Assay and others: simple). Mark: the **closed ring**, eight specialist dots around one larger core ("many into one"); four dots below 32 px. Colour: **lavender** (ground #ECE8FF, dots #8F7BF0, core #4A35B8), the same family as the colour that marks agent-written work, so the mark and the agent's colour mean the same thing. No face, no character. Trademark and domain checks are still owed before anything external. |
 
 ## Direction being prototyped (Carly's morning)
 
