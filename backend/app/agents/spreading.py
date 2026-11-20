@@ -69,6 +69,28 @@ REQUIRED_TOTALS: dict[str, tuple[str, ...]] = {
 AS_OF_DOCUMENTS = ("mrr_report", "bank_statement")
 
 
+_AS_OF = re.compile(r"(?:\bas\s+of|\bended)[ \t]+([^\n]{0,40})", re.I)
+_STATEMENT_PERIOD = re.compile(r"statement\s+period:?[ \t]*([^\n]{0,80})", re.I)
+
+
+def _stated_dates(document: Document, pages: list[DocumentPage]) -> list[date]:
+    """The dates an as-of document states for itself: an MRR report's "As of <date>" / "month ended <date>"
+    headers, a bank statement's closing date ("Statement period: <first> to <last>")."""
+    found: list[date] = []
+    for page in pages:
+        if document.doc_type == "bank_statement":
+            for tail in _STATEMENT_PERIOD.findall(page.text):
+                dates = dates_in(tail)
+                if dates:
+                    found.append(dates[-1])
+        else:
+            for tail in _AS_OF.findall(page.text):
+                dates = dates_in(tail)
+                if dates:
+                    found.append(dates[0])
+    return found
+
+
 def _statements_for(document: Document | None) -> tuple[str, ...] | None:
     """The statements a document is read for. An MRR/ARR report holds only the SaaS lines and a bank
     statement only the two cash lines, so only those are checked; any other document is read for every
@@ -417,6 +439,23 @@ def spread_document(
               guardrail_notes=result.notes)
         outcome.run.guardrail_notes = result.notes
         return result
+
+    if document.doc_type in AS_OF_DOCUMENTS:
+        pages = list(db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)
+                                .order_by(DocumentPage.page_number)).scalars())
+        stated = _stated_dates(document, pages)
+        if not stated or set(stated) != {period_end}:
+            _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="high",
+                  title=f"{document.title}: the date the document states is not {period_end:%B %-d, %Y}",
+                  question=f"This document's own date "
+                           f"({', '.join(f'{d:%B %-d, %Y}' for d in sorted(set(stated))) or 'none found'}) is not "
+                           f"{period_end:%B %-d, %Y}, so its figures are not for the period. Is this the right "
+                           "document?",
+                  allowed_decisions=["wrong_document", "request_new_document"], required_permission="confirm_spread",
+                  evidence={"document_id": str(document.id), "stated_dates": sorted({d.isoformat() for d in stated})},
+                  guardrail_notes=result.notes)
+            outcome.run.guardrail_notes = result.notes
+            return result
 
     values = _store_cells(db, cells=out.cells, borrower=borrower, document=document, period_end=period_end,
                           months=months, scale=scale, run_id=outcome.run.id, result=result)
