@@ -75,3 +75,21 @@ def test_thread_endpoint_requires_sign_in_and_404s_an_unknown_client(db, client,
     assert client.get(f"/api/v1/threads/{uuid.uuid4()}").status_code == 404
     body = client.get(f"/api/v1/threads/{world['borrower'].id}").json()
     assert body["messages"] == [] and body["borrower"]["name"] == "Quillfeather Labs, Inc."
+
+
+def test_sort_key_tolerates_a_missing_timestamp():
+    from app.squad.threads import _sort_key
+
+    msgs = [{"id": "b", "type": "case", "ts": "2026-11-20T10:00:00+00:00"}, {"id": "a", "type": "case", "ts": ""},
+            {"id": "c", "type": "case"}]
+    assert [m["id"] for m in sorted(msgs, key=_sort_key)] == ["a", "c", "b"]
+
+
+def test_a_decided_question_is_an_ask_with_its_choice_and_no_duplicate_decision(db, world):
+    item = raise_item(db, borrower_id=world["borrower"].id, item_type="question", title="Which entity?",
+                      question="Which entity filed this?", allowed_decisions=["a", "b"],
+                      evidence={"options": [{"id": "a", "label": "Parent"}, {"id": "b", "label": "Sub"}]})
+    workflow.decide_work_item(db, item, user_id=world["analyst"].id, user_role="analyst", decision="a")
+    msgs = build_thread(db, world["borrower"].id)["messages"]
+    assert [m["type"] for m in msgs] == ["ask"]
+    assert msgs[0]["choice"] == "Parent" and msgs[0]["chosen_by"] == "Priya Raman"

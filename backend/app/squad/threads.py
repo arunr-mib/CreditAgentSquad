@@ -1,7 +1,7 @@
 """A client's thread: the record, mapped to the message types the conversation shows (spec 6).
 Nothing here is stored; the thread is rebuilt on every read so it cannot drift from the ledger."""
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import func, select
@@ -20,6 +20,20 @@ RANK = {"document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, 
 REPORT_TEXT_KEYS = ("narrative", "summary", "explanation")  # an agent's written output, with {{fact:…}} references
 
 
+EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
+
+
+def _sort_key(m: dict[str, Any]) -> tuple[datetime, int, str]:
+    """Order by the second, then by how a case unfolds. A message without a timestamp sorts first."""
+    try:
+        ts = datetime.fromisoformat(m["ts"]).replace(microsecond=0)
+    except (KeyError, TypeError, ValueError):
+        ts = EPOCH
+    if ts.tzinfo is None:
+        ts = ts.replace(tzinfo=UTC)
+    return ts, RANK[m["type"]], m["id"]
+
+
 def _names(db: Session) -> dict[str, str]:
     return {str(u.id): u.name for u in db.execute(select(User)).scalars()}
 
@@ -28,8 +42,11 @@ def _iso(value: datetime | None) -> str:
     return value.isoformat() if value else ""
 
 
-def _events(db: Session, action_prefix: str, ids: list[str] | None = None, entity_type: str | None = None):
+def _events(db: Session, action_prefix: str, ids: list[str] | None = None, entity_type: str | None = None,
+            borrower_id: str | None = None):
     query = select(LedgerEvent).where(LedgerEvent.action.like(action_prefix + "%")).order_by(LedgerEvent.seq)
+    if borrower_id is not None:
+        query = query.where(LedgerEvent.payload["borrower_id"].astext == borrower_id)
     if ids is not None:
         query = query.where(LedgerEvent.entity_id.in_(ids or ["-"]))
     if entity_type:
@@ -62,6 +79,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
                              "period_end": plain(d.period_end)})
 
     items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower_id)).scalars().all()
+    question_ids = {str(i.id) for i in items if i.item_type == "question"}  # their answer is the ask's choice
     item_ids = [str(i.id) for i in items]
     for i in items:
         if i.item_type == "question":
@@ -78,6 +96,8 @@ def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
                              "allowed_decisions": offered(i.item_type, i.allowed_decisions)})
 
     for e in _events(db, "work_item.decided", item_ids):
+        if e.entity_id in question_ids:
+            continue
         p = e.payload or {}
         messages.append({"id": f"decision:{e.seq}", "type": "decision", "ts": _iso(e.ts), "work_item_id": e.entity_id,
                          "decision": p.get("decision"), "reason": p.get("reason", ""),
@@ -96,10 +116,8 @@ def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
             messages.append({"id": f"run:{run.id}", "type": "report", "ts": _iso(run.finished_at or run.created_at),
                              "agent_name": run.agent_name, "task": run.task, "text": text, "run_id": str(run.id)})
 
-    for e in _events(db, "copilot.asked"):
+    for e in _events(db, "copilot.asked", borrower_id=bid):
         p = e.payload or {}
-        if p.get("borrower_id") != bid:
-            continue
         messages.append({"id": f"qa:{e.seq}", "type": "qa", "ts": _iso(e.ts), "question": p.get("question", ""),
                          "answer": p.get("answer_with_references", ""), "fact_ids": p.get("fact_ids", []),
                          "citations": p.get("citations", []), "status": p.get("status", "answered"),
@@ -108,7 +126,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID) -> dict[str, Any]:
     messages += drafts_messages(db, borrower_id, names)
     # Ledger instants are whole seconds while rows carry microseconds, so order by the second and then by
     # how a case unfolds (documents in, then the case, then who it was handed to, then the decision).
-    messages.sort(key=lambda m: (datetime.fromisoformat(m["ts"]).replace(microsecond=0), RANK[m["type"]], m["id"]))
+    messages.sort(key=_sort_key)
     head = db.execute(select(func.coalesce(func.max(LedgerEvent.seq), 0))).scalar_one()
     return {"borrower": {"id": bid, "code": borrower.code, "name": borrower.name, "template_id": borrower.template_id},
             "head_seq": int(head), "messages": messages}
