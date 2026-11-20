@@ -65,6 +65,10 @@ The pattern is the owner's own from SpreadSense: the workspace on Vercel, the AP
 3. **Vercel.** New project from the same repository with root directory `frontend`. In `frontend/vercel.json` replace `REPLACE-WITH-THE-API-HOST` with the Railway host from step 2, commit, and deploy.
 4. Open the Vercel address and sign in as `priya.raman@bankofstoic.example`, password `squad-demo`.
 
+## Frozen: the clickable demo (c-squad.vercel.app)
+
+`https://c-squad.vercel.app` (Vercel project `csquad`) is the reference copy of the Squad demo, frozen on 20 November 2026 by the owner's decision. **Do not redeploy it, change its settings or its `ANTHROPIC_API_KEY`.** Its source is in `docs/product/prototype/` (page) and `docs/product/prototype/site/` (live-answer function); later changes to those files are for new work and must not be deployed to `csquad`. Its Vercel-assigned second address, `csquad-kappa.vercel.app`, is left as is. v2 gets its own Vercel project and its own database schema (`squad2`); see `docs/specs/2026-11-20-innovation-book-and-lending-layer-design.md`.
+
 ## Things to know
 
 - The demo accounts and their password are public knowledge once this is on the internet. The data is synthetic; do not load anything else into a deployment that has demo accounts.
