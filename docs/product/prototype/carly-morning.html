@@ -272,6 +272,14 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .main .pane, .main .composer { transition: padding-right .24s ease; }
 .main.push .pane, .main.push .composer { padding-right: calc(var(--dw, 560px) + 32px); } .main.push .scrim { display: none; }
 .drawer { width: var(--dw, min(560px, 100%)); }
+/* rail: the logo row is the way into Squad's conversation */
+.whobtn { width: 100%; border: 1px solid transparent; border-radius: 12px; background: transparent; text-align: left; padding: 8px 10px; margin-bottom: 10px; }
+.whobtn:hover { background: var(--sunk); }
+.whobtn[aria-current="page"] { background: var(--surface); border-color: var(--line); }
+.whobtn .badge { margin-left: auto; }
+body.railc .whobtn { width: 52px; padding: 6px 0; justify-content: center; position: relative; }
+body.railc .whobtn .badge { position: absolute; top: 0; right: -2px; min-width: 17px; height: 17px; font-size: 10px; padding: 0 4px; }
+
 /* rail: icons, open cases, edge chevron */
 .rail { position: relative; padding-top: 18px; overflow: visible; }
 .navitem { justify-content: flex-start; gap: 10px; }
@@ -285,7 +293,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
 /* presence: Squad's state, centred above the conversation */
 .presence { display: flex; justify-content: center; padding: 10px 32px 2px; }
 .pres { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
-.pres b { font-size: 13px; font-weight: 600; letter-spacing: .01em; color: var(--ink); }
+.pres b { font-size: 12px; font-weight: 600; letter-spacing: .01em; color: var(--ink); }
 .mk .dots, .mk .cr { transform-box: view-box; transform-origin: 50% 50%; }
 @keyframes sq-step { from { transform: rotate(0deg); } to { transform: rotate(90deg); } }
 @keyframes sq-pop { 0% { transform: scale(1); } 40% { transform: scale(1.28); } 100% { transform: scale(1); } }
@@ -293,7 +301,7 @@ label.lbl { font-size: 13px; font-weight: 600; }
 .pres { position: relative; }
 .pres.speak .dots { animation: sq-step .9s cubic-bezier(.2,.8,.2,1); }
 .pres.speak .cr { animation: sq-pop .6s ease-out; }
-.pres.speak::before { content: ""; position: absolute; top: 0; left: 50%; width: 56px; height: 56px; margin-left: -28px; border-radius: 50%; border: 2px solid var(--squad); animation: sq-ripple .9s ease-out forwards; pointer-events: none; }
+.pres.speak::before { content: ""; position: absolute; top: 0; left: 50%; width: 42px; height: 42px; margin-left: -21px; border-radius: 50%; border: 2px solid var(--squad); animation: sq-ripple .9s ease-out forwards; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .pres.speak .dots, .pres.speak .cr, .pres.speak::before { animation: none; } }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .pane { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px); mask-image: linear-gradient(to bottom, transparent 0, #000 18px); }
@@ -468,10 +476,12 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   };
   const RING = [[50,20],[71.2,28.8],[80,50],[71.2,71.2],[50,80],[28.8,71.2],[20,50],[28.8,28.8]];
   const SMALL = [[50,18],[82,50],[50,82],[18,50]];
+  // Squad mark: four specialists around one core. Needs you = an ember ring around the core; working = the dots turn.
   const mark = (size, state = "rest") => {
-    const small = size < 32, pts = small ? SMALL : RING, r = small ? 11 : 7, core = small ? 17 : 15;
-    const dots = pts.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${state === "work" && i % 2 ? r * 0.72 : r}" ${state === "work" && i % 2 ? 'opacity="0.7"' : ""}/>`).join("");
-    return `<svg class="mk" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><g class="dots ${state === "work" ? "orbit" : ""}" fill="#8f7bf0">${dots}</g><circle class="cr ${state === "work" ? "core" : ""}" cx="50" cy="50" r="${core}" fill="${state === "needs" ? "var(--ember)" : "#4a35b8"}"/></svg>`;
+    const r = 11, core = state === "needs" ? 15 : 17;
+    const dots = SMALL.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${state === "work" && i % 2 ? r * 0.75 : r}" ${state === "work" && i % 2 ? 'opacity="0.7"' : ""}/>`).join("");
+    const ring = state === "needs" ? ` stroke="var(--ember)" stroke-width="${size < 24 ? 7 : 5.5}"` : "";
+    return `<svg class="mk" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><g class="dots ${state === "work" ? "orbit" : ""}" fill="#8f7bf0">${dots}</g><circle class="cr ${state === "work" ? "core" : ""}" cx="50" cy="50" r="${core}" fill="#4a35b8"${ring}/></svg>`;
   };
   // The work trail: which agent did what, in plain words. Agents are Squad's specialists; "Code" is plain calculation, no AI.
   const TRAIL = [
@@ -530,7 +540,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const n = needsYou();
     const state = working ? "work" : helen || n ? "needs" : "rest";
     const text = helen ? "1 decision waiting for you" : s.live ? "working · checking Dataflake's October certificate" : working ? "working on your question" : n ? `${n} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} you · watching 12 clients` : "all clear · watching 12 clients";
-    $("presence").innerHTML = `<div class="pres ${Date.now() < speakUntil ? "speak" : ""}" title="Squad · ${text}">${mark(56, state)}<b>Squad</b><span class="sr">: ${text}</span></div>`;
+    $("presence").innerHTML = `<div class="pres ${Date.now() < speakUntil ? "speak" : ""}" title="Squad · ${text}">${mark(42, state)}<b>Squad</b><span class="sr">: ${text}</span></div>`;
   }
   function rail() {
     const helen = helenView();
@@ -538,10 +548,10 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const item = (nav, icon, label, badge, current) => `<button class="navitem" ${nav ? `data-nav="${nav}"` : ""} ${current ? 'aria-current="page"' : ""} title="${esc(label)}" aria-label="${esc(label)}" type="button"><span class="ni">${icon}</span><span class="nl">${label}</span>${badge || ""}</button>`;
     const n = needsYou(); const chats = openChats();
     $("rail").innerHTML = `
-      <div class="who">${mark(railC ? 34 : 40, helen || n ? "needs" : "rest")}<div><b>Squad</b><span class="status">${helen ? "1 decision waiting" : "watching 12 clients"}</span></div></div>
+      ${helen ? `<div class="who">${mark(railC ? 34 : 40, "needs")}<div><b>Squad</b><span class="status">1 decision waiting</span></div></div>` :
+        `<button class="who whobtn" type="button" data-nav="squad" ${view === "squad" ? 'aria-current="page"' : ""} title="Squad · your conversation" aria-label="Squad, your conversation${n ? `, ${n} need${n === 1 ? "s" : ""} you` : ""}">${mark(railC ? 34 : 40, n ? "needs" : "rest")}<div><b>Squad</b><span class="status">watching 12 clients</span></div>${n ? `<span class="badge ember" title="${n} need${n === 1 ? "s" : ""} you">${n}</span>` : ""}</button>`}
       <button class="edge" type="button" data-act="railc" aria-label="${railC ? "Expand" : "Collapse"} navigation" title="${railC ? "Expand" : "Collapse"} navigation">${railC ? NAVI.expand : NAVI.collapse}</button>
       ${helen ? item("", NAVI.approvals, "Approvals", '<span class="badge ember" title="1 decision waiting">1</span>', true) : `
-      ${item("squad", NAVI.squad, "Squad", n ? `<span class="badge ember" title="${n} need${n === 1 ? "s" : ""} you">${n}</span>` : "", view === "squad")}
       ${item("portfolio", NAVI.portfolio, "My Portfolio", "", view === "portfolio")}
       ${chats.length ? `<div class="navgroup">Open cases</div>${chats.map((c) => item("chat:" + c.id, `<span class="tile">${c.short}</span>`, c.label, "", view === "chat:" + c.id)).join("")}` : ""}`}
       <div class="me" title="${helen ? "Helen Strand · credit officer" : "Carly Reyes · commercial credit analyst"}"><div class="avatar" style="${helen ? "" : "background:var(--me);color:#fff"}">${helen ? "HS" : "CR"}</div><div><b>${helen ? "Helen Strand" : "Carly Reyes"}</b><small>${helen ? "Credit officer" : "Credit analyst"}</small></div></div>`;
