@@ -328,9 +328,7 @@ In `periods.py` set `MODES = ("ttm", "ytd", "point", "fy", "t3m")` and, in `reso
             if months == 3:
                 res.value = current
                 return res
-            earlier_end = month_end(*divmod(period_end.year * 12 + period_end.month - 1 - 3, 12)[0:1],
-                                    (period_end.month - 4) % 12 + 1)
-            earlier = _fetch(res, provider, key, earlier_end, months - 3, -1)
+            earlier = _fetch(res, provider, key, _months_before(period_end, 3), months - 3, -1)
             if current is not None and earlier is not None:
                 res.value = CALC_CONTEXT.subtract(current, earlier)
             return res
@@ -345,7 +343,7 @@ In `periods.py` set `MODES = ("ttm", "ytd", "point", "fy", "t3m")` and, in `reso
         return res
 ```
 
-and add the helper (replacing the awkward `earlier_end` expression above with it too):
+and add the helper it uses:
 
 ```python
 def _months_before(period_end: date, months: int) -> date:
@@ -353,7 +351,7 @@ def _months_before(period_end: date, months: int) -> date:
     return month_end(index // 12, index % 12 + 1)
 ```
 
-so the within-year branch reads `earlier = _fetch(res, provider, key, _months_before(period_end, 3), months - 3, -1)`. Mode/flow validation already rejects `t3m` on point lines because `line.flow == (mode == "point")` is false for a point line with `t3m` — add an explicit check: `if mode == "t3m" and not line.flow:` → `INVALID_PERIOD_MODE`. In `terms.py` add `"t3m"` to `Basis`.
+Mode/flow validation already rejects `t3m` on point lines because `line.flow == (mode == "point")` is false for a point line with `t3m` — add an explicit check: `if mode == "t3m" and not line.flow:` → `INVALID_PERIOD_MODE`. In `terms.py` add `"t3m"` to `Basis`.
 
 - [ ] **Step 4: Run tests**
 
@@ -433,7 +431,7 @@ def test_rml_is_cash_over_average_three_month_burn():
 
 
 def test_rml_covenant_breach_below_threshold():
-    result = test_covenant(_cov("min_runway_months", {}, 9, "months"), OCT, _dataflake())
+    result = test_covenant(_cov("min_runway_months", {}, 9, "months", basis="t3m"), OCT, _dataflake())
     assert result.value == D("7.1") and result.passed is False and result.note is None
 
 
@@ -447,7 +445,7 @@ def test_rml_not_meaningful_when_cash_flow_positive():
         ("cf.capitalised_software_spend", OCT, 10): D("0"),
         ("cf.capitalised_software_spend", date(2026, 7, 31), 7): D("0"),
     })
-    result = test_covenant(_cov("min_runway_months", {}, 9, "months"), OCT, provider)
+    result = test_covenant(_cov("min_runway_months", {}, 9, "months", basis="t3m"), OCT, provider)
     assert result.passed is True and result.value is None
     assert result.note == "not_meaningful_cash_flow_positive" and result.errors == []
 
@@ -508,7 +506,7 @@ class RevenueVsPlanParams(_Model):
         return self
 ```
 
-Register in `PARAMS_BY_ARCHETYPE`: `"min_unrestricted_cash": NoParams, "min_runway_months": NoParams, "revenue_vs_plan": RevenueVsPlanParams`; in `BASIS_BY_ARCHETYPE`: `"min_unrestricted_cash": ("point",), "min_runway_months": ("t3m",)`, `"revenue_vs_plan": ("t3m", "point")`. (`min_runway_months` basis `t3m` describes the burn average; tests above use `basis="point"` for cash archetype and `t3m` for plan — update the RML test helper call to `basis="t3m"` when writing it.)
+Register in `PARAMS_BY_ARCHETYPE`: `"min_unrestricted_cash": NoParams, "min_runway_months": NoParams, "revenue_vs_plan": RevenueVsPlanParams`; in `BASIS_BY_ARCHETYPE`: `"min_unrestricted_cash": ("point",), "min_runway_months": ("t3m",)`, `"revenue_vs_plan": ("t3m", "point")` (`min_runway_months` uses `t3m` because its burn is a trailing-three-months average; ARR plan tests use `point`).
 
 `metrics.py`: add a `t3m(key)` helper next to `ttm`/`point` (`{"op": "line", "key": key, "period": "t3m"}`) and the three definitions listed under Interfaces in `metric_definitions()`.
 
