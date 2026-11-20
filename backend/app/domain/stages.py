@@ -20,6 +20,7 @@ from app.domain.collateral_service import review_borrowing_base, store_line_avai
 from app.domain.covenant_service import governing_terms, run_covenant_tests
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document
+from app.domain.facts import Fact
 from app.domain.facts_service import current_fact
 from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, CycleStage, WorkItem
 from app.domain.reviews import Action
@@ -122,16 +123,26 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
                  "unverified": len(result.unverified), "failed_checks": len(result.failed_checks)}
     if result.status == "spread":
         _review_reading(db, cycle, borrower, documents[-1], "spreading", "financial statements", result.run_id)
-    if result.status != "spread":
-        return "done"  # the pack is held for a person; the reports and bank statements wait for it
-    # an MRR report and a bank statement hold only the SaaS lines and the two bank lines: each is read in
-    # its own call and checked against its own statement
+    # an MRR report and a bank statement share no inputs with the pack: each is read in its own call, whatever
+    # became of the pack, and any item it raises blocks the stage on its own. A document already read (every
+    # fact on file is verified or confirmed) is not read again when the stage runs again.
     for extra in _documents(db, cycle, "mrr_report", "bank_statement"):
+        if _already_read(db, extra):
+            continue
         extra_result = spreading.spread_document(
             db, borrower=borrower, document=extra, period_end=cycle.period_end, months=cycle.months,
-            cycle=cycle, llm=_llm(), prior_fye_cash=None)
+            cycle=cycle, llm=_llm(), prior_fye_cash=None, scale_override=st.detail.get("scale_override"))
         st.detail = {**st.detail, f"read_{extra.doc_type}_{extra.id}": extra_result.status}
+        if extra_result.status == "spread":
+            what = "MRR report" if extra.doc_type == "mrr_report" else "bank statement"
+            _review_reading(db, cycle, borrower, extra, "spreading", what, extra_result.run_id)
     return "done"
+
+
+def _already_read(db: Session, document: Document) -> bool:
+    facts = list(db.execute(select(Fact.status).where(
+        Fact.document_id == document.id, Fact.status != "rejected", Fact.status != "superseded")).scalars())
+    return bool(facts) and all(status in ("verified", "confirmed") for status in facts)
 
 
 @workflow.stage_handler("covenant_testing")
