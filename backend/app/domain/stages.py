@@ -16,7 +16,7 @@ from app.calc.periods import is_fiscal_year_end, prior_fiscal_year_end, ytd_mont
 from app.core import clock
 from app.core.config import get_settings
 from app.domain import calendar, workflow
-from app.domain.cash_reconciliation import reconcile_cash
+from app.domain.cash_reconciliation import reconcile_cash, waiting_reason
 from app.domain.collateral_service import review_borrowing_base, store_line_availability
 from app.domain.covenant_service import governing_terms, run_covenant_tests
 from app.domain.credit import Borrower, Facility
@@ -188,6 +188,7 @@ def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
                             reading.run_id)
     # the bank's own statements against the certificate's cash: once the tests (and any covenant item) exist
     reconcile_cash(db, borrower=borrower, cycle=cycle)
+    waiting = waiting_reason(db, borrower, cycle)
     # each breach gets an investigation attached for the person who will decide it. The filter is
     # in Python because the column holds JSON null, which SQL does not treat as NULL.
     investigated = 0
@@ -199,6 +200,8 @@ def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
             investigated += 1
     st.detail = {**st.detail, "tests": tested, "investigations": investigated,
                  "loans_without_approved_terms": len(untestable)}
+    if waiting:
+        st.detail = {**st.detail, "cash_reconciliation_waiting": waiting}
     return "done"
 
 
