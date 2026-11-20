@@ -446,7 +446,9 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   let look = pref("squad-look2", "night"); let railC = pref("squad-rail2", "closed") === "closed";
   const applyChrome = () => { document.documentElement.dataset.look = look; document.body.classList.toggle("railc", railC); };
   const WATCH = 12;
-  const SUGGESTED_VIEW = "One-time waiver, conditioned on the $8M extension closing by 15 December. Ask for weekly cash reporting until then.";
+  const SUGGESTED_VIEW = "One-time waiver, on condition that the $8M investment arrives by 15 December.";
+  const RETURN_REASON = "Is the $8M actually signed? Please attach the term sheet.";
+  const APPROVE_REASON = "Signed term sheet seen: $8M closing 12 December, before the 15 December deadline.";
   const rml = (c, b) => Math.round((c / b) * 10) / 10;   // cash only ÷ average monthly net burn (last 3 months)
 
   const STEPS = [
@@ -529,7 +531,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
   let lookOpen = false; let tempRail = false; let userDw = 0; let speakUntil = 0;
   // Squad "responds": the ring turns one step and the core pops when a new Squad message arrives.
   const speak = () => { speakUntil = Date.now() + 950; presence(); setTimeout(() => { if (Date.now() >= speakUntil) presence(); }, 1000); };
-  // What still needs Carly at this point in the morning: Stripple's two figures, the Dataflake case, Lumora's chaser.
+  // What still needs Carly at this point in the morning: Stripple's two figures, the Dataflake case, Lumora's reminder.
   function needsYou() {
     const stripple = step < 5 || !run.line || !run.fixed;
     const dataflake = step <= 6 ? !s.routed : (s.helenDone && !s.sentBack);
@@ -547,7 +549,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
     const n = needsYou();
     const state = working ? "work" : helen || n ? "needs" : "rest";
     const text = helen ? "1 decision waiting for you" : s.live ? "working · checking Dataflake's October certificate" : working ? "working on your question" : n ? `${n} thing${n === 1 ? "" : "s"} need${n === 1 ? "s" : ""} you · watching 12 clients` : "all clear · watching 12 clients";
-    $("presence").innerHTML = `<div class="pres ${Date.now() < speakUntil ? "speak" : ""}" title="Squad · ${text}">${mark(42, state)}<b>Squad</b><span class="sr">: ${text}</span></div><div class="say" role="status" aria-live="polite">${sayText ? `<span>${sayText}</span>` : ""}</div>`;
+    $("presence").innerHTML = `<div class="pres ${Date.now() < speakUntil ? "speak" : ""}" title="Credit Squad · ${text}">${mark(42, state)}<b>Credit Squad</b><span class="sr">: ${text}</span></div><div class="say" role="status" aria-live="polite">${sayText ? `<span>${sayText}</span>` : ""}</div>`;
   }
   function rail() {
     const helen = helenView();
@@ -602,7 +604,7 @@ button.chip.cite { color: var(--squad-ink); border-color: var(--squad-line); }
       <div class="worklist">
         <button class="workitem" type="button" data-act="w1"><span class="n">01</span><span class="t">Stripple Tech: 2 figures need your eye</span><small>~3 min</small></button>
         <button class="workitem" type="button" data-act="w2"><span class="n">02</span><span class="t">Dataflake Inc missed its minimum cash covenant</span><small>I'm preparing the case</small></button>
-        <button class="workitem" type="button" data-act="w3"><span class="n">03</span><span class="t">Lumora Health is 12 days late with October reporting</span><small>chaser drafted</small></button>
+        <button class="workitem" type="button" data-act="w3"><span class="n">03</span><span class="t">Lumora Health is 12 days late with October reporting</span><small>reminder drafted</small></button>
       </div>
       <div>${dive("queue")}</div>`, "Squad · 7:02 am", anim);
   }
@@ -667,7 +669,7 @@ Carly</textarea></div>
     let h = `<div class="row">${s.stack.length ? '<button class="btn ghost" type="button" data-act="home" style="padding:0">← Back</button>' : ""}<span class="meta">Side chat · ${esc(c.co)}</span><span style="margin-left:auto">${dive("co:" + c.co)}</span></div>`;
     if (id === "dataflake") {
       h += dataflakeMsg(false);
-      if (step >= 7 && s.approved) h += squadMsg(`<p class="text">Helen approved the conditional waiver at 11:02. I'll watch for the extension closing and the weekly cash reports.</p>`, "Squad · 11:03 am");
+      if (step >= 7 && s.approved) h += squadMsg(`<p class="text">Helen approved the conditional waiver at 11:02. I'll confirm when the $8M arrives; the deadline is 15 December.</p>`, "Squad · 11:03 am");
     }
     if (id === "stripple") {
       if (step < 2) h += squadMsg(`<p class="text">Overnight I spread Stripple Tech's September figures. October's package isn't in yet; drop it in the Squad chat when it arrives and I'll file it.</p>`, "Squad · 7:02 am");
@@ -677,9 +679,9 @@ Carly</textarea></div>
       }
     }
     if (id === "lumora") {
-      h += squadMsg(`<p class="text">Lumora Health's October monthly financials and compliance certificate are <b>12 days late</b>. RML is <b class="num">9.5 months</b> and their Q4 board meets in December, so we want October's figures before then. I've drafted a chaser for you.</p>
+      h += squadMsg(`<p class="text">Lumora Health's October monthly financials and compliance certificate are <b>12 days late</b>. RML is <b class="num">9.5 months</b> and their Q4 board meets in December, so we want October's figures before then. I've drafted a reminder for you.</p>
         <div class="email"><div class="hd"><span>To: finance@lumora.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span>${run.lumoraSent ? '<span class="tag ok" style="margin-left:auto">Sent</span>' : ""}</div>
-          <label for="lumoramail" style="position:absolute;left:-9999px">Chaser to Lumora Health</label>
+          <label for="lumoramail" style="position:absolute;left:-9999px">Reminder to Lumora Health</label>
           <textarea id="lumoramail" ${run.lumoraSent ? "readonly" : ""}>Hi Ana,\n\nWe haven't yet received Lumora Health's October monthly financials and compliance certificate. Could you send them this week? If something is holding them up, let me know and we can talk it through.\n\nThanks,\nCarly</textarea></div>
         ${run.lumoraSent ? `<div class="trust">Sent as Carly. I'll file the package when it arrives and tell you if anything is missing. · <i>prototype: nothing was really sent</i></div>` :
           `<div class="row"><button class="btn primary" type="button" data-act="lumorasend">Send as Carly</button><span class="meta">Squad never sends to a borrower on its own</span></div>`}`, "Squad · 7:02 am", false, !run.lumoraSent);
@@ -697,7 +699,7 @@ Carly</textarea></div>
       body = `<h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Work queue · Carly Reyes</h1>
         <div class="card"><table class="port"><thead><tr><th>Client</th><th>Item</th><th>Severity</th><th>With</th></tr></thead><tbody>
           <tr><td class="co"><b>Dataflake Inc</b></td><td>Minimum unrestricted cash covenant missed</td><td><span class="tag bad">Critical</span></td><td>${s.approved ? "Closed · approved by Helen Strand" : step >= 7 ? "Helen Strand" : "Carly Reyes"}</td></tr>
-          <tr><td class="co"><b>Lumora Health</b></td><td>October reporting 12 days late</td><td><span class="tag warn">High</span></td><td>${run.lumoraSent ? "Chaser sent · Squad watching" : "Carly Reyes · chaser drafted"}</td></tr>
+          <tr><td class="co"><b>Lumora Health</b></td><td>October reporting 12 days late</td><td><span class="tag warn">High</span></td><td>${run.lumoraSent ? "Reminder sent · Squad watching" : "Carly Reyes · reminder drafted"}</td></tr>
           <tr><td class="co"><b>Stripple Tech</b></td><td>2 October figures to review</td><td><span class="tag warn">Medium</span></td><td>${step >= 5 ? "Done" : "Carly Reyes"}</td></tr>
         </tbody></table></div>`;
     } else if (key.startsWith("co:")) {
@@ -729,14 +731,14 @@ Carly</textarea></div>
           <div class="def" style="margin-top:8px">Sources: compliance certificate p. 1 · October bank statements · loan agreement §1.1 and §7.10, p. 4</div></div>`;
     } else if (key === "case:dataflake") {
       const status = s.approved ? ["ok", "Approved"] : s.sentBack ? ["warn", "Back with Helen Strand"] : step >= 7 && s.helenDone ? ["warn", "Returned to Carly"] : step >= 7 ? ["warn", "With Helen Strand"] : ["warn", "In preparation"];
-      const reason = s.helenReason || run.helenReason || "Add a cash case if the close slips to January.";
+      const reason = s.helenReason || run.helenReason || RETURN_REASON;
       body = `<div class="row"><h1 style="margin:0;font-size:28px;letter-spacing:-.02em">Casefile · Dataflake Inc · conditional waiver</h1><span class="tag ${status[0]}">${status[1]}</span></div>
         <div class="card pad"><div class="lbl" style="margin-bottom:8px">Ledger (append-only)</div><ul class="ledger">
           <li><span class="mono">9:14</span><b>Squad · Covenant agent</b><span>Tested minimum unrestricted cash: $4.6M against $5.0M · miss</span></li>
-          ${run.mailSent ? `<li><span class="mono">9:47</span><b>Carly Reyes</b><span>Emailed Dataflake's CFO for the term sheet and November forecast <span class="proto">prototype: nothing was really sent</span></span></li>` : ""}
+          ${run.mailSent ? `<li><span class="mono">9:47</span><b>Carly Reyes</b><span>Emailed Dataflake's CFO for the signed term sheet <span class="proto">prototype: nothing was really sent</span></span></li>` : ""}
           ${step >= 7 ? `<li><span class="mono">9:52</span><b>Carly Reyes</b><span>Routed to Helen Strand: “${esc(run.view || SUGGESTED_VIEW)}”</span></li>` : ""}
-          ${step >= 7 && s.helenDone ? `<li><span class="mono">10:31</span><b>Helen Strand</b><span>Returned to Carly: “${esc(reason)}”</span></li><li><span class="mono">10:48</span><b>Squad</b><span>Added the January cash case: 4.6 − 2 × 0.65 = $3.3M, below the $5.0M minimum</span></li>` : ""}
-          ${s.sentBack ? `<li><span class="mono">10:52</span><b>Carly Reyes</b><span>Sent back to Helen Strand with the January case</span></li>` : ""}
+          ${step >= 7 && s.helenDone ? `<li><span class="mono">10:31</span><b>Helen Strand</b><span>Returned to Carly: “${esc(reason)}”</span></li><li><span class="mono">10:40</span><b>Dataflake's CFO</b><span>Sent the signed term sheet: $8M, closing 12 December</span></li><li><span class="mono">10:48</span><b>Squad · Intake agent</b><span>Attached the term sheet to the case; checked it names Dataflake and the amount is $8M</span></li>` : ""}
+          ${s.sentBack ? `<li><span class="mono">10:52</span><b>Carly Reyes</b><span>Sent back to Helen Strand with the signed term sheet</span></li>` : ""}
           ${s.approved ? `<li><span class="mono">11:02</span><b>Helen Strand</b><span>Approved the one-time waiver, conditioned on the extension closing by 15 December: “${esc(s.approveReason)}”</span></li>` : ""}
         </ul></div>`;
     }
@@ -750,9 +752,9 @@ Carly</textarea></div>
     return `<div class="summary anim" id="summary">
       <div class="row">${mark(40, "rest")}<h2>That's Carly's morning.</h2></div>
       <div class="sumgrid">
-        <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension closing by 15 December, on her second pass.</div><div>${dive("case:dataflake")}</div></section>
-        <section><h3>The January cash case</h3><div>If the close slips to January, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum.</div></section>
-        <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Chaser to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li>${run.certAsked ? "<li>Question to Dataflake about the pledged cash: <b>sent</b></li>" : ""}</ul><div class="proto">prototype: nothing was really sent</div></section>
+        <section><h3>Decided</h3><div>Helen Strand approved a one-time waiver for <b>Dataflake Inc</b>, conditioned on the <b class="num">$8M</b> Series B extension arriving by 15 December, on her second pass, after seeing the signed term sheet.</div><div>${dive("case:dataflake")}</div></section>
+        <section><h3>The evidence Helen asked for</h3><div>The signed term sheet: <b class="num">$8M</b> from Dataflake's two existing investors, closing 12 December, three days before the waiver deadline. <button class="btn ghost" type="button" data-act="termsheet" style="padding:0;height:auto">See the term sheet</button></div></section>
+        <section><h3>Sent</h3><ul><li>Email to Dataflake's CFO: ${run.mailSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li><li>${stripple}</li><li>Reminder to Lumora Health: ${run.lumoraSent ? "<b>sent</b>" : "drafted, not sent in this run"}</li>${run.certAsked ? "<li>Question to Dataflake about the pledged cash: <b>sent</b></li>" : ""}</ul><div class="proto">prototype: nothing was really sent</div></section>
         <section><h3>What Carly taught Squad</h3><ul><li>${line ? `Contract liabilities go to ${line}${run.remember ? ", remembered for Stripple Tech" : ", not remembered (you'll be asked again)"}` : "Contract liabilities: not answered in this run"}</li><li>${run.fixed ? 'Capitalised software corrected from <span class="num">1,200</span> to <span class="num">4,850</span>: the balance is on page 3' : "Capitalised software: not corrected in this run"}</li><li>Track record on Stripple Tech: <b class="num">${run.fixed ? "197 of 200" : "196 of 198"}</b> figures right${run.fixed ? ", corrected 3 times (once today)" : ", corrected twice"}</li></ul></section>
         ${run.asks.some((a) => a.status === "done") ? `<section style="grid-column:1/-1"><h3>What Carly asked</h3><ul>${run.asks.filter((a) => a.status === "done").map((a) => `<li>“${esc(a.q)}” · ${a.answerable === false ? "Squad said it couldn't answer from the evidence" : `answered with ${a.traced} figure${a.traced === 1 ? "" : "s"} traced`}</li>`).join("")}</ul></section>` : ""}
       </div>
@@ -773,8 +775,8 @@ Carly</textarea></div>
         ["F6", "Shortfall against the minimum", "$0.4M", "calculated by code: 5.0 − 4.6"],
         ["F7", "Average monthly net burn, last 3 months", "$0.65M", "monthly financials"],
         ["F8", "RML (remaining months of liquidity)", "7.1 months", "calculated by code: 4.6 ÷ 0.65"],
-        ["F9", "Series B extension", "$8M, signed, expected to close in December", "signed term sheet"],
-        ["F10", "Cash if the close slips to January", "near $3.3M", "calculated by code: 4.6 − 2 × 0.65"],
+        ["F9", "Series B extension", "$8M from the two existing investors, expected to close by 12 December", "term sheet"],
+        ["F10", "Condition Carly proposes for the waiver", "the $8M must arrive by 15 December", "Carly's view"],
         ["F11", "Squad's track record on Dataflake covenant tests", "37 of 38 right; one corrected by Carly in an earlier month", "evaluation history"],
       ],
       clauses: [
@@ -813,7 +815,7 @@ Carly</textarea></div>
         ["F4", "October monthly financials and compliance certificate", "12 days late", "reporting calendar"],
       ],
       clauses: [],
-      notes: [["N1", "Next event", "Q4 board meeting in December."], ["N2", "Chaser", "Squad drafted a chaser for Carly to send; Squad never sends to a borrower on its own."]],
+      notes: [["N1", "Next event", "Q4 board meeting in December."], ["N2", "Reminder", "Squad drafted a reminder email for Carly to send; Squad never sends to a client on its own."]],
     },
   };
   PACKS.portfolio = {
@@ -828,7 +830,7 @@ Carly</textarea></div>
       [/pledg|exclud|restrict|letter of credit|\blc\b/i, "Because §1.1 defines Unrestricted Cash as excluding any cash pledged, escrowed or otherwise restricted, including cash securing letters of credit. The $0.7M sits in an account pledged for a letter of credit, so the $5.3M on the certificate becomes $4.6M.", ["C1", "F2", "F3", "F5"]],
       [/certif|5\.3|cfo|count/i, "The certificate reports $5.3M, which includes the $0.7M pledged cash. Why they counted it is still open: Dataflake's CFO hasn't explained it yet.", ["F3", "F2", "N1"]],
       [/short|how much|miss|below|gap|minimum/i, "Unrestricted cash is $4.6M against the $5.0M minimum in §7.10, a shortfall of $0.4M.", ["F5", "F4", "F6", "C2"]],
-      [/january|slip|delay|extension|series|close/i, "The $8M Series B extension is signed and expected to close in December. If it slips to January, two more months of burn leave cash near $3.3M, below the $5.0M minimum.", ["F9", "F10", "F4"]],
+      [/january|slip|delay|late|extension|series|close|arriv|condition/i, "The $8M Series B extension is expected to close by 12 December. The waiver Carly proposes holds only if the $8M arrives by 15 December; if it doesn't, the October miss stands.", ["F9", "F10"]],
       [/rml|runway|month|burn/i, "RML is 7.1 months: unrestricted cash of $4.6M divided by average monthly net burn of $0.65M.", ["F8", "F5", "F7"]],
       [/waive|should|recommend|decide|option/i, "That's your call to recommend and Helen's to decide, not mine. The options on file are a one-time waiver conditioned on funding, a reservation of rights, or a default notice.", ["N2"]],
       [/trust|sure|right|accura/i, "I've been right on 37 of 38 covenant tests for Dataflake; you corrected the other one. This one rests on the §1.1 quote, which code found on page 4, and on the bank statements.", ["F11", "C1"]],
@@ -840,7 +842,7 @@ Carly</textarea></div>
       [/trust|track|right|accura/i, "197 of 200 figures you've checked on Stripple Tech were right. You've corrected me 3 times, once today.", ["F6"]],
     ],
     lumora: [
-      [/late|why|report|chaser|send/i, "Lumora Health's October financials and compliance certificate are 12 days late. I drafted a chaser; it goes only if you send it.", ["F4", "N2"]],
+      [/late|why|report|chaser|remind|send/i, "Lumora Health's October financials and compliance certificate are 12 days late. I drafted a reminder; it goes only if you send it.", ["F4", "N2"]],
       [/rml|runway|cash|burn|month/i, "RML is 9.5 months: $4.0M of unrestricted cash over $0.42M of average monthly net burn. That's under the 12-month watch level, with the Q4 board in December.", ["F3", "F1", "F2", "N1"]],
     ],
     portfolio: [
@@ -1084,11 +1086,12 @@ Carly's question: ${q}`;
     if (step === 7 && s.helenDone) {
       h += squadMsg(`<div class="card pad" style="display:flex;flex-direction:column;gap:10px">
         <div class="row"><span class="tag warn">Returned by Helen Strand</span><span class="meta">Dataflake Inc · conditional waiver</span></div>
-        <div style="font-size:15px">“${esc(s.helenReason || run.helenReason || "Add a cash case if the close slips to January.")}”</div></div>
-        <p class="text">I've added the case: if the extension closes in January instead of December, two more months of burn leave unrestricted cash near <b class="num">$3.3M</b> (4.6 − 2 × 0.65), below the <b class="num">$5.0M</b> minimum until it closes. Sources attached.</p>
+        <div style="font-size:15px">“${esc(s.helenReason || run.helenReason || RETURN_REASON)}”</div></div>
+        <p class="text">Marcus, Dataflake's CFO, replied at 10:40 with the signed term sheet: <b class="num">$8M</b> from the two existing investors, closing 12 December. The Intake agent checked it names Dataflake and that the amount matches. It's attached to the case.</p>
+        <div class="row"><button class="chip cite" type="button" data-act="termsheet">${ico.file} Series B extension term sheet, signed · 3 pages</button></div>
         ${s.sentBack ? `<div class="trust">You sent it back to Helen at 10:52.</div>` : `<div class="row"><button class="btn primary" type="button" data-act="sendback">Send back to Helen</button></div>`}`, "Squad · 10:48 am", !s.approved, !s.sentBack);
       if (s.approved) h += squadMsg(`<div class="card pad" style="background:var(--ok-soft);border-color:var(--line);display:flex;flex-direction:column;gap:8px"><div><b style="color:var(--ok)">Approved by Helen Strand at 11:02:</b> one-time waiver, conditioned on the $8M extension closing by 15 December.</div><div style="font-size:14px">Her reason: “${esc(s.approveReason)}”</div><div>${dive("case:dataflake")}</div></div>
-        <p class="text">That's everything that needed you this morning. I'll watch for the extension closing and the weekly cash reports.</p>
+        <p class="text">That's everything that needed you this morning. I'll confirm when the $8M arrives; the deadline is 15 December.</p>
         ${s.summary ? "" : `<div class="row"><button class="btn dark" type="button" data-act="showsummary">See the morning's summary</button></div>`}`, "Squad · 11:02 am", !s.summary);
       if (s.summary) h += summary();
     }
@@ -1149,7 +1152,7 @@ Carly's question: ${q}`;
       <div class="email">
         <div class="hd"><span>To: cfo@dataflake.example</span><span>From: Carly Reyes</span><span class="squadmark">drafted by Squad</span>${run.mailSent ? '<span class="tag ok" style="margin-left:auto">Sent</span>' : ""}</div>
         <label for="mail" style="position:absolute;left:-9999px">Email to Dataflake's CFO</label>
-        <textarea id="mail" ${run.mailSent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send the signed Series B extension term sheet and your November cash forecast?${run.certChoice === "email" ? " Could you also tell us why the certificate counted the cash held for the letter of credit?" : ""} We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
+        <textarea id="mail" ${run.mailSent ? "readonly" : ""}>Hi Marcus,\n\nOur October test shows unrestricted cash of $4.6M against the $5.0M minimum; the $0.7M in the pledged account is excluded under §1.1. Could you send us the signed Series B extension term sheet?${run.certChoice === "email" ? " Could you also tell us why the certificate counted the cash held for the letter of credit?" : ""} We'll come back to you on next steps this week.\n\nThanks,\nCarly</textarea>
       </div>
       ${run.mailSent ? '<div class="proto">Sent as Carly · prototype: nothing was really sent</div>' : ""}
       <div class="row">${run.mailSent ? "" : '<button class="btn" type="button" data-act="sendmail">Send email as Carly</button>'}${s.routed ? "" : '<button class="btn primary" type="button" data-act="route">Route to Helen Strand</button>'}<span class="meta">Squad never sends to a borrower on its own</span></div>
@@ -1169,7 +1172,7 @@ Carly's question: ${q}`;
         <div style="font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.15;text-wrap:balance">Grant Dataflake a one-time waiver, conditioned on the $8M extension closing by 15 December?</div>
         <div class="k3"><div><small>Unrestricted cash</small><b>$4.6M</b></div><div><small>Minimum</small><b>$5.0M</b></div><div><small>RML</small><b>7.1 mo</b></div></div>
         <div style="font-size:15px;color:#e1dbd0"><b style="color:#d7ccff">Carly recommends:</b> “${esc(run.view || SUGGESTED_VIEW)}”</div>
-        ${second ? `<div style="font-size:15px;color:#e1dbd0;border-top:1px solid var(--night-line);padding-top:14px"><b style="color:#d7ccff">You returned it:</b> “${esc(s.helenReason || run.helenReason)}”<br><b style="color:#d7ccff">Added since:</b> if the close slips to January, unrestricted cash is near <b>$3.3M</b> (4.6 − 2 × 0.65), below the <b>$5.0M</b> minimum until it closes.</div>` : ""}
+        ${second ? `<div style="font-size:15px;color:#e1dbd0;border-top:1px solid var(--night-line);padding-top:14px"><b style="color:#d7ccff">You returned it:</b> “${esc(s.helenReason || run.helenReason)}”<br><b style="color:#d7ccff">Added since:</b> the signed term sheet: $8M from the two existing investors, closing 12 December. <button class="btn ghost" type="button" data-act="termsheet" style="color:#cfc3ff;height:auto;padding:0">Open the term sheet</button></div>` : ""}
         <div class="muted">Prepared by Squad · checked by Carly · every figure sourced · <button class="btn ghost" type="button" data-act="drawer" style="color:#cfc3ff;height:auto;padding:0">see the evidence</button></div>
         <fieldset style="border:0;margin:0;padding:0;display:grid;gap:8px"><legend class="muted" style="margin-bottom:8px">Your decision</legend>
           <label class="opt"><input type="radio" name="hd" value="approve" ${s.helen === "approve" ? "checked" : ""}>Approve the conditional waiver</label>
@@ -1177,16 +1180,32 @@ Carly's question: ${q}`;
           <label class="opt"><input type="radio" name="hd" value="return" ${s.helen === "return" ? "checked" : ""}>Return to Carly</label></fieldset>
         <label class="muted" for="hreason">Reason (required)</label>
         <textarea class="field" id="hreason" placeholder="Your reason goes on the ledger with the decision"></textarea>
-        <button class="suggest" type="button" data-act="fill" data-to="hreason" data-text="${second ? "January case accepted; the condition and weekly cash reporting cover the risk." : "Add a cash case if the close slips to January."}">Demo: use a sample reason</button>
+        <button class="suggest" type="button" data-act="fill" data-to="hreason" data-text="${second ? APPROVE_REASON : RETURN_REASON}">Demo: use a sample reason</button>
         <div class="row"><button class="btn primary" type="button" data-act="helenrecord">Record decision</button><span class="muted">Recorded on the ledger with your name and reason</span></div>
         <div>${dive("case:dataflake")}</div>
       </div>
     </div>`;
   }
 
+  function termSheet() {
+    return `<div class="grip" title="Drag to resize" aria-hidden="true"></div><header><b>Series B extension · term sheet · page 1 of 3</b><button class="iconbtn" type="button" data-act="closedrawer" aria-label="Close">${ico.x}</button></header>
+      <div class="body">
+        <div class="clause">
+          <div style="text-align:center;font-weight:600">SUMMARY OF TERMS · SERIES B-2 PREFERRED</div>
+          <div><b>Company:</b> <mark>Dataflake Inc</mark></div>
+          <div><b>Amount:</b> <mark>$8,000,000</mark>, from the Company's two existing lead investors</div>
+          <div><b>Closing:</b> on or before <mark>12 December 2026</mark></div>
+          <div><b>Signatures:</b> the Company and both investors, dated 17 November 2026</div>
+          <div style="margin-top:6px;text-align:center;font-family:var(--f-ui);font-size:10px;letter-spacing:.1em;color:var(--ink-3)">SYNTHETIC · FOR DEMONSTRATION</div>
+        </div>
+        <div class="verified">✓ Company name, amount and date found on page 1 by code</div>
+        <div class="trust">The waiver Carly proposes holds only if this $8M arrives by 15 December. Closing on 12 December leaves three days' margin.</div>
+        <div>${dive("case:dataflake")}</div>
+      </div>`;
+  }
   function drawer() {
     const d = $("drawer");
-    d.innerHTML = `<div class="grip" title="Drag to resize" aria-hidden="true"></div><header><b>Loan agreement · §1.1 Definitions · page 4</b><button class="iconbtn" type="button" data-act="closedrawer" aria-label="Close">${ico.x}</button></header>
+    if (s.drawerDoc === "ts") d.innerHTML = termSheet(); else d.innerHTML = `<div class="grip" title="Drag to resize" aria-hidden="true"></div><header><b>Loan agreement · §1.1 Definitions · page 4</b><button class="iconbtn" type="button" data-act="closedrawer" aria-label="Close">${ico.x}</button></header>
       <div class="body">
         <div class="clause">
           <div style="text-align:center;font-weight:600">LOAN AND SECURITY AGREEMENT</div>
@@ -1287,7 +1306,7 @@ Carly's question: ${q}`;
       case "openchat": return open("chat:" + t.dataset.chat);
       case "cc": return open("cc:" + t.dataset.cc);
       case "home": s.view = s.stack.length ? s.stack.pop() : ""; return render();
-      case "lumorasend": run.lumoraSent = true; render(); return toast("Chaser sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
+      case "lumorasend": run.lumoraSent = true; render(); return toast("Reminder sent as Carly · <b>recorded</b> · prototype: nothing was really sent");
       case "back": if (step === 1) { s.view = "squad"; return render(); } return go(2);
       case "reqdraft": s.reqDraft = true; return render();
       case "reqcancel": s.reqDraft = false; return render();
@@ -1308,7 +1327,8 @@ Carly's question: ${q}`;
       case "toDataflake": return go(5);
       case "reviewfix": return go(4);
       case "trail": s.trail = !s.trail; return render();
-      case "drawer": s.drawer = true; return drawer();
+      case "drawer": s.drawer = true; s.drawerDoc = ""; return drawer();
+      case "termsheet": s.drawer = true; s.drawerDoc = "ts"; return drawer();
       case "closedrawer": s.drawer = false; return drawer();
       case "prep": return go(6);
       case "skiplive": s.live = false; s.trail = true; render(); return speak();
@@ -1346,7 +1366,7 @@ Carly's question: ${q}`;
         s.approveReason = r; s.approved = true; render();
         return toast("Approved · <b>recorded</b> with your reason · back in Carly's view");
       }
-      case "sendback": s.sentBack = true; s.helen = ""; render(); return toast("Sent back to <b>Helen Strand</b> with the January case · switching to Helen's view");
+      case "sendback": s.sentBack = true; s.helen = ""; render(); return toast("Sent back to <b>Helen Strand</b> with the signed term sheet · switching to Helen's view");
       case "restart": return go(0);
     }
   });
@@ -1375,8 +1395,8 @@ Carly's question: ${q}`;
   $("next").addEventListener("click", () => {
     if (step === STEPS.length - 1) {
       if (s.summary) return go(0);
-      s.helenReason = s.helenReason || run.helenReason || "Add a cash case if the close slips to January.";
-      s.approveReason = s.approveReason || "January case accepted; the condition and weekly cash reporting cover the risk.";
+      s.helenReason = s.helenReason || run.helenReason || RETURN_REASON;
+      s.approveReason = s.approveReason || APPROVE_REASON;
       s.helenDone = true; s.sentBack = true; s.approved = true; s.summary = true; s.view = ""; s.stack = []; s.drawer = false; return render();
     }
     go(step + 1);
