@@ -62,13 +62,13 @@ Day = Annotated[date, BeforeValidator(_to_date)]
 Name = Annotated[StrictStr, StringConstraints(min_length=1)]
 
 Operator = Literal[">=", "<=", ">", "<"]
-Unit = Literal["ratio", "usd", "pct", "days", "count"]
+Unit = Literal["ratio", "usd", "pct", "days", "count", "months"]
 Basis = Literal["ttm", "ytd", "point", "fy", "t3m"]
 Frequency = Literal["monthly", "quarterly", "semiannual", "annual"]
 Quality = Literal["audited", "reviewed", "compiled", "internal", "tax_return"]
 Archetype = Literal[
     "coverage", "leverage", "current_ratio", "min_tangible_net_worth", "min_liquidity", "max_capex",
-    "debt_to_tnw", "custom",
+    "debt_to_tnw", "min_unrestricted_cash", "min_runway_months", "revenue_vs_plan", "custom",
 ]
 AGE_BUCKET_LIMITS = (0, 30, 60, 90)
 
@@ -210,6 +210,21 @@ class MinLiquidityParams(_Model):
     include_availability: StrictBool
 
 
+class PlanMonth(_Model):
+    period_end: Day
+    amount: NonNegDec
+
+
+class RevenueVsPlanParams(_Model):
+    metric: Literal["revenue", "arr"]
+    plan: list[PlanMonth] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _unique(self) -> RevenueVsPlanParams:
+        _no_duplicates((p.period_end for p in self.plan), "plan month")
+        return self
+
+
 class CustomParams(_Model):
     expression: dict[str, Any]
 
@@ -222,6 +237,9 @@ PARAMS_BY_ARCHETYPE: dict[str, type[_Model]] = {
     "min_liquidity": MinLiquidityParams,
     "max_capex": NoParams,
     "debt_to_tnw": NoParams,
+    "min_unrestricted_cash": NoParams,
+    "min_runway_months": NoParams,
+    "revenue_vs_plan": RevenueVsPlanParams,
     "custom": CustomParams,
 }
 
@@ -234,6 +252,9 @@ BASIS_BY_ARCHETYPE: dict[str, tuple[str, ...]] = {
     "min_liquidity": ("point",),
     "max_capex": ("fy", "ttm"),
     "debt_to_tnw": ("point",),
+    "min_unrestricted_cash": ("point",),
+    "min_runway_months": ("t3m",),
+    "revenue_vs_plan": ("t3m", "point"),
     "custom": ("ttm", "ytd", "point", "fy"),
 }
 

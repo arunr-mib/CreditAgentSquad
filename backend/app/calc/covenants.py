@@ -18,8 +18,8 @@ from pydantic import ValidationError
 from . import errors as E
 from .decimal_utils import CALC_CONTEXT, ZERO, is_decimal, round_half_up, to_decimal
 from .errors import CalcError
-from .expr import ENGINE_VERSION, Trace, evaluate
-from .metrics import UNFINANCED_CAPEX, add, div, metric_definitions, named, point, sub, ttm
+from .expr import ENGINE_VERSION, Trace, evaluate, shift_period_end
+from .metrics import UNFINANCED_CAPEX, add, const, div, metric_definitions, named, point, sub, t3m, ttm
 from .periods import Provider, is_month_end, month_end, resolve_line, ytd_months
 from .terms import Covenant, Definition, threshold_in_force
 
@@ -60,7 +60,41 @@ def build_definitions(definitions: Mapping[str, Definition | Mapping[str, Any]] 
     return out
 
 
-def compile_covenant(covenant: Covenant) -> dict[str, Any]:
+class PlanMissing(Exception):
+    """The approved plan has no figure for one or more months the test needs."""
+
+    def __init__(self, months: list[date]) -> None:
+        super().__init__(months)
+        self.months = months
+
+
+NOT_MEANINGFUL_CASH_FLOW_POSITIVE = "not_meaningful_cash_flow_positive"
+
+
+@dataclass
+class RmlResult:
+    value: Decimal | None
+    burn: Decimal | None  # average monthly net burn over the last three months
+    not_meaningful: bool
+    errors: list[CalcError]
+    trace: Trace
+
+
+def compute_rml(period_end: date, provider: Provider, fye_month: int = 12) -> RmlResult:
+    """RML = unrestricted cash / average monthly net burn (last 3 months). Burn <= 0: not meaningful."""
+    defs = metric_definitions()
+    burn = evaluate(named("avg_net_burn"), period_end, provider, definitions=defs, fye_month=fye_month)
+    cash = evaluate(named("unrestricted_cash"), period_end, provider, definitions=defs, fye_month=fye_month)
+    trace = Trace(inputs=cash.trace.inputs + burn.trace.inputs, steps=cash.trace.steps + burn.trace.steps)
+    errors = burn.errors + cash.errors
+    if errors:
+        return RmlResult(None, burn.value, False, errors, trace)
+    if burn.value <= ZERO:
+        return RmlResult(None, burn.value, True, [], trace)
+    return RmlResult(CALC_CONTEXT.divide(cash.value, burn.value), burn.value, False, [], trace)
+
+
+def compile_covenant(covenant: Covenant, period_end: date | None = None) -> dict[str, Any]:
     """The archetype's formula as an expression tree."""
     params = covenant.typed_params
     archetype = covenant.archetype
@@ -83,6 +117,24 @@ def compile_covenant(covenant: Covenant) -> dict[str, Any]:
         return ttm("cf.capex")  # the fiscal year at a year end, trailing twelve months at an interim date
     if archetype == "debt_to_tnw":
         return div(point("bs.total_liabilities"), named("tangible_net_worth"))
+    if archetype == "min_unrestricted_cash":
+        return named("unrestricted_cash")
+    if archetype == "min_runway_months":
+        return div(named("unrestricted_cash"), named("avg_net_burn"))  # test_covenant uses compute_rml
+    if archetype == "revenue_vs_plan":
+        if period_end is None:
+            raise ValueError("revenue_vs_plan needs the period end to pick plan months")
+        if params.metric == "arr":
+            measured, months = point("saas.arr"), [period_end]
+        else:
+            measured = add(t3m("is.subscription_revenue"), t3m("is.services_revenue"))
+            months = [shift_period_end(period_end, -2), shift_period_end(period_end, -1), period_end]
+        plan = {p.period_end: p.amount for p in params.plan}
+        missing = [m for m in months if m not in plan]
+        if missing:
+            raise PlanMissing(missing)
+        total = sum((plan[m] for m in months), ZERO)
+        return div(measured, const(str(total)))
     return params.expression  # custom: as written
 
 
@@ -101,6 +153,7 @@ class CovenantTestResult:
     trace: Trace = field(default_factory=Trace)
     errors: list[CalcError] = field(default_factory=list)
     expression: dict[str, Any] | None = None
+    note: str | None = None  # e.g. not_meaningful_cash_flow_positive
     calc_id: str | None = None
     engine_version: str = ENGINE_VERSION
 
@@ -157,7 +210,7 @@ def test_covenant(
     covenant: Covenant | Mapping[str, Any],
     period_end: date,
     provider: Provider,
-    definitions: Mapping[str, Definition | Mapping[str, Any]] | None,
+    definitions: Mapping[str, Definition | Mapping[str, Any]] | None = None,
     *,
     fye_month: int = 12,
     step_up_from: date | None = None,
@@ -184,7 +237,15 @@ def test_covenant(
         return result
 
     result.operator, result.unit = cov.test.operator, cov.test.unit
-    result.expression = compile_covenant(cov)
+    if cov.archetype == "min_runway_months":
+        return _test_rml(cov, result, period_end, provider, fye_month)
+    try:
+        result.expression = compile_covenant(cov, period_end)
+    except PlanMissing as exc:
+        result.errors.append(CalcError(
+            E.MISSING_PARAMETER,
+            f"no approved plan figure for {', '.join(m.isoformat() for m in exc.months)}", period_end=period_end))
+        return result
     evaluation = evaluate(result.expression, period_end, provider, definitions=names, rounding=cov.rounding,
                           fye_month=fye_month, calc_id=calc_id)
     result.trace = evaluation.trace
@@ -202,6 +263,28 @@ def test_covenant(
     value = evaluation.rounded
     result.value, result.raw_value = value, evaluation.value
     operator = cov.test.operator
+    result.passed = {">=": value >= threshold, ">": value > threshold,
+                     "<=": value <= threshold, "<": value < threshold}[operator]
+    result.headroom = value - threshold if operator in (">=", ">") else threshold - value
+    if threshold != ZERO:
+        result.headroom_pct = round_half_up(CALC_CONTEXT.divide(result.headroom, abs(threshold)), HEADROOM_PCT_DP)
+    return result
+
+
+def _test_rml(cov: Covenant, result: CovenantTestResult, period_end: date, provider: Provider,
+              fye_month: int) -> CovenantTestResult:
+    rml = compute_rml(period_end, provider, fye_month)
+    result.trace = rml.trace
+    result.errors.extend(rml.errors)
+    result.threshold = threshold_in_force(cov.test, period_end)
+    if result.errors:
+        return result
+    if rml.not_meaningful:
+        result.passed, result.note = True, NOT_MEANINGFUL_CASH_FLOW_POSITIVE
+        return result
+    value = round_half_up(rml.value, cov.rounding.dp)
+    result.value, result.raw_value = value, rml.value
+    threshold, operator = result.threshold, cov.test.operator
     result.passed = {">=": value >= threshold, ">": value > threshold,
                      "<=": value <= threshold, "<": value < threshold}[operator]
     result.headroom = value - threshold if operator in (">=", ">") else threshold - value
@@ -262,6 +345,7 @@ class Outcome:
     variances: list[Variance] = field(default_factory=list)
     errors: list[CalcError] = field(default_factory=list)  # what is missing, for cannot_test
     certificate_compared: bool = False
+    note: str | None = None
 
 
 def determine_outcome(
@@ -296,7 +380,8 @@ def determine_outcome(
             variances.append(Variance("in_compliance", test_result.passed, entry.in_compliance))
     compared = entry is not None
     if test_result.passed:
-        return Outcome(COMPLIANT_VARIANCE if variances else COMPLIANT, variances, certificate_compared=compared)
+        return Outcome(COMPLIANT_VARIANCE if variances else COMPLIANT, variances, certificate_compared=compared,
+                       note=test_result.note)
     if entry is not None and entry.in_compliance is True:
         return Outcome(BREACH_REPORTED_COMPLIANT, variances, certificate_compared=compared)
     return Outcome(BREACH, variances, certificate_compared=compared)

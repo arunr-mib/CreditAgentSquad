@@ -51,6 +51,10 @@ def ttm(key: str) -> dict[str, Any]:
     return line(key, "ttm")
 
 
+def t3m(key: str) -> dict[str, Any]:
+    return line(key, "t3m")
+
+
 def point(key: str) -> dict[str, Any]:
     return line(key, "point")
 
@@ -112,10 +116,18 @@ _LIBRARY: tuple[MetricDef, ...] = (
 
 METRICS: dict[str, MetricDef] = {m.name: m for m in _LIBRARY}
 
+# Names for venture covenants (runway, unrestricted cash); referenced by `named`, not part of the metrics-1 spec set.
+_VENTURE: dict[str, Mapping[str, Any]] = {
+    "unrestricted_cash": point("bs.cash_unrestricted"),
+    "net_burn_t3m": sub(add(t3m("cf.vc_capex"), t3m("cf.capitalised_software_spend")),
+                        t3m("cf.vc_operating_cash_flow")),
+    "avg_net_burn": div(named("net_burn_t3m"), const("3")),
+}
+
 
 def metric_definitions() -> dict[str, Mapping[str, Any]]:
     """Name -> expression tree, for `named` references."""
-    return {name: metric.expr for name, metric in METRICS.items()}
+    return {**{name: metric.expr for name, metric in METRICS.items()}, **_VENTURE}
 
 
 def compute_metric(
