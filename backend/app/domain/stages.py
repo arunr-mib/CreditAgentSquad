@@ -16,6 +16,7 @@ from app.calc.periods import is_fiscal_year_end, prior_fiscal_year_end, ytd_mont
 from app.core import clock
 from app.core.config import get_settings
 from app.domain import calendar, workflow
+from app.domain.cash_reconciliation import reconcile_cash
 from app.domain.collateral_service import review_borrowing_base, store_line_availability
 from app.domain.covenant_service import governing_terms, run_covenant_tests
 from app.domain.credit import Borrower, Facility
@@ -185,6 +186,8 @@ def covenant_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
         if certificates and not already_read and reading.stored:
             _review_reading(db, cycle, borrower, certificates[-1], "covenant_testing", "compliance certificate",
                             reading.run_id)
+    # the bank's own statements against the certificate's cash: once the tests (and any covenant item) exist
+    reconcile_cash(db, borrower=borrower, cycle=cycle)
     # each breach gets an investigation attached for the person who will decide it. The filter is
     # in Python because the column holds JSON null, which SQL does not treat as NULL.
     investigated = 0
