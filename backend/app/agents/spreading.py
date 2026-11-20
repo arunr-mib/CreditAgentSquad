@@ -55,7 +55,7 @@ class SpreadExtraction(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="spreading", version="2",
+    name="spreading", version="3",
     purpose="Locate template figures in financial statements; code verifies each on its page.",
     prompt_file="spreading.md", output_model=SpreadExtraction, tools=(), effort="high", max_tokens=32000)
 
@@ -79,44 +79,56 @@ def _names(text: str, name: str) -> bool:
     return bool(core) and core in squash(text)
 
 
-def _known_labels() -> dict[str, tuple[str, ...]]:
-    """Every name each line is known by, across all statements; a printed total is known under
-    its `stated.` key. A label is judged against all of them, so a row from another statement
-    is recognised for what it is."""
+def _known_labels(template_id: str = template.TEMPLATE_ID) -> dict[str, tuple[str, ...]]:
+    """Every name each line of the template is known by, across all statements; a printed total
+    is known under its `stated.` key. A label is judged against all of them, so a row from
+    another statement is recognised for what it is."""
     out = {}
-    for line in template.LINES:
+    for line in template.template_lines(template_id):
         out[(template.STATED_PREFIX + line.key) if line.computed else line.key] = template.known_labels(line.key)
     return out
 
 
 _LABELS = _known_labels()
+_LABELS_BY_TEMPLATE = {tid: _known_labels(tid) for tid in template.TEMPLATES}
 
 
-def _mapping_doubt(key: str, row_label: str, confirmed: bool = False) -> str | None:
+def _mapping_doubt(key: str, row_label: str, confirmed: bool = False,
+                   template_id: str = template.TEMPLATE_ID) -> str | None:
     """A reason to hold a cell: the row's label, as code read it from the page, is not a known
     name for the line it was filed under, and no person has confirmed it for this borrower."""
-    doubt = mapping_doubt(row_label, key, _LABELS, confirmed=confirmed)
+    labels = _LABELS_BY_TEMPLATE[template_id]
+    doubt = mapping_doubt(row_label, key, labels, confirmed=confirmed)
     if doubt:  # say it in the template's own line names, which is what a person sees on screen
-        for name in sorted(_LABELS, key=len, reverse=True):
+        for name in sorted(labels, key=len, reverse=True):
             base = name.removeprefix(template.STATED_PREFIX)
-            printed = f"the printed total '{template.LINE_BY_KEY[base].label}'" if name != base \
-                else f"'{template.LINE_BY_KEY[base].label}'"
+            printed = f"the printed total '{template.ALL_LINE_BY_KEY[base].label}'" if name != base \
+                else f"'{template.ALL_LINE_BY_KEY[base].label}'"
             doubt = re.sub(rf"(?<![\w.]){re.escape(name)}(?![\w.])", printed, doubt)
     return doubt
 
 
-def _allowed_key(key: str) -> bool:
+def _fillable(key: str, lines: dict[str, template.TemplateLine]) -> bool:
     if key.startswith(template.STATED_PREFIX):
-        line = template.LINE_BY_KEY.get(key[len(template.STATED_PREFIX):])
+        line = lines.get(key[len(template.STATED_PREFIX):])
         return line is not None and line.computed
-    line = template.LINE_BY_KEY.get(key)
+    line = lines.get(key)
     return line is not None and not line.computed
+
+
+def _allowed_key(key: str, template_id: str = template.TEMPLATE_ID) -> bool:
+    return _fillable(key, {line.key: line for line in template.template_lines(template_id)})
+
+
+def _out_of_template(key: str, template_id: str) -> bool:
+    """A line of some other template: a real line the agent may fill, but not for this borrower."""
+    return not _allowed_key(key, template_id) and _fillable(key, template.ALL_LINE_BY_KEY)
 
 
 def _sign(key: str) -> int:
     if key.startswith(template.STATED_PREFIX):
         return 1
-    return template.LINE_BY_KEY[key].presentation_sign
+    return template.ALL_LINE_BY_KEY[key].presentation_sign
 
 
 _COMPARATIVE = "@comparative"
@@ -135,28 +147,30 @@ def line_the_label_names(db: Session, cell: dict[str, Any]) -> dict[str, Any] | 
         return None
     suffix = _COMPARATIVE if key.endswith(_COMPARATIVE) else ""
     assigned = key.removesuffix(_COMPARATIVE)
-    if assigned not in _LABELS:
-        return None
-    other = reads_as(label, assigned, _LABELS)
-    if other is None:
-        return None
     try:
         fact = db.get(Fact, uuid.UUID(fact_id))
     except ValueError:
         return None
     if fact is None or fact.key != key:
         return None
+    owner = db.get(Borrower, fact.borrower_id)
+    labels = _LABELS_BY_TEMPLATE[owner.template_id if owner is not None else template.TEMPLATE_ID]
+    if assigned not in labels:
+        return None
+    other = reads_as(label, assigned, labels)
+    if other is None:
+        return None
     return {"key": other + suffix, "value": fact.value * _sign(assigned) * _sign(other)}
 
 
 def _months_for(key: str, months: int) -> int:
     base = key[len(template.STATED_PREFIX):] if key.startswith(template.STATED_PREFIX) else key
-    return months if template.LINE_BY_KEY[base].flow else 0
+    return months if template.ALL_LINE_BY_KEY[base].flow else 0
 
 
-def template_listing() -> str:
+def template_listing(template_id: str = template.TEMPLATE_ID) -> str:
     rows = []
-    for line in template.LINES:
+    for line in template.template_lines(template_id):
         kind = "total" if line.computed else "line"
         rows.append(f"- {line.key} | {line.label} | {kind}")
     return "\n".join(rows)
@@ -172,15 +186,17 @@ class SpreadResult:
     work_items: list[WorkItem] = field(default_factory=list)
     notes: list[dict[str, Any]] = field(default_factory=list)  # guardrail notes
     context: dict[str, Any] = field(default_factory=dict)  # what a later repair needs: units, absent lines
+    out_of_template: list[str] = field(default_factory=list)  # lines read that are not the borrower's template's
 
 
 def _item(db, result, borrower, cycle, document, **kw) -> None:
     kw["evidence"] = {**kw.get("evidence", {}), "spread": result.context}
     subject = document.id if document is not None else f"{borrower.id}:{result.context.get('period_end')}"
+    kind = kw.pop("dedupe_kind", kw["item_type"])
     result.work_items.append(raise_item(
         db, borrower_id=borrower.id, cycle_id=cycle.id if cycle else None, stage="spreading",
         actor=("agent", "spreading"), agent_run_id=result.run_id,
-        dedupe_key=f"{kw['item_type']}:{subject}", **kw))
+        dedupe_key=f"{kind}:{subject}", **kw))
     result.status = "needs_person"
 
 
@@ -217,10 +233,17 @@ def _derive_scale(db: Session, document: Document, out: SpreadExtraction, result
 
 def _store_cells(db, *, cells, borrower, document, period_end, months, scale, run_id, result, suffix=""):
     """Verify and store each cell. Returns usable stored values by key (several cells per key are added)."""
+    tid = borrower.template_id
     allowed = []
     for cell in cells:
-        if _allowed_key(cell.key):
+        if _allowed_key(cell.key, tid):
             allowed.append(cell)
+        elif _out_of_template(cell.key, tid):
+            # a real line, but not one of this borrower's template: refused, and a person is asked
+            if cell.key not in result.out_of_template:
+                result.out_of_template.append(cell.key)
+            result.notes.append({"layer": "spreading", "check": "not_in_template", "action": "refused",
+                                 "detail": f"{cell.key} is not a line of the {tid} template"})
         else:
             result.notes.append({"layer": "spreading", "check": "unknown_key", "action": "dropped",
                                  "detail": f"{cell.key} is not a line the agent may fill"})
@@ -249,7 +272,7 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
             if value < 0 and key in template.NEVER_NEGATIVE:
                 return f"{key} is negative as printed, where only a positive amount is expected"
             names = [key, key + PART_SUFFIX, key + suffix, key + suffix + PART_SUFFIX]
-            return _mapping_doubt(key, check.row_label, label_confirmed(db, borrower.id, names, check.row_label))
+            return _mapping_doubt(key, check.row_label, label_confirmed(db, borrower.id, names, check.row_label), tid)
 
         fact, check = store_extracted_cell(
             db, borrower_id=borrower.id, key=cell.key + suffix + part, period_end=period_end,
@@ -315,7 +338,7 @@ def spread_document(
         {"type": "text", "text": (
             f"Spread the statements for the period ended {period_end:%B %-d, %Y} "
             f"({months} months, fiscal year to date). Template lines (key | label | kind):\n"
-            f"{template_listing()}")},
+            f"{template_listing(borrower.template_id)}")},
     ]
     scope = Scope(borrower_id=borrower.id, period_end=period_end, months=months,
                   cycle_id=cycle.id if cycle else None, document_ids=(document.id,))
@@ -394,22 +417,35 @@ def spread_document(
               guardrail_notes=result.notes)
         outcome.run.guardrail_notes = result.notes
         return result
-    absent = [k for k in out.absent_keys if k in template.LINE_BY_KEY and k not in values]
+    tid = borrower.template_id
+    if result.out_of_template:
+        listed = ", ".join(sorted(result.out_of_template))
+        _item(db, result, borrower, cycle, document, item_type="spread.value_unverified", severity="medium",
+              dedupe_kind="spread.not_in_template",
+              title=f"{document.title}: figures filed under lines outside the {tid} template",
+              question=f"The reader filed figures under {listed}, which are not lines of this borrower's {tid} "
+                       "template, so they were not stored. Request a new document, or key the figures by hand?",
+              allowed_decisions=["request_new_document", "key_by_hand"], required_permission="confirm_spread",
+              evidence={"document_id": str(document.id), "template": tid, "lines": sorted(result.out_of_template)},
+              guardrail_notes=result.notes)
+    absent = [k for k in out.absent_keys if template.in_template(k, tid) and k not in values]
     result.context = {**result.context, "scale": scale, "absent": sorted(absent)}
-    report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent)
+    report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent,
+                                      template_id=tid)
     result.failed_checks = [e.to_dict() for e in report.errors]
     # footing is the check that catches a misread line, so it may not be skipped: each statement
     # that was read must have its final printed total read and agreeing with the lines
     footed = {c.key for c in report.checks if c.check == "footing" and c.status == "pass"}
-    for total in REQUIRED_TOTALS:
-        statement = template.LINE_BY_KEY[total].statement
-        read = any(k in values for k, line in template.LINE_BY_KEY.items()
+    lines = {line.key: line for line in template.template_lines(tid)}
+    for total in (t for t in REQUIRED_TOTALS if t in lines):
+        statement = lines[total].statement
+        read = any(k in values for k, line in lines.items()
                    if line.statement == statement and not line.computed)
         failed = any(e.get("key") == total for e in result.failed_checks)
         if read and total not in footed and not failed:
             result.failed_checks.append({
                 "code": "total_not_read", "key": total,
-                "message": f"the printed {template.LINE_BY_KEY[total].label.lower()} was not read, so the "
+                "message": f"the printed {lines[total].label.lower()} was not read, so the "
                            f"{statement} lines cannot be checked against it"})
 
     if result.unverified:
@@ -529,7 +565,8 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
     result.context = {"document_id": str(document.id) if document is not None else None,
                       "period_end": period_end.isoformat(), "months": months, "scale": scale, "absent": sorted(absent)}
     values: dict[str, Decimal] = {}
-    for line in template.LINES:
+    tid = borrower.template_id
+    for line in template.template_lines(tid):
         keys = [template.STATED_PREFIX + line.key] if line.computed else [line.key]
         for key in keys:
             fact = current_fact(db, borrower.id, key, period_end, _months_for(key, months))
@@ -540,7 +577,7 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
     prior = current_fact(db, borrower.id, "bs.cash",
                          prior_fiscal_year_end(period_end, borrower.fiscal_year_end_month), 0)
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior.value if prior else None,
-                                      absent=still_absent)
+                                      absent=still_absent, template_id=tid)
     result.failed_checks = [e.to_dict() for e in report.errors]
     if report.errors:
         _item(db, result, borrower, cycle, document, item_type="spread.does_not_foot", severity="high",
