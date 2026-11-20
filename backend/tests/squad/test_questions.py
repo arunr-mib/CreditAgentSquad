@@ -113,3 +113,35 @@ def test_endpoint_refuses_a_role_that_cannot_decide_and_an_unknown_item(db, clie
     sign_in(client, "admin")
     assert client.post(f"/api/v1/work-items/{item.id}/answer", json={"option_id": "map_to_arr"}).status_code == 403
     assert client.post(f"/api/v1/work-items/{uuid.uuid4()}/answer", json={"option_id": "x"}).status_code == 404
+
+
+def test_endpoint_answer_on_a_non_question_item_is_422(db, client, world):
+    from app.domain.work_items import raise_item
+    other = raise_item(db, borrower_id=world["borrower"].id, item_type="funding_slipped", title="t",
+                       question="Review it?", allowed_decisions=["reviewed", "escalate_to_committee"])
+    db.commit()
+    sign_in(client, "priya.raman")
+    assert client.post(f"/api/v1/work-items/{other.id}/answer", json={"option_id": "reviewed"}).status_code == 422
+
+
+def test_a_refused_role_with_remember_and_a_note_writes_no_lesson(db, client, world):
+    item = _ask(db, world["borrower"])
+    db.commit()
+    sign_in(client, "admin")
+    r = client.post(f"/api/v1/work-items/{item.id}/answer",
+                    json={"option_id": "map_to_arr", "remember": True, "note": WHY})
+    assert r.status_code == 403
+    assert _lessons(db) == 0 and db.get(type(item), item.id).status == "open"
+
+
+def test_a_failing_lesson_write_rolls_the_decision_back_even_if_the_caller_carries_on(db, world, monkeypatch):
+    item = _ask(db, world["borrower"])
+
+    def boom(*a, **k):
+        raise RuntimeError("lesson store down")
+
+    monkeypatch.setattr("app.squad.questions.record_lesson", boom)
+    with pytest.raises(RuntimeError):
+        answer_question(db, item, world["analyst"], "map_to_arr", remember=True, note=WHY)
+    db.refresh(item)
+    assert item.status == "open" and item.decision is None

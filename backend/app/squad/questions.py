@@ -61,9 +61,10 @@ def answer_question(db: Session, item: WorkItem, user: User, option_id: str, *, 
         text = f"{user.name} chose “{label}” when asked: {item.question} Reason: {words}"
         if len(text) > LESSON_MAX:
             raise ValueError(f"a lesson is at most {LESSON_MAX} characters")
-    workflow.decide_work_item(db, item, user_id=user.id, user_role=user.role, decision=option_id, reason=note)
-    if remember:
-        lesson = record_lesson(db, borrower_id=item.borrower_id, topic=item.evidence.get("topic", QUESTION),
-                               text=text, written_by=user.id, work_item_id=item.id, tag=option_id)
-        item.evidence = {**item.evidence, "lesson_id": str(lesson.id)}
+    with db.begin_nested():  # the decision and its lesson stand or fall together, whatever the caller does next
+        workflow.decide_work_item(db, item, user_id=user.id, user_role=user.role, decision=option_id, reason=note)
+        if remember:
+            lesson = record_lesson(db, borrower_id=item.borrower_id, topic=item.evidence.get("topic", QUESTION),
+                                   text=text, written_by=user.id, work_item_id=item.id, tag=option_id)
+            item.evidence = {**item.evidence, "lesson_id": str(lesson.id)}
     return item
