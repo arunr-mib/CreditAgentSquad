@@ -1,20 +1,31 @@
 // frontend/src/squad/__tests__/thread.test.tsx
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Thread, ThreadMessage } from '../api/types';
 import { ClientThread } from '../thread/ClientThread';
 
-const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, open: vi.fn(), trail: undefined as unknown }));
+const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, open: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
 vi.mock('@/api/hooks', () => ({
   useBorrowerByCode: (code: string) => ({ borrower: state.notFound ? undefined : { id: 'b1', code, name: 'Quillfeather Labs, Inc.' }, notFound: state.notFound, isPending: false }),
 }));
-vi.mock('../api/hooks', () => ({
-  useThread: () => ({ data: state.thread, isPending: false, error: null }),
-  useTrail: () => ({ data: state.trail, isPending: false }),
-}));
+vi.mock('../api/hooks', async () => {
+  const { useEffect, useState } = await import('react');
+  return {
+  useThread: () => {
+    const [, bump] = useState(0);
+    useEffect(() => {
+      const f = () => bump((n) => n + 1);
+      state.subs.add(f);
+      return () => void state.subs.delete(f);
+    }, []);
+    return { data: state.thread, isPending: false, error: null };
+  },
+  useTrail: () => ({ data: state.trail, isPending: false, error: state.trailError ? new Error('x') : null, refetch: state.refetch }),
+  };
+});
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: state.open, close: () => {}, current: null }) }));
 vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 vi.mock('../thread/Composer', () => ({ Composer: () => null }));
@@ -38,7 +49,10 @@ function mount(search = '') {
   const root = createRootRoute();
   const route = createRoute({ getParentRoute: () => root, path: '/clients/$code', component: ClientThread, validateSearch: (s: Record<string, unknown>) => ({ case: typeof s.case === 'string' ? s.case : undefined }) });
   const router = createRouter({ routeTree: root.addChildren([route]), history: createMemoryHistory({ initialEntries: [`/clients/QFL${search}`] }) });
-  return render(<QueryClientProvider client={new QueryClient()}><RouterProvider router={router} /></QueryClientProvider>);
+  const client = new QueryClient();
+  const ui = () => <QueryClientProvider client={client}><RouterProvider router={router} /></QueryClientProvider>;
+  const result = render(ui());
+  return { ...result, update: () => act(() => state.subs.forEach((f) => f())) };
 }
 
 beforeEach(() => {
@@ -107,5 +121,60 @@ describe('ClientThread', () => {
     await userEvent.click(within(card).getByRole('button', { name: /how i got here/i }));
     expect(within(card).getByText('Spreading agent')).toBeInTheDocument();
     expect(within(card).getByText(/calculation, no AI/)).toBeInTheDocument();
+  });
+
+  it('says where each case stands in words, from the thread', async () => {
+    state.thread = thread([
+      { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'] },
+      { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'x', title: 'Handed', question: 'q', severity: 'high', status: 'open', allowed_decisions: [] },
+      { ...base, id: 'handoff:2', type: 'handoff', work_item_id: 'w2', assigned_to: 'Helen Strand', assigned_to_id: 'u2', by: 'Priya Raman' },
+      { ...base, id: 'case:3', type: 'case', work_item_id: 'w3', item_type: 'x', title: 'Done', question: 'q', severity: 'medium', status: 'closed', allowed_decisions: [] },
+      { ...base, id: 'decision:3', type: 'decision', work_item_id: 'w3', decision: 'not_a_breach', reason: '', by: 'Priya Raman', by_id: 'u1' },
+    ]);
+    mount();
+    const card = async (t: string) => (await screen.findByText(t)).closest('[data-work-item]') as HTMLElement;
+    expect(within(await card('Mine')).getByText('Needs your call')).toBeInTheDocument();
+    expect(within(await card('Mine')).getByText('Critical')).toBeInTheDocument();
+    expect(within(await card('Handed')).getByText('With Helen Strand')).toBeInTheDocument();
+    expect(within(await card('Handed')).getByText('High')).toBeInTheDocument();
+    expect(within(await card('Done')).getByText('not a breach by Priya Raman')).toBeInTheDocument();
+    expect(screen.queryByText('open')).not.toBeInTheDocument();
+    expect(screen.queryByText('closed')).not.toBeInTheDocument();
+  });
+
+  it('scrolls to the focused case once, not on every update', async () => {
+    const scroll = vi.fn();
+    Element.prototype.scrollIntoView = scroll;
+    state.thread = thread([messages[0]!]);
+    const view = mount('?case=w1');
+    await screen.findByText('October compliance certificate');
+    expect(scroll).not.toHaveBeenCalled();
+    state.thread = thread(messages);
+    view.update();
+    await screen.findByText('Cash below minimum');
+    expect(scroll).toHaveBeenCalledTimes(1);
+    state.thread = thread([...messages, { ...base, id: 'held:9', type: 'held', document_id: 'd9', title: 'Another scan', reason: 'x' }]);
+    view.update();
+    await screen.findByText('Another scan');
+    expect(scroll).toHaveBeenCalledTimes(1);
+  });
+
+  it('offers Try again when the trail request fails', async () => {
+    state.trailError = true;
+    mount();
+    const card = (await screen.findByText('Cash below minimum')).closest('[data-work-item]') as HTMLElement;
+    await userEvent.click(within(card).getByRole('button', { name: /how i got here/i }));
+    expect(within(card).getByRole('alert')).toHaveTextContent(/could not be loaded/i);
+    await userEvent.click(within(card).getByRole('button', { name: /try again/i }));
+    expect(state.refetch).toHaveBeenCalled();
+    state.trailError = false;
+  });
+
+  it('shows a time on messages and an error with Try again for a failed trail', async () => {
+    state.trail = undefined;
+    mount();
+    const card = (await screen.findByText('Cash below minimum')).closest('[data-work-item]') as HTMLElement;
+    expect(card.querySelector('time')).not.toBeNull();
+    expect(within(card).getByRole('button', { name: /how i got here/i })).toHaveAttribute('aria-controls', 'trail-w1');
   });
 });

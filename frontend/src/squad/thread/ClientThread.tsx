@@ -1,6 +1,6 @@
 // frontend/src/squad/thread/ClientThread.tsx
 import { Link, useParams, useSearch } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useBorrowerByCode } from '@/api/hooks';
 import { useThread } from '../api/hooks';
 import { clientFile } from '../links';
@@ -13,10 +13,14 @@ export function ClientThread() {
   const { borrower, notFound } = useBorrowerByCode(code);
   const thread = useThread(borrower?.id);
 
+  const scrolled = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (!focusId || !thread.data) return;
-    // To the start of what is new for this case, not the bottom of the thread.
-    document.querySelector('[data-focused="true"]')?.scrollIntoView?.({ block: 'start' });
+    if (!focusId || scrolled.current === focusId || !thread.data) return;
+    const el = document.querySelector('[data-focused="true"]');
+    if (!el) return;
+    scrolled.current = focusId;
+    // To the start of what is new for this case, not the bottom of the thread; once per case, so a poll never re-scrolls.
+    el.scrollIntoView?.({ block: 'start' });
   }, [focusId, thread.data]);
 
   if (notFound) {
@@ -39,7 +43,7 @@ export function ClientThread() {
       {messages.length === 0 ? <p className="sq-muted">Nothing here yet. Squad will write here as documents arrive and work is done.</p> : null}
       <div className="sq-messages">
         {messages.map((m) => (
-          <MessageView key={m.id} message={m} borrowerCode={borrower.code}
+          <MessageView key={m.id} message={m} thread={messages} borrowerCode={borrower.code}
             focused={Boolean(focusId) && 'work_item_id' in m && m.work_item_id === focusId && (m.type === 'case' || m.type === 'ask')} />
         ))}
       </div>

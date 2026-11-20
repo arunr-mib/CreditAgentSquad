@@ -7,12 +7,16 @@ export function Trail({ workItemId }: { workItemId: string }) {
   const [open, setOpen] = useState(false);
   const trail = useTrail(workItemId, open);
   return (
-    <div className="sq-trail">
-      <button type="button" className="sq-link" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+    <div className="sq-trail" id={`trail-${workItemId}`}>
+      <button type="button" className="sq-link" aria-expanded={open} aria-controls={`trail-${workItemId}`} onClick={() => setOpen((o) => !o)}>
         How I got here
       </button>
       {open ? (
-        trail.data ? (
+        trail.error ? (
+          <p role="alert" className="sq-muted">
+            The trail could not be loaded. <button type="button" className="sq-link" onClick={() => void trail.refetch()}>Try again</button>
+          </p>
+        ) : trail.data ? (
           trail.data.steps.length === 0 ? (
             <p className="sq-muted">No agent work is recorded behind this case.</p>
           ) : (
