@@ -176,7 +176,7 @@ class _Gatherer:
                     out.append((f"{METRIC_WORDS.get(metric, metric)} at {fact.period_end.isoformat()}", fact))
             for _name, point in points:  # a venture series of monthly points, each carrying its fact
                 fact = self._metric(metric, point)
-                if fact is not None:
+                if fact is not None and all(f is not fact and f.id != fact.id for _l, f in out):
                     out.append((f"{METRIC_WORDS.get(metric, metric)} at {fact.period_end.isoformat()}", fact))
             if basis.get("change") is not None and len(found) == 2 and all(f is not None for f in found):
                 unit = "pct" if rule is not None and rule.kind in ("pct_decrease", "pct_increase") else METRIC_UNITS.get(metric, "count")

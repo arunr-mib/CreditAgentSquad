@@ -45,10 +45,17 @@ def monthly_ends(period_end: date, count: int) -> list[date]:
 
 
 def approved_plan(db: Session, borrower: Borrower, period_end: date) -> dict[date, Decimal] | None:
+    found = approved_plan_with_terms(db, borrower, period_end)
+    return None if found is None else found[0]
+
+
+def approved_plan_with_terms(db: Session, borrower: Borrower,
+                             period_end: date) -> tuple[dict[date, Decimal], uuid.UUID] | None:
     """The monthly revenue plan from the approved terms in force at `period_end` (design spec 5). Plan figures are
     terms data a person entered and a second person approved, never a budget column read from a borrower document. A
     proposed version never governs; a covenant on ARR is not a revenue plan. None when the terms hold no revenue plan."""
     plan: dict[date, Decimal] = {}
+    version_id: uuid.UUID | None = None
     for facility in db.execute(select(Facility).where(Facility.borrower_id == borrower.id)).scalars():
         row, version = governing_terms(db, facility, period_end)
         if row is None:
@@ -57,7 +64,8 @@ def approved_plan(db: Session, borrower: Borrower, period_end: date) -> dict[dat
             if covenant.archetype == "revenue_vs_plan" and covenant.typed_params.metric == "revenue":
                 # overlapping plan months across facilities resolve last-wins (one facility per borrower in practice)
                 plan.update({month.period_end: month.amount for month in covenant.typed_params.plan})
-    return plan or None
+                version_id = row.id
+    return (plan, version_id) if plan and version_id is not None else None
 
 
 def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.PeriodMetrics]:
@@ -227,15 +235,17 @@ def _venture_source_facts(db: Session, borrower: Borrower, period_end: date, fir
     from app.domain.metrics_service import store_metric, store_plan_ratio
 
     metric = VENTURE_RULE_METRIC[fired.rule_id]
-    plan = approved_plan(db, borrower, period_end) if metric == "plan_ratio" else None
+    governing = approved_plan_with_terms(db, borrower, period_end) if metric == "plan_ratio" else None
 
     def link(point: dict[str, Any] | None) -> dict[str, Any] | None:
         if not isinstance(point, dict) or "value" not in point:
             return point
         end = point["period_end"]
         if metric == "plan_ratio":
-            planned = sum((plan[m] for m in monthly_ends(end, 3)), Decimal(0)) if plan else None
-            fact = store_plan_ratio(db, borrower, end, planned) if planned else None
+            plan, terms_version_id = governing if governing else ({}, None)
+            months = monthly_ends(end, 3)
+            fact = (store_plan_ratio(db, borrower, end, {m: plan[m] for m in months}, terms_version_id)
+                    if governing and all(m in plan for m in months) else None)
         else:
             fact = store_metric(db, borrower, metric, end)
         if fact is None or not same_number(fact.value, Decimal(str(point["value"]))):
