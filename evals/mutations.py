@@ -472,7 +472,8 @@ def run_mutations(engine: Engine, book: Book, names: list[str] | None = None, *,
                 reader = StandInReader(book, tamper=tamper)
                 graded = grade_borrower(borrower, loaded.run(lambda r=reader: r, decide=decide))
                 outcome = {"name": mutation.name, "what": mutation.what, "borrower": code, "agent": mutation.agent,
-                           "applied": bool(applied), **classify(baseline, graded)}
+                           "applied": bool(applied), "baseline_raised": sorted(baseline["raised_exceptions"]),
+                           **classify(baseline, graded)}
                 if not applied:
                     outcome["caught_by"] = "NOT APPLIED"
                     outcome["evidence"] = f"the {mutation.agent} agent was never asked, so nothing was tampered with"

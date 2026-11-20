@@ -242,7 +242,11 @@ class StandInReader:
             start = _certificate_header_end(lines)
             if start is None or rows:
                 continue
-            for name, _section, required, actual, compliance in _certificate_rows(lines, start):
+            dropped: list[list[str]] = []
+            found = _certificate_rows(lines, start, dropped)
+            for cells in dropped:
+                self._disagree(context, "certificate row not readable", cells, None)
+            for name, _section, required, actual, compliance in found:
                 # a covenant name may wrap: try the whole name, then its first line
                 covenant_id = by_name.get(name.lower()) or by_name.get(name.split(" | ")[0].lower())
                 if covenant_id is not None:
@@ -383,7 +387,8 @@ def _certificate_header_end(lines: list[str]) -> int | None:
     return None
 
 
-def _certificate_rows(lines: list[str], start: int) -> list[tuple[str, str, str, str, str]]:
+def _certificate_rows(lines: list[str], start: int,
+                      dropped: list[list[str]] | None = None) -> list[tuple[str, str, str, str, str]]:
     """Rows after the header: covenant, section, required, actual, in-compliance. A cell may wrap onto the
     next line, so a row ends at the Yes/No that closes it and its cells are the lines before it."""
     rows: list[tuple[str, str, str, str, str]] = []
@@ -393,6 +398,8 @@ def _certificate_rows(lines: list[str], start: int) -> list[tuple[str, str, str,
             at = next((k for k, c in enumerate(current) if re.fullmatch(r"\d+(\.\d+)*", c)), None)
             if at is not None and 0 < at < len(current) - 1:
                 rows.append((" ".join(current[:at]), current[at], " ".join(current[at + 1:-1]), current[-1], line))
+            elif dropped is not None:
+                dropped.append([*current, line])
             current = []
         elif line.lower().startswith(("dollar amounts", "certif")):
             break
@@ -413,8 +420,11 @@ def _printed_matches(printed: str, reported: dict[str, Any], factor: int) -> boo
     truth = _dec(reported["value"]) / factor
     if printed.endswith("%"):
         truth *= 100
-    places = -value.as_tuple().exponent if value.as_tuple().exponent < 0 else 0
-    return value == truth.quantize(Decimal(1).scaleb(-places)) if factor == 1 else value * factor == _dec(reported["value"])
+    if reported.get("unit", "ratio") in ("pct", "ratio"):
+        exponent = value.as_tuple().exponent
+        places = -exponent if isinstance(exponent, int) and exponent < 0 else 0
+        return value == truth.quantize(Decimal(1).scaleb(-places))
+    return value * factor == _dec(reported["value"])
 
 
 def _dec(value: Any) -> Decimal:

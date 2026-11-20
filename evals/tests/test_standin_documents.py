@@ -55,8 +55,11 @@ def test_the_monthly_pack_reports_the_year_to_date_column_first():
     ferro = book.get("ferrogate-cloud")
     meta = ferro.document_by_file("mf-2026-10-31.pdf")
     answer = _answer(StandInReader(book), _request(book, ferro, meta, "spreading"))
-    assert answer["cells"] and all(c["column_header"].startswith("October 31, 2026") or "2026" in c["column_header"]
-                                   for c in answer["cells"])
+    assert answer["cells"]
+    # the first figure after a statement label is the ten-months column: the page's span line says so
+    page_text = pymupdf.open(book.root / meta["path"])[1].get_text()
+    assert "Ten months ended\nOctober 31, 2026" in page_text
+    assert {c["column_header"] for c in answer["cells"]} == {"October 31, 2026"}
     printed = {c["key"]: c["printed_figure"] for c in answer["cells"]}
     assert printed["stated.is.total_revenue"] == meta["figures"]["is.total_revenue"]["printed"]  # the ten-months column, not the month
 
@@ -81,7 +84,7 @@ def test_ferrogate_runway_is_reported_as_the_text_the_certificate_prints():
     meta = ferro.document_by_file("mcc-2026-10-31.pdf")
     rows = {r["covenant_id"]: r for r in _answer(StandInReader(book), _request(book, ferro, meta, "certificate"))["rows"]}
     assert rows["min_runway_months"]["actual_printed"].startswith("Not meaningful")
-    assert rows["dscr"]["actual_printed"].endswith("to 1.00") or rows["dscr"]["actual_printed"].endswith("x")
+    assert rows["dscr"]["actual_printed"] == "6.54 to 1.00"
 
 
 def test_filed_only_documents_and_the_held_export_get_a_type_and_no_figures():
