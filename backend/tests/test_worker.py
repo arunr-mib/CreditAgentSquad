@@ -56,3 +56,21 @@ def test_a_tick_past_an_expected_close_raises_the_funding_item_once(db, monkeypa
     assert worker.run_once(db)["funding_slipped"] == 0
     items = db.execute(select(WorkItem).where(WorkItem.item_type == "funding_slipped")).scalars().all()
     assert len(items) == 1 and items[0].borrower_id == borrower.id
+
+
+def test_a_failing_funding_check_does_not_stop_the_tick(db, monkeypatch):
+    from app.domain import funding
+
+    def broken(db, today):
+        db.add(Borrower(code="PARTIAL", name="Written before the failure"))
+        db.flush()
+        raise RuntimeError("funding check broke")
+
+    ticked = []
+    monkeypatch.setattr(funding, "check_funding_events", broken)
+    monkeypatch.setattr(workflow, "tick", lambda db: ticked.append(1) or 0)
+    monkeypatch.setattr(db, "commit", db.flush)
+    result = worker.run_once(db)
+    assert ticked == [1] and result["funding_slipped"] == 0
+    from sqlalchemy import select
+    assert db.execute(select(Borrower).where(Borrower.code == "PARTIAL")).first() is None  # nothing partial

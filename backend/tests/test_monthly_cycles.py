@@ -132,3 +132,47 @@ def test_spreading_refuses_a_venture_line_for_a_commercial_borrower(db, files):
     assert db.execute(select(Fact).where(Fact.borrower_id == b.id, Fact.key == "bs.cash_unrestricted")).first() is None
     listing = llm.requests[0].messages[0]["content"][-1]["text"]
     assert "is.revenue" in listing and "bs.cash_unrestricted" not in listing
+
+
+def test_a_commercial_borrower_with_approved_monthly_reporting_gets_monthly_signal_history(db):
+    b = borrower(db, "CI6")
+    approve_reporting(db, b, "monthly")
+    ends = [p.period_end for p in _series(db, b, OCT)]
+    assert len(ends) == 14 and ends[-3:] == [AUG, SEP, OCT]
+    assert all(p.months == ytd_months(p.period_end, 12) for p in _series(db, b, OCT))
+
+
+def test_fourteen_monthly_period_ends_cross_the_year_boundary(db):
+    b = borrower(db, "VC6", "vc-1")
+    assert period_ends_for(db, b, date(2025, 9, 1), OCT) == [
+        date(2025, 9, 30), date(2025, 10, 31), date(2025, 11, 30), date(2025, 12, 31), date(2026, 1, 31),
+        date(2026, 2, 28), date(2026, 3, 31), date(2026, 4, 30), date(2026, 5, 31), date(2026, 6, 30),
+        date(2026, 7, 31), AUG, SEP, OCT]
+
+
+def _truth(code, template_id, tested, period):
+    info = {"id": code, "name": "Harrowgate Tool & Die, Inc.", "industry": "Software", "fiscal_year_end_month": 12,
+            "risk_rating": 4, "relationship_manager": "Rae Manager", "analyst": "Ana Lyst"}
+    if template_id:
+        info["template_id"] = template_id
+    return {"borrower": info, "as_of": period, "current_period": period, "facilities": [], "documents": [],
+            "terms_versions": [], "periods": [], "system_of_record": [], "certificates": [], "borrowing_base": [],
+            "expected": {"covenant_tests": [{"period_end": d} for d in tested], "exceptions": []}}
+
+
+def _seed(db, truth, tmp_path):
+    from app.seed_book import SeedReport, seed_borrower
+    return seed_borrower(db, truth, docs_root=tmp_path, current="seeded", password_hash="x", report=SeedReport())
+
+
+def test_seeding_a_venture_borrower_opens_monthly_cycles(db, tmp_path):
+    b = _seed(db, _truth("VCS", "vc-1", ["2026-08-31", "2026-09-30", "2026-10-31"], "2026-10-31"), tmp_path)
+    cycles = db.execute(select(Cycle).where(Cycle.borrower_id == b.id)).scalars().all()
+    assert b.template_id == "vc-1"
+    assert {c.cycle_type for c in cycles} == {"monthly"} and len(cycles) == 3
+
+
+def test_seeding_a_commercial_borrower_at_30_september_opens_a_nine_month_cycle(db, tmp_path):
+    b = _seed(db, _truth("CIS", None, ["2026-09-30"], "2026-09-30"), tmp_path)
+    cycles = db.execute(select(Cycle).where(Cycle.borrower_id == b.id)).scalars().all()
+    assert [(c.cycle_type, c.months) for c in cycles] == [("quarterly", 9)]

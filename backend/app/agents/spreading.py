@@ -89,7 +89,6 @@ def _known_labels(template_id: str = template.TEMPLATE_ID) -> dict[str, tuple[st
     return out
 
 
-_LABELS = _known_labels()
 _LABELS_BY_TEMPLATE = {tid: _known_labels(tid) for tid in template.TEMPLATES}
 
 

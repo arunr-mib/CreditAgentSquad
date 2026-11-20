@@ -22,7 +22,12 @@ def run_once(db: Session) -> dict[str, int]:
     """One pass: refresh the calendar, mark slipped funding, wake waiting cycles, then run every queued job."""
     today = clock.today(db)
     overdue = calendar.refresh_statuses(db, today)
-    slipped = len(funding.check_funding_events(db, today))
+    slipped = 0
+    try:
+        with db.begin_nested():  # a failure here rolls back its own writes and never stops the tick
+            slipped = len(funding.check_funding_events(db, today))
+    except Exception:
+        log.exception("funding check failed; the rest of the pass goes on")
     moved = workflow.tick(db)
     ran = workflow.drain(db)
     db.commit()
