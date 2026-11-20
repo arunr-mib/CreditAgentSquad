@@ -238,7 +238,8 @@ for _lines in TEMPLATES.values():
 
 4. Extend `NEVER_NEGATIVE` with the `vc-1` positive lines: `is.subscription_revenue`, `is.services_revenue`, `is.cost_of_revenue`, `is.rnd`, `is.sales_marketing`, `is.gna`, `bs.cash_unrestricted`, `bs.cash_restricted`, `bs.capitalised_software`, `bs.deferred_revenue_current`, `bs.deferred_revenue_noncurrent`, `cf.vc_capex`, `cf.capitalised_software_spend`, `saas.mrr`, `saas.arr`, `saas.customers`.
 5. Add `SYNONYMS` for `vc-1`: `"bs.deferred_revenue_current": ("Contract liabilities, current", "Deferred revenue")` is **not** added — mapping "contract liabilities" stays a question to a person (spec 4); add only unambiguous ones: `"is.rnd": ("Research and development expense", "R&D")`, `"is.gna": ("General and administrative expense",)`, `"cf.capitalised_software_spend": ("Capitalized software development costs",)`.
-6. `compute_statement` and `check_statement` gain `template_id: str = "ci-1"`; every place they iterate `LINES` or check membership in `LINE_BY_KEY` for absent/stated lines uses `template_lines(template_id)` / `in_template(key, template_id)` instead, and the error text names the template. `_TIES` (cash-flow ties) apply only to `ci-1`; for `vc-1` there are no ties yet.
+7. **Standard-spread reference (owner request, 20 Nov):** add `backend/app/calc/TEMPLATES.md` mapping every `ci-1` and `vc-1` line to the conventional sections of a bank spreading template of the kind used by industry spreading tools such as Moody's MMAS (Sales / Cost of Sales / Gross Profit / Operating Expenses / Operating Profit / Interest / Net Profit; Current Assets / Non-current Assets / Current Liabilities / Long-term Debt / Equity; UCA-style cash flow: operating, investing, financing). Use only public, generic section names; copy nothing proprietary, and name no product in code. Add `TemplateLine.section: str` (one of the section names in that file) to every line, and a test that every line has a section from the documented list.
+8. `compute_statement` and `check_statement` gain `template_id: str = "ci-1"`; every place they iterate `LINES` or check membership in `LINE_BY_KEY` for absent/stated lines uses `template_lines(template_id)` / `in_template(key, template_id)` instead, and the error text names the template. `_TIES` (cash-flow ties) apply only to `ci-1`; for `vc-1` there are no ties yet.
 
 - [ ] **Step 4: Run tests**
 
@@ -568,6 +569,24 @@ Expected: all pass.
 git add backend/app/calc/terms.py backend/app/calc/metrics.py backend/app/calc/covenants.py backend/tests/calc/test_covenants_vc.py
 git commit -m "feat(p1): runway, unrestricted cash and revenue-vs-plan covenants"
 ```
+
+---
+
+### Task 3b: Debt service coverage (DSCR) for venture borrowers (owner request, 20 Nov)
+
+**Files:**
+- Modify: `backend/app/calc/template.py` (add to `vc-1`: `is.vc_depreciation_amortization` "Depreciation and amortization", and the existing `sup.cash_interest_paid`, `sup.scheduled_principal` lines shared with `ci-1`; include D&A in `is.vc_operating_loss`'s formula as a deduction), `backend/app/calc/metrics.py` (`vc_ebitda = is.vc_operating_loss + is.vc_depreciation_amortization` on a `ttm` basis), `backend/app/calc/covenants.py` (`coverage` archetype picks `vc_ebitda` for a `vc-1` borrower when `numerator_base` is `ebitda`)
+- Test: `backend/tests/calc/test_covenants_vc.py` (add tests)
+
+**Interfaces:**
+- Consumes: Task 1 template registry; Task 3 `compile_covenant(covenant, period_end=None)`.
+- Produces: `compile_covenant(covenant, period_end=None, template_id="ci-1")`; `test_covenant(..., template_id="ci-1")` passes it through; DSCR = (EBITDA − unfinanced capex) ÷ (cash interest + scheduled principal), the same formula the `coverage` archetype already uses for `ci-1`.
+
+- [ ] **Step 1: Failing tests:** (a) a `vc-1` borrower with TTM operating loss −1,000,000, D&A 200,000, cash interest 300,000, scheduled principal 500,000 has DSCR −1.00 (negative EBITDA is a real breach, not "not meaningful": only the denominator must be positive); (b) a `vc-1` borrower with no debt service (interest 0, principal 0) cannot be tested, with the existing `non_positive_denominator` error; (c) the existing `ci-1` coverage tests still pass unchanged.
+- [ ] **Step 2: Run** → FAIL.
+- [ ] **Step 3: Implement** as listed; `unfinanced_capex` for `vc-1` = `cf.vc_capex` TTM (no purchase-money financing line in `vc-1`).
+- [ ] **Step 4: Run** `uv run pytest backend/tests/calc -q` → all pass.
+- [ ] **Step 5: Commit** — `git commit -m "feat(p1): DSCR for venture borrowers"`
 
 ---
 
