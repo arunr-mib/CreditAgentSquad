@@ -48,7 +48,8 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
           {message.options.map((o) => (
             <label key={o.id} className="sq-option">
               <input type="radio" name={group} value={o.id} checked={choice === o.id} onChange={() => setChoice(o.id)} />
-              <span><b>{o.label}</b><br /><span className="sq-muted">{o.evidence}</span></span>
+              <b>{o.label}</b>
+              <span className="sq-muted">{o.evidence}</span>
             </label>
           ))}
         </fieldset>
