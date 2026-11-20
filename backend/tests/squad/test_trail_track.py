@@ -61,15 +61,41 @@ def _extracted(db, borrower, run, key):
                     kind="extracted", document_id=doc.id, page=1, quote="100", agent_run_id=run.id)
 
 
-def test_track_record_counts_checked_and_corrected_from_the_record(db, world):
+def test_track_record_counts_right_corrected_and_unreviewed_from_the_record(db, world):
+    from app.domain.facts_service import correct_fact, reject_fact
     run = _run(db, world["borrower"])
+    user = world["analyst"]
     good = _extracted(db, world["borrower"], run, "is.total_revenue")
     bad = _extracted(db, world["borrower"], run, "bs.cash")
-    ledger.record(db, actor_type="user", actor_id=world["analyst"].id, action="fact.superseded", entity_type="fact",
-                  entity_id=bad.id, payload={"old_value": "100", "new_value": "90"})
+    refused = _extracted(db, world["borrower"], run, "bs.debt")
+    pending = _extracted(db, world["borrower"], run, "is.cogs")
+    good.status, pending.status = "verified", "proposed"
+    correct_fact(db, bad, value=D("90"), user_id=user.id, reason="misread")
+    reject_fact(db, refused, user_id=user.id, reason="not on the page")
+    db.flush()
     [row] = track_record(db, world["borrower"].id)
-    assert (row["task"], row["checked"], row["corrected"], row["right"]) == ("read_statements", 2, 1, 1)
-    assert row["last_correction_at"] is not None and good.id != bad.id
+    assert (row["task"], row["right"], row["corrected"], row["unreviewed"], row["checked"]) == ("read_statements", 1, 2, 1, 4)
+    assert row["last_correction_at"] is not None and isinstance(row["since"], str)
+
+
+def test_a_supersede_by_a_non_person_is_not_a_correction(db, world):
+    run = _run(db, world["borrower"])
+    fact = _extracted(db, world["borrower"], run, "bs.cash")
+    fact.status = "superseded"
+    ledger.record(db, actor_type="system", actor_id="facts", action="fact.superseded", entity_type="fact",
+                  entity_id=fact.id, payload={})
+    db.flush()
+    assert track_record(db, world["borrower"].id) == []
+
+
+def test_trail_endpoints_need_the_view_permission(db, client, world, monkeypatch):
+    import app.api.deps as deps
+    from app.core.roles import Permission
+    real = deps.can
+    monkeypatch.setattr(deps, "can", lambda role, perm: False if perm == Permission.VIEW else real(role, perm))
+    sign_in(client, "priya.raman")
+    assert client.get(f"/api/v1/cases/{uuid.uuid4()}/trail").status_code == 403
+    assert client.get(f"/api/v1/borrowers/{world['borrower'].id}/track-record").status_code == 403
 
 
 def test_track_record_is_empty_for_a_client_nothing_has_read(db, world):

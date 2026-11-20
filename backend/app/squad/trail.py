@@ -1,4 +1,5 @@
 """The work trail under a case ("How I got here"): which specialist did what, and which checks it passed."""
+import uuid
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -35,9 +36,15 @@ def case_trail(db: Session, item: WorkItem) -> dict[str, Any]:
     calc = None
     calc_id = (item.evidence or {}).get("calc_run_id")
     if not calc_id and (item.evidence or {}).get("covenant_test_id"):
-        test = db.get(CovenantTest, item.evidence["covenant_test_id"])
+        try:
+            test = db.get(CovenantTest, uuid.UUID(str(item.evidence["covenant_test_id"])))
+        except ValueError:
+            test = None
         calc_id = str(test.calc_run_id) if test and test.calc_run_id else None
-    calc_row = db.get(CalcRun, calc_id) if calc_id else None
+    try:
+        calc_row = db.get(CalcRun, uuid.UUID(str(calc_id))) if calc_id else None
+    except ValueError:
+        calc_row = None
     if calc_row is not None:
         calc = {"id": str(calc_row.id), "formula_key": calc_row.formula_key, "inputs": calc_row.inputs,
                 "outputs": calc_row.outputs}

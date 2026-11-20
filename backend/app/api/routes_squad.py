@@ -104,7 +104,7 @@ def send_draft_route(draft_id: uuid.UUID, db: Session = Depends(get_db),
 
 
 @router.get("/cases/{work_item_id}/trail")
-def trail(work_item_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
+def trail(work_item_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(require(Permission.VIEW))) -> dict:
     item = db.get(WorkItem, work_item_id)
     if item is None:
         raise HTTPException(404, "Case not found.")
@@ -112,7 +112,8 @@ def trail(work_item_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depe
 
 
 @router.get("/borrowers/{borrower_id}/track-record")
-def borrower_track_record(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> list[dict]:
+def borrower_track_record(borrower_id: uuid.UUID, db: Session = Depends(get_db),
+                          _: User = Depends(require(Permission.VIEW))) -> list[dict]:
     if db.get(Borrower, borrower_id) is None:
         raise HTTPException(404, "Client not found.")
     return track_record(db, borrower_id)
