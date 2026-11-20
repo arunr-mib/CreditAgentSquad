@@ -29,6 +29,10 @@ class FundingEvent(Base, IdMixin, CreatedMixin):
     evidence_document_ids: Mapped[list[str]] = json_col(default=list)
 
 
+# the responses to a slipped round, default first; no email is sent (drafting is Phase 4)
+SLIPPED_DECISIONS = ("ask_for_new_timeline", "note_and_watch", "reserve_rights", "escalate")
+
+
 def check_funding_events(db: Session, as_of: date, *, actor: tuple[str, str] = ("system", "funding")) -> list[FundingEvent]:
     """Mark every expected or signed event whose close date has passed as slipped, record it, and
     ask a person about it. An event is only ever marked once, so the item is raised once."""
@@ -46,8 +50,10 @@ def check_funding_events(db: Session, as_of: date, *, actor: tuple[str, str] = (
             db, borrower_id=event.borrower_id, item_type="funding_slipped", severity="high",
             title=f"Expected {event.kind.replace('_', ' ')} of {event.amount:,.2f} has slipped",
             question=f"The {event.kind.replace('_', ' ')} expected to close on {event.expected_close.isoformat()} "
-                     "has not closed. Should the runway and covenant outlook be reviewed?",
-            allowed_decisions=["reviewed", "escalate_to_committee"], blocks_stage=False,
+                     "has not closed. What should we do: ask the client for a new timeline (Squad drafts the "
+                     "email for you to send), note it and keep watching, reserve the bank's rights, or "
+                     "escalate to the credit officer?",
+            allowed_decisions=list(SLIPPED_DECISIONS), blocks_stage=False,
             evidence={"funding_event_id": str(event.id), "expected_close": event.expected_close.isoformat()},
             dedupe_key=f"funding_slipped:{event.id}", actor=actor)
     db.flush()

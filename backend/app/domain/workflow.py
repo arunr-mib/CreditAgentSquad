@@ -295,7 +295,7 @@ DECISIONS_NEEDING_REASON = frozenset({
     "temporary_overadvance_approved", "certificate_correct", "extension_granted", "received_elsewhere",
     "rating_review_requested", "add_to_watch_list", "accept_as_reported",
     "restated_update_prior", "keep_prior", "amendment_not_applicable", "not_applicable", "return_for_rework",
-    "reject",
+    "reject", "reserve_rights", "escalate",
 })
 ITEM_TYPES_NEEDING_REASON = frozenset({
     "covenant.breach", "covenant.reported_mismatch", "covenant.reported_breach_unconfirmed", "bb.over_advance",

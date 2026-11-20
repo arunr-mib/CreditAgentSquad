@@ -7,6 +7,7 @@ from app.core.ledger import LedgerEvent
 from app.domain.credit import Borrower
 from app.domain.funding import FundingEvent, check_funding_events
 from app.domain.monitoring import WorkItem
+from app.domain.org import User
 from app.seed_users import seed_users
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -74,3 +75,52 @@ def test_funding_event_api(client, db):
     assert len(client.get(url).json()) == 1
     assert db.execute(select(LedgerEvent).where(LedgerEvent.action == "funding_event.recorded")).first()
     assert client.get("/api/v1/borrowers/00000000-0000-4000-8000-000000000000/funding-events").status_code == 404
+
+
+def _slipped_item(db):
+    b = make_borrower(db, template_id="vc-1")
+    db.add(FundingEvent(borrower_id=b.id, kind="equity_round", amount=D("8000000"),
+                        expected_close=date(2026, 12, 12), status="expected"))
+    db.flush()
+    check_funding_events(db, date(2026, 12, 13))
+    return db.execute(select(WorkItem).where(WorkItem.item_type == "funding_slipped",
+                                             WorkItem.borrower_id == b.id)).scalar_one()
+
+
+def test_the_slipped_item_offers_four_responses_in_order(db):
+    item = _slipped_item(db)
+    assert item.allowed_decisions == ["ask_for_new_timeline", "note_and_watch", "reserve_rights", "escalate"]
+    assert "Squad drafts the email for you to send" in item.question
+    assert "has not closed. What should we do:" in item.question
+
+
+@pytest.mark.parametrize("decision,reason", [("ask_for_new_timeline", ""), ("note_and_watch", ""),
+                                             ("reserve_rights", "rights reserved under the loan agreement"),
+                                             ("escalate", "needs the credit officer")])
+def test_each_response_can_be_recorded_by_an_analyst_and_closes_the_item(db, decision, reason):
+    from app.domain import workflow
+    seed_users(db, password="pw")
+    analyst = db.execute(select(User).where(User.role == "analyst")).scalars().first()
+    item = _slipped_item(db)
+    workflow.decide_work_item(db, item, user_id=analyst.id, user_role=analyst.role, decision=decision, reason=reason)
+    assert item.status == "decided" and item.decision == decision
+
+
+def test_reserving_rights_and_escalating_need_a_reason(db):
+    from app.domain import workflow
+    seed_users(db, password="pw")
+    analyst = db.execute(select(User).where(User.role == "analyst")).scalars().first()
+    for decision in ("reserve_rights", "escalate"):
+        with pytest.raises(ValueError, match="reason"):
+            workflow.decide_work_item(db, _slipped_item_for(db, decision), user_id=analyst.id,
+                                      user_role=analyst.role, decision=decision)
+
+
+def _slipped_item_for(db, code):
+    b = make_borrower(db, code=f"S-{code}"[:12], template_id="vc-1")
+    db.add(FundingEvent(borrower_id=b.id, kind="equity_round", amount=D("1"),
+                        expected_close=date(2026, 12, 12), status="expected"))
+    db.flush()
+    check_funding_events(db, date(2026, 12, 13))
+    return db.execute(select(WorkItem).where(WorkItem.item_type == "funding_slipped",
+                                             WorkItem.borrower_id == b.id)).scalar_one()
