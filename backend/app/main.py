@@ -13,7 +13,7 @@ API_PREFIX = "/api/v1"
 # Routers added by later milestones. Each is included when its module exists, so no one has
 # to edit this file to add a router: create `app/api/<name>.py` with a `router`.
 OPTIONAL_ROUTERS = ("routes_ui", "routes_reviews", "routes_packages", "routes_copilot", "routes_evals",
-                    "routes_governance")
+                    "routes_governance", "routes_squad")
 
 
 class RefuseOversizedUploads:

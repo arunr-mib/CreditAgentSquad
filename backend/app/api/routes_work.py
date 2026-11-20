@@ -299,10 +299,12 @@ def list_agents(db: Session = Depends(get_db), _: User = Depends(current_user)) 
 
 @router.get("/ledger")
 def list_ledger(entity_type: str | None = None, entity_id: str | None = None, action: str | None = None,
-                before_seq: int | None = Query(default=None, ge=1, le=2**63 - 1), limit: int = 100,
+                before_seq: int | None = Query(default=None, ge=1, le=2**63 - 1),
+                after_seq: int | None = Query(default=None, ge=0, le=2**63 - 1), limit: int = 100,
                 db: Session = Depends(get_db),
                 _: User = Depends(current_user)) -> list[dict]:
-    query = select(LedgerEvent).order_by(LedgerEvent.seq.desc()).limit(max(1, min(limit, 500)))
+    """Newest first. With `after_seq` (the polling cursor) only events after it, oldest first."""
+    query = select(LedgerEvent)
     if entity_type:
         query = query.where(LedgerEvent.entity_type == entity_type)
     if entity_id:
@@ -311,6 +313,11 @@ def list_ledger(entity_type: str | None = None, entity_id: str | None = None, ac
         query = query.where(LedgerEvent.action.like(action + "%"))
     if before_seq:
         query = query.where(LedgerEvent.seq < before_seq)
+    if after_seq is not None:
+        query = query.where(LedgerEvent.seq > after_seq).order_by(LedgerEvent.seq.asc())
+    else:
+        query = query.order_by(LedgerEvent.seq.desc())
+    query = query.limit(max(1, min(limit, 500)))
     return [row(e) for e in db.execute(query).scalars()]
 
 
