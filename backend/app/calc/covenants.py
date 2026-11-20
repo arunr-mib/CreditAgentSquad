@@ -258,7 +258,7 @@ def test_covenant(
     try:
         result.expression = compile_covenant(cov, period_end, template_id)
     except UndefinedForTemplate as exc:
-        result.errors.append(CalcError(E.MISSING_PARAMETER, str(exc), key="numerator_base", period_end=period_end))
+        result.errors.append(CalcError(E.UNDEFINED_FOR_TEMPLATE, str(exc), key="numerator_base", period_end=period_end))
         return result
     except PlanMissing as exc:
         result.errors.append(CalcError(

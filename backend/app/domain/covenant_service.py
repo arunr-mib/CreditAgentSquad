@@ -131,7 +131,8 @@ def run_covenant_tests(
         calc_id = uuid.uuid4()
         result = calc_cov.test_covenant(
             covenant, period_end, provider, version.terms.definitions, fye_month=fye,
-            step_up_from=facility.origination_date or version_row.effective_from, calc_id=str(calc_id))
+            step_up_from=facility.origination_date or version_row.effective_from, calc_id=str(calc_id),
+            template_id=borrower.template_id)
         calc = _calc_run(db, borrower, version_row, covenant, period_end, result, calc_id, actor)
         unit = result.unit or covenant.test.unit
         value_fact = None

@@ -185,7 +185,8 @@ def _recalculate(ctx: ToolContext, case: Case, terms: Terms, terms_json: dict[st
     result = calc_cov.test_covenant(
         covenant, test.period_end, covenant_service.fact_provider(ctx.db, borrower.id), terms.definitions,
         fye_month=borrower.fiscal_year_end_month,
-        step_up_from=case.facility.origination_date or version_row.effective_from, calc_id=str(calc_id))
+        step_up_from=case.facility.origination_date or version_row.effective_from, calc_id=str(calc_id),
+        template_id=borrower.template_id)
     calc = covenant_service._calc_run(ctx.db, borrower, version_row, covenant, test.period_end, result, calc_id, ACTOR)
     seq = len(run_calcs(ctx.db, ctx.run.id)) + 1
     if what_if:

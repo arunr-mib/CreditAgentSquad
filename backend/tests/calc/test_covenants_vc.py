@@ -157,7 +157,7 @@ def test_vc_dscr_uses_vc_ebitda_and_vc_capex():
 def test_vc_adjusted_ebitda_is_not_defined():
     cov = _dscr_cov().model_copy(update={"params": _dscr_cov().typed_params.model_copy(update={"numerator_base": "adjusted_ebitda"})})
     result = test_covenant(cov, FYE, _dscr_facts(), template_id="vc-1")
-    assert result.passed is None and result.errors[0].code == "missing_parameter"
+    assert result.passed is None and result.errors[0].code == "undefined_for_template"
     assert "venture template" in result.errors[0].message
 
 

@@ -186,3 +186,54 @@ def test_no_terms_in_force_raises_one_item(db, world):
     tests = run_covenant_tests(db, borrower=borrower, facility=facility, period_end=FY)
     assert [t.outcome for t in tests] == ["cannot_test"]
     assert db.execute(select(WorkItem)).scalar_one().item_type == "covenant.cannot_test"
+
+
+def vc_world(db):
+    approver = User(email="vc@x.example", name="Officer", role="credit_officer", password_hash="x")
+    borrower = Borrower(code="VCD", name="Quillfeather Labs, Inc.", template_id="vc-1")
+    db.add_all([approver, borrower])
+    db.flush()
+    facility = Facility(borrower_id=borrower.id, code="VCD-VD", name="Venture loan", facility_type="term_loan",
+                        commitment=D("5000000"), origination_date=date(2024, 1, 15))
+    db.add(facility)
+    db.flush()
+    return borrower, facility, approver
+
+
+def dscr_terms():
+    return {
+        "definitions": {},
+        "covenants": [
+            {"id": "dscr", "name": "Debt Service Coverage", "archetype": "coverage",
+             "params": {"numerator_base": "ebitda", "deductions": [],
+                        "denominator": ["cash_interest", "scheduled_principal"]},
+             "test": {"operator": ">=", "threshold": "1.20", "unit": "ratio"},
+             "measurement": {"basis": "ttm", "frequency": "quarterly"},
+             "rounding": {"dp": 2, "mode": "half_up"}, "citations": cite("7.11")}],
+        "reporting_requirements": [], "borrowing_base": None,
+    }
+
+
+def test_vc_borrower_dscr_is_tested_with_vc_formulas(db):
+    borrower, facility, approver = vc_world(db)
+    approve(db, facility, approver, dscr_terms())
+    # vc_ebitda = operating loss + D&A = -1,000,000 + 200,000 = -800,000; debt service 800,000 -> -1.00
+    for key, value in {"is.vc_operating_loss": "-1000000", "is.vc_depreciation_amortization": "200000",
+                       "sup.cash_interest_paid": "300000", "sup.scheduled_principal": "500000"}.items():
+        add_fact(db, borrower_id=borrower.id, key=key, period_end=FY, months=12, value=D(value), kind="seeded")
+    (test,) = run_covenant_tests(db, borrower=borrower, facility=facility, period_end=FY)
+    assert test.outcome == "breach" and test.value == D("-1.00") and test.passed is False
+    calc = db.get(CalcRun, test.calc_run_id)
+    assert "is.vc_operating_loss" in {i["key"] for i in calc.inputs}
+
+
+def test_vc_adjusted_ebitda_covenant_is_cannot_test_with_its_own_error_code(db):
+    borrower, facility, approver = vc_world(db)
+    body = dscr_terms()
+    body["definitions"] = {"ebitda": {"base": "ebitda", "addbacks": []}}
+    body["covenants"][0]["params"]["numerator_base"] = "adjusted_ebitda"
+    approve(db, facility, approver, body)
+    (test,) = run_covenant_tests(db, borrower=borrower, facility=facility, period_end=FY)
+    assert test.outcome == "cannot_test"
+    calc = db.get(CalcRun, test.calc_run_id)
+    assert calc.error and "venture template" in calc.error
