@@ -35,3 +35,24 @@
 @media (prefers-reduced-motion: reduce) {
   .sq-orbit, .sq-mk-responding .sq-orbit, .sq-core-breathe, .sq-ripple { animation: none; }
 }
+.sq-shell { display: flex; min-height: 100vh; }
+.sq-skip { position: absolute; left: -9999px; }
+.sq-skip:focus { left: 8px; top: 8px; z-index: 80; background: var(--sq-surface); padding: 6px 10px; border-radius: 8px; }
+.sq-nav { width: 248px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; background: var(--sq-surface); border-right: 1px solid var(--sq-line); position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sq-nav[data-collapsed='true'] { width: 64px; align-items: center; }
+.sq-nav[data-collapsed='true'] .sq-navlabel, .sq-nav[data-collapsed='true'] .sq-navhead { display: none; }
+.sq-nav[data-collapsed='true'] .sq-navfoot { flex-direction: column; }
+.sq-navlink { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 4px 8px; border-radius: 10px; color: var(--sq-ink); text-decoration: none; position: relative; }
+.sq-navlink:hover { background: var(--sq-sunk); }
+.sq-navlink[aria-current='page'] { background: var(--sq-sunk); font-weight: 600; }
+.sq-navhome { font-weight: 600; margin-bottom: 6px; }
+.sq-navhead { margin: 14px 8px 4px; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--sq-ink3); }
+.sq-cases { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+.sq-badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--sq-ember); color: var(--sq-on-ember); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.sq-nav[data-collapsed='true'] .sq-badge { position: absolute; top: 0; right: 0; min-width: 18px; height: 18px; font-size: 11px; }
+.sq-initial, .sq-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--sq-squad-soft); color: var(--sq-squad); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sq-count { margin-left: auto; font-size: 12px; color: var(--sq-ink2); }
+.sq-grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sq-navfoot { margin-top: auto; display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--sq-line); width: 100%; }
+.sq-stage { flex: 1; min-width: 0; }
+.sq-main { max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }
