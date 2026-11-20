@@ -18,7 +18,7 @@ from .decimal_utils import CALC_CONTEXT, is_decimal
 from .errors import CalcError
 from .template import line_info
 
-MODES = ("ttm", "ytd", "point", "fy")
+MODES = ("ttm", "ytd", "point", "fy", "t3m")
 
 
 @dataclass(frozen=True, order=True)
@@ -95,6 +95,12 @@ def prior_fiscal_year_end(period_end: date, fye_month: int = 12) -> date:
     return month_end(year, fye_month)
 
 
+def _months_before(period_end: date, months: int) -> date:
+    """The month end `months` months before `period_end`."""
+    index = period_end.year * 12 + (period_end.month - 1) - months
+    return month_end(index // 12, index % 12 + 1)
+
+
 def provider_from_facts(facts: Mapping[tuple[str, date, int], Decimal | FactValue]) -> Provider:
     """A provider over an in-memory table keyed `(key, period_end, months)`."""
     table: dict[tuple[str, date, int], FactValue] = {}
@@ -157,6 +163,7 @@ def resolve_line(
     fy:    the full fiscal year; `period_end` must be a fiscal year end.
     ttm:   at a fiscal year end, the fiscal year; at an interim date,
            YTD(current) + FY(prior) - YTD(same period, prior year).
+    t3m:   the flow over the three months ending at `period_end`.
     Flow lines take ttm, ytd or fy; point-in-time lines take point only.
     """
     _check_month(fye_month)
@@ -175,6 +182,12 @@ def resolve_line(
             CalcError(E.INVALID_PERIOD_MODE, f"unknown period mode {mode!r} for {key}", key=key, period_end=period_end)
         )
         return res
+    if mode == "t3m" and not line.flow:
+        res.errors.append(
+            CalcError(E.INVALID_PERIOD_MODE, f"{key} is a point-in-time line and cannot be read as t3m",
+                      key=key, period_end=period_end)
+        )
+        return res
     if line.flow == (mode == "point"):
         kind = "a flow" if line.flow else "a point-in-time"
         res.errors.append(
@@ -190,6 +203,23 @@ def resolve_line(
             CalcError(E.NOT_FISCAL_YEAR_END, f"{key} for the fiscal year needs a fiscal year end, got {period_end.isoformat()}",
                       key=key, period_end=period_end)
         )
+        return res
+    if mode == "t3m":
+        current = _fetch(res, provider, key, period_end, months, 1)
+        if months >= 3:
+            if months == 3:
+                res.value = current
+                return res
+            earlier = _fetch(res, provider, key, _months_before(period_end, 3), months - 3, -1)
+            if current is not None and earlier is not None:
+                res.value = CALC_CONTEXT.subtract(current, earlier)
+            return res
+        prior_fy_end = prior_fiscal_year_end(period_end, fye_month)
+        prior_fy = _fetch(res, provider, key, prior_fy_end, 12, 1)
+        cut_end = _months_before(prior_fy_end, 3 - months)
+        cut = _fetch(res, provider, key, cut_end, 12 - (3 - months), -1)
+        if None not in (current, prior_fy, cut):
+            res.value = CALC_CONTEXT.subtract(CALC_CONTEXT.add(current, prior_fy), cut)
         return res
     if mode in ("point", "ytd", "fy") or at_year_end:
         res.value = _fetch(res, provider, key, period_end, months, 1)

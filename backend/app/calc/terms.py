@@ -63,7 +63,7 @@ Name = Annotated[StrictStr, StringConstraints(min_length=1)]
 
 Operator = Literal[">=", "<=", ">", "<"]
 Unit = Literal["ratio", "usd", "pct", "days", "count"]
-Basis = Literal["ttm", "ytd", "point", "fy"]
+Basis = Literal["ttm", "ytd", "point", "fy", "t3m"]
 Frequency = Literal["monthly", "quarterly", "semiannual", "annual"]
 Quality = Literal["audited", "reviewed", "compiled", "internal", "tax_return"]
 Archetype = Literal[
