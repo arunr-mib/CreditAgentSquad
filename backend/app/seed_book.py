@@ -2,7 +2,7 @@
 services, so every seeded covenant test, borrowing base review and signal is produced by the
 same code that runs live. Seeded facts are marked `seeded`: loaded from ground truth, not extracted.
 
-Run: PYTHONPATH=backend python -m app.seed_book [--current seeded|live|none]
+Run: PYTHONPATH=backend python -m app.seed_book [--book innovation|legacy] [--current seeded|live|none]
   seeded  the current period is also loaded from ground truth (a full demo without model calls)
   live    current-period documents arrive unclassified and the agents process them
   none    history only
@@ -33,6 +33,7 @@ from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document
 from app.domain.documents_service import ingest_pdf
 from app.domain.facts_service import add_fact
+from app.domain.funding import FundingEvent, check_funding_events
 from app.domain.monitoring import STAGES, Cycle
 from app.domain.org import User
 from app.domain.periods_service import period_ends_for, reporting_frequency
@@ -41,7 +42,11 @@ from app.domain.terms import TermsVersion
 from app.domain.terms_service import check_provenance, raise_unapproved_amendments
 from app.domain.work_items import raise_item
 
-SYNTHETIC_ROOT = Path(__file__).resolve().parents[2] / "synthetic" / "out"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+# two books: v2's default is innovation banking; legacy is the frozen 21-borrower C&I book the engine tests run on
+BOOKS = {"innovation": REPO_ROOT / "synthetic" / "books" / "innovation" / "out",
+         "legacy": REPO_ROOT / "synthetic" / "out"}
+SYNTHETIC_ROOT = BOOKS["innovation"]
 SEED_ACTOR = ("system", "seed")
 DOC_TYPES = {"annual_financial_statements": "annual_statements",
              "interim_financial_statements": "interim_statements"}
@@ -65,7 +70,15 @@ SEEDED_ITEMS = {
                              ["values_corrected", "accept_as_reported", "request_new_document"], True),
     "spread.restatement": ("The comparative column differs from what was confirmed last year. Has the borrower restated, and should the prior spread be updated?",
                            ["restated_update_prior", "keep_prior", "ask_borrower"], False),
+    "intake.unclassified": ("Which client is this, and which month?",
+                            ["classified_by_hand", "not_needed", "request_new_document"], False),
+    "spread.value_unverified": ("The statements print a line, 'Contract liabilities', that is not in the template, and a "
+                                "capitalised software figure that may be the balance rather than the month's spending. "
+                                "Which template line does each belong to?",
+                                ["values_confirmed", "values_corrected", "request_new_document"], False),
 }
+# where a stand-in item sits and who may decide it; anything not listed is a spreading item
+SEEDED_WHERE = {"intake.unclassified": ("intake", "upload_document")}
 
 
 def halted(truth: dict[str, Any]) -> bool:
@@ -123,6 +136,9 @@ class SeedReport:
     borrowing_base_reviews: int = 0
     signals: int = 0
     work_items: int = 0
+    funding_events: int = 0
+    slipped_funding: int = 0
+    skipped_documents: int = 0
     provenance_warnings: dict[str, list[str]] = field(default_factory=dict)
 
 
@@ -232,7 +248,11 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         path = docs_root / d["path"]
         if not path.exists():
             continue
-        filed = not (is_current and current == "live")
+        if path.suffix.lower() != ".pdf":  # the workbook beside a held export: intake takes PDFs only
+            report.skipped_documents += 1
+            continue
+        held = bool(d.get("held"))  # a file that cannot be placed arrives unclassified, in every mode
+        filed = not held and not (is_current and current == "live")
         doc = ingest_pdf(
             db, borrower_id=borrower.id, data=path.read_bytes(), file_name=path.name, title=d["title"],
             doc_type=doc_type(d["type"]) if filed else None, doc_type_source="system", period_end=period_end if filed else None,
@@ -242,7 +262,25 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         doc.meta = {**doc.meta, "external_id": d["id"]}
         documents[d["id"]] = doc
         report.documents += 1
+        # Ruling: the truth lists only the PDF print of a held export and names its workbook under "workbook";
+        # intake takes PDFs only, so that companion file is counted as skipped rather than filed.
+        workbook = d.get("workbook")
+        if workbook and (docs_root / workbook["path"]).exists() and not workbook["path"].lower().endswith(".pdf"):
+            report.skipped_documents += 1
     db.flush()
+
+    for e in truth.get("funding_events", []):
+        event = FundingEvent(
+            borrower_id=borrower.id, kind=e["kind"], amount=_d(e["amount"]), expected_close=_day(e["expected_close"]),
+            status=e["status"],
+            evidence_document_ids=[str(documents[i].id) for i in e.get("evidence_document_ids", []) if i in documents])
+        db.add(event)
+        db.flush()
+        ledger.record(db, actor_type=SEED_ACTOR[0], actor_id=SEED_ACTOR[1], action="funding_event.recorded",
+                      entity_type="funding_event", entity_id=event.id,
+                      payload={"borrower_id": borrower.id, "kind": event.kind, "amount": event.amount,
+                               "expected_close": event.expected_close, "seeded": True})
+        report.funding_events += 1
 
     # terms, exactly as the book states them: an approved version governs, a proposed one does not
     for tv in truth["terms_versions"]:
@@ -323,11 +361,12 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
             for expected in truth["expected"]["exceptions"]:
                 if expected["type"] in SEEDED_ITEMS:
                     question, decisions, blocks = SEEDED_ITEMS[expected["type"]]
+                    stage, permission = SEEDED_WHERE.get(expected["type"], ("spreading", "confirm_spread"))
                     raise_item(
-                        db, borrower_id=borrower.id, cycle_id=cycle.id, stage="spreading",
+                        db, borrower_id=borrower.id, cycle_id=cycle.id, stage=stage,
                         item_type=expected["type"], severity="high" if blocks else "medium",
                         title=f"{borrower.name}: {expected['summary']}", question=question,
-                        allowed_decisions=decisions, required_permission="confirm_spread", blocks_stage=blocks,
+                        allowed_decisions=decisions, required_permission=permission, blocks_stage=blocks,
                         evidence={"seeded": True, "note": "Stand-in for the item the Spreading Agent raises on a live run.",
                                   "subject": expected.get("subject")},
                         actor=SEED_ACTOR, dedupe_key=f"{expected['type']}:{cycle.id}")
@@ -371,24 +410,28 @@ def seed_book(db: Session, *, root: Path = SYNTHETIC_ROOT, current: str = "seede
     password_hash = hash_password(password)
     files = sorted((root / "truth").glob("*.json"))
     if not files:
-        raise FileNotFoundError(f"no truth files under {root}/truth; run: python -m synthetic.generate")
-    as_of = None
+        raise FileNotFoundError(f"no truth files under {root}/truth; run: python -m synthetic.books.innovation.generate "
+                                "(or python -m synthetic.generate for the legacy book)")
+    as_ofs: list[date] = []
     for path in files:
         truth = json.loads(path.read_text())
         if only and truth["borrower"]["id"] not in only:
             continue
         if db.execute(select(Borrower.id).where(Borrower.code == truth["borrower"]["id"])).first():
             continue
-        as_of = _day(truth["as_of"])
+        as_ofs.append(_day(truth["as_of"]))
         seed_borrower(db, truth, docs_root=root, current=current, password_hash=password_hash, report=report)
-    if as_of is not None:
+    if as_ofs:
+        as_of = max(as_ofs)  # books can mix as-of dates: the kept C&I four are as of 17 November
         clock.set_today(db, as_of, actor=SEED_ACTOR)
+        report.slipped_funding = len(check_funding_events(db, as_of))
     report.work_items = len(db.execute(select(WorkItem.id)).all())
     return report
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--book", choices=tuple(BOOKS), default="innovation", help="which book to load")
     parser.add_argument("--current", choices=("seeded", "live", "none"), default="seeded")
     parser.add_argument("--only", nargs="*", help="borrower ids to load")
     args = parser.parse_args()
@@ -398,7 +441,7 @@ def main() -> None:
 
     with Session(get_engine()) as db:
         seed_users(db)
-        report = seed_book(db, current=args.current, only=args.only)
+        report = seed_book(db, root=BOOKS[args.book], current=args.current, only=args.only)
         db.commit()
     print(json.dumps(report.__dict__, indent=1, default=str))
 
