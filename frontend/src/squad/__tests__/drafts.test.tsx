@@ -86,3 +86,26 @@ describe('DraftMessage', () => {
     expect(screen.queryByRole('button', { name: /send as/i })).not.toBeInTheDocument();
   });
 });
+
+describe('DraftMessage when someone else sent first', () => {
+  it('shows the sent state with the real sender after the refused send, read-only and with the recorded text', async () => {
+    calls.send.mockRejectedValue(new ApiError(422, 'this draft has already been sent'));
+    const view = mount(draft());
+    await userEvent.type(screen.getByLabelText('Message'), ' local');
+    calls.edit.mockResolvedValue({ status: 'draft' });
+    await userEvent.click(screen.getByRole('button', { name: 'Send as Priya' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('already been sent');
+    // the thread refetches and now carries the sent draft
+    const sentDraft = draft({ status: 'sent', sent_by: 'Dana Cole', sent_at: '2026-11-20T09:00:00Z', body: 'Recorded text.' });
+    view.rerender(
+      <AuthContext.Provider value={{ user: priya, status: 'signed-in', can: () => true, signIn: async () => priya, signOut: async () => {}, retry: () => {} }}>
+        <PresenceProvider needs={0}><DraftMessage message={sentDraft} /><Say /></PresenceProvider>
+      </AuthContext.Provider>,
+    );
+    expect(screen.getByText(/sent by Dana Cole/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Priya Raman/)).not.toBeInTheDocument();
+    const box = screen.getByLabelText('Message');
+    expect(box).toHaveAttribute('readonly');
+    expect(box).toHaveValue('Recorded text.');
+  });
+});

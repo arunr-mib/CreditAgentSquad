@@ -13,7 +13,8 @@ function useWrite<TIn, TOut>(path: (input: TIn) => string, body: (input: TIn) =>
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: TIn) => post<TOut>(path(input), body(input)),
-    onSuccess: () => {
+    // Settle, not just succeed: a refused write (e.g. already sent by someone else) means the screen is stale.
+    onSettled: () => {
       void qc.invalidateQueries({ queryKey: ['briefing'] });
       void qc.invalidateQueries({ queryKey: ['thread'] });
       also.forEach((key) => void qc.invalidateQueries({ queryKey: [key] }));

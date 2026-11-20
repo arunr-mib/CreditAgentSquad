@@ -54,8 +54,8 @@ export function DraftMessage({ message }: { message: Draft }) {
         {sent ? <span className="sq-tag">Sent</span> : null}
       </header>
       <p className="sq-muted">Subject: {message.subject}</p>
-      <textarea aria-label="Message" value={body} readOnly={sent || !mayWrite} onChange={(e) => setBody(e.target.value)} rows={6} className="sq-paper sq-draftbox" />
-      {sent ? <p className="sq-faint">Sent by {message.sent_by ?? user?.name}{message.sent_at ? <> <Time ts={message.sent_at} /></> : null}. Recorded on the ledger, not emailed.</p> : null}
+      <textarea aria-label="Message" value={sent ? message.body : body} readOnly={sent || !mayWrite} onChange={(e) => setBody(e.target.value)} rows={6} className="sq-paper sq-draftbox" />
+      {sent ? <p className="sq-faint">Sent by {message.sent_by ?? (justSent ? user?.name : null)}{message.sent_at ? <> <Time ts={message.sent_at} /></> : null}. Recorded on the ledger, not emailed.</p> : null}
       {!sent && mayWrite ? (
         <div className="sq-actions">
           <button type="button" className="sq-btn sq-btn-primary" disabled={!body.trim() || send.isPending || edit.isPending} onClick={() => void sendIt()}>
