@@ -15,6 +15,7 @@ import { PresenceLine, PresenceProvider } from '../presence/Presence';
 import { useNavCollapse } from './useNavCollapse';
 import { buildCommands } from './commands';
 import { SquadNav } from './SquadNav';
+import { surfaceOf } from './surface';
 
 function Frame() {
   const { user, signOut } = useAuth();
@@ -47,6 +48,7 @@ function Frame() {
     role: user?.role ?? '',
   });
   const needs = briefing.data?.needs_you ?? 0;
+  const surface = surfaceOf(pathname);
   return (
     <PresenceProvider needs={needs}>
       <div className="sq-shell" data-collapsed={navCollapsed}>
@@ -54,8 +56,8 @@ function Frame() {
         <SquadNav collapsed={navCollapsed} onToggle={toggle} needs={needs} openClients={briefing.data?.open_clients ?? []}
           pathname={pathname} userName={user?.name ?? ''} role={user?.role ?? ''} onSignOut={() => void signOut()} />
         <div className="sq-stage">
-          <main id="main" tabIndex={-1} className="sq-main">
-            <PresenceLine />
+          <main id="main" tabIndex={-1} className="sq-main" data-surface={surface}>
+            {surface === 'conversation' ? <PresenceLine /> : null}
             <Outlet />
           </main>
         </div>

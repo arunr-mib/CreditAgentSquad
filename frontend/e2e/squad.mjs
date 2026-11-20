@@ -206,6 +206,25 @@ journey('looks: every look keeps text readable and the officer starts in Warm pa
   await analyst.close();
 });
 
+journey('legacy cockpit route: /portfolio in Night is full width, has no presence line and passes the contrast checks', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1920, height: 900 } });
+  const page = await context.newPage();
+  await signIn(page, ANALYST);
+  assert((await page.evaluate(() => document.querySelector('.sq-root').dataset.look)) === 'night', 'the analyst did not start in Night');
+  await page.goto(`${BASE}/portfolio`);
+  await page.locator('.sq-main[data-surface="cockpit"]').waitFor();
+  await page.getByRole('heading', { level: 1 }).first().waitFor();
+  const width = (await page.locator('.sq-main').boundingBox()).width;
+  assert(width > 1200 && width <= 1480, `the portfolio is ${Math.round(width)}px wide in the shell (expected the cockpit width, up to 1480)`);
+  assert((await page.locator('.sq-presence').count()) === 0, 'the presence line shows on a cockpit screen');
+  await page.addScriptTag({ content: axeSource });
+  const result = await page.evaluate(() => window.axe.run(document.body, { runOnly: ['color-contrast', 'label', 'button-name', 'link-name'] }));
+  const bad = result.violations.map((v) => `${v.id}: ${v.nodes.length}`);
+  assert(bad.length === 0, `Night /portfolio: accessibility violations: ${bad.join(', ')}`);
+  assert((await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)), 'horizontal page scroll on /portfolio');
+  await context.close();
+});
+
 journey('motion: with reduced motion the mark does not move', async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: 'reduce' });
   const page = await context.newPage();
