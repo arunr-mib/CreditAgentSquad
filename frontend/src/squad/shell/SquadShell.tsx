@@ -6,6 +6,7 @@ import { useAuth } from '@/auth/context';
 import { defaultCopilotScope, useWorkspaceDrawer } from '@/drawer/context';
 import { WorkspaceDrawer } from '@/drawer/WorkspaceDrawer';
 import { useBorrowers } from '@/api/hooks';
+import { useSource } from '@/source/context';
 import { useBriefing } from '../api/hooks';
 import { useLedgerHeartbeat } from '../api/polling';
 import { LookProvider, useLook } from '../useLook';
@@ -32,6 +33,15 @@ function Frame() {
   const borrowers = useBorrowers();
   const { setLook } = useLook();
   const [collapsed, setCollapsed] = useState(storedCollapsed);
+  // Below 1280 px an open evidence drawer folds the nav away so the conversation keeps its room; the person's own choice returns on close.
+  const { current: evidence } = useSource();
+  const [wide, setWide] = useState(() => window.innerWidth >= 1280);
+  useEffect(() => {
+    const onResize = () => setWide(window.innerWidth >= 1280);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const navCollapsed = collapsed || (evidence !== null && !wide);
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((o) => !o), []));
   const { open: drawerOpen, tab: drawerTab, itemId: drawerItem, borrowerCode: drawerBorrower, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
@@ -64,9 +74,9 @@ function Frame() {
   const needs = briefing.data?.needs_you ?? 0;
   return (
     <PresenceProvider needs={needs}>
-      <div className="sq-shell" data-collapsed={collapsed}>
+      <div className="sq-shell" data-collapsed={navCollapsed}>
         <a href="#main" className="sq-skip">Skip to content</a>
-        <SquadNav collapsed={collapsed} onToggle={toggle} needs={needs} openClients={briefing.data?.open_clients ?? []}
+        <SquadNav collapsed={navCollapsed} onToggle={toggle} needs={needs} openClients={briefing.data?.open_clients ?? []}
           pathname={pathname} userName={user?.name ?? ''} role={user?.role ?? ''} onSignOut={() => void signOut()} />
         <div className="sq-stage">
           <main id="main" tabIndex={-1} className="sq-main">
@@ -74,7 +84,7 @@ function Frame() {
             <Outlet />
           </main>
         </div>
-        <EvidenceResizer />
+        <EvidenceResizer navWidth={navCollapsed ? 64 : 248} />
         <WorkspaceDrawer />
         <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} commands={commands} placeholder="Search clients and commands" />
       </div>

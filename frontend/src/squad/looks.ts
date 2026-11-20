@@ -56,7 +56,21 @@ export function defaultLookFor(role: string): LookId {
   return role === 'credit_officer' ? 'warm' : 'night';
 }
 
-const LEGACY_TOKENS = ['--canvas', '--surface', '--surface-sunken', '--surface-hover', '--ink-900', '--ink-700', '--ink-500', '--hairline', '--hairline-strong', '--iris', '--red', '--amber', '--green'];
+/** The older token names the reused source drawer, AgentBody and the interim cockpit screens read, mapped to the look. */
+export function legacyTokens(id: LookId): Record<string, string> {
+  const v = LOOKS[id].vars;
+  return {
+    '--canvas': v.ground, '--surface': v.surface, '--surface-sunken': v.sunk, '--surface-hover': v.sunk,
+    '--ink-900': v.ink, '--ink-700': v.ink2, '--ink-500': v.ink2, '--ink-400': v.lineStrong,
+    '--hairline': v.line, '--hairline-strong': v.line,
+    '--cobalt': v.squad, '--cobalt-strong': v.squad, '--cobalt-bg': v.squadSoft, '--cobalt-border': v.squadLine,
+    '--iris': v.squad, '--iris-mark': v.squad, '--iris-bg': v.squadSoft, '--iris-border': v.squadLine,
+    '--red': v.bad, '--red-mark': v.bad, '--red-bg': v.sunk, '--red-border': v.line,
+    '--amber': v.warn, '--amber-mark': v.warn, '--amber-bg': v.sunk, '--amber-border': v.line,
+    '--green': v.ok, '--green-mark': v.ok, '--green-bg': v.sunk, '--green-border': v.line,
+  };
+}
+const LEGACY_TOKENS = Object.keys(legacyTokens('night'));
 
 const cssName = (token: string) => `--sq-${token.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`;
 
@@ -66,14 +80,7 @@ export function applyLook(id: LookId, root: HTMLElement | null = document.queryS
   root.dataset.look = id;
   root.style.colorScheme = LOOKS[id].dark ? 'dark' : 'light';
   for (const [token, value] of Object.entries(LOOKS[id].vars)) root.style.setProperty(cssName(token), value);
-  // The reused source drawer, AgentBody and the interim cockpit screens read the older token names (set on the Squad root only).
-  const v = LOOKS[id].vars;
-  const legacy: Record<string, string> = {
-    '--canvas': v.ground, '--surface': v.surface, '--surface-sunken': v.sunk, '--surface-hover': v.sunk,
-    '--ink-900': v.ink, '--ink-700': v.ink2, '--ink-500': v.ink2, '--hairline': v.line, '--hairline-strong': v.line,
-    '--iris': v.squad, '--red': v.bad, '--amber': v.warn, '--green': v.ok,
-  };
-  for (const [name, value] of Object.entries(legacy)) root.style.setProperty(name, value);
+  for (const [name, value] of Object.entries(legacyTokens(id))) root.style.setProperty(name, value);
 }
 
 /** Removes what applyLook set. */
