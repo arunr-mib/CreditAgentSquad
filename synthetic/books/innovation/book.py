@@ -93,23 +93,24 @@ def _version_in_force(versions: list[dict], end: date) -> dict:
     return [v for v in versions if date.fromisoformat(v["effective_from"]) <= end][-1]
 
 
-def _dscr_rows(series: Series, version: dict, facility_id: str, certified: set[date]) -> list[dict]:
+def _dscr_rows(series: Series, version: dict, facility_id: str, certificates: list[dict]) -> list[dict]:
     """Ferrogate's trailing-twelve-month DSCR tests, one per month from the month its terms version takes effect."""
     covenant = next(c for c in version["terms"]["covenants"] if c["id"] == "dscr")
     threshold = D(covenant["test"]["threshold"])
+    by_end = {c["period_end"]: c["reported"]["dscr"] for c in certificates if "dscr" in c["reported"]}
     rows = []
     for i in range(N):
         if MONTHS[i] < DSCR_EFFECTIVE or series.dscr(i) is None:
             continue
         value = q(series.dscr(i), 2)
-        reported = MONTHS[i] in certified
+        cert = by_end.get(MONTHS[i])
         rows.append({
             "period_end": MONTHS[i], "covenant_id": "dscr", "covenant_name": covenant["name"], "archetype": "coverage",
-            "facility_id": facility_id, "terms_version_id": version["id"], "terms_version": version["version"],
-            "unit": "ratio", "operator": ">=", "threshold": threshold, "value": value, "pass": value >= threshold,
+            "facility_id": facility_id, "unit": "ratio", "operator": ">=", "threshold": threshold, "value": value, "pass": value >= threshold,
             "headroom": q((value - threshold) / threshold, 4), "note": None,
-            "reported_value": value if reported else None, "reported_threshold": threshold if reported else None,
-            "reported_in_compliance": value >= threshold if reported else None,
+            "reported_value": cert["value"] if cert else None,
+            "reported_threshold": cert["threshold"] if cert else None,
+            "reported_in_compliance": cert["in_compliance"] if cert else None,
             "outcome": "compliant" if value >= threshold else "breach",
         })  # fmt: skip
     return rows
@@ -120,8 +121,7 @@ def _expected(spec: ClientSpec, series: Series, plan: dict, terms: ClientTerms, 
     rows = covenant_rows(spec, series, plan, terms.version["id"], terms.facility["id"])
     versions = terms.versions()
     if len(versions) > 1:  # a later version adds the DSCR test; every row cites the version in force at its period
-        certified = {c["period_end"] for c in certificates}
-        rows += _dscr_rows(series, versions[-1], terms.facility["id"], certified)
+        rows += _dscr_rows(series, versions[-1], terms.facility["id"], certificates)
     for row in rows:
         version = _version_in_force(versions, row["period_end"])
         row["terms_version_id"], row["terms_version"] = version["id"], version["version"]
@@ -293,6 +293,22 @@ def verify(book: ClientBook) -> None:
         dscr = [r for r in rows if r["covenant_id"] == "dscr"]
         need([r["period_end"] for r in dscr] == list(MONTHS[MONTHS.index(DSCR_EFFECTIVE) :]), "DSCR tests May to October")
         need(all(r["outcome"] == "compliant" and r["threshold"] == D(DSCR_MIN) for r in dscr), "DSCR should be compliant")
+        by_end = {c["period_end"]: c["reported"]["dscr"] for c in book.certificates if "dscr" in c["reported"]}
+        need(sorted(by_end) == list(MONTHS[LAST - 2 :]), "DSCR certificate lines should be August to October")
+        for r in dscr:
+            i = MONTHS.index(r["period_end"])
+            if i >= LAST - 2:
+                need(r["reported_value"] == by_end[r["period_end"]]["value"] == q(series.dscr(i), 2),
+                     f"DSCR certificate figure for {r['period_end']} is not the computed one")
+            else:
+                need(r["reported_value"] is None and r["reported_threshold"] is None
+                     and r["reported_in_compliance"] is None, "DSCR before the certificates should report nothing")
+        versions = book.terms.versions()
+        need([v["version"] for v in versions] == [1, 2], "Ferrogate should have two terms versions")
+        for r in rows:
+            want = 2 if r["period_end"] >= DSCR_EFFECTIVE else 1
+            need(r["terms_version"] == want and r["terms_version_id"] == versions[want - 1]["id"],
+                 f"{r['covenant_id']} {r['period_end']} cites the wrong terms version")
     # a certificate figure is exact, or far outside every tolerance
     for r in rows:
         if r["reported_value"] is not None and r["value"] is not None:
@@ -340,6 +356,8 @@ def verify(book: ClientBook) -> None:
     if spec.scenario == "funding_slipped":
         need(book.funding_events[0]["expected_close"] < AS_OF, "the round should be past its date")
         need(series.rml(LAST) < 9, "runway should be under 9 months")
+        need(any(s["rule"] == "runway_below_watch" and s["severity"] == "high" for s in now_signals),
+             "the high signal should be runway below watch")
     if spec.scenario == "restricted_account":
         accounts = reports.bank_accounts(spec, book.months, LAST)
         held = sum(a["closing"] for a in accounts if a["restricted"])
@@ -357,6 +375,9 @@ def verify(book: ClientBook) -> None:
         need(roll["opening"] + roll["additions"] - roll["amortisation"] == roll["closing"], "software roll does not tie")
         need(roll["closing"] > 10 * roll["additions"], "balance should dwarf the month's spending")
         need(reports.misread_runway(series, LAST) < series.rml(LAST) * D("0.7"), "the misread should change runway a lot")
+        held = next((d for d in book.documents if d.id == f"{spec.id}.mrr-export"), None)
+        need(held is not None and held.extra.get("held") is True and held.period_end is None, "held export missing")
+        need(book.scenario_details["new_line"]["belongs_to"] == "bs.deferred_revenue_current", "new line mapping")
     for event in book.funding_events:
         need(event["kind"] in ("equity_round", "extension", "milestone_tranche", "venture_debt"), "funding kind")
     need(len(spec.id) <= 32, "borrower code is longer than 32 characters")
