@@ -26,4 +26,4 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 5. The test suite may be parallelised (dev-only `pytest-xdist`).
 6. Phase 5 hosting pre-approved: a new Vercel project and a new `squad2` schema in the existing Supabase project, free tiers.
 7. The owner will start recruiting 4 analysts and 1 credit officer for the usability sessions.
-8. Git tags: **not** approved; no tags.
+8. Git tags: approved later the same day; `v1` marks commit 2292b38 (the last commit before v2 work).
