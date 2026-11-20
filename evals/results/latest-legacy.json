@@ -1,0 +1,2630 @@
+{
+ "meta": {
+  "suite": "monitoring-cycle",
+  "mode": "standin",
+  "standin": true,
+  "label": "STAND-IN: a perfect reader built from the book's ground truth answered in place of the model. This proves the pipeline, the workflow and the grader. It is not model performance.",
+  "generated_at": "2026-11-20T22:44:08+00:00",
+  "commit": "cf783d07f43180c70406b4ab057cf981fd60b7fe",
+  "borrowers": 21,
+  "scope": "whole book",
+  "decide": true,
+  "passes": 1,
+  "seconds": 139.9,
+  "unsigned_oracle_rows": 0,
+  "standin_print_vs_truth_disagreements": [],
+  "accepted_stale": [],
+  "prompt_only_verified": 0,
+  "eval_run_id": "e45d0a94-8ee8-4226-bf41-4e9517fe6952"
+ },
+ "gate": {
+  "passed": true,
+  "reasons": [],
+  "run_errors": [],
+  "nothing_read": [],
+  "rule": "any invented-number or false-compliant in any pass fails; the stand-in suite must also agree with the truth in full, apart from listed known findings",
+  "known_findings_applied": [],
+  "unexplained": [],
+  "stale_known_findings": []
+ },
+ "metrics": {
+  "extraction_accuracy": 1.0,
+  "extraction_facts_expected": 2677,
+  "extraction_facts_correct": 2677,
+  "extraction_abstain_rate": 0.0,
+  "cycles_needing_no_person": 0.4762,
+  "cycles_expected_to_need_no_person": 0.4762,
+  "exception_precision": 1.0,
+  "exception_recall": 1.0,
+  "covenant_outcome_accuracy": 1.0,
+  "covenant_abstain_rate": 0.0,
+  "cycles_run": 21,
+  "cycles_closed": 17,
+  "cycles_reaching_signals": 17,
+  "disagreements": 0,
+  "input_tokens": null,
+  "output_tokens": null
+ },
+ "failure_counts": {
+  "invented-number": 0,
+  "false-compliant": 0,
+  "false-breach": 0,
+  "missed-exception": 0,
+  "false-exception": 0,
+  "wrong-citation": 0,
+  "wrong-abstain": 0,
+  "missed-abstain": 0,
+  "stale-terms": 0
+ },
+ "borrowers": {
+  "ashgrove-fleet": {
+   "borrower": "ashgrove-fleet",
+   "scenario": "missing_page",
+   "error": null,
+   "expected_exceptions": [
+    "spread.does_not_foot"
+   ],
+   "stage_reached": "spreading",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "intake",
+   "raised_exceptions": [
+    "spread.does_not_foot"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 72,
+    "correct": 72,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 72,
+      "correct": 72
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "spreading",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "spread.does_not_foot",
+       "blocks_stage": true,
+       "stage": "spreading"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "A page appears to be missing from the statements, so the lines printed on it are not reported."
+      }
+     ]
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 5.38
+  },
+  "briarstone-beverage": {
+   "borrower": "briarstone-beverage",
+   "scenario": "over_advance",
+   "error": null,
+   "expected_exceptions": [
+    "bb.over_advance"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "bb.over_advance"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 201,
+    "correct": 201,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 99,
+      "correct": 99
+     }
+    },
+    "ungraded_facts": {
+     "signal": 1,
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "borrowing_base",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "bb.over_advance",
+       "blocks_stage": true,
+       "stage": "borrowing_base"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "bb.over_advance",
+       "decision": "paydown_required",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.64
+  },
+  "brindlewood-home-health": {
+   "borrower": "brindlewood-home-health",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 105,
+    "correct": 105,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.03
+  },
+  "calder-finch-staffing": {
+   "borrower": "calder-finch-staffing",
+   "scenario": "step_up",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "covenant",
+     "detail": "1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    },
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 100,
+    "correct": 100,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.reported_mismatch",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.reported_mismatch",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.06
+  },
+  "dunmore-industrial-supply": {
+   "borrower": "dunmore-industrial-supply",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 187,
+    "correct": 187,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 90,
+      "correct": 90
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 88,
+      "correct": 88
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.57
+  },
+  "eastmere-building": {
+   "borrower": "eastmere-building",
+   "scenario": "late_reporting",
+   "error": null,
+   "expected_exceptions": [
+    "intake.missing_document"
+   ],
+   "stage_reached": "awaiting_package",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": null,
+   "raised_exceptions": [
+    "intake.missing_document"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 0,
+    "correct": 0,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": null,
+    "abstain_rate": null,
+    "by_document": {},
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "awaiting_package",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 5.17
+  },
+  "halvorsen-plastics": {
+   "borrower": "halvorsen-plastics",
+   "scenario": "restated_comparative",
+   "error": null,
+   "expected_exceptions": [
+    "spread.restatement"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "spread.restatement"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 191,
+    "correct": 191,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 89,
+      "correct": 89
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "spread.restatement",
+       "blocks_stage": false,
+       "stage": "spreading"
+      },
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "spread.restatement",
+       "decision": "ask_borrower",
+       "by_role": "analyst",
+       "error": null
+      },
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.77
+  },
+  "harrowgate-precision": {
+   "borrower": "harrowgate-precision",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 199,
+    "correct": 199,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.85
+  },
+  "kestrel-bay-packaging": {
+   "borrower": "kestrel-bay-packaging",
+   "scenario": "hidden_breach",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "covenant",
+     "detail": "1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    },
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 102,
+    "correct": 102,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.reported_mismatch",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.reported_mismatch",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.68
+  },
+  "larkspur-environmental": {
+   "borrower": "larkspur-environmental",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 103,
+    "correct": 103,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.12
+  },
+  "marlowe-ridge-logistics": {
+   "borrower": "marlowe-ridge-logistics",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 107,
+    "correct": 107,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 98
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.13
+  },
+  "northgale-electrical": {
+   "borrower": "northgale-electrical",
+   "scenario": "miscounted_ineligible",
+   "error": null,
+   "expected_exceptions": [
+    "bb.certificate_mismatch"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "bb.certificate_mismatch"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 189,
+    "correct": 189,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 90,
+      "correct": 90
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 93,
+      "correct": 93
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "borrowing_base",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "bb.certificate_mismatch",
+       "blocks_stage": true,
+       "stage": "borrowing_base"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "bb.certificate_mismatch",
+       "decision": "bank_figures_stand",
+       "by_role": "analyst",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.07
+  },
+  "ostrander-valley-foods": {
+   "borrower": "ostrander-valley-foods",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 201,
+    "correct": 201,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 98
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 8.16
+  },
+  "pellham-grain": {
+   "borrower": "pellham-grain",
+   "scenario": "reported_breach",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.breach"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.breach"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "covenant",
+     "detail": "1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    },
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 199,
+    "correct": 199,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.breach",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.breach",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.87
+  },
+  "quillfeather-bakery": {
+   "borrower": "quillfeather-bakery",
+   "scenario": "addback_over_cap",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 104,
+    "correct": 104,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 98
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.92
+  },
+  "sablewood-dental": {
+   "borrower": "sablewood-dental",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 98,
+    "correct": 98,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 92,
+      "correct": 92
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.96
+  },
+  "stanmoor-mechanical": {
+   "borrower": "stanmoor-mechanical",
+   "scenario": "image_only",
+   "error": null,
+   "expected_exceptions": [
+    "spread.image_only"
+   ],
+   "stage_reached": "spreading",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "intake",
+   "raised_exceptions": [
+    "spread.image_only"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 0,
+    "correct": 0,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": null,
+    "abstain_rate": null,
+    "by_document": {},
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "spreading",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "spread.image_only",
+       "blocks_stage": true,
+       "stage": "spreading"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 4.66
+  },
+  "tallwater-foodservice": {
+   "borrower": "tallwater-foodservice",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 202,
+    "correct": 202,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 98
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 98
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.01
+  },
+  "thornbury-metal": {
+   "borrower": "thornbury-metal",
+   "scenario": "deteriorating_trend",
+   "error": null,
+   "expected_exceptions": [
+    "signal.high"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "signal.high"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 105,
+    "correct": 105,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15,
+     "signal": 6
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "signals",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "signal.high",
+       "blocks_stage": true,
+       "stage": "signals"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "signal.high",
+       "decision": "acknowledged",
+       "by_role": "analyst",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.92
+  },
+  "vantry-freight": {
+   "borrower": "vantry-freight",
+   "scenario": "unapproved_amendment",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch",
+    "terms.unapproved_amendment"
+   ],
+   "stage_reached": "covenant_testing",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "spreading",
+   "raised_exceptions": [
+    "covenant.reported_mismatch",
+    "terms.unapproved_amendment"
+   ],
+   "routine_approvals": [],
+   "not_reached": [
+    "signals"
+   ],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "covenant",
+     "detail": "1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 104,
+    "correct": 104,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 98
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "terms.unapproved_amendment",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      },
+      {
+       "type": "covenant.reported_mismatch",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.reported_mismatch",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "terms.unapproved_amendment",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 5.59
+  },
+  "wrenfield-diagnostics": {
+   "borrower": "wrenfield-diagnostics",
+   "scenario": "scale_trap",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 108,
+    "correct": 108,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 12,
+      "correct": 12
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 4,
+    "correct": 4,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 6.1
+  }
+ },
+ "known_findings": [],
+ "passes": [
+  {
+   "metrics": {
+    "extraction_accuracy": 1.0,
+    "extraction_facts_expected": 2677,
+    "extraction_facts_correct": 2677,
+    "extraction_abstain_rate": 0.0,
+    "cycles_needing_no_person": 0.4762,
+    "cycles_expected_to_need_no_person": 0.4762,
+    "exception_precision": 1.0,
+    "exception_recall": 1.0,
+    "covenant_outcome_accuracy": 1.0,
+    "covenant_abstain_rate": 0.0,
+    "cycles_run": 21,
+    "cycles_closed": 17,
+    "cycles_reaching_signals": 17,
+    "disagreements": 0,
+    "input_tokens": null,
+    "output_tokens": null
+   },
+   "failure_counts": {
+    "invented-number": 0,
+    "false-compliant": 0,
+    "false-breach": 0,
+    "missed-exception": 0,
+    "false-exception": 0,
+    "wrong-citation": 0,
+    "wrong-abstain": 0,
+    "missed-abstain": 0,
+    "stale-terms": 0
+   }
+  }
+ ]
+}
