@@ -104,6 +104,12 @@ const ask = (over: Partial<Extract<ThreadMessage, { type: 'ask' }>> = {}): Extra
 });
 
 describe('AskMessage', () => {
+  it('renders agent-written option text through AgentBody, so a fact reference becomes a stored figure', () => {
+    mount(<AskMessage message={ask({ options: [{ id: 'a', label: 'Use {{fact:f1}}', evidence: 'Cash was {{fact:f2}}.' }, { id: 'b', label: 'Ignore it', evidence: '' }] })} focused={false} />);
+    const bodies = screen.getAllByTestId('body').map((n) => n.textContent);
+    expect(bodies).toEqual(expect.arrayContaining(['Use {{fact:f1}}', 'Cash was {{fact:f2}}.']));
+  });
+
   it('cannot be confirmed until an option is chosen', async () => {
     mount(<AskMessage message={ask()} focused={false} />);
     const confirm = screen.getByRole('button', { name: /confirm/i });

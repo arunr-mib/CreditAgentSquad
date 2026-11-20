@@ -13,6 +13,7 @@ from app.domain.lessons import record_lesson
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.domain.work_items import raise_item
+from app.guardrails.numbers import extract_figures, stray_digits
 
 QUESTION = "question"
 LESSON_MAX = 2000  # the same cap the lessons route puts on a lesson's text
@@ -36,10 +37,23 @@ def _check_options(options: list[dict[str, Any]]) -> list[dict[str, str]]:
     return clean
 
 
+def _refuse_typed_figures(options: list[dict[str, str]]) -> None:
+    """The model never types a number: in agent-written option text a figure must be a {{fact:…}} reference.
+    The engine's own strict figure reader is used, so what counts as a figure is the same everywhere."""
+    for option in options:
+        for field in ("label", "evidence"):
+            text = option[field]
+            if extract_figures(text, strict=True) or stray_digits(text, strict=True):
+                raise ValueError(f"option {option['id']!r} has a figure in its {field}; "
+                                 "an agent cites a figure as a {{fact:<id>}} reference, never types it")
+
+
 def raise_question(db: Session, *, borrower_id: uuid.UUID, title: str, question: str, options: list[dict[str, Any]],
                    evidence: dict[str, Any] | None = None, topic: str = "question", cycle_id: uuid.UUID | None = None,
                    severity: str = "medium", actor: tuple[str, str] = ("agent", "squad")) -> WorkItem:
     clean = _check_options(options)
+    if actor[0] == "agent":
+        _refuse_typed_figures(clean)
     if not 1 <= len(topic) <= TOPIC_MAX:
         raise ValueError(f"a topic is 1 to {TOPIC_MAX} characters")
     return raise_item(

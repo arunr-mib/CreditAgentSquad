@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import { errorMessage } from '@/api/client';
 import { useAuth } from '@/auth/context';
+import { AgentBody } from '@/source/AgentBody';
 import { useAnswer } from '../api/hooks';
 import type { ThreadMessage } from '../api/types';
 import { SquadMark } from '../mark/SquadMark';
@@ -48,8 +49,8 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
           {message.options.map((o) => (
             <label key={o.id} className="sq-option">
               <input type="radio" name={group} value={o.id} checked={choice === o.id} onChange={() => setChoice(o.id)} />
-              <b>{o.label}</b>
-              <span className="sq-muted">{o.evidence}</span>
+              <AgentBody text={o.label} className="sq-optlabel" />
+              {o.evidence ? <AgentBody text={o.evidence} className="sq-muted sq-optevidence" /> : null}
             </label>
           ))}
         </fieldset>

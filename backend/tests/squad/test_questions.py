@@ -9,8 +9,8 @@ from sqlalchemy import func, select
 from .conftest import sign_in
 
 OPTIONS = [
-    {"id": "map_to_arr", "label": "Map to ARR", "evidence": "Page 3 labels it ARR."},
-    {"id": "map_to_mrr", "label": "Map to MRR", "evidence": "Page 3 also shows monthly."},
+    {"id": "map_to_arr", "label": "Map to ARR", "evidence": "The page labels it ARR."},
+    {"id": "map_to_mrr", "label": "Map to MRR", "evidence": "The page also shows monthly."},
 ]
 WHY = "The covenant is written on annual figures."
 
@@ -145,3 +145,27 @@ def test_a_failing_lesson_write_rolls_the_decision_back_even_if_the_caller_carri
         answer_question(db, item, world["analyst"], "map_to_arr", remember=True, note=WHY)
     db.refresh(item)
     assert item.status == "open" and item.decision is None
+
+
+def _agent_options(label="Map to ARR", evidence="The page labels it ARR."):
+    return [{"id": "a", "label": label, "evidence": evidence}, {"id": "b", "label": "Map to MRR", "evidence": ""}]
+
+
+@pytest.mark.parametrize("field", ["label", "evidence"])
+@pytest.mark.parametrize("text", ["Revenue was $4,500,000", "about 4.5 million", "a 12.5% decline", "1.25x cover", "USD4,500,000"])
+def test_an_agent_cannot_type_a_figure_into_an_option(db, world, field, text):
+    options = _agent_options(**{field: text})
+    with pytest.raises(ValueError, match="fact"):
+        raise_question(db, borrower_id=world["borrower"].id, title="t", question="Which?", options=options)
+
+
+def test_an_agent_may_cite_a_figure_through_a_fact_reference(db, world):
+    item = raise_question(db, borrower_id=world["borrower"].id, title="t", question="Which?",
+                          options=_agent_options(evidence="Cash was {{fact:3f9a2b}} at quarter end."))
+    assert item.evidence["options"][0]["evidence"] == "Cash was {{fact:3f9a2b}} at quarter end."
+
+
+def test_a_person_may_write_their_own_figures_in_an_option(db, world):
+    item = raise_question(db, borrower_id=world["borrower"].id, title="t", question="Which?",
+                          options=_agent_options(label="Use 4,500,000"), actor=("user", str(world["analyst"].id)))
+    assert item.evidence["options"][0]["label"] == "Use 4,500,000"
