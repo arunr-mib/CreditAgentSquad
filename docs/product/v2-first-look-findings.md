@@ -2,7 +2,7 @@
 
 Screens: `docs/product/screens/v2-squad-home-night.png`, `v2-stripple-thread-night.png` (merged branch, innovation book, Priya, Night, 1440 px). All 14 browser journeys pass; these are quality findings against the demo's bar, not test failures.
 
-## Bugs (fix before usability sessions)
+## Bugs (fixed 20 Nov: ad4e591, 0f49333, 7a2d71c)
 1. **"Runway falling" fires for Ferrogate**, which is cash-flow positive (runway not meaningful), and for most clients. A not-meaningful runway must never feed `runway_falling`; check the window logic against the truth's signal list.
 2. **Duplicates in the briefing**: a signal and the work item raised from it show as two rows ("Signal: runway below watch" and "Dataflake Inc: runway below watch · waiting for you"). Show the work item only when one exists for the signal.
 3. **Amounts printed raw** in titles ("equity round of 15,000,000.00"): titles must render figures through facts/formatting ("$15.0M"), never raw strings.
