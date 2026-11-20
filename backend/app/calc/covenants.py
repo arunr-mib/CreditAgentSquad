@@ -371,13 +371,12 @@ def determine_outcome(
     if test_result.errors or test_result.passed is None:
         return Outcome(CANNOT_TEST, errors=list(test_result.errors), certificate_compared=False)
 
-    if test_result.note == NOT_MEANINGFUL_CASH_FLOW_POSITIVE:
-        # No measured value exists; the certificate's own runway figure is not a covenant input.
-        return Outcome(COMPLIANT, certificate_compared=certificate_entry is not None, note=test_result.note)
     variances: list[Variance] = []
     entry = certificate_entry
     if entry is not None:
-        if entry.value is not None and abs(test_result.value - entry.value) > tolerance:
+        # A not-meaningful runway has no measured value; the certificate's own figure is not a covenant input.
+        if (entry.value is not None and test_result.value is not None
+                and test_result.note != NOT_MEANINGFUL_CASH_FLOW_POSITIVE and abs(test_result.value - entry.value) > tolerance):
             variances.append(Variance("value", test_result.value, entry.value))
         if entry.threshold is not None and entry.threshold != test_result.threshold:
             variances.append(Variance("threshold", test_result.threshold, entry.threshold))

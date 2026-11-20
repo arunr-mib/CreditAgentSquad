@@ -1,7 +1,14 @@
 from datetime import date
 from decimal import Decimal as D
 
-from app.calc.covenants import CovenantTestResult, compute_rml, determine_outcome, test_covenant
+from app.calc.covenants import (
+    COMPLIANT,
+    COMPLIANT_VARIANCE,
+    CovenantTestResult,
+    compute_rml,
+    determine_outcome,
+    test_covenant,
+)
 from app.calc.periods import provider_from_facts
 from app.calc.terms import Covenant
 
@@ -61,9 +68,10 @@ def test_rml_not_meaningful_when_cash_flow_positive():
 
 
 def test_not_meaningful_rml_maps_to_compliant_with_note():
-    result = CovenantTestResult("min_runway_months", OCT, passed=True, note="not_meaningful_cash_flow_positive")
+    result = CovenantTestResult("min_runway_months", OCT, passed=True, threshold=D("9"),
+                                note="not_meaningful_cash_flow_positive")
     outcome = determine_outcome(result, None, D("0"))
-    assert outcome.outcome == "compliant" and outcome.note == "not_meaningful_cash_flow_positive"
+    assert outcome.outcome == COMPLIANT and outcome.note == "not_meaningful_cash_flow_positive"
 
 
 def _plan(months):
@@ -91,8 +99,18 @@ def test_revenue_vs_plan_missing_plan_month_cannot_test():
 
 
 def test_not_meaningful_rml_ignores_certificate_value():
-    result = CovenantTestResult("min_runway_months", OCT, passed=True, note="not_meaningful_cash_flow_positive")
+    result = CovenantTestResult("min_runway_months", OCT, passed=True, threshold=D("9"),
+                                note="not_meaningful_cash_flow_positive")
     entry = {"value": "24.0", "threshold": "9", "in_compliance": True}
     outcome = determine_outcome(result, entry, D("0.1"))
-    assert outcome.outcome == "compliant" and outcome.note == "not_meaningful_cash_flow_positive"
+    assert outcome.outcome == COMPLIANT and outcome.note == "not_meaningful_cash_flow_positive"
     assert outcome.variances == []
+
+
+def test_not_meaningful_rml_still_checks_certificate_compliance_flag():
+    result = CovenantTestResult("min_runway_months", OCT, passed=True, threshold=D("9"),
+                                note="not_meaningful_cash_flow_positive")
+    entry = {"value": "2.0", "threshold": "9", "in_compliance": False}
+    outcome = determine_outcome(result, entry, D("0.1"))
+    assert outcome.outcome == COMPLIANT_VARIANCE and outcome.note == "not_meaningful_cash_flow_positive"
+    assert [v.field for v in outcome.variances] == ["in_compliance"]
