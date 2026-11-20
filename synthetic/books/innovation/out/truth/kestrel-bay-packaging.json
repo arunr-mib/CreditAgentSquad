@@ -1,0 +1,5002 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "kestrel-bay-packaging",
+  "name": "Kestrel Bay Packaging Corp.",
+  "legal_form": "corporation",
+  "industry": "manufacturing",
+  "city": "Green Bay",
+  "state": "WI",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Dana Whitcombe",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 6,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Lorraine Destefano",
+  "auditor": "Wexley Arnault LLP"
+ },
+ "facilities": [
+  {
+   "id": "kestrel-bay-packaging-rlc",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "15500000",
+   "original_amount": "15500000",
+   "closing_date": "2022-05-06",
+   "maturity_date": "2028-05-06",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "kestrel-bay-packaging-tl",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "38055000",
+   "original_amount": "38055000",
+   "closing_date": "2022-05-06",
+   "maturity_date": "2029-05-06",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "885000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-kestrel-bay-packaging-1",
+   "facility_id": "kestrel-bay-packaging-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-05-06",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2022-05-12",
+   "warnings": [],
+   "source_documents": [
+    "kestrel-bay-packaging.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "kestrel-bay-packaging.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "kestrel-bay-packaging.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "current_ratio",
+      "name": "Current Ratio",
+      "archetype": "current_ratio",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "kestrel-bay-packaging.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Current Ratio, measured as of the last day of each fiscal quarter, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "kestrel-bay-packaging.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Current Ratio\" means, as of any date, the ratio of (a) total current assets to (b) total current liabilities of the Borrower as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "kestrel-bay-packaging.credit-agreement",
+       "section": "5.1(a)",
+       "page": 6,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "kestrel-bay-packaging.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "kestrel-bay-packaging.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "kestrel-bay-packaging.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "kestrel-bay-packaging.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "kestrel-bay-packaging.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $15,500,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "kestrel-bay-packaging.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $38,055,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "kestrel-bay-packaging.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $885,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "29761000",
+    "is.cogs": "21240000",
+    "is.gross_profit": "8521000",
+    "is.sga": "4911000",
+    "is.depreciation_amortization": "931000",
+    "is.other_operating_expense": "119000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2560000",
+    "is.interest_expense": "690000",
+    "is.other_income_net": "18000",
+    "is.pretax_income": "1888000",
+    "is.income_tax_expense": "472000",
+    "is.net_income": "1416000",
+    "bs.cash": "3571000",
+    "bs.accounts_receivable": "15133000",
+    "bs.inventory": "14432000",
+    "bs.other_current_assets": "1429000",
+    "bs.total_current_assets": "34565000",
+    "bs.net_ppe": "35791000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "78616000",
+    "bs.accounts_payable": "9543000",
+    "bs.accrued_liabilities": "2391000",
+    "bs.revolver": "6547000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2139000",
+    "bs.total_current_liabilities": "24160000",
+    "bs.long_term_debt": "27435000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1875000",
+    "bs.total_liabilities": "53470000",
+    "bs.total_equity": "25146000",
+    "bs.total_liabilities_and_equity": "78616000",
+    "cf.net_income": "1416000",
+    "cf.depreciation_amortization": "931000",
+    "cf.change_in_working_capital": "-364000",
+    "cf.other_operating": "21000",
+    "cf.cfo": "2004000",
+    "cf.capex": "1012000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1012000",
+    "cf.revolver_net": "122000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "885000",
+    "cf.distributions": "163000",
+    "cf.other_financing": "0",
+    "cf.cff": "-926000",
+    "cf.net_change_in_cash": "66000",
+    "sup.cash_interest_paid": "700000",
+    "sup.cash_taxes_paid": "441000",
+    "sup.scheduled_principal": "885000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "17997000",
+    "cash.beginning_of_year": "3505000",
+    "debt.term_total": "30975000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "60904000",
+    "is.cogs": "43433000",
+    "is.gross_profit": "17471000",
+    "is.sga": "10050000",
+    "is.depreciation_amortization": "1864000",
+    "is.other_operating_expense": "244000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5313000",
+    "is.interest_expense": "1367000",
+    "is.other_income_net": "37000",
+    "is.pretax_income": "3983000",
+    "is.income_tax_expense": "996000",
+    "is.net_income": "2987000",
+    "bs.cash": "3737000",
+    "bs.accounts_receivable": "16553000",
+    "bs.inventory": "15079000",
+    "bs.other_current_assets": "1495000",
+    "bs.total_current_assets": "36864000",
+    "bs.net_ppe": "35917000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "81041000",
+    "bs.accounts_payable": "9972000",
+    "bs.accrued_liabilities": "2487000",
+    "bs.revolver": "7768000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2268000",
+    "bs.total_current_liabilities": "26035000",
+    "bs.long_term_debt": "26550000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1896000",
+    "bs.total_liabilities": "54481000",
+    "bs.total_equity": "26560000",
+    "bs.total_liabilities_and_equity": "81041000",
+    "cf.net_income": "2987000",
+    "cf.depreciation_amortization": "1864000",
+    "cf.change_in_working_capital": "-1843000",
+    "cf.other_operating": "42000",
+    "cf.cfo": "3050000",
+    "cf.capex": "2071000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2071000",
+    "cf.revolver_net": "1343000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1770000",
+    "cf.distributions": "320000",
+    "cf.other_financing": "0",
+    "cf.cff": "-747000",
+    "cf.net_change_in_cash": "232000",
+    "sup.cash_interest_paid": "1381000",
+    "sup.cash_taxes_paid": "913000",
+    "sup.scheduled_principal": "1770000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "19411000",
+    "cash.beginning_of_year": "3505000",
+    "debt.term_total": "30090000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "92504000",
+    "is.cogs": "65932000",
+    "is.gross_profit": "26572000",
+    "is.sga": "15264000",
+    "is.depreciation_amortization": "2800000",
+    "is.other_operating_expense": "370000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8138000",
+    "is.interest_expense": "2052000",
+    "is.other_income_net": "56000",
+    "is.pretax_income": "6142000",
+    "is.income_tax_expense": "1536000",
+    "is.net_income": "4606000",
+    "bs.cash": "3792000",
+    "bs.accounts_receivable": "16172000",
+    "bs.inventory": "15287000",
+    "bs.other_current_assets": "1517000",
+    "bs.total_current_assets": "36768000",
+    "bs.net_ppe": "36055000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "81083000",
+    "bs.accounts_payable": "10109000",
+    "bs.accrued_liabilities": "2522000",
+    "bs.revolver": "7003000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2310000",
+    "bs.total_current_liabilities": "25484000",
+    "bs.long_term_debt": "25665000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1917000",
+    "bs.total_liabilities": "53066000",
+    "bs.total_equity": "28017000",
+    "bs.total_liabilities_and_equity": "81083000",
+    "cf.net_income": "4606000",
+    "cf.depreciation_amortization": "2800000",
+    "cf.change_in_working_capital": "-1478000",
+    "cf.other_operating": "63000",
+    "cf.cfo": "5991000",
+    "cf.capex": "3145000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3145000",
+    "cf.revolver_net": "578000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2655000",
+    "cf.distributions": "482000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2559000",
+    "cf.net_change_in_cash": "287000",
+    "sup.cash_interest_paid": "2064000",
+    "sup.cash_taxes_paid": "1437000",
+    "sup.scheduled_principal": "2655000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "20868000",
+    "cash.beginning_of_year": "3505000",
+    "debt.term_total": "29205000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "122965000",
+    "is.cogs": "87699000",
+    "is.gross_profit": "35266000",
+    "is.sga": "20290000",
+    "is.depreciation_amortization": "3740000",
+    "is.other_operating_expense": "492000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "10744000",
+    "is.interest_expense": "2706000",
+    "is.other_income_net": "74000",
+    "is.pretax_income": "8112000",
+    "is.income_tax_expense": "2029000",
+    "is.net_income": "6083000",
+    "bs.cash": "3655000",
+    "bs.accounts_receivable": "15856000",
+    "bs.inventory": "14790000",
+    "bs.other_current_assets": "1462000",
+    "bs.total_current_assets": "35763000",
+    "bs.net_ppe": "36151000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "80174000",
+    "bs.accounts_payable": "9780000",
+    "bs.accrued_liabilities": "2429000",
+    "bs.revolver": "6701000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2199000",
+    "bs.total_current_liabilities": "24649000",
+    "bs.long_term_debt": "24780000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1938000",
+    "bs.total_liabilities": "51367000",
+    "bs.total_equity": "28807000",
+    "bs.total_liabilities_and_equity": "80174000",
+    "cf.net_income": "6083000",
+    "cf.depreciation_amortization": "3740000",
+    "cf.change_in_working_capital": "-1143000",
+    "cf.other_operating": "84000",
+    "cf.cfo": "8764000",
+    "cf.capex": "4181000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4181000",
+    "cf.revolver_net": "276000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3540000",
+    "cf.distributions": "1169000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4433000",
+    "cf.net_change_in_cash": "150000",
+    "sup.cash_interest_paid": "2728000",
+    "sup.cash_taxes_paid": "1977000",
+    "sup.scheduled_principal": "3540000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "21658000",
+    "cash.beginning_of_year": "3505000",
+    "debt.term_total": "28320000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "30758000",
+    "is.cogs": "22093000",
+    "is.gross_profit": "8665000",
+    "is.sga": "5075000",
+    "is.depreciation_amortization": "942000",
+    "is.other_operating_expense": "123000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2525000",
+    "is.interest_expense": "633000",
+    "is.other_income_net": "18000",
+    "is.pretax_income": "1910000",
+    "is.income_tax_expense": "478000",
+    "is.net_income": "1432000",
+    "bs.cash": "3691000",
+    "bs.accounts_receivable": "15505000",
+    "bs.inventory": "15011000",
+    "bs.other_current_assets": "1476000",
+    "bs.total_current_assets": "35683000",
+    "bs.net_ppe": "36255000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "80198000",
+    "bs.accounts_payable": "9927000",
+    "bs.accrued_liabilities": "2444000",
+    "bs.revolver": "6767000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2200000",
+    "bs.total_current_liabilities": "24878000",
+    "bs.long_term_debt": "23895000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1959000",
+    "bs.total_liabilities": "50732000",
+    "bs.total_equity": "29466000",
+    "bs.total_liabilities_and_equity": "80198000",
+    "cf.net_income": "1432000",
+    "cf.depreciation_amortization": "942000",
+    "cf.change_in_working_capital": "279000",
+    "cf.other_operating": "21000",
+    "cf.cfo": "2674000",
+    "cf.capex": "1046000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1046000",
+    "cf.revolver_net": "66000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "885000",
+    "cf.distributions": "773000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1592000",
+    "cf.net_change_in_cash": "36000",
+    "sup.cash_interest_paid": "640000",
+    "sup.cash_taxes_paid": "493000",
+    "sup.scheduled_principal": "885000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "22317000",
+    "cash.beginning_of_year": "3655000",
+    "debt.term_total": "27435000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "63000000",
+    "is.cogs": "45217000",
+    "is.gross_profit": "17783000",
+    "is.sga": "10395000",
+    "is.depreciation_amortization": "1887000",
+    "is.other_operating_expense": "252000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5249000",
+    "is.interest_expense": "1251000",
+    "is.other_income_net": "37000",
+    "is.pretax_income": "4035000",
+    "is.income_tax_expense": "1009000",
+    "is.net_income": "3026000",
+    "bs.cash": "3869000",
+    "bs.accounts_receivable": "16996000",
+    "bs.inventory": "15712000",
+    "bs.other_current_assets": "1548000",
+    "bs.total_current_assets": "38125000",
+    "bs.net_ppe": "36406000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "82791000",
+    "bs.accounts_payable": "10390000",
+    "bs.accrued_liabilities": "2547000",
+    "bs.revolver": "8086000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2337000",
+    "bs.total_current_liabilities": "26900000",
+    "bs.long_term_debt": "23010000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1980000",
+    "bs.total_liabilities": "51890000",
+    "bs.total_equity": "30901000",
+    "bs.total_liabilities_and_equity": "82791000",
+    "cf.net_income": "3026000",
+    "cf.depreciation_amortization": "1887000",
+    "cf.change_in_working_capital": "-1282000",
+    "cf.other_operating": "42000",
+    "cf.cfo": "3673000",
+    "cf.capex": "2142000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2142000",
+    "cf.revolver_net": "1385000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1770000",
+    "cf.distributions": "932000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1317000",
+    "cf.net_change_in_cash": "214000",
+    "sup.cash_interest_paid": "1263000",
+    "sup.cash_taxes_paid": "971000",
+    "sup.scheduled_principal": "1770000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "23752000",
+    "cash.beginning_of_year": "3655000",
+    "debt.term_total": "26550000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "96183000",
+    "is.cogs": "68999000",
+    "is.gross_profit": "27184000",
+    "is.sga": "15870000",
+    "is.depreciation_amortization": "2836000",
+    "is.other_operating_expense": "385000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8093000",
+    "is.interest_expense": "1879000",
+    "is.other_income_net": "57000",
+    "is.pretax_income": "6271000",
+    "is.income_tax_expense": "1568000",
+    "is.net_income": "4703000",
+    "bs.cash": "3982000",
+    "bs.accounts_receivable": "17092000",
+    "bs.inventory": "16159000",
+    "bs.other_current_assets": "1593000",
+    "bs.total_current_assets": "38826000",
+    "bs.net_ppe": "36585000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "83671000",
+    "bs.accounts_payable": "10686000",
+    "bs.accrued_liabilities": "2618000",
+    "bs.revolver": "7874000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2417000",
+    "bs.total_current_liabilities": "27135000",
+    "bs.long_term_debt": "22125000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2001000",
+    "bs.total_liabilities": "51261000",
+    "bs.total_equity": "32410000",
+    "bs.total_liabilities_and_equity": "83671000",
+    "cf.net_income": "4703000",
+    "cf.depreciation_amortization": "2836000",
+    "cf.change_in_working_capital": "-1423000",
+    "cf.other_operating": "63000",
+    "cf.cfo": "6179000",
+    "cf.capex": "3270000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3270000",
+    "cf.revolver_net": "1173000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2655000",
+    "cf.distributions": "1100000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2582000",
+    "cf.net_change_in_cash": "327000",
+    "sup.cash_interest_paid": "1888000",
+    "sup.cash_taxes_paid": "1502000",
+    "sup.scheduled_principal": "2655000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "25261000",
+    "cash.beginning_of_year": "3655000",
+    "debt.term_total": "25665000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "128060000",
+    "is.cogs": "91778000",
+    "is.gross_profit": "36282000",
+    "is.sga": "21130000",
+    "is.depreciation_amortization": "3790000",
+    "is.other_operating_expense": "513000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "10849000",
+    "is.interest_expense": "2487000",
+    "is.other_income_net": "76000",
+    "is.pretax_income": "8438000",
+    "is.income_tax_expense": "2110000",
+    "is.net_income": "6328000",
+    "bs.cash": "3825000",
+    "bs.accounts_receivable": "16628000",
+    "bs.inventory": "15477000",
+    "bs.other_current_assets": "1530000",
+    "bs.total_current_assets": "37460000",
+    "bs.net_ppe": "36715000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "82435000",
+    "bs.accounts_payable": "10235000",
+    "bs.accrued_liabilities": "2517000",
+    "bs.revolver": "7013000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2327000",
+    "bs.total_current_liabilities": "25632000",
+    "bs.long_term_debt": "21240000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2022000",
+    "bs.total_liabilities": "48894000",
+    "bs.total_equity": "33541000",
+    "bs.total_liabilities_and_equity": "82435000",
+    "cf.net_income": "6328000",
+    "cf.depreciation_amortization": "3790000",
+    "cf.change_in_working_capital": "-856000",
+    "cf.other_operating": "84000",
+    "cf.cfo": "9346000",
+    "cf.capex": "4354000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4354000",
+    "cf.revolver_net": "312000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3540000",
+    "cf.distributions": "1594000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4822000",
+    "cf.net_change_in_cash": "170000",
+    "sup.cash_interest_paid": "2502000",
+    "sup.cash_taxes_paid": "2061000",
+    "sup.scheduled_principal": "3540000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "26392000",
+    "cash.beginning_of_year": "3655000",
+    "debt.term_total": "24780000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "32188000",
+    "is.cogs": "23024000",
+    "is.gross_profit": "9164000",
+    "is.sga": "5311000",
+    "is.depreciation_amortization": "957000",
+    "is.other_operating_expense": "129000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2767000",
+    "is.interest_expense": "576000",
+    "is.other_income_net": "19000",
+    "is.pretax_income": "2210000",
+    "is.income_tax_expense": "553000",
+    "is.net_income": "1657000",
+    "bs.cash": "3863000",
+    "bs.accounts_receivable": "16262000",
+    "bs.inventory": "15644000",
+    "bs.other_current_assets": "1545000",
+    "bs.total_current_assets": "37314000",
+    "bs.net_ppe": "36852000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "82426000",
+    "bs.accounts_payable": "10345000",
+    "bs.accrued_liabilities": "2529000",
+    "bs.revolver": "7081000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2356000",
+    "bs.total_current_liabilities": "25851000",
+    "bs.long_term_debt": "20355000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2043000",
+    "bs.total_liabilities": "48249000",
+    "bs.total_equity": "34177000",
+    "bs.total_liabilities_and_equity": "82426000",
+    "cf.net_income": "1657000",
+    "cf.depreciation_amortization": "957000",
+    "cf.change_in_working_capital": "335000",
+    "cf.other_operating": "21000",
+    "cf.cfo": "2970000",
+    "cf.capex": "1094000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1094000",
+    "cf.revolver_net": "68000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "885000",
+    "cf.distributions": "1021000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1838000",
+    "cf.net_change_in_cash": "38000",
+    "sup.cash_interest_paid": "587000",
+    "sup.cash_taxes_paid": "542000",
+    "sup.scheduled_principal": "885000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "27028000",
+    "cash.beginning_of_year": "3825000",
+    "debt.term_total": "23895000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "66161000",
+    "is.cogs": "47230000",
+    "is.gross_profit": "18931000",
+    "is.sga": "10917000",
+    "is.depreciation_amortization": "1918000",
+    "is.other_operating_expense": "265000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5831000",
+    "is.interest_expense": "1137000",
+    "is.other_income_net": "39000",
+    "is.pretax_income": "4733000",
+    "is.income_tax_expense": "1184000",
+    "is.net_income": "3549000",
+    "bs.cash": "4077000",
+    "bs.accounts_receivable": "17796000",
+    "bs.inventory": "16447000",
+    "bs.other_current_assets": "1631000",
+    "bs.total_current_assets": "39951000",
+    "bs.net_ppe": "37046000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "85257000",
+    "bs.accounts_payable": "10876000",
+    "bs.accrued_liabilities": "2654000",
+    "bs.revolver": "8240000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2533000",
+    "bs.total_current_liabilities": "27843000",
+    "bs.long_term_debt": "19470000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2064000",
+    "bs.total_liabilities": "49377000",
+    "bs.total_equity": "35880000",
+    "bs.total_liabilities_and_equity": "85257000",
+    "cf.net_income": "3549000",
+    "cf.depreciation_amortization": "1918000",
+    "cf.change_in_working_capital": "-1255000",
+    "cf.other_operating": "42000",
+    "cf.cfo": "4254000",
+    "cf.capex": "2249000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2249000",
+    "cf.revolver_net": "1227000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1770000",
+    "cf.distributions": "1210000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1753000",
+    "cf.net_change_in_cash": "252000",
+    "sup.cash_interest_paid": "1153000",
+    "sup.cash_taxes_paid": "1095000",
+    "sup.scheduled_principal": "1770000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "28731000",
+    "cash.beginning_of_year": "3825000",
+    "debt.term_total": "23010000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "100900000",
+    "is.cogs": "74893000",
+    "is.gross_profit": "26007000",
+    "is.sga": "16649000",
+    "is.depreciation_amortization": "2884000",
+    "is.other_operating_expense": "404000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6070000",
+    "is.interest_expense": "1705000",
+    "is.other_income_net": "60000",
+    "is.pretax_income": "4425000",
+    "is.income_tax_expense": "1184000",
+    "is.net_income": "3241000",
+    "bs.cash": "4169000",
+    "bs.accounts_receivable": "17703000",
+    "bs.inventory": "18796000",
+    "bs.other_current_assets": "1667000",
+    "bs.total_current_assets": "42335000",
+    "bs.net_ppe": "37261000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "87856000",
+    "bs.accounts_payable": "12429000",
+    "bs.accrued_liabilities": "2711000",
+    "bs.revolver": "10989000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "1945000",
+    "bs.total_current_liabilities": "31614000",
+    "bs.long_term_debt": "18585000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2085000",
+    "bs.total_liabilities": "52284000",
+    "bs.total_equity": "35572000",
+    "bs.total_liabilities_and_equity": "87856000",
+    "cf.net_income": "3241000",
+    "cf.depreciation_amortization": "2884000",
+    "cf.change_in_working_capital": "-2525000",
+    "cf.other_operating": "63000",
+    "cf.cfo": "3663000",
+    "cf.capex": "3430000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3430000",
+    "cf.revolver_net": "3976000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2655000",
+    "cf.distributions": "1210000",
+    "cf.other_financing": "0",
+    "cf.cff": "111000",
+    "cf.net_change_in_cash": "344000",
+    "sup.cash_interest_paid": "1719000",
+    "sup.cash_taxes_paid": "1726000",
+    "sup.scheduled_principal": "2655000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "28423000",
+    "cash.beginning_of_year": "3825000",
+    "debt.term_total": "22125000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "118000000",
+    "is.cogs": "84465000",
+    "is.gross_profit": "33535000",
+    "is.sga": "19471000",
+    "is.depreciation_amortization": "3702000",
+    "is.other_operating_expense": "472000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "9890000",
+    "is.interest_expense": "2935000",
+    "is.other_income_net": "71000",
+    "is.pretax_income": "7026000",
+    "is.income_tax_expense": "1757000",
+    "is.net_income": "5269000",
+    "bs.cash": "3505000",
+    "bs.accounts_receivable": "14787000",
+    "bs.inventory": "14184000",
+    "bs.other_current_assets": "1402000",
+    "bs.total_current_assets": "33878000",
+    "bs.net_ppe": "35710000",
+    "bs.intangibles": "7080000",
+    "bs.other_noncurrent_assets": "1180000",
+    "bs.total_assets": "77848000",
+    "bs.accounts_payable": "9380000",
+    "bs.accrued_liabilities": "2360000",
+    "bs.revolver": "6425000",
+    "bs.cpltd": "3540000",
+    "bs.other_current_liabilities": "2076000",
+    "bs.total_current_liabilities": "23781000",
+    "bs.long_term_debt": "28320000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1854000",
+    "bs.total_liabilities": "53955000",
+    "bs.total_equity": "23893000",
+    "bs.total_liabilities_and_equity": "77848000",
+    "cf.net_income": "5269000",
+    "cf.depreciation_amortization": "3702000",
+    "cf.change_in_working_capital": "329000",
+    "cf.other_operating": "84000",
+    "cf.cfo": "9384000",
+    "cf.capex": "4012000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4012000",
+    "cf.revolver_net": "-65000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "3540000",
+    "cf.distributions": "1802000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5407000",
+    "cf.net_change_in_cash": "-35000",
+    "sup.cash_interest_paid": "2946000",
+    "sup.cash_taxes_paid": "1850000",
+    "sup.scheduled_principal": "3540000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "7149000",
+    "equity.retained_earnings": "16744000",
+    "cash.beginning_of_year": "3540000",
+    "debt.term_total": "31860000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.35",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "34202000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6099000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2649000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2035000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3751000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14534000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.43",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "35683000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "24878000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.39",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "34636000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6122000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2590000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2042000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3763000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14517000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.42",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "38125000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "26900000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.31",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "33539000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6180000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2533000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2061000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3776000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14550000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.43",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "38826000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "27135000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.16",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "31793000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6328000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2487000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2110000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3790000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14715000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.46",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "37460000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "25632000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.07",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "30976000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6553000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2430000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2185000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3805000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14973000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.44",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "37314000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "25851000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.04",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "31250000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6851000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2373000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2285000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3821000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "15330000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.43",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "39951000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "27843000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Lorraine Destefano",
+   "reported": {
+    "total_leverage": {
+     "value": "2.41",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "33114000"
+      },
+      {
+       "label": "Net income",
+       "amount": "4866000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2313000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "1726000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "3838000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "12743000"
+      },
+      {
+       "label": "Pro forma cost savings from plant consolidation",
+       "amount": "1000000"
+      },
+      {
+       "label": "EBITDA as calculated by the Borrower",
+       "amount": "13743000"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.34",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "42335000"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "31614000"
+      }
+     ]
+    }
+   },
+   "document_id": "kestrel-bay-packaging.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "6407000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "31860000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "6565000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "31860000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "6547000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30975000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "6926000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30975000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "7280000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30975000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "7768000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30090000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "7551000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30090000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "7352000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "30090000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "7003000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "29205000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "6833000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "29205000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "6747000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "29205000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "6701000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "28320000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "6696000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "28320000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "6718000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "28320000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "6767000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "27435000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "7120000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "27435000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "7616000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "27435000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "8086000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26550000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "8015000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26550000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "7849000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26550000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "7874000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25665000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "7693000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25665000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "7410000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25665000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "7013000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24780000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "6993000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24780000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "7150000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24780000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "7081000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23895000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "7430000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23895000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "7814000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23895000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "8240000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23010000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "9037000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23010000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "9952000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23010000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "10989000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22125000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "10989000",
+   "commitment": "15500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22125000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "kestrel-bay-packaging.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/kestrel-bay-packaging/credit-agreement.pdf",
+   "pages": 11,
+   "title": "Credit Agreement between Kestrel Bay Packaging Corp. and Bank of Stoic",
+   "received_date": "2022-05-06",
+   "document_date": "2022-05-06"
+  },
+  {
+   "id": "kestrel-bay-packaging.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/kestrel-bay-packaging/afs-2024.pdf",
+   "pages": 7,
+   "title": "Kestrel Bay Packaging Corp. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-03",
+   "document_date": "2025-03-25",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "3,655"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "15,856"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "14,790"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,462"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "35,763"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "36,151"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "80,174"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "9,780"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,429"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "6,701"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "2,199"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "24,649"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "24,780"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,938"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "51,367"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "28,807"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "80,174"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "122,965"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "87,699"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "35,266"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "20,290"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,740"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "492"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "10,744"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,706"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "74"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "8,112"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "2,029"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,083"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,083"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "3,740"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(1,143)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "84"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "8,764"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,181)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(4,181)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "276"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,540)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,169)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(4,433)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "150"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,728"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "1,977"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,540"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,505",
+    "bs.accounts_receivable": "14,787",
+    "bs.inventory": "14,184",
+    "bs.other_current_assets": "1,402",
+    "bs.total_current_assets": "33,878",
+    "bs.net_ppe": "35,710",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "77,848",
+    "bs.accounts_payable": "9,380",
+    "bs.accrued_liabilities": "2,360",
+    "bs.revolver": "6,425",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,076",
+    "bs.total_current_liabilities": "23,781",
+    "bs.long_term_debt": "28,320",
+    "bs.other_noncurrent_liabilities": "1,854",
+    "bs.total_liabilities": "53,955",
+    "bs.total_equity": "23,893",
+    "bs.total_liabilities_and_equity": "77,848",
+    "is.revenue": "118,000",
+    "is.cogs": "84,465",
+    "is.gross_profit": "33,535",
+    "is.sga": "19,471",
+    "is.depreciation_amortization": "3,702",
+    "is.other_operating_expense": "472",
+    "is.operating_income": "9,890",
+    "is.interest_expense": "2,935",
+    "is.other_income_net": "71",
+    "is.pretax_income": "7,026",
+    "is.income_tax_expense": "1,757",
+    "is.net_income": "5,269",
+    "cf.net_income": "5,269",
+    "cf.depreciation_amortization": "3,702",
+    "cf.change_in_working_capital": "329",
+    "cf.other_operating": "84",
+    "cf.cfo": "9,384",
+    "cf.capex": "(4,012)",
+    "cf.cfi": "(4,012)",
+    "cf.revolver_net": "(65)",
+    "cf.term_debt_repayments": "(3,540)",
+    "cf.distributions": "(1,802)",
+    "cf.cff": "(5,407)",
+    "cf.net_change_in_cash": "(35)",
+    "sup.cash_interest_paid": "2,946",
+    "sup.cash_taxes_paid": "1,850",
+    "sup.scheduled_principal": "3,540",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/kestrel-bay-packaging/afs-2025.pdf",
+   "pages": 7,
+   "title": "Kestrel Bay Packaging Corp. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-07",
+   "document_date": "2026-03-29",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "3,825"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "16,628"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "15,477"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,530"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "37,460"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "36,715"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "82,435"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "10,235"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,517"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "7,013"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "2,327"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "25,632"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "21,240"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,022"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "48,894"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "33,541"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "82,435"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "128,060"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "91,778"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "36,282"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "21,130"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,790"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "513"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "10,849"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,487"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "76"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "8,438"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "2,110"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,328"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,328"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "3,790"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(856)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "84"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "9,346"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,354)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(4,354)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "312"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,540)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,594)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(4,822)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "170"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,502"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "2,061"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,540"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,655",
+    "bs.accounts_receivable": "15,856",
+    "bs.inventory": "14,790",
+    "bs.other_current_assets": "1,462",
+    "bs.total_current_assets": "35,763",
+    "bs.net_ppe": "36,151",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "80,174",
+    "bs.accounts_payable": "9,780",
+    "bs.accrued_liabilities": "2,429",
+    "bs.revolver": "6,701",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,199",
+    "bs.total_current_liabilities": "24,649",
+    "bs.long_term_debt": "24,780",
+    "bs.other_noncurrent_liabilities": "1,938",
+    "bs.total_liabilities": "51,367",
+    "bs.total_equity": "28,807",
+    "bs.total_liabilities_and_equity": "80,174",
+    "is.revenue": "122,965",
+    "is.cogs": "87,699",
+    "is.gross_profit": "35,266",
+    "is.sga": "20,290",
+    "is.depreciation_amortization": "3,740",
+    "is.other_operating_expense": "492",
+    "is.operating_income": "10,744",
+    "is.interest_expense": "2,706",
+    "is.other_income_net": "74",
+    "is.pretax_income": "8,112",
+    "is.income_tax_expense": "2,029",
+    "is.net_income": "6,083",
+    "cf.net_income": "6,083",
+    "cf.depreciation_amortization": "3,740",
+    "cf.change_in_working_capital": "(1,143)",
+    "cf.other_operating": "84",
+    "cf.cfo": "8,764",
+    "cf.capex": "(4,181)",
+    "cf.cfi": "(4,181)",
+    "cf.revolver_net": "276",
+    "cf.term_debt_repayments": "(3,540)",
+    "cf.distributions": "(1,169)",
+    "cf.cff": "(4,433)",
+    "cf.net_change_in_cash": "150",
+    "sup.cash_interest_paid": "2,728",
+    "sup.cash_taxes_paid": "1,977",
+    "sup.scheduled_principal": "3,540",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/kestrel-bay-packaging/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Kestrel Bay Packaging Corp. interim financial statements, Q1 2025",
+   "received_date": "2025-05-02",
+   "document_date": "2025-04-28",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,691"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "15,505"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,011"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,476"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "35,683"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "36,255"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "80,198"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "9,927"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,444"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,767"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,200"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "24,878"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "23,895"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,959"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "50,732"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "29,466"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "80,198"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "30,758"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "22,093"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,665"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,075"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "942"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "123"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,525"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "633"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "18"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,910"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "478"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,432"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,432"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "942"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "279"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "21"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,674"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,046)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,046)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "66"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(885)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(773)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,592)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "36"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "640"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "493"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "885"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,571",
+    "bs.accounts_receivable": "15,133",
+    "bs.inventory": "14,432",
+    "bs.other_current_assets": "1,429",
+    "bs.total_current_assets": "34,565",
+    "bs.net_ppe": "35,791",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "78,616",
+    "bs.accounts_payable": "9,543",
+    "bs.accrued_liabilities": "2,391",
+    "bs.revolver": "6,547",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,139",
+    "bs.total_current_liabilities": "24,160",
+    "bs.long_term_debt": "27,435",
+    "bs.other_noncurrent_liabilities": "1,875",
+    "bs.total_liabilities": "53,470",
+    "bs.total_equity": "25,146",
+    "bs.total_liabilities_and_equity": "78,616",
+    "is.revenue": "29,761",
+    "is.cogs": "21,240",
+    "is.gross_profit": "8,521",
+    "is.sga": "4,911",
+    "is.depreciation_amortization": "931",
+    "is.other_operating_expense": "119",
+    "is.operating_income": "2,560",
+    "is.interest_expense": "690",
+    "is.other_income_net": "18",
+    "is.pretax_income": "1,888",
+    "is.income_tax_expense": "472",
+    "is.net_income": "1,416",
+    "cf.net_income": "1,416",
+    "cf.depreciation_amortization": "931",
+    "cf.change_in_working_capital": "(364)",
+    "cf.other_operating": "21",
+    "cf.cfo": "2,004",
+    "cf.capex": "(1,012)",
+    "cf.cfi": "(1,012)",
+    "cf.revolver_net": "122",
+    "cf.term_debt_repayments": "(885)",
+    "cf.distributions": "(163)",
+    "cf.cff": "(926)",
+    "cf.net_change_in_cash": "66",
+    "sup.cash_interest_paid": "700",
+    "sup.cash_taxes_paid": "441",
+    "sup.scheduled_principal": "885",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Kestrel Bay Packaging Corp. interim financial statements, Q2 2025",
+   "received_date": "2025-08-04",
+   "document_date": "2025-07-31",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,869"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,996"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,712"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,548"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "38,125"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "36,406"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "82,791"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "10,390"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,547"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "8,086"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,337"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "26,900"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "23,010"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,980"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "51,890"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "30,901"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "82,791"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "63,000"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "45,217"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "17,783"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,395"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,887"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "252"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,249"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,251"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "37"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,035"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,009"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,026"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,026"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,887"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,282)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "42"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,673"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,142)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,142)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,385"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,770)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(932)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,317)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "214"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,263"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "971"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,770"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,737",
+    "bs.accounts_receivable": "16,553",
+    "bs.inventory": "15,079",
+    "bs.other_current_assets": "1,495",
+    "bs.total_current_assets": "36,864",
+    "bs.net_ppe": "35,917",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "81,041",
+    "bs.accounts_payable": "9,972",
+    "bs.accrued_liabilities": "2,487",
+    "bs.revolver": "7,768",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,268",
+    "bs.total_current_liabilities": "26,035",
+    "bs.long_term_debt": "26,550",
+    "bs.other_noncurrent_liabilities": "1,896",
+    "bs.total_liabilities": "54,481",
+    "bs.total_equity": "26,560",
+    "bs.total_liabilities_and_equity": "81,041",
+    "is.revenue": "60,904",
+    "is.cogs": "43,433",
+    "is.gross_profit": "17,471",
+    "is.sga": "10,050",
+    "is.depreciation_amortization": "1,864",
+    "is.other_operating_expense": "244",
+    "is.operating_income": "5,313",
+    "is.interest_expense": "1,367",
+    "is.other_income_net": "37",
+    "is.pretax_income": "3,983",
+    "is.income_tax_expense": "996",
+    "is.net_income": "2,987",
+    "cf.net_income": "2,987",
+    "cf.depreciation_amortization": "1,864",
+    "cf.change_in_working_capital": "(1,843)",
+    "cf.other_operating": "42",
+    "cf.cfo": "3,050",
+    "cf.capex": "(2,071)",
+    "cf.cfi": "(2,071)",
+    "cf.revolver_net": "1,343",
+    "cf.term_debt_repayments": "(1,770)",
+    "cf.distributions": "(320)",
+    "cf.cff": "(747)",
+    "cf.net_change_in_cash": "232",
+    "sup.cash_interest_paid": "1,381",
+    "sup.cash_taxes_paid": "913",
+    "sup.scheduled_principal": "1,770",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Kestrel Bay Packaging Corp. interim financial statements, Q3 2025",
+   "received_date": "2025-10-26",
+   "document_date": "2025-10-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,982"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,092"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "16,159"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,593"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "38,826"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "36,585"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "83,671"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "10,686"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,618"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "7,874"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,417"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "27,135"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "22,125"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,001"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "51,261"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "32,410"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "83,671"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "96,183"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "68,999"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "27,184"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "15,870"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,836"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "385"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "8,093"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,879"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "57"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "6,271"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,568"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "4,703"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,703"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,836"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,423)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "63"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "6,179"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,270)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(3,270)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,173"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,655)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,100)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,582)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "327"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,888"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,502"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,655"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,792",
+    "bs.accounts_receivable": "16,172",
+    "bs.inventory": "15,287",
+    "bs.other_current_assets": "1,517",
+    "bs.total_current_assets": "36,768",
+    "bs.net_ppe": "36,055",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "81,083",
+    "bs.accounts_payable": "10,109",
+    "bs.accrued_liabilities": "2,522",
+    "bs.revolver": "7,003",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,310",
+    "bs.total_current_liabilities": "25,484",
+    "bs.long_term_debt": "25,665",
+    "bs.other_noncurrent_liabilities": "1,917",
+    "bs.total_liabilities": "53,066",
+    "bs.total_equity": "28,017",
+    "bs.total_liabilities_and_equity": "81,083",
+    "is.revenue": "92,504",
+    "is.cogs": "65,932",
+    "is.gross_profit": "26,572",
+    "is.sga": "15,264",
+    "is.depreciation_amortization": "2,800",
+    "is.other_operating_expense": "370",
+    "is.operating_income": "8,138",
+    "is.interest_expense": "2,052",
+    "is.other_income_net": "56",
+    "is.pretax_income": "6,142",
+    "is.income_tax_expense": "1,536",
+    "is.net_income": "4,606",
+    "cf.net_income": "4,606",
+    "cf.depreciation_amortization": "2,800",
+    "cf.change_in_working_capital": "(1,478)",
+    "cf.other_operating": "63",
+    "cf.cfo": "5,991",
+    "cf.capex": "(3,145)",
+    "cf.cfi": "(3,145)",
+    "cf.revolver_net": "578",
+    "cf.term_debt_repayments": "(2,655)",
+    "cf.distributions": "(482)",
+    "cf.cff": "(2,559)",
+    "cf.net_change_in_cash": "287",
+    "sup.cash_interest_paid": "2,064",
+    "sup.cash_taxes_paid": "1,437",
+    "sup.scheduled_principal": "2,655",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/kestrel-bay-packaging/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Kestrel Bay Packaging Corp. interim financial statements, Q1 2026",
+   "received_date": "2026-05-06",
+   "document_date": "2026-05-02",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "3,863"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,262"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "15,644"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,545"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "37,314"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "36,852"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "82,426"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "10,345"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,529"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "7,081"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,356"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "25,851"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "20,355"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,043"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "48,249"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "34,177"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "82,426"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "32,188"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "23,024"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,164"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,311"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "957"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "129"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,767"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "576"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "19"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,210"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "553"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,657"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,657"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "957"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "335"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "21"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,970"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,094)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,094)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "68"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(885)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,021)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,838)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "38"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "587"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "542"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "885"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,691",
+    "bs.accounts_receivable": "15,505",
+    "bs.inventory": "15,011",
+    "bs.other_current_assets": "1,476",
+    "bs.total_current_assets": "35,683",
+    "bs.net_ppe": "36,255",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "80,198",
+    "bs.accounts_payable": "9,927",
+    "bs.accrued_liabilities": "2,444",
+    "bs.revolver": "6,767",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,200",
+    "bs.total_current_liabilities": "24,878",
+    "bs.long_term_debt": "23,895",
+    "bs.other_noncurrent_liabilities": "1,959",
+    "bs.total_liabilities": "50,732",
+    "bs.total_equity": "29,466",
+    "bs.total_liabilities_and_equity": "80,198",
+    "is.revenue": "30,758",
+    "is.cogs": "22,093",
+    "is.gross_profit": "8,665",
+    "is.sga": "5,075",
+    "is.depreciation_amortization": "942",
+    "is.other_operating_expense": "123",
+    "is.operating_income": "2,525",
+    "is.interest_expense": "633",
+    "is.other_income_net": "18",
+    "is.pretax_income": "1,910",
+    "is.income_tax_expense": "478",
+    "is.net_income": "1,432",
+    "cf.net_income": "1,432",
+    "cf.depreciation_amortization": "942",
+    "cf.change_in_working_capital": "279",
+    "cf.other_operating": "21",
+    "cf.cfo": "2,674",
+    "cf.capex": "(1,046)",
+    "cf.cfi": "(1,046)",
+    "cf.revolver_net": "66",
+    "cf.term_debt_repayments": "(885)",
+    "cf.distributions": "(773)",
+    "cf.cff": "(1,592)",
+    "cf.net_change_in_cash": "36",
+    "sup.cash_interest_paid": "640",
+    "sup.cash_taxes_paid": "493",
+    "sup.scheduled_principal": "885",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Kestrel Bay Packaging Corp. interim financial statements, Q2 2026",
+   "received_date": "2026-07-30",
+   "document_date": "2026-07-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,077"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,796"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "16,447"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,631"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "39,951"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "37,046"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "85,257"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "10,876"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,654"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "8,240"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,533"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "27,843"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "19,470"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,064"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "49,377"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "35,880"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "85,257"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "66,161"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "47,230"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "18,931"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "10,917"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,918"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "265"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,831"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,137"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "39"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,733"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,184"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,549"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,549"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,918"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,255)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "42"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "4,254"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,249)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,249)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,227"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,770)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,210)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,753)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "252"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,153"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,095"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,770"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,869",
+    "bs.accounts_receivable": "16,996",
+    "bs.inventory": "15,712",
+    "bs.other_current_assets": "1,548",
+    "bs.total_current_assets": "38,125",
+    "bs.net_ppe": "36,406",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "82,791",
+    "bs.accounts_payable": "10,390",
+    "bs.accrued_liabilities": "2,547",
+    "bs.revolver": "8,086",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,337",
+    "bs.total_current_liabilities": "26,900",
+    "bs.long_term_debt": "23,010",
+    "bs.other_noncurrent_liabilities": "1,980",
+    "bs.total_liabilities": "51,890",
+    "bs.total_equity": "30,901",
+    "bs.total_liabilities_and_equity": "82,791",
+    "is.revenue": "63,000",
+    "is.cogs": "45,217",
+    "is.gross_profit": "17,783",
+    "is.sga": "10,395",
+    "is.depreciation_amortization": "1,887",
+    "is.other_operating_expense": "252",
+    "is.operating_income": "5,249",
+    "is.interest_expense": "1,251",
+    "is.other_income_net": "37",
+    "is.pretax_income": "4,035",
+    "is.income_tax_expense": "1,009",
+    "is.net_income": "3,026",
+    "cf.net_income": "3,026",
+    "cf.depreciation_amortization": "1,887",
+    "cf.change_in_working_capital": "(1,282)",
+    "cf.other_operating": "42",
+    "cf.cfo": "3,673",
+    "cf.capex": "(2,142)",
+    "cf.cfi": "(2,142)",
+    "cf.revolver_net": "1,385",
+    "cf.term_debt_repayments": "(1,770)",
+    "cf.distributions": "(932)",
+    "cf.cff": "(1,317)",
+    "cf.net_change_in_cash": "214",
+    "sup.cash_interest_paid": "1,263",
+    "sup.cash_taxes_paid": "971",
+    "sup.scheduled_principal": "1,770",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Kestrel Bay Packaging Corp. interim financial statements, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,169"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,703"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "18,796"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,667"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "42,335"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "37,261"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "7,080"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,180"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "87,856"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "12,429"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,711"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "10,989"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,540"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,945"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "31,614"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "18,585"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,085"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "52,284"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "35,572"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "87,856"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "100,900"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "74,893"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "26,007"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "16,649"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,884"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "404"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,070"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,705"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "60"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,425"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,184"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,241"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,241"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,884"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(2,525)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "63"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,663"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(3,430)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(3,430)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "3,976"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,655)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,210)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "111"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "344"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,719"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,726"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,655"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,982",
+    "bs.accounts_receivable": "17,092",
+    "bs.inventory": "16,159",
+    "bs.other_current_assets": "1,593",
+    "bs.total_current_assets": "38,826",
+    "bs.net_ppe": "36,585",
+    "bs.intangibles": "7,080",
+    "bs.other_noncurrent_assets": "1,180",
+    "bs.total_assets": "83,671",
+    "bs.accounts_payable": "10,686",
+    "bs.accrued_liabilities": "2,618",
+    "bs.revolver": "7,874",
+    "bs.cpltd": "3,540",
+    "bs.other_current_liabilities": "2,417",
+    "bs.total_current_liabilities": "27,135",
+    "bs.long_term_debt": "22,125",
+    "bs.other_noncurrent_liabilities": "2,001",
+    "bs.total_liabilities": "51,261",
+    "bs.total_equity": "32,410",
+    "bs.total_liabilities_and_equity": "83,671",
+    "is.revenue": "96,183",
+    "is.cogs": "68,999",
+    "is.gross_profit": "27,184",
+    "is.sga": "15,870",
+    "is.depreciation_amortization": "2,836",
+    "is.other_operating_expense": "385",
+    "is.operating_income": "8,093",
+    "is.interest_expense": "1,879",
+    "is.other_income_net": "57",
+    "is.pretax_income": "6,271",
+    "is.income_tax_expense": "1,568",
+    "is.net_income": "4,703",
+    "cf.net_income": "4,703",
+    "cf.depreciation_amortization": "2,836",
+    "cf.change_in_working_capital": "(1,423)",
+    "cf.other_operating": "63",
+    "cf.cfo": "6,179",
+    "cf.capex": "(3,270)",
+    "cf.cfi": "(3,270)",
+    "cf.revolver_net": "1,173",
+    "cf.term_debt_repayments": "(2,655)",
+    "cf.distributions": "(1,100)",
+    "cf.cff": "(2,582)",
+    "cf.net_change_in_cash": "327",
+    "sup.cash_interest_paid": "1,888",
+    "sup.cash_taxes_paid": "1,502",
+    "sup.scheduled_principal": "2,655",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/kestrel-bay-packaging/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, Q1 2025",
+   "received_date": "2025-05-02",
+   "document_date": "2025-04-30",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/kestrel-bay-packaging/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, Q2 2025",
+   "received_date": "2025-08-04",
+   "document_date": "2025-08-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/kestrel-bay-packaging/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, Q3 2025",
+   "received_date": "2025-10-26",
+   "document_date": "2025-10-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/kestrel-bay-packaging/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, FY2025",
+   "received_date": "2026-02-01",
+   "document_date": "2026-01-30",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/kestrel-bay-packaging/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, Q1 2026",
+   "received_date": "2026-05-06",
+   "document_date": "2026-05-04",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/kestrel-bay-packaging/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, Q2 2026",
+   "received_date": "2026-07-30",
+   "document_date": "2026-07-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/kestrel-bay-packaging/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Kestrel Bay Packaging Corp. compliance certificate, Q3 2026",
+   "received_date": "2026-10-30",
+   "document_date": "2026-10-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "hidden_breach",
+  "description": "Breach behind a compliant certificate: the leverage covenant fails for the current quarter, but the borrower's certificate adds pro forma cost savings that the agreement does not permit and claims compliance.",
+  "details": {
+   "covenant_id": "total_leverage",
+   "unpermitted_addback": "Pro forma cost savings from plant consolidation",
+   "amount": "1000000"
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.35",
+    "pass": true,
+    "headroom": "0.0600",
+    "reported_value": "2.35",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "34202000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6099000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2649000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2035000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3751000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14534000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.43",
+    "pass": true,
+    "headroom": "0.1440",
+    "reported_value": "1.43",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "35683000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "24878000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.39",
+    "pass": true,
+    "headroom": "0.0440",
+    "reported_value": "2.39",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "34636000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6122000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2590000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2042000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3763000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14517000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.42",
+    "pass": true,
+    "headroom": "0.1360",
+    "reported_value": "1.42",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "38125000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "26900000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.31",
+    "pass": true,
+    "headroom": "0.0760",
+    "reported_value": "2.31",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "33539000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6180000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2533000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2061000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3776000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14550000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.43",
+    "pass": true,
+    "headroom": "0.1440",
+    "reported_value": "1.43",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "38826000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "27135000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.16",
+    "pass": true,
+    "headroom": "0.1360",
+    "reported_value": "2.16",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "31793000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6328000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2487000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2110000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3790000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14715000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.46",
+    "pass": true,
+    "headroom": "0.1680",
+    "reported_value": "1.46",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "37460000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "25632000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.07",
+    "pass": true,
+    "headroom": "0.1720",
+    "reported_value": "2.07",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "30976000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6553000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2430000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2185000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3805000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14973000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.44",
+    "pass": true,
+    "headroom": "0.1520",
+    "reported_value": "1.44",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "37314000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "25851000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.04",
+    "pass": true,
+    "headroom": "0.1840",
+    "reported_value": "2.04",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "31250000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6851000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2373000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2285000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3821000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "15330000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.43",
+    "pass": true,
+    "headroom": "0.1440",
+    "reported_value": "1.43",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "39951000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "27843000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "2.60",
+    "pass": false,
+    "headroom": "-0.0400",
+    "reported_value": "2.41",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "breach_reported_compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "33114000"
+     },
+     {
+      "label": "Net income",
+      "amount": "4866000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2313000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "1726000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "3838000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "12743000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "kestrel-bay-packaging-rlc",
+    "terms_version_id": "tv-kestrel-bay-packaging-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.34",
+    "pass": true,
+    "headroom": "0.0720",
+    "reported_value": "1.34",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "42335000"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "31614000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-03-31",
+    "severity": "medium",
+    "value": "0.0600",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-06-30",
+    "severity": "medium",
+    "value": "0.0440",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-09-30",
+    "severity": "medium",
+    "value": "0.0760",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.1440",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.1680",
+     "prior_period": "0.1520"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.0400",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "0.0720",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "current_ratio"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.0720",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "current_ratio",
+     "two_periods_ago": "0.1520",
+     "prior_period": "0.1440"
+    }
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "covenant.reported_mismatch",
+    "severity": "critical",
+    "period_end": "2026-09-30",
+    "subject": "covenant:total_leverage",
+    "summary": "Total Leverage Ratio fails its threshold while the certificate claims compliance."
+   }
+  ]
+ }
+}

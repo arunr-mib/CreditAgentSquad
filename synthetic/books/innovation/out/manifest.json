@@ -1,0 +1,2825 @@
+{
+ "schema": "synthetic-manifest-2",
+ "seed": 20261120,
+ "legacy_seed": 20261117,
+ "as_of": "2026-11-19",
+ "lender": "Bank of Stoic",
+ "counts": {
+  "borrowers": 20,
+  "documents": 301,
+  "pages": 854
+ },
+ "borrowers": [
+  {
+   "id": "dataflake",
+   "name": "Dataflake Inc",
+   "scenario": "pledged_cash"
+  },
+  {
+   "id": "lumora-health",
+   "name": "Lumora Health",
+   "scenario": "late_package"
+  },
+  {
+   "id": "brightvane-energy",
+   "name": "Brightvane Energy",
+   "scenario": "runway_falling"
+  },
+  {
+   "id": "mosswell-robotics",
+   "name": "Mosswell Robotics",
+   "scenario": "clean"
+  },
+  {
+   "id": "halcyon-grid",
+   "name": "Halcyon Grid",
+   "scenario": "funding_expected"
+  },
+  {
+   "id": "quillon-ai",
+   "name": "Quillon AI",
+   "scenario": "clean"
+  },
+  {
+   "id": "kelvra-bio",
+   "name": "Kelvra Bio",
+   "scenario": "funding_expected"
+  },
+  {
+   "id": "orbitline-systems",
+   "name": "Orbitline Systems",
+   "scenario": "clean"
+  },
+  {
+   "id": "stripple-tech",
+   "name": "Stripple Tech",
+   "scenario": "stripple_package"
+  },
+  {
+   "id": "veridia-payments",
+   "name": "Veridia Payments",
+   "scenario": "clean"
+  },
+  {
+   "id": "tessaract-labs",
+   "name": "Tessaract Labs",
+   "scenario": "clean"
+  },
+  {
+   "id": "pellucid-sensors",
+   "name": "Pellucid Sensors",
+   "scenario": "clean"
+  },
+  {
+   "id": "corvane-analytics",
+   "name": "Corvane Analytics",
+   "scenario": "plan_miss"
+  },
+  {
+   "id": "nimbusfield-security",
+   "name": "Nimbusfield Security",
+   "scenario": "funding_slipped"
+  },
+  {
+   "id": "tidewell-medical",
+   "name": "Tidewell Medical",
+   "scenario": "restricted_account"
+  },
+  {
+   "id": "ferrogate-cloud",
+   "name": "Ferrogate Cloud",
+   "scenario": "cash_flow_positive"
+  },
+  {
+   "id": "kestrel-bay-packaging",
+   "name": "Kestrel Bay Packaging Corp.",
+   "scenario": "hidden_breach"
+  },
+  {
+   "id": "harrowgate-precision",
+   "name": "Harrowgate Precision Components, Inc.",
+   "scenario": "clean"
+  },
+  {
+   "id": "briarstone-beverage",
+   "name": "Briarstone Beverage Company",
+   "scenario": "over_advance"
+  },
+  {
+   "id": "pellham-grain",
+   "name": "Pellham Grain & Milling Co.",
+   "scenario": "reported_breach"
+  }
+ ],
+ "documents": [
+  {
+   "id": "dataflake.credit-agreement",
+   "borrower_id": "dataflake",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/dataflake/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "8edb3cfe7a3ca609376acba7a40c7ea2dd6955234abbd65ba7040d5f975adba9"
+  },
+  {
+   "id": "dataflake.afs-2025",
+   "borrower_id": "dataflake",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/dataflake/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "03c01d5363bfb153868b949c9f0db54e592b96e05a3878d395b769047f59bc8a"
+  },
+  {
+   "id": "dataflake.bank-2026-08-31",
+   "borrower_id": "dataflake",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/dataflake/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "9474e66b7d88f0f81138f954ed7d88f4584b7f7062e8569365ef98edd8d624fd"
+  },
+  {
+   "id": "dataflake.mrr-2026-08-31",
+   "borrower_id": "dataflake",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/dataflake/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "bccb26ce6d0e9c25596b641a546f3daba88fcd587bc9d2d7d7062fa371baf3f7"
+  },
+  {
+   "id": "dataflake.mf-2026-08-31",
+   "borrower_id": "dataflake",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/dataflake/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "a0157402e61470c75b7c16e6d81d34d72dee25273c8b59d5835a5189c71fadc0"
+  },
+  {
+   "id": "dataflake.mcc-2026-08-31",
+   "borrower_id": "dataflake",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/dataflake/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "ea9ce34e03c6727bfe96b3664f5212863daeebdabd2a5fd82c5dadd6cf138883"
+  },
+  {
+   "id": "dataflake.bank-2026-09-30",
+   "borrower_id": "dataflake",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/dataflake/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "81fc1373674746f52ae16dd645025785fdbcca86cbf5512cc27698a3432d5c60"
+  },
+  {
+   "id": "dataflake.mrr-2026-09-30",
+   "borrower_id": "dataflake",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/dataflake/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "b8adfb9a88886eb1e6b9e6978e61222ed5697e4f4cd67a99908f4ff0a0c289d4"
+  },
+  {
+   "id": "dataflake.mf-2026-09-30",
+   "borrower_id": "dataflake",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/dataflake/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "bd7427b7fd2a283f6d262022602463d84c6d1e307b0e2b41179aeca5aeec35af"
+  },
+  {
+   "id": "dataflake.mcc-2026-09-30",
+   "borrower_id": "dataflake",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/dataflake/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "37ea2b34f656d0ddb6d29223ff6b6168324ec8f93d7df2a12a2416b67ca3538b"
+  },
+  {
+   "id": "dataflake.bank-2026-10-31",
+   "borrower_id": "dataflake",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/dataflake/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "0a3c0326c30830cb652ce0e92ac6594b2ae86a164c5f1929a966264849944298"
+  },
+  {
+   "id": "dataflake.mrr-2026-10-31",
+   "borrower_id": "dataflake",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/dataflake/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "b49000d213adb2b8fc78a64a9811caa838a126a6c7fecf0c1d569a8dfcdc89a9"
+  },
+  {
+   "id": "dataflake.mf-2026-10-31",
+   "borrower_id": "dataflake",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/dataflake/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "943cb4ca6c6f902ce6fd9967ea9f3056617ac4f0087ccbd0a9095556ed1d5a8e"
+  },
+  {
+   "id": "dataflake.mcc-2026-10-31",
+   "borrower_id": "dataflake",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/dataflake/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "95ad96548c50bfa3bb5d807acf17317edafc0457649a836a6f1adf1c8e3ae3ef"
+  },
+  {
+   "id": "dataflake.term-sheet-2026-11-10",
+   "borrower_id": "dataflake",
+   "type": "term_sheet",
+   "period_end": null,
+   "path": "documents/dataflake/term-sheet-2026-11-10.pdf",
+   "pages": 1,
+   "text_sha256": "6f296ae09f62e1ee19acd5d4738b94ca90321822083ec7ad8ddda12cb5f39040"
+  },
+  {
+   "id": "dataflake.investor-update-2026-10-31",
+   "borrower_id": "dataflake",
+   "type": "investor_update",
+   "period_end": "2026-10-31",
+   "path": "documents/dataflake/investor-update-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "6d4b78fecdce73edf640afaf021fea96dc92a5d0a07bf312f8d8fb18fd2a1d16"
+  },
+  {
+   "id": "lumora-health.credit-agreement",
+   "borrower_id": "lumora-health",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/lumora-health/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "34382f768a38030051f774ef78ed8b8c14c32bb63c7cb0659614698c24eccc83"
+  },
+  {
+   "id": "lumora-health.afs-2025",
+   "borrower_id": "lumora-health",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/lumora-health/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "28fe69c0e4b06bef8d309e17dbdc389956cadb85eee556a15d43fc9dbf368e5f"
+  },
+  {
+   "id": "lumora-health.bank-2026-08-31",
+   "borrower_id": "lumora-health",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/lumora-health/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "a3d6baa60a49e7a44cf9aaeb47b5fc9dd98ff82c2c2b54d0489babdf0c6c288f"
+  },
+  {
+   "id": "lumora-health.mrr-2026-08-31",
+   "borrower_id": "lumora-health",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/lumora-health/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "0672dea602ddd1585acb220001482d232ce445365bd39c37118ab4874ec239a7"
+  },
+  {
+   "id": "lumora-health.mf-2026-08-31",
+   "borrower_id": "lumora-health",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/lumora-health/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "03fcb39d24b001e7bfd0e5365f0714dd5207bf4e4a28a2919f57199e39966725"
+  },
+  {
+   "id": "lumora-health.mcc-2026-08-31",
+   "borrower_id": "lumora-health",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/lumora-health/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "497ada5851bb7cdf3e879ed47878021d1028016da0ca6d045da6cb8dd74f5ddb"
+  },
+  {
+   "id": "lumora-health.bank-2026-09-30",
+   "borrower_id": "lumora-health",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/lumora-health/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "714f5866b6e995907717733460a4e68ecb920e8709d1144839cecfc174b7112d"
+  },
+  {
+   "id": "lumora-health.mrr-2026-09-30",
+   "borrower_id": "lumora-health",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/lumora-health/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "9109d52d05188c628f345537e0cae5ac659fdec6d8a5de6ffc17d0913cf52197"
+  },
+  {
+   "id": "lumora-health.mf-2026-09-30",
+   "borrower_id": "lumora-health",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/lumora-health/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "0cd6df78e8887320d748b40961188484ac2d2d63916ba16a2141b6f2cfd61fbb"
+  },
+  {
+   "id": "lumora-health.mcc-2026-09-30",
+   "borrower_id": "lumora-health",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/lumora-health/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "2852d07e4e163aae6129265d79ce0fcec76d97a1c57e82df2f1e84fba3f1a226"
+  },
+  {
+   "id": "brightvane-energy.credit-agreement",
+   "borrower_id": "brightvane-energy",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/brightvane-energy/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "1ed004868ee554de0dd046388afc10287a2496a036e513b1518d6d1eab81189f"
+  },
+  {
+   "id": "brightvane-energy.afs-2025",
+   "borrower_id": "brightvane-energy",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/brightvane-energy/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "d725d58ade17fe0ce8f6428f139614c5d059aed217abcbf41540d2db63a84fb1"
+  },
+  {
+   "id": "brightvane-energy.bank-2026-08-31",
+   "borrower_id": "brightvane-energy",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/brightvane-energy/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "fe6fb0d6720c8e779752a4dc65484305f9c941c734f167292d9255dd9fec1c03"
+  },
+  {
+   "id": "brightvane-energy.mrr-2026-08-31",
+   "borrower_id": "brightvane-energy",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/brightvane-energy/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "5e58ecd6b29688cc87ab6ce35c7ebd048ec75ee3b0ccb397f682cf4b82ba9a91"
+  },
+  {
+   "id": "brightvane-energy.mf-2026-08-31",
+   "borrower_id": "brightvane-energy",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/brightvane-energy/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "26a973f072f9e9548633a694fcda374ae07c4e83a96c27ddf36413f429a6e7fa"
+  },
+  {
+   "id": "brightvane-energy.mcc-2026-08-31",
+   "borrower_id": "brightvane-energy",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/brightvane-energy/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "22528bb9d98c265b781ae521630f07e06fb13b46e07ef4dda1ef1401139986f2"
+  },
+  {
+   "id": "brightvane-energy.bank-2026-09-30",
+   "borrower_id": "brightvane-energy",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/brightvane-energy/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "8178177e7b44cb541ecdef55bea4c3bde25a3728b03a6e9178d64dffe0c47345"
+  },
+  {
+   "id": "brightvane-energy.mrr-2026-09-30",
+   "borrower_id": "brightvane-energy",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/brightvane-energy/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "d8500623559230023bf38796cf434f791cc68a3d13ff2cbca460cf5127008c10"
+  },
+  {
+   "id": "brightvane-energy.mf-2026-09-30",
+   "borrower_id": "brightvane-energy",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/brightvane-energy/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "9b0ff8aa89056a9fe6071febcf864848f5cfd634455547b64738ed79afba7ec1"
+  },
+  {
+   "id": "brightvane-energy.mcc-2026-09-30",
+   "borrower_id": "brightvane-energy",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/brightvane-energy/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "1bf78b2d5ee3d8620c77f141821a22340f8e74f59a27dc54d8c63d30d721a855"
+  },
+  {
+   "id": "brightvane-energy.bank-2026-10-31",
+   "borrower_id": "brightvane-energy",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/brightvane-energy/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "a2ae8b0bb296636acd95a89948d931ffa42291c2ed1321dddef2b267ca39b5e4"
+  },
+  {
+   "id": "brightvane-energy.mrr-2026-10-31",
+   "borrower_id": "brightvane-energy",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/brightvane-energy/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "7930445cca66ef9a328009f789026dc75b2bc54cee8b684eef1090592d41b871"
+  },
+  {
+   "id": "brightvane-energy.mf-2026-10-31",
+   "borrower_id": "brightvane-energy",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/brightvane-energy/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "51459c97c3ffde2b736e77496ca4aad0e4c491666c8d5518316af0b8e416d61b"
+  },
+  {
+   "id": "brightvane-energy.mcc-2026-10-31",
+   "borrower_id": "brightvane-energy",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/brightvane-energy/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "2248df76f8b323d72008ba8daec88cdf000472f035e7bf27f6602f4f094604c3"
+  },
+  {
+   "id": "mosswell-robotics.credit-agreement",
+   "borrower_id": "mosswell-robotics",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/mosswell-robotics/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "778add5ccab42e6d76c636b764d6622edaa28251120f8fb0f31b357b4ef9fac6"
+  },
+  {
+   "id": "mosswell-robotics.afs-2025",
+   "borrower_id": "mosswell-robotics",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/mosswell-robotics/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "fda4c61a56b6afd8e4b2d77abea7c3d09a78ca0f8995adeea81c74664fa57397"
+  },
+  {
+   "id": "mosswell-robotics.bank-2026-08-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/mosswell-robotics/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "3db28bb679a180a8ba844b18a0e92e8d18b47b13b2b59561acaa17d0eb1cd291"
+  },
+  {
+   "id": "mosswell-robotics.mrr-2026-08-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/mosswell-robotics/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "c4b9ed8e91824a7639a31865aad69b0f143f47b0da099530c16923e548f2d987"
+  },
+  {
+   "id": "mosswell-robotics.mf-2026-08-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/mosswell-robotics/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "9a0abd06a540a6844a35ab770ee8048bbd7c62ae9cb514318561348708716755"
+  },
+  {
+   "id": "mosswell-robotics.mcc-2026-08-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/mosswell-robotics/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "d3db949621487b34a94b19eff5302a2e5440014f8f978b4d37bfa1b73cdbaea3"
+  },
+  {
+   "id": "mosswell-robotics.bank-2026-09-30",
+   "borrower_id": "mosswell-robotics",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/mosswell-robotics/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "d95945538829403eb66908885ea9f656bdd73687175d924f911925d81407963e"
+  },
+  {
+   "id": "mosswell-robotics.mrr-2026-09-30",
+   "borrower_id": "mosswell-robotics",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/mosswell-robotics/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "9870f839c4c0da7f79722160c9442568d2902f4896f0484c4254ed88cc0c8e3b"
+  },
+  {
+   "id": "mosswell-robotics.mf-2026-09-30",
+   "borrower_id": "mosswell-robotics",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/mosswell-robotics/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "0c50ed6d227abf7052df8ee6461a3f5cacd33a2856556160337b5d1abc63cd35"
+  },
+  {
+   "id": "mosswell-robotics.mcc-2026-09-30",
+   "borrower_id": "mosswell-robotics",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/mosswell-robotics/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "42d148f9b59836b5f0799aee2c3703ef9872043b0d8ff4003bd739c045ed018d"
+  },
+  {
+   "id": "mosswell-robotics.bank-2026-10-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/mosswell-robotics/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "f762307193ccf75d30d06901b989b59375e5723b07254540016fd0a7d9fd671f"
+  },
+  {
+   "id": "mosswell-robotics.mrr-2026-10-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/mosswell-robotics/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "bec235e0f3221d7854095aa0e8dc0d0c054cc89fd1c38fb5dbbf86ba2f8fa407"
+  },
+  {
+   "id": "mosswell-robotics.mf-2026-10-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/mosswell-robotics/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "dda437ff1d5877ac2e89d5310eb3ae97c592275512b7a48747a9e5c59e95a90b"
+  },
+  {
+   "id": "mosswell-robotics.mcc-2026-10-31",
+   "borrower_id": "mosswell-robotics",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/mosswell-robotics/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "70154554f921633cd547c9d47a6d06e349fb697d0ad623c95707cd16fffc8da9"
+  },
+  {
+   "id": "halcyon-grid.credit-agreement",
+   "borrower_id": "halcyon-grid",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/halcyon-grid/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "34498c7a1900fd8d0dc473fe140f80d31159cd048c9e82e5f1e989779e699f70"
+  },
+  {
+   "id": "halcyon-grid.afs-2025",
+   "borrower_id": "halcyon-grid",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/halcyon-grid/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "5051f45aa3f8dd26bb4b95b148d36070fa8ad707c589396db7021ffa1ea913d6"
+  },
+  {
+   "id": "halcyon-grid.bank-2026-08-31",
+   "borrower_id": "halcyon-grid",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/halcyon-grid/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "9949adb18008866c7243d554fe351684ff9d15f458fd03950bbc72304c589940"
+  },
+  {
+   "id": "halcyon-grid.mrr-2026-08-31",
+   "borrower_id": "halcyon-grid",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/halcyon-grid/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "ed6abb0b601b6cd9788d79b30afae8ea86c71aa5eccf484e2de8c2be3b820f0e"
+  },
+  {
+   "id": "halcyon-grid.mf-2026-08-31",
+   "borrower_id": "halcyon-grid",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/halcyon-grid/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "2b2b9914b5a0c0e08993c17bdf23a946711ae65b759dac1a335f890cd1825ede"
+  },
+  {
+   "id": "halcyon-grid.mcc-2026-08-31",
+   "borrower_id": "halcyon-grid",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/halcyon-grid/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "26d74a7b9c3eadca71cda33d30fb9830a786d707c615333e47a6f9de6c00ee84"
+  },
+  {
+   "id": "halcyon-grid.bank-2026-09-30",
+   "borrower_id": "halcyon-grid",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/halcyon-grid/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "a1acb47bcd1eaf8daad307b2ee8851457a984b4d560c5a0cf5de840e57e82995"
+  },
+  {
+   "id": "halcyon-grid.mrr-2026-09-30",
+   "borrower_id": "halcyon-grid",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/halcyon-grid/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "5731e4ba89dd5543434004539eee234497d694ce5f6027e9477967cbeb736233"
+  },
+  {
+   "id": "halcyon-grid.mf-2026-09-30",
+   "borrower_id": "halcyon-grid",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/halcyon-grid/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "3fc159b162134a3b7591f748b21287f04a3c4004185f2798266384d73e5f9865"
+  },
+  {
+   "id": "halcyon-grid.mcc-2026-09-30",
+   "borrower_id": "halcyon-grid",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/halcyon-grid/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "c6a74bf93f9546b99fa0095486d65a6a5c544434d10e875f0da20eb026c04efb"
+  },
+  {
+   "id": "halcyon-grid.bank-2026-10-31",
+   "borrower_id": "halcyon-grid",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/halcyon-grid/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "033a60a5c5ca8112cc454a2810123980ec45b4a4774ba6b4f8e7b4fbfe70a07a"
+  },
+  {
+   "id": "halcyon-grid.mrr-2026-10-31",
+   "borrower_id": "halcyon-grid",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/halcyon-grid/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "1fbda1cfc2f76d9c9e825a7241417eb13c1e8c862c699821af2b801a1b1f3321"
+  },
+  {
+   "id": "halcyon-grid.mf-2026-10-31",
+   "borrower_id": "halcyon-grid",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/halcyon-grid/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "1eb149a79aae6c4ae1ad19c404e60d772e0531b52c2831c74bc6b69293bb5a4d"
+  },
+  {
+   "id": "halcyon-grid.mcc-2026-10-31",
+   "borrower_id": "halcyon-grid",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/halcyon-grid/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "fdda6cf438c4ae8b1d4f9ef2e7c9a68a128f9583c5ce6283b36b118a42c036c6"
+  },
+  {
+   "id": "halcyon-grid.investor-update-2026-10-31",
+   "borrower_id": "halcyon-grid",
+   "type": "investor_update",
+   "period_end": "2026-10-31",
+   "path": "documents/halcyon-grid/investor-update-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "a9c45e278071cea08732edd8b2029f44af970040e83c25e1ef93b6b6ceb5c061"
+  },
+  {
+   "id": "quillon-ai.credit-agreement",
+   "borrower_id": "quillon-ai",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/quillon-ai/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "68a36c07cf362708398ff00dc3a6cf2e376f81001c1ef02e9f66a16baa2e4087"
+  },
+  {
+   "id": "quillon-ai.afs-2025",
+   "borrower_id": "quillon-ai",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/quillon-ai/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "bab88774c1faa10c6594a8e928ac7aea8145dfa9182b9ff74a00fe116f153d2f"
+  },
+  {
+   "id": "quillon-ai.bank-2026-08-31",
+   "borrower_id": "quillon-ai",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/quillon-ai/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "ffc2b78330760f0420530d365d32a4d8244c5a2231126f8199d4e44fe3f131d1"
+  },
+  {
+   "id": "quillon-ai.mrr-2026-08-31",
+   "borrower_id": "quillon-ai",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/quillon-ai/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "d17e45b1df56de5fd9751217fd84f4f125669356b8f21b4392da9c27d602234e"
+  },
+  {
+   "id": "quillon-ai.mf-2026-08-31",
+   "borrower_id": "quillon-ai",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/quillon-ai/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "1d884d26aabbb18f94153a2d6a411b4c567b1303cd5432a0f3ad2af4eb175344"
+  },
+  {
+   "id": "quillon-ai.mcc-2026-08-31",
+   "borrower_id": "quillon-ai",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/quillon-ai/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "f305f882015f7ba11ea72607cb64265f6c40a554c6f935aa4ccfaf706d0252ab"
+  },
+  {
+   "id": "quillon-ai.bank-2026-09-30",
+   "borrower_id": "quillon-ai",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/quillon-ai/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "59c2aeca08ad7c7c6c49527745cff6a3a4c30e68f01878605cbb996a07b85186"
+  },
+  {
+   "id": "quillon-ai.mrr-2026-09-30",
+   "borrower_id": "quillon-ai",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/quillon-ai/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "d0a4cb0f5859d8220e639dd7cd13afb27c44f3a15528043c142a0a7d918187ee"
+  },
+  {
+   "id": "quillon-ai.mf-2026-09-30",
+   "borrower_id": "quillon-ai",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/quillon-ai/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "c439fc595868259e2c1df17560ddfc318d7b9421d35705e4c7548cd9aa1ab605"
+  },
+  {
+   "id": "quillon-ai.mcc-2026-09-30",
+   "borrower_id": "quillon-ai",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/quillon-ai/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "8bb5b9c345f2b0343ead11fa755566f3f1b9b2954b0316227862e9dbbffd54fa"
+  },
+  {
+   "id": "quillon-ai.bank-2026-10-31",
+   "borrower_id": "quillon-ai",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/quillon-ai/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "5a5a3ad6fe55cd93adf924aa1e481a9dd53c95b92a91879a93e8cdf0a296c5fd"
+  },
+  {
+   "id": "quillon-ai.mrr-2026-10-31",
+   "borrower_id": "quillon-ai",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/quillon-ai/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "408e0ef9ed417fc6bfbc6685f6f9d527846a313fe7f7230b8cf35954081c7820"
+  },
+  {
+   "id": "quillon-ai.mf-2026-10-31",
+   "borrower_id": "quillon-ai",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/quillon-ai/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "06278642b56241181570f6452886675768c740682aa5360f8367f73b200ed544"
+  },
+  {
+   "id": "quillon-ai.mcc-2026-10-31",
+   "borrower_id": "quillon-ai",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/quillon-ai/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "5d912d968b9fcfdd3469b9aff0725759dd564359ba62c2c33d434f4f1be0dce7"
+  },
+  {
+   "id": "kelvra-bio.credit-agreement",
+   "borrower_id": "kelvra-bio",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/kelvra-bio/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "4b052c8726c2e8c574374c1d6804d1379cf12b77dff28a0c827cc1d9bf06c2e2"
+  },
+  {
+   "id": "kelvra-bio.afs-2025",
+   "borrower_id": "kelvra-bio",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/kelvra-bio/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "bc77e6d53385bf7024faca6f87ef5c700d5d4d392d4f09e2d38f6a9da5ce5676"
+  },
+  {
+   "id": "kelvra-bio.bank-2026-08-31",
+   "borrower_id": "kelvra-bio",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/kelvra-bio/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "8c7fe0acdf66a00396249d05b43bcf1f34532aa10339e560bfa78d057748f434"
+  },
+  {
+   "id": "kelvra-bio.mrr-2026-08-31",
+   "borrower_id": "kelvra-bio",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/kelvra-bio/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "29fed40c2493a1a6ac0868b65960ecb19308ec5d35e2e906bb41ffc2dd319ef8"
+  },
+  {
+   "id": "kelvra-bio.mf-2026-08-31",
+   "borrower_id": "kelvra-bio",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/kelvra-bio/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "e6796d1678142178d803653a76f51c6f517f582680232c3acdd853f926b7c567"
+  },
+  {
+   "id": "kelvra-bio.mcc-2026-08-31",
+   "borrower_id": "kelvra-bio",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/kelvra-bio/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "0bf4965693a3a52c416058b33956bd8d2515c3addb84ebc67d6695843c6d66b3"
+  },
+  {
+   "id": "kelvra-bio.bank-2026-09-30",
+   "borrower_id": "kelvra-bio",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/kelvra-bio/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "f42af3f86d314e931869e6dfc5a405714db87d155c170c2d310ac2e154967332"
+  },
+  {
+   "id": "kelvra-bio.mrr-2026-09-30",
+   "borrower_id": "kelvra-bio",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/kelvra-bio/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "e9e4fbd8accc7f2e71abc96ebb78f0a603bede912f98a7a05e8298f70e9a99d1"
+  },
+  {
+   "id": "kelvra-bio.mf-2026-09-30",
+   "borrower_id": "kelvra-bio",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/kelvra-bio/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "8a5e4fdc8b08afad14adea2f8cafa575d00275c114639f0233e429429a8df536"
+  },
+  {
+   "id": "kelvra-bio.mcc-2026-09-30",
+   "borrower_id": "kelvra-bio",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/kelvra-bio/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "0aeb3330ae667e69ccbf8f3eb14b222b255aef55d13a27013e50d6013d03f9f1"
+  },
+  {
+   "id": "kelvra-bio.bank-2026-10-31",
+   "borrower_id": "kelvra-bio",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/kelvra-bio/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "74b73d20ac18e9927f1e2071c265e97c08ab1b0df149927b205133ce132fbc4b"
+  },
+  {
+   "id": "kelvra-bio.mrr-2026-10-31",
+   "borrower_id": "kelvra-bio",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/kelvra-bio/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "4054239182d9361ded7607f4ca3f62812db6abc9a2644a9ba3e583b4d7b3b4bc"
+  },
+  {
+   "id": "kelvra-bio.mf-2026-10-31",
+   "borrower_id": "kelvra-bio",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/kelvra-bio/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "f289edc618b2293ea8277561964ba77507efe3c5b265a68f3bc0e954b1d20a0e"
+  },
+  {
+   "id": "kelvra-bio.mcc-2026-10-31",
+   "borrower_id": "kelvra-bio",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/kelvra-bio/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "eed7ea7ca0774f6d49c23468fcbc5e217b5dffaea8633c3bd56e56202a09a6a1"
+  },
+  {
+   "id": "kelvra-bio.investor-update-2026-10-31",
+   "borrower_id": "kelvra-bio",
+   "type": "investor_update",
+   "period_end": "2026-10-31",
+   "path": "documents/kelvra-bio/investor-update-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "d5d7f0086f93326b7e9a4d0cf81c0562029757cb0640cf4d518f610ef624dc1e"
+  },
+  {
+   "id": "orbitline-systems.credit-agreement",
+   "borrower_id": "orbitline-systems",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/orbitline-systems/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "0e21790c0b191975c615769b13d513790f966dc151f1b38b97b18b1a85a972be"
+  },
+  {
+   "id": "orbitline-systems.afs-2025",
+   "borrower_id": "orbitline-systems",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/orbitline-systems/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "d342d248240fbbca2a7b541dace0499a325684ef84b6b8631c0799c8ccee708f"
+  },
+  {
+   "id": "orbitline-systems.bank-2026-08-31",
+   "borrower_id": "orbitline-systems",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/orbitline-systems/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "5d743c52b8dabfcc026601a9826cffaa3286aa73be32302e379680203fdbdf01"
+  },
+  {
+   "id": "orbitline-systems.mrr-2026-08-31",
+   "borrower_id": "orbitline-systems",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/orbitline-systems/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "3c7eb81bccf5772b68cdd77fd54456d5cd0611e934995711ac823437df0ccd22"
+  },
+  {
+   "id": "orbitline-systems.mf-2026-08-31",
+   "borrower_id": "orbitline-systems",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/orbitline-systems/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "696125ce12698219d42ec63e32911788900a595fc0652c4a8bb862b24bb836b0"
+  },
+  {
+   "id": "orbitline-systems.mcc-2026-08-31",
+   "borrower_id": "orbitline-systems",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/orbitline-systems/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "8a99335d8ba58f54f222b10a32d8ec2762a885cbf7a12c4376857e0fb2ac9909"
+  },
+  {
+   "id": "orbitline-systems.bank-2026-09-30",
+   "borrower_id": "orbitline-systems",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/orbitline-systems/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "7a037742d3cc086acc1635a24ed56e17424c3e3418696f67b1126474febe7bbf"
+  },
+  {
+   "id": "orbitline-systems.mrr-2026-09-30",
+   "borrower_id": "orbitline-systems",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/orbitline-systems/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "2e06088629d43a2395f9dee397b5a47287dcc32a297c130a632ffc0616fc944e"
+  },
+  {
+   "id": "orbitline-systems.mf-2026-09-30",
+   "borrower_id": "orbitline-systems",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/orbitline-systems/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "8c25b3df90370997ab1054a91471bd0a697dbef67c1499e860c4ea10c50794fc"
+  },
+  {
+   "id": "orbitline-systems.mcc-2026-09-30",
+   "borrower_id": "orbitline-systems",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/orbitline-systems/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "7fbaee10b0c94e5873b46a8f20e72cf83fad64af1fff3cacf19f1a92bd4f57b3"
+  },
+  {
+   "id": "orbitline-systems.bank-2026-10-31",
+   "borrower_id": "orbitline-systems",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/orbitline-systems/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "61c54856430bc3067b3eee8009b8cd1e654e4d0f2cc57b73ab9ab3d27e8c0780"
+  },
+  {
+   "id": "orbitline-systems.mrr-2026-10-31",
+   "borrower_id": "orbitline-systems",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/orbitline-systems/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "b4eba06daa14e56dc018785618706e03ed81e99ffb869f40f795e9741c0138bf"
+  },
+  {
+   "id": "orbitline-systems.mf-2026-10-31",
+   "borrower_id": "orbitline-systems",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/orbitline-systems/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "3a999cd5e7467541a912a87b8ee1c39516df30ab2bcc8a1328b5693e741feb61"
+  },
+  {
+   "id": "orbitline-systems.mcc-2026-10-31",
+   "borrower_id": "orbitline-systems",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/orbitline-systems/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "fa28516c86d43603dc41e4824197c40e9e39faec1de79461b87848ef7cf90924"
+  },
+  {
+   "id": "stripple-tech.credit-agreement",
+   "borrower_id": "stripple-tech",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/stripple-tech/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "c4c7e2c85f6f2042b9eef393514bf80fd09e9bcdcb4df1143c037618626b4ae7"
+  },
+  {
+   "id": "stripple-tech.afs-2025",
+   "borrower_id": "stripple-tech",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/stripple-tech/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "a0bc7009a486bd100b42854404e3a94612413a75fb4d5451c69d3d828db0d581"
+  },
+  {
+   "id": "stripple-tech.bank-2026-08-31",
+   "borrower_id": "stripple-tech",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/stripple-tech/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "180b38f4ab7bd8fb6459ed0211cf0dae175885349e50f6494254e752e560c706"
+  },
+  {
+   "id": "stripple-tech.mrr-2026-08-31",
+   "borrower_id": "stripple-tech",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/stripple-tech/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "494e0be708ee5e11b2e6236c8efacbce272a2b2ff17e4047b8f0b28c39f56c9a"
+  },
+  {
+   "id": "stripple-tech.mf-2026-08-31",
+   "borrower_id": "stripple-tech",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/stripple-tech/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "49e347dd0194e417be096e5350252ee17f81572014586eb24f7a83825d6f1299"
+  },
+  {
+   "id": "stripple-tech.mcc-2026-08-31",
+   "borrower_id": "stripple-tech",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/stripple-tech/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "08e267917a34c50d4521681f45fa48383b3f0ed6efcb811506129995058904e3"
+  },
+  {
+   "id": "stripple-tech.bank-2026-09-30",
+   "borrower_id": "stripple-tech",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/stripple-tech/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "26035bcba71193f0c66b36f14cc191e55f653488a90191085b825b89cc957144"
+  },
+  {
+   "id": "stripple-tech.mrr-2026-09-30",
+   "borrower_id": "stripple-tech",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/stripple-tech/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "616b867c48029226dc93808d58a47a0d267bcdf9818166f8abd614fd34feebe8"
+  },
+  {
+   "id": "stripple-tech.mf-2026-09-30",
+   "borrower_id": "stripple-tech",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/stripple-tech/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "adcf1303da4e660d887fa549fdbf24331deab1c5f51c67f4c07fbf96d550ae0f"
+  },
+  {
+   "id": "stripple-tech.mcc-2026-09-30",
+   "borrower_id": "stripple-tech",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/stripple-tech/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "6736fb6b23d5a020e8e2695b7d4ecaef5a50b54d01b6855816e36b7501da6759"
+  },
+  {
+   "id": "stripple-tech.bank-2026-10-31",
+   "borrower_id": "stripple-tech",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/stripple-tech/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "de02a00bc8f92172e291f17bdabb5b883bf79c6b185b0a3bdc8dc6983cf2d60a"
+  },
+  {
+   "id": "stripple-tech.mrr-2026-10-31",
+   "borrower_id": "stripple-tech",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/stripple-tech/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "47dbb4a70fe028baf94d09bb84aefd382e45a683701b374af8a70b24892cf49f"
+  },
+  {
+   "id": "stripple-tech.mf-2026-10-31",
+   "borrower_id": "stripple-tech",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/stripple-tech/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "1c66a476ae547a2fd2dcaf5001e5985704ca207c5e3ef10b551899e8a27d77a0"
+  },
+  {
+   "id": "stripple-tech.mcc-2026-10-31",
+   "borrower_id": "stripple-tech",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/stripple-tech/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "fda6a0593d76476c017930056a23ef7699e6a0ad325a24d1e22f6201b1f50cb8"
+  },
+  {
+   "id": "stripple-tech.mrr-export",
+   "borrower_id": "stripple-tech",
+   "type": "unclassified",
+   "period_end": null,
+   "path": "documents/stripple-tech/mrr_export.pdf",
+   "pages": 1,
+   "text_sha256": "7bbf0af0d73293b845cf8259967e52d4a01800fd1dbd9cf92db89f060dfe654d"
+  },
+  {
+   "id": "stripple-tech.mrr-export-xlsx",
+   "borrower_id": "stripple-tech",
+   "type": "unclassified",
+   "period_end": null,
+   "path": "documents/stripple-tech/mrr_export.xlsx",
+   "pages": 0,
+   "text_sha256": "da9f2bafa3954396c89947e84dac6eefe238ffad525a2baadf2a3199b5436c72"
+  },
+  {
+   "id": "veridia-payments.credit-agreement",
+   "borrower_id": "veridia-payments",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/veridia-payments/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "b612271321f73ec2357bd3e61a7c19e852ba9ee54c237f167b4d34fa2e153535"
+  },
+  {
+   "id": "veridia-payments.afs-2025",
+   "borrower_id": "veridia-payments",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/veridia-payments/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "70dcbc65d0e32bf83d033e0a61bf83254071d0d33c6d17db81430d74b0d7ba60"
+  },
+  {
+   "id": "veridia-payments.bank-2026-08-31",
+   "borrower_id": "veridia-payments",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/veridia-payments/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "d5cff00fdf7a722e2018eb675ea2baed499a1154de98d71a1044e5a70abdd165"
+  },
+  {
+   "id": "veridia-payments.mrr-2026-08-31",
+   "borrower_id": "veridia-payments",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/veridia-payments/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "098f2f3b989746fa2a5d4b14a297908f1e0a18f1c511e0f1cf4a9bad39ac51b0"
+  },
+  {
+   "id": "veridia-payments.mf-2026-08-31",
+   "borrower_id": "veridia-payments",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/veridia-payments/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "a330523715fd09d6e95bb449573486ea7848a019396af0fd79eab6e7209d8671"
+  },
+  {
+   "id": "veridia-payments.mcc-2026-08-31",
+   "borrower_id": "veridia-payments",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/veridia-payments/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "d7c5a36c4c1c8f006cc9a7ae00a54e961b2b8742c6036bb3aef450cf6a792890"
+  },
+  {
+   "id": "veridia-payments.bank-2026-09-30",
+   "borrower_id": "veridia-payments",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/veridia-payments/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "38dbe83aaed2aee485d8237ea5ceb092aa0f699dc073b81d4e9e5af1efc5d679"
+  },
+  {
+   "id": "veridia-payments.mrr-2026-09-30",
+   "borrower_id": "veridia-payments",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/veridia-payments/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "4887f3cec4c2473e90464032ef0c6c1a266102ea6b0fab2dbda6adab13596b9b"
+  },
+  {
+   "id": "veridia-payments.mf-2026-09-30",
+   "borrower_id": "veridia-payments",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/veridia-payments/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "9f57860b3fb86508d3cda8e16c608d2d137ea630c4d6ef4f8537f657df58c781"
+  },
+  {
+   "id": "veridia-payments.mcc-2026-09-30",
+   "borrower_id": "veridia-payments",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/veridia-payments/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "e0ba795c3a20cde7078a15b706ebcc43226382941fc1541e813cd612c6be218a"
+  },
+  {
+   "id": "veridia-payments.bank-2026-10-31",
+   "borrower_id": "veridia-payments",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/veridia-payments/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "11349db230e1812ce0dd2a78ce53de46111ecb999f916f1907efc1263544b30d"
+  },
+  {
+   "id": "veridia-payments.mrr-2026-10-31",
+   "borrower_id": "veridia-payments",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/veridia-payments/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "720a2917804fdd97ea51ca379d8cbe42b978e48324d2fb6a474f57ed3d2d8b38"
+  },
+  {
+   "id": "veridia-payments.mf-2026-10-31",
+   "borrower_id": "veridia-payments",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/veridia-payments/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "ce3b897b7956b9e0903104d9d30490234e0178a1cb255770150db6f460d6536c"
+  },
+  {
+   "id": "veridia-payments.mcc-2026-10-31",
+   "borrower_id": "veridia-payments",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/veridia-payments/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "52f3d36877287ac3008b6a80549db0d68797c3e43f7f02c3be3092a2387de0d6"
+  },
+  {
+   "id": "tessaract-labs.credit-agreement",
+   "borrower_id": "tessaract-labs",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/tessaract-labs/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "eaca3ff2311ea35f28144348965bd849fe0ac279a7403c1f39637f1677baf3fa"
+  },
+  {
+   "id": "tessaract-labs.afs-2025",
+   "borrower_id": "tessaract-labs",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/tessaract-labs/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "80bfaf04b36a36478db588b6db2c0737443427e6f5623cb4b73c03fb2cf3f01b"
+  },
+  {
+   "id": "tessaract-labs.bank-2026-08-31",
+   "borrower_id": "tessaract-labs",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/tessaract-labs/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "b3e972d81ae6a55cd97a0db42771bb64615f396fe6b8b770b893efdbb63b9eff"
+  },
+  {
+   "id": "tessaract-labs.mrr-2026-08-31",
+   "borrower_id": "tessaract-labs",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/tessaract-labs/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "2013d14c7577414112029ce4ff1c3792a9db55f706006be961de2f5f6a08b77f"
+  },
+  {
+   "id": "tessaract-labs.mf-2026-08-31",
+   "borrower_id": "tessaract-labs",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/tessaract-labs/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "6e29a833dee6404a90a454d00d44b5b30a371ce04458ac47b427fe9e678bae35"
+  },
+  {
+   "id": "tessaract-labs.mcc-2026-08-31",
+   "borrower_id": "tessaract-labs",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/tessaract-labs/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "df8c09292f216ab9c064e3b600445cd6f816c534def02556508e87c9fbe4e84e"
+  },
+  {
+   "id": "tessaract-labs.bank-2026-09-30",
+   "borrower_id": "tessaract-labs",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/tessaract-labs/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "c99edc17481277af6a1d0f8e8eb3d01f3d5134235012dd0b340277640cdd80b7"
+  },
+  {
+   "id": "tessaract-labs.mrr-2026-09-30",
+   "borrower_id": "tessaract-labs",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/tessaract-labs/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "151408471456a83ee97308aae90963031cc14b47fe5743547b464254bc5b3f66"
+  },
+  {
+   "id": "tessaract-labs.mf-2026-09-30",
+   "borrower_id": "tessaract-labs",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/tessaract-labs/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "7dbe53bb329247e4e0415d132e44788a1dcec35fe7aa2c04f57627bccb4821e0"
+  },
+  {
+   "id": "tessaract-labs.mcc-2026-09-30",
+   "borrower_id": "tessaract-labs",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/tessaract-labs/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "85d4cd9af9172ed11f9c2780dec13f1722557ea86912a8fbeb6ab5ef071a365c"
+  },
+  {
+   "id": "tessaract-labs.bank-2026-10-31",
+   "borrower_id": "tessaract-labs",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/tessaract-labs/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "9ac23a20b56b5d077aec28ef143250f29781f7dc0f0fcf7ba61b77ab32114ebf"
+  },
+  {
+   "id": "tessaract-labs.mrr-2026-10-31",
+   "borrower_id": "tessaract-labs",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/tessaract-labs/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "3a5770d50c16b933e819d1eddbb2ca0f3de08fc6b1ec4862c98f02af3b12181d"
+  },
+  {
+   "id": "tessaract-labs.mf-2026-10-31",
+   "borrower_id": "tessaract-labs",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/tessaract-labs/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "364ab8ac0b8c7366f7fc2d9efe8d1b12e91e3d93570cc4350357b8608decd98e"
+  },
+  {
+   "id": "tessaract-labs.mcc-2026-10-31",
+   "borrower_id": "tessaract-labs",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/tessaract-labs/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "fa2b0e5683b428e0de25ef67ce7a4418eb4338267a9669293316789bb3143363"
+  },
+  {
+   "id": "pellucid-sensors.credit-agreement",
+   "borrower_id": "pellucid-sensors",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/pellucid-sensors/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "ccb7a408d229a5e3b686dd712a69de8d44b54326f08cbfa9e5acf7ee3bde5296"
+  },
+  {
+   "id": "pellucid-sensors.afs-2025",
+   "borrower_id": "pellucid-sensors",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/pellucid-sensors/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "f51c7b178abe46444a9c549e9d1bc64b32d93a16f5bb03f2ed555ff3d4dde304"
+  },
+  {
+   "id": "pellucid-sensors.bank-2026-08-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "48636b02ac135f4aaf21966210222ce3ae5fbe90250a389ac438cb2cdb85b5e6"
+  },
+  {
+   "id": "pellucid-sensors.mrr-2026-08-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "660500427779263de02fc41b4b7c96e43829d24ea898c095678b3f30aa0e12ee"
+  },
+  {
+   "id": "pellucid-sensors.mf-2026-08-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "ee54cc0da36d1ed50c9ef413a1f2fe45c4e72998aef3e06befc6822cfc15c92f"
+  },
+  {
+   "id": "pellucid-sensors.mcc-2026-08-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "f0b5209dcebe5bfd03c076c1ea5ace52ce8bace29f4e3994ad16fd63a691c5fa"
+  },
+  {
+   "id": "pellucid-sensors.bank-2026-09-30",
+   "borrower_id": "pellucid-sensors",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "70043239e88676a5050e3a5ced05fe1b4e22ac070525e2146bd10bafb3d7b004"
+  },
+  {
+   "id": "pellucid-sensors.mrr-2026-09-30",
+   "borrower_id": "pellucid-sensors",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "7ae4a08d0060e453f8f1a499f928afcdbcb8f485243d453e47a13f8c6336c49a"
+  },
+  {
+   "id": "pellucid-sensors.mf-2026-09-30",
+   "borrower_id": "pellucid-sensors",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "07c00979f03ecb9c057157e773f59ee5738344016da15c2bc8b98b3015b8cef7"
+  },
+  {
+   "id": "pellucid-sensors.mcc-2026-09-30",
+   "borrower_id": "pellucid-sensors",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "1606a5e9b5db8012806c26beb2bd09996cf1a3aaf084a437bf93d15c6a826193"
+  },
+  {
+   "id": "pellucid-sensors.bank-2026-10-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "056e5d3a9a1fc4bebc353bab4ba6482f4a5edc623532bdb4f13666c9f7099688"
+  },
+  {
+   "id": "pellucid-sensors.mrr-2026-10-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "fa61e538d18858140482e045f1a0c6d5e741242f90ea379a003bda48192712a0"
+  },
+  {
+   "id": "pellucid-sensors.mf-2026-10-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "77261f465b9b650e9572e97fee0efb107fdb05cfa31aad6269e435c9f4d91d98"
+  },
+  {
+   "id": "pellucid-sensors.mcc-2026-10-31",
+   "borrower_id": "pellucid-sensors",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "61d6d6028a962891f88a9131cfd16e38f57cd2bc2a98a1d3dd11b70a33b79e45"
+  },
+  {
+   "id": "corvane-analytics.credit-agreement",
+   "borrower_id": "corvane-analytics",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/corvane-analytics/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "fae38a0fbded966002c29fbb8f8f57955625c6060373d3e34098ccd7ccdefe59"
+  },
+  {
+   "id": "corvane-analytics.afs-2025",
+   "borrower_id": "corvane-analytics",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/corvane-analytics/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "6b619812fbbb52ef398f77cc205fb1a7870823c17b91e7e605bfda41b0cba3b2"
+  },
+  {
+   "id": "corvane-analytics.bank-2026-08-31",
+   "borrower_id": "corvane-analytics",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/corvane-analytics/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "432a58ccaac1c42277904730841961d3b02613506211e990f21441898a99ee6a"
+  },
+  {
+   "id": "corvane-analytics.mrr-2026-08-31",
+   "borrower_id": "corvane-analytics",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/corvane-analytics/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "b353d52c1cac31f9f60848eeb58f18cee61f0d0d6982b7724499c6e051ed350f"
+  },
+  {
+   "id": "corvane-analytics.mf-2026-08-31",
+   "borrower_id": "corvane-analytics",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/corvane-analytics/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "7abaee0634f8e404e8fdba99b1c20c59cc223704a7452a8aa8232b26a8ee3ed4"
+  },
+  {
+   "id": "corvane-analytics.mcc-2026-08-31",
+   "borrower_id": "corvane-analytics",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/corvane-analytics/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "7e6f5c6c3d7f9741897837791fa05d4f0bee569a4227ff4cc3aa4ff4d00f6099"
+  },
+  {
+   "id": "corvane-analytics.bank-2026-09-30",
+   "borrower_id": "corvane-analytics",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/corvane-analytics/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "07334b84e94cf153b04678603378d0d5b159614159402b06b02e01231203ad57"
+  },
+  {
+   "id": "corvane-analytics.mrr-2026-09-30",
+   "borrower_id": "corvane-analytics",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/corvane-analytics/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "52b76fee2c6f0477c884c88959fcddfdf06c1e7e52af6c52a85a53dac8e1731f"
+  },
+  {
+   "id": "corvane-analytics.mf-2026-09-30",
+   "borrower_id": "corvane-analytics",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/corvane-analytics/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "1306cdc4baab2faf4c798b86d32b817d434be8ae2870f6a0b2a96a0b4d7d4364"
+  },
+  {
+   "id": "corvane-analytics.mcc-2026-09-30",
+   "borrower_id": "corvane-analytics",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/corvane-analytics/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "840580d84486054e485ffee3880684661af035864ea430fab90b074ef394921b"
+  },
+  {
+   "id": "corvane-analytics.bank-2026-10-31",
+   "borrower_id": "corvane-analytics",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/corvane-analytics/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "4c560bd1db935e29491faf4ba806d56eac56abb6c3a4714bea188de437edb425"
+  },
+  {
+   "id": "corvane-analytics.mrr-2026-10-31",
+   "borrower_id": "corvane-analytics",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/corvane-analytics/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "04f0a4979e8aab62012da41b263daba5af290caeb59ebc49d43d930443447e43"
+  },
+  {
+   "id": "corvane-analytics.mf-2026-10-31",
+   "borrower_id": "corvane-analytics",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/corvane-analytics/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "0b5f893a6a0350b4329448c8debe64ce7ded24201293d07deb0769b76556a85a"
+  },
+  {
+   "id": "corvane-analytics.mcc-2026-10-31",
+   "borrower_id": "corvane-analytics",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/corvane-analytics/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "098032eef7c05c26bd03b73cdf206ede8a6842c98a094eb2def823d43f9b7514"
+  },
+  {
+   "id": "nimbusfield-security.credit-agreement",
+   "borrower_id": "nimbusfield-security",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/nimbusfield-security/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "b1cef164655e2a5d01327f2a0116b36c0f8e71c083c26cf2c00d07bb0322c1f1"
+  },
+  {
+   "id": "nimbusfield-security.afs-2025",
+   "borrower_id": "nimbusfield-security",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/nimbusfield-security/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "91d326ffe5e0125f4dbbdbfa126f2ac42e624d389a4cb82accc995f0ad4d0c88"
+  },
+  {
+   "id": "nimbusfield-security.bank-2026-08-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/nimbusfield-security/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "f27497f1e770e036319bdb50205be8a5b953b6be2b764cada8c2210eb81a49e5"
+  },
+  {
+   "id": "nimbusfield-security.mrr-2026-08-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/nimbusfield-security/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "79147ea21ad9897a88d6cef9a287a287047c7895f6a7080b69c2810f8c440162"
+  },
+  {
+   "id": "nimbusfield-security.mf-2026-08-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/nimbusfield-security/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "c76d4c03e14705dd7466530d202e2f8edfffd95cc729033280f92277161af6cf"
+  },
+  {
+   "id": "nimbusfield-security.mcc-2026-08-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/nimbusfield-security/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "3fa8100bbe3e4eb2930992626bb28d4fd90cda937aae419e6a796d14f6378a72"
+  },
+  {
+   "id": "nimbusfield-security.bank-2026-09-30",
+   "borrower_id": "nimbusfield-security",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/nimbusfield-security/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "b864b6a1012abf7fe220692e75f5b5ce442e23bcea8d8cfbef60cb2847e6e5bb"
+  },
+  {
+   "id": "nimbusfield-security.mrr-2026-09-30",
+   "borrower_id": "nimbusfield-security",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/nimbusfield-security/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "ca61472e6176a2aabcb112aca90eaecca39dbec8c59e9c93e167818c71a9e8c4"
+  },
+  {
+   "id": "nimbusfield-security.mf-2026-09-30",
+   "borrower_id": "nimbusfield-security",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/nimbusfield-security/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "78bad7a796f77e5612d5132dc8c8e09ea34752256e9345158c95f814996e7733"
+  },
+  {
+   "id": "nimbusfield-security.mcc-2026-09-30",
+   "borrower_id": "nimbusfield-security",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/nimbusfield-security/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "2f56771874d95e18afe6d2896a018f832b06c1cedc21c1a5750d8db21c2a7a3f"
+  },
+  {
+   "id": "nimbusfield-security.bank-2026-10-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/nimbusfield-security/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "31cd3907b449912d85a6a9454449aa26755dc9f1725dafa6a16a82d4629f1669"
+  },
+  {
+   "id": "nimbusfield-security.mrr-2026-10-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/nimbusfield-security/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "a277235d6b59a4771b8619b429c7de6f2bd3d46034d737f1d717f81497bc156e"
+  },
+  {
+   "id": "nimbusfield-security.mf-2026-10-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/nimbusfield-security/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "edaf441b64ff9beac6fa8f0c95f1f8ad4e4fdea813004f39762bd1915efa84b1"
+  },
+  {
+   "id": "nimbusfield-security.mcc-2026-10-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/nimbusfield-security/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "401f747fe4563060480d831fa1ae24424372739c847d9f0167200e45ef473f12"
+  },
+  {
+   "id": "nimbusfield-security.term-sheet-2026-09-24",
+   "borrower_id": "nimbusfield-security",
+   "type": "term_sheet",
+   "period_end": null,
+   "path": "documents/nimbusfield-security/term-sheet-2026-09-24.pdf",
+   "pages": 1,
+   "text_sha256": "1a41a189f289eb0e9513bef3fffe80d46325b5a3b9bdb25de400d689eb316de5"
+  },
+  {
+   "id": "nimbusfield-security.investor-update-2026-10-31",
+   "borrower_id": "nimbusfield-security",
+   "type": "investor_update",
+   "period_end": "2026-10-31",
+   "path": "documents/nimbusfield-security/investor-update-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "46e11aa6cdef81fed8dc7a90a4d04d416179026cc988cae62a4739b4984c51e5"
+  },
+  {
+   "id": "tidewell-medical.credit-agreement",
+   "borrower_id": "tidewell-medical",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/tidewell-medical/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "f51768493a645aa2ba6a5b2762d561ac8aa359154822a00194df6fd4e597a17f"
+  },
+  {
+   "id": "tidewell-medical.afs-2025",
+   "borrower_id": "tidewell-medical",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/tidewell-medical/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "252d0892ac88ff9bf8d406c439b497c6e027ce12764d262656a4d82501548adc"
+  },
+  {
+   "id": "tidewell-medical.bank-2026-08-31",
+   "borrower_id": "tidewell-medical",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/tidewell-medical/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "38365798cae6f855b6ab4436c9b9bdd8660e837694b1781880d73c56b28c3877"
+  },
+  {
+   "id": "tidewell-medical.mrr-2026-08-31",
+   "borrower_id": "tidewell-medical",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/tidewell-medical/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "a6d6430bc711d02a64b5bcc773af81f8bba358a1d8fe3c11acbd6909b01d328f"
+  },
+  {
+   "id": "tidewell-medical.mf-2026-08-31",
+   "borrower_id": "tidewell-medical",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/tidewell-medical/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "a997c488f336d43d377fffd8722fd99e262b976b92f09f654cda358e3b738294"
+  },
+  {
+   "id": "tidewell-medical.mcc-2026-08-31",
+   "borrower_id": "tidewell-medical",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/tidewell-medical/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "20878283969d8d7b162b7dfbed1ed956da865bf066ce2bae6a4ce7334d74071f"
+  },
+  {
+   "id": "tidewell-medical.bank-2026-09-30",
+   "borrower_id": "tidewell-medical",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/tidewell-medical/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "2d47e17ab3219812ed3141b356baca3c9114a8afa88e5884379e1cee013868b6"
+  },
+  {
+   "id": "tidewell-medical.mrr-2026-09-30",
+   "borrower_id": "tidewell-medical",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/tidewell-medical/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "33383d2cff5d534828d36021219f39d75c7c97e94bfa4dcdcb0a043897706bc7"
+  },
+  {
+   "id": "tidewell-medical.mf-2026-09-30",
+   "borrower_id": "tidewell-medical",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/tidewell-medical/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "0acbfedc2a4d4d0a05707ce654e007a6870c06a883f7e225198edbd2cc39b434"
+  },
+  {
+   "id": "tidewell-medical.mcc-2026-09-30",
+   "borrower_id": "tidewell-medical",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/tidewell-medical/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "8ff745af3ae5368c6a299d0f5321b6129537e303973a9fd655b4e09a533a83a2"
+  },
+  {
+   "id": "tidewell-medical.bank-2026-10-31",
+   "borrower_id": "tidewell-medical",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/tidewell-medical/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "4ae1b7ef32664c2d7a4b50a0a308df3a60a1a91c65d9a6e3833f342eda4a4832"
+  },
+  {
+   "id": "tidewell-medical.mrr-2026-10-31",
+   "borrower_id": "tidewell-medical",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/tidewell-medical/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "33cd5912729ee5481aab7a1613dd284265675c399ae9a4f136e49f53a6fee39d"
+  },
+  {
+   "id": "tidewell-medical.mf-2026-10-31",
+   "borrower_id": "tidewell-medical",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/tidewell-medical/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "3e1765477ac0d8a046b4154070d9d296f56fdfdc115343f1afe6ffff2be36852"
+  },
+  {
+   "id": "tidewell-medical.mcc-2026-10-31",
+   "borrower_id": "tidewell-medical",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/tidewell-medical/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "81b03f8f37dfd0126da62cb2ec965c4ff9875a7d166262ce17272b2646dc44c6"
+  },
+  {
+   "id": "ferrogate-cloud.credit-agreement",
+   "borrower_id": "ferrogate-cloud",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/ferrogate-cloud/credit-agreement.pdf",
+   "pages": 5,
+   "text_sha256": "daf304be8b64c034a24b475140f38a152b403c9074395a6996ca58e720e123e7"
+  },
+  {
+   "id": "ferrogate-cloud.afs-2025",
+   "borrower_id": "ferrogate-cloud",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/ferrogate-cloud/afs-2025.pdf",
+   "pages": 5,
+   "text_sha256": "c50eac6ce580441836d2e4823666bbdde01e9f2e044b747f18a1f3987ab59dd2"
+  },
+  {
+   "id": "ferrogate-cloud.bank-2026-08-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/ferrogate-cloud/bank-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "aaffb30b03f755f442b866182f6baae8dccbd7b011643a4d566ba1ebb5049451"
+  },
+  {
+   "id": "ferrogate-cloud.mrr-2026-08-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/ferrogate-cloud/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "text_sha256": "412e6ae82f4fe63e4fc4ea8dda8fe3ecb0e1260cb6fd564f79b5d30194dda0e5"
+  },
+  {
+   "id": "ferrogate-cloud.mf-2026-08-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/ferrogate-cloud/mf-2026-08-31.pdf",
+   "pages": 4,
+   "text_sha256": "10984fd123b9ca8b28afedd04ca3c1c448335c7c92fa74fa512539a119f1576c"
+  },
+  {
+   "id": "ferrogate-cloud.mcc-2026-08-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/ferrogate-cloud/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "text_sha256": "21eed3eb6a5d8bbd42c628b956c474e9b8b52c95b8ef3940bb63589ed1a3d49c"
+  },
+  {
+   "id": "ferrogate-cloud.bank-2026-09-30",
+   "borrower_id": "ferrogate-cloud",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/ferrogate-cloud/bank-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "f989a8b1a1860ac9c7821ea5fdabb8367b3901003957719a911536f743be5e65"
+  },
+  {
+   "id": "ferrogate-cloud.mrr-2026-09-30",
+   "borrower_id": "ferrogate-cloud",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/ferrogate-cloud/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "text_sha256": "67cb74d3afcbec567101d2139f37efe6497a1adbdca6456a2f7971fd99227a87"
+  },
+  {
+   "id": "ferrogate-cloud.mf-2026-09-30",
+   "borrower_id": "ferrogate-cloud",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/ferrogate-cloud/mf-2026-09-30.pdf",
+   "pages": 4,
+   "text_sha256": "90ad339de9c778f1ede9b9b18a5948b4442315c7e5f3cde8b463d254be09ddc7"
+  },
+  {
+   "id": "ferrogate-cloud.mcc-2026-09-30",
+   "borrower_id": "ferrogate-cloud",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/ferrogate-cloud/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "67ca2304609cea56b9461b5e50f1f823fb0bf5bb741e84ef02dddd8763f1738e"
+  },
+  {
+   "id": "ferrogate-cloud.bank-2026-10-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/ferrogate-cloud/bank-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "d2fe25e48e7e8c6dbf7708962f98f11fc24e2e754bf7904493978ccc135d5077"
+  },
+  {
+   "id": "ferrogate-cloud.mrr-2026-10-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/ferrogate-cloud/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "text_sha256": "a24f733f417e32470d27a832dccca868305971f21ce868e1af354c9c4ca0c799"
+  },
+  {
+   "id": "ferrogate-cloud.mf-2026-10-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/ferrogate-cloud/mf-2026-10-31.pdf",
+   "pages": 4,
+   "text_sha256": "a77b7604c7b72f93c8a48bffba040a1151e472bce830d284f8cf8f2f08434135"
+  },
+  {
+   "id": "ferrogate-cloud.mcc-2026-10-31",
+   "borrower_id": "ferrogate-cloud",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/ferrogate-cloud/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "text_sha256": "2b04413b8f00a53e1bb1a3a93e3cc40fa64129320b3d7128d7a0cbc17032f609"
+  },
+  {
+   "id": "kestrel-bay-packaging.credit-agreement",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/kestrel-bay-packaging/credit-agreement.pdf",
+   "pages": 11,
+   "text_sha256": "8c986b92bdf5ac678d39a699168c30fa90a3733bd92d7161b84bd6c85d2f703d"
+  },
+  {
+   "id": "kestrel-bay-packaging.afs-2024",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/kestrel-bay-packaging/afs-2024.pdf",
+   "pages": 7,
+   "text_sha256": "bff90df0ac981bc02bcf9303bd667c4c78b324668c579d54d152fddbefd67698"
+  },
+  {
+   "id": "kestrel-bay-packaging.afs-2025",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/kestrel-bay-packaging/afs-2025.pdf",
+   "pages": 7,
+   "text_sha256": "6bb228692682cd29e52f1ae5943e1ccb35a6bec7af83ad2afa6c150fa9c4c974"
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2025-03-31",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/kestrel-bay-packaging/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "8ca0f644bdac68b02505190480c25a2443dc3f1840d11b6fc690df827bb74a60"
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2025-06-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "d5db26e69ddd2d328a1a402c7b49e28bc0adb591e9302029e1fe4c6a0a7544dc"
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2025-09-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "df6562be0971facd4f309ee663de44c4b93a70e5b60ce5516a27bb5c14b1f28f"
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2026-03-31",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/kestrel-bay-packaging/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "c5672d68ed65ac25fc3a9d43d75269ff526d6d2a4d79ab4d058caca53186bae5"
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2026-06-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "5421997da5ab76ebfc4f25fe3a3eef84981125fdca982c0952e03e05cec90ace"
+  },
+  {
+   "id": "kestrel-bay-packaging.ifs-2026-09-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/kestrel-bay-packaging/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "dd0012570b1c66076c47d364104a657fe125addae1c6201ee3ffc67ec3ef16d3"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-03-31",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/kestrel-bay-packaging/cc-2025-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "dc0b0de57706e0f04eecbd1918885fb09f34dfc91a0dcaaf32b199e380c50b40"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-06-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/kestrel-bay-packaging/cc-2025-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "a80bb364950f858a3d7c098f0937dbb1b78366a43254120f9d652f02cd23b40f"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-09-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/kestrel-bay-packaging/cc-2025-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "8f7a0dbe9e9b38c827840cdc8aa3dd689abe49049019d3a04c2428b3d80d3be1"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2025-12-31",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/kestrel-bay-packaging/cc-2025-12-31.pdf",
+   "pages": 2,
+   "text_sha256": "ca74795c6692e5b9e39a32df24191a4e448ecc64b2671adb8a0b8c62fe8413ac"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2026-03-31",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/kestrel-bay-packaging/cc-2026-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "27de1cb876da4b67b00350934e43301164ef6f2146df1be25959611d7e0b74f6"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2026-06-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/kestrel-bay-packaging/cc-2026-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "ec34d1aaadd26723da219564167290009c51dc6dc96b4b20a24f6f71a555dfd2"
+  },
+  {
+   "id": "kestrel-bay-packaging.cc-2026-09-30",
+   "borrower_id": "kestrel-bay-packaging",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/kestrel-bay-packaging/cc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "4838a04d2ca9e03363e5c6600a89de935b16b635a020fc50d590b7941d13f2a1"
+  },
+  {
+   "id": "harrowgate-precision.credit-agreement",
+   "borrower_id": "harrowgate-precision",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/harrowgate-precision/credit-agreement.pdf",
+   "pages": 14,
+   "text_sha256": "c029f31e9ad90bd46e29ebca0cdcdbc8d2deef3863e371f993955cead90a3b02"
+  },
+  {
+   "id": "harrowgate-precision.afs-2024",
+   "borrower_id": "harrowgate-precision",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/harrowgate-precision/afs-2024.pdf",
+   "pages": 7,
+   "text_sha256": "e5912bb7859f776f2c310a768a61d1a9aa765fb7b365f05bfed4942460a74f64"
+  },
+  {
+   "id": "harrowgate-precision.afs-2025",
+   "borrower_id": "harrowgate-precision",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/harrowgate-precision/afs-2025.pdf",
+   "pages": 7,
+   "text_sha256": "dc728cadfeaffeea9d7721b4bdfada0d53021677d0cb21d9c07e21a7b76c9bbf"
+  },
+  {
+   "id": "harrowgate-precision.ifs-2025-03-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/harrowgate-precision/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "26962bad57386e843de70471c4f036184cd06cce84d9c4bcc21af9b04459653a"
+  },
+  {
+   "id": "harrowgate-precision.ifs-2025-06-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/harrowgate-precision/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "dfaa2ba76d1eddae0b2bb7b6eb5fdb6ba39a620b458ab942a722598c2279470a"
+  },
+  {
+   "id": "harrowgate-precision.ifs-2025-09-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/harrowgate-precision/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "8f37c45760e38435370ec9f3ef7f32bd8517e7443c67f3a77c5cd37675dcbda2"
+  },
+  {
+   "id": "harrowgate-precision.ifs-2026-03-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/harrowgate-precision/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "c4af54eabbd73546fc8a1456776e54b2c5b34a465608785fea90d82c595e463b"
+  },
+  {
+   "id": "harrowgate-precision.ifs-2026-06-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/harrowgate-precision/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "8a717bef0c44e74fa4ac3045e762e54667884a1fc36162e43d8695ea76b3f2da"
+  },
+  {
+   "id": "harrowgate-precision.ifs-2026-09-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/harrowgate-precision/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "cbd507e273a524fb73305a45f07dd5410f83013434b23715ef9b6d1f552bf8c7"
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-03-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/harrowgate-precision/cc-2025-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "063355b5673d744ad96622e49aa05fd0aad946be59fa14ce78fd7ad023161a86"
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-06-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/harrowgate-precision/cc-2025-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "af644d76fe151ee8238ede90e183b522db07d042f632f0c34e402e22f5090474"
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-09-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/harrowgate-precision/cc-2025-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "93167c8ec5b264b73119ec8ce3fca196e1fd2ec33c81a54c9b27769765dbc17a"
+  },
+  {
+   "id": "harrowgate-precision.cc-2025-12-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/harrowgate-precision/cc-2025-12-31.pdf",
+   "pages": 2,
+   "text_sha256": "b87161aec42cc195aae64f8ac93430307016aac7549b05e50340443d42257c5f"
+  },
+  {
+   "id": "harrowgate-precision.cc-2026-03-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/harrowgate-precision/cc-2026-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "f3992a8c598fe199bf2b5e06ab5f6b528063cd97879d8ed96000c17df8a80651"
+  },
+  {
+   "id": "harrowgate-precision.cc-2026-06-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/harrowgate-precision/cc-2026-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "7b57b09f728ae0a6eb06adde11130961c5de0a2745c8cf8311b02d7f50dc3c81"
+  },
+  {
+   "id": "harrowgate-precision.cc-2026-09-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/harrowgate-precision/cc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "7daaa1a74ace18f9d33a23b58fcefb91ede099e03ef8022e63a94d930db04ed1"
+  },
+  {
+   "id": "harrowgate-precision.bbc-2026-07-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/harrowgate-precision/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "text_sha256": "5f72ee3b2174c447243fb345b1ee17bae087e05d8d9987da682174d34042d687"
+  },
+  {
+   "id": "harrowgate-precision.bbc-2026-08-31",
+   "borrower_id": "harrowgate-precision",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/harrowgate-precision/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "text_sha256": "8fdbca18ba526047c3f83889e0f627e3ee1c3773c4addf3a149f3ae93feda36c"
+  },
+  {
+   "id": "harrowgate-precision.bbc-2026-09-30",
+   "borrower_id": "harrowgate-precision",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/harrowgate-precision/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "text_sha256": "b6e0f662f5cbd42b7f48aacf94d63e00760f4833b731314ebd9a73e97134ed39"
+  },
+  {
+   "id": "briarstone-beverage.credit-agreement",
+   "borrower_id": "briarstone-beverage",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/briarstone-beverage/credit-agreement.pdf",
+   "pages": 13,
+   "text_sha256": "c2f74076c0555dba51a70b23deee89d64761c965af3d48053fb8171fba14950d"
+  },
+  {
+   "id": "briarstone-beverage.afs-2024",
+   "borrower_id": "briarstone-beverage",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/briarstone-beverage/afs-2024.pdf",
+   "pages": 7,
+   "text_sha256": "d7a2f4dab8848d4c76b232484531dc1e5c3b74c9049243d574db75b8b09183f6"
+  },
+  {
+   "id": "briarstone-beverage.afs-2025",
+   "borrower_id": "briarstone-beverage",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/briarstone-beverage/afs-2025.pdf",
+   "pages": 7,
+   "text_sha256": "b0a02c946236038276a2f8212ae6a50599952d6ee9a12ee01aada588ed28b5d9"
+  },
+  {
+   "id": "briarstone-beverage.ifs-2025-03-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/briarstone-beverage/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "e8deb26d6a56b97af7d98f8447dfab5f032e9e1d86f49c31f952eec7ada2a441"
+  },
+  {
+   "id": "briarstone-beverage.ifs-2025-06-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/briarstone-beverage/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "5d0ed5704dc2c945dcbd11cf120dd6c4958435f912637847775d4248b363184d"
+  },
+  {
+   "id": "briarstone-beverage.ifs-2025-09-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/briarstone-beverage/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "06eb342ef54d950ed92119739ac1e7c3f8ea930994b966bddaca2f263c07b835"
+  },
+  {
+   "id": "briarstone-beverage.ifs-2026-03-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/briarstone-beverage/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "fd78d742905815e4b5026067ef7c8182190dc953a57f69c16265178a0c2c7aa7"
+  },
+  {
+   "id": "briarstone-beverage.ifs-2026-06-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/briarstone-beverage/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "6d942728ee5fc6850669b8cb5749d6439f538dc0c742fdb7594c9c136247a89a"
+  },
+  {
+   "id": "briarstone-beverage.ifs-2026-09-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/briarstone-beverage/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "d2f2ecb59e600b67d89e39fc2ea4b9837126b6a7c3fec4e704102e511c69e3c1"
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-03-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/briarstone-beverage/cc-2025-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "85083b5e4125e087b0d3c3dd8837bb40b035401e47a69c482ed27bdbe58499e6"
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-06-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/briarstone-beverage/cc-2025-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "a152400f78b57db8fcfb30c148fafdbb6404e45f4c302dba25e58280a75ec53f"
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-09-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/briarstone-beverage/cc-2025-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "01c49db73b18a70a77c8955f05517e3feb274caf6256992e98b5a6ecde5469fe"
+  },
+  {
+   "id": "briarstone-beverage.cc-2025-12-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/briarstone-beverage/cc-2025-12-31.pdf",
+   "pages": 2,
+   "text_sha256": "b4db8494d7a01a25dffcee0788ba24bdba82adee75cda55732ae4eb08b917e0d"
+  },
+  {
+   "id": "briarstone-beverage.cc-2026-03-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/briarstone-beverage/cc-2026-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "55fa1ea972ac2e4840e6b97a3583d9ec90a3e308e7613a6f17daa52f29f349e6"
+  },
+  {
+   "id": "briarstone-beverage.cc-2026-06-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/briarstone-beverage/cc-2026-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "0c6ee3034531cf55008795f70e2606af72b9db507703e76db8117d559eb66e04"
+  },
+  {
+   "id": "briarstone-beverage.cc-2026-09-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/briarstone-beverage/cc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "553741b0cea68229b739cf08e1d33bf9d0ffc3efa74a623c286b3464e77397c1"
+  },
+  {
+   "id": "briarstone-beverage.bbc-2026-07-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/briarstone-beverage/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "text_sha256": "c7f93481a3b933f3945adff23413478ad3d600073ac7f4858fd959c759ed3e0a"
+  },
+  {
+   "id": "briarstone-beverage.bbc-2026-08-31",
+   "borrower_id": "briarstone-beverage",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/briarstone-beverage/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "text_sha256": "25591df4035a6b4d3a20f8fabcc41dfb6bb6d93b3acfe180d460254369d672cc"
+  },
+  {
+   "id": "briarstone-beverage.bbc-2026-09-30",
+   "borrower_id": "briarstone-beverage",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/briarstone-beverage/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "text_sha256": "0594ee87416c7c4054dbf839d63b82d2b9cbd85d618354d364d6077985396500"
+  },
+  {
+   "id": "pellham-grain.credit-agreement",
+   "borrower_id": "pellham-grain",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/pellham-grain/credit-agreement.pdf",
+   "pages": 14,
+   "text_sha256": "6d81961b91c0fcb28213146fb6e65d0d0723649ebcbf47e0ed60347c0fc8c4f7"
+  },
+  {
+   "id": "pellham-grain.afs-2024",
+   "borrower_id": "pellham-grain",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/pellham-grain/afs-2024.pdf",
+   "pages": 7,
+   "text_sha256": "25691dd08c8c6b20988301d2440d0cb924b23f99c6dedb0b52310a5c39516ae5"
+  },
+  {
+   "id": "pellham-grain.afs-2025",
+   "borrower_id": "pellham-grain",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/pellham-grain/afs-2025.pdf",
+   "pages": 7,
+   "text_sha256": "9a0a7d3541b0eef4e6138427c23343a55e9f66e1ac63d0e06b614ce0598e906b"
+  },
+  {
+   "id": "pellham-grain.ifs-2025-03-31",
+   "borrower_id": "pellham-grain",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/pellham-grain/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "c7c8be4b6b58b96dfc1604957d306e812b06f23109a90d32b1092be5c2d01274"
+  },
+  {
+   "id": "pellham-grain.ifs-2025-06-30",
+   "borrower_id": "pellham-grain",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/pellham-grain/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "dd041d83854a6959ed1ee666520df6aae6fffcf293a7d8a3b7a7d3d67a06b561"
+  },
+  {
+   "id": "pellham-grain.ifs-2025-09-30",
+   "borrower_id": "pellham-grain",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/pellham-grain/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "9685c7b1adbc56eff43d4bbec969e76922f330092d29045c18dca8b97b5ae433"
+  },
+  {
+   "id": "pellham-grain.ifs-2026-03-31",
+   "borrower_id": "pellham-grain",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/pellham-grain/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "text_sha256": "86920dbc1386a0027e39fb32e8fdf8cc1b075433c3f3e83425f13b50e5668e01"
+  },
+  {
+   "id": "pellham-grain.ifs-2026-06-30",
+   "borrower_id": "pellham-grain",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/pellham-grain/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "text_sha256": "bad08d2f5ca7e1b333d498c20f6dd5d0f8b4b9edd24c0eea91bee4c5f8ffa38b"
+  },
+  {
+   "id": "pellham-grain.ifs-2026-09-30",
+   "borrower_id": "pellham-grain",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/pellham-grain/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "text_sha256": "90920b2596f383c52b2415226a8238d045f024991b220ca3af9c82cc123fbeeb"
+  },
+  {
+   "id": "pellham-grain.cc-2025-03-31",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/pellham-grain/cc-2025-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "b7d64c483ebca6a9bf70bae5e777f2081425b2eda43685c8837bd75ded71da96"
+  },
+  {
+   "id": "pellham-grain.cc-2025-06-30",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/pellham-grain/cc-2025-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "32c970396217d59402959d6ccb2a79373833c083328a7933d60b3170fe3294b8"
+  },
+  {
+   "id": "pellham-grain.cc-2025-09-30",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/pellham-grain/cc-2025-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "bf5aebfeba84d70e276695513451536283ceebf2f2acfedb7a62eff3d8c98ea7"
+  },
+  {
+   "id": "pellham-grain.cc-2025-12-31",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/pellham-grain/cc-2025-12-31.pdf",
+   "pages": 2,
+   "text_sha256": "8121a5422931f335e004045228e7ef955d44a0af4fc1ce8bf900857e30a41b7d"
+  },
+  {
+   "id": "pellham-grain.cc-2026-03-31",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/pellham-grain/cc-2026-03-31.pdf",
+   "pages": 2,
+   "text_sha256": "fc5f0f42ca0bfc08b777f9c3a492dee2d74eb6f25ef64c8d7c2e213bae6bc508"
+  },
+  {
+   "id": "pellham-grain.cc-2026-06-30",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/pellham-grain/cc-2026-06-30.pdf",
+   "pages": 2,
+   "text_sha256": "da8190ca6c0a2ac3645f6b7e923f9c5482e19719e9a40873148ef1b88bfb7520"
+  },
+  {
+   "id": "pellham-grain.cc-2026-09-30",
+   "borrower_id": "pellham-grain",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/pellham-grain/cc-2026-09-30.pdf",
+   "pages": 2,
+   "text_sha256": "4f932282319dfe63b8e8c904d3f16085dae9d086b41f06c8aac9ab857e37675f"
+  },
+  {
+   "id": "pellham-grain.bbc-2026-07-31",
+   "borrower_id": "pellham-grain",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/pellham-grain/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "text_sha256": "73298c2b4567989ce6c021673bb82bc2efe51852497186f1f578e26156e37ec6"
+  },
+  {
+   "id": "pellham-grain.bbc-2026-08-31",
+   "borrower_id": "pellham-grain",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/pellham-grain/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "text_sha256": "e12942a5334c1ad290c13c81bd23f1161da72af1fa1c0affee9d350594f47637"
+  },
+  {
+   "id": "pellham-grain.bbc-2026-09-30",
+   "borrower_id": "pellham-grain",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/pellham-grain/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "text_sha256": "de00fde6fdef17b193697f93f639a942474669a3d2f99000e81a5e83533a2aa1"
+  }
+ ]
+}

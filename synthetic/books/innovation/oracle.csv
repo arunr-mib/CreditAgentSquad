@@ -1,0 +1,80 @@
+borrower_id,borrower_name,period_end,kind,item,expected_value,threshold,expected_outcome,terms_version,scenario,owner_signed_off
+dataflake,Dataflake Inc,2026-10-31,covenant_test,min_unrestricted_cash,4600000,>= 5000000,breach_reported_compliant,tv-dataflake-1,pledged_cash,no
+dataflake,Dataflake Inc,2026-10-31,covenant_test,min_runway_months,7.1,>= 6.0,compliant_variance,tv-dataflake-1,pledged_cash,no
+dataflake,Dataflake Inc,2026-10-31,covenant_test,revenue_vs_plan,1.0530,>= 0.80,compliant,tv-dataflake-1,pledged_cash,no
+dataflake,Dataflake Inc,2026-10-31,funding_event,extension:2026-12-12,8000000,,signed,,pledged_cash,no
+dataflake,Dataflake Inc,2026-10-31,exception,covenant:min_unrestricted_cash,,,covenant.reported_mismatch,,pledged_cash,no
+dataflake,Dataflake Inc,2026-10-31,exception,signal:runway_below_watch,,,signal.high,,pledged_cash,no
+lumora-health,Lumora Health,2026-10-31,covenant_test,min_unrestricted_cash,,>= 2500000,cannot_test,tv-lumora-health-1,late_package,no
+lumora-health,Lumora Health,2026-10-31,covenant_test,min_runway_months,,>= 6.0,cannot_test,tv-lumora-health-1,late_package,no
+lumora-health,Lumora Health,2026-10-31,covenant_test,revenue_vs_plan,,>= 0.80,cannot_test,tv-lumora-health-1,late_package,no
+lumora-health,Lumora Health,2026-10-31,exception,requirement:bank_statements,,,intake.missing_document,,late_package,no
+lumora-health,Lumora Health,2026-10-31,exception,requirement:mrr_report,,,intake.missing_document,,late_package,no
+brightvane-energy,Brightvane Energy,2026-10-31,covenant_test,min_unrestricted_cash,5500000,>= 3000000,compliant,tv-brightvane-energy-1,runway_falling,no
+brightvane-energy,Brightvane Energy,2026-10-31,covenant_test,min_runway_months,12.2,>= 6.0,compliant,tv-brightvane-energy-1,runway_falling,no
+brightvane-energy,Brightvane Energy,2026-10-31,covenant_test,revenue_vs_plan,1.0528,>= 0.80,compliant,tv-brightvane-energy-1,runway_falling,no
+mosswell-robotics,Mosswell Robotics,2026-10-31,covenant_test,min_unrestricted_cash,7800000,>= 4000000,compliant,tv-mosswell-robotics-1,clean,no
+mosswell-robotics,Mosswell Robotics,2026-10-31,covenant_test,min_runway_months,13.0,>= 6.0,compliant,tv-mosswell-robotics-1,clean,no
+mosswell-robotics,Mosswell Robotics,2026-10-31,covenant_test,revenue_vs_plan,1.0524,>= 0.80,compliant,tv-mosswell-robotics-1,clean,no
+halcyon-grid,Halcyon Grid,2026-10-31,covenant_test,min_unrestricted_cash,2600000,>= 1500000,compliant,tv-halcyon-grid-1,funding_expected,no
+halcyon-grid,Halcyon Grid,2026-10-31,covenant_test,min_runway_months,13.0,>= 6.0,compliant,tv-halcyon-grid-1,funding_expected,no
+halcyon-grid,Halcyon Grid,2026-10-31,covenant_test,revenue_vs_plan,1.0531,>= 0.80,compliant,tv-halcyon-grid-1,funding_expected,no
+halcyon-grid,Halcyon Grid,2026-10-31,funding_event,equity_round:2027-03-31,12000000,,expected,,funding_expected,no
+quillon-ai,Quillon AI,2026-10-31,covenant_test,min_unrestricted_cash,12000000,>= 6000000,compliant,tv-quillon-ai-1,clean,no
+quillon-ai,Quillon AI,2026-10-31,covenant_test,min_runway_months,15.0,>= 6.0,compliant,tv-quillon-ai-1,clean,no
+quillon-ai,Quillon AI,2026-10-31,covenant_test,revenue_vs_plan,1.0526,>= 0.80,compliant,tv-quillon-ai-1,clean,no
+kelvra-bio,Kelvra Bio,2026-10-31,covenant_test,min_unrestricted_cash,9200000,>= 3500000,compliant,tv-kelvra-bio-1,funding_expected,no
+kelvra-bio,Kelvra Bio,2026-10-31,covenant_test,min_runway_months,18.4,>= 6.0,compliant,tv-kelvra-bio-1,funding_expected,no
+kelvra-bio,Kelvra Bio,2026-10-31,covenant_test,revenue_vs_plan,1.0528,>= 0.80,compliant,tv-kelvra-bio-1,funding_expected,no
+kelvra-bio,Kelvra Bio,2026-10-31,funding_event,milestone_tranche:2027-02-26,4000000,,expected,,funding_expected,no
+orbitline-systems,Orbitline Systems,2026-10-31,covenant_test,min_unrestricted_cash,3900000,>= 2000000,compliant,tv-orbitline-systems-1,clean,no
+orbitline-systems,Orbitline Systems,2026-10-31,covenant_test,min_runway_months,18.6,>= 6.0,compliant,tv-orbitline-systems-1,clean,no
+orbitline-systems,Orbitline Systems,2026-10-31,covenant_test,revenue_vs_plan,1.0524,>= 0.80,compliant,tv-orbitline-systems-1,clean,no
+stripple-tech,Stripple Tech,2026-10-31,covenant_test,min_unrestricted_cash,6600000,>= 3500000,compliant,tv-stripple-tech-1,stripple_package,no
+stripple-tech,Stripple Tech,2026-10-31,covenant_test,min_runway_months,22.0,>= 6.0,compliant,tv-stripple-tech-1,stripple_package,no
+stripple-tech,Stripple Tech,2026-10-31,covenant_test,revenue_vs_plan,1.0528,>= 0.80,compliant,tv-stripple-tech-1,stripple_package,no
+stripple-tech,Stripple Tech,2026-10-31,exception,document:stripple-tech.mrr-export,,,intake.unclassified,,stripple_package,no
+stripple-tech,Stripple Tech,2026-10-31,exception,document:stripple-tech.mf-2026-10-31,,,spread.value_unverified,,stripple_package,no
+veridia-payments,Veridia Payments,2026-10-31,covenant_test,min_unrestricted_cash,14000000,>= 7000000,compliant,tv-veridia-payments-1,clean,no
+veridia-payments,Veridia Payments,2026-10-31,covenant_test,min_runway_months,25.5,>= 6.0,compliant,tv-veridia-payments-1,clean,no
+veridia-payments,Veridia Payments,2026-10-31,covenant_test,revenue_vs_plan,1.0526,>= 0.80,compliant,tv-veridia-payments-1,clean,no
+tessaract-labs,Tessaract Labs,2026-10-31,covenant_test,min_unrestricted_cash,11000000,>= 5500000,compliant,tv-tessaract-labs-1,clean,no
+tessaract-labs,Tessaract Labs,2026-10-31,covenant_test,min_runway_months,27.5,>= 6.0,compliant,tv-tessaract-labs-1,clean,no
+tessaract-labs,Tessaract Labs,2026-10-31,covenant_test,revenue_vs_plan,1.0527,>= 0.80,compliant,tv-tessaract-labs-1,clean,no
+pellucid-sensors,Pellucid Sensors,2026-10-31,covenant_test,min_unrestricted_cash,6300000,>= 3000000,compliant,tv-pellucid-sensors-1,clean,no
+pellucid-sensors,Pellucid Sensors,2026-10-31,covenant_test,min_runway_months,28.6,>= 6.0,compliant,tv-pellucid-sensors-1,clean,no
+pellucid-sensors,Pellucid Sensors,2026-10-31,covenant_test,revenue_vs_plan,1.0533,>= 0.80,compliant,tv-pellucid-sensors-1,clean,no
+corvane-analytics,Corvane Analytics,2026-10-31,covenant_test,min_unrestricted_cash,8400000,>= 4000000,compliant,tv-corvane-analytics-1,plan_miss,no
+corvane-analytics,Corvane Analytics,2026-10-31,covenant_test,min_runway_months,14.0,>= 6.0,compliant,tv-corvane-analytics-1,plan_miss,no
+corvane-analytics,Corvane Analytics,2026-10-31,covenant_test,revenue_vs_plan,0.6521,>= 0.80,breach,tv-corvane-analytics-1,plan_miss,no
+corvane-analytics,Corvane Analytics,2026-10-31,exception,covenant:revenue_vs_plan,,,covenant.breach,,plan_miss,no
+nimbusfield-security,Nimbusfield Security,2026-10-31,covenant_test,min_unrestricted_cash,3300000,>= 2000000,compliant,tv-nimbusfield-security-1,funding_slipped,no
+nimbusfield-security,Nimbusfield Security,2026-10-31,covenant_test,min_runway_months,8.3,>= 6.0,compliant,tv-nimbusfield-security-1,funding_slipped,no
+nimbusfield-security,Nimbusfield Security,2026-10-31,covenant_test,revenue_vs_plan,1.0528,>= 0.80,compliant,tv-nimbusfield-security-1,funding_slipped,no
+nimbusfield-security,Nimbusfield Security,2026-10-31,funding_event,equity_round:2026-11-06,15000000,,slipped,,funding_slipped,no
+nimbusfield-security,Nimbusfield Security,2026-10-31,exception,funding_event:equity_round:2026-11-06,,,funding_slipped,,funding_slipped,no
+nimbusfield-security,Nimbusfield Security,2026-10-31,exception,signal:runway_below_watch,,,signal.high,,funding_slipped,no
+tidewell-medical,Tidewell Medical,2026-10-31,covenant_test,min_unrestricted_cash,4300000,>= 3000000,compliant_variance,tv-tidewell-medical-1,restricted_account,no
+tidewell-medical,Tidewell Medical,2026-10-31,covenant_test,min_runway_months,12.3,>= 6.0,compliant_variance,tv-tidewell-medical-1,restricted_account,no
+tidewell-medical,Tidewell Medical,2026-10-31,covenant_test,revenue_vs_plan,1.0523,>= 0.80,compliant,tv-tidewell-medical-1,restricted_account,no
+tidewell-medical,Tidewell Medical,2026-10-31,exception,cash:2026-10-31,,,cash.statement_mismatch,,restricted_account,no
+ferrogate-cloud,Ferrogate Cloud,2026-10-31,covenant_test,min_unrestricted_cash,16000000,>= 8000000,compliant,tv-ferrogate-cloud-2,cash_flow_positive,no
+ferrogate-cloud,Ferrogate Cloud,2026-10-31,covenant_test,min_runway_months,,>= 6.0,compliant+not_meaningful,tv-ferrogate-cloud-2,cash_flow_positive,no
+ferrogate-cloud,Ferrogate Cloud,2026-10-31,covenant_test,revenue_vs_plan,1.0527,>= 0.80,compliant,tv-ferrogate-cloud-2,cash_flow_positive,no
+ferrogate-cloud,Ferrogate Cloud,2026-10-31,covenant_test,dscr,6.54,>= 1.25,compliant,tv-ferrogate-cloud-2,cash_flow_positive,no
+kestrel-bay-packaging,Kestrel Bay Packaging Corp.,2026-09-30,covenant_test,total_leverage,2.60,<= 2.50,breach_reported_compliant,tv-kestrel-bay-packaging-1,hidden_breach,yes
+kestrel-bay-packaging,Kestrel Bay Packaging Corp.,2026-09-30,covenant_test,current_ratio,1.34,>= 1.25,compliant,tv-kestrel-bay-packaging-1,hidden_breach,yes
+kestrel-bay-packaging,Kestrel Bay Packaging Corp.,2026-09-30,exception,covenant:total_leverage,,,covenant.reported_mismatch,,hidden_breach,yes
+harrowgate-precision,"Harrowgate Precision Components, Inc.",2026-09-30,covenant_test,fccr,1.51,>= 1.05,compliant,tv-harrowgate-precision-1,clean,yes
+harrowgate-precision,"Harrowgate Precision Components, Inc.",2026-09-30,covenant_test,total_leverage,1.89,<= 3.00,compliant,tv-harrowgate-precision-1,clean,yes
+harrowgate-precision,"Harrowgate Precision Components, Inc.",2026-09-30,covenant_test,min_tnw,22137000,>= 13000000,compliant,tv-harrowgate-precision-1,clean,yes
+harrowgate-precision,"Harrowgate Precision Components, Inc.",2026-09-30,borrowing_base,availability,2951000,,ok,,clean,yes
+briarstone-beverage,Briarstone Beverage Company,2026-09-30,covenant_test,fccr,1.73,>= 1.20,compliant,tv-briarstone-beverage-1,over_advance,yes
+briarstone-beverage,Briarstone Beverage Company,2026-09-30,covenant_test,total_leverage,1.97,<= 3.00,compliant,tv-briarstone-beverage-1,over_advance,yes
+briarstone-beverage,Briarstone Beverage Company,2026-09-30,borrowing_base,availability,-81949,,over_advance,,over_advance,yes
+briarstone-beverage,Briarstone Beverage Company,2026-09-30,exception,borrowing_base:2026-09-30,,,bb.over_advance,,over_advance,yes
+pellham-grain,Pellham Grain & Milling Co.,2026-09-30,covenant_test,fccr,1.28,>= 1.35,breach,tv-pellham-grain-1,reported_breach,yes
+pellham-grain,Pellham Grain & Milling Co.,2026-09-30,covenant_test,total_leverage,2.04,<= 2.40,compliant,tv-pellham-grain-1,reported_breach,yes
+pellham-grain,Pellham Grain & Milling Co.,2026-09-30,covenant_test,min_tnw,58265000,>= 39000000,compliant,tv-pellham-grain-1,reported_breach,yes
+pellham-grain,Pellham Grain & Milling Co.,2026-09-30,borrowing_base,availability,6049000,,ok,,reported_breach,yes
+pellham-grain,Pellham Grain & Milling Co.,2026-09-30,exception,covenant:fccr,,,covenant.breach,,reported_breach,yes

@@ -8,6 +8,17 @@ exactly, extraction, covenant tests and exceptions can be graded exactly.
 Every document carries `SYNTHETIC - FOR DEMONSTRATION` in the footer of every page. All borrower,
 customer, officer and audit-firm names are invented.
 
+## Two books
+
+| Book | Where | What | Regenerate |
+|---|---|---|---|
+| Innovation (v2 default) | `synthetic/books/innovation/` | 20 borrowers: 16 venture-backed clients (monthly, template `vc-1`, current period 31 October 2026) and the 4 kept C&I borrowers | `uv run python -m synthetic.books.innovation.generate` |
+| Legacy C&I (v1, frozen) | `synthetic/` (this folder) | 21 quarterly borrowers; existing engine tests run on it | `uv run python -m synthetic.generate` |
+
+The legacy generator is frozen: `synthetic/tests/test_legacy_frozen.py` pins every source file and the four kept truth files by digest. The kept four (`kestrel-bay-packaging`, `harrowgate-precision`, `briarstone-beverage`, `pellham-grain`) are built by the legacy code with the legacy seed, so their truth, documents and signed answer-key rows are identical in both books. The innovation answer key is `synthetic/books/innovation/oracle.csv`: its rows for the 16 innovation clients are unsigned until the owner signs them.
+
+Innovation conventions the spec left open: tests run from August 2025 (a trailing three months needs published months before it); due days are financials and certificate 30, MRR report 15, bank statements 7; the approved revenue plan covers May 2025 to October 2026; DSCR only for Ferrogate from May 2026 (terms version); `mrr_export.xlsx` is delivered with a PDF print (`mrr_export.pdf`) because intake takes PDFs only; the exception `cash.statement_mismatch` is raised by a reconciliation the engine does not do yet.
+
 ## Regenerate
 
 ```bash
