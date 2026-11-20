@@ -50,7 +50,8 @@ export function DraftMessage({ message }: { message: Draft }) {
     <article className="sq-msg sq-card sq-email">
       <header className="sq-msghead">
         <SquadMark size={22} /> <b>Draft to {message.to}</b>
-        <span className="sq-faint">drafted by Squad</span>
+        <span className="sq-faint">drafted by {message.created_by}</span>
+        {message.edited_by ? <span className="sq-faint">edited by {message.edited_by}</span> : null}
         {sent ? <span className="sq-tag">Sent</span> : null}
       </header>
       <p className="sq-muted">Subject: {message.subject}</p>

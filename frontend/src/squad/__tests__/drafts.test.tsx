@@ -36,6 +36,18 @@ describe('DraftMessage', () => {
     expect(screen.queryByRole('button', { name: /save changes/i })).not.toBeInTheDocument();
   });
 
+  it('says who drafted it, and who edited it, from the record', () => {
+    mount(draft({ created_by: 'Helen Strand', edited_by: 'Priya Raman' }));
+    expect(screen.getByText('drafted by Helen Strand')).toBeInTheDocument();
+    expect(screen.getByText('edited by Priya Raman')).toBeInTheDocument();
+    expect(screen.queryByText(/drafted by squad/i)).not.toBeInTheDocument();
+  });
+
+  it('says nothing about an edit when nobody edited it', () => {
+    mount(draft());
+    expect(screen.queryByText(/edited by/i)).not.toBeInTheDocument();
+  });
+
   it('offers to save only once the text has changed', async () => {
     mount(draft());
     await userEvent.type(screen.getByLabelText('Message'), ' Thanks.');
