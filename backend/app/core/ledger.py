@@ -78,6 +78,12 @@ def _body(ev: LedgerEvent) -> dict[str, Any]:
     }
 
 
+def lock(db: Session) -> None:
+    """Take the ledger's append lock (held to the end of the transaction). A caller that reads the ledger to
+    decide what to append takes it first, so the read cannot be stale by the time it appends."""
+    db.execute(text("SELECT pg_advisory_xact_lock(:k)"), {"k": _LOCK_KEY})
+
+
 def record(
     db: Session,
     *,
@@ -92,7 +98,7 @@ def record(
     """Append one event inside the caller's transaction. Appends are serialised by an advisory lock."""
     if actor_type not in ("user", "agent", "system"):
         raise ValueError(f"unknown actor_type {actor_type!r}")
-    db.execute(text("SELECT pg_advisory_xact_lock(:k)"), {"k": _LOCK_KEY})
+    lock(db)
     last = db.execute(
         select(LedgerEvent.seq, LedgerEvent.hash).order_by(LedgerEvent.seq.desc()).limit(1)
     ).first()

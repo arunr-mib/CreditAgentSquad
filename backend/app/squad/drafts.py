@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.core import ledger
 from app.core.ledger import LedgerEvent
+from app.domain.monitoring import WorkItem
 from app.domain.org import User
 
 
@@ -28,6 +29,8 @@ def _fold(events: list[LedgerEvent], names: dict[str, str]) -> dict[str, Any]:
              "status": "draft", "created_by": _who(names, first), "created_at": first.ts.isoformat(),
              "edited_by": None, "sent_by": None, "sent_at": None}
     for event in events[1:]:
+        if draft["status"] == "sent":  # nothing after the send counts, whatever the ledger holds
+            break
         if event.action == "draft.edited":
             draft["subject"] = event.payload.get("subject", draft["subject"])
             draft["body"] = event.payload.get("body", draft["body"])
@@ -64,6 +67,10 @@ def create_draft(db: Session, *, borrower_id: uuid.UUID, to: str, subject: str, 
                  work_item_id: uuid.UUID | None = None, actor: tuple[str, str] = ("agent", "squad")) -> dict[str, Any]:
     if not to.strip() or not subject.strip():
         raise ValueError("a draft needs a recipient and a subject")
+    if work_item_id is not None:
+        item = db.get(WorkItem, work_item_id)
+        if item is None or item.borrower_id != borrower_id:
+            raise ValueError("that work item does not belong to this client")
     draft_id = uuid.uuid4()
     ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="draft.created", entity_type="draft",
                   entity_id=draft_id, payload={"borrower_id": borrower_id, "to": to.strip(), "subject": subject.strip(),
@@ -74,11 +81,14 @@ def create_draft(db: Session, *, borrower_id: uuid.UUID, to: str, subject: str, 
 
 def edit_draft(db: Session, draft_id: uuid.UUID, user: User, *, subject: str | None = None,
                body: str | None = None) -> dict[str, Any]:
+    ledger.lock(db)  # before the status check, so a concurrent send cannot slip in between
     current = get_draft(db, draft_id)
     if current["status"] == "sent":
         raise ValueError("this draft has been sent and cannot be changed")
     payload: dict[str, Any] = {"borrower_id": current["borrower_id"]}
     if subject is not None:
+        if not subject.strip():
+            raise ValueError("a draft needs a subject")
         payload["subject"] = subject.strip()
     if body is not None:
         payload["body"] = body
@@ -89,6 +99,7 @@ def edit_draft(db: Session, draft_id: uuid.UUID, user: User, *, subject: str | N
 
 
 def send_draft(db: Session, draft_id: uuid.UUID, user: User) -> dict[str, Any]:
+    ledger.lock(db)
     current = get_draft(db, draft_id)
     if current["status"] == "sent":
         raise ValueError("this draft has already been sent")
