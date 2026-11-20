@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from app.calc import signals as sig
 from app.calc.periods import FactValue, month_end, ytd_months
 from app.core import ledger
+from app.domain import periods_service
 from app.domain.covenant_service import fact_provider
 from app.domain.credit import Borrower, Facility
 from app.domain.facts import Fact
@@ -47,8 +48,9 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
     fye = borrower.fiscal_year_end_month
     has_base = db.execute(select(Facility.id).where(
         Facility.borrower_id == borrower.id, Facility.has_borrowing_base.is_(True))).first() is not None
-    venture = borrower.template_id == "vc-1"
-    ends = monthly_ends(period_end, HISTORY_MONTHS) if venture else quarter_ends(period_end, HISTORY_QUARTERS)
+    venture = borrower.template_id == "vc-1"  # which signal inputs exist
+    monthly = periods_service.step_months(db, borrower, period_end) == 1  # how often the borrower reports
+    ends = monthly_ends(period_end, HISTORY_MONTHS) if monthly else quarter_ends(period_end, HISTORY_QUARTERS)
     venture_inputs = sig.compute_signal_inputs(
         period_end, provider, fye_month=fye, template_id="vc-1", history_months=HISTORY_MONTHS - 1) if venture else None
     series = []
@@ -56,7 +58,7 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
         if venture_inputs is not None:
             inputs = venture_inputs if end == period_end else venture_inputs.history.get(end)
             if inputs is None:
-                continue
+                continue  # a month with no inputs is skipped, never filled with zeros
         else:
             inputs = sig.compute_signal_inputs(end, provider, fye_month=fye)
         metrics: dict[str, Any] = dict(inputs.values)
@@ -73,7 +75,7 @@ def _series(db: Session, borrower: Borrower, period_end: date) -> list[sig.Perio
             headroom[test.covenant_id] = (FactValue(stored.value, str(stored.id))
                                           if stored is not None and stored.value == test.headroom_pct
                                           else test.headroom_pct)
-        months = ytd_months(end, fye) if venture else ((end.month - fye) % 12) or 12
+        months = ytd_months(end, fye) if monthly else ((end.month - fye) % 12) or 12
         series.append(sig.PeriodMetrics(end, months, metrics, headroom))
     return series
 
