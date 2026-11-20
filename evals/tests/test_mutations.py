@@ -95,10 +95,6 @@ def test_a_numeric_runway_for_a_not_meaningful_period_is_caught(engine, file_sto
     outcome = run_mutations(engine, book, ["cert-runway-reported-as-a-number"])[0]
     assert outcome["applied"], "the certificate agent is never asked, so nothing was tampered with"
     assert not outcome["error"], outcome
-    if outcome["caught_by"] == "SLIPPED" and "spread.value_unverified" in outcome["baseline_raised"]:
-        # the untampered run already raises spread.value_unverified (the Revenue to Plan row), which masks the
-        # product's refusal of the invented runway. Remove when defects A/B are fixed (Task 9).
-        pytest.xfail("masked by the baseline certificate item for Revenue to Plan; remove when defects A/B are fixed (Task 9)")
     assert outcome["caught_by"] != "SLIPPED", outcome["evidence"]
 
 

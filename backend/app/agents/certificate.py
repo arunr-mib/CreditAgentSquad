@@ -23,7 +23,7 @@ from app.domain.documents_service import get_page, read_file
 from app.domain.facts_service import add_fact, store_extracted_cell
 from app.domain.monitoring import Cycle
 from app.guardrails.numbers import extract_figures, parse_printed_figure
-from app.guardrails.quotes import locate, quote_on_page, same_row, verify_cell
+from app.guardrails.quotes import CellCheck, locate, quote_on_page, row_label, same_row, verify_cell
 from app.guardrails.units import scale_of, units_in
 
 
@@ -58,6 +58,7 @@ class CertificateResult:
     run_id: uuid.UUID | None = None
     stored: list[str] = field(default_factory=list)  # covenant ids with a verified reported value
     unverified: list[dict[str, Any]] = field(default_factory=list)
+    not_meaningful: list[str] = field(default_factory=list)  # printed "Not meaningful": no value, by design
 
 
 def _on_row(page, anchor, text: str) -> bool:
@@ -65,6 +66,15 @@ def _on_row(page, anchor, text: str) -> bool:
     covenant's reported figure. The row is never chosen by a label the reader reported: a label
     fragment such as "Ratio" sits on every row."""
     return any(same_row(hit.bbox, anchor) for hit in locate(page.words, text))
+
+
+def _text_anchor(page, printed_label: str, printed: str):
+    """Where `printed` sits on the row of the covenant's label, to the right of it; None unless it is
+    found exactly once there."""
+    labels = locate(page.words, printed_label)
+    found = [hit for hit in locate(page.words, printed)
+             if any(same_row(hit.bbox, lab.bbox) and hit.bbox[0] >= lab.bbox[2] - 2.0 for lab in labels)]
+    return found[0].bbox if len(found) == 1 else None
 
 
 def _flag_on_row(page, anchor) -> str | None:
@@ -103,6 +113,23 @@ def _unit_problem(unit: str, printed_unit: str) -> str | None:
     if unit != "pct" and printed_unit == "%":
         return f"the figure is printed as a percent but this covenant is measured in {unit}"
     return None
+
+
+_NOT_MEANINGFUL = re.compile(r"^not\s+meaningful\b", re.I)
+_UNIT_WORDS = {"months": re.compile(r"^(?P<fig>\S+)\s+months?$", re.I),
+               "ratio": re.compile(r"^(?P<fig>\S+)\s+to\s+1(?:\.0+)?$", re.I)}
+
+
+def _split_actual(printed: str, unit: str) -> tuple[str, bool]:
+    """The figure inside what the certificate prints for a covenant, and whether it prints
+    "Not meaningful" instead of one. A unit word that belongs to the covenant ("9.4 months", "6.54
+    to 1.00") is set aside; anything else is left whole, so it is refused rather than guessed."""
+    text = printed.strip()
+    if _NOT_MEANINGFUL.match(text):
+        return text, True
+    pattern = _UNIT_WORDS.get(unit)
+    match = pattern.match(text) if pattern else None
+    return (match.group("fig"), False) if match else (text, False)
 
 
 def read_certificate(db: Session, *, borrower: Borrower, document: Document, period_end: date, terms: Terms,
@@ -147,13 +174,20 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
         else:
             # the row the figure sits on must be this covenant's row. Code reads the row's label
             # from the page; the label the reader reported is only used to find the row
-            located = verify_cell(page.words, printed_figure=row.actual_printed, printed_label=row.printed_label,
-                                  label_gap=_COLUMN_GAP)
-            if located.value is not None:
-                problem = _row_problem(located.row_label, row.covenant_id, names)
-            printed = parse_printed_figure(row.actual_printed)
-            if problem is None and printed is not None:
-                problem = _unit_problem(covenant.test.unit, printed.unit)
+            figure_text, no_value = _split_actual(row.actual_printed, covenant.test.unit)
+            if no_value:
+                anchor = _text_anchor(page, row.printed_label, row.actual_printed)
+                label_found = row_label(page.words, anchor, _COLUMN_GAP) if anchor else None
+                problem = ("the printed 'Not meaningful' was not found on the row of the covenant's label"
+                           if anchor is None else _row_problem(label_found, row.covenant_id, names))
+            else:
+                located = verify_cell(page.words, printed_figure=figure_text, printed_label=row.printed_label,
+                                      label_gap=_COLUMN_GAP)
+                if located.value is not None:
+                    problem = _row_problem(located.row_label, row.covenant_id, names)
+                printed = parse_printed_figure(figure_text)
+                if problem is None and printed is not None:
+                    problem = _unit_problem(covenant.test.unit, printed.unit)
             if problem is None and units_in_doubt and covenant.test.unit == "usd":
                 problem = "the certificate prints an 'in thousands' phrase that was not reported, so dollar amounts cannot be scaled"
         if problem:
@@ -162,22 +196,29 @@ def read_certificate(db: Session, *, borrower: Borrower, document: Document, per
         seen.add(row.covenant_id)
         unit = covenant.test.unit
         per_cent = Decimal("0.01") if unit == "pct" else Decimal(1)  # the engine holds a percentage as a fraction
-        fact, check = store_extracted_cell(
-            db, borrower_id=borrower.id, key=f"cert.{covenant.id}.value", period_end=period_end, months=0,
-            document=document, page_number=row.page, printed_figure=row.actual_printed,
-            printed_label=row.printed_label, column_header=None, scale=scale if unit == "usd" else 1,
-            presentation_sign=1, agent_run_id=outcome.run.id, unit=unit, unit_factor=per_cent,
-            label_gap=_COLUMN_GAP,
-            actor=("agent", "certificate_reader"))
-        if fact is None or not check.ok:
-            result.unverified.append({"covenant_id": covenant.id, "reason": check.status, "detail": check.detail})
-            continue
-        result.stored.append(covenant.id)
+        if no_value:
+            # the certificate itself says there is no figure: nothing is stored as the value (never a
+            # zero), and the requirement and the compliance entry are still read from the row
+            fact, check = None, CellCheck("verified", bbox=anchor, row_label=label_found or "")
+            result.not_meaningful.append(covenant.id)
+        else:
+            fact, check = store_extracted_cell(
+                db, borrower_id=borrower.id, key=f"cert.{covenant.id}.value", period_end=period_end, months=0,
+                document=document, page_number=row.page, printed_figure=figure_text,
+                printed_label=row.printed_label, column_header=None, scale=scale if unit == "usd" else 1,
+                presentation_sign=1, agent_run_id=outcome.run.id, unit=unit, unit_factor=per_cent,
+                label_gap=_COLUMN_GAP, actor=("agent", "certificate_reader"))
+            if fact is None or not check.ok:
+                result.unverified.append({"covenant_id": covenant.id, "reason": check.status, "detail": check.detail})
+                continue
+            result.stored.append(covenant.id)
         common = dict(borrower_id=borrower.id, period_end=period_end, months=0, kind="extracted", status="verified",
                       document_id=document.id, page=row.page, label_text=check.row_label or row.printed_label,
                       agent_run_id=outcome.run.id, actor=("agent", "certificate_reader"))
         # the requirement and the compliance entry must sit on the covenant's own row
-        figures = extract_figures(row.required_printed)
+        # "1.25 to 1.00" is one ratio when 1.25 is a threshold the approved terms hold for this covenant
+        known = [covenant.test.threshold, *(step.value for step in covenant.test.steps)] if unit == "ratio" else []
+        figures = extract_figures(row.required_printed, known_ratios=known)
         if len(figures) == 1 and _unit_problem(unit, "%" if figures[0].kind == "percent" else "") is not None:
             result.unverified.append({"covenant_id": covenant.id, "reason": "requirement_unverified",
                                       "detail": _unit_problem(unit, "%" if figures[0].kind == "percent" else "")})

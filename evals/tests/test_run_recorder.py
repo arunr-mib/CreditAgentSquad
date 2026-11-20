@@ -20,10 +20,10 @@ def test_a_funding_item_raised_at_seed_time_reaches_the_recording(engine, file_s
     types = [w["type"] for w in recording["work_items"]]
     assert types.count("funding_slipped") == 1
     # exactly what the stand-in cycle raises today: the funding item (the product's own, at seed
-    # time), the signal the book expects, and a certificate item for the Revenue to Plan row (the
-    # product stores a percentage as printed and cannot cite the wrapped row: Task 9's to fix);
+    # time) and the signal the book expects. The certificate item for the Revenue to Plan row is
+    # gone now that percentages are stored as fractions and the wrapped row is cited by its own label;
     # a change here is a finding
-    assert set(types) == {"funding_slipped", "signal.high", "spread.value_unverified"}
+    assert set(types) == {"funding_slipped", "signal.high"}
 
 
 @pytest.fixture(scope="module")

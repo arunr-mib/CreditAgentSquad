@@ -44,23 +44,24 @@ def cert_pdf(actual="105.30%", required_lines=("Not less than 80.00% of", "plan"
     return buf.getvalue()
 
 
-def run(book, *, unit, actual="105.30%", required="Not less than 80.00% of plan", **pdf_args):  # noqa: F811
-    db, _ = book
+def run(world, *, unit, actual="105.30%", required="Not less than 80.00% of plan", cid="revenue_vs_plan",
+        name="Revenue to Plan", threshold=D("0.80"), **pdf_args):
+    db, _ = world
     borrower = db.execute(select(Borrower).where(Borrower.code == "pellham-grain")).scalar_one()
     facility = db.execute(select(Facility).where(Facility.borrower_id == borrower.id)).scalars().first()
     _, version = governing_terms(db, facility, PERIOD)
     base = version.terms.covenants[0]
-    covenant = base.model_copy(update={"id": "revenue_vs_plan", "name": "Revenue to Plan",
-                                       "test": base.test.model_copy(update={"unit": unit, "threshold": D("0.80")})})
+    covenant = base.model_copy(update={"id": cid, "name": name,
+                                       "test": base.test.model_copy(update={"unit": unit, "threshold": threshold})})
     terms = version.terms.model_copy(update={"covenants": [covenant]})
     doc = ingest_pdf(db, borrower_id=borrower.id, file_name="cert.pdf", doc_type="compliance_certificate",
-                     period_end=PERIOD, data=cert_pdf(actual=actual, **pdf_args))
-    rows = [{"covenant_id": "revenue_vs_plan", "page": 1, "printed_label": "Revenue to Plan", "actual_printed": actual,
+                     period_end=PERIOD, data=cert_pdf(actual=actual, label=name, **pdf_args))
+    rows = [{"covenant_id": cid, "page": 1, "printed_label": name, "actual_printed": actual,
              "required_printed": required, "compliance_printed": "Yes"}]
     answer = {"rows": rows, "scale_statement": "", "scale_page": 0, "notes": []}
     llm = ScriptedClient([LLMResponse(content=[{"type": "text", "text": json.dumps(answer)}], stop_reason="end_turn")])
     result = read_certificate(db, borrower=borrower, document=doc, period_end=PERIOD, terms=terms, cycle=None, llm=llm)
-    get = lambda part: current_fact(db, borrower.id, f"cert.revenue_vs_plan.{part}", PERIOD, 0)  # noqa: E731
+    get = lambda part: current_fact(db, borrower.id, f"cert.{cid}.{part}", PERIOD, 0)  # noqa: E731
     return result, get
 
 
@@ -97,3 +98,34 @@ def test_a_ratio_covenant_printed_as_a_ratio_is_stored_as_printed(book):  # noqa
     result, get = run(book, unit="ratio", actual="1.28x", required="Not less than 0.80x of plan",
                       required_lines=("Not less than 0.80x of", "plan"))
     assert get("value").value == D("1.28") and result.unverified == []
+
+
+def test_a_figure_printed_with_its_unit_word_is_stored_as_the_figure(book):  # noqa: F811
+    result, get = run(book, unit="months", actual="9.4 months", required="Not less than 6.0 months",
+                      cid="min_runway_months", name="Minimum Runway", required_lines=("", "Not less than 6.0 months"))
+    assert result.unverified == [] and result.stored == ["min_runway_months"]
+    assert get("value").value == D("9.4") and get("threshold").value == D("6.0")
+    result, get = run(book, unit="ratio", actual="6.54 to 1.00", required="Not less than 1.25x",
+                      cid="dscr", name="DSCR", required_lines=("", "Not less than 1.25x"))
+    assert result.unverified == [] and get("value").value == D("6.54")
+
+
+def test_a_unit_word_that_does_not_belong_to_the_covenant_is_not_dropped(book):  # noqa: F811
+    result, get = run(book, unit="usd", actual="9.4 months", required="Not less than 6.0",
+                      cid="cash", name="Minimum Cash", required_lines=("", "Not less than 6.0"))
+    assert get("value") is None and result.stored == [] and result.unverified
+
+
+def test_a_not_meaningful_actual_stores_no_value_but_the_requirement_and_the_flag(book):  # noqa: F811
+    result, get = run(book, unit="months", actual="Not meaningful", required="Not less than 6.0 months",
+                      cid="min_runway_months", name="Minimum Runway", required_lines=("", "Not less than 6.0 months"))
+    assert result.unverified == [] and result.stored == [] and result.not_meaningful == ["min_runway_months"]
+    assert get("value") is None  # never a zero or an invented figure
+    assert get("threshold").value == D("6.0") and get("in_compliance").value == 1
+    assert get("threshold").label_text == "Minimum Runway"
+
+
+def test_a_ratio_requirement_printed_as_to_one_wraps_and_is_still_one_figure(book):  # noqa: F811
+    result, get = run(book, unit="ratio", actual="6.54 to 1.00", required="Not less than 1.25 to 1.00",
+                      cid="dscr", name="DSCR", threshold=D("1.25"), required_lines=("Not less than 1.25 to", "1.00"))
+    assert result.unverified == [] and get("threshold").value == D("1.25")
