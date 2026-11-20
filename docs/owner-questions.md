@@ -8,3 +8,11 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 ## Answered
 
 - Squad experience spec, open questions: product name "Credit Squad" on screen (for now); client file redesigned; Night for analysts, Warm paper for officers. Recorded in the spec, section 15.
+
+## Added while you were away (Phase 1 build)
+
+3. **Slipped funding round: what can the officer decide?** A round that passes its expected close raises a high-priority item offering "reviewed" or "escalate to committee", outside the monthly cycle. *Taken: those two options.*
+4. **"Runway falling three months running".** Implemented as three successive monthly declines (four monthly figures). *Taken: as described.*
+5. **Monthly vs quarterly packs.** A pack whose heading says one/two/four/five/seven/eight/ten/eleven months, or "month ended", is filed as monthly financials; three/six/nine months stay quarterly interim statements. *Taken: as described; the Intake agent can still disagree and a person resolves it.*
+6. **Startup DSCR deductions.** Startups have no tax-paid or distributions lines, so a DSCR covenant that names those deductions on a startup can't be tested (shown as missing data). *Taken: as described.*
+7. **A cash-flow-positive startup whose certificate says it's not in compliance.** Runway is "not meaningful", so the bank's result is compliant; the certificate's own runway figure is ignored, but its "not in compliance" flag is still reported as a disagreement. *Taken: as described.*
