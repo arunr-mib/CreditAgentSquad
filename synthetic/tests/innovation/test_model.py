@@ -62,8 +62,11 @@ def test_financing_inflows_are_not_burn(sims):
     assert abs(kelvra.series.avg_burn(jan) - 500_000) < 150_000
     apr = model.MONTHS.index(date(2026, 4, 30))
     assert veridia.months[apr].flows["cf.debt_raised"] == 5_000_000
-    assert veridia.months[apr].balances["bs.venture_debt_current"] + veridia.months[apr].balances[
-        "bs.venture_debt_noncurrent"] == 8_000_000
+    assert (
+        veridia.months[apr].balances["bs.venture_debt_current"]
+        + veridia.months[apr].balances["bs.venture_debt_noncurrent"]
+        == 8_000_000
+    )
 
 
 def test_net_burn_is_capex_plus_capitalised_software_less_operating_cash_flow(sims):
@@ -96,8 +99,18 @@ def test_clean_clients_do_not_trip_runway_falling_and_brightvane_does(sims):
         points = [series.rml(i) for i in range(model.LAST - 3, model.LAST + 1)]
         return all(b < a for a, b in zip(points, points[1:], strict=False))
 
-    for client_id in ("mosswell-robotics", "quillon-ai", "orbitline-systems", "veridia-payments", "tessaract-labs",
-                      "pellucid-sensors", "halcyon-grid", "kelvra-bio", "stripple-tech", "corvane-analytics"):
+    for client_id in (
+        "mosswell-robotics",
+        "quillon-ai",
+        "orbitline-systems",
+        "veridia-payments",
+        "tessaract-labs",
+        "pellucid-sensors",
+        "halcyon-grid",
+        "kelvra-bio",
+        "stripple-tech",
+        "corvane-analytics",
+    ):
         assert not falling(sims[client_id].series), client_id
     assert falling(sims["brightvane-energy"].series)
 
@@ -108,4 +121,7 @@ def test_same_seed_same_truth_and_a_new_seed_keeps_the_owners_figures():
     assert [m.flows for m in a[1]] == [m.flows for m in b[1]]
     other = model.simulate(spec, 2)
     assert [m.flows for m in other[1]] != [m.flows for m in a[1]]
-    assert Series(other[1]).cash(model.LAST) == spec.cash and Series(other[1]).net_burn3(model.LAST) == 3 * spec.burn
+    assert (
+        Series(other[1]).cash(model.LAST) == spec.cash
+        and Series(other[1]).net_burn3(model.LAST) == 3 * spec.burn
+    )

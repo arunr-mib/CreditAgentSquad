@@ -22,9 +22,23 @@ LOOKS_LIKE = {
 def invented_names() -> list[dict]:
     rows = []
     for spec in CLIENTS:
-        rows.append({"kind": "company", "name": spec.name, "sector": spec.sector, "watch": LOOKS_LIKE.get(spec.id, "")})
+        rows.append(
+            {
+                "kind": "company",
+                "name": spec.name,
+                "sector": spec.sector,
+                "watch": LOOKS_LIKE.get(spec.id, ""),
+            }
+        )
     for spec in CLIENTS:
-        rows.append({"kind": "person", "name": spec.cfo, "sector": f"chief financial officer, {spec.name}", "watch": ""})
+        rows.append(
+            {
+                "kind": "person",
+                "name": spec.cfo,
+                "sector": f"chief financial officer, {spec.name}",
+                "watch": "",
+            }
+        )
     return rows
 
 

@@ -7,6 +7,7 @@ from decimal import Decimal
 from synthetic.books.innovation.expected import COVENANTS, Series, cert_cash, cert_entry, cert_months, q
 from synthetic.books.innovation.model import LAST, MONTHS, Month, rnd
 from synthetic.books.innovation.roster import ClientSpec
+from synthetic.books.innovation.terms import DSCR_EFFECTIVE, DSCR_MIN, FERROGATE
 
 D = Decimal
 
@@ -37,6 +38,18 @@ def build_certificates(spec: ClientSpec, series: Series, plan: dict) -> list[dic
                          {"label": "Approved Plan for the same three months", "amount": planned}]  # fmt: skip
             reported[covenant_id] = {"value": value, "threshold": threshold[unit], "in_compliance": flag,
                                      "unit": unit, "calculation": lines}  # fmt: skip
+        if spec.id == FERROGATE and MONTHS[i] >= DSCR_EFFECTIVE:
+            value = q(series.dscr(i), 2)
+            ebitda = series.flow12("is.vc_operating_loss", i) + series.flow12(
+                "is.vc_depreciation_amortization", i
+            )
+            service = series.flow12("is.vc_interest", i) + series.flow12("sup.scheduled_principal", i)
+            reported["dscr"] = {
+                "value": value, "threshold": D(DSCR_MIN), "in_compliance": value >= D(DSCR_MIN), "unit": "ratio",
+                "calculation": [{"label": "EBITDA for the twelve months ended", "amount": ebitda},
+                                {"label": "Interest and scheduled principal for the twelve months ended",
+                                 "amount": service}],
+            }  # fmt: skip
         certificates.append(
             {"period_end": MONTHS[i], "scale": 1, "signed_by": spec.cfo, "reported": reported}
         )
@@ -54,6 +67,8 @@ def format_actual(unit: str, value: Decimal | None) -> str:
 
 
 def format_required(unit: str, threshold: Decimal) -> str:
+    if unit == "ratio":
+        return f"Not less than {threshold:.2f} to 1.00"
     if unit == "usd":
         return f"Not less than ${int(threshold):,}"
     if unit == "months":

@@ -70,26 +70,43 @@ FORMULAS: dict[str, tuple[tuple[int, str], ...]] = {
     "is.total_revenue": ((1, "is.subscription_revenue"), (1, "is.services_revenue")),
     "is.vc_gross_profit": ((1, "is.total_revenue"), (-1, "is.cost_of_revenue")),
     "is.vc_operating_loss": (
-        (1, "is.vc_gross_profit"), (-1, "is.rnd"), (-1, "is.sales_marketing"), (-1, "is.gna"),
+        (1, "is.vc_gross_profit"),
+        (-1, "is.rnd"),
+        (-1, "is.sales_marketing"),
+        (-1, "is.gna"),
         (-1, "is.vc_depreciation_amortization"),
     ),  # fmt: skip
     "is.vc_net_loss": ((1, "is.vc_operating_loss"), (-1, "is.vc_interest"), (1, "is.vc_other_income")),
     "bs.vc_total_cash": ((1, "bs.cash_unrestricted"), (1, "bs.cash_restricted")),
     "bs.vc_total_assets": (
-        (1, "bs.vc_total_cash"), (1, "bs.short_term_investments"), (1, "bs.accounts_receivable"),
-        (1, "bs.other_current_assets"), (1, "bs.capitalised_software"), (1, "bs.vc_other_intangibles"),
+        (1, "bs.vc_total_cash"),
+        (1, "bs.short_term_investments"),
+        (1, "bs.accounts_receivable"),
+        (1, "bs.other_current_assets"),
+        (1, "bs.capitalised_software"),
+        (1, "bs.vc_other_intangibles"),
         (1, "bs.other_noncurrent_assets"),
     ),  # fmt: skip
     "bs.vc_total_liabilities": (
-        (1, "bs.accounts_payable"), (1, "bs.accrued_liabilities"), (1, "bs.deferred_revenue_current"),
-        (1, "bs.deferred_revenue_noncurrent"), (1, "bs.venture_debt_current"), (1, "bs.venture_debt_noncurrent"),
-        (1, "bs.convertible_notes"), (1, "bs.safes"), (1, "bs.vc_other_liabilities"),
+        (1, "bs.accounts_payable"),
+        (1, "bs.accrued_liabilities"),
+        (1, "bs.deferred_revenue_current"),
+        (1, "bs.deferred_revenue_noncurrent"),
+        (1, "bs.venture_debt_current"),
+        (1, "bs.venture_debt_noncurrent"),
+        (1, "bs.convertible_notes"),
+        (1, "bs.safes"),
+        (1, "bs.vc_other_liabilities"),
     ),  # fmt: skip
     "bs.vc_total_equity": ((1, "bs.preferred_equity"), (1, "bs.common_equity")),
     "bs.vc_total_liabilities_and_equity": ((1, "bs.vc_total_liabilities"), (1, "bs.vc_total_equity")),
     "cf.vc_net_change_in_cash": (
-        (1, "cf.vc_operating_cash_flow"), (-1, "cf.vc_capex"), (-1, "cf.capitalised_software_spend"),
-        (1, "cf.equity_raised"), (1, "cf.debt_raised"), (1, "cf.vc_other_financing"),
+        (1, "cf.vc_operating_cash_flow"),
+        (-1, "cf.vc_capex"),
+        (-1, "cf.capitalised_software_spend"),
+        (1, "cf.equity_raised"),
+        (1, "cf.debt_raised"),
+        (1, "cf.vc_other_financing"),
     ),  # fmt: skip
 }
 ALL_KEYS = (
@@ -141,7 +158,9 @@ def burn_path(spec: ClientSpec, rng: random.Random) -> list[int]:
         scale = D(3) / sum(base[LAST - 2 :])
         base = [x * scale for x in base]
     elif spec.shape == "positive":
-        base = [D("-0.4") if i < 14 else D(1) for i in range(N)]  # burning modestly until February 2026 (so the trailing-twelve-month DSCR stays well above 1.25x), then generating
+        base = [
+            D("-0.4") if i < 14 else D(1) for i in range(N)
+        ]  # burning modestly until February 2026 (so the trailing-twelve-month DSCR stays well above 1.25x), then generating
     wobble = [D(rng.randint(-40, 40)) / 1000 for _ in range(N)]
     net_burn = [rnd(burn * base[i] * (1 + wobble[i])) for i in range(N)]
     net_burn[LAST] = 3 * spec.burn - net_burn[LAST - 2] - net_burn[LAST - 1]
@@ -233,7 +252,9 @@ def simulate(spec: ClientSpec, seed: int = DEFAULT_SEED) -> tuple[Month, list[Mo
         "bs.accounts_payable", "bs.accrued_liabilities", "bs.deferred_revenue_current",
         "bs.deferred_revenue_noncurrent", "bs.venture_debt_current", "bs.venture_debt_noncurrent",
         "bs.convertible_notes", "bs.safes", "bs.vc_other_liabilities"))  # fmt: skip
-    common = {-1: assets - liabilities - opening_bal["bs.preferred_equity"]}  # the opening accumulated deficit
+    common = {
+        -1: assets - liabilities - opening_bal["bs.preferred_equity"]
+    }  # the opening accumulated deficit
     opening_bal["bs.common_equity"] = common[-1]
     apply_formulas(opening_bal)
     opening = Month(OPENING_END, {}, {**opening_bal, "saas.mrr": mrr[-1], "saas.arr": 12 * mrr[-1],
@@ -289,7 +310,9 @@ def build_periods(months: list[Month]) -> list[Period]:
         values = {**ytd, **m.balances}
         apply_formulas(values)
         quality = "audited" if m.end == date(2025, 12, 31) else "internal"
-        periods.append(Period(m.end, m.end.month, m.end.year, quality, {k: values[k] for k in ALL_KEYS}, dict(m.memo)))
+        periods.append(
+            Period(m.end, m.end.month, m.end.year, quality, {k: values[k] for k in ALL_KEYS}, dict(m.memo))
+        )
     return periods
 
 
@@ -297,18 +320,29 @@ def comparative_fy2024(opening: Month, fy2025: Period) -> Period:
     """Fiscal 2024, for the comparative column of the audited statements. The simulation starts in January 2025,
     so the 2024 flows are the 2025 flows scaled by 0.62 (a company that grew about 60 percent); the December 2024
     balance sheet is the opening balance sheet."""
-    values = {k: rnd(D(v) * D("0.62")) for k, v in fy2025.values.items() if is_flow(k) and k in IS_IN + CF_IN + SUP}
+    values = {
+        k: rnd(D(v) * D("0.62")) for k, v in fy2025.values.items() if is_flow(k) and k in IS_IN + CF_IN + SUP
+    }
     values.update({k: v for k, v in opening.balances.items() if k in BS_IN + SAAS})
     apply_formulas(values)
-    return Period(OPENING_END, 12, 2024, "audited", {k: values[k] for k in ALL_KEYS},
-                  {"derived": "fiscal 2024 flows are fiscal 2025 flows scaled by 0.62"})
+    return Period(
+        OPENING_END,
+        12,
+        2024,
+        "audited",
+        {k: values[k] for k in ALL_KEYS},
+        {"derived": "fiscal 2024 flows are fiscal 2025 flows scaled by 0.62"},
+    )
 
 
 def check_periods(opening: Month, periods: list[Period]) -> list[str]:
     """Verify the identities from the published figures only. Returns a list of failures."""
     problems: list[str] = []
     by_end = {p.period_end: p for p in periods}
-    start_cash = {2025: opening.balances["bs.vc_total_cash"], 2026: by_end[date(2025, 12, 31)].values["bs.vc_total_cash"]}
+    start_cash = {
+        2025: opening.balances["bs.vc_total_cash"],
+        2026: by_end[date(2025, 12, 31)].values["bs.vc_total_cash"],
+    }
     for p in periods:
         v, tag = p.values, p.period_end.isoformat()
         for key, parts in FORMULAS.items():

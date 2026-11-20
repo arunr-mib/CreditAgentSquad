@@ -147,8 +147,14 @@ def cert_entry(spec: ClientSpec, series: Series, plan: dict[date, int], i: int, 
     return ratio, ratio >= D(spec.plan_floor)
 
 
-def classify(passed: bool, value: Decimal | None, reported: bool, rep_value: Decimal | None, rep_flag: bool | None,
-             unit: str) -> str:
+def classify(
+    passed: bool,
+    value: Decimal | None,
+    reported: bool,
+    rep_value: Decimal | None,
+    rep_flag: bool | None,
+    unit: str,
+) -> str:
     """Outcome of a covenant test against the borrower's certificate (spec section 8 of the design)."""
     if not passed:
         return "breach_reported_compliant" if reported and rep_flag else "breach"
@@ -160,7 +166,9 @@ def classify(passed: bool, value: Decimal | None, reported: bool, rep_value: Dec
     return "compliant" if agrees else "compliant_variance"
 
 
-def covenant_rows(spec: ClientSpec, series: Series, plan: dict[date, int], version_id: str, facility_id: str) -> list[dict]:
+def covenant_rows(
+    spec: ClientSpec, series: Series, plan: dict[date, int], version_id: str, facility_id: str
+) -> list[dict]:
     """One row per covenant per month from August 2025."""
     rows: list[dict] = []
     certified = cert_months(spec)
@@ -191,8 +199,9 @@ def covenant_rows(spec: ClientSpec, series: Series, plan: dict[date, int], versi
     return rows
 
 
-def compute_signals(series: Series, plan: dict[date, int], rows: list[dict], i: int,
-                    days_late: list[tuple[str, int]]) -> list[dict]:
+def compute_signals(
+    series: Series, plan: dict[date, int], rows: list[dict], i: int, days_late: list[tuple[str, int]]
+) -> list[dict]:
     """Signals for month i under rule set `signals-1` (the startup rules of spec section 7)."""
     end = MONTHS[i]
     out: list[dict] = []
@@ -217,7 +226,9 @@ def compute_signals(series: Series, plan: dict[date, int], rows: list[dict], i: 
     if runway is not None and runway < 12:
         add("runway_below_watch", q(runway, 2), "high" if runway < 9 else "medium")
     points = [series.rml(j) for j in range(i - 3, i + 1)]
-    if None not in points and all(later < earlier for earlier, later in zip(points, points[1:], strict=False)):
+    if None not in points and all(
+        later < earlier for earlier, later in zip(points, points[1:], strict=False)
+    ):
         add("runway_falling", q(runway, 2))
     prior = series.avg_burn(i - 3)
     if prior > 0:

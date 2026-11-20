@@ -222,3 +222,42 @@ def test_ferrogate_gains_a_ttm_dscr_covenant_from_may_2026_mirroring_the_legacy_
 def test_only_ferrogate_has_a_second_terms_version(sims):
     for sim in sims.values():
         assert len(terms_for(sim).versions()) == (2 if sim.spec.id == "ferrogate-cloud" else 1)
+
+
+def test_ferrogate_certificates_report_the_dscr_line_with_the_true_ttm_figure(sims):
+    from synthetic.books.innovation.expected import q
+
+    sim = sims["ferrogate-cloud"]
+    certificates = reports.build_certificates(sim.spec, sim.series, build_plan(sim.spec, sim.series))
+    assert certificates and all(c["period_end"] >= date(2026, 5, 31) for c in certificates)
+    for certificate in certificates:
+        line = certificate["reported"]["dscr"]
+        i = model.MONTHS.index(certificate["period_end"])
+        assert line["value"] == q(sim.series.dscr(i), 2) and line["threshold"] == D("1.25")
+        assert line["unit"] == "ratio" and line["in_compliance"] is True
+    assert reports.format_required("ratio", D("1.25")) == "Not less than 1.25 to 1.00"
+    for other in ("dataflake", "tidewell-medical"):
+        spec, series = sims[other].spec, sims[other].series
+        assert all(
+            "dscr" not in c["reported"]
+            for c in reports.build_certificates(spec, series, build_plan(spec, series))
+        )
+
+
+def test_terms_versions_share_no_mutable_covenant_objects(sims):
+    terms = terms_for(sims["ferrogate-cloud"])
+    first, second = terms.versions()
+    first["terms"]["covenants"][0]["test"]["threshold"] = "changed"
+    first["terms"]["covenants"][0]["params"]["x"] = 1
+    assert second["terms"]["covenants"][0]["test"]["threshold"] != "changed"
+    assert terms.version["terms"]["covenants"][0]["test"]["threshold"] != "changed"
+    assert terms.versions()[1]["terms"]["covenants"][0]["test"]["threshold"] != "changed"
+
+
+def test_ferrogate_agreement_prints_the_dscr_definition_and_covenant_verbatim(sims, tmp_path):
+    terms = terms_for(sims["ferrogate-cloud"])
+    result = render_legal(tmp_path / "ca.pdf", terms.agreement, "Ferrogate Cloud")
+    pages = common.page_texts(tmp_path / "ca.pdf")
+    for anchor in ("def_dscr", "cov_dscr"):
+        quote = terms.agreement.cites[anchor]["quote"]
+        assert common.squash(quote) in common.squash(pages[result["anchor_pages"][anchor] - 1]), anchor

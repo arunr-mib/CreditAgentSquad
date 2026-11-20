@@ -37,7 +37,11 @@ def test_sixteen_clients_with_distinct_short_ids_and_the_owners_twelve_exactly()
         spec = BY_ID[client_id]
         assert (spec.cash, spec.burn, spec.rml) == (cash, burn, rml), client_id
     assert {c.id for c in CLIENTS} - set(OWNER) == {
-        "corvane-analytics", "nimbusfield-security", "tidewell-medical", "ferrogate-cloud"}
+        "corvane-analytics",
+        "nimbusfield-security",
+        "tidewell-medical",
+        "ferrogate-cloud",
+    }
     assert BY_ID["ferrogate-cloud"].rml is None and BY_ID["ferrogate-cloud"].burn < 0
 
 

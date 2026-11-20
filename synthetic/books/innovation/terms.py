@@ -4,6 +4,7 @@ placeholders, and the facility. The approved plan figures are terms data entered
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import date, timedelta
 from decimal import Decimal
@@ -34,9 +35,9 @@ class ClientTerms:
         """Every terms version in order. When a later version exists the first is superseded the day before it."""
         if not self.later_versions:
             return [self.version]
-        first = {**self.version, "status": "superseded",
+        first = {**deepcopy(self.version), "status": "superseded",
                  "effective_to": (date.fromisoformat(self.later_versions[0]["effective_from"]) - timedelta(days=1)).isoformat()}  # fmt: skip
-        return [first, *self.later_versions]
+        return [first, *deepcopy(self.later_versions)]
 
 
 def build_agreement(spec: ClientSpec) -> LegalDoc:
@@ -345,7 +346,7 @@ def build_terms(spec: ClientSpec, plan: dict[date, int]) -> ClientTerms:
         version2 = {
             **version, "id": f"tv-{spec.id}-2", "version": 2, "effective_from": DSCR_EFFECTIVE.isoformat(),
             "approved_at": (DSCR_EFFECTIVE - timedelta(days=20)).isoformat(),
-            "terms": {**terms, "covenants": [*terms["covenants"], dscr_covenant()]},
+            "terms": {**deepcopy(terms), "covenants": [*deepcopy(terms["covenants"]), dscr_covenant()]},
         }  # fmt: skip
         later = (version2,)
     return ClientTerms(agreement, version, facility, clause_index, later)
