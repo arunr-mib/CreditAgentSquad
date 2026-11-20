@@ -1,5 +1,5 @@
 """Borrowers and their loans. The schema says `facility`; the workspace says "loan"."""
-from sqlalchemy import Integer
+from sqlalchemy import CheckConstraint, Integer
 
 from app.core.db import Base, CreatedMixin, IdMixin
 from app.domain.common import (
@@ -19,6 +19,7 @@ from app.domain.common import (
 
 class Borrower(Base, IdMixin, CreatedMixin):
     __tablename__ = "borrowers"
+    __table_args__ = (CheckConstraint("template_id IN ('ci-1','vc-1')", name="template_id"),)
 
     code: Mapped[str] = mapped_column(String(32), unique=True)  # stable id from the system of record
     name: Mapped[str] = mapped_column(String(200))
@@ -29,6 +30,8 @@ class Borrower(Base, IdMixin, CreatedMixin):
     relationship_manager_id: Mapped[uuid.UUID | None] = fk("users.id", nullable=True)
     analyst_id: Mapped[uuid.UUID | None] = fk("users.id", nullable=True)
     profile: Mapped[dict[str, Any]] = json_col(default=dict)
+    # which monitoring template applies: ci-1 commercial and industrial, vc-1 venture
+    template_id: Mapped[str] = mapped_column(String(8), server_default="ci-1")
 
 
 class Facility(Base, IdMixin, CreatedMixin):

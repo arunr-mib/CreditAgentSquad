@@ -13,6 +13,7 @@ from app.api.deps import PageNumber, current_user, require
 from app.api.routes_ui import _Labels, _summary
 from app.api.serialize import plain, row
 from app.calc import template
+from app.core import ledger
 from app.core.clock import today
 from app.core.config import MAX_UPLOAD_BYTES
 from app.core.db import get_db
@@ -22,6 +23,8 @@ from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
 from app.domain.documents_service import DocumentRefused, ingest_pdf, read_file
 from app.domain.facts import CalcRun, Fact
+from app.domain.funding import KINDS as FUNDING_KINDS
+from app.domain.funding import FundingEvent
 from app.domain.monitoring import CovenantTest, Cycle, Signal, WorkItem
 from app.domain.org import User
 
@@ -101,6 +104,41 @@ def get_borrower(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: User 
     users = {u.id: u.name for u in db.execute(select(User)).scalars()}
     return {**row(b), "relationship_manager": users.get(b.relationship_manager_id), "analyst": users.get(b.analyst_id),
             "facilities": [row(f) for f in facilities]}
+
+
+class FundingEventIn(BaseModel):
+    kind: str
+    amount: Decimal = Field(gt=0, max_digits=20, decimal_places=2)
+    expected_close: date
+    evidence_document_ids: list[str] = Field(default_factory=list)
+
+
+@router.get("/borrowers/{borrower_id}/funding-events")
+def list_funding_events(borrower_id: uuid.UUID, db: Session = Depends(get_db),
+                        _: User = Depends(require(Permission.VIEW))) -> list[dict]:
+    _borrower_or_404(db, borrower_id)
+    events = db.execute(select(FundingEvent).where(FundingEvent.borrower_id == borrower_id)
+                        .order_by(FundingEvent.expected_close, FundingEvent.created_at)).scalars()
+    return [row(e) for e in events]
+
+
+@router.post("/borrowers/{borrower_id}/funding-events", status_code=201)
+def record_funding_event(borrower_id: uuid.UUID, body: FundingEventIn, db: Session = Depends(get_db),
+                         user: User = Depends(require(Permission.PREPARE_TERMS))) -> dict:
+    _borrower_or_404(db, borrower_id)
+    if body.kind not in FUNDING_KINDS:
+        raise HTTPException(422, f"Funding kind must be one of: {', '.join(FUNDING_KINDS)}.")
+    event = FundingEvent(borrower_id=borrower_id, kind=body.kind, amount=body.amount,
+                         expected_close=body.expected_close, status="expected",
+                         evidence_document_ids=body.evidence_document_ids)
+    db.add(event)
+    db.flush()
+    ledger.record(db, actor_type="user", actor_id=str(user.id), action="funding_event.recorded",
+                  entity_type="funding_event", entity_id=event.id,
+                  payload={"borrower_id": borrower_id, "kind": event.kind, "amount": event.amount,
+                           "expected_close": event.expected_close})
+    db.commit()
+    return row(event)
 
 
 @router.get("/borrowers/{borrower_id}/documents")
