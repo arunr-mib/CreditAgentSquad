@@ -9,6 +9,7 @@ import { useBorrowers } from '@/api/hooks';
 import { useBriefing } from '../api/hooks';
 import { useLedgerHeartbeat } from '../api/polling';
 import { LookProvider, useLook } from '../useLook';
+import { EvidenceResizer } from '../evidence/EvidenceResizer';
 import { PresenceLine, PresenceProvider } from '../presence/Presence';
 import { buildCommands } from './commands';
 import { SquadNav } from './SquadNav';
@@ -73,6 +74,7 @@ function Frame() {
             <Outlet />
           </main>
         </div>
+        <EvidenceResizer />
         <WorkspaceDrawer />
         <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} commands={commands} placeholder="Search clients and commands" />
       </div>

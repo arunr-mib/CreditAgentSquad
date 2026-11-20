@@ -103,3 +103,15 @@
 .sq-option input { grid-row: 1 / span 2; margin-top: 4px; }
 .sq-option input { grid-row: 1 / span 2; margin-top: 4px; }
 .sq-draftbox { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--sq-line); font: inherit; font-family: Georgia, 'Newsreader', serif; resize: vertical; }
+
+/* Evidence drawer: it pushes the stage aside, resizable, and follows the look (its legacy tokens are set on .sq-root). */
+.sq-resizer { position: fixed; top: 0; bottom: 0; width: 8px; margin-right: -4px; cursor: col-resize; z-index: 45; background: transparent; }
+.sq-resizer:hover, .sq-resizer:focus-visible { background: var(--sq-squad-line); outline: none; }
+.sq-root [data-source-drawer] { top: 0; }
+@media (min-width: 1000px) {
+  html[data-source-open] .sq-stage { padding-right: var(--source-w); }
+}
+@media (max-width: 999px) {
+  .sq-resizer { display: none; }
+}
+[data-source-drawer] canvas, [data-source-drawer] .pdf-page { background: var(--sq-paper); }

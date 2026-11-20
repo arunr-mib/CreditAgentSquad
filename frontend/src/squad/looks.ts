@@ -56,6 +56,8 @@ export function defaultLookFor(role: string): LookId {
   return role === 'credit_officer' ? 'warm' : 'night';
 }
 
+const LEGACY_TOKENS = ['--canvas', '--surface', '--surface-sunken', '--surface-hover', '--ink-900', '--ink-700', '--ink-500', '--hairline', '--hairline-strong', '--iris', '--red', '--amber', '--green'];
+
 const cssName = (token: string) => `--sq-${token.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`;
 
 /** Sets the look on the Squad root (default: the `.sq-root` container), never on the page, so the legacy cockpit is untouched. */
@@ -64,6 +66,14 @@ export function applyLook(id: LookId, root: HTMLElement | null = document.queryS
   root.dataset.look = id;
   root.style.colorScheme = LOOKS[id].dark ? 'dark' : 'light';
   for (const [token, value] of Object.entries(LOOKS[id].vars)) root.style.setProperty(cssName(token), value);
+  // The reused source drawer, AgentBody and the interim cockpit screens read the older token names (set on the Squad root only).
+  const v = LOOKS[id].vars;
+  const legacy: Record<string, string> = {
+    '--canvas': v.ground, '--surface': v.surface, '--surface-sunken': v.sunk, '--surface-hover': v.sunk,
+    '--ink-900': v.ink, '--ink-700': v.ink2, '--ink-500': v.ink2, '--hairline': v.line, '--hairline-strong': v.line,
+    '--iris': v.squad, '--red': v.bad, '--amber': v.warn, '--green': v.ok,
+  };
+  for (const [name, value] of Object.entries(legacy)) root.style.setProperty(name, value);
 }
 
 /** Removes what applyLook set. */
@@ -71,4 +81,5 @@ export function clearLook(root: HTMLElement): void {
   delete root.dataset.look;
   root.style.colorScheme = '';
   for (const token of Object.keys(LOOKS.night.vars)) root.style.removeProperty(cssName(token));
+  for (const name of LEGACY_TOKENS) root.style.removeProperty(name);
 }
