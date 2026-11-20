@@ -47,6 +47,7 @@ import pymupdf
 
 from evals.book import (
     AR_BUCKETS,
+    BANK_KEYS,
     BB_LINES,
     DOC_TYPES,
     OUTFLOWS,
@@ -138,6 +139,13 @@ class Truth:
                 prior = (s.get("comparative_printed") or {}).get(key)
                 if prior is not None and s.get("comparative_period_end"):
                     out[name + COMPARATIVE] = (self._printed(key, prior, scale), s["comparative_period_end"], file)
+        if not self.halted:
+            for d in self.docs:
+                if d["type"] in ("mrr_report", "bank_statement") and "figures" in d:
+                    file, scale = Path(d["path"]).name, Decimal(d.get("scale", 1))
+                    for key, figure in d["figures"].items():
+                        name = BANK_KEYS.get(key, key) if d["type"] == "bank_statement" else key
+                        out[name] = (self._printed(key, figure["printed"], scale), d["period_end"], file)
         if self.halted:
             return out  # the cycle stops at intake or spreading; the other documents are not read
         if self.cert is not None:

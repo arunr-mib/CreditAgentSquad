@@ -16,8 +16,8 @@ from .errors import CalcError
 
 TEMPLATE_ID = "ci-1"
 STATED_PREFIX = "stated."
-STATEMENTS = ("is", "bs", "cf", "sup", "saas")
-POINT_IN_TIME = ("bs", "saas")
+STATEMENTS = ("is", "bs", "cf", "sup", "saas", "bank")
+POINT_IN_TIME = ("bs", "saas", "bank")
 ALLOWED_SCALES = (1, 1000)
 
 
@@ -25,7 +25,7 @@ ALLOWED_SCALES = (1, 1000)
 class TemplateLine:
     key: str
     label: str
-    statement: str  # is | bs | cf | sup | saas | bb
+    statement: str  # is | bs | cf | sup | saas | bank | bb
     computed: bool = False
     presentation_sign: int = 1
     flow: bool = True  # True: fiscal year to date flow; False: point in time
@@ -216,6 +216,9 @@ VC_LINES: tuple[TemplateLine, ...] = (
     # optional metrics from the investor pack: in no total, null when the pack does not state them
     _line("saas.net_new_arr", "Net new ARR", "SaaS Metrics", optional=True),
     _line("saas.net_revenue_retention", "Net revenue retention", "SaaS Metrics", optional=True),
+    # a bank statement's two account totals (point in time); in no total, a pack need not print them
+    _line("bank.cash_unrestricted", "Total operating accounts (unrestricted)", "Bank Balances", optional=True),
+    _line("bank.cash_restricted", "Total pledged and restricted accounts", "Bank Balances", optional=True),
 )
 
 LINES = CI_LINES  # alias kept so existing imports of the ci-1 tuple keep working
@@ -250,6 +253,11 @@ for _lines in TEMPLATES.values():
 # nor listed here is put to a person once (see app/guardrails/labels.py); add to this list only
 # names that can mean nothing else.
 SYNONYMS: dict[str, tuple[str, ...]] = {
+    # the names an MRR/ARR report prints for its metrics
+    "saas.mrr": ("Monthly recurring revenue (MRR)", "MRR"),
+    "saas.arr": ("Annual recurring revenue (ARR)", "ARR"),
+    "saas.net_new_arr": ("Net new ARR in the month", "Net new annual recurring revenue"),
+    "saas.net_revenue_retention": ("Net revenue retention, trailing 12 months", "Net revenue retention (NRR)", "NRR"),
     "is.revenue": ("Net sales", "Revenue", "Revenues", "Sales", "Total revenue", "Net revenues"),
     "is.cogs": ("Cost of sales", "Cost of services", "Cost of revenue", "Cost of goods sold and services"),
     "is.sga": ("Selling, general and administrative expenses", "General and administrative",
@@ -308,6 +316,7 @@ NEVER_NEGATIVE = frozenset({
     "bs.capitalised_software", "bs.deferred_revenue_current", "bs.deferred_revenue_noncurrent",
     "cf.vc_capex", "cf.capitalised_software_spend", "saas.mrr", "saas.arr", "saas.customers",
     "is.vc_stock_based_compensation", "saas.net_revenue_retention",
+    "bank.cash_unrestricted", "bank.cash_restricted",
 })
 
 

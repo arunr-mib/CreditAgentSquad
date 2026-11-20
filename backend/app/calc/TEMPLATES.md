@@ -33,6 +33,7 @@ operating, investing and financing sections. Section names are generic public ac
 | Supplemental | sup | `sup.cash_interest_paid`, `sup.cash_taxes_paid`, `sup.scheduled_principal`, `sup.financed_capex` | `sup.cash_interest_paid`, `sup.scheduled_principal` |
 | Memo Items | is | - | `is.vc_stock_based_compensation` (optional memo) |
 | SaaS Metrics | saas | - | `saas.mrr`, `saas.arr`, `saas.customers`, `saas.net_new_arr` (optional), `saas.net_revenue_retention` (optional) |
+| Bank Balances | bank | - | `bank.cash_unrestricted` (optional), `bank.cash_restricted` (optional); read from a bank statement, not part of any total |
 
 ## Optional lines
 

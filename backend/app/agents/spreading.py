@@ -54,7 +54,7 @@ class SpreadExtraction(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="spreading", version="4",
+    name="spreading", version="5",
     purpose="Locate template figures in financial statements; code verifies each on its page.",
     prompt_file="spreading.md", output_model=SpreadExtraction, tools=(), effort="high", max_tokens=32000)
 
@@ -66,10 +66,15 @@ REQUIRED_TOTALS: dict[str, tuple[str, ...]] = {
 }
 
 
+AS_OF_DOCUMENTS = ("mrr_report", "bank_statement")
+
+
 def _statements_for(document: Document | None) -> tuple[str, ...] | None:
-    """The statements a document is read for. An MRR/ARR report holds only the SaaS lines, so only those are
-    checked; any other document is read for every statement of the template."""
-    return ("saas",) if document is not None and document.doc_type == "mrr_report" else None
+    """The statements a document is read for. An MRR/ARR report holds only the SaaS lines and a bank
+    statement only the two cash lines, so only those are checked; any other document is read for every
+    statement of the template."""
+    kind = document.doc_type if document is not None else None
+    return {"mrr_report": ("saas",), "bank_statement": ("bank",)}.get(kind)
 
 
 def _mentions(text: str, period_end: date) -> bool:
@@ -282,13 +287,18 @@ def _store_cells(db, *, cells, borrower, document, period_end, months, scale, ru
             names = [key, key + PART_SUFFIX, key + suffix, key + suffix + PART_SUFFIX]
             return _mapping_doubt(key, check.row_label, label_confirmed(db, borrower.id, names, check.row_label), tid)
 
+        # an as-of document (MRR report, bank statement) is one figure per labelled row under a page-level
+        # date, not columns of periods; its period is the page's stated date (checked by `period_ok`), so
+        # the column test is not applied and the reader's header plays no part
+        as_of = document.doc_type in AS_OF_DOCUMENTS
         fact, check = store_extracted_cell(
             db, borrower_id=borrower.id, key=cell.key + suffix + part, period_end=period_end,
             months=_months_for(cell.key, months), document=document, page_number=cell.page,
             printed_figure=cell.printed_figure, printed_label=cell.printed_label,
-            column_header=cell.column_header, scale=1 if cell.key in template.UNSCALED else scale,
+            column_header=None if as_of else cell.column_header, scale=1 if cell.key in template.UNSCALED else scale,
             presentation_sign=_sign(cell.key), agent_run_id=run_id,
-            doubt_for=doubt_for, column_period=period_end, column_months=_months_for(cell.key, months))
+            doubt_for=doubt_for, column_period=None if as_of else period_end,
+            column_months=_months_for(cell.key, months))
         if fact is None or not check.ok:
             result.unverified.append({
                 "key": cell.key + suffix, "page": cell.page, "printed_figure": cell.printed_figure,

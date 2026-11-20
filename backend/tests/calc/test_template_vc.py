@@ -156,7 +156,7 @@ DOC = Path(app.calc.__file__).parent / "TEMPLATES.md"
 
 
 def _documented_sections():
-    return set(re.findall(r"^\| ([A-Z][^|]*?) \| (?:is|bs|cf|sup|saas) \|", DOC.read_text(), flags=re.M))
+    return set(re.findall(r"^\| ([A-Z][^|]*?) \| (?:is|bs|cf|sup|saas|bank) \|", DOC.read_text(), flags=re.M))
 
 
 def test_every_line_has_a_documented_section():

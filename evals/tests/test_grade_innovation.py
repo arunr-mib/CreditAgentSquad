@@ -30,3 +30,10 @@ def test_funding_and_cash_exceptions_map_to_stages():
     assert STAGE_OF_ITEM["funding_slipped"] == "signals"
     assert STAGE_OF_ITEM["cash"] == "covenant_testing"
 
+
+
+def test_expected_facts_include_mrr_and_bank_figures_for_a_monthly_client():
+    book = load_book(BOOKS["innovation"], ["tidewell-medical"])
+    expected = Truth(book.get("tidewell-medical")).expected_facts()
+    assert expected["saas.mrr"][2] == "mrr-2026-10-31.pdf"
+    assert expected["bank.cash_unrestricted"][0] == 4300000 and expected["bank.cash_restricted"][0] == 1100000

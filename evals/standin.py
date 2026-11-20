@@ -29,7 +29,7 @@ from typing import Any
 import pymupdf
 from app.agents.llm import LLMRequest, LLMResponse
 
-from evals.book import DOC_TYPES, TOTALS, Book, Borrower, long_date, parse_printed, squash
+from evals.book import BANK_KEYS, DOC_TYPES, TOTALS, Book, Borrower, long_date, parse_printed, squash
 
 STANDIN_MODEL = "stand-in-perfect-reader"
 Tamper = Callable[[str, dict[str, Any], dict[str, Any]], dict[str, Any]]
@@ -58,8 +58,6 @@ BBC_LABELS = {
     "Letters of credit outstanding": "letters_of_credit",
     "Availability (over-advance)": "availability",
 }
-# a bank statement's balances are the product's bank facts, not statement lines
-BANK_KEYS = {"bs.cash_unrestricted": "bank.cash_unrestricted", "bs.cash_restricted": "bank.cash_restricted"}
 _TITLE = re.compile(r"financial statements|compliance certificate|borrowing base certificate|agreement|amendment|waiver"
                     r"|term sheet|investor update|monthly recurring revenue|account statement", re.I)
 _UNITS = re.compile(r"\(in (?:thousands of |whole )?U\.S\. dollars[^)]*\)", re.I)

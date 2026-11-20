@@ -26,6 +26,9 @@ def oracle_for(root: Path | str) -> Path:
 
 _GENERATORS = {"legacy": "synthetic.generate", "innovation": "synthetic.books.innovation.generate"}
 
+# a bank statement's balances are the product's bank facts, not statement lines
+BANK_KEYS = {"bs.cash_unrestricted": "bank.cash_unrestricted", "bs.cash_restricted": "bank.cash_restricted"}
+
 # the book's document type names -> the product's
 DOC_TYPES = {"annual_financial_statements": "annual_statements",
              "interim_financial_statements": "interim_statements",

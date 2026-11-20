@@ -122,6 +122,15 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
                  "unverified": len(result.unverified), "failed_checks": len(result.failed_checks)}
     if result.status == "spread":
         _review_reading(db, cycle, borrower, documents[-1], "spreading", "financial statements", result.run_id)
+    if result.status != "spread":
+        return "done"  # the pack is held for a person; the reports and bank statements wait for it
+    # an MRR report and a bank statement hold only the SaaS lines and the two bank lines: each is read in
+    # its own call and checked against its own statement
+    for extra in _documents(db, cycle, "mrr_report", "bank_statement"):
+        extra_result = spreading.spread_document(
+            db, borrower=borrower, document=extra, period_end=cycle.period_end, months=cycle.months,
+            cycle=cycle, llm=_llm(), prior_fye_cash=None)
+        st.detail = {**st.detail, f"read_{extra.doc_type}_{extra.id}": extra_result.status}
     return "done"
 
 
