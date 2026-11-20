@@ -6,6 +6,7 @@ import { SquadMark } from '../mark/SquadMark';
 import { AskMessage } from './AskMessage';
 import { DraftMessage } from './DraftMessage';
 import { QaMessage } from './QaMessage';
+import { Time } from './Time';
 import { Trail } from './Trail';
 
 const words = (s: string | null) => (s ?? 'decided').replace(/_/g, ' ');
@@ -23,12 +24,6 @@ export function caseState(message: Extract<ThreadMessage, { type: 'case' }>, all
   if (handoff) return { text: `With ${handoff.assigned_to ?? 'no one in particular'}`, needsYou: false };
   if (message.allowed_decisions.length > 0) return { text: 'Needs your call', needsYou: true };
   return { text: 'Open', needsYou: false };
-}
-
-function Time({ ts }: { ts: string }) {
-  const d = new Date(ts);
-  if (Number.isNaN(d.getTime())) return null;
-  return <time className="sq-faint sq-time" dateTime={ts} title={d.toLocaleString()}>{d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</time>;
 }
 
 export function MessageView({ message, focused, borrowerCode, thread = [] }: { message: ThreadMessage; focused: boolean; borrowerCode: string; thread?: ThreadMessage[] }) {

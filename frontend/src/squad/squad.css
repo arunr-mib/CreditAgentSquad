@@ -85,3 +85,14 @@
 
 .sq-tag-needs { border-color: var(--sq-ember); color: var(--sq-ink); font-weight: 600; }
 .sq-time { margin-left: auto; font-size: 12px; }
+
+.sq-composer { position: sticky; bottom: 0; display: flex; gap: 8px; align-items: flex-end; padding: 12px 0; background: var(--sq-ground); flex-wrap: wrap; }
+.sq-composer textarea { flex: 1; min-width: 220px; resize: vertical; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--sq-line); background: var(--sq-surface); color: var(--sq-ink); font: inherit; }
+.sq-error { color: var(--sq-bad); width: 100%; margin: 4px 0 0; }
+.sq-me { margin: 0 0 6px; color: var(--sq-ink2); }
+.sq-refusal { border-color: var(--sq-warn); }
+.sq-options { border: none; margin: 8px 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.sq-option { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--sq-line); border-radius: 10px; background: var(--sq-surface); cursor: pointer; }
+.sq-check-label { display: inline-flex; gap: 6px; align-items: center; }
+.sq-why { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; color: var(--sq-ink2); }
+.sq-why textarea { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--sq-line); background: var(--sq-surface); color: var(--sq-ink); font: inherit; resize: vertical; }
