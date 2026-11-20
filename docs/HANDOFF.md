@@ -25,6 +25,8 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 - Lessons: `POST /api/v1/lessons` writes a person's own words.
 - Monthly reporting: intake files monthly packs, MRR/ARR reports (title only), bank statements, term sheets, investor updates; the quote guardrail reads "one … eleven months ended" and "month ended"; cycles open per reporting frequency; spreading, corrections, publishing, Copilot and routes follow the borrower's template; a line from the other template is refused and asked about.
 
+**Verified at Phase 1 close (20 November 2026):** full test suite passed; `ruff` clean; migration 0005 upgraded, downgraded and re-upgraded on a scratch Postgres database; stand-in evaluation on the legacy book unchanged from v1: 21 borrowers, extraction 2,677 of 2,677, covenant outcomes 100%, exception precision and recall 100%, gate passed (stand-in reader, not model performance). Nothing has been run with a real model in v2.
+
 **Known gaps carried to later phases:** revenue-below-plan signal gets no plan until Phase 2 wires approved plan figures in; every `vc-1` spread currently requires MRR, ARR and customers, so a financial pack without them cannot finalise (decide in Phase 2: SaaS lines likely from the MRR report); waiver conditions that reference a funding event (Phase 4b approvals); venture metrics in publishing packages; quarterly-reporting venture borrowers use quarter windows for runway-falling and burn-rising; `pytest-xdist` deferred (needs one test database per worker).
 
 

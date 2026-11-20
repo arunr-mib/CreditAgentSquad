@@ -1,31 +1,31 @@
-# Evaluation scorecard: monitoring-cycle (record)
+# Evaluation scorecard: monitoring-cycle (standin)
 
-**Mode: record.** Mode record: answers came from a live model.
+**STAND-IN RUN. NOT MODEL PERFORMANCE.** A perfect reader built from the synthetic book's ground truth answered in place of the model. This run proves the pipeline, the workflow and the grader end to end; it says nothing about how a model reads these documents.
 
-- Generated 2026-11-19T18:41:00+00:00; commit `b96b0e7db5f37e1c82ca96ae7245f2a90ef86cc4`; 1 borrower(s) (['kestrel-bay-packaging']); 1 pass(es); run time 120.8 seconds.
+- Generated 2026-11-20T15:04:12+00:00; commit `2dd030953f335f27aec2cf68f129911c8b7d2b16`; 21 borrower(s) (whole book); 1 pass(es); run time 158.2 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 0.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
 
 ## Gate: PASSED
 
-Rule: any invented-number or false-compliant in any pass fails; accuracy is reported, not gated.
+Rule: any invented-number or false-compliant in any pass fails; the stand-in suite must also agree with the truth in full, apart from listed known findings.
 
 ## Headline numbers
 
 | Measure | Value |
 |---|---|
-| Extraction accuracy (verified facts equal to truth, over facts expected) | 100.0% (102 of 102) |
+| Extraction accuracy (verified facts equal to truth, over facts expected) | 100.0% (2677 of 2677) |
 | Extraction abstain rate (expected facts with no usable fact) | 0.0% |
 | Covenant outcome accuracy | 100.0% |
 | Covenant abstain rate (cannot test where the truth has an outcome) | 0.0% |
 | Exception precision | 100.0% |
 | Exception recall | 100.0% |
-| Cycles needing no person (beyond the commentary approval every review needs) | 0.0% (the book expects 0.0%) |
-| Cycles reaching the signals stage or beyond | 1 of 1 |
-| Cycles closed | 1 of 1 |
+| Cycles needing no person (beyond the commentary approval every review needs) | 47.6% (the book expects 47.6%) |
+| Cycles reaching the signals stage or beyond | 17 of 21 |
+| Cycles closed | 17 of 21 |
 | Other disagreements with the truth | 0 |
-| Model tokens in / out | 42,519 / 13,110 |
+| Model tokens in / out | not measured / not measured |
 
 | Named failure | Count |
 |---|---|
@@ -35,7 +35,7 @@ Rule: any invented-number or false-compliant in any pass fails; accuracy is repo
 | missed-exception | 0 |
 | false-exception | 0 |
 | wrong-citation | 0 |
-| wrong-abstain | 1 |
+| wrong-abstain | 0 |
 | missed-abstain | 0 |
 | stale-terms | 0 |
 
@@ -43,35 +43,91 @@ Rule: any invented-number or false-compliant in any pass fails; accuracy is repo
 
 | Borrower | Scenario | Stage reached | Expected exceptions | Raised exceptions | Extraction | Covenants | Differences |
 |---|---|---|---|---|---|---|---|
-| `kestrel-bay-packaging` | hidden_breach | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | 1 |
+| `ashgrove-fleet` | missing_page | spreading (needs_person) | spread.does_not_foot | spread.does_not_foot | 100.0% (72/72) | 3/3 | none |
+| `briarstone-beverage` | over_advance | closed (closed) | bb.over_advance | bb.over_advance | 100.0% (201/201) | 2/2 | none |
+| `brindlewood-home-health` | clean | closed (closed) | none | none | 100.0% (105/105) | 3/3 | none |
+| `calder-finch-staffing` | step_up | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (100/100) | 2/2 | none |
+| `dunmore-industrial-supply` | clean | closed (closed) | none | none | 100.0% (187/187) | 3/3 | none |
+| `eastmere-building` | late_reporting | awaiting_package (needs_person) | intake.missing_document | intake.missing_document | not measured (0/0) | 2/2 | none |
+| `halvorsen-plastics` | restated_comparative | closed (closed) | spread.restatement | spread.restatement | 100.0% (191/191) | 2/2 | none |
+| `harrowgate-precision` | clean | closed (closed) | none | none | 100.0% (199/199) | 3/3 | none |
+| `kestrel-bay-packaging` | hidden_breach | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | none |
+| `larkspur-environmental` | clean | closed (closed) | none | none | 100.0% (103/103) | 3/3 | none |
+| `marlowe-ridge-logistics` | clean | closed (closed) | none | none | 100.0% (107/107) | 3/3 | none |
+| `northgale-electrical` | miscounted_ineligible | closed (closed) | bb.certificate_mismatch | bb.certificate_mismatch | 100.0% (189/189) | 2/2 | none |
+| `ostrander-valley-foods` | clean | closed (closed) | none | none | 100.0% (201/201) | 3/3 | none |
+| `pellham-grain` | reported_breach | closed (closed) | covenant.breach | covenant.breach | 100.0% (199/199) | 3/3 | none |
+| `quillfeather-bakery` | addback_over_cap | closed (closed) | none | none | 100.0% (104/104) | 2/2 | none |
+| `sablewood-dental` | clean | closed (closed) | none | none | 100.0% (98/98) | 2/2 | none |
+| `stanmoor-mechanical` | image_only | spreading (needs_person) | spread.image_only | spread.image_only | not measured (0/0) | 3/3 | none |
+| `tallwater-foodservice` | clean | closed (closed) | none | none | 100.0% (202/202) | 2/2 | none |
+| `thornbury-metal` | deteriorating_trend | closed (closed) | signal.high | signal.high | 100.0% (105/105) | 3/3 | none |
+| `vantry-freight` | unapproved_amendment | covenant_testing (needs_person) | covenant.reported_mismatch, terms.unapproved_amendment | covenant.reported_mismatch, terms.unapproved_amendment | 100.0% (104/104) | 2/2 | none |
+| `wrenfield-diagnostics` | scale_trap | closed (closed) | none | none | 100.0% (108/108) | 4/4 | none |
 
 ## Differences from the truth
 
-| Borrower | Failure | Item | Detail | Known finding |
-|---|---|---|---|---|
-| `kestrel-bay-packaging` | wrong-abstain | covenant run | the run abstained: no answer |  |
+None. Every borrower's outcome agrees with the book.
 
 ## Where a person was needed
 
 | Borrower | Stage | Open items | Scripted decisions |
 |---|---|---|---|
+| `ashgrove-fleet` | spreading | spread.does_not_foot | none (left open) |
+| `briarstone-beverage` | borrowing_base | bb.over_advance | bb.over_advance: paydown_required by credit_officer |
+| `briarstone-beverage` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `brindlewood-home-health` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `calder-finch-staffing` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
+| `calder-finch-staffing` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `dunmore-industrial-supply` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `eastmere-building` | awaiting_package | intake.missing_document | none (left open) |
+| `halvorsen-plastics` | review_prep | review.commentary_approval, spread.restatement | spread.restatement: ask_borrower by analyst, review.commentary_approval: approve by portfolio_manager |
+| `harrowgate-precision` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `kestrel-bay-packaging` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
 | `kestrel-bay-packaging` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-
-## Agent text no person was shown
-
-Prose from the raw model answer that is not among the shown notes: refused by a guardrail, or placed where the product does not show it. Read each one: a refused honest sentence is a defect, and the text is the test case.
-
-| Borrower | Agent | Typed figures | Text |
-|---|---|---|---|
-| `kestrel-bay-packaging` | certificate | none | Both covenants in the approved terms are reported in the summary table on page one and in Schedule 1 on page two. |
-| `kestrel-bay-packaging` | certificate | none | The Schedule 1 leverage calculation adds back pro forma cost savings from plant consolidation to arrive at EBITDA as calculated by the Borrower; the credit team may wish to confirm this add-back is permitted under the Credit Agreement. |
-| `kestrel-bay-packaging` | certificate | none | No embedded instructions were found in the document. |
-| `kestrel-bay-packaging` | early_warning | none | Total leverage of {{fact:c601b895-84de-4c17-924d-3a457d9892bf}} is above the {{fact:4836287c-1df0-4096-9e1b-02a7553358db}} maximum, so headroom is negative at {{fact:63375695-c4ab-42c7-83aa-4c5a3acfd506}}. On these figures the covenant appears to be breached, not just tight. Debt is high relative to earnings, and this coincides with shrinking liquidity headroom on the current ratio. |
-| `kestrel-bay-packaging` | early_warning | none | The current ratio of {{fact:ca57b164-5c32-4cfe-a039-7f0017a2a32a}} still clears the {{fact:7c9ed9aa-c5b8-49ec-90d5-6d3d9e2f105b}} minimum, but with only {{fact:f34ba902-b8c0-40ad-81a1-6424bca6a595}} headroom. Thin short-term liquidity on top of leverage already over its limit points to pressure on both debt load and near-term cash. |
-| `kestrel-bay-packaging` | early_warning | none | Current ratio headroom slipped from {{fact:883e7a9a-0fe4-42ce-9bcc-c0fc09932e29}} in March to {{fact:590ebb45-361b-46f4-965b-14f83831998f}} in June, then fell sharply to {{fact:f34ba902-b8c0-40ad-81a1-6424bca6a595}} in September. This shows the thin liquidity cushion is a worsening trend rather than a one-off, with most of the deterioration in the third quarter. |
+| `larkspur-environmental` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `marlowe-ridge-logistics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `northgale-electrical` | borrowing_base | bb.certificate_mismatch | bb.certificate_mismatch: bank_figures_stand by analyst |
+| `northgale-electrical` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `ostrander-valley-foods` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `pellham-grain` | covenant_testing | covenant.breach | covenant.breach: escalate_to_committee by credit_officer |
+| `pellham-grain` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `quillfeather-bakery` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `sablewood-dental` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `stanmoor-mechanical` | spreading | spread.image_only | none (left open) |
+| `tallwater-foodservice` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `thornbury-metal` | signals | signal.high | signal.high: acknowledged by analyst |
+| `thornbury-metal` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `vantry-freight` | covenant_testing | covenant.reported_mismatch, terms.unapproved_amendment | covenant.reported_mismatch: escalate_to_committee by credit_officer |
+| `vantry-freight` | covenant_testing | terms.unapproved_amendment | none (left open) |
+| `wrenfield-diagnostics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 
 ## Observations
 
-- `kestrel-bay-packaging`: guardrail note on covenant: step_cap -> abstain: the run reached its step cap before giving an answer
+- `briarstone-beverage`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `calder-finch-staffing`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `calder-finch-staffing`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `dunmore-industrial-supply`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `kestrel-bay-packaging`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `kestrel-bay-packaging`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `larkspur-environmental`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `pellham-grain`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `pellham-grain`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `quillfeather-bakery`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `thornbury-metal`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `vantry-freight`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `wrenfield-diagnostics`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
+- `briarstone-beverage`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `calder-finch-staffing`: guardrail note on covenant: error -> abstain: the run did not finish
+- `calder-finch-staffing`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `dunmore-industrial-supply`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `kestrel-bay-packaging`: guardrail note on covenant: error -> abstain: the run did not finish
+- `kestrel-bay-packaging`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `larkspur-environmental`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `pellham-grain`: guardrail note on covenant: error -> abstain: the run did not finish
+- `pellham-grain`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `quillfeather-bakery`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `thornbury-metal`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
+- `vantry-freight`: guardrail note on covenant: error -> abstain: the run did not finish
+- `wrenfield-diagnostics`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
 
