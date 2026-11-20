@@ -491,6 +491,16 @@ _CASH_ROLL: dict[str, tuple[str, str]] = {  # (net change in cash, balance-sheet
 }
 
 
+def cash_roll_keys(template_id: str) -> tuple[str, str]:
+    """(net change in cash, balance-sheet cash) for the template: the cash roll's two lines."""
+    return _CASH_ROLL[template_id]
+
+
+def balance_keys(template_id: str) -> tuple[str, str]:
+    """(total assets, total liabilities and equity) for the template."""
+    return _BALANCE[template_id]
+
+
 def check_statement(
     inputs: Mapping[str, Decimal],
     *,

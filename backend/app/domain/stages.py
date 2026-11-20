@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from app.agents import certificate, collateral, early_warning, intake, spreading
 from app.agents import covenant as covenant_agent
 from app.agents.llm import LLMClient, client_for
+from app.calc import template
 from app.calc.periods import is_fiscal_year_end, prior_fiscal_year_end, ytd_months
 from app.core import clock
 from app.core.config import get_settings
@@ -112,7 +113,7 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     if not documents:
         return "waiting"
     prior_end = prior_fiscal_year_end(cycle.period_end, borrower.fiscal_year_end_month)
-    prior_cash = current_fact(db, borrower.id, "bs.cash", prior_end, 0)
+    prior_cash = current_fact(db, borrower.id, template.cash_roll_keys(borrower.template_id)[1], prior_end, 0)
     result = spreading.spread_document(
         db, borrower=borrower, document=documents[-1], period_end=cycle.period_end, months=cycle.months,
         cycle=cycle, llm=_llm(), prior_fye_cash=prior_cash.value if prior_cash else None,

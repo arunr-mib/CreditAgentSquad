@@ -33,7 +33,7 @@ from app.guardrails.narrative import check_narrative
 from app.guardrails.quotes import dates_in, quote_on_page
 from app.guardrails.units import scale_of, units_in
 
-ENGINE_VERSION = f"template-{template.TEMPLATE_ID}"
+ENGINE_VERSION = f"template-{template.TEMPLATE_ID}"  # the engine; the borrower's template id goes in formula_version
 PART_SUFFIX = "~part"
 
 
@@ -60,7 +60,11 @@ SPEC = AgentSpec(
     prompt_file="spreading.md", output_model=SpreadExtraction, tools=(), effort="high", max_tokens=32000)
 
 # the final printed total of each statement; a spread is not usable until each one foots
-REQUIRED_TOTALS = ("is.net_income", "bs.total_assets", "bs.total_liabilities_and_equity", "cf.net_change_in_cash")
+REQUIRED_TOTALS: dict[str, tuple[str, ...]] = {
+    "ci-1": ("is.net_income", "bs.total_assets", "bs.total_liabilities_and_equity", "cf.net_change_in_cash"),
+    "vc-1": ("is.vc_net_loss", "bs.vc_total_assets", "bs.vc_total_liabilities_and_equity",
+             "cf.vc_net_change_in_cash"),
+}
 
 
 def _mentions(text: str, period_end: date) -> bool:
@@ -436,7 +440,7 @@ def spread_document(
     # that was read must have its final printed total read and agreeing with the lines
     footed = {c.key for c in report.checks if c.check == "footing" and c.status == "pass"}
     lines = {line.key: line for line in template.template_lines(tid)}
-    for total in (t for t in REQUIRED_TOTALS if t in lines):
+    for total in (t for t in REQUIRED_TOTALS[tid] if t in lines):
         statement = lines[total].statement
         read = any(k in values for k, line in lines.items()
                    if line.statement == statement and not line.computed)
@@ -515,7 +519,7 @@ def spread_document(
 def _store_computed(db, borrower, period_end, months, report, result) -> None:
     """Totals are produced by code, stored as calculated facts that name their inputs."""
     calc = CalcRun(
-        borrower_id=borrower.id, formula_key="template_totals", formula_version=template.TEMPLATE_ID,
+        borrower_id=borrower.id, formula_key="template_totals", formula_version=borrower.template_id,
         period_end=period_end, engine_version=ENGINE_VERSION,
         inputs=[{"key": k, "fact_id": str(f.id), "value": str(f.value)} for k, f in sorted(result.facts.items())
                 if "@" not in k and not k.startswith(template.STATED_PREFIX)],
@@ -537,7 +541,7 @@ def _store_absent(db, borrower, period_end, months, absent, result) -> None:
         return
     proof = [(k, f) for k, f in sorted(result.facts.items()) if k.startswith(template.STATED_PREFIX)]
     calc = CalcRun(
-        borrower_id=borrower.id, formula_key="absent_lines_verified_by_footing", formula_version=template.TEMPLATE_ID,
+        borrower_id=borrower.id, formula_key="absent_lines_verified_by_footing", formula_version=borrower.template_id,
         period_end=period_end, engine_version=ENGINE_VERSION,
         inputs=[{"key": k, "fact_id": str(f.id), "value": str(f.value)} for k, f in proof],
         outputs={key: "0" for key in sorted(absent)}, created_by_type="system", created_by_id="spreading")
@@ -573,7 +577,7 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
                 values[key] = fact.value
                 result.facts[key] = fact
     still_absent = [k for k in absent if k not in values]
-    prior = current_fact(db, borrower.id, "bs.cash",
+    prior = current_fact(db, borrower.id, template.cash_roll_keys(tid)[1],
                          prior_fiscal_year_end(period_end, borrower.fiscal_year_end_month), 0)
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior.value if prior else None,
                                       absent=still_absent, template_id=tid)
@@ -586,7 +590,7 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
               required_permission="confirm_spread",
               evidence={"document_id": result.context["document_id"], "checks": result.failed_checks})
         return result
-    if current_fact(db, borrower.id, "bs.total_assets", period_end, 0) is None:
+    if current_fact(db, borrower.id, template.balance_keys(tid)[0], period_end, 0) is None:
         _store_computed(db, borrower, period_end, months, report, result)
         _store_absent(db, borrower, period_end, months, still_absent, result)
     ledger.record(db, actor_type="system", actor_id="spreading", action="spread.finalized",
