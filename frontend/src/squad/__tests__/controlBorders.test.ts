@@ -1,11 +1,9 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import css from '../squad.css?raw';
 import { contrast, LOOKS, LOOK_IDS } from '../looks';
 
-const css = readFileSync(resolve(__dirname, '../squad.css'), 'utf8');
 const rule = (selector: string) => {
-  const m = css.split('\n').find((l) => l.startsWith(`${selector} {`));
+  const m = css.split('\n').find((l: string) => l.startsWith(`${selector} {`));
   if (!m) throw new Error(`no rule for ${selector}`);
   return m;
 };
