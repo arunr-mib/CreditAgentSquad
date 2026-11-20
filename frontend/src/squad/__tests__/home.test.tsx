@@ -7,7 +7,7 @@ import { AuthContext } from '@/auth/context';
 import type { Briefing, BriefingItem } from '../api/types';
 import { SquadHome } from '../home/SquadHome';
 
-const mockBriefing = vi.hoisted(() => ({ data: undefined as unknown, isPending: false, error: null as unknown }));
+const mockBriefing = vi.hoisted(() => ({ data: undefined as unknown, isPending: false, error: null as unknown, refetch: vi.fn() }));
 vi.mock('../api/hooks', () => ({ useBriefing: () => mockBriefing }));
 vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 
@@ -35,6 +35,33 @@ function mount(b: Briefing) {
 }
 
 describe('SquadHome', () => {
+  it('scopes the ember dot to needs-you rows and makes the count a heading', async () => {
+    mount(briefing([
+      item({ key: 'a', severity: 'high' }),
+      item({ key: 'b', work_item_id: 'w2', severity: 'high', kind: 'decided', needs_you: false, state: 'reviewed by Priya Raman', title: 'Done thing' }),
+    ]));
+    expect(await screen.findByRole('heading', { name: '1 needs you' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /confirm revenue/i })).toHaveClass('sq-row-needs');
+    expect(screen.getByRole('link', { name: /done thing/i })).not.toHaveClass('sq-row-needs');
+  });
+
+  it('offers Try again on error, which refetches', async () => {
+    mockBriefing.data = undefined;
+    mockBriefing.error = new Error('x');
+    const root = createRootRoute({ component: SquadHome });
+    const router = createRouter({ routeTree: root.addChildren([]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <AuthContext.Provider value={{ user: priya, status: 'signed-in', can: () => true, signIn: async () => priya, signOut: async () => {}, retry: () => {} }}>
+          <RouterProvider router={router} />
+        </AuthContext.Provider>
+      </QueryClientProvider>,
+    );
+    (await screen.findByRole('button', { name: 'Try again' })).click();
+    expect(mockBriefing.refetch).toHaveBeenCalled();
+    mockBriefing.error = null;
+  });
+
   it('says plainly that nothing needs her, and does not paint zero as an alarm', async () => {
     mount(briefing([]));
     expect(await screen.findByText('Nothing needs you.')).toBeInTheDocument();
