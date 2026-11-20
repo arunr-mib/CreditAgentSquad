@@ -28,7 +28,8 @@ _GENERATORS = {"legacy": "synthetic.generate", "innovation": "synthetic.books.in
 
 # the book's document type names -> the product's
 DOC_TYPES = {"annual_financial_statements": "annual_statements",
-             "interim_financial_statements": "interim_statements"}
+             "interim_financial_statements": "interim_statements",
+             "unclassified": "other"}
 # borrowing base certificate lines: the book's names -> the product's fact names
 BB_LINES = {
     "gross_ar": "ar_total", "ineligible_excluded": "ar_ineligible_excluded",
@@ -44,7 +45,11 @@ AR_BUCKETS = {"0_30": "current", "31_60": "days_31_60", "61_90": "days_61_90", "
 TOTALS = frozenset({
     "is.gross_profit", "is.operating_income", "is.pretax_income", "is.net_income",
     "bs.total_current_assets", "bs.total_assets", "bs.total_current_liabilities", "bs.total_liabilities",
-    "bs.total_liabilities_and_equity", "cf.cfo", "cf.cfi", "cf.cff", "cf.net_change_in_cash"})
+    "bs.total_liabilities_and_equity", "cf.cfo", "cf.cfi", "cf.cff", "cf.net_change_in_cash",
+    # vc-1 (the innovation book's template)
+    "is.total_revenue", "is.vc_gross_profit", "is.vc_operating_loss", "is.vc_net_loss",
+    "bs.vc_total_cash", "bs.vc_total_assets", "bs.vc_total_liabilities", "bs.vc_total_equity",
+    "bs.vc_total_liabilities_and_equity", "cf.vc_net_change_in_cash"})
 # lines printed as outflows in brackets and stored positive
 OUTFLOWS = frozenset({"cf.capex", "cf.term_debt_repayments", "cf.distributions"})
 

@@ -20,8 +20,10 @@ def test_a_funding_item_raised_at_seed_time_reaches_the_recording(engine, file_s
     types = [w["type"] for w in recording["work_items"]]
     assert types.count("funding_slipped") == 1
     # exactly what the stand-in cycle raises today: the funding item (the product's own, at seed
-    # time) and the spread item the stand-in's reading provokes; a change here is a finding
-    assert set(types) == {"funding_slipped", "spread.does_not_foot"}
+    # time), the signal the book expects, and a certificate item for the Revenue to Plan row (the
+    # product stores a percentage as printed and cannot cite the wrapped row: Task 9's to fix);
+    # a change here is a finding
+    assert set(types) == {"funding_slipped", "signal.high", "spread.value_unverified"}
 
 
 @pytest.fixture(scope="module")

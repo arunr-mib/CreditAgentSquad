@@ -58,7 +58,10 @@ BBC_LABELS = {
     "Letters of credit outstanding": "letters_of_credit",
     "Availability (over-advance)": "availability",
 }
-_TITLE = re.compile(r"financial statements|compliance certificate|borrowing base certificate|agreement|amendment|waiver", re.I)
+# a bank statement's balances are the product's bank facts, not statement lines
+BANK_KEYS = {"bs.cash_unrestricted": "bank.cash_unrestricted", "bs.cash_restricted": "bank.cash_restricted"}
+_TITLE = re.compile(r"financial statements|compliance certificate|borrowing base certificate|agreement|amendment|waiver"
+                    r"|term sheet|investor update|monthly recurring revenue|account statement", re.I)
 _UNITS = re.compile(r"\(in (?:thousands of |whole )?U\.S\. dollars[^)]*\)", re.I)
 _DOCUMENT = re.compile(r'<document number="(\d+)" file="([^"]*)" pages="(\d+)">\n(.*?)\n</document>', re.S)
 
@@ -160,7 +163,9 @@ class StandInReader:
                 "document_number": int(number), "doc_type": doc_type, "period_end_text": period_text,
                 "effective_date_text": effective_text,
                 "quality": meta.get("quality", "na") if "statements" in doc_type else "na",
-                "title_as_printed": title, "concern": ""})
+                "title_as_printed": title,
+                # the held export: a print of a workbook that names no company and carries no period
+                "concern": "The file names no company and shows a different year." if meta.get("held") else ""})
         return {"documents": documents}
 
     # ---- spreading ------------------------------------------------------------------------
@@ -188,7 +193,8 @@ class StandInReader:
         cells, comparative_cells, unread = [], [], []
         for key, figure in meta["figures"].items():
             page, label, printed = figure["page"], figure["label"], figure["printed"]
-            name = f"stated.{key}" if key in TOTALS else key
+            name = BANK_KEYS[key] if meta["type"] == "bank_statement" and key in BANK_KEYS else (
+                f"stated.{key}" if key in TOTALS else key)
             lines = pages.get(page, [])
             # a careful reader reports a figure only when the row is really there: the label,
             # then the figure for the period, then the comparative figure
@@ -228,24 +234,21 @@ class StandInReader:
         asked = dict(re.findall(r"^- ([a-z0-9_]+) \| (.+)$", self._text(request), re.M))
         by_name = {name.strip().lower(): cid for cid, name in asked.items()}
         rows, scale_statement, scale_page = [], "", 0
-        header = ["Covenant", "Section", "Required", "Actual", "In compliance"]
         for n, page in enumerate(pdf, start=1):
             lines = _lines(page)
             for line in lines:
                 if not scale_statement and line.lower().startswith("dollar amounts in this certificate"):
                     scale_statement, scale_page = line, n
-            start = next((i for i in range(len(lines)) if lines[i:i + 5] == header), None)
+            start = _certificate_header_end(lines)
             if start is None or rows:
                 continue
-            i = start + 5
-            while i + 4 < len(lines) and _is_figure(lines[i + 3]) and lines[i + 4] in ("Yes", "No"):
-                label, _section, required, actual, compliance = lines[i:i + 5]
-                covenant_id = by_name.get(label.lower())
+            for name, _section, required, actual, compliance in _certificate_rows(lines, start):
+                # a covenant name may wrap: try the whole name, then its first line
+                covenant_id = by_name.get(name.lower()) or by_name.get(name.split(" | ")[0].lower())
                 if covenant_id is not None:
-                    rows.append({"covenant_id": covenant_id, "page": n, "printed_label": label,
+                    rows.append({"covenant_id": covenant_id, "page": n, "printed_label": name,
                                  "actual_printed": actual, "required_printed": required,
                                  "compliance_printed": compliance})
-                i += 5
         truth = borrower.certificate(date.fromisoformat(meta["period_end"])) if meta and meta.get("period_end") else None
         notes = []
         if truth is not None:
@@ -256,8 +259,7 @@ class StandInReader:
                     self._disagree(context, f"certificate row {row['covenant_id']}", row["actual_printed"], None)
                     continue
                 factor = scale if reported.get("unit", "ratio") == "usd" else 1
-                printed = parse_printed(row["actual_printed"])
-                if printed is None or printed * factor != _dec(reported["value"]):
+                if not _printed_matches(row["actual_printed"], reported, factor):
                     self._disagree(context, f"certificate value {row['covenant_id']}", row["actual_printed"], reported["value"])
                 if (row["compliance_printed"] == "Yes") != bool(reported["in_compliance"]):
                     self._disagree(context, f"certificate compliance {row['covenant_id']}", row["compliance_printed"],
@@ -367,6 +369,52 @@ class StandInReader:
             "below, each taken from the facts on this sheet. "
             + ("There are open items awaiting a decision." if open_items else "No items are awaiting a decision."))})
         return {"sections": sections}
+
+
+def _certificate_header_end(lines: list[str]) -> int | None:
+    """Where the rows of the covenant table start: after the Covenant, Section, Required, Actual and
+    In compliance headers, which a page may print as separate lines or run together."""
+    for i in range(len(lines) - 3):
+        if lines[i:i + 3] == ["Covenant", "Section", "Required"]:
+            j = i + 3
+            while j < len(lines) and lines[j].startswith(("Actual", "In compliance")):
+                j += 1
+            return j
+    return None
+
+
+def _certificate_rows(lines: list[str], start: int) -> list[tuple[str, str, str, str, str]]:
+    """Rows after the header: covenant, section, required, actual, in-compliance. A cell may wrap onto the
+    next line, so a row ends at the Yes/No that closes it and its cells are the lines before it."""
+    rows: list[tuple[str, str, str, str, str]] = []
+    current: list[str] = []
+    for line in lines[start:]:
+        if line in ("Yes", "No"):
+            at = next((k for k, c in enumerate(current) if re.fullmatch(r"\d+(\.\d+)*", c)), None)
+            if at is not None and 0 < at < len(current) - 1:
+                rows.append((" ".join(current[:at]), current[at], " ".join(current[at + 1:-1]), current[-1], line))
+            current = []
+        elif line.lower().startswith(("dollar amounts", "certif")):
+            break
+        else:
+            current.append(line)
+    return rows
+
+
+def _printed_matches(printed: str, reported: dict[str, Any], factor: int) -> bool:
+    """Does the printed actual say what the truth says: text for a value that is not meaningful, otherwise
+    the figure with its unit word, percent sign or "to 1.00" removed, at the precision printed."""
+    if reported["value"] is None:
+        return printed.lower().startswith("not meaningful")
+    head = printed.removesuffix(" months").removesuffix(" to 1.00").strip()
+    value = parse_printed(head)
+    if value is None:
+        return False
+    truth = _dec(reported["value"]) / factor
+    if printed.endswith("%"):
+        truth *= 100
+    places = -value.as_tuple().exponent if value.as_tuple().exponent < 0 else 0
+    return value == truth.quantize(Decimal(1).scaleb(-places)) if factor == 1 else value * factor == _dec(reported["value"])
 
 
 def _dec(value: Any) -> Decimal:
