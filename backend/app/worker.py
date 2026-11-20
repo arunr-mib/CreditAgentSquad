@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.core import clock
 from app.core.db import get_engine
-from app.domain import calendar, hooks, workflow  # noqa: F401  (hooks registers handlers and decisions)
+from app.domain import calendar, funding, hooks, workflow  # noqa: F401  (hooks registers handlers and decisions)
 
 log = logging.getLogger("squad.worker")
 TICK_SECONDS = 30
@@ -19,12 +19,14 @@ IDLE_SECONDS = 2
 
 
 def run_once(db: Session) -> dict[str, int]:
-    """One pass: refresh the calendar, wake waiting cycles, then run every queued job."""
-    overdue = calendar.refresh_statuses(db, clock.today(db))
+    """One pass: refresh the calendar, mark slipped funding, wake waiting cycles, then run every queued job."""
+    today = clock.today(db)
+    overdue = calendar.refresh_statuses(db, today)
+    slipped = len(funding.check_funding_events(db, today))
     moved = workflow.tick(db)
     ran = workflow.drain(db)
     db.commit()
-    return {"obligations_now_overdue": overdue, "cycles_woken": moved, "jobs_run": ran}
+    return {"obligations_now_overdue": overdue, "funding_slipped": slipped, "cycles_woken": moved, "jobs_run": ran}
 
 
 def main() -> None:

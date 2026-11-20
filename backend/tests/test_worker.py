@@ -33,3 +33,26 @@ def test_verify_ledger_command_reports_the_chain(db, capsys):
     ledger.record(db, actor_type="system", actor_id="t", action="t.one", entity_type="x", entity_id="1")
     assert cli.verify_ledger(db) == 0 and "chain intact" in capsys.readouterr().out
     assert cli.main(["nonsense"]) == 2
+
+
+def test_a_tick_past_an_expected_close_raises_the_funding_item_once(db, monkeypatch):
+    from decimal import Decimal
+
+    from app.domain.funding import FundingEvent
+    from app.domain.monitoring import WorkItem
+    from sqlalchemy import select
+
+    monkeypatch.setattr(db, "commit", db.flush)
+    borrower = Borrower(code="W-10", name="Funding Borrower", template_id="vc-1")
+    db.add(borrower)
+    db.flush()
+    db.add(FundingEvent(borrower_id=borrower.id, kind="equity_round", amount=Decimal("5000000"),
+                        expected_close=date(2026, 11, 20)))
+    db.flush()
+    clock.set_today(db, date(2026, 11, 20))
+    assert worker.run_once(db)["funding_slipped"] == 0  # the close date itself has not passed
+    clock.set_today(db, date(2026, 11, 21))
+    assert worker.run_once(db)["funding_slipped"] == 1
+    assert worker.run_once(db)["funding_slipped"] == 0
+    items = db.execute(select(WorkItem).where(WorkItem.item_type == "funding_slipped")).scalars().all()
+    assert len(items) == 1 and items[0].borrower_id == borrower.id
