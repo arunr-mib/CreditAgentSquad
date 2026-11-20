@@ -1,7 +1,7 @@
 /* frontend/src/squad/squad.css — the Squad experience's own classes, built only from --sq-* variables. */
 .sq-root { background: var(--sq-ground); color: var(--sq-ink); font-family: 'Inter Variable', system-ui, sans-serif; font-size: 15px; line-height: 1.5; }
 .sq-root * { box-sizing: border-box; }
-.sq-iconbtn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--sq-line); background: var(--sq-surface); color: var(--sq-ink2); cursor: pointer; }
+.sq-iconbtn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--sq-line-strong); background: var(--sq-surface); color: var(--sq-ink2); cursor: pointer; }
 .sq-iconbtn:hover { color: var(--sq-ink); }
 .sq-iconbtn:focus-visible, .sq-btn:focus-visible, .sq-navlink:focus-visible { outline: 2px solid var(--sq-squad); outline-offset: 2px; }
 .sq-menu { background: var(--sq-surface); border: 1px solid var(--sq-line); border-radius: 10px; padding: 4px; min-width: 190px; color: var(--sq-ink); z-index: 60; }
@@ -9,7 +9,7 @@
 .sq-menuitem[data-highlighted] { background: var(--sq-sunk); }
 .sq-menuitem[data-state='checked'] { font-weight: 600; }
 .sq-swatch { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--sq-line); }
-.sq-btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--sq-line); background: var(--sq-surface); color: var(--sq-ink); font: inherit; font-weight: 500; cursor: pointer; }
+.sq-btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--sq-line-strong); background: var(--sq-surface); color: var(--sq-ink); font: inherit; font-weight: 500; cursor: pointer; }
 .sq-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
 .sq-btn-primary { background: var(--sq-ink); color: var(--sq-on-ink); border-color: var(--sq-ink); }
 .sq-card { background: var(--sq-surface); border: 1px solid var(--sq-line); border-radius: 14px; padding: 14px 16px; }
@@ -18,3 +18,5 @@
 .sq-faint { color: var(--sq-ink3); }
 .sq-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .sq-paper { background: var(--sq-paper); color: var(--sq-paper-ink); }
+.sq-input { height: 34px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--sq-line-strong); background: var(--sq-surface); color: var(--sq-ink); font: inherit; }
+.sq-input:focus-visible { outline: 2px solid var(--sq-squad); outline-offset: 2px; }

@@ -5,13 +5,13 @@ import { LOOK_IDS, LOOKS } from './looks';
 import { useLook } from './useLook';
 
 export function LookMenu() {
-  const { look, setLook } = useLook();
+  const { look, setLook, root } = useLook();
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger className="sq-iconbtn" aria-label={`Look: ${LOOKS[look].label}`}>
         <Palette size={16} aria-hidden />
       </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
+      <DropdownMenu.Portal container={root}>
         <DropdownMenu.Content className="sq-menu" align="end" sideOffset={6}>
           <DropdownMenu.RadioGroup value={look} onValueChange={(v) => setLook(v as (typeof LOOK_IDS)[number])}>
             {LOOK_IDS.map((id) => (
