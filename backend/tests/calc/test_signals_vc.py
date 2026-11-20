@@ -174,3 +174,26 @@ def test_compute_inputs_not_meaningful_runway_flag():
     inputs = compute_signal_inputs(OCT, p, template_id=VC)
     assert inputs.values["rml"] is None and inputs.values["rml_not_meaningful"] == D("1")
     assert "rml" not in inputs.errors
+
+
+# ---- rules that do not depend on the template apply to the venture template too --------------
+
+def test_template_independent_rules_apply_to_both_templates():
+    names = {r.id: r for r in RULES}
+    for name in ("auditor_opinion", "line_usage_high", "availability_low"):
+        assert {"vc-1", "ci-1"} <= names[name].templates
+
+
+def test_going_concern_opinion_fires_for_a_venture_borrower():
+    from app.calc.signals import AuditorOpinion
+    item = AuditorOpinion(OCT, "going_concern", fact_id="f1", document_id="d1", page=4)
+    out = _run([_entry(0, rml="20")], opinions=[item])
+    assert _names(out) == ["auditor_opinion"] and out.signals[0].severity == "high"
+    assert _names(_run([_entry(0, rml="20")], opinions=[AuditorOpinion(OCT, "unqualified")])) == []
+
+
+def test_line_usage_and_availability_fire_for_a_venture_borrower_with_a_venture_debt_line():
+    from app.calc.signals import SystemRow
+    row = SystemRow(OCT, D("4600000"), D("5000000"), 0)
+    out = _run([_entry(0, rml="20", availability="100000")], system_rows=[row])
+    assert set(_names(out)) == {"line_usage_high", "availability_low"}
