@@ -12,17 +12,9 @@ import { useLedgerHeartbeat } from '../api/polling';
 import { LookProvider, useLook } from '../useLook';
 import { EvidenceResizer } from '../evidence/EvidenceResizer';
 import { PresenceLine, PresenceProvider } from '../presence/Presence';
+import { useNavCollapse } from './useNavCollapse';
 import { buildCommands } from './commands';
 import { SquadNav } from './SquadNav';
-
-const NAV_KEY = 'squad.nav.collapsed';
-function storedCollapsed(): boolean {
-  try {
-    return localStorage.getItem(NAV_KEY) !== 'false'; // collapsed unless the person opened it
-  } catch {
-    return true;
-  }
-}
 
 function Frame() {
   const { user, signOut } = useAuth();
@@ -32,16 +24,8 @@ function Frame() {
   const briefing = useBriefing();
   const borrowers = useBorrowers();
   const { setLook } = useLook();
-  const [collapsed, setCollapsed] = useState(storedCollapsed);
-  // Below 1280 px an open evidence drawer folds the nav away so the conversation keeps its room; the person's own choice returns on close.
   const { current: evidence } = useSource();
-  const [wide, setWide] = useState(() => window.innerWidth >= 1280);
-  useEffect(() => {
-    const onResize = () => setWide(window.innerWidth >= 1280);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  const navCollapsed = collapsed || (evidence !== null && !wide);
+  const { collapsed: navCollapsed, toggle } = useNavCollapse(evidence !== null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((o) => !o), []));
   const { open: drawerOpen, tab: drawerTab, itemId: drawerItem, borrowerCode: drawerBorrower, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
@@ -56,15 +40,6 @@ function Frame() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [drawerOpen, drawerTab, drawerItem, drawerBorrower, openCopilot, closeDrawer, pathname]);
-  const toggle = () =>
-    setCollapsed((c) => {
-      try {
-        localStorage.setItem(NAV_KEY, String(!c));
-      } catch {
-        /* not remembered */
-      }
-      return !c;
-    });
   const commands = buildCommands({
     clients: (borrowers.data ?? []).map((b) => ({ code: b.code, name: b.name })),
     go: (path) => void navigate({ to: path }),
