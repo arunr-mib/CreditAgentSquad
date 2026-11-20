@@ -273,6 +273,8 @@ def test_covenant(
 
 def _test_rml(cov: Covenant, result: CovenantTestResult, period_end: date, provider: Provider,
               fye_month: int) -> CovenantTestResult:
+    # Reference formula for audit only; it is never evaluated. The test uses compute_rml so burn <= 0 never divides.
+    result.expression = compile_covenant(cov, period_end)
     rml = compute_rml(period_end, provider, fye_month)
     result.trace = rml.trace
     result.errors.extend(rml.errors)
@@ -369,6 +371,9 @@ def determine_outcome(
     if test_result.errors or test_result.passed is None:
         return Outcome(CANNOT_TEST, errors=list(test_result.errors), certificate_compared=False)
 
+    if test_result.note == NOT_MEANINGFUL_CASH_FLOW_POSITIVE:
+        # No measured value exists; the certificate's own runway figure is not a covenant input.
+        return Outcome(COMPLIANT, certificate_compared=certificate_entry is not None, note=test_result.note)
     variances: list[Variance] = []
     entry = certificate_entry
     if entry is not None:

@@ -88,3 +88,11 @@ def test_revenue_vs_plan_missing_plan_month_cannot_test():
     result = test_covenant(cov, OCT, provider_from_facts({}))
     assert result.passed is None
     assert any(e.code == "missing_parameter" and "2026-08-31" in e.message for e in result.errors)
+
+
+def test_not_meaningful_rml_ignores_certificate_value():
+    result = CovenantTestResult("min_runway_months", OCT, passed=True, note="not_meaningful_cash_flow_positive")
+    entry = {"value": "24.0", "threshold": "9", "in_compliance": True}
+    outcome = determine_outcome(result, entry, D("0.1"))
+    assert outcome.outcome == "compliant" and outcome.note == "not_meaningful_cash_flow_positive"
+    assert outcome.variances == []
