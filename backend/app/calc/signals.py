@@ -30,10 +30,11 @@ from datetime import date, timedelta
 from decimal import Decimal
 from typing import Any
 
+from .covenants import compute_rml
 from .decimal_utils import CALC_CONTEXT, ZERO, is_decimal, round_half_up
 from .errors import CalcError
-from .expr import Trace, evaluate
-from .metrics import METRICS, metric_definitions, point, ttm
+from .expr import Trace, evaluate, shift_period_end
+from .metrics import METRICS, add, metric_definitions, named, point, t3m, ttm
 from .periods import FactValue, Provider, same_period_prior_year
 
 SIGNALS_VERSION = "signals-1"
@@ -45,11 +46,16 @@ class SignalRule:
     severity: str  # low | medium | high
     kind: str
     params: Mapping[str, Any] = field(default_factory=dict)
+    templates: frozenset[str] = frozenset({"ci-1"})  # the spreading templates the rule applies to
 
+
+CI = frozenset({"ci-1"})
+VC = frozenset({"vc-1"})
+BOTH = CI | VC
 
 RULES: tuple[SignalRule, ...] = (
-    SignalRule("covenant_headroom_low", "medium", "headroom_below", {"threshold": Decimal("0.10")}),
-    SignalRule("covenant_headroom_falling", "low", "headroom_falling", {"periods": 2}),
+    SignalRule("covenant_headroom_low", "medium", "headroom_below", {"threshold": Decimal("0.10")}, BOTH),
+    SignalRule("covenant_headroom_falling", "low", "headroom_falling", {"periods": 2}, BOTH),
     SignalRule("revenue_ttm_decline", "medium", "pct_decrease",
                {"metric": "revenue_ttm", "compare": "yoy", "threshold": Decimal("0.10"), "dp": 4}),
     SignalRule("ebitda_margin_decline", "medium", "abs_decrease",
@@ -65,9 +71,15 @@ RULES: tuple[SignalRule, ...] = (
                {"metric": "cash", "compare": "yoy", "threshold": Decimal("0.30"), "dp": 4}),
     SignalRule("line_usage_high", "medium", "usage_above", {"threshold": Decimal("0.90"), "dp": 4}),
     SignalRule("availability_low", "medium", "availability_below", {"threshold": Decimal("0.10"), "dp": 4}),
-    SignalRule("reporting_late", "high", "reporting_late", {"days": 15}),
-    SignalRule("payment_past_due", "high", "past_due", {"days": 10}),
+    SignalRule("reporting_late", "high", "reporting_late", {"days": 15}, BOTH),
+    SignalRule("payment_past_due", "high", "past_due", {"days": 10}, BOTH),
     SignalRule("auditor_opinion", "high", "auditor_opinion", {"opinions": ("qualified", "going_concern")}),
+    # startup rules (vc-1): monthly series of rml, avg_net_burn and plan_ratio
+    SignalRule("runway_below_watch", "high", "rml_below", {"watch": Decimal("12"), "high_below": Decimal("9")}, VC),
+    SignalRule("runway_falling", "medium", "rml_falling", {"periods": 3}, VC),
+    SignalRule("burn_rising", "medium", "pct_increase",
+               {"metric": "avg_net_burn", "threshold": Decimal("0.20"), "compare_months": 3, "dp": 4}, VC),
+    SignalRule("revenue_below_plan", "medium", "plan_ratio_below", {"threshold": Decimal("1.00"), "dp": 4}, VC),
 )
 
 
@@ -158,6 +170,11 @@ def _point(entry: PeriodMetrics, value: Decimal | FactValue | None) -> dict[str,
     return {"period_end": entry.period_end, "months": entry.months, "value": fact.value, "fact_id": fact.fact_id}
 
 
+def _flag(value: Decimal | FactValue | None) -> bool:
+    number = value.value if isinstance(value, FactValue) else value
+    return number is not None and number != ZERO
+
+
 class _Evaluation:
     def __init__(self, period_end: date, series: Sequence[PeriodMetrics], system_rows: Sequence[SystemRow],
                  reporting: Sequence[ReportingItem], opinions: Sequence[AuditorOpinion], as_of: date | None) -> None:
@@ -175,8 +192,9 @@ class _Evaluation:
         self.reporting, self.opinions, self.as_of = reporting, opinions, as_of
         self.out = SignalEvaluation()
 
-    def fire(self, rule: SignalRule, basis: dict[str, Any], subject: str | None = None) -> None:
-        self.out.signals.append(Signal(rule.id, rule.severity, self.period_end, subject, basis))
+    def fire(self, rule: SignalRule, basis: dict[str, Any], subject: str | None = None,
+             severity: str | None = None) -> None:
+        self.out.signals.append(Signal(rule.id, severity or rule.severity, self.period_end, subject, basis))
 
     def skip(self, rule: SignalRule, reason: str, subject: str | None = None, **detail: Any) -> None:
         self.out.not_evaluated.append(NotEvaluated(rule.id, subject, reason, detail))
@@ -268,6 +286,74 @@ class _Evaluation:
         elif current["value"] < rule.params["threshold"]:
             self.fire(rule, {"metric": metric, "current": current, "threshold": rule.params["threshold"]})
 
+    # -- startup (monthly) rules
+
+    def _rml(self, rule: SignalRule, entry: PeriodMetrics) -> dict[str, Any] | None | bool:
+        """The entry's RML point; None if unmeasured (skipped); False if not meaningful (skipped)."""
+        if _flag(entry.metrics.get("rml_not_meaningful")):
+            self.skip(rule, "not_meaningful", metric="rml", period_end=entry.period_end)
+            return False
+        point_ = _point(entry, entry.metrics.get("rml"))
+        if point_ is None:
+            self.skip(rule, "missing_value", metric="rml", period_end=entry.period_end)
+        return point_
+
+    def rml_below(self, rule: SignalRule) -> None:
+        current = self._rml(rule, self.current)
+        if not current:  # unmeasured, or cash-flow positive: never a runway signal
+            return
+        value = current["value"]
+        if value < rule.params["watch"]:
+            severity = "high" if value < rule.params["high_below"] else "medium"
+            self.fire(rule, {"metric": "rml", "current": current, "watch": rule.params["watch"],
+                             "high_below": rule.params["high_below"]}, severity=severity)
+
+    def rml_falling(self, rule: SignalRule) -> None:
+        count = rule.params["periods"]
+        window = self.before[-count:] + [self.current]
+        if len(window) < count + 1:
+            self.skip(rule, "no_comparison_period", metric="rml")
+            return
+        points = [self._rml(rule, e) for e in window]
+        if not all(points):
+            return
+        if all(later["value"] < earlier["value"] for earlier, later in zip(points, points[1:], strict=False)):
+            self.fire(rule, {"metric": "rml", "values": points})
+
+    def pct_increase(self, rule: SignalRule) -> None:
+        metric = rule.params["metric"]
+        current = _point(self.current, self.current.metrics.get(metric))
+        if current is None:
+            self.skip(rule, "missing_value", metric=metric, period_end=self.period_end)
+            return
+        prior_end = shift_period_end(self.period_end, -rule.params["compare_months"])
+        prior_entry = self.by_end.get(prior_end)
+        if prior_entry is None:
+            self.skip(rule, "no_comparison_period", metric=metric, compare_months=rule.params["compare_months"])
+            return
+        prior = _point(prior_entry, prior_entry.metrics.get(metric))
+        if prior is None:
+            self.skip(rule, "missing_value", metric=metric, period_end=prior_end)
+            return
+        if prior["value"] <= ZERO:
+            self.skip(rule, "non_positive_base", metric=metric, period_end=prior_end)
+            return
+        change = round_half_up(CALC_CONTEXT.divide(CALC_CONTEXT.subtract(current["value"], prior["value"]),
+                                                   prior["value"]), rule.params["dp"])
+        if change > rule.params["threshold"]:
+            self.fire(rule, {"metric": metric, "compare_months": rule.params["compare_months"], "current": current,
+                             "prior": prior, "change": change, "threshold": rule.params["threshold"]})
+
+    def plan_ratio_below(self, rule: SignalRule) -> None:
+        current = _point(self.current, self.current.metrics.get("plan_ratio"))
+        if current is None:  # no plan (or a plan month missing): absent data is not a signal
+            self.skip(rule, "missing_value", metric="plan_ratio", period_end=self.period_end)
+            return
+        ratio = round_half_up(current["value"], rule.params["dp"])
+        if ratio < rule.params["threshold"]:
+            self.fire(rule, {"metric": "plan_ratio", "current": current, "ratio": ratio,
+                             "threshold": rule.params["threshold"]})
+
     # -- system of record
 
     def _commitment(self, rule: SignalRule) -> SystemRow | None:
@@ -339,17 +425,20 @@ def evaluate_signals(
     opinions: Sequence[AuditorOpinion] = (),
     as_of: date | None = None,
     rules: Sequence[SignalRule] = RULES,
+    template_id: str = "ci-1",
 ) -> SignalEvaluation:
     """Apply the rule table for the period ending `period_end`.
 
     `series` must contain that period and whatever history exists (any order). `system_rows`
     are the facility's rows; the latest on or before `period_end` is used. `reporting` and
     `opinions` are the items to judge. `as_of` is the date lateness of an unreceived document
-    is measured to; without it such items are not evaluated. Signals come back in rule order.
+    is measured to; without it such items are not evaluated. Only rules whose `templates` include
+    `template_id` run. Signals come back in rule order.
     """
     run = _Evaluation(period_end, series, system_rows, reporting, opinions, as_of)
     for rule in rules:
-        getattr(run, rule.kind)(rule)
+        if template_id in rule.templates:
+            getattr(run, rule.kind)(rule)
     return run.out
 
 
@@ -372,13 +461,63 @@ class SignalInputs:
     values: dict[str, Decimal | None]  # UNROUNDED; None means unmeasured
     errors: dict[str, list[CalcError]]  # only the inputs that could not be measured
     traces: dict[str, Trace]  # the facts behind each input
+    history: dict[date, SignalInputs] = field(default_factory=dict)  # venture: the months before, oldest first
 
 
-def compute_signal_inputs(period_end: date, provider: Provider, *, fye_month: int = 12) -> SignalInputs:
+def _venture_inputs(period_end: date, provider: Provider, fye_month: int,
+                    plan: Mapping[date, Decimal] | None) -> SignalInputs:
+    out = SignalInputs({}, {}, {})
+    definitions = metric_definitions()
+    rml = compute_rml(period_end, provider, fye_month)
+    out.values["rml"] = rml.value
+    out.values["rml_not_meaningful"] = None if rml.errors else (Decimal(1) if rml.not_meaningful else Decimal(0))
+    out.traces["rml"] = rml.trace
+    if rml.errors:
+        out.errors["rml"] = rml.errors
+    burn = evaluate(named("avg_net_burn"), period_end, provider, definitions=definitions, fye_month=fye_month)
+    out.values["avg_net_burn"], out.traces["avg_net_burn"] = burn.value, burn.trace
+    if burn.errors:
+        out.errors["avg_net_burn"] = burn.errors
+    out.values["plan_ratio"] = None
+    months = [shift_period_end(period_end, -2), shift_period_end(period_end, -1), period_end]
+    if plan is not None and all(m in plan for m in months):
+        planned = sum((plan[m] for m in months), ZERO)
+        revenue = evaluate(add(t3m("is.subscription_revenue"), t3m("is.services_revenue")), period_end, provider,
+                           definitions=definitions, fye_month=fye_month)
+        out.traces["plan_ratio"] = revenue.trace
+        if revenue.errors:
+            out.errors["plan_ratio"] = revenue.errors
+        elif planned > ZERO:
+            out.values["plan_ratio"] = CALC_CONTEXT.divide(revenue.value, planned)
+    return out
+
+
+def compute_signal_inputs(
+    period_end: date,
+    provider: Provider,
+    *,
+    fye_month: int = 12,
+    template_id: str = "ci-1",
+    history_months: int | None = None,
+    plan: Mapping[date, Decimal] | None = None,
+) -> SignalInputs:
     """Measure the metric inputs of the signal rules for one period (for `PeriodMetrics.metrics`).
 
     Values are unrounded on purpose: the rules round once, at the end of their own formula.
+    For `vc-1` the inputs are `rml`, `rml_not_meaningful` (1 when cash-flow positive), `avg_net_burn`
+    and `plan_ratio` (last three months' revenue over the plan for those months; None with no plan
+    or a plan month missing, which is absent data and never a miss), and `history` holds the same
+    for each of the `history_months` (default 6) months before `period_end`. `plan` maps month end
+    to planned revenue. For `ci-1` the quarterly metrics are returned and `history_months` and
+    `plan` are ignored.
     """
+    if template_id == "vc-1":
+        out = _venture_inputs(period_end, provider, fye_month, plan)
+        count = 6 if history_months is None else history_months
+        for back in range(count, 0, -1):
+            month = shift_period_end(period_end, -back)
+            out.history[month] = _venture_inputs(month, provider, fye_month, plan)
+        return out
     out = SignalInputs({}, {}, {})
     definitions = metric_definitions()
     for name, expression in SIGNAL_INPUTS.items():

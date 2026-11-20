@@ -65,12 +65,13 @@ def only(evaluation, rule_id):
 
 def test_rule_table_is_signals_1():
     assert SIGNALS_VERSION == "signals-1"
-    assert [r.id for r in RULES] == [
+    ci_rules = [r for r in RULES if "ci-1" in r.templates]  # the startup rules are covered in test_signals_vc
+    assert [r.id for r in ci_rules] == [
         "covenant_headroom_low", "covenant_headroom_falling", "revenue_ttm_decline", "ebitda_margin_decline",
         "dso_increase", "dpo_increase", "leverage_increase", "net_loss", "cash_decline", "line_usage_high",
         "availability_low", "reporting_late", "payment_past_due", "auditor_opinion",
     ]
-    assert {r.id: r.severity for r in RULES} == {
+    assert {r.id: r.severity for r in ci_rules} == {
         "covenant_headroom_low": "medium", "covenant_headroom_falling": "low", "revenue_ttm_decline": "medium",
         "ebitda_margin_decline": "medium", "dso_increase": "medium", "dpo_increase": "medium",
         "leverage_increase": "medium", "net_loss": "high", "cash_decline": "medium", "line_usage_high": "medium",
