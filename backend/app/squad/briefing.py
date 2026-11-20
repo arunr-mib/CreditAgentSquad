@@ -3,7 +3,7 @@ and what agents finished overnight. Every count is taken from the list that is r
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from app.core import clock
@@ -14,6 +14,7 @@ from app.domain.funding import FundingEvent
 from app.domain.monitoring import Signal, WorkItem
 from app.domain.org import User
 from app.domain.terms import ReportingObligation
+from app.publishing.content import SIGNAL_LABELS
 from app.squad.threads import REPORT_TEXT_KEYS
 
 BREACH_TYPES = frozenset({"covenant.breach", "covenant.reported_breach_unconfirmed", "bb.over_advance"})
@@ -21,6 +22,7 @@ KIND_RANK = {"breach": 0, "overdue_report": 1, "signal": 2, "question": 3, "revi
 SEVERITY_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 RECENT = timedelta(days=2)
 FUNDING_WINDOW_DAYS = 14
+OVERNIGHT_LIMIT = 8
 
 
 def _words(decision: str | None) -> str:
@@ -39,21 +41,29 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
 
     items: list[dict[str, Any]] = []
     now = datetime.now(UTC)
-    for w in db.execute(select(WorkItem)).scalars():
+    open_or_recent = or_(WorkItem.status == "open",
+                         and_(WorkItem.status == "decided", WorkItem.decided_at >= now - RECENT))
+    for w in db.execute(select(WorkItem).where(open_or_recent)).scalars():
         if w.borrower_id not in borrowers:
             continue
         kind = "question" if w.item_type == "question" else "breach" if w.item_type in BREACH_TYPES else "review"
         base = {**ref(w.borrower_id), "title": w.title, "severity": w.severity, "work_item_id": str(w.id)}
         if w.status == "open":
-            actionable = can(user.role, Permission(w.required_permission)) and w.assigned_to in (None, user.id)
-            if actionable:
+            try:
+                holds = can(user.role, Permission(w.required_permission))
+            except ValueError:  # an unknown permission is nobody's to act on
+                holds = False
+            prepared_by_me = w.prepared_by_id == str(user.id)
+            second_person_blocked = w.requires_second_person and prepared_by_me
+            if holds and not second_person_blocked and w.assigned_to in (None, user.id):
                 state = "Squad asks" if kind == "question" else "waiting for you"
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": state, "needs_you": True,
                               "_due": w.due_date})
-            elif w.assigned_to and w.assigned_to != user.id and w.prepared_by_id == str(user.id):
-                items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": f"with {names.get(w.assigned_to, 'a colleague')}",
+            elif prepared_by_me and (second_person_blocked or (w.assigned_to and w.assigned_to != user.id)):
+                who = names.get(w.assigned_to, "a colleague") if w.assigned_to else "a second person"
+                items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": f"with {who}",
                               "needs_you": False, "_due": w.due_date})
-        elif w.status == "decided" and w.decided_at and now - w.decided_at <= RECENT:
+        else:
             items.append({**base, "key": f"item:{w.id}", "kind": "decided",
                           "state": f"{_words(w.decision)} by {names.get(w.decided_by, 'a colleague')}",
                           "needs_you": False, "_due": None})
@@ -67,11 +77,14 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                           "work_item_id": None, "_due": ob.due_date})
 
     seen_signals: set = set()
-    for s in db.execute(select(Signal).where(Signal.status == "open")).scalars():
+    signals = db.execute(select(Signal).where(Signal.status == "open")).scalars().all()
+    signals.sort(key=lambda x: (SEVERITY_RANK.get(x.severity, 9), -x.created_at.timestamp()))
+    for s in signals:
         if s.borrower_id in borrowers and s.borrower_id not in seen_signals:
             seen_signals.add(s.borrower_id)
+            label = SIGNAL_LABELS.get(s.rule_id, s.rule_id.replace("_", " "))
             items.append({**ref(s.borrower_id), "key": f"signal:{s.borrower_id}", "kind": "signal",
-                          "title": "A signal needs a look", "state": "new signal", "severity": s.severity,
+                          "title": f"Signal: {label}", "state": "new signal", "severity": s.severity,
                           "needs_you": can_decide, "work_item_id": None, "_due": None})
 
     horizon = today + timedelta(days=FUNDING_WINDOW_DAYS)
@@ -89,15 +102,16 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
 
     overnight = []
     since = now - timedelta(hours=18)
-    for run in db.execute(select(AgentRun).where(AgentRun.status == "completed", AgentRun.agent_name != "copilot",
-                                                 AgentRun.borrower_id.is_not(None)).order_by(AgentRun.finished_at.desc())).scalars():
-        done = run.finished_at or run.created_at
+    runs = db.execute(select(AgentRun).where(
+        AgentRun.status == "completed", AgentRun.agent_name != "copilot", AgentRun.borrower_id.is_not(None),
+        AgentRun.finished_at >= since).order_by(AgentRun.finished_at.desc()).limit(OVERNIGHT_LIMIT * 4)).scalars()
+    for run in runs:
         out = run.output or {}
         text = next((out[k] for k in REPORT_TEXT_KEYS if isinstance(out.get(k), str) and out[k].strip()), None)
-        if done >= since and text and run.borrower_id in borrowers:
-            overnight.append({"agent_name": run.agent_name, "text": text, "finished_at": done.isoformat(),
+        if text and run.borrower_id in borrowers:
+            overnight.append({"agent_name": run.agent_name, "text": text, "finished_at": run.finished_at.isoformat(),
                               **ref(run.borrower_id)})
-        if len(overnight) == 8:
+        if len(overnight) == OVERNIGHT_LIMIT:
             break
 
     open_clients: dict[str, dict[str, Any]] = {}
