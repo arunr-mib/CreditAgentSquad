@@ -168,9 +168,14 @@ def lifecycle(client, db):
     ["signed", "slipped", "closed"]])
 def test_legal_status_transitions(client, lifecycle, path):
     _, _, url = lifecycle
+    previous = "expected"
     for status in path:
-        r = client.patch(url, json={"status": status})
+        body = {"status": status}
+        if previous == "slipped" and status in ("expected", "signed"):
+            body["expected_close"] = "2099-12-31"  # reviving a slipped round needs a new timeline
+        r = client.patch(url, json=body)
         assert r.status_code == 200 and r.json()["status"] == status, r.text
+        previous = status
 
 
 @pytest.mark.parametrize("start,target", [
@@ -235,3 +240,19 @@ def test_patching_needs_the_prepare_permission_and_an_event_of_this_borrower(cli
                         json={"status": "signed"}).status_code == 404
     _sign_in(client, "ruth.calloway")  # view only
     assert client.patch(url, json={"status": "signed"}).status_code == 403
+
+
+@pytest.mark.parametrize("body", [{"status": "expected"}, {"status": "signed", "expected_close": "2020-01-31"}])
+def test_a_slipped_round_comes_back_only_with_a_future_close(client, lifecycle, body):
+    _, _, url = lifecycle
+    assert client.patch(url, json={"status": "slipped"}).status_code == 200
+    r = client.patch(url, json=body)
+    assert r.status_code == 422 and "after today" in r.text
+    assert client.get(url.rsplit("/", 1)[0]).json()[0]["status"] == "slipped"
+
+
+def test_a_closed_event_cannot_be_edited(client, lifecycle):
+    _, _, url = lifecycle
+    assert client.patch(url, json={"status": "closed"}).status_code == 200
+    r = client.patch(url, json={"expected_close": "2027-06-30"})
+    assert r.status_code == 422 and "final" in r.text

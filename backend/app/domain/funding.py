@@ -5,7 +5,7 @@ from datetime import date
 from sqlalchemy import CheckConstraint, select
 from sqlalchemy.orm import Session
 
-from app.core import ledger
+from app.core import clock, ledger
 from app.core.db import Base, CreatedMixin, IdMixin
 from app.domain import work_items
 from app.domain.common import Date, Decimal, Mapped, Numeric, String, fk, json_col, mapped_column
@@ -68,6 +68,13 @@ def update_funding_event(db: Session, event: FundingEvent, *, status: str | None
         if status not in TRANSITIONS[event.status]:
             legal = ", ".join(TRANSITIONS[event.status]) or "none, a closed event is final"
             raise ValueError(f"a {event.status} event cannot become {status}; it can become: {legal}")
+    if event.status == "closed":
+        raise ValueError("a closed event is final; record a new event instead")
+    if event.status == "slipped" and status in ("expected", "signed"):
+        # reviving a slipped round needs the new timeline, after today: an old date would be
+        # marked slipped again on the next tick with no one asked
+        if expected_close is None or expected_close <= clock.today(db):
+            raise ValueError("a slipped round can be expected again only with a new expected close after today")
     evidence = valid_evidence(db, event.borrower_id, add_evidence or [])
     before = {"status": event.status, "expected_close": event.expected_close,
               "evidence_document_ids": list(event.evidence_document_ids)}
