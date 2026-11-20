@@ -15,7 +15,7 @@ from pathlib import Path
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
-from evals.book import DEFAULT_BOOK, REPO, load_book
+from evals.book import BOOKS, REPO, load_book
 from evals.run import LoadedBorrower, default_database_url, ensure_schema, scratch_file_store
 from evals.standin import StandInReader
 
@@ -27,7 +27,7 @@ def build(code: str, out: Path = OUT) -> dict[str, int]:
     from app.domain.credit import Borrower
     from app.publishing.service import build_content, content_hash, render_files
 
-    book = load_book(DEFAULT_BOOK, [code])
+    book = load_book(BOOKS["legacy"], [code])  # the examples are legacy borrowers
     engine = create_engine(default_database_url())
     try:
         with scratch_file_store():

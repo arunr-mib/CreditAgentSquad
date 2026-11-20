@@ -1,5 +1,6 @@
 """When a run may start. No test here calls a model, and none may."""
 import io
+import shutil
 
 import pytest
 from app.agents.llm import RecordedClient
@@ -60,16 +61,16 @@ def test_signed_rows_let_a_billable_run_start_only_with_the_owners_go_ahead(tmp_
 
 def test_recorded_mode_refuses_when_there_are_no_recordings(tmp_path):
     with pytest.raises(RunRefused, match="no recorded model responses"):
-        check_may_start("recorded", ["dataflake"], recordings=tmp_path)
+        check_may_start("recorded", ["dataflake"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
     (tmp_path / "intake").mkdir()
     (tmp_path / "intake" / "x.json").write_text("{}")
-    check_may_start("recorded", ["dataflake"], recordings=tmp_path)
+    check_may_start("recorded", ["dataflake"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
 
 
 def test_stand_in_needs_no_signature_and_no_flag():
-    check_may_start("standin", ["dataflake"], out=io.StringIO())
+    check_may_start("standin", ["dataflake"], out=io.StringIO(), oracle=oracle_for(DEFAULT_BOOK))
     with pytest.raises(RunRefused, match="unknown mode"):
-        check_may_start("cheap", [])
+        check_may_start("cheap", [], oracle=oracle_for(DEFAULT_BOOK))
 
 
 @pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
@@ -103,9 +104,58 @@ def test_text_that_is_not_one_figure_is_not_read_as_one(text):
     assert parse_printed(text) is None
 
 
+def test_the_oracle_is_required_there_is_no_default_to_borrow():
+    with pytest.raises(TypeError):
+        check_may_start("live", ["dataflake"], confirm_billable=True, out=io.StringIO())
+    with pytest.raises(TypeError):
+        unsigned_oracle_rows(["dataflake"])
+
+
+def _nothing_is_built(monkeypatch):
+    monkeypatch.setattr(run, "make_client", lambda *a, **k: pytest.fail("a client was built for a refused run"))
+    monkeypatch.setattr(run, "create_engine", lambda *a, **k: pytest.fail("an engine was created for a refused run"))
+
+
+@pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
+def test_both_books_are_refused_together_before_anything_is_built(monkeypatch, capsys):
+    _nothing_is_built(monkeypatch)
+    assert run.main(["--mode", "live", "--book", "both"]) == 2
+    assert "Not started" in capsys.readouterr().err
+
+
+@pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
+def test_a_book_path_with_an_unsigned_oracle_is_refused_by_its_own_oracle(tmp_path, monkeypatch, capsys):
+    _nothing_is_built(monkeypatch)
+    root = tmp_path / "book" / "out"
+    shutil.copytree(DEFAULT_BOOK, root, ignore=shutil.ignore_patterns("documents"))
+    (tmp_path / "book" / "oracle.csv").write_text(_oracle(tmp_path, "no").read_text())
+    assert run.main(["--mode", "live", "--book", str(root), "--confirm-billable"]) == 2
+    assert "not signed by the owner" in capsys.readouterr().err
+
+
+@pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
+def test_a_missing_borrower_in_any_book_refuses_the_whole_run(monkeypatch, capsys):
+    _nothing_is_built(monkeypatch)
+    assert run.main(["--mode", "standin", "--book", "both", "--only", "dataflake"]) == 2
+    assert "not in the book" in capsys.readouterr().err
+
+
+def test_only_the_default_book_writes_latest(tmp_path):
+    assert run._stem("innovation", BOOKS["innovation"]) == "latest"
+    assert run._stem("legacy", BOOKS["legacy"]) == "latest-legacy"
+    assert run._stem(str(tmp_path / "x" / "out"), tmp_path / "x" / "out") == "latest-x"
+    results = {"meta": {"mode": "standin"}, "gate": {"passed": True, "reasons": []}}
+    (tmp_path / "latest.json").write_text("keep")
+    from unittest import mock
+
+    with mock.patch("evals.scorecard.render_markdown", return_value="md"):
+        json_path, _ = run.write_results(results, tmp_path, "latest-legacy")
+    assert json_path.name == "latest-legacy.json" and (tmp_path / "latest.json").read_text() == "keep"
+
+
 def test_a_billable_run_reads_the_oracle_of_the_book_it_runs(monkeypatch):
     seen = []
     monkeypatch.setattr(run, "unsigned_oracle_rows", lambda codes, oracle: seen.append(oracle) or [])
     check_may_start("live", ["x"], confirm_billable=True, out=io.StringIO(), oracle=oracle_for(BOOKS["legacy"]))
-    check_may_start("live", ["x"], confirm_billable=True, out=io.StringIO())
+    check_may_start("live", ["x"], confirm_billable=True, out=io.StringIO(), oracle=oracle_for(DEFAULT_BOOK))
     assert seen == [oracle_for(BOOKS["legacy"]), oracle_for(DEFAULT_BOOK)]

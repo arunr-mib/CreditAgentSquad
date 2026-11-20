@@ -17,7 +17,6 @@ REPO = Path(__file__).resolve().parents[1]
 BOOKS = {"legacy": REPO / "synthetic" / "out",
          "innovation": REPO / "synthetic" / "books" / "innovation" / "out"}
 DEFAULT_BOOK = BOOKS["innovation"]
-ORACLE = REPO / "synthetic" / "oracle.csv"  # the legacy oracle; kept for old imports
 
 
 def oracle_for(root: Path | str) -> Path:
@@ -194,7 +193,7 @@ def generate_book(out: Path | str, book: str = "legacy") -> Path:
     return Path(out)
 
 
-def unsigned_oracle_rows(codes: list[str], oracle: Path = ORACLE) -> list[dict[str, str]]:
+def unsigned_oracle_rows(codes: list[str], oracle: Path) -> list[dict[str, str]]:
     """Oracle rows for these borrowers that the owner has not signed. A borrower with no oracle
     row at all counts as unsigned: there is nothing the owner agreed to grade against."""
     with oracle.open(newline="") as handle:

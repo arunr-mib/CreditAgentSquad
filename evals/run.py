@@ -372,8 +372,8 @@ def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tam
     return client_for(Settings(squad_llm_mode=mode, squad_recordings_dir=str(recordings)))
 
 
-def check_may_start(mode: str, codes: list[str], *, allow_unsigned: bool = False, confirm_billable: bool = False,
-                    recordings: Path = RECORDINGS_DIR, out=None, oracle: Path | None = None) -> None:
+def check_may_start(mode: str, codes: list[str], *, oracle: Path, allow_unsigned: bool = False, confirm_billable: bool = False,
+                    recordings: Path = RECORDINGS_DIR, out=None) -> None:
     """Refuse a run that should not start. Raises RunRefused with the reason."""
     out = out or sys.stderr
     if mode not in MODES:
@@ -383,7 +383,7 @@ def check_may_start(mode: str, codes: list[str], *, allow_unsigned: bool = False
                          "(--mode record, billable) or use --mode standin")
     if mode in BILLABLE:
         print(COST_WARNING, file=out)
-        unsigned = unsigned_oracle_rows(codes, oracle or oracle_for(DEFAULT_BOOK))
+        unsigned = unsigned_oracle_rows(codes, oracle)
         if unsigned and not allow_unsigned:
             borrowers = sorted({r["borrower_id"] for r in unsigned})
             raise RunRefused(
@@ -536,13 +536,28 @@ def main(argv: list[str] | None = None) -> int:
                         help="stand-in only: also run the mutation checks (about one minute) and add them to the scorecard")
     args = parser.parse_args(argv)
 
-    books = ["legacy", "innovation"] if args.book == "both" else [args.book]
-    worst = 0
-    for name in books:
-        root = BOOKS.get(name, Path(name))
-        stem = "latest-legacy" if (name == "legacy" and args.book == "both") else "latest"
-        worst = max(worst, _run_one(args, root, stem))
-    return worst
+    names = ["legacy", "innovation"] if args.book == "both" else [args.book]
+    plan = []
+    try:  # preflight every book before any is built, run or billed
+        for name in names:
+            root = BOOKS.get(name, Path(name))
+            book = load_book(root, args.only or None)
+            check_may_start(args.mode, [b.code for b in book], oracle=oracle_for(root),
+                            allow_unsigned=args.allow_unsigned, confirm_billable=args.confirm_billable,
+                            recordings=Path(args.recordings))
+            plan.append((root, _stem(name, root)))
+    except (RunRefused, FileNotFoundError, KeyError) as exc:
+        print(f"Not started: {exc}", file=sys.stderr)
+        return 2
+    return max(_run_one(args, root, stem) for root, stem in plan)
+
+
+def _stem(name: str, root: Path) -> str:
+    """Only the default book writes latest.*; any other book writes latest-<book>.*."""
+    if root.resolve() == DEFAULT_BOOK.resolve():
+        return "latest"
+    label = name if name in BOOKS else (root.parent.name if root.name == "out" else root.name)
+    return f"latest-{label}"
 
 
 def _run_one(args, root: Path, stem: str) -> int:

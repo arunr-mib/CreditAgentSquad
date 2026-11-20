@@ -1,7 +1,7 @@
 """The stand-in suite over the whole book: every borrower through the live monitoring cycle,
 graded against the truth, with the gate asserted.
 
-About two minutes (each borrower at five to seven seconds each, most of it loading history).
+About two minutes (each borrower takes five to seven seconds, most of it loading history).
 Deselect with: -m "not slow".
 
 A stand-in run proves the pipeline, the workflow and the grader. It is not model performance.
