@@ -89,8 +89,15 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                           "needs_you": mine(ob.borrower_id),
                           "work_item_id": None, "_due": ob.due_date})
 
+    # A signal that has an open work item (raised from it, or attached to a chaser) is listed once, as the item.
+    raised: set[tuple[Any, str]] = set()
+    for w in db.execute(select(WorkItem).where(WorkItem.status == "open")).scalars():
+        evidence = w.evidence or {}
+        rules_raised = {evidence.get("rule_id")} | {e.get("rule_id") for e in evidence.get("signals", [])}
+        raised |= {(w.borrower_id, r) for r in rules_raised if r}
     seen_signals: set = set()
-    signals = db.execute(select(Signal).where(Signal.status == "open")).scalars().all()
+    signals = [s for s in db.execute(select(Signal).where(Signal.status == "open")).scalars()
+               if (s.borrower_id, s.rule_id) not in raised]
     signals.sort(key=lambda x: (SEVERITY_RANK.get(x.severity, 9), -x.created_at.timestamp()))
     for s in signals:
         if s.borrower_id in borrowers and s.borrower_id not in seen_signals:

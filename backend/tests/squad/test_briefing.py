@@ -254,3 +254,41 @@ def test_overdue_reports_and_signals_count_only_for_the_clients_analyst(db, worl
     assert priya["needs_you"] == 2
     assert other["needs_you"] == 0 and len(other["items"]) == 2
     assert officer["needs_you"] == 0 and len(officer["items"]) == 2
+
+
+def _signal(db, borrower, rule, severity):
+    from app.core import clock
+    from app.domain.monitoring import Signal
+    row = Signal(borrower_id=borrower.id, period_end=clock.today(db), rule_id=rule, rule_version="1",
+                 severity=severity, status="open")
+    db.add(row)
+    db.flush()
+    return row
+
+
+def test_a_signal_with_an_open_work_item_is_listed_once_as_the_work_item(db, world):
+    row = _signal(db, world["borrower"], "runway_below_watch", "high")
+    item = raise_item(db, borrower_id=world["borrower"].id, item_type="signal.high", title="Quill: runway below watch",
+                      severity="high", question="A high-severity early warning fired. Acknowledge it?", allowed_decisions=["acknowledged"],
+                      evidence={"signal_id": str(row.id), "rule_id": "runway_below_watch"})
+    items = build_briefing(db, world["analyst"])["items"]
+    assert [i["kind"] for i in items] == ["review"] and items[0]["work_item_id"] == str(item.id)
+    assert build_briefing(db, world["analyst"])["needs_you"] == 1
+
+
+def test_a_signal_attached_to_a_chaser_is_not_listed_again(db, world):
+    row = _signal(db, world["borrower"], "reporting_late", "high")
+    raise_item(db, borrower_id=world["borrower"].id, item_type="intake.missing_document", title="Chase the pack",
+               severity="medium", question="Should Squad chase the missing pack from the client?", allowed_decisions=["chased"],
+               evidence={"signals": [{"signal_id": str(row.id), "rule_id": "reporting_late"}]})
+    assert [i["kind"] for i in build_briefing(db, world["analyst"])["items"]] == ["review"]
+
+
+def test_a_different_signal_for_the_same_client_is_still_listed(db, world):
+    row = _signal(db, world["borrower"], "runway_below_watch", "high")
+    _signal(db, world["borrower"], "burn_rising", "medium")
+    raise_item(db, borrower_id=world["borrower"].id, item_type="signal.high", title="t", severity="high",
+               question="A high-severity early warning fired. Acknowledge it?", allowed_decisions=["acknowledged"],
+               evidence={"signal_id": str(row.id), "rule_id": "runway_below_watch"})
+    signals = [i for i in build_briefing(db, world["analyst"])["items"] if i["kind"] == "signal"]
+    assert [s["title"] for s in signals] == ["Signal: burn rising"]
