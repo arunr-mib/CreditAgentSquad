@@ -38,7 +38,7 @@ export function SignIn() {
       <section aria-labelledby="sign-in-title">
         <div className="flex items-center gap-2.5">
           <Mark size={24} />
-          <span className="text-title font-semibold tracking-[-0.012em] text-ink">Credit Agent Squad</span>
+          <span className="text-title font-semibold tracking-[-0.012em] text-ink">Credit Squad</span>
         </div>
         <h1 id="sign-in-title" className="mt-10 text-page font-semibold tracking-[-0.018em] text-ink">
           Sign in

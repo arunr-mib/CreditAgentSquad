@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute, createRouter, lazyRouteComponent, Navigate, redirect, useRouterState } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter, lazyRouteComponent, Navigate, useRouterState } from '@tanstack/react-router';
 import { useAuth } from '@/auth/context';
 import { Button } from '@/design';
 import { CommandCentre } from '@/screens/CommandCentre';
@@ -6,7 +6,7 @@ import { Notice } from '@/screens/parts';
 import { SignIn } from '@/screens/SignIn';
 import { WorkspaceDrawerProvider } from '@/drawer/context';
 import { CopilotConversationProvider } from '@/drawer/CopilotPanel';
-import { AppShell } from '@/shell/AppShell';
+import { SquadShell } from '@/squad/shell/SquadShell';
 import { SourceProvider } from '@/source/SourceDrawer';
 
 const str = (value: unknown): string | undefined => (typeof value === 'string' && value ? value : undefined);
@@ -47,13 +47,13 @@ function Root() {
   }
   if (atSignIn) {
     const target = str((location.search as { redirect?: unknown }).redirect);
-    return <Navigate to={target && target.startsWith('/') && !target.startsWith('//') ? target : '/command-centre'} replace />;
+    return <Navigate to={target && target.startsWith('/') && !target.startsWith('//') ? target : '/'} replace />;
   }
   return (
     <SourceProvider>
       <WorkspaceDrawerProvider>
         <CopilotConversationProvider>
-          <AppShell />
+          <SquadShell />
         </CopilotConversationProvider>
       </WorkspaceDrawerProvider>
     </SourceProvider>
@@ -65,9 +65,14 @@ const rootRoute = createRootRoute({ component: Root });
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  beforeLoad: () => {
-    throw redirect({ to: '/command-centre' });
-  },
+  component: lazyRouteComponent(() => import('@/squad/home/SquadHome'), 'SquadHome'),
+});
+
+export const clientRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/clients/$code',
+  component: lazyRouteComponent(() => import('@/squad/thread/ClientThread'), 'ClientThread'),
+  validateSearch: (search: Record<string, unknown>): { case?: string } => clean({ case: str(search.case) }),
 });
 
 const signInRoute = createRoute({
@@ -171,6 +176,7 @@ const designRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  clientRoute,
   signInRoute,
   commandCentreRoute,
   portfolioRoute,

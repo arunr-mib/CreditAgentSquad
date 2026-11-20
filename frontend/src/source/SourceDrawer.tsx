@@ -710,12 +710,15 @@ export function SourceProvider({ children }: { children: ReactNode }) {
     };
   }, [isOpen]);
 
+  // Inside the Squad experience the drawer mounts in the look's root so it follows the look; elsewhere, on the body.
+  const squadRoot = isOpen ? (document.querySelector<HTMLElement>('.sq-root') ?? undefined) : undefined;
+
   return (
     <SourceContext.Provider value={api}>
       {children}
       {/* Not modal: the page beside it stays in use, so a reader can go from figure to figure with the source alongside. */}
       <RadixDialog.Root open={isOpen} onOpenChange={(next) => (next ? undefined : close())} modal={false}>
-        <RadixDialog.Portal>
+        <RadixDialog.Portal container={squadRoot}>
           <RadixDialog.Content
             aria-describedby={undefined}
             data-source-drawer
