@@ -66,8 +66,10 @@ ROUTINE_ITEMS = frozenset({"review.commentary_approval", "package.release", "ter
 HALTING = frozenset({"intake.missing_document", "spread.image_only", "spread.does_not_foot"})
 STAGES = ("awaiting_package", "intake", "spreading", "covenant_testing", "borrowing_base", "signals",
           "review_prep", "in_review", "actions_open", "closed")
+PACK_TYPES = frozenset({"annual_financial_statements", "interim_financial_statements", "monthly_financials"})
 STAGE_OF_ITEM = {"intake": "awaiting_package", "spread": "spreading", "covenant": "covenant_testing",
-                 "terms": "covenant_testing", "bb": "borrowing_base", "signal": "signals", "review": "review_prep"}
+                 "terms": "covenant_testing", "bb": "borrowing_base", "signal": "signals", "review": "review_prep",
+                 "funding_slipped": "signals", "cash": "covenant_testing"}
 # agents the stand-in reader does not answer; the product must fall back safely for each
 STANDIN_UNANSWERED = frozenset({"covenant", "early_warning", "terms"})
 PASSING = ("compliant", "compliant_variance")
@@ -108,7 +110,7 @@ class Truth:
         self.end = borrower.current_period
         self.period = borrower.period(self.end) or {"values": {}}
         self.docs = borrower.documents(self.end)
-        self.statements = next((d for d in self.docs if "figures" in d), None)
+        self.statements = next((d for d in self.docs if d["type"] in PACK_TYPES and "figures" in d), None)
         self.cert = borrower.certificate(self.end)
         self.bb = borrower.borrowing_base(self.end)
         self.tests = {t["covenant_id"]: t for t in borrower.expected_tests(self.end)}
@@ -136,7 +138,8 @@ class Truth:
         if self.cert is not None:
             file = self._file("compliance_certificate")
             for covenant_id, entry in self.cert["reported"].items():
-                out[f"cert.{covenant_id}.value"] = (Decimal(entry["value"]), self.end.isoformat(), file)
+                if entry.get("value") is not None:  # "Not meaningful": the certificate prints text, not a figure
+                    out[f"cert.{covenant_id}.value"] = (Decimal(entry["value"]), self.end.isoformat(), file)
                 out[f"cert.{covenant_id}.threshold"] = (Decimal(entry["threshold"]), self.end.isoformat(), file)
                 out[f"cert.{covenant_id}.in_compliance"] = (
                     Decimal(1 if entry["in_compliance"] else 0), self.end.isoformat(), file)

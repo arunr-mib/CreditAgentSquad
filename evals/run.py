@@ -232,7 +232,9 @@ class LoadedBorrower:
         cycle = db.execute(select(Cycle).where(Cycle.borrower_id == row.id, Cycle.status == "open",
                                                Cycle.period_end == borrower.current_period)).scalar_one()
         seeded_facts = set(db.execute(select(Fact.id).where(Fact.borrower_id == row.id)).scalars())
-        seeded_items = set(db.execute(select(WorkItem.id).where(WorkItem.borrower_id == row.id)).scalars())
+        # funding_slipped is raised by check_funding_events at seed time; it is the product's own exception and is graded
+        seeded_items = set(db.execute(select(WorkItem.id).where(
+            WorkItem.borrower_id == row.id, WorkItem.item_type != "funding_slipped")).scalars())
 
         deciders: dict[str, Any] = {}
         stops: list[dict[str, Any]] = []
