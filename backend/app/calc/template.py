@@ -31,12 +31,13 @@ class TemplateLine:
     flow: bool = True  # True: fiscal year to date flow; False: point in time
     formula: tuple[tuple[int, str], ...] = ()  # (sign, component key) for computed lines
     section: str = ""  # conventional spread section, one of those in TEMPLATES.md
+    optional: bool = False  # outside every total; a statement need not print it, and unprinted is null, never zero
 
 
-def _line(key: str, label: str, section: str, *, sign: int = 1) -> TemplateLine:
+def _line(key: str, label: str, section: str, *, sign: int = 1, optional: bool = False) -> TemplateLine:
     statement = key.split(".", 1)[0]
     return TemplateLine(key, label, statement, presentation_sign=sign,
-                        flow=statement not in POINT_IN_TIME, section=section)
+                        flow=statement not in POINT_IN_TIME, section=section, optional=optional)
 
 
 def _total(key: str, label: str, section: str, *terms: str) -> TemplateLine:
@@ -160,6 +161,8 @@ VC_LINES: tuple[TemplateLine, ...] = (
     _line("is.vc_other_income", "Other income (expense), net", "Other Income and Expense"),
     _total("is.vc_net_loss", "Net income (loss)", "Net Profit",
            "is.vc_operating_loss", "-is.vc_interest", "is.vc_other_income"),
+    # memo, already inside the operating expense lines above: in no total
+    _line("is.vc_stock_based_compensation", "Stock-based compensation (memo)", "Memo Items", optional=True),
     # Balance sheet (point in time)
     _line("bs.cash_unrestricted", "Cash in operating accounts", "Current Assets"),
     _line("bs.cash_restricted", "Cash pledged or restricted", "Current Assets"),
@@ -208,6 +211,9 @@ VC_LINES: tuple[TemplateLine, ...] = (
     _line("saas.mrr", "Monthly recurring revenue", "SaaS Metrics"),
     _line("saas.arr", "Annual recurring revenue", "SaaS Metrics"),
     _line("saas.customers", "Customers", "SaaS Metrics"),
+    # optional metrics from the investor pack: in no total, null when the pack does not state them
+    _line("saas.net_new_arr", "Net new ARR", "SaaS Metrics", optional=True),
+    _line("saas.net_revenue_retention", "Net revenue retention", "SaaS Metrics", optional=True),
 )
 
 LINES = CI_LINES  # alias kept so existing imports of the ci-1 tuple keep working
@@ -299,6 +305,7 @@ NEVER_NEGATIVE = frozenset({
     "is.sales_marketing", "is.gna", "bs.cash_unrestricted", "bs.cash_restricted",
     "bs.capitalised_software", "bs.deferred_revenue_current", "bs.deferred_revenue_noncurrent",
     "cf.vc_capex", "cf.capitalised_software_spend", "saas.mrr", "saas.arr", "saas.customers",
+    "is.vc_stock_based_compensation", "saas.net_revenue_retention",
 })
 
 
@@ -433,6 +440,10 @@ def compute_statement(
             continue
         if not line.computed:
             if line.key in bad:
+                continue
+            if line.optional:  # not printed means unmeasured: never an error, never a zero
+                if line.key in inputs and line.key not in absent_set:
+                    result.values[line.key] = inputs[line.key]
                 continue
             if line.key in inputs and line.key not in absent_set:
                 result.values[line.key] = inputs[line.key]

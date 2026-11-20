@@ -31,4 +31,24 @@ operating, investing and financing sections. Section names are generic public ac
 | Financing Activities | cf | `cf.revolver_net`, `cf.term_debt_proceeds`, `cf.term_debt_repayments`, `cf.distributions`, `cf.other_financing`, `cf.cff` | `cf.equity_raised`, `cf.debt_raised`, `cf.vc_other_financing` |
 | Net Change in Cash | cf | `cf.net_change_in_cash` | `cf.vc_net_change_in_cash` |
 | Supplemental | sup | `sup.cash_interest_paid`, `sup.cash_taxes_paid`, `sup.scheduled_principal`, `sup.financed_capex` | `sup.cash_interest_paid`, `sup.scheduled_principal` |
-| SaaS Metrics | saas | - | `saas.mrr`, `saas.arr`, `saas.customers` |
+| Memo Items | is | - | `is.vc_stock_based_compensation` (optional memo) |
+| SaaS Metrics | saas | - | `saas.mrr`, `saas.arr`, `saas.customers`, `saas.net_new_arr` (optional), `saas.net_revenue_retention` (optional) |
+
+## Optional lines
+
+A line marked `optional` in `calc/template.py` sits outside every total, so it changes no footing.
+A statement need not print it: when it is not printed the line has no fact at all (unmeasured is
+null, never zero), and it is not an error. It is never filed as a verified zero when the reader
+lists it as absent. `vc-1` has three: `is.vc_stock_based_compensation` (a memo of the stock-based
+compensation already inside the operating expense lines), `saas.net_new_arr` and
+`saas.net_revenue_retention`.
+
+## Periods: flows are year to date
+
+Flow lines (income statement, cash flow, supplemental) are stored as fiscal year to date: a
+nine-month column is nine months of flow. Point-in-time lines (balance sheet, SaaS metrics) are
+stored at the period end. A trailing-three-month figure (`t3m`) is not stored; it is derived from
+differences of year-to-date figures at the period end and three months earlier (and across the
+fiscal year end when the window crosses it). A monthly pack must therefore state year-to-date
+columns (month columns are not converted to year to date by the spreading step), otherwise `t3m`
+measures (runway, net burn) cannot be computed and the test is "cannot be tested", never zero.

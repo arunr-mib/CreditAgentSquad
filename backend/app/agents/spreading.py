@@ -33,7 +33,6 @@ from app.guardrails.narrative import check_narrative
 from app.guardrails.quotes import dates_in, quote_on_page
 from app.guardrails.units import scale_of, units_in
 
-ENGINE_VERSION = f"template-{template.TEMPLATE_ID}"  # the engine; the borrower's template id goes in formula_version
 PART_SUFFIX = "~part"
 
 
@@ -309,7 +308,7 @@ def _sum_fact(db: Session, borrower: Borrower, key: str, parts: list[Fact]) -> F
     total = sum((p.value for p in parts), Decimal(0))
     calc = CalcRun(
         borrower_id=borrower.id, formula_key="sum_of_printed_rows", formula_version="1",
-        period_end=first.period_end, engine_version=ENGINE_VERSION,
+        period_end=first.period_end, engine_version=f"template-{borrower.template_id}",
         inputs=[{"name": p.label_text, "key": p.key, "fact_id": str(p.id), "value": str(p.value)} for p in parts],
         outputs={key: str(total)}, created_by_type="agent", created_by_id="spreading")
     db.add(calc)
@@ -431,7 +430,8 @@ def spread_document(
               allowed_decisions=["request_new_document", "key_by_hand"], required_permission="confirm_spread",
               evidence={"document_id": str(document.id), "template": tid, "lines": sorted(result.out_of_template)},
               guardrail_notes=result.notes)
-    absent = [k for k in out.absent_keys if template.in_template(k, tid) and k not in values]
+    absent = [k for k in out.absent_keys if template.in_template(k, tid) and k not in values
+              and not template.ALL_LINE_BY_KEY[k].optional]
     result.context = {**result.context, "scale": scale, "absent": sorted(absent)}
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior_fye_cash, absent=absent,
                                       template_id=tid)
@@ -520,7 +520,7 @@ def _store_computed(db, borrower, period_end, months, report, result) -> None:
     """Totals are produced by code, stored as calculated facts that name their inputs."""
     calc = CalcRun(
         borrower_id=borrower.id, formula_key="template_totals", formula_version=borrower.template_id,
-        period_end=period_end, engine_version=ENGINE_VERSION,
+        period_end=period_end, engine_version=f"template-{borrower.template_id}",
         inputs=[{"key": k, "fact_id": str(f.id), "value": str(f.value)} for k, f in sorted(result.facts.items())
                 if "@" not in k and not k.startswith(template.STATED_PREFIX)],
         outputs={k: str(v) for k, v in sorted(report.computed.items())},
@@ -542,7 +542,7 @@ def _store_absent(db, borrower, period_end, months, absent, result) -> None:
     proof = [(k, f) for k, f in sorted(result.facts.items()) if k.startswith(template.STATED_PREFIX)]
     calc = CalcRun(
         borrower_id=borrower.id, formula_key="absent_lines_verified_by_footing", formula_version=borrower.template_id,
-        period_end=period_end, engine_version=ENGINE_VERSION,
+        period_end=period_end, engine_version=f"template-{borrower.template_id}",
         inputs=[{"key": k, "fact_id": str(f.id), "value": str(f.value)} for k, f in proof],
         outputs={key: "0" for key in sorted(absent)}, created_by_type="system", created_by_id="spreading")
     db.add(calc)
@@ -576,7 +576,7 @@ def finalize_spread(db: Session, *, borrower: Borrower, document: Document | Non
             if fact is not None:
                 values[key] = fact.value
                 result.facts[key] = fact
-    still_absent = [k for k in absent if k not in values]
+    still_absent = [k for k in absent if k not in values and not template.ALL_LINE_BY_KEY[k].optional]
     prior = current_fact(db, borrower.id, template.cash_roll_keys(tid)[1],
                          prior_fiscal_year_end(period_end, borrower.fiscal_year_end_month), 0)
     report = template.check_statement(values, scale=scale, prior_fye_cash=prior.value if prior else None,

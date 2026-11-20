@@ -147,3 +147,30 @@ def test_the_spreading_stage_passes_the_prior_year_total_cash_for_a_venture_borr
     monkeypatch.setattr(stages, "_llm", lambda: None)
     stages.spreading_stage(db, cycle, type("St", (), {"detail": {}})())
     assert seen["prior_fye_cash"] == PRIOR_FYE_CASH and seen["document"].id == doc.id
+
+
+def test_the_calculation_records_the_borrowers_template_not_the_default(db, vc):
+    from app.domain.facts import CalcRun
+    _spread(db, vc, _answer())
+    runs = db.execute(select(CalcRun).where(CalcRun.borrower_id == vc.id,
+                                            CalcRun.formula_key == "template_totals")).scalars().all()
+    assert runs and {(r.formula_version, r.engine_version) for r in runs} == {("vc-1", "template-vc-1")}
+
+
+def test_an_optional_line_listed_as_absent_is_never_filed_as_a_zero(db, vc):
+    answer = _answer()
+    answer["absent_keys"] = ["saas.net_new_arr", "is.vc_stock_based_compensation", "saas.net_revenue_retention"]
+    result = _spread(db, vc, answer)
+    assert result.status == "spread", result.failed_checks
+    for key in answer["absent_keys"]:
+        assert current_fact(db, vc.id, key, PERIOD, 0 if key.startswith("saas") else 9) is None
+
+
+def test_an_optional_line_that_is_printed_is_stored_and_changes_no_total(db, vc, monkeypatch):
+    memo = ("is.vc_stock_based_compensation", "5,000")
+    monkeypatch.setitem(ROWS, 1, [*ROWS[1], memo])
+    answer = _answer()
+    result = _spread(db, vc, answer)
+    assert result.status == "spread", (result.failed_checks, result.unverified)
+    assert current_fact(db, vc.id, "is.vc_stock_based_compensation", PERIOD, 9).value == D("5000000")
+    assert current_fact(db, vc.id, "is.vc_net_loss", PERIOD, 9).value == D("-3250000")  # footing unchanged

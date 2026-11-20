@@ -176,3 +176,31 @@ def test_every_template_line_is_listed_in_the_doc():
 
 def test_section_defaults_so_existing_constructors_keep_working():
     assert TemplateLine("x.y", "Y", "is").section == ""
+
+
+# ---- optional lines outside every total ------------------------------------------------------
+
+OPTIONAL = ("is.vc_stock_based_compensation", "saas.net_new_arr", "saas.net_revenue_retention")
+
+
+def test_optional_lines_are_in_no_total():
+    lines = template_lines("vc-1")
+    by_key = {line.key: line for line in lines}
+    assert all(by_key[k].optional and not by_key[k].computed for k in OPTIONAL)
+    used = {component for line in lines if line.computed for _, component in line.formula}
+    assert not used & set(OPTIONAL)
+    assert not any(line.optional for line in template_lines("ci-1"))
+
+
+def test_an_unprinted_optional_line_is_no_error_and_no_zero():
+    result = compute_statement({"saas.mrr": D("1"), "saas.arr": D("12"), "saas.customers": D("3")},
+                               statements=["saas"], template_id="vc-1")
+    assert result.errors == [] and not set(OPTIONAL) & set(result.values)
+
+
+def test_a_printed_optional_line_is_kept_and_absent_marking_does_not_make_it_zero():
+    base = {"saas.mrr": D("1"), "saas.arr": D("12"), "saas.customers": D("3")}
+    kept = compute_statement({**base, "saas.net_revenue_retention": D("112")}, statements=["saas"], template_id="vc-1")
+    assert kept.errors == [] and kept.values["saas.net_revenue_retention"] == D("112")
+    marked = compute_statement(base, absent=["saas.net_new_arr"], statements=["saas"], template_id="vc-1")
+    assert marked.errors == [] and "saas.net_new_arr" not in marked.values
