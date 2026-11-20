@@ -127,11 +127,34 @@ _MONTHS = ("january", "february", "march", "april", "may", "june", "july", "augu
 _MONTH_YEAR = re.compile(r"^\s*([A-Za-z]{3,9})\.?\s+((?:19|20)\d{2})\s*$")
 
 
+_ANY_MONTH_YEAR = re.compile(r"\b([A-Za-z]{3,9})\.?\s+((?:19|20)\d{2})\b")
+_HEADING_LINES = 8
+_BODY_LINE = 60  # characters: a longer line is body text, where the heading has ended
+
+
+def _heading_months(head: str) -> set[tuple[int, int]]:
+    """The distinct (year, month) pairs written as "Month YYYY" in the heading lines: the first
+    non-empty lines, up to the first line that reads as body text."""
+    months: set[tuple[int, int]] = set()
+    for count, line in enumerate(x.strip() for x in head.split("\n") if x.strip()):
+        if count >= _HEADING_LINES or len(line) > _BODY_LINE:
+            break
+        for name, year in _ANY_MONTH_YEAR.findall(line):
+            month = next((i for i, full in enumerate(_MONTHS, start=1) if full.startswith(name.lower()[:3])
+                          and len(name) >= 3), None)
+            if month is not None:
+                months.add((int(year), month))
+    return months
+
+
 def _month_end(text: str, head: str) -> date | None:
     """An investor update is headed with a month ("October 2026"). The period is that month's end,
-    and only when the agent's text is on the page and is nothing but a month and a year."""
+    and only when the agent's text is on the page, is nothing but a month and a year, and is the
+    one month the heading names: a heading naming two months says nothing about which is the period."""
     match = _MONTH_YEAR.match(text)
     if match is None or not quote_on_page(head, text):
+        return None
+    if len(_heading_months(head)) != 1:
         return None
     month = next((i for i, name in enumerate(_MONTHS, start=1) if name.startswith(match.group(1).lower()[:3])
                   and len(match.group(1)) >= 3), None)

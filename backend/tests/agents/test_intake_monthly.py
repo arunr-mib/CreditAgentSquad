@@ -121,3 +121,23 @@ def test_a_month_that_is_not_printed_on_the_page_is_not_taken_as_a_period(db, wo
     llm = answer(dict(doc_type="investor_update", period_end_text="October 2026", quality="na", title_as_printed="x"))
     classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="iu3")
     assert doc.period_end is None
+
+
+def test_an_investor_update_heading_naming_two_months_is_filed_without_a_period(db, world):  # noqa: F811
+    borrower, _ = world
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=OCT, months=1)
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="iu4.pdf", data=pdf(
+        "INVESTOR UPDATE", "Harrowgate Tool & Die, Inc.", "October 2026 compared with September 2026", "Highlights"))
+    llm = answer(dict(doc_type="investor_update", period_end_text="October 2026", quality="na", title_as_printed="x"))
+    result = classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="iu5")
+    assert result.work_items == [] and doc.doc_type == "investor_update" and doc.period_end is None
+
+
+def test_the_same_month_repeated_in_the_heading_and_a_table_is_still_one_month(db, world):  # noqa: F811
+    borrower, _ = world
+    cycle = workflow.open_cycle(db, borrower_id=borrower.id, period_end=OCT, months=1)
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="iu5.pdf", data=pdf(
+        "INVESTOR UPDATE", "Harrowgate Tool & Die, Inc.", "October 2026", "Metric", "October 2026"))
+    llm = answer(dict(doc_type="investor_update", period_end_text="October 2026", quality="na", title_as_printed="x"))
+    classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="iu6")
+    assert doc.period_end == OCT
