@@ -63,6 +63,18 @@ def test_a_recent_decision_is_listed_with_who_decided_and_does_not_count(db, wor
     assert b["items"][0]["kind"] == "decided" and b["items"][0]["state"] == "reviewed by Priya Raman"
 
 
+def test_a_decision_reads_in_the_past_tense_and_a_question_by_the_option_chosen(db, world):
+    breach = _breach(db, world["borrower"])
+    workflow.decide_work_item(db, breach, user_id=world["officer"].id, user_role="credit_officer", decision="not_a_breach", reason="Cash was reclassified.")
+    ask = raise_item(db, borrower_id=world["other"].id, item_type="question", title="Which?", question="ARR or MRR?",
+                     allowed_decisions=["map_to_arr", "map_to_mrr"],
+                     evidence={"options": [{"id": "map_to_arr", "label": "Map to ARR"}, {"id": "map_to_mrr", "label": "Map to MRR"}]})
+    workflow.decide_work_item(db, ask, user_id=world["analyst"].id, user_role="analyst", decision="map_to_arr")
+    states = {i["work_item_id"]: i["state"] for i in build_briefing(db, world["analyst"])["items"]}
+    assert states[str(breach.id)] == "marked not a breach by Helen Strand"
+    assert states[str(ask.id)] == "Map to ARR \u2014 chosen by Priya Raman"
+
+
 def test_a_decision_older_than_two_days_drops_off(db, world):
     item = _review(db, world["borrower"])
     workflow.decide_work_item(db, item, user_id=world["analyst"].id, user_role="analyst", decision="reviewed")
@@ -90,6 +102,18 @@ def _facility(db, borrower):
     db.add(f)
     db.flush()
     return f
+
+
+def test_overdue_grammar_says_one_day(db, world):
+    from app.core import clock
+    from app.domain.terms import ReportingObligation
+    f = _facility(db, world["borrower"])
+    today = clock.today(db)
+    db.add(ReportingObligation(borrower_id=world["borrower"].id, facility_id=f.id, requirement_id="q",
+                               document_type="quarterly_statements", period_end=today - timedelta(days=60),
+                               due_date=today - timedelta(days=1), status="overdue"))
+    db.flush()
+    assert build_briefing(db, world["analyst"])["items"][0]["state"] == "1 day overdue"
 
 
 def test_an_overdue_report_is_listed_for_all_and_counts_only_for_deciders(db, world):

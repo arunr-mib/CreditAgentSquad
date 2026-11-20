@@ -133,3 +133,14 @@ def test_a_draft_may_only_cite_a_work_item_of_the_same_client(db, world):
     for bad in (theirs.id, uuid.uuid4()):
         with pytest.raises(ValueError):
             create_draft(db, borrower_id=world["borrower"].id, to="a@b.example", subject="s", body="b", work_item_id=bad)
+
+
+@pytest.mark.parametrize("field,value", [("to", "a" * 321), ("subject", "s" * 201), ("body", "b" * 8001), ("kind", "essay")])
+def test_the_draft_route_bounds_every_field(db, client, world, field, value):
+    db.commit()
+    sign_in(client, "priya.raman")
+    good = {"to": "cfo@quillfeather.example", "subject": "October MRR", "body": "Hi.", "kind": "reminder"}
+    url = f"/api/v1/borrowers/{world['borrower'].id}/drafts"
+    assert client.post(url, json={**good, field: value}).status_code == 422
+    assert client.post(url, json=good).status_code == 201
+    assert client.post(url, json={**good, "to": "a" * 320, "subject": "s" * 200, "body": "b" * 8000}).status_code == 201

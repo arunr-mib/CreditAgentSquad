@@ -1,8 +1,9 @@
 """Endpoints for the Squad experience. Read models and thin writes; every rule lives in the domain."""
 import uuid
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import current_user, require
@@ -59,16 +60,16 @@ def answer(item_id: uuid.UUID, body: AnswerIn, db: Session = Depends(get_db), us
 
 
 class DraftIn(BaseModel):
-    to: str
-    subject: str
-    body: str
-    kind: str = "message"
+    to: str = Field(max_length=320)
+    subject: str = Field(max_length=200)
+    body: str = Field(max_length=8000)
+    kind: Literal["message", "reminder", "demo_reminder"] = "message"
     work_item_id: uuid.UUID | None = None
 
 
 class DraftEditIn(BaseModel):
-    subject: str | None = None
-    body: str | None = None
+    subject: str | None = Field(default=None, max_length=200)
+    body: str | None = Field(default=None, max_length=8000)
 
 
 def _draft_call(db: Session, fn, *args, **kwargs) -> dict:

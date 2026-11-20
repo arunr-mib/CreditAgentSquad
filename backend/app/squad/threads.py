@@ -16,6 +16,7 @@ from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.domain.work_items import offered
 from app.squad import rules
+from app.squad.words import decision_words, question_choice
 
 RANK = {"document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4, "handoff": 5, "decision": 6}
 REPORT_TEXT_KEYS = ("narrative", "summary", "explanation")  # an agent's written output, with {{fact:…}} references
@@ -87,10 +88,9 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
     for i in items:
         if i.item_type == "question":
             options = (i.evidence or {}).get("options", [])
-            chosen = next((o for o in options if o["id"] == i.decision), None)
             messages.append({"id": f"ask:{i.id}", "type": "ask", "ts": _iso(i.created_at), "work_item_id": str(i.id),
                              "title": i.title, "question": i.question, "options": options, "status": i.status,
-                             "choice": chosen["label"] if chosen else None,
+                             "choice": question_choice(i.evidence, i.decision),
                              "chosen_by": names.get(str(i.decided_by)) if i.decided_by else None})
         else:
             messages.append({"id": f"case:{i.id}", "type": "case", "ts": _iso(i.created_at), "work_item_id": str(i.id),
@@ -106,7 +106,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
             continue
         p = e.payload or {}
         messages.append({"id": f"decision:{e.seq}", "type": "decision", "ts": _iso(e.ts), "work_item_id": e.entity_id,
-                         "decision": p.get("decision"), "reason": p.get("reason", ""),
+                         "decision": p.get("decision"), "decision_words": decision_words(p.get("decision")), "reason": p.get("reason", ""),
                          "by": names.get(e.actor_id, e.actor_id), "by_id": e.actor_id})
     for e in _events(db, "work_item.assigned", item_ids):
         to = (e.payload or {}).get("assigned_to")

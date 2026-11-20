@@ -17,6 +17,7 @@ from app.domain.terms import ReportingObligation
 from app.publishing.content import SIGNAL_LABELS
 from app.squad import rules
 from app.squad.threads import REPORT_TEXT_KEYS
+from app.squad.words import decision_words, question_choice
 
 BREACH_TYPES = frozenset({"covenant.breach", "covenant.reported_breach_unconfirmed", "bb.over_advance"})
 KIND_RANK = {"breach": 0, "overdue_report": 1, "signal": 2, "question": 3, "review": 4, "funding": 5, "decided": 6}
@@ -26,8 +27,13 @@ FUNDING_WINDOW_DAYS = 14
 OVERNIGHT_LIMIT = 8
 
 
-def _words(decision: str | None) -> str:
-    return (decision or "decided").replace("_", " ")
+def _decided_state(w: WorkItem, who: str) -> str:
+    choice = question_choice(w.evidence, w.decision) if w.item_type == "question" else None
+    return f"{choice} \u2014 chosen by {who}" if choice else f"{decision_words(w.decision)} by {who}"
+
+
+def _days(n: int) -> str:
+    return f"{n} day overdue" if n == 1 else f"{n} days overdue"
 
 
 def build_briefing(db: Session, user: User) -> dict[str, Any]:
@@ -71,7 +77,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                               "needs_you": False, "_due": w.due_date})
         else:
             items.append({**base, "key": f"item:{w.id}", "kind": "decided",
-                          "state": f"{_words(w.decision)} by {names.get(w.decided_by, 'a colleague')}",
+                          "state": _decided_state(w, names.get(w.decided_by, "a colleague")),
                           "needs_you": False, "_due": None})
 
     for ob in db.execute(select(ReportingObligation).where(ReportingObligation.status == "overdue")).scalars():
@@ -79,7 +85,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
             days = (today - ob.due_date).days
             items.append({**ref(ob.borrower_id), "key": f"overdue:{ob.id}", "kind": "overdue_report",
                           "title": f"{ob.document_type.replace('_', ' ').capitalize()} for {ob.period_end:%B %Y} is overdue",
-                          "state": f"{days} days overdue", "severity": "medium",
+                          "state": _days(days), "severity": "medium",
                           "needs_you": mine(ob.borrower_id),
                           "work_item_id": None, "_due": ob.due_date})
 

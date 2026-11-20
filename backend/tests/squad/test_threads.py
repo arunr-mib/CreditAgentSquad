@@ -135,3 +135,10 @@ def test_the_thread_route_sends_needs_you_for_the_signed_in_viewer(db, client, w
     assert [m["needs_you"] for m in client.get(url).json()["messages"] if m["type"] == "case"] == [True]
     sign_in(client, "priya.raman")
     assert [m["needs_you"] for m in client.get(url).json()["messages"] if m["type"] == "case"] == [False]
+
+
+def test_a_decision_message_carries_the_shared_past_tense_words(db, world):
+    item = _breach(db, world["borrower"])
+    workflow.decide_work_item(db, item, user_id=world["officer"].id, user_role="credit_officer", decision="not_a_breach", reason="Cash was reclassified.")
+    decision = next(m for m in build_thread(db, world["borrower"].id)["messages"] if m["type"] == "decision")
+    assert decision["decision"] == "not_a_breach" and decision["decision_words"] == "marked not a breach"
