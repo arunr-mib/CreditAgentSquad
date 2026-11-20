@@ -3593,7 +3593,7 @@ uv run pytest synthetic/tests -v
 uv run ruff check .
 ```
 
-Expected: `20 borrowers, 301 documents, 854 pages written to synthetic/books/innovation/out in ~4s`; `git status` shows nothing under `synthetic/out` or `synthetic/oracle.csv` (the v1 book is untouched); the whole synthetic suite passes (about 127 tests, including every legacy test); ruff clean. Open `synthetic/books/innovation/oracle.csv`: 16 rows `yes` (the kept four), 62 rows `no`.
+Expected: `20 borrowers, 301 documents, 854 pages written to synthetic/books/innovation/out in ~4s`; `git status` shows nothing under `synthetic/out` or `synthetic/oracle.csv` (the v1 book is untouched); the whole synthetic suite passes (about 127 tests, including every legacy test); ruff clean. Open `synthetic/books/innovation/oracle.csv`: 16 rows `yes` (the kept four), 63 rows `no` (62 plus Ferrogate's DSCR test).
 
 - [ ] **Step 5: Commit**
 
@@ -4447,7 +4447,7 @@ In the comment on line 4 replace `python -m synthetic.generate && python -m app.
 Directly under the "Where things stand" heading add:
 
 ```markdown
-**Phase 2 (v2 innovation book, 20 November 2026):** `synthetic/books/innovation/` holds the 20-borrower book (16 venture-backed clients on a monthly cadence plus the four kept C&I borrowers, byte-identical to v1). The v1 generator and `synthetic/out/` are frozen and pinned by digest. The answer key `synthetic/books/innovation/oracle.csv` has 62 rows waiting for the owner's signature. `python -m app.seed_book` now loads the innovation book by default (`--book legacy` for v1). Expected values are computed independently of `app/calc`; `backend/tests/calc/test_synthetic_innovation_truth.py` runs the book through the engine. The stand-in reader for the new document types, recordings and the live run are Phase 3; the Tidewell reconciliation exception is pending until then.
+**Phase 2 (v2 innovation book, 20 November 2026):** `synthetic/books/innovation/` holds the 20-borrower book (16 venture-backed clients on a monthly cadence plus the four kept C&I borrowers, byte-identical to v1). The v1 generator and `synthetic/out/` are frozen and pinned by digest. The answer key `synthetic/books/innovation/oracle.csv` has 63 rows waiting for the owner's signature. `python -m app.seed_book` now loads the innovation book by default (`--book legacy` for v1). Expected values are computed independently of `app/calc`; `backend/tests/calc/test_synthetic_innovation_truth.py` runs the book through the engine. The stand-in reader for the new document types, recordings and the live run are Phase 3; the Tidewell reconciliation exception is pending until then.
 ```
 
 - [ ] **Step 6: Whole-suite check**
