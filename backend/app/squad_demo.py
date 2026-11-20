@@ -23,7 +23,12 @@ def seed_squad_demo(db: Session) -> dict:
     names = db.execute(select(Borrower).order_by(Borrower.name)).scalars().all()
     if len(names) < 2:
         raise RuntimeError("seed the book first: Squad's demonstration needs two clients")
-    asked, reminded = names[0], names[1]
+    # On the innovation book the line-mapping question belongs to Stripple (its October package
+    # carries the new line) and the reminder to Lumora (its October package is late); on any other
+    # book the first two clients by name stand in.
+    by_code = {b.code: b for b in names}
+    asked = by_code.get("stripple-tech", names[0])
+    reminded = by_code.get("lumora-health") or next(b for b in names if b.id != asked.id)
     existing = db.execute(select(WorkItem).where(WorkItem.borrower_id == asked.id, WorkItem.item_type == "question",
                                                  WorkItem.evidence["dedupe_key"].astext == DEMO_KEY)).scalars().first()
     item = existing or raise_question(
