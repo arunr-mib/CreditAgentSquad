@@ -62,15 +62,10 @@ function Root() {
 
 const rootRoute = createRootRoute({ component: Root });
 
-/** Replaced by SquadHome in Task 10. */
-function SquadHomeRoute() {
-  return <h1>Squad</h1>;
-}
-
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: SquadHomeRoute,
+  component: lazyRouteComponent(() => import('@/squad/home/SquadHome'), 'SquadHome'),
 });
 
 export const clientRoute = createRoute({

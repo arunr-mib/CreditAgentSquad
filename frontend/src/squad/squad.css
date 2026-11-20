@@ -57,3 +57,14 @@
 .sq-stage { flex: 1; min-width: 0; }
 .sq-main { max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }
 .sq-product { margin: 4px 8px 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--sq-ink); }
+.sq-h1 { font-size: 26px; font-weight: 650; margin: 8px 0 2px; }
+.sq-h2 { font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--sq-ink2); margin: 26px 0 8px; }
+.sq-lede { font-size: 17px; color: var(--sq-ink2); margin: 0 0 14px; }
+.sq-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.sq-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: var(--sq-surface); border: 1px solid var(--sq-line); color: var(--sq-ink); text-decoration: none; }
+.sq-row:hover { border-color: var(--sq-ink3); }
+.sq-row:focus-visible { outline: 2px solid var(--sq-squad); outline-offset: 2px; }
+.sq-dotmark { width: 10px; height: 10px; border-radius: 50%; background: var(--sq-ink3); flex-shrink: 0; }
+.sq-sev-critical, .sq-sev-high { background: var(--sq-ember); }
+.sq-state { font-size: 13px; color: var(--sq-ink2); white-space: nowrap; }
+.sq-state-needs { color: var(--sq-ink); font-weight: 600; }
