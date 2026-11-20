@@ -122,16 +122,19 @@ _LONG_DATE = re.compile(r"\b([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(
 _SLASH_DATE = re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{4})\b")
 _MONTH_DAY = re.compile(r"\b([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b")
 _YEAR_TOKEN = re.compile(r"(?<![\d,.$])\b((?:19|20)\d{2})\b(?![\d,.%])")
+_WORD_MONTHS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
+                "nine": 9, "ten": 10, "eleven": 11, "twelve": 12}
+_NUMBER_WORDS = "|".join(_WORD_MONTHS)
 _DURATION = re.compile(
-    r"\b(three|six|nine|twelve|3|6|9|12)[\s-]+months?(?:\s+period)?\s+end(?:ed|ing)\b"
-    r"|\b(quarter|year)s?\s+end(?:ed|ing)\b", re.I)
-_DURATION_MONTHS = {"three": 3, "3": 3, "six": 6, "6": 6, "nine": 9, "9": 9, "twelve": 12, "12": 12,
-                    "quarter": 3, "year": 12}
+    r"\b(" + _NUMBER_WORDS + r"|\d{1,2})[\s-]+months?(?:\s+period)?\s+end(?:ed|ing)\b"
+    r"|\b(quarter|year)s?\s+end(?:ed|ing)\b"
+    r"|\b(?:the\s+)?(month)\s+(?:end(?:ed|ing)\b|of\b)", re.I)
+_DURATION_MONTHS = {**_WORD_MONTHS, **{str(n): n for n in range(1, 13)}, "quarter": 3, "year": 12, "month": 1}
 # words a column header may carry besides its date and still be the period's own column
 _HEADER_WORDS = re.compile(
     r"\b(?:un)?audited\b|\bactual\b|\bas\s+of\b|\bat\b|\bfor\s+the\b|\bperiod\b|\bended\b|\bending\b|"
     r"\byear[\s-]to[\s-]date\b|\bytd\b|\bfiscal\b|\byears?\b|\bquarters?\b|\bmonths?\b|\bthe\b|[(),.:$]|"
-    r"\bin\s+thousands\b|\b(?:three|six|nine|twelve)\b", re.I)
+    r"\bin\s+thousands\b|\b(?:" + _NUMBER_WORDS + r")\b", re.I)
 _ALIGN = 3.0       # points: right edges this close are one column
 _INDENT = 40.0     # points: a row starting this close to the label margin is a label row, not a header
 _RUN_GAP = 12.0    # points: a wider gap between words starts a new header phrase
@@ -162,7 +165,8 @@ def dates_in(text: str) -> list[date]:
 
 def durations_in(text: str) -> set[int]:
     """Lengths of period the text states, in months ("nine months ended", "year ended")."""
-    return {_DURATION_MONTHS[(a or b).lower()] for a, b in _DURATION.findall(text)}
+    return {_DURATION_MONTHS[(a or b or c).lower()] for a, b, c in _DURATION.findall(text)
+            if (a or b or c).lower() in _DURATION_MONTHS}
 
 
 def _box(word: Word) -> Box:

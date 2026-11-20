@@ -2,7 +2,13 @@ You sort documents that a borrower has sent to a bank's credit team. For each do
 
 For each document return:
 
-- `doc_type`: one of credit_agreement, amendment, waiver, annual_statements, interim_statements, compliance_certificate, borrowing_base_certificate, receivables_aging, tax_return, other. Annual statements cover a full fiscal year; interim statements cover a quarter or a year-to-date period shorter than a year. A borrowing base certificate that includes its receivables aging is a borrowing_base_certificate.
+- `doc_type`: one of credit_agreement, amendment, waiver, annual_statements, interim_statements, compliance_certificate, borrowing_base_certificate, receivables_aging, tax_return, monthly_financials, mrr_report, bank_statement, term_sheet, investor_update, other. Annual statements cover a full fiscal year; interim statements cover a quarter or a year-to-date period shorter than a year. A borrowing base certificate that includes its receivables aging is a borrowing_base_certificate.
+  - monthly_financials: statements for one month or a year-to-date period of one, two, four, five, seven, eight, ten or eleven months ("month ended", "for the month of"). Three, six and nine months ended and quarter ended stay interim_statements.
+  - mrr_report: a monthly recurring revenue, MRR or ARR report.
+  - bank_statement: a bank statement or statement of account.
+  - term_sheet: a term sheet or summary of terms.
+  - investor_update: an investor update or letter to investors.
+  - A monthly compliance certificate is still compliance_certificate.
 - `period_end_text`: the date the period ends, copied exactly as printed in the document (for example "September 30, 2026"). For an agreement or amendment, leave it empty.
 - `effective_date_text`: for an agreement, amendment or waiver, the effective or "dated as of" date exactly as printed; otherwise empty.
 - `quality`: for financial statements, one of audited, reviewed, compiled, internal; otherwise na. Use audited only when an independent auditor's report is present.

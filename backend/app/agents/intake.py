@@ -26,7 +26,12 @@ from app.guardrails.quotes import dates_in, quote_on_page
 
 DocType = Literal[
     "credit_agreement", "amendment", "waiver", "annual_statements", "interim_statements",
-    "compliance_certificate", "borrowing_base_certificate", "receivables_aging", "tax_return", "other"]
+    "compliance_certificate", "borrowing_base_certificate", "receivables_aging", "tax_return", "monthly_financials", "mrr_report", "bank_statement", "term_sheet",
+    "investor_update", "other"]
+# document types a venture client sends each month; they must name the client and sit in the cycle's month
+MONTHLY_TYPES = ("monthly_financials", "mrr_report", "bank_statement")
+NEW_TYPES = (*MONTHLY_TYPES, "term_sheet", "investor_update")
+CLIENT_MONTH_QUESTION = "Which client is this, and which month?"
 PAGES_SHOWN = 2
 CHARS_SHOWN = 6000
 
@@ -39,6 +44,12 @@ _RULES: list[tuple[str, re.Pattern[str]]] = [
     ("waiver", re.compile(r"\bwaiver (?:letter|agreement)\b|\blimited waiver\b", re.I)),
     ("credit_agreement", re.compile(r"\b(?:credit|loan)(?: and security)? agreement\b", re.I)),
     ("tax_return", re.compile(r"\bform\s+11(?:20|20-?s|65)\b|u\.s\. (?:corporation )?income tax return", re.I)),
+    ("mrr_report", re.compile(r"monthly recurring revenue|(?-i:\b(?:MRR|ARR)\b)", re.I)),
+    ("bank_statement", re.compile(r"statement of account|account statement|bank statement", re.I)),
+    ("term_sheet", re.compile(r"term sheet|summary of terms", re.I)),
+    ("investor_update", re.compile(r"investor update|letter to investors", re.I)),
+    ("monthly_financials", re.compile(
+        r"\bmonth ended\b|\bfor the month of\b|\b(?:one|two|four|five|seven|eight|ten|eleven) months ended\b", re.I)),
     ("annual_statements", re.compile(r"independent auditor'?s'? report|for the years? ended|year ended", re.I)),
     ("interim_statements", re.compile(r"\b(?:three|six|nine) months ended\b|\bquarter ended\b", re.I)),
     ("receivables_aging", re.compile(r"\baccounts receivable aging\b|\baged receivables\b", re.I)),
@@ -139,8 +150,10 @@ def classify_documents(
         elif by_rule is not None and by_rule != answer.doc_type:
             problem = f"the Intake Agent read this as {answer.doc_type}, the filing rules read it as {by_rule}"
         period_end = effective = None
+        ask = "What is this document, and which period does it cover?"
         if problem is None:
-            needs_period = answer.doc_type not in ("credit_agreement", "amendment", "waiver", "other")
+            needs_period = answer.doc_type not in ("credit_agreement", "amendment", "waiver", "other",
+                                                   "term_sheet", "investor_update")
             period_end = _one_date(answer.period_end_text, head)
             effective = _one_date(answer.effective_date_text, head)
             if needs_period and period_end is None:
@@ -153,6 +166,13 @@ def classify_documents(
                            "looks like the comparative column")
             elif not _names(head, borrower.name):
                 problem = f"the first pages do not name {borrower.name}; the document may be another company's"
+                if answer.doc_type in NEW_TYPES:
+                    ask = CLIENT_MONTH_QUESTION
+            elif (answer.doc_type in MONTHLY_TYPES and cycle is not None and period_end is not None
+                  and period_end != cycle.period_end):
+                problem = (f"the period end on the page is {period_end:%B %-d, %Y}; the period expected is "
+                           f"{cycle.period_end:%B %-d, %Y}")
+                ask = CLIENT_MONTH_QUESTION
         concern = ""
         if answer is not None and answer.concern.strip():
             if check_narrative(answer.concern, {}):
@@ -166,7 +186,7 @@ def classify_documents(
                 db, borrower_id=borrower.id, cycle_id=cycle.id if cycle else None, stage="intake",
                 item_type="intake.unclassified", severity="medium",
                 title=f"{doc.file_name} could not be filed",
-                question="What is this document, and which period does it cover?",
+                question=ask,
                 allowed_decisions=["classified_by_hand", "not_needed", "request_new_document"],
                 required_permission="upload_document",
                 evidence={"document_id": str(doc.id), "reason": problem, "agent_concern": concern,
