@@ -322,17 +322,28 @@ def routed_by(db: Session, item: WorkItem) -> set[str]:
     """Everyone who has sent this item for a decision with their view. The ledger is the record."""
     from app.core.ledger import LedgerEvent
 
-    return set(db.execute(select(LedgerEvent.actor_id).where(
+    return {str(a).lower() for a in db.execute(select(LedgerEvent.actor_id).where(
         LedgerEvent.entity_type == "work_item", LedgerEvent.entity_id == str(item.id),
-        LedgerEvent.action == ROUTED)).scalars())
+        LedgerEvent.action == ROUTED)).scalars()}
+
+
+def latest_hand_off(db: Session, item: WorkItem):
+    """The latest routed-or-returned ledger event of this item (by sequence), or None if it was never routed."""
+    from app.core.ledger import LedgerEvent
+
+    return db.execute(select(LedgerEvent).where(
+        LedgerEvent.entity_type == "work_item", LedgerEvent.entity_id == str(item.id),
+        LedgerEvent.action.in_((ROUTED, RETURNED))).order_by(LedgerEvent.seq.desc()).limit(1)).scalar_one_or_none()
 
 
 def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, decision: str | None = None,
-                     reason: str | None = None) -> Exception | None:
+                     reason: str | None = None, receiving: bool = False) -> Exception | None:
     """The engine's one answer to "may this person decide this item, and take this decision?". None means yes;
     otherwise the exception `decide_work_item` raises, checked in the order it always has been. Squad's read models
     call this to say what a person may do, so a screen and the engine cannot disagree. Pass `decision` to include the
-    decision's own rules, and `reason` (even "") to include the reason rule."""
+    decision's own rules, and `reason` (even "") to include the reason rule. Once an item has been routed it also
+    refuses a case sitting returned (it can be decided after it is routed again) and anyone but the person it is
+    with (`receiving=True` skips these two: it asks whether a person could be sent the case). An unknown required permission is a rule refusal (ValueError, 422), as it was before this predicate."""
     from app.core.roles import Permission, SecondPersonRequired, can, require_second_person
 
     if item.status != "open":
@@ -343,7 +354,7 @@ def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, de
     try:
         needed = Permission(item.required_permission)
     except ValueError:
-        return PermissionError(f"no role can decide this item ({item.required_permission})")
+        return ValueError(f"no role can decide this item ({item.required_permission})")
     if not can(user_role, needed):
         return PermissionError(f"your role cannot decide this item ({item.required_permission})")
     extra = DECISION_PERMISSIONS.get((item.item_type, decision)) if decision is not None else None
@@ -356,8 +367,18 @@ def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, de
             require_second_person(item.prepared_by_id, user_id)
         except SecondPersonRequired as exc:
             return exc
-    if str(user_id) in routed_by(db, item):
+    if str(user_id).lower() in {str(r).lower() for r in routed_by(db, item)}:
         return SecondPersonRequired("You sent this case for a decision with your view; a second person must decide it.")
+    last = None if receiving else latest_hand_off(db, item)
+    if last is not None:
+        from app.domain.org import User
+
+        holder = db.get(User, item.assigned_to) if item.assigned_to else None
+        if last.action == RETURNED and str((last.payload or {}).get("returned_to")) == str(item.assigned_to):
+            return ValueError(f"This case was returned to {holder.name if holder else 'the analyst'}; it can be "
+                              "decided once it is sent again.")
+        if item.assigned_to is not None and str(item.assigned_to) != str(user_id):
+            return ValueError(f"This case was sent to {holder.name if holder else 'someone else'}; only they can decide it.")
     return None
 
 

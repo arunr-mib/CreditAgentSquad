@@ -39,6 +39,7 @@ def _days(n: int) -> str:
 
 def build_briefing(db: Session, user: User) -> dict[str, Any]:
     today = clock.today(db)
+    offered = approves(user.role)
     borrowers = {b.id: b for b in db.execute(select(Borrower)).scalars()}
     names = {u.id: u.name for u in db.execute(select(User)).scalars()}
     can_decide = can(user.role, Permission.DECIDE_WORK_ITEM)
@@ -146,4 +147,4 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
             c["open"] += 1
     return {"as_of": today.isoformat(), "needs_you": sum(1 for i in items if i["needs_you"]), "items": items,
             "overnight": overnight, "open_clients": sorted(open_clients.values(), key=lambda c: c["name"]),
-            "approvals": {"offered": approves(user.role), "waiting": len(build_approvals(db, user))}}
+            "approvals": {"offered": offered, "waiting": len(build_approvals(db, user)) if offered else 0}}

@@ -28,7 +28,8 @@ def _require_open(item: WorkItem) -> None:
 
 
 def may_receive(db: Session, person: User, item: WorkItem) -> bool:
-    return bool(person.is_active) and decision_refusal(db, item, user_id=person.id, user_role=person.role) is None
+    return bool(person.is_active) and decision_refusal(db, item, user_id=person.id, user_role=person.role,
+                                                                    receiving=True) is None
 
 
 def latest_route(db: Session, item: WorkItem) -> LedgerEvent | None:
@@ -56,13 +57,16 @@ def route_work_item(db: Session, item: WorkItem, *, user: User, to_user_id: uuid
     if not may_receive(db, to, item):
         raise ValueError(f"{to.name} cannot decide this case; it needs {item.required_permission}.")
     previous = item.assigned_to
+    earlier = {"previous_prepared_by_id": item.prepared_by_id,
+               "previous_requires_second_person": bool(item.requires_second_person)}
     item.assigned_to = to.id
     if item.prepared_by_id is None:
         item.prepared_by_id = str(user.id)
     item.requires_second_person = True
     ledger.record(db, actor_type="user", actor_id=user.id, action=ROUTED, entity_type="work_item",
                   entity_id=item.id, payload={"borrower_id": item.borrower_id, "assigned_to": to.id,
-                                              "previous_assigned_to": previous, "view": view})
+                                              "previous_assigned_to": previous, "view": view,
+                                              **earlier})
     db.flush()
     return item
 

@@ -370,6 +370,9 @@ def assign_work_item(item_id: uuid.UUID, body: AssignIn, db: Session = Depends(g
         raise HTTPException(404, "Work item not found.")
     if item.status != "open":
         raise HTTPException(422, "This item has already been decided.")
+    if workflow.latest_hand_off(db, item) is not None and item.assigned_to != user.id:
+        raise HTTPException(409, "This case was sent for a decision and is with someone else; use Return or Route "
+                                 "in its thread instead of assigning it.")
     if body.assigned_to is not None:
         assignee = db.get(User, body.assigned_to)
         if assignee is None or not assignee.is_active:

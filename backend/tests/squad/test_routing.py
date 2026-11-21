@@ -194,3 +194,104 @@ def test_return_api_needs_the_person_the_case_is_with(db, client, world):
     db.commit()
     sign_in(client, "priya.raman")
     assert client.post(f"/api/v1/work-items/{item.id}/return", json={"reason": "x"}).status_code == 403
+
+
+# ---- fix round 1 ----
+
+def test_a_returned_case_cannot_be_decided_until_it_is_routed_again(db, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    return_work_item(db, item, user=world["officer"], reason="Attach the signed term sheet first.")
+    refuse = workflow.decision_refusal
+    why = refuse(db, item, user_id=world["officer"].id, user_role="credit_officer", decision="no_action")
+    assert isinstance(why, ValueError) and "returned" in str(why)
+    assert [d["permitted"] for d in build_case(db, item, world["officer"])["decisions"]] == [False, False]
+    with pytest.raises(ValueError, match="returned"):
+        workflow.decide_work_item(db, item, user_id=world["officer"].id, user_role="credit_officer", decision="no_action")
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view="Attached.")
+    assert refuse(db, item, user_id=world["officer"].id, user_role="credit_officer", decision="no_action") is None
+
+
+def test_only_the_person_a_case_was_routed_to_may_decide_it(db, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    dana = _user(db, "dana.whitfield")  # holds the permission, but the case is with Helen
+    why = workflow.decision_refusal(db, item, user_id=dana.id, user_role=dana.role, decision="no_action")
+    assert isinstance(why, ValueError) and "Helen Strand" in str(why)
+    assert [d["permitted"] for d in build_case(db, item, dana)["decisions"]] == [False, False]
+
+
+def test_decide_api_refuses_a_returned_case_and_a_case_with_someone_else(db, client, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    db.commit()
+    sign_in(client, "dana.whitfield")
+    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 422
+    return_work_item(db, item, user=world["officer"], reason="Attach the signed term sheet first.")
+    db.commit()
+    sign_in(client, "helen.strand")
+    r = client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"})
+    assert r.status_code == 422 and "returned" in r.json()["detail"]
+
+
+def test_the_router_is_still_refused_after_a_re_route_and_a_second_router_cannot_route_it_back(db, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    tomas = _user(db, "tomas.keller")
+    route_work_item(db, item, user=world["analyst"], to_user_id=tomas.id, view=VIEW)
+    route_work_item(db, item, user=tomas, to_user_id=world["officer"].id, view="Agreed.")
+    for who in (world["analyst"], tomas):
+        assert isinstance(workflow.decision_refusal(db, item, user_id=who.id, user_role=who.role, decision="no_action"),
+                          SecondPersonRequired)
+    with pytest.raises(ValueError, match="with someone else"):
+        route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    return_work_item(db, item, user=world["officer"], reason="Not yet.")
+    route_work_item(db, item, user=tomas, to_user_id=world["officer"].id, view="Again.")
+    assert isinstance(workflow.decision_refusal(db, item, user_id=world["analyst"].id, user_role="analyst",
+                                                decision="no_action"), SecondPersonRequired)
+
+
+def test_the_router_check_ignores_the_case_of_an_id(db, world, monkeypatch):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    item.prepared_by_id = "terms-agent-run"  # so only the router check can refuse her
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    item.assigned_to = world["analyst"].id
+    monkeypatch.setattr(workflow, "routed_by", lambda _db, _item: {str(world["analyst"].id).upper()})
+    assert isinstance(workflow.decision_refusal(db, item, user_id=world["analyst"].id, user_role="analyst"),
+                      SecondPersonRequired)
+
+
+def test_the_route_event_records_what_it_changed(db, world):
+    from app.core.ledger import LedgerEvent
+    from sqlalchemy import select
+    item = _case(db, world["borrower"])
+    item.prepared_by_id = "terms-agent-run"
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    p = db.execute(select(LedgerEvent).where(LedgerEvent.action == "work_item.routed",
+                                             LedgerEvent.entity_id == str(item.id))).scalar_one().payload
+    assert p["previous_prepared_by_id"] == "terms-agent-run" and p["previous_requires_second_person"] is False
+
+
+def test_an_unknown_required_permission_is_a_rule_refusal_422(db, client, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    item.required_permission = "no_such_permission"
+    db.commit()
+    sign_in(client, "helen.strand")
+    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 422
+
+
+def test_assign_refuses_a_routed_case_unless_the_caller_holds_it(db, client, world):
+    item = _case(db, world["borrower"])
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    db.commit()
+    sign_in(client, "priya.raman")
+    r = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": None})
+    assert r.status_code == 409 and "Return" in r.json()["detail"]
+    sign_in(client, "helen.strand")
+    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": None}).status_code == 200
+
+
+def test_waiting_is_zero_when_approvals_is_not_offered(db, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    tomas = _user(db, "tomas.keller")
+    route_work_item(db, item, user=world["analyst"], to_user_id=tomas.id, view=VIEW)
+    assert build_briefing(db, tomas)["approvals"] == {"offered": False, "waiting": 0}
