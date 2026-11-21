@@ -112,4 +112,4 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 5. **Plain-words name for bank statements:** default "Bank account statement".
 6. **"Squad gathers what was asked" on a return:** default: code lists the client's documents not yet attached and a person attaches one (or drafts a request to the client); Squad attaches nothing by itself.
 7. **My Portfolio order:** default: lowest runway/headroom first, then clients with no measurement (for example a late package), then cash-flow-positive clients last — a client we know least about should not sit at the bottom.
-   - **Owner, 21 Nov:** keep the review room. Task 5 moves it into Squad's look instead of deleting it. Packages: explained, decision pending (default stays: no Squad screen; the engine keeps generating and releasing them).
+   - **Owner, 21 Nov:** keep the review room. Task 5 moves it into Squad's look instead of deleting it. Packages: keep too (owner "yes Keep packages") — Task 5 adds a Packages view in the client file and release for the portfolio manager. Calendar is deleted.
