@@ -102,3 +102,11 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 
 - Measured spend 8.31 US dollars (from recorded token counts; the estimate was mid 12.65). Gate passed on the live record scorecards; the replay of the recordings does not pass because fact ids differ per run (a product and harness fix, not a model result). Details: `docs/HANDOFF.md`, `docs/lessons/a-recorded-model-run-cannot-replay-agents-that-cite-fact-ids.md`.
 - **Re-record (21 Nov, after the Phase 3 fix waves):** approved — Covenant, Review and Early Warning agents on Opus 5.5 for both books, cap **$5** (estimate $1.50–$3.50), to start only after the full test run passes.
+
+## Phase 4b (21 Nov) — I chose a default for each so work continues; tell me to change any
+
+1. **Packages, review room, calendar** are not in the Squad spec. Default: Task 5 deletes them (v1 keeps them at commit 2292b38). Keep any?
+2. **Agents reading figures from spreadsheets** is out of 4b. Which phase should own it? Default: after Phase 5.
+3. **Kestrel Bay wrong-abstain and Pellham wording** need a small billable re-record to prove fixed. Default: none in 4b; I will bring an estimate later.
+4. **"Needs you" no longer counts signals** (a signal needing a decision already raises a work item). Default: accepted.
+5. **Plain-words name for bank statements:** default "Bank account statement".
