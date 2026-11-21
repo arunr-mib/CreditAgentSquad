@@ -1,9 +1,156 @@
 {
  "_basis": "full",
+ "_ids": {
+  "03b5274b-ce22-44dc-a909-68cd4fb0797c": {
+   "document": null,
+   "key": "cov.min_runway_months.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "12.2"
+  },
+  "2261870b-4c6e-44ea-8d02-6cc05227247b": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.1452"
+  },
+  "280c13b7-6522-4119-b93d-1e3eb5f07968": {
+   "document": null,
+   "key": "metric.rml",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "15.6914"
+  },
+  "4e6971f5-1058-4866-a2e0-af324ac4d0dc": {
+   "document": null,
+   "key": "metric.rml",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-07-31",
+   "type": "fact",
+   "value": "17.30882"
+  },
+  "84c4f495-3f8f-41e3-8ec6-f65b13b2e7ff": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.9912"
+  },
+  "988eb01a-2ade-4939-b5a5-ae4ec33ab4dc": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.0333"
+  },
+  "9cb8edab-f0ed-47d3-a593-3052389e5299": {
+   "document": null,
+   "key": "metric.rml",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "12.222222"
+  },
+  "9e7601bb-0498-468a-bf82-c27e0f0ca1ac": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.6167"
+  },
+  "a3016cc7-c315-47bb-bba2-6eae70f903b9": {
+   "document": null,
+   "key": "cov.min_runway_months.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6"
+  },
+  "c2893b24-aaa2-48eb-b939-7efd5860a9b2": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "3000000"
+  },
+  "c5be1736-2939-4482-821e-c6270bf7eb00": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.3"
+  },
+  "d743013d-09b0-4c4a-ac7d-0103574bf33d": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8333"
+  },
+  "dc42ac78-e25d-4f53-804a-a9960350ff98": {
+   "document": null,
+   "key": "metric.rml",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "13.828206"
+  },
+  "f294dc87-0da8-4b48-a408-60e6282f193e": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5500000"
+  }
+ },
  "_spec": "early_warning@1:38b46a6cfb2c",
  "content": [
   {
-   "text": "{\"explanations\":[{\"signal_id\":\"3c464494-50b8-4743-b9f0-4d955b05706b\",\"explanation\":\"Runway has shortened every month, from {{fact:e808f329-9ed2-4660-864e-85468337786f}} months at July end through {{fact:7c471ca8-9a09-435d-b265-5ad25f42b31b}} and {{fact:4e9ad01a-26dd-47bf-af8b-010049b697d1}} to {{fact:91ab4d4e-02f6-4093-9c9b-6fdd09d6ab06}} at October end. The steady decline means cash is being used faster than it is replenished. This underlying trend drives both covenant headroom signals.\"},{\"signal_id\":\"7c09fe13-b294-4d84-9203-631a83612620\",\"explanation\":\"Headroom on the minimum cash covenant fell from {{fact:f4a47252-f39e-4885-b92c-2417cd690951}} to {{fact:2e29a2c8-d621-4b31-a025-495dc0a2fcb6}} to {{fact:70437476-3cba-47c4-968d-bf53abaeaf98}}, with unrestricted cash at {{fact:7146bbbd-8978-474c-9d9f-b125f7f7a94d}} against a floor of {{fact:9d60030b-f402-47e5-9c64-00df9f1582df}}. This is the thinner of the two covenant cushions. The cash burn behind it also explains the falling runway.\"},{\"signal_id\":\"5e62e5fe-6f06-46a1-9498-3283e89c8cbb\",\"explanation\":\"Headroom on the minimum runway covenant narrowed from {{fact:406c40a8-c588-4040-af98-afe0429ccf53}} to {{fact:05172343-e33a-447f-929b-b97a25beb1f4}} to {{fact:d17b43e9-1b63-4865-9051-65f587a66bce}}. Runway of {{fact:d3a61e1f-0098-40b9-86a5-b0e1e3f5df58}} months still clears the minimum of {{fact:1ffb0178-4f03-45c9-945c-4f203f5e6270}} months comfortably. The signal mirrors the falling runway rather than adding a separate concern.\"}],\"ranking\":[\"3c464494-50b8-4743-b9f0-4d955b05706b\",\"7c09fe13-b294-4d84-9203-631a83612620\",\"5e62e5fe-6f06-46a1-9498-3283e89c8cbb\"]}",
+   "signature": "CAQSlAsKEAgUGAI4AUIIdGhpbmtpbmcSDPTOKqEP07ZZVuEzHRoMeVaO0W+7ZLUP+uGRIjDiSDy6SJOe+j/gWA7RpKLyDKDzWvhid4LJSAa2sbk7R2YHA6dvI1qiMjaq5x7XfzgqsQr38ceC06fEd88vo+kUDT+voX7LgtMc4PDP9/LZ+TkOZ32/DAbYLcB9KLbYfH4131iKgR+3CLTf9Gv4tbKjg9/NkArKiW35Ys0bJY0Zh6UmFmilWTgSYuNO2v3tlmKe3CgRzZNuMUOfwU6uv17kt3uyK8O+Gkff0m6F+vjkhRY0u38+GS9hQ7OrnMxOluoXO5B/rd/rsEpgl91kjqOpdeDTaNOa7ZDJtCECfh4I8ZX0P9DjjwM6ObD5ntiPJGSfmLSHgEBcamMz9euclbCdoz0mRWKE6nnVAh70iO29BjhPsOA993wzoi+E9mjWKKABrOkF+gZo29mtU1KPOSimkPO7AN9C59ALRzlXs9OItAQZzev9580yjIqDNh/LlGgMUgyjsCEz09th65hp/VcJOKuyC2ma/MJbnC/kNW6RRqy9ubQiBoDw4vKjgdiEBhEpYiMrpjEMRkGvEt8kiwCfmwFVS9WTKd9PV8IbcOsUoUGDPr4PZJbeYGEbdkApL9gaulH1N0Vnf6QhCXh6ENeGTpv5SrMbnhLjDLzeIEVr5La1D5kXlZqScqqJZOKUMdCP3xyPoONfkf1eN+kd24ndqGqci8LMCM0MAkfJ6XM6napIOx2M1gcfoWXvqX+ruuJWXrjOJ1Fxo6r5JqmY5KTVZMJoGvGwakgxd1oUloQ+KwB/1OEc7RmzuNoPI+db8BHtSgEn/QJZdQADLjeUziZRd5fdziGsgUKyWIdGfM2QSPxvtacfw0uaam45x//U/e5sFTJxTKHGCa/tFw4spoJkJA5wQv9H8anZRHeBrYg6Q/DMVnZD7VgG1Xmkx6vE8bRYE68HqCTGvbA4LgYsLZ1Fg+mbLSVsILbmKQXJ7wu5Z5p2i3MSLBobB5QCIoedAytzQvjWpQ69/rB0li9OOSIDewtfL6LI1Oto/HP6VwCotMRbydx4iBq716wvrADi44SKz26hnkWRjipOQYPO2PfScN0B1NfHC0rEiKLnL/aYTysfP+uaQ4OUKj0FoGZrX7rP9hRf/PzXXVYPLutk96v6cSuhRka5JqG3Xk6rCsC5ehj2At6E+/aPVwgYIORKrHX4O2X1Blg7T6dC6VwcRA9d43uTdFNWCfFpdTpt/4ROcpJNP8LrrfvdHG6rfb7BbxIxGJVrwH7HVnkk2mg7vtFt3PEb9nbvauuZNBX1irVibJDvFkZTievObaPcg3CotLpdOZlPwvz6kqEt9ZnVlgsle+qq6IZrWZEsQEgCF5P6UacsMg0xGWfUmlUD5O6b9AX+BEACsO2DJr4LYgP5I5rhfbeRog13OAsVUYHgfw4rP/erjZCP8qLSRMC6qVLbbMpFc5SvT5gGWGL8Qf6D30jwpshwhtUNF1COJIx0PMyCk6qd8Klc+59GrUrm385UL+0tsocF8JXjo/yVAxEYSbQQoBsxtmGAIeaylkG/8ZlBZRKR/g0dOtjAECLjOA9JYGt9ALrsbbKYKd5etGpBN+wvDERRtYv2BlqqfPJ4Yor6+AW8XXozNeqoihHKTI7GEXers1PwZYGlnlE8AjYwFGz6g9lVD1PVpcXIdYsLYbO1eL+gfwRdGfuE6TaFIqq9829V4H454Bzs1/aptlXvy5+g5iTnyBiBlNDQHJg9iCSg0rbt8K4EIKUp8f5mBYwrYiMEEJKD66BDUb684wd6ToHZDMHa55Y6m+x8zatv0d+MOG/GMgYg/Z9v2qJ7YdaHMInPI87em5XpknDHJxOvRFXrBGkqFsZ13L6iniK1CR+iLuQowqEYAQ==",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "text": "{\"explanations\":[{\"signal_id\":\"894492e1-ad86-4dbe-ba44-3b42237a9301\",\"explanation\":\"Runway has shortened every month, from {{fact:4e6971f5-1058-4866-a2e0-af324ac4d0dc}} months at the end of July to {{fact:9cb8edab-f0ed-47d3-a593-3052389e5299}} months at the end of October. This points to sustained cash burn without fresh funding. It is the likely driver of both covenant headroom signals, which show the same erosion against the runway and cash tests.\"},{\"signal_id\":\"233ec147-257f-4d3c-b851-7b15ad4ec1ff\",\"explanation\":\"This is the covenant view of the falling runway. Headroom has narrowed from {{fact:9e7601bb-0498-468a-bf82-c27e0f0ca1ac}} in August to {{fact:988eb01a-2ade-4939-b5a5-ae4ec33ab4dc}} in October, with runway at {{fact:03b5274b-ce22-44dc-a909-68cd4fb0797c}} months against a floor of {{fact:a3016cc7-c315-47bb-bba2-6eae70f903b9}}. It is still comfortably compliant, but the steady monthly decline matters if burn continues.\"},{\"signal_id\":\"5be3705b-c3b5-43f2-bc70-87298b4d3cd3\",\"explanation\":\"Unrestricted cash of {{fact:f294dc87-0da8-4b48-a408-60e6282f193e}} still clears the {{fact:c2893b24-aaa2-48eb-b939-7efd5860a9b2}} minimum. However, headroom fell from {{fact:2261870b-4c6e-44ea-8d02-6cc05227247b}} in August to {{fact:d743013d-09b0-4c4a-ac7d-0103574bf33d}} in October and is now the thinner of the covenants. It reflects the same cash burn behind the shrinking runway and may be the first test to tighten.\"}],\"ranking\":[\"894492e1-ad86-4dbe-ba44-3b42237a9301\",\"5be3705b-c3b5-43f2-bc70-87298b4d3cd3\",\"233ec147-257f-4d3c-b851-7b15ad4ec1ff\"]}",
    "type": "text"
   }
  ],
@@ -12,9 +159,9 @@
  "stop_details": null,
  "stop_reason": "end_turn",
  "usage": {
-  "cache_creation_input_tokens": 1469,
-  "cache_read_input_tokens": 2546,
+  "cache_creation_input_tokens": 949,
+  "cache_read_input_tokens": 2565,
   "input_tokens": 4,
-  "output_tokens": 858
+  "output_tokens": 1062
  }
 }

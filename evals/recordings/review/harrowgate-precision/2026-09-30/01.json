@@ -1,14 +1,418 @@
 {
  "_basis": "full",
+ "_ids": {
+  "01179cf4-f21f-4966-887b-d7d706f0a25c": {
+   "document": null,
+   "key": "metric.cash",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "3027000"
+  },
+  "0589019c-994e-438e-a2ea-25ffb59e6e9a": {
+   "document": null,
+   "key": "cov.total_leverage.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.89"
+  },
+  "0f301368-ffdd-42b7-bd8d-1acd9f12718a": {
+   "document": null,
+   "key": "metric.current_ratio",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "1.44"
+  },
+  "107bb226-907a-4157-9c7a-6426d245e914": {
+   "document": null,
+   "key": "metric.dso",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "47.7"
+  },
+  "1c2b0bca-17fe-4bef-97f1-e98131e83ea8": {
+   "document": "cd102ebd8ade341354bef9a281826bbf1941e1be78bd34296564029b84e11741",
+   "key": "cert.fccr.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.51"
+  },
+  "1eaf1d27-d9f7-40dc-baca-3e8abf377afa": {
+   "document": null,
+   "key": "cov.fccr.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.05"
+  },
+  "20db4f2c-b2c8-423a-a1ac-fb32c578f39c": {
+   "document": null,
+   "key": "cov.min_tnw.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "22137000"
+  },
+  "212efe30-d51b-4a34-9199-c63f1ceb50b4": {
+   "document": null,
+   "key": "metric.total_debt",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "24431000"
+  },
+  "29a8e0cf-2c70-440c-a5b0-33c60c35fa01": {
+   "document": null,
+   "key": "metric.ebitda",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "11463000"
+  },
+  "2cc9c89a-c415-46ee-8416-73af9eedd116": {
+   "document": null,
+   "key": "metric.current_ratio",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.46"
+  },
+  "2e1f792a-e989-4a42-8067-b5b479e959b1": {
+   "document": null,
+   "key": "cov.fccr.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.51"
+  },
+  "32cac748-8985-4064-9da8-d8d05c11cf2c": {
+   "document": null,
+   "key": "metric.leverage",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.89"
+  },
+  "34788b2a-3ebd-45d7-97e5-fc5900c7298c": {
+   "document": null,
+   "key": "metric.net_income_ttm",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "4783000"
+  },
+  "3574b15e-3adb-466d-8fdd-3efe34c1e596": {
+   "formula_key": "covenant.min_tnw",
+   "outputs": {
+    "headroom": "9137000",
+    "headroom_pct": "0.7028",
+    "passed": true,
+    "raw_value": "22137000",
+    "threshold": "13000000",
+    "value": "22137000"
+   },
+   "period_end": "2026-09-30",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "38d253d8-187b-480d-8172-e8e9746a61e1": {
+   "formula_key": "covenant.total_leverage",
+   "outputs": {
+    "headroom": "1.11",
+    "headroom_pct": "0.37",
+    "passed": true,
+    "raw_value": "1.890779028177614935008287534",
+    "threshold": "3",
+    "value": "1.89"
+   },
+   "period_end": "2026-09-30",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "3f808d51-2537-4682-874a-37dc8c7217b7": {
+   "document": null,
+   "key": "bb.availability",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "2951000"
+  },
+  "517461f8-6a11-497e-85df-59bd949c94ad": {
+   "document": null,
+   "key": "metric.revenue_growth_yoy",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.0474"
+  },
+  "54deea32-c61c-4c4e-a168-5c323d791a34": {
+   "document": null,
+   "key": "cov.min_tnw.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.7028"
+  },
+  "5c7d8948-7015-4f21-876b-965f9f8c3bce": {
+   "document": null,
+   "key": "cov.total_leverage.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "3"
+  },
+  "614cebe2-c782-4fc4-89e0-ee801d2d7348": {
+   "document": null,
+   "key": "metric.ebitda_margin",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "0.1182"
+  },
+  "68a6a601-12d4-4bb2-9a0a-54ae4a18926b": {
+   "document": "cd102ebd8ade341354bef9a281826bbf1941e1be78bd34296564029b84e11741",
+   "key": "cert.min_tnw.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "22137000"
+  },
+  "722db283-6633-40ec-a4e3-3524bf00316a": {
+   "document": null,
+   "key": "metric.leverage",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "2.22"
+  },
+  "86962410-1fa6-4eab-8a4d-94dff0641899": {
+   "document": null,
+   "key": "metric.revenue_ttm",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "93036000"
+  },
+  "8c27d4cf-d53e-4206-8c9c-5bd35eedf80e": {
+   "document": null,
+   "key": "cov.total_leverage.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.37"
+  },
+  "8d6f921a-bff7-4b91-ab96-48287f6a538f": {
+   "document": null,
+   "key": "metric.interest_coverage",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "6.83"
+  },
+  "8dc750f9-d4cb-4660-a67d-b00f4b88543c": {
+   "document": null,
+   "key": "metric.net_income_ttm",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "5238000"
+  },
+  "8e814dad-8f2f-4209-a3e7-3f6a7de4e480": {
+   "document": null,
+   "key": "metric.cash",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "2904000"
+  },
+  "8f0ad967-c739-47a0-81a9-4ebf18cac0fd": {
+   "document": null,
+   "key": "metric.ebitda_margin",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.1176"
+  },
+  "90c875dd-d22b-416f-b551-a8a9b9a79303": {
+   "document": null,
+   "key": "metric.total_debt",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "21674000"
+  },
+  "9ce5fff3-d4f2-4a83-9424-8d77d2aaca21": {
+   "document": "cd102ebd8ade341354bef9a281826bbf1941e1be78bd34296564029b84e11741",
+   "key": "cert.total_leverage.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.89"
+  },
+  "a5043bcb-c057-4f07-9d24-8ab29c7aae89": {
+   "document": null,
+   "key": "metric.dpo",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "42.6"
+  },
+  "a558ad29-c418-4f13-8201-594662c0b5a5": {
+   "document": null,
+   "key": "metric.interest_coverage",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "5.9"
+  },
+  "b22f206d-71d3-48f1-84e8-b4ae57611522": {
+   "document": null,
+   "key": "cov.min_tnw.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "13000000"
+  },
+  "b75e1550-a052-43fe-8461-db74b19494f7": {
+   "document": null,
+   "key": "metric.dpo",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "42.3"
+  },
+  "b8c1384c-cda4-4f49-a680-8db8a67d2981": {
+   "document": null,
+   "key": "cov.fccr.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.4381"
+  },
+  "b8fbee20-c5d7-4c59-b104-88a3bec69bfa": {
+   "document": null,
+   "key": "metric.ebitda",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "10994000"
+  },
+  "ba5d5217-9bd1-4137-9dec-0e9cdeb6f516": {
+   "document": null,
+   "key": "metric.dso",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "49.8"
+  },
+  "e8150cd1-3cbd-4e27-91b5-3ae2296631c8": {
+   "formula_key": "covenant.fccr",
+   "outputs": {
+    "headroom": "0.46",
+    "headroom_pct": "0.4381",
+    "passed": true,
+    "raw_value": "1.506897357961187748421790975",
+    "threshold": "1.05",
+    "value": "1.51"
+   },
+   "period_end": "2026-09-30",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "f7d0e090-436a-4273-83ba-4a8ede62b72c": {
+   "document": null,
+   "key": "metric.revenue_ttm",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "97448000"
+  }
+ },
  "_spec": "review@1:756954570713",
  "content": [
   {
-   "signature": "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",
+   "signature": "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",
    "thinking": "",
    "type": "thinking"
   },
   {
-   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"Harrowgate Precision Components, Inc. shows stable to improving credit metrics for the period ended September 30, 2026. Trailing twelve month revenue and EBITDA both rose from a year earlier, and total debt to EBITDA declined to {{fact:6d06dcc5-63d4-4916-b022-ab56b87c671d}} from {{fact:09a80f0b-0dab-4b7b-bbbb-4abb1af52784}} as total debt was reduced. All three financial covenants are met, the compliance certificate agrees with the bank's calculations, and the borrowing base agrees. No early warning signals fired and no items are awaiting a decision.\"},{\"section\":\"performance\",\"body\":\"Trailing twelve month revenue rose to {{fact:aec7e8e1-7e93-4508-96bf-b2e38896fe8e}} from {{fact:706a3d5d-e02b-40fb-8847-a5c8dbdb20ac}}, growth of {{fact:52e7f874-dc20-4f8b-a359-ec88a30f6b66}}. EBITDA increased to {{fact:dc416ac4-7992-48bd-b81f-a781a61c563f}} from {{fact:6d7bc5a3-33d8-4a8a-86e5-6626b3b88c7c}}, with margin of {{fact:c7a32667-d655-41fd-ab23-80c98761c345}} unchanged from {{fact:a6b80ec8-a684-4896-9f2c-b1d041444e79}}. Net income rose to {{fact:952abc1e-fb49-4454-836b-68606f544ffc}} from {{fact:6940f333-4c98-481d-9c5d-f4f5191c0149}}. Total debt fell to {{fact:06ffa7f1-9d00-4852-9131-ca2339ed13ae}} from {{fact:a222314b-932b-4b81-887d-d956bac2e507}}, and interest coverage improved to {{fact:56b1b520-dfce-4e33-a6ae-28b5a4e83246}} from {{fact:52667214-b751-46be-a2d4-ac3641644435}}. Working capital was steady: the current ratio was {{fact:b1bc8d72-6145-491f-8294-50af93e974cb}} against {{fact:59663b30-f6b5-4978-b3d3-32e621cecd4b}}, days sales outstanding shortened to {{fact:6dd4762f-8ff7-4141-a885-19d42b48caee}} from {{fact:04e0a716-2e46-4707-ae7e-6f747879de35}}, days payables moved to {{fact:c5abf00d-8d27-475e-9b0b-5455a97eb502}} from {{fact:dee52a76-d47d-4f26-94af-0a02c9137a70}}, and cash rose to {{fact:f5d6e796-c371-471c-a086-1a0411892d46}} from {{fact:f544b816-f919-43ee-b355-023c236fbc74}}.\"},{\"section\":\"covenants\",\"body\":\"The Fixed Charge Coverage Ratio was calculated at {{fact:2d143911-9533-4c9b-9e43-d23da7c27edc}} against a minimum of {{fact:73a5525c-a291-448e-8a12-c4f5d0c45b8e}}, a cushion of {{fact:8451e493-fa0a-40c2-989b-b40448891e41}}. Tangible net worth was {{fact:9a523262-2610-495f-8e1c-4b88df358628}} against a minimum of {{fact:d2c775dc-6c87-4e1c-80a8-840244592011}}, a cushion of {{fact:1d18723a-efa3-4a83-91aa-e5690429d642}}. The Total Leverage Ratio was {{fact:c5bb68cc-3b81-4615-9acd-7367575ea2c7}} against a maximum of {{fact:a250d285-81e0-4dd0-a9a3-3d95c43c8762}}, a cushion of {{fact:0be12b47-15bc-4276-8474-0e6b8e5b0047}}. All three covenants are compliant, and the values reported on the certificate ({{fact:8b068447-b212-48e7-a3fd-7303e8c9e908}}, {{fact:a4b372cb-1a1d-4156-8f02-38637577842c}} and {{fact:e0d82124-369d-4c4f-8fa0-22fb92e2b79f}}) match the bank's calculations.\"},{\"section\":\"collateral\",\"body\":\"The borrowing base for the Revolving Line of Credit as of September 30, 2026 agrees with the bank's records, with no mismatched lines. Availability under the revolver was {{fact:544ba8e2-841d-43c4-bc48-2b162effa319}}.\"},{\"section\":\"risks\",\"body\":\"No early warning signals fired this period and there are no open work items awaiting review. Covenant cushions, the certificate reconciliation and the borrowing base raise no exceptions. A reviewer may wish to confirm that the year-on-year reduction in total debt and the improvement in leverage are consistent with scheduled term loan amortization and revolver usage.\"}]}",
+   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"Harrowgate Precision Components reported higher earnings and lower debt for the twelve months ended September 30, 2026. Revenue rose to {{fact:f7d0e090-436a-4273-83ba-4a8ede62b72c}} from {{fact:86962410-1fa6-4eab-8a4d-94dff0641899}}, and total debt to EBITDA declined to {{fact:32cac748-8985-4064-9da8-d8d05c11cf2c}} from {{fact:722db283-6633-40ec-a4e3-3524bf00316a}}. All tested covenants were met, and the compliance certificate agrees with the bank's calculations. The borrowing base agrees, with availability of {{fact:3f808d51-2537-4682-874a-37dc8c7217b7}}. No early warning signals fired and no items are awaiting a decision.\"},{\"section\":\"performance\",\"body\":\"Trailing twelve month revenue increased to {{fact:f7d0e090-436a-4273-83ba-4a8ede62b72c}} from {{fact:86962410-1fa6-4eab-8a4d-94dff0641899}}, growth of {{fact:517461f8-6a11-497e-85df-59bd949c94ad}}. EBITDA rose to {{fact:29a8e0cf-2c70-440c-a5b0-33c60c35fa01}} from {{fact:b8fbee20-c5d7-4c59-b104-88a3bec69bfa}}. The EBITDA margin was {{fact:8f0ad967-c739-47a0-81a9-4ebf18cac0fd}}, level with {{fact:614cebe2-c782-4fc4-89e0-ee801d2d7348}} a year earlier. Net income increased to {{fact:8dc750f9-d4cb-4660-a67d-b00f4b88543c}} from {{fact:34788b2a-3ebd-45d7-97e5-fc5900c7298c}}. Interest coverage improved to {{fact:8d6f921a-bff7-4b91-ab96-48287f6a538f}} from {{fact:a558ad29-c418-4f13-8201-594662c0b5a5}}. Total debt fell to {{fact:90c875dd-d22b-416f-b551-a8a9b9a79303}} from {{fact:212efe30-d51b-4a34-9199-c63f1ceb50b4}}, and cash rose to {{fact:01179cf4-f21f-4966-887b-d7d706f0a25c}} from {{fact:8e814dad-8f2f-4209-a3e7-3f6a7de4e480}}. Working capital was steady. The current ratio was {{fact:2cc9c89a-c415-46ee-8416-73af9eedd116}}, compared with {{fact:0f301368-ffdd-42b7-bd8d-1acd9f12718a}} a year earlier. DSO shortened to {{fact:107bb226-907a-4157-9c7a-6426d245e914}} from {{fact:ba5d5217-9bd1-4137-9dec-0e9cdeb6f516}}, and DPO shortened to {{fact:b75e1550-a052-43fe-8461-db74b19494f7}} from {{fact:a5043bcb-c057-4f07-9d24-8ab29c7aae89}}.\"},{\"section\":\"covenants\",\"body\":\"All covenants were compliant at September 30, 2026. In each case the certificate figure matches the bank's calculation. The Fixed Charge Coverage Ratio was {{fact:2e1f792a-e989-4a42-8067-b5b479e959b1}} against a minimum of {{fact:1eaf1d27-d9f7-40dc-baca-3e8abf377afa}}, a cushion of {{fact:b8c1384c-cda4-4f49-a680-8db8a67d2981}}. Tangible Net Worth was {{fact:20db4f2c-b2c8-423a-a1ac-fb32c578f39c}} against a minimum of {{fact:b22f206d-71d3-48f1-84e8-b4ae57611522}}, a cushion of {{fact:54deea32-c61c-4c4e-a168-5c323d791a34}}. The Total Leverage Ratio was {{fact:0589019c-994e-438e-a2ea-25ffb59e6e9a}} against a maximum of {{fact:5c7d8948-7015-4f21-876b-965f9f8c3bce}}, a cushion of {{fact:8c27d4cf-d53e-4206-8c9c-5bd35eedf80e}}. Leverage carries the narrowest cushion of the tested covenants.\"},{\"section\":\"collateral\",\"body\":\"The borrowing base supporting the Revolving Line of Credit was tested as of September 30, 2026. The borrower's certificate agrees with the bank's calculation, with no mismatched lines. Availability was {{fact:3f808d51-2537-4682-874a-37dc8c7217b7}}.\"},{\"section\":\"risks\",\"body\":\"No early warning signals fired this period, and there are no open work items awaiting review. Of the tested covenants, the Total Leverage Ratio has the smallest cushion, at {{fact:8c27d4cf-d53e-4206-8c9c-5bd35eedf80e}}. A reviewer may wish to note this as the covenant most sensitive to any decline in EBITDA.\"}]}",
    "type": "text"
   }
  ],
@@ -17,9 +421,9 @@
  "stop_details": null,
  "stop_reason": "end_turn",
  "usage": {
-  "cache_creation_input_tokens": 5906,
+  "cache_creation_input_tokens": 5967,
   "cache_read_input_tokens": 0,
   "input_tokens": 4,
-  "output_tokens": 2419
+  "output_tokens": 2438
  }
 }

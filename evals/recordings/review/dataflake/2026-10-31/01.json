@@ -1,14 +1,219 @@
 {
  "_basis": "full",
+ "_ids": {
+  "0f4a516c-80bb-4a2d-90d8-840c4dc82c95": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.35"
+  },
+  "20e82f95-f192-4d3b-ad4b-4c408e3fa3fc": {
+   "document": "b50a88274520a31e3375253293338b1e27ad9e11ac4ac91a9b2caf801fe5228f",
+   "key": "cert.min_unrestricted_cash.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6100000"
+  },
+  "27f2a252-f5c7-43cc-b69c-5b44d45a368b": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.0487"
+  },
+  "420db624-0e32-49de-bd64-e9d3d4a80144": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "-0.08"
+  },
+  "42b95c3d-e261-4df8-8225-9c03419e5211": {
+   "formula_key": "covenant.min_unrestricted_cash",
+   "outputs": {
+    "headroom": "-400000",
+    "headroom_pct": "-0.08",
+    "passed": false,
+    "raw_value": "4600000",
+    "threshold": "5000000",
+    "value": "4600000"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "487a261a-74e2-4da2-b28a-9a21c7314a68": {
+   "document": null,
+   "key": "cov.min_runway_months.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "7.1"
+  },
+  "4ade100d-b734-4ee7-b218-8cfac3d30ff0": {
+   "document": null,
+   "key": "cov.min_runway_months.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6"
+  },
+  "5f4d1f3e-5042-435d-9166-67a314a7d125": {
+   "formula_key": "covenant.revenue_vs_plan",
+   "outputs": {
+    "headroom": "0.253",
+    "headroom_pct": "0.3163",
+    "passed": true,
+    "raw_value": "1.053009057005860415556739478",
+    "threshold": "0.8",
+    "value": "1.053"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "72314421-976e-4db8-8c1a-54edfb96cefd": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4600000"
+  },
+  "741f3e4a-e75a-45fa-a96d-a724bb5bbbdd": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "0.1813"
+  },
+  "8355c16b-7307-4ae8-bd20-7863e9f14f59": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.053"
+  },
+  "90263cfa-801d-4997-8049-daccf4de5980": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5000000"
+  },
+  "b2ad5621-2c45-45fc-8dba-38d4a4817d2b": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.3163"
+  },
+  "d02964b1-6a21-403e-9f43-f5e3847f88d6": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "d69d82c4-2686-4c71-a085-bde0ef4a0246": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "0.55"
+  },
+  "e3be7baa-6e49-4cb3-946d-ccc5021d4154": {
+   "formula_key": "covenant.min_runway_months",
+   "outputs": {
+    "avg_net_burn": "650000",
+    "headroom": "1.1",
+    "headroom_pct": "0.1833",
+    "passed": true,
+    "raw_value": "7.076923076923076923076923077",
+    "threshold": "6",
+    "value": "7.1"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "e71a9d45-8dae-44fb-bfdd-0d0a7531d923": {
+   "document": "b50a88274520a31e3375253293338b1e27ad9e11ac4ac91a9b2caf801fe5228f",
+   "key": "cert.revenue_vs_plan.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.053"
+  },
+  "ec483d01-4115-4f8c-9b47-fd69f2f8a2c1": {
+   "document": "b50a88274520a31e3375253293338b1e27ad9e11ac4ac91a9b2caf801fe5228f",
+   "key": "cert.min_runway_months.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "9.4"
+  },
+  "fd556cd6-994a-4d89-9e88-46a9b164bf2d": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.1833"
+  }
+ },
  "_spec": "review@1:756954570713",
  "content": [
   {
-   "signature": "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",
+   "signature": "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",
    "thinking": "",
    "type": "thinking"
   },
   {
-   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"For the period ended October 31, 2026, the bank's calculation shows Dataflake Inc in breach of its Minimum Unrestricted Cash covenant, with unrestricted cash of {{fact:c6b23fca-d829-47de-afb9-2c23d0a23106}} against a required {{fact:dfe07fca-0fbc-40ee-b40b-3a228a34e2f2}}. The compliance certificate reports {{fact:184f5e8f-a860-4009-a6ea-0a022cdd796d}} and claims compliance. This mismatch has been escalated to committee, which is where the decision on the breach now sits. Minimum Runway passes on the bank's figures but with a narrowing cushion, and the bank's runway figure is also below the certificate's. Revenue to Plan is comfortably met.\"},{\"section\":\"covenants\",\"body\":\"Minimum Unrestricted Cash is in breach. The bank calculates {{fact:c6b23fca-d829-47de-afb9-2c23d0a23106}} against a minimum of {{fact:dfe07fca-0fbc-40ee-b40b-3a228a34e2f2}}, a cushion of {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}}. The certificate reports {{fact:184f5e8f-a860-4009-a6ea-0a022cdd796d}} and claims compliance. Minimum Runway is compliant at {{fact:88465eb6-1917-4cd2-b16b-08d16b705fd9}} months against a floor of {{fact:629bd59a-680f-43d2-9cd0-1e4063fb047e}}, a cushion of {{fact:09bff13b-0bba-432a-8f89-e9c4a43c04b8}}. The certificate reports a higher {{fact:331838bf-3847-40fa-a7c6-dadfb19968ea}} months. Revenue to Plan is compliant at {{fact:f83892cf-4ef5-4eb2-8124-6d8819dfa799}} against {{fact:fff29ffd-c6d1-4cb9-8e95-a35edb6467d5}}, a cushion of {{fact:12fa886b-8411-43d2-af59-ca3e47cd609e}}, matching the certificate. Reviewers should reconcile both cash and runway differences with the borrower's figures.\"},{\"section\":\"risks\",\"body\":\"The most significant item is the cash covenant breach that the certificate reports as compliant. The related critical work item has been decided and escalated to committee. The high-severity runway-below-watch signal fired; runway of {{fact:88465eb6-1917-4cd2-b16b-08d16b705fd9}} months limits the borrower's capacity to absorb setbacks before new funding is needed. That work item has been acknowledged. The medium-severity headroom signal on unrestricted cash understates the position, as the level is below the minimum rather than near it. Low-severity signals show both cash and runway headroom declining each month from August through October, indicating ongoing burn rather than a one-month dip. No work items remain undecided.\"}]}",
+   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"Dataflake Inc breached its Minimum Unrestricted Cash covenant for the period ended October 31, 2026, on the bank's calculation of {{fact:72314421-976e-4db8-8c1a-54edfb96cefd}} against a required {{fact:90263cfa-801d-4997-8049-daccf4de5980}}. The compliance certificate reports {{fact:20e82f95-f192-4d3b-ad4b-4c408e3fa3fc}} and claims compliance. The certificate also reports a higher runway than the bank calculates. Revenue is ahead of plan, but cash and runway cushions have been narrowing. The certificate mismatch on the cash covenant has already been escalated to committee, which holds the decision.\"},{\"section\":\"covenants\",\"body\":\"Minimum Unrestricted Cash is in breach. Calculated cash of {{fact:72314421-976e-4db8-8c1a-54edfb96cefd}} is below the {{fact:90263cfa-801d-4997-8049-daccf4de5980}} minimum, a cushion of {{fact:420db624-0e32-49de-bd64-e9d3d4a80144}}. The certificate reports {{fact:20e82f95-f192-4d3b-ad4b-4c408e3fa3fc}} and claims compliance. Minimum Runway is compliant at {{fact:487a261a-74e2-4da2-b28a-9a21c7314a68}} against a required {{fact:4ade100d-b734-4ee7-b218-8cfac3d30ff0}}, a cushion of {{fact:fd556cd6-994a-4d89-9e88-46a9b164bf2d}}. The certificate reports a higher {{fact:ec483d01-4115-4f8c-9b47-fd69f2f8a2c1}}. Revenue to Plan is compliant at {{fact:8355c16b-7307-4ae8-bd20-7863e9f14f59}} against {{fact:d02964b1-6a21-403e-9f43-f5e3847f88d6}}, a cushion of {{fact:b2ad5621-2c45-45fc-8dba-38d4a4817d2b}}, and agrees with the certificate.\"},{\"section\":\"risks\",\"body\":\"The highest-severity signal is runway below the watch level. That work item has been acknowledged. The covenant headroom signal flags the negative cash cushion of {{fact:420db624-0e32-49de-bd64-e9d3d4a80144}}, the balance-sheet counterpart to the short runway. Two lower-severity signals show cash and runway headroom both declining from August through October. This points to a sustained cash drain rather than a single-month dip. The critical work item, a cash covenant failure reported as compliant, has been escalated to committee. The certificate also overstates runway against the bank's calculation, and a reviewer may wish to reconcile how the borrower derived both certificate figures. No work items remain open.\"}]}",
    "type": "text"
   }
  ],
@@ -17,9 +222,9 @@
  "stop_details": null,
  "stop_reason": "end_turn",
  "usage": {
-  "cache_creation_input_tokens": 3943,
+  "cache_creation_input_tokens": 3819,
   "cache_read_input_tokens": 0,
   "input_tokens": 4,
-  "output_tokens": 1668
+  "output_tokens": 1574
  }
 }

@@ -1,9 +1,215 @@
 {
  "_basis": "full",
- "_spec": "covenant@1:297ca24fdcef",
+ "_ids": {
+  "09fea935-22f1-4404-850a-5dee6043b2d8": {
+   "document": null,
+   "key": "is.services_revenue",
+   "kind": "seeded",
+   "months": 7,
+   "page": null,
+   "period_end": "2026-07-31",
+   "type": "fact",
+   "value": "354224"
+  },
+  "0e6c8abe-fab4-4d30-836d-9d27bfa0d17d": {
+   "sha256": "fa80118c4924e257e22fcf4e763fac38492396e175d146378e6231e4401ed45c",
+   "type": "document"
+  },
+  "15d608fd-312d-4c22-a58c-6219b15a761d": {
+   "sha256": "a0822bd9cdb1e10477e53fdd817a28107a3b2584a466141296429809cff174bb",
+   "type": "document"
+  },
+  "1639c660-61ea-4900-894d-176ac32689c6": {
+   "sha256": "3cfafb756adf80ef41084ca641ec7970c2129c376621f205f504c652ac1fd9d8",
+   "type": "document"
+  },
+  "1fe991a3-04a0-442a-b354-f9570c0a7fb5": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "-0.1849"
+  },
+  "23d611ce-7f76-47d0-bcef-0285be3693e0": {
+   "sha256": "00ef76e1d1a25e5e319be003e8294ee8cac3b560439b98dd064378515bbfbeb2",
+   "type": "document"
+  },
+  "2737650c-8e79-4228-994a-c72cc9df0fe9": {
+   "document": null,
+   "key": "rerun.revenue_vs_plan.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.6521"
+  },
+  "28422eeb-dceb-4f49-8352-e883b8257d48": {
+   "document": "3cfafb756adf80ef41084ca641ec7970c2129c376621f205f504c652ac1fd9d8",
+   "key": "cert.revenue_vs_plan.threshold",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "3755719f-7547-4045-a3fd-6739b19e4094": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "3902a2ea-b51d-4351-9359-68e273462aef": {
+   "document": "da0c298cc242890924f9384e922a1eb4e2e7c4722e1b2465e039f504ab19bac6",
+   "key": "is.subscription_revenue",
+   "kind": "extracted",
+   "months": 10,
+   "page": 2,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "8387735"
+  },
+  "393a5f8f-31bc-4154-b287-1b2f9889c650": {
+   "sha256": "097ca8995ba2898fa01e82d2fa53033bc29b07d9b7d0f121a67dc2d8ee4cdfbe",
+   "type": "document"
+  },
+  "53708bac-98e8-4db6-b4da-9917a6a3a238": {
+   "sha256": "bfe10bcdc7bba452ce5eb913bbe42044698c2f40996fad278f3bd341dc8bfebf",
+   "type": "document"
+  },
+  "546bba93-50ef-47cf-9505-8332bbde1f7e": {
+   "sha256": "0f1d761f85b2ad8a0d1cead106bb1068898d6df7dc87c5d385a0264e27f2e5ea",
+   "type": "document"
+  },
+  "6cbb2942-0ad0-4340-a1d4-f8b67ecc7ac7": {
+   "sha256": "e56882b10eaca2505501e975a99abdbae2090fd20d560126b944594b7fe7840b",
+   "type": "document"
+  },
+  "8204fb36-f1b7-4530-8172-d344c070b721": {
+   "document": "3cfafb756adf80ef41084ca641ec7970c2129c376621f205f504c652ac1fd9d8",
+   "key": "cert.revenue_vs_plan.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.6521"
+  },
+  "82251160-5855-4ed4-98ee-f34aba93a656": {
+   "sha256": "94f1198cb019ad2bfb5a5283dd16d2c585d91595461242f152e424fcc2976ff0",
+   "type": "document"
+  },
+  "84d02a22-b9aa-4383-b617-6db932ccc9a2": {
+   "document": "da0c298cc242890924f9384e922a1eb4e2e7c4722e1b2465e039f504ab19bac6",
+   "key": "is.services_revenue",
+   "kind": "extracted",
+   "months": 10,
+   "page": 2,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "503264"
+  },
+  "884ed17c-1c30-4849-9299-1fb5b31ab38f": {
+   "sha256": "0b0bd274da23b47e56c869c5f6188e230d73d1243c1e16fb7daa8e564036a758",
+   "type": "document"
+  },
+  "a590363c-0fc3-454d-9a58-83315a5c5f4f": {
+   "document": null,
+   "key": "is.subscription_revenue",
+   "kind": "seeded",
+   "months": 7,
+   "page": null,
+   "period_end": "2026-07-31",
+   "type": "fact",
+   "value": "5903735"
+  },
+  "b2a986eb-c7c6-413d-bef1-4650893c0e5a": {
+   "formula_key": "covenant.revenue_vs_plan",
+   "outputs": {
+    "headroom": "-0.1479",
+    "headroom_pct": "-0.1849",
+    "passed": false,
+    "raw_value": "0.6520653789004457652303120357",
+    "threshold": "0.8",
+    "value": "0.6521"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "b2d054c9-bf21-4d60-b8a2-a7ec5a3a8919": {
+   "document": null,
+   "key": "rerun.revenue_vs_plan.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "b3d2aadc-6fca-45f9-9866-7f1e1bed1afc": {
+   "formula_key": "covenant.revenue_vs_plan",
+   "outputs": {
+    "headroom": "-0.1479",
+    "headroom_pct": "-0.1849",
+    "passed": false,
+    "raw_value": "0.6520653789004457652303120357",
+    "threshold": "0.8",
+    "value": "0.6521"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "c2cbd967-dfb1-45ba-a583-ddf0218861f1": {
+   "sha256": "1ba19013554a334f5358d8d505c3433b82e40f93ba2353076d09039d78969f50",
+   "type": "document"
+  },
+  "c337db2b-f965-4ff5-be07-2864c543a668": {
+   "sha256": "e85845b50eb35d196987c1b1d2c604aeeb4a538f25a03744bc46d07ca7943db0",
+   "type": "document"
+  },
+  "e08879b9-577d-492d-8915-879b45e6c456": {
+   "sha256": "c004e5decce965d63769f5aa3b6ae50f41f3c286baca31e4ed46bbde534900ca",
+   "type": "document"
+  },
+  "e959bfd5-abb7-47e5-a334-99dfbb8654e2": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.6521"
+  },
+  "f28d0c06-d90c-4b24-a3b7-d3e43751dc72": {
+   "document": null,
+   "key": "rerun.revenue_vs_plan.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "-0.1849"
+  },
+  "f56edd53-2430-4adf-9bfe-5069a3c153db": {
+   "sha256": "da0c298cc242890924f9384e922a1eb4e2e7c4722e1b2465e039f504ab19bac6",
+   "type": "document"
+  }
+ },
+ "_spec": "covenant@2:297ca24fdcef",
  "content": [
   {
-   "text": "{\"recommendation\":\"escalate\",\"explanation\":\"The breach looks real. Revenue to Plan (Section 6.3) for the three months ended October 31, 2026 came to {{fact:2aa946f7-88cb-43f5-9d81-36858ba826b6}}. The minimum is {{fact:86b794ce-e84e-4abc-994a-281808cbcc21}}, so the shortfall is {{fact:6571fa4a-90b8-4cb3-b718-3e9e95db9631}}. The borrower's own October certificate agrees: it reports {{fact:194229d5-2cee-41c8-a7b3-fc68f0dd8337}} and says the borrower was not in compliance. The test has no add-backs, so no add-back cap can explain it. Only one terms version is on file (version 1, approved, from the original agreement). No unapproved amendments are on file. A search of the documents found no waiver and no written update to the Approved Plan. Rerunning the test under version 1 gave the same failure. The September certificate also reports the borrower out of compliance with this covenant, so the shortfall is not limited to one month. How the bank responds is for the credit team to decide.\",\"claims\":[{\"text\":\"The agreement requires revenue for any three-month period to be at least 80% of the Approved Plan for the same three months.\",\"document_id\":\"b5e62881-949a-4c61-91fc-bf9c0d464999\",\"page\":4,\"quote\":\"Revenue for any three-month period shall not be less than 80% of the\\nApproved Plan for the same three months.\"},{\"text\":\"The Approved Plan can only change by written agreement between the Lender and the Borrower, and none is on file.\",\"document_id\":\"b5e62881-949a-4c61-91fc-bf9c0d464999\",\"page\":3,\"quote\":\"\\\"Approved Plan\\\" means the monthly revenue plan approved by the Lender and recorded in the Lender's credit file, as updated by written agreement of the Lender and the Borrower.\"},{\"text\":\"The borrower's October 2026 certificate admits it was not in compliance with Revenue to Plan.\",\"document_id\":\"52a9e701-11b7-4213-b3bd-dc4a75fef29b\",\"page\":1,\"quote\":\"As of October 31, 2026, the Borrower was not in compliance with: Revenue to Plan.\"}],\"calc_ids\":[\"eb2bb488-4a94-4106-831e-05698456b5c5\",\"18876882-9531-4acb-b024-0c023c2d7ad5\"],\"missing_evidence\":[],\"suggested_tag\":\"true_breach\"}",
+   "text": "{\"recommendation\":\"escalate\",\"explanation\":\"The Revenue to Plan test fails for the three months ended October 31, 2026. Revenue was {{fact:2737650c-8e79-4228-994a-c72cc9df0fe9}} of the Approved Plan. Section 6.3 requires at least {{fact:b2d054c9-bf21-4d60-b8a2-a7ec5a3a8919}}. I reran the test under terms version 1, the only version on file, and it still fails, with headroom of {{fact:f28d0c06-d90c-4b24-a3b7-d3e43751dc72}}. The borrower's October certificate reports the same ratio, {{fact:8204fb36-f1b7-4530-8172-d344c070b721}}, and says the borrower is not in compliance. No unapproved amendments are on file. A search of the documents found no waiver and no written update to the Approved Plan. The test has no add-backs, so there is no cap to correct. The September certificate also reported this covenant out of compliance. This looks like a true breach. How to respond is for the credit team to decide.\",\"claims\":[{\"text\":\"Section 6.3 requires revenue for any three-month period to be at least the stated share of the Approved Plan.\",\"document_id\":\"0e6c8abe-fab4-4d30-836d-9d27bfa0d17d\",\"page\":4,\"quote\":\"Revenue for any three-month period shall not be less than 80% of the\\nApproved Plan for the same three months.\"},{\"text\":\"The Approved Plan can be changed only by written agreement of the Lender and the Borrower. No such update was found on file.\",\"document_id\":\"0e6c8abe-fab4-4d30-836d-9d27bfa0d17d\",\"page\":3,\"quote\":\"\\\"Approved Plan\\\" means the monthly revenue plan approved by the Lender and recorded in the Lender's credit file, as updated by written agreement of the Lender and the Borrower.\"},{\"text\":\"The borrower's October 2026 compliance certificate says it was not in compliance with Revenue to Plan.\",\"document_id\":\"1639c660-61ea-4900-894d-176ac32689c6\",\"page\":1,\"quote\":\"As of October 31, 2026, the Borrower was not in compliance with: Revenue to Plan.\"}],\"calc_ids\":[\"b2a986eb-c7c6-413d-bef1-4650893c0e5a\"],\"missing_evidence\":[],\"suggested_tag\":\"true_breach\"}",
    "type": "text"
   }
  ],
@@ -12,9 +218,9 @@
  "stop_details": null,
  "stop_reason": "end_turn",
  "usage": {
-  "cache_creation_input_tokens": 334,
-  "cache_read_input_tokens": 10383,
+  "cache_creation_input_tokens": 370,
+  "cache_read_input_tokens": 10307,
   "input_tokens": 2,
-  "output_tokens": 850
+  "output_tokens": 810
  }
 }

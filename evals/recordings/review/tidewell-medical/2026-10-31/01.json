@@ -1,14 +1,209 @@
 {
  "_basis": "full",
+ "_ids": {
+  "009b0def-8f49-40a4-b70b-ed2fb4ec1f81": {
+   "document": "66c28cb6fb25e2e47f8b33f5fc76fc049bf3158bb0f95212f965698f5e52402e",
+   "key": "cert.min_unrestricted_cash.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5300000"
+  },
+  "024f36aa-bc1d-4dfb-8d20-278ef760ee0e": {
+   "document": "66c28cb6fb25e2e47f8b33f5fc76fc049bf3158bb0f95212f965698f5e52402e",
+   "key": "cert.revenue_vs_plan.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.0523"
+  },
+  "0b034021-75cb-4470-a534-9ef58e0ad159": {
+   "formula_key": "covenant.min_runway_months",
+   "outputs": {
+    "avg_net_burn": "350000",
+    "headroom": "6.3",
+    "headroom_pct": "1.05",
+    "passed": true,
+    "raw_value": "12.28571428571428571428571429",
+    "threshold": "6",
+    "value": "12.3"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "2be480c2-276a-4efa-87fa-e64211c8e831": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.05"
+  },
+  "370f7427-3266-4da7-b8ed-3e2ef5795114": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.4333"
+  },
+  "47642701-27fe-490a-928f-b33adde90f1c": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0.8773"
+  },
+  "587ac04d-68ab-41c8-acab-61e61e84577d": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "3000000"
+  },
+  "5923156d-5b17-4795-b08d-aaba65784c4f": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.7833"
+  },
+  "5924794a-483f-4ff7-a304-12c5266711bc": {
+   "document": null,
+   "key": "cov.min_runway_months.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6"
+  },
+  "5c962657-cdc9-4c76-86e7-d5549a472a92": {
+   "document": null,
+   "key": "cov.min_runway_months.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "12.3"
+  },
+  "735d4528-2bc3-4245-ae80-f5fe5ee72941": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "0.9979"
+  },
+  "92cb55b3-ff4f-4645-9b50-6ba04ecc94c4": {
+   "formula_key": "covenant.revenue_vs_plan",
+   "outputs": {
+    "headroom": "0.2523",
+    "headroom_pct": "0.3154",
+    "passed": true,
+    "raw_value": "1.052286161552911709455228554",
+    "threshold": "0.8",
+    "value": "1.0523"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "9a38fdcd-b162-4b44-b97a-35e865451eb5": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.3154"
+  },
+  "aa19c384-9083-4796-ab5b-79411e86381e": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "b7303033-a3e5-4556-9df1-f3c1265984fe": {
+   "formula_key": "covenant.min_unrestricted_cash",
+   "outputs": {
+    "headroom": "1300000",
+    "headroom_pct": "0.4333",
+    "passed": true,
+    "raw_value": "4300000",
+    "threshold": "3000000",
+    "value": "4300000"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "bad0b846-4288-4aaa-957d-a5669c9c321f": {
+   "document": "66c28cb6fb25e2e47f8b33f5fc76fc049bf3158bb0f95212f965698f5e52402e",
+   "key": "cert.min_runway_months.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "15.1"
+  },
+  "c277bd3c-74ac-4e79-b397-8c5931c3ba02": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.0523"
+  },
+  "c71186d0-4532-4650-b75d-ba279b3f1fd5": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4300000"
+  }
+ },
  "_spec": "review@1:756954570713",
  "content": [
   {
-   "signature": "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",
+   "signature": "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",
    "thinking": "",
    "type": "thinking"
   },
   {
-   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"Tidewell Medical is compliant with all three covenants on the bank's calculation for the period ended October 31, 2026. The main change is that the bank's calculations of unrestricted cash and runway are lower than the figures on the compliance certificate. The cash and runway cushions also narrowed over the period, with most of the decline in October. A high-severity item on the unrestricted cash discrepancy between bank statements and the certificate is open and needs review before the certificate figures can be relied on.\"},{\"section\":\"covenants\",\"body\":\"Minimum Runway is compliant at {{fact:7c8c3773-efde-4e13-92a5-b513fb7c1581}} months against a required {{fact:1253ff82-d663-4110-9480-898c859a1ca6}}, a cushion of {{fact:d9e898ae-2b1f-42ba-8999-f930ad36c25c}}. The certificate reports a higher {{fact:ce67f8e2-048a-4b7e-a194-f6f3931844ae}}. Minimum Unrestricted Cash is compliant at {{fact:96b12a12-368d-4129-9236-712e7e3156e6}} against a floor of {{fact:761c7dcc-be1e-42c5-9a5e-26a784793936}}, a cushion of {{fact:05e182ac-c859-46a7-866c-57a6a1be9e48}}. The certificate reports a higher {{fact:8c51de4f-7aa1-4afb-92d7-f9616f5619b3}}. Revenue to Plan is compliant at {{fact:470a6db8-749e-4b27-81a2-e1f4f213f28c}} against a required {{fact:a6d3da68-b287-4d03-8e75-a55154062c5b}}, a cushion of {{fact:61d46daf-6cf4-44b4-a43c-412e83f0fa84}}, and it matches the certificate.\"},{\"section\":\"risks\",\"body\":\"The most important open item is a high-severity work item: bank statements and the certificate disagree on unrestricted cash. It is consistent with the variance between the bank's calculation and the reported figure. Low-severity signals show the unrestricted cash cushion narrowing to {{fact:05e182ac-c859-46a7-866c-57a6a1be9e48}} and the runway cushion narrowing to {{fact:d9e898ae-2b1f-42ba-8999-f930ad36c25c}}, both mostly in October. Cash has the thinnest cushion of the three covenants. Revenue to Plan headroom is essentially flat. This suggests the cash and runway pressure comes from spending or working capital rather than a sales shortfall, which a reviewer may wish to confirm.\"}]}",
+   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"On the bank's calculation, Tidewell Medical meets all of its covenants for the period ended October 31, 2026. However, the certificate reports higher unrestricted cash and runway than the bank calculates. The most important change is the narrowing cash cushion: unrestricted cash of {{fact:c71186d0-4532-4650-b75d-ba279b3f1fd5}} against a {{fact:587ac04d-68ab-41c8-acab-61e61e84577d}} floor leaves headroom of {{fact:370f7427-3266-4da7-b8ed-3e2ef5795114}}, down each month. A high-severity open item is waiting for review because the bank statements and the certificate disagree on unrestricted cash, and it needs a reviewer's determination.\"},{\"section\":\"covenants\",\"body\":\"Minimum Unrestricted Cash is met on the bank's calculation: {{fact:c71186d0-4532-4650-b75d-ba279b3f1fd5}} against a required {{fact:587ac04d-68ab-41c8-acab-61e61e84577d}}, a cushion of {{fact:370f7427-3266-4da7-b8ed-3e2ef5795114}}. The certificate reports a higher {{fact:009b0def-8f49-40a4-b70b-ed2fb4ec1f81}}. Minimum Runway is also met: {{fact:5c962657-cdc9-4c76-86e7-d5549a472a92}} months against {{fact:5924794a-483f-4ff7-a304-12c5266711bc}}, a cushion of {{fact:2be480c2-276a-4efa-87fa-e64211c8e831}}. Here too the certificate is higher, at {{fact:bad0b846-4288-4aaa-957d-a5669c9c321f}}. Revenue to Plan is {{fact:c277bd3c-74ac-4e79-b397-8c5931c3ba02}} against a minimum of {{fact:aa19c384-9083-4796-ab5b-79411e86381e}}, a cushion of {{fact:9a38fdcd-b162-4b44-b97a-35e865451eb5}}, and it agrees with the certificate at {{fact:024f36aa-bc1d-4dfb-8d20-278ef760ee0e}}.\"},{\"section\":\"risks\",\"body\":\"The highest-priority item is the open, high-severity mismatch between bank statements and the certificate on unrestricted cash. The certificate's {{fact:009b0def-8f49-40a4-b70b-ed2fb4ec1f81}} exceeds the bank's calculated {{fact:c71186d0-4532-4650-b75d-ba279b3f1fd5}}, so the reviewer should establish which figure is correct. Low-severity signals show unrestricted cash headroom narrowing each month, with a sharp drop to {{fact:370f7427-3266-4da7-b8ed-3e2ef5795114}}. Runway headroom has also fallen to {{fact:2be480c2-276a-4efa-87fa-e64211c8e831}}, most steeply in October. Revenue headroom slipped only marginally, to {{fact:9a38fdcd-b162-4b44-b97a-35e865451eb5}}, which suggests the cash decline reflects spending or working capital rather than weaker sales.\"}]}",
    "type": "text"
   }
  ],
@@ -17,9 +212,9 @@
  "stop_details": null,
  "stop_reason": "end_turn",
  "usage": {
-  "cache_creation_input_tokens": 3615,
+  "cache_creation_input_tokens": 3658,
   "cache_read_input_tokens": 0,
   "input_tokens": 4,
-  "output_tokens": 1521
+  "output_tokens": 1883
  }
 }
