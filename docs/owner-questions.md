@@ -123,3 +123,4 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 6. Asked for a fuller explanation (given in chat, 21 Nov).
 7. Portfolio order agreed: lowest runway/headroom first, then not measured, then cash-flow positive last.
 8. **Package release by the person who prepared it** (new, 21 Nov): today the engine refuses a release only for missing permission, draft commentary or a failed check — the same portfolio manager may prepare and release a package. The commentary inside has already been approved by a second person. Default: keep as is in 4b; say if release should need a second person.
+8. Package release: no second person needed (owner, 21 Nov). The engine's current rules stand: permission, approved commentary, a passing check.
