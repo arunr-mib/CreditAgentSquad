@@ -18,6 +18,7 @@ from app.squad import drafts
 from app.squad.briefing import build_briefing
 from app.squad.cases import build_approvals, build_case
 from app.squad.client_file import measure_series
+from app.squad.portfolio import build_portfolio, lessons_for
 from app.squad.questions import answer_question
 from app.squad.threads import build_thread
 from app.squad.track_record import track_record
@@ -38,6 +39,19 @@ def get_thread(borrower_id: uuid.UUID, db: Session = Depends(get_db), user: User
 @router.get("/me/briefing")
 def my_briefing(db: Session = Depends(get_db), user: User = Depends(current_user)) -> dict:
     return build_briefing(db, user)
+
+
+@router.get("/me/portfolio")
+def my_portfolio(db: Session = Depends(get_db), user: User = Depends(require(Permission.VIEW))) -> dict:
+    return build_portfolio(db, user)
+
+
+@router.get("/borrowers/{borrower_id}/lessons")
+def borrower_lessons(borrower_id: uuid.UUID, db: Session = Depends(get_db),
+                     _: User = Depends(require(Permission.VIEW))) -> list[dict]:
+    if db.get(Borrower, borrower_id) is None:
+        raise HTTPException(404, "Client not found.")
+    return lessons_for(db, borrower_id)
 
 
 class AnswerIn(BaseModel):

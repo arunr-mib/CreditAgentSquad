@@ -16,6 +16,7 @@ from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.domain.work_items import offered
 from app.squad import rules
+from app.squad.portfolio import lessons_for
 from app.squad.words import decision_words, document_type_words, question_choice
 
 RANK = {"arrivals": 0, "document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4,
@@ -116,6 +117,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
                              "period_end": plain(d.period_end)})
 
     items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower_id)).scalars().all()
+    lessons = lessons_for(db, borrower_id, names={u.id: u.name for u in db.execute(select(User)).scalars()})
     question_ids = {str(i.id) for i in items if i.item_type == "question"}  # their answer is the ask's choice
     item_ids = [str(i.id) for i in items]
     for i in items:
@@ -127,7 +129,10 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
                              "title": i.title, "question": i.question, "options": options, "status": i.status,
                              "choice": question_choice(i.evidence, i.decision),
                              "chosen_by": names.get(str(i.decided_by)) if i.decided_by else None,
-                             "needs_you": needs_you, "state_words": words})
+                             "needs_you": needs_you, "state_words": words,
+                             "habits": [{"id": h["id"], "text": h["text"], "by": h["by"], "at": h["at"]}
+                                        for h in lessons if h["topic"] == (i.evidence or {}).get("topic")
+                                        and h["work_item_id"] != str(i.id)]})
         else:
             messages.append({"id": f"case:{i.id}", "type": "case", "ts": _iso(i.created_at), "work_item_id": str(i.id),
                              "item_type": i.item_type, "title": i.title, "question": i.question,

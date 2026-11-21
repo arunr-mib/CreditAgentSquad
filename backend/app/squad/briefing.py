@@ -45,7 +45,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
     can_decide = can(user.role, Permission.DECIDE_WORK_ITEM)
 
     def mine(borrower_id) -> bool:
-        """Overdue reports and signals are the client's analyst's to work; others see them listed."""
+        """Overdue reports are the client's analyst's to work; others see them listed."""
         return can_decide and rules.is_clients_analyst(user, borrowers[borrower_id])
 
     def ref(borrower_id) -> dict[str, Any]:
@@ -100,17 +100,18 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         evidence = w.evidence or {}
         rules_raised = {evidence.get("rule_id")} | {e.get("rule_id") for e in evidence.get("signals", [])}
         raised |= {(w.borrower_id, r) for r in rules_raised if r}
-    seen_signals: set = set()
+    # Signals are listed, not counted: a signal that needs a decision has a work item, and that item counts.
     signals = [s for s in db.execute(select(Signal).where(Signal.status == "open")).scalars()
-               if (s.borrower_id, s.rule_id) not in raised]
+               if (s.borrower_id, s.rule_id) not in raised and s.borrower_id in borrowers]
     signals.sort(key=lambda x: (SEVERITY_RANK.get(x.severity, 9), -x.created_at.timestamp()))
+    by_client: dict[Any, list[Signal]] = {}
     for s in signals:
-        if s.borrower_id in borrowers and s.borrower_id not in seen_signals:
-            seen_signals.add(s.borrower_id)
-            label = SIGNAL_LABELS.get(s.rule_id, s.rule_id.replace("_", " "))
-            items.append({**ref(s.borrower_id), "key": f"signal:{s.borrower_id}", "kind": "signal",
-                          "title": f"Signal: {label}", "state": "new signal", "severity": s.severity,
-                          "needs_you": mine(s.borrower_id), "work_item_id": None, "_due": None})
+        by_client.setdefault(s.borrower_id, []).append(s)
+    for bid, rows in by_client.items():
+        labels = list(dict.fromkeys(SIGNAL_LABELS.get(s.rule_id, s.rule_id.replace("_", " ")) for s in rows))
+        title = f"Signal: {labels[0]}" if len(labels) == 1 else f"Signals: {', '.join(labels)}"
+        items.append({**ref(bid), "key": f"signal:{bid}", "kind": "signal", "title": title, "state": "watching",
+                      "severity": rows[0].severity, "needs_you": False, "work_item_id": None, "_due": None})
 
     horizon = today + timedelta(days=FUNDING_WINDOW_DAYS)
     for f in db.execute(select(FundingEvent).where(FundingEvent.status.in_(("expected", "signed")),

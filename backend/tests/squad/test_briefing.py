@@ -132,7 +132,7 @@ def test_an_overdue_report_is_listed_for_all_and_counts_only_for_deciders(db, wo
     assert len(build_briefing(db, world["admin"])["items"]) == 1
 
 
-def test_one_signal_per_borrower_the_most_severe(db, world):
+def test_one_signal_row_per_client_naming_every_signal_most_severe_first(db, world):
     from app.core import clock
     from app.domain.monitoring import Signal
     today = clock.today(db)
@@ -141,8 +141,9 @@ def test_one_signal_per_borrower_the_most_severe(db, world):
                       severity=sev, status="open"))
     db.flush()
     signals = [i for i in build_briefing(db, world["analyst"])["items"] if i["kind"] == "signal"]
-    assert len(signals) == 1 and signals[0]["severity"] == "high"
-    assert signals[0]["title"] == "Signal: Covenant cushion below the policy floor"
+    assert len(signals) == 1 and signals[0]["severity"] == "high" and signals[0]["needs_you"] is False
+    assert signals[0]["title"].startswith("Signals: Covenant cushion below the policy floor, ")
+    assert signals[0]["title"].count(", ") == 2
 
 
 def test_upcoming_funding_within_fourteen_days_is_listed_and_does_not_count(db, world):
@@ -236,7 +237,7 @@ def test_an_item_assigned_to_me_counts_whoever_the_clients_analyst_is(db, world)
     assert build_briefing(db, tomas)["needs_you"] == 1
 
 
-def test_overdue_reports_and_signals_count_only_for_the_clients_analyst(db, world):
+def test_overdue_reports_count_for_the_clients_analyst_and_signals_never_count(db, world):
     from app.core import clock
     from app.domain.monitoring import Signal
     from app.domain.terms import ReportingObligation
@@ -251,7 +252,7 @@ def test_overdue_reports_and_signals_count_only_for_the_clients_analyst(db, worl
                   severity="high", status="open"))
     db.flush()
     priya, other, officer = (build_briefing(db, u) for u in (world["analyst"], tomas, world["officer"]))
-    assert priya["needs_you"] == 2
+    assert priya["needs_you"] == 1
     assert other["needs_you"] == 0 and len(other["items"]) == 2
     assert officer["needs_you"] == 0 and len(officer["items"]) == 2
 
