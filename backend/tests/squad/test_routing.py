@@ -279,15 +279,15 @@ def test_an_unknown_required_permission_is_a_rule_refusal_422(db, client, world)
     assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 422
 
 
-def test_assign_refuses_a_routed_case_unless_the_caller_holds_it(db, client, world):
+def test_assign_refuses_a_routed_case_whoever_asks(db, client, world):
     item = _case(db, world["borrower"])
     route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
     db.commit()
     sign_in(client, "priya.raman")
     r = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": None})
     assert r.status_code == 409 and "Return" in r.json()["detail"]
-    sign_in(client, "helen.strand")
-    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": None}).status_code == 200
+    sign_in(client, "helen.strand")  # even the person holding it goes through Route or Return
+    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": None}).status_code == 409
 
 
 def test_waiting_is_zero_when_approvals_is_not_offered(db, world):
@@ -295,3 +295,34 @@ def test_waiting_is_zero_when_approvals_is_not_offered(db, world):
     tomas = _user(db, "tomas.keller")
     route_work_item(db, item, user=world["analyst"], to_user_id=tomas.id, view=VIEW)
     assert build_briefing(db, tomas)["approvals"] == {"offered": False, "waiting": 0}
+
+
+def test_assign_cannot_walk_a_returned_case_back_to_the_officer(db, client, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    return_work_item(db, item, user=world["officer"], reason="Attach the signed term sheet first.")
+    db.commit()
+    sign_in(client, "priya.raman")
+    for body in ({"assigned_to": str(world["officer"].id)}, {"assigned_to": None}):
+        r = client.post(f"/api/v1/work-items/{item.id}/assign", json=body)
+        assert r.status_code == 409 and "Route" in r.json()["detail"]
+    sign_in(client, "helen.strand")
+    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 422
+
+
+def test_a_case_is_returned_whoever_it_is_assigned_to(db, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    return_work_item(db, item, user=world["officer"], reason="Attach the signed term sheet first.")
+    for holder in (world["officer"].id, None):  # however it got there, a return stands until it is routed again
+        item.assigned_to = holder
+        why = workflow.decision_refusal(db, item, user_id=world["officer"].id, user_role="credit_officer",
+                                        decision="no_action")
+        assert isinstance(why, ValueError) and "returned" in str(why)
+
+
+def test_an_item_with_an_unknown_permission_is_not_in_an_analysts_briefing(db, world):
+    item = _case(db, world["borrower"], permission="decide_work_item")
+    item.required_permission = "no_such_permission"
+    db.flush()
+    assert not any(i["work_item_id"] == str(item.id) for i in build_briefing(db, world["analyst"])["items"])

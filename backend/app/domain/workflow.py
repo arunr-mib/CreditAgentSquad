@@ -374,8 +374,9 @@ def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, de
         from app.domain.org import User
 
         holder = db.get(User, item.assigned_to) if item.assigned_to else None
-        if last.action == RETURNED and str((last.payload or {}).get("returned_to")) == str(item.assigned_to):
-            return ValueError(f"This case was returned to {holder.name if holder else 'the analyst'}; it can be "
+        if last.action == RETURNED:  # a return stands until the case is routed again, whoever holds it
+            sent_back = db.get(User, (last.payload or {}).get("returned_to"))
+            return ValueError(f"This case was returned to {sent_back.name if sent_back else 'the analyst'}; it can be "
                               "decided once it is sent again.")
         if item.assigned_to is not None and str(item.assigned_to) != str(user_id):
             return ValueError(f"This case was sent to {holder.name if holder else 'someone else'}; only they can decide it.")

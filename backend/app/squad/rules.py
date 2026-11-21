@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import object_session
 
 from app.core.ledger import LedgerEvent
-from app.core.roles import Permission, Role, SecondPersonRequired
+from app.core.roles import Permission, Role, SecondPersonRequired, can
 from app.domain import workflow
 from app.domain.credit import Borrower
 from app.domain.monitoring import WorkItem
@@ -18,7 +18,10 @@ def _refusal(user: User, item: WorkItem) -> Exception | None:
 
 def holds_permission(user: User, item: WorkItem) -> bool:
     """For an open item: the person's role holds the permission the item needs."""
-    return not isinstance(_refusal(user, item), PermissionError)
+    try:
+        return can(user.role, Permission(item.required_permission))
+    except ValueError:  # an unknown permission is nobody's to act on
+        return False
 
 
 def prepared_by(user: User, item: WorkItem) -> bool:
