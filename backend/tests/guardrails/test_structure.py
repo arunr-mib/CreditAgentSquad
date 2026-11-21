@@ -38,6 +38,7 @@ def test_honest_notes_pass(text):
     "Debt on page 6 is large.",          # above the page count
     "Debt schedule on page 5x was fine.",
     "The account (ending 4.25%) is fine.",
+    "Ending 125000 is the rollforward.",   # six digits: an amount, not an account mask
     "The account (ending 1234) is fine.",  # not printed in the document
     "Coverage was two times coverage.",
     "EBITDA was 2025 in the nine months.",
@@ -96,8 +97,10 @@ def refs_ok(text, refs=REFS):
 
 
 @pytest.mark.parametrize("text", [
-    "Only one terms version is on file (version 1, approved).",
-    "Rerunning the test under version 2 gave the same failure.",
+    "Only one terms version 1 is on file.",
+    "The approved version 1 governs.",
+    "Version 2 of the terms was not used.",
+    "Rerunning the test under terms version 2 gave the same failure.",
     "A search found only the agreement's own Section 9.1 clause.",
     "Revenue to Plan (Section 6.3) is the test.",
     "The test in Section 6.12(b) applies.",
@@ -110,6 +113,8 @@ def test_known_versions_and_sections_pass_anywhere(text):
     "Under version 7 the ratio was higher.",       # no such version
     "The limit stood at Section 4.25 on that day.",  # not a section the run read
     "Leverage was version 1.5x.",
+    "Rerunning under version 2 gave the same failure.",   # a bare "version N" is not a qualified version
+    "Leverage is terms version 1.5x.",
     "Section 9.1x was the multiple.",
     "The shortfall is not limited to one month.",   # "to one" stays refused; the retry handles it
     "Growth over a four-quarter climb.",
@@ -143,9 +148,10 @@ def _problems(answer, refs):
 def test_recorded_covenant_answers_pass_or_need_exactly_the_one_retry():
     # Corvane's final answer said the shortfall was "not limited to one month": that is the one retry
     corvane = _recorded_covenant_answer("corvane-analytics/2026-10-31/revenue_vs_plan/06.json")
-    assert _problems(corvane, References(frozenset({1}), frozenset({"6.3"}))) == ["to one"]
+    # (and its bare "version 1" mentions, which now need a qualifier: that is a second thing to correct in the same retry)
+    assert _problems(corvane, References(frozenset({1}), frozenset({"6.3"}))) == ["1", "1", "to one"]
     pellham = _recorded_covenant_answer("pellham-grain/2026-09-30/fccr/06.json")
-    assert _problems(pellham, References(frozenset({1}), frozenset({"6.1", "9.1"}))) == []
+    assert _problems(pellham, References(frozenset({1}), frozenset({"6.1", "9.1"}))) == ["1"]
     # without the references the same answers were refused outright
     assert _problems(pellham, References()) != []
 
@@ -155,3 +161,10 @@ def test_a_decimal_at_the_start_of_a_page_line_is_not_a_section_heading():
     assert sections_printed("3.25 : 1 test\n4.50 times\n") == set()
     assert sections_printed("3.25 Minimum Revenue\nSee Section 6.3 and § 9.1.\n7.2. Waivers") == {"3.25", "6.3", "9.1", "7.2"}
     assert not refs_ok("The limit stood at Section 3.25.", References(sections=frozenset(sections_printed("3.25 : 1 test"))))
+
+
+def test_only_printed_ending_or_mask_contexts_register_an_account_ending():
+    st = DocumentStructure.from_pages([
+        "Collateral account (ending 9001) pledged\nAccount ending 9002 total\nacct xxxx9003\nEnding 125000\n"
+        "Ending 4417\nEnding balance 5555\nCard ****9004"])
+    assert st.endings == {"9001", "9002", "9003", "9004"}

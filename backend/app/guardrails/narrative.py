@@ -88,7 +88,14 @@ _BRACKETED_REF = (re.compile(r"\(\s*$"), re.compile(r"^\s*\)"))
 _PAGE_TAIL = r"(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|turns?|thousand|million|billion|bps|basis))"
 _PAGE_REF = re.compile(r"(?P<prep>\b(?:on|in|see|from|at)\s+)?\bpages?\s+(?P<n>\d{1,3})" + _PAGE_TAIL, re.I)
 _NOTE_REF = re.compile(r"\bNotes?\s+(?P<n>\d{1,3})" + _PAGE_TAIL)
-_ENDING_REF = re.compile(r"\bending\s+(?P<n>\d{3,6})(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|thousand|million|billion))", re.I)
+_ENDING_REF = re.compile(r"\bending\s+(?:in\s+)?(?<![\d,.])(?P<n>\d{4})(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|thousand|million|billion))", re.I)
+# an account's last four digits as a statement prints them: "(ending 9001)", "ending in 9001", "account ... ending
+# 9001" on one line, or a masked number ("xxxx9001", "****9001"). A bare "Ending 125000" (a rollforward amount) is
+# none of these.
+_ENDING_PRINTED = re.compile(
+    r"\(\s*ending\s+(?:in\s+)?(\d{4})\s*\)|\bending\s+in\s+(\d{4})\b"
+    r"|\b(?:account|acct\.?|a/c|card)\b[^\n]{0,40}?\bending\s+(\d{4})\b(?![,.]?\d)"
+    r"|(?:x{2,}|\*{2,}|\u2022{2,})\s?(\d{4})\b(?![,.]?\d)", re.I)
 _YEAR_REF = re.compile(r"(?P<lead>\b(?:\w+-(?:month|quarter|year)|comparatives?\s+(?:for|from|of))\s+)(?P<n>20[0-3]\d)\b(?![,.]?\d|\s?%|\s*(?:x\b|thousand|million|billion|percent))", re.I)
 # where a reference may stand: opening the text or a clause ("Page 5 (Note 1 - ...)", "(page 5)"), or after
 # a preposition that follows the name of a part of a document or a past participle ("rows on page 4",
@@ -120,8 +127,8 @@ class DocumentStructure:
         for text in pages:
             for m in re.finditer(r"(?im)^\s*notes?\s+(\d{1,3})\b", text):
                 notes.add(int(m.group(1)))
-            for m in re.finditer(r"(?i)\bending\s+(?:in\s+)?(\d{3,6})\b|\b(?:x{2,}|\*{2,}|\u2022+)\s?(\d{3,6})\b", text):
-                endings.add(m.group(1) or m.group(2))
+            for m in _ENDING_PRINTED.finditer(text):
+                endings.add(next(g for g in m.groups() if g))
             for m in re.finditer(r"\b(20[0-3]\d)\b", text):
                 years.add(int(m.group(1)))
         return cls(len(pages), frozenset(notes), frozenset(endings), frozenset(years))
@@ -136,7 +143,10 @@ class References:
     sections: frozenset[str] = frozenset()
 
 
-_VERSION_REF = re.compile(r"\bversions?\s+(?P<n>\d{1,3})\b(?![.,]\d|\s*(?:x\b|%|percent|times|turns?))", re.I)
+# a version is named with its qualifier: "terms version 2", "approved version 2", "version 2 of the terms"
+_VERSION_REF = re.compile(
+    r"\b(?:(?:terms|approved)\s+version\s+(?P<n>\d{1,3})\b|version\s+(?P<m>\d{1,3})\s+of\s+the\s+terms\b)"
+    r"(?![.,]\d|\s*(?:x\b|%|percent|times|turns?))", re.I)
 _SECTION_REF = re.compile(
     r"\b(?:Sections?|§)\s*(?P<n>\d{1,3}(?:\.\d{1,3})*)(?:\([A-Za-z0-9]{1,4}\))*(?![\w]|[.,]\d|%|\s*(?:x\b|percent|times|turns?))")
 # heading shapes only: "Section 6.3", "§ 6.3", or a line that opens with a number and then a capitalised word
@@ -155,7 +165,8 @@ def _blank_refs(text: str, refs: References) -> str:
     chars = list(text)
     for pattern, ok in ((_VERSION_REF, lambda g: int(g) in refs.versions), (_SECTION_REF, lambda g: g in refs.sections)):
         for m in pattern.finditer(text):
-            if ok(m.group("n")):
+            groups = m.groupdict()
+            if ok(groups.get("n") or groups.get("m")):
                 for i in range(m.start(), m.end()):
                     chars[i] = " "
     return "".join(chars)
