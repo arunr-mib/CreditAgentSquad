@@ -34,7 +34,7 @@ from app.domain.facts_service import add_fact, current_fact, label_confirmed, st
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.work_items import raise_item
 from app.guardrails.labels import mapping_doubt, reads_as
-from app.guardrails.narrative import check_narrative
+from app.guardrails.narrative import DocumentStructure, check_narrative
 from app.guardrails.quotes import dates_in, quote_on_page
 from app.guardrails.units import scale_of, units_in
 
@@ -409,8 +409,13 @@ def spread_document(
     out: SpreadExtraction = outcome.output  # type: ignore[assignment]
 
     # notes are prose from the model: they may be shown only if they contain no typed figure
+    # (a place in the document, a note heading, an account ending or a year is allowed only if the
+    # document's own pages have it: the allowance is built here, from the pages, never from the model)
+    structure = DocumentStructure.from_pages(
+        p.text for p in db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)
+                                   .order_by(DocumentPage.page_number)).scalars())
     for note in out.notes:
-        problems = check_narrative(note, {})
+        problems = check_narrative(note, {}, structure=structure, echo=out.scale_statement)
         if problems:
             result.notes.append({"layer": "narrative", "check": "figure_untraceable", "action": "dropped",
                                  "detail": "a note from the agent contained a typed figure and was removed"})

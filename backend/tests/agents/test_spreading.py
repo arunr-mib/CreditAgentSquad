@@ -290,3 +290,11 @@ def test_a_borrowers_own_wording_is_confirmed_once_by_a_person_and_then_remember
     db.flush()
     elsewhere, _ = spread(db, other, perfect_answer(labels=labels), pdf=build_pdf(labels=labels))
     assert elsewhere.status == "needs_person"
+
+
+def test_a_note_may_point_at_a_page_the_document_has(db, setup):
+    notes = ["The debt schedule on page 2 has no template line.", "Leverage on page 2 is high.",
+             "The debt schedule on page 9 has no template line."]
+    result, _ = spread(db, setup, perfect_answer(notes=notes))
+    shown = [n["detail"] for n in result.notes if n["action"] == "shown"]
+    assert shown == [notes[0]]

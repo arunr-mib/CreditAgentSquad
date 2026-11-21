@@ -69,6 +69,8 @@ _MONTH_CAP = (
 _STRICT_NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
     ("fact_ref", re.compile(r"\{\{fact:[^}]*\}\}")),
     ("iso_date", re.compile(rf"(?<![\w.,$-]){_YEAR}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])\b(?![\w,.-]*\d)")),
+    ("date_range", re.compile(
+        rf"\b{_MONTH_CAP}\s+{_DAY}(?:st|nd|rd|th)?\s+(?:to|through)\s+{_MONTH_CAP}\s+{_DAY}(?:st|nd|rd|th)?,?\s+{_YEAR}\b(?![,.]?\d)")),
     ("month_day_year", re.compile(rf"\b{_MONTH_CAP}\s+{_DAY}(?:st|nd|rd|th)?,?\s+{_YEAR}\b(?![,.]?\d)")),
     ("day_month_year", re.compile(rf"(?<![\w.,$-]){_DAY}(?:st|nd|rd|th)?\s+{_MONTH_CAP}\s+{_YEAR}\b(?![,.]?\d)")),
     ("month_day", re.compile(rf"\b(?:on|by|of|before|after|until|through|dated|ended|ending|since|from)\s+{_MONTH_CAP}\s+{_DAY}(?:st|nd|rd|th)?\b(?![,.]?\d|\s*(?:percent|%|x\b|times|million|thousand|billion))")),

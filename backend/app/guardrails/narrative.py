@@ -29,12 +29,12 @@ _COUNT_NOUN = (r"facilit(?:y|ies)|loans?|borrowers?|customers?|suppliers?|vendor
                r"years?|weeks?|periods?|amendments?|waivers?|exceptions?|items?|locations?|plants?|sites?|"
                r"statements?|certificates?|documents?|reports?|tests?|signals?|lenders?|guarantors?|subsidiar(?:y|ies)|"
                r"segments?|contracts?|accounts?|occasions?|instances?|reasons?|factors?|sections?|parties|owners?|"
-               r"members?|directors?|officers?|employees?|products?|lines?|projects?|properties|payments?|draws?")
+               r"members?|directors?|officers?|employees?|products?|lines?|projects?|properties|payments?|draws?|totals?")
 _COUNT_ADJECTIVE = (r"consecutive|largest|major|principal|main|key|new|open|remaining|prior|previous|next|last|past|"
                     r"additional|other|separate|straight|successive|fiscal|calendar|interim|reporting|financial|"
-                    r"compliance|late|missed|scheduled|operating|trailing")
+                    r"compliance|late|missed|scheduled|operating|trailing|bank|template|account|summary|total")
 _ALLOWED_COUNT = re.compile(
-    rf"^[\s-]+(?:(?:{_COUNT_ADJECTIVE})\s+){{0,2}}(?:{_COUNT_NOUN})\b(?!\s+(?:of\s+)?(?:ebitda|revenue|debt|income|fixed|interest|service|payroll|"
+    rf"^[\s-]+(?:(?:{_COUNT_ADJECTIVE})\s+){{0,3}}(?:{_COUNT_NOUN})\b(?!\s+(?:of\s+)?(?:ebitda|revenue|debt|income|fixed|interest|service|payroll|"
     r"expenses?|sales|purchases|inventory|cover|coverage|liquidity|runway|cash))"
     rf"|^\s+of\s+(?:the|its|their|these|those|them|which)\b", re.I)
 # a Roman numeral standing for a number ("leverage is IV times"); after a capitalised word it is
@@ -84,6 +84,78 @@ _AFTER_REF = re.compile(
 _BRACKETED_REF = (re.compile(r"\(\s*$"), re.compile(r"^\s*\)"))
 
 
+_PAGE_TAIL = r"(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|turns?|thousand|million|billion|bps|basis))"
+_PAGE_REF = re.compile(r"(?P<prep>\b(?:on|in|see|from|at)\s+)?\bpages?\s+(?P<n>\d{1,3})" + _PAGE_TAIL, re.I)
+_NOTE_REF = re.compile(r"\bNotes?\s+(?P<n>\d{1,3})" + _PAGE_TAIL)
+_ENDING_REF = re.compile(r"\bending\s+(?P<n>\d{3,6})(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|thousand|million|billion))", re.I)
+_YEAR_REF = re.compile(r"(?P<lead>\b(?:\w+-(?:month|quarter|year)|comparatives?\s+(?:for|from|of))\s+)(?P<n>20[0-3]\d)\b(?![,.]?\d|\s?%|\s*(?:x\b|thousand|million|billion|percent))", re.I)
+# where a reference may stand: opening the text or a clause ("Page 5 (Note 1 - ...)", "(page 5)"), or after
+# a preposition that follows the name of a part of a document or a past participle ("rows on page 4",
+# "Dividends paid on page 4"). A page after a measure ("leverage on page 5") is not one.
+_CLAUSE_START = re.compile(r"(?:^|[.;:(,\u2013\u2014-]\s*|\b(?:in|see|under|per|and|or|of|with)\s+)$", re.I)
+_PART_WORD = re.compile(
+    r"\b(?:rows?|lines?|items?|entr(?:y|ies)|schedules?|statements?|tables?|sheets?|listings?|reports?|certificates?|"
+    r"pages?|notes?|sections?|components?|accounts?|balances?|rollforwards?|roll-forwards?|\w+ed|paid|shown|set|"
+    r"printed|found|given|reported)\s*$|\bnotes?\s+\d{1,3}\s*$|[)'\"\u2019]\s*$", re.I)
+
+
+@dataclass(frozen=True)
+class DocumentStructure:
+    """What the printed document says about itself, built by code from its page texts: how many pages
+    it has, which note headings are printed, which account endings and which years appear. A note may
+    point at a place in the document only if the place exists."""
+
+    page_count: int
+    note_numbers: frozenset[int] = frozenset()
+    endings: frozenset[str] = frozenset()
+    years: frozenset[int] = frozenset()
+
+    @classmethod
+    def from_pages(cls, texts: Iterable[str]) -> "DocumentStructure":
+        pages = list(texts)
+        notes: set[int] = set()
+        endings: set[str] = set()
+        years: set[int] = set()
+        for text in pages:
+            for m in re.finditer(r"(?im)^\s*notes?\s+(\d{1,3})\b", text):
+                notes.add(int(m.group(1)))
+            for m in re.finditer(r"(?i)\bending\s+(?:in\s+)?(\d{3,6})\b|\b(?:x{2,}|\*{2,}|\u2022+)\s?(\d{3,6})\b", text):
+                endings.add(m.group(1) or m.group(2))
+            for m in re.finditer(r"\b(20[0-3]\d)\b", text):
+                years.add(int(m.group(1)))
+        return cls(len(pages), frozenset(notes), frozenset(endings), frozenset(years))
+
+
+def _blank_structure(text: str, st: DocumentStructure) -> str:
+    """Blank the places in a note that point into the document and are true of it. Anything else
+    stays for the figure checks to refuse."""
+    spans: list[tuple[int, int]] = []
+    for m in _PAGE_REF.finditer(text):
+        n = int(m.group("n"))
+        if not 1 <= n <= st.page_count:
+            continue
+        before = text[:m.start()]
+        if m.group("prep"):
+            if _PART_WORD.search(before) or _CLAUSE_START.search(before):
+                spans.append((m.start(), m.end()))
+        elif _CLAUSE_START.search(before):
+            spans.append((m.start(), m.end()))
+    for m in _NOTE_REF.finditer(text):
+        if int(m.group("n")) in st.note_numbers and _CLAUSE_START.search(text[:m.start()]):
+            spans.append((m.start(), m.end()))
+    for m in _ENDING_REF.finditer(text):
+        if m.group("n") in st.endings:
+            spans.append((m.start("n"), m.end("n")))
+    for m in _YEAR_REF.finditer(text):
+        if int(m.group("n")) in st.years:
+            spans.append((m.start("n"), m.end("n")))
+    chars = list(text)
+    for a, b in spans:
+        for i in range(a, b):
+            chars[i] = " "
+    return "".join(chars)
+
+
 @dataclass(frozen=True)
 class FactView:
     """What the renderer needs to know about a fact."""
@@ -122,12 +194,15 @@ def check_narrative(
     allowed_figures: Iterable[Decimal] = (),
     known_ratios: Iterable[Decimal] = (),
     echo: str = "",
+    structure: DocumentStructure | None = None,
 ) -> list[Note]:
     """Findings for a piece of agent text. An empty list means the text may be shown.
 
     - every reference must be well formed and name a fact in scope;
     - every figure typed outside a reference must match `allowed_figures` (figures from quotes
       the agent cited and constants from approved terms) or a known ratio;
+    - `structure` (built by code from the document's own pages) lets a note point at a page, a note
+      heading, an account ending or a comparative year that the document really has;
     - a quantity in words is refused unless the same words are in `echo`, the text of the
       question the answer responds to (a person's own threshold may be said back to them).
     """
@@ -157,6 +232,13 @@ def check_narrative(
     # superscript digits read as digits)
     ratios = list(known_ratios)
     outside = unicodedata.normalize("NFKC", _ANY_REF.sub(lambda m: " " * len(m.group(0)), text))
+    if structure is not None:
+        # a page the document does not have is refused, whatever else allows a page number
+        for m in _PAGE_REF.finditer(outside):
+            if not 1 <= int(m.group("n")) <= structure.page_count:
+                notes.append(Note("narrative", "figure_untraceable", "retry",
+                                  "a page was named that the document does not have", subject=m.group("n")))
+        outside = _blank_structure(outside, structure)
     for problem in untraceable_figures(outside, allowed_figures, ratios, strict=True):
         notes.append(Note(
             "narrative", "figure_untraceable", "retry",
