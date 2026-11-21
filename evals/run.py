@@ -379,9 +379,46 @@ def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Ca
 # ---- the suite ------------------------------------------------------------------------------------
 
 
+RECORDABLE_AGENTS = ("covenant", "review", "early_warning")
+
+
+class SelectiveRecordingClient:
+    """Record mode for chosen agents, recorded replay for every other. The agent is the first part
+    of a request's record key (``covenant/<borrower>/...``). A replayed recording that is stale or
+    missing raises, as in recorded mode: nothing is hidden and nothing but the chosen agents is billed."""
+    mode = "record"
+
+    def __init__(self, recording, replay, agents: frozenset[str]):
+        self.recording, self.replay, self.agents = recording, replay, frozenset(agents)
+
+    @property
+    def prompt_only_verified(self) -> int:
+        return getattr(self.replay, "prompt_only_verified", 0)
+
+    def create(self, request):
+        agent = request.record_key.split("/", 1)[0]
+        return (self.recording if agent in self.agents else self.replay).create(request)
+
+
+def parse_record_agents(text: str | None) -> frozenset[str]:
+    """``covenant,review,early_warning`` -> a set; an unknown agent is refused."""
+    names = frozenset(n.strip() for n in (text or "").split(",") if n.strip())
+    unknown = sorted(names - set(RECORDABLE_AGENTS))
+    if unknown:
+        raise RunRefused(f"--record-agents: unknown agent(s) {', '.join(unknown)}; choose from {', '.join(RECORDABLE_AGENTS)}")
+    return names
+
+
 def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tamper=None,
-                accept_stale: frozenset[str] = frozenset()):
+                accept_stale: frozenset[str] = frozenset(), record_agents: frozenset[str] = frozenset()):
     """The model client for a mode. Stand-in and recorded never call a model."""
+    if record_agents:
+        if mode != "record":
+            raise RunRefused("--record-agents needs --mode record")
+        from app.agents.llm import RecordedClient
+
+        return SelectiveRecordingClient(make_client("record", book, recordings=recordings),
+                                        RecordedClient(recordings, accept_stale, resolver=_resolver()), record_agents)
     if mode == "standin":
         from evals.standin import StandInReader
 
@@ -398,6 +435,12 @@ def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tam
     if isinstance(client, RecordingClient):
         client.resolver = RESOLVER  # saves what each id stands for beside the response
     return client
+
+
+def _resolver():
+    from evals.idmap import RESOLVER
+
+    return RESOLVER
 
 
 def check_may_start(mode: str, codes: list[str], *, oracle: Path, allow_unsigned: bool = False, confirm_billable: bool = False,
@@ -482,7 +525,8 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
               decide: bool = True, passes: int = 1, database_url: str | None = None, engine: Engine | None = None,
               allow_unsigned: bool = False, confirm_billable: bool = False, recordings: Path = RECORDINGS_DIR,
               tamper=None, progress: Callable[[str], None] | None = None, keep_recordings: bool = False,
-              accept_stale: frozenset[str] = frozenset()) -> dict[str, Any]:
+              accept_stale: frozenset[str] = frozenset(),
+              record_agents: frozenset[str] = frozenset()) -> dict[str, Any]:
     """Run and grade the suite. Returns the results document (see evals/README.md)."""
     from evals.grade import build_results
 
@@ -497,7 +541,8 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
     try:
         with scratch_file_store():
             ensure_schema(engine)
-            client = make_client(mode, book, recordings=recordings, tamper=tamper, accept_stale=accept_stale)
+            client = make_client(mode, book, recordings=recordings, tamper=tamper, accept_stale=accept_stale,
+                                 record_agents=record_agents)
             all_passes = []
             for n in range(1, passes + 1):
                 if progress:
@@ -511,6 +556,7 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
                             standin_disagreements=getattr(client, "disagreements", []),
                             unsigned_oracle_rows=len(unsigned_oracle_rows(codes, oracle)), scope=only)
     results["meta"]["accepted_stale"] = sorted(accept_stale)
+    results["meta"]["record_agents"] = sorted(record_agents)
     results["meta"]["prompt_only_verified"] = getattr(client, "prompt_only_verified", 0)
     if keep_recordings:
         results["recordings"] = all_passes
@@ -557,6 +603,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--recordings", default=str(RECORDINGS_DIR))
     parser.add_argument("--accept-stale", nargs="*", default=[], metavar="AGENT",
                         help="recorded mode: replay stale recordings of these agents (printed in the scorecard)")
+    parser.add_argument("--record-agents", metavar="AGENTS",
+                        help="record mode only: comma-separated agents to record (covenant,review,early_warning); "
+                             "every other agent replays from its existing recording")
     parser.add_argument("--allow-unsigned", action="store_true",
                         help="live/record only: run although oracle rows in scope are not signed by the owner")
     parser.add_argument("--confirm-billable", action="store_true",
@@ -567,6 +616,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--mutations", action="store_true",
                         help="stand-in only: also run the mutation checks (about one minute) and add them to the scorecard")
     args = parser.parse_args(argv)
+    try:
+        args.record_agents = parse_record_agents(args.record_agents)
+        if args.record_agents and args.mode != "record":
+            raise RunRefused("--record-agents needs --mode record")
+    except RunRefused as exc:
+        print(f"Not started: {exc}", file=sys.stderr)
+        return 2
 
     names = ["legacy", "innovation"] if args.book == "both" else [args.book]
     plan = []
@@ -600,7 +656,8 @@ def _run_one(args, root: Path, stem: str) -> int:
             mode=args.mode, book_root=root, only=args.only or None, decide=args.decide, passes=args.passes,
             engine=engine, allow_unsigned=args.allow_unsigned, confirm_billable=args.confirm_billable,
             recordings=Path(args.recordings), progress=lambda line: print(line, flush=True),
-            keep_recordings=bool(args.save_recordings), accept_stale=frozenset(args.accept_stale))
+            keep_recordings=bool(args.save_recordings), accept_stale=frozenset(args.accept_stale),
+            record_agents=args.record_agents)
     except (RunRefused, FileNotFoundError, KeyError) as exc:
         print(f"Not started: {exc}", file=sys.stderr)
         return 2
