@@ -17,6 +17,9 @@ from app.domain.monitoring import Cycle
 from app.guardrails.narrative import FactView, check_narrative, format_fact, referenced_fact_ids
 from app.guardrails.policy import PROHIBITED_PHRASES
 
+# Written by code when the sheet has nothing to say about risks: no model text, and no figure.
+NO_RISKS_SENTENCE = "No signals fired and no items are open for this period."
+
 SECTIONS = ("summary", "performance", "covenants", "collateral", "risks")
 
 
@@ -84,5 +87,10 @@ def draft_commentary(db: Session, *, borrower: Borrower, cycle: Cycle, sheet: di
                                  "detail": f"{section.section}: makes no reference to any fact"})
         else:
             result.sections[section.section] = section.body
+    # a sheet with no fired signal and no open item has nothing for a risks section to cite: code writes the
+    # sentence, whatever the model drafted (a model's "risks" there could only be invented or empty)
+    if not sheet.get("signals") and not any(i.get("status") == "open" for i in sheet.get("work_items", [])):
+        result.sections["risks"] = NO_RISKS_SENTENCE
+        result.notes = [n for n in result.notes if n.get("section") != "risks"]
     outcome.run.guardrail_notes = result.notes
     return result

@@ -96,13 +96,15 @@ def test_draft_is_checked_stored_as_agent_written_and_needs_a_person(db, world, 
     assert cycle.stage == "review_prep"
     sheet_row = db.execute(select(ReviewSheet).where(ReviewSheet.cycle_id == cycle.id)).scalar_one()
     stored = {c.section: c for c in db.execute(select(Commentary).where(Commentary.review_sheet_id == sheet_row.id)).scalars()}
-    assert set(stored) == {"summary", "performance"}
+    # the risks draft was refused by policy, but this sheet has no signal and no open item: code wrote that section
+    assert set(stored) == {"summary", "performance", "risks"}
+    assert stored["risks"].body == "No signals fired and no items are open for this period."
     assert all(c.author_type == "agent" and c.status == "draft" for c in stored.values())
     text = review_service.rendered(db, stored["performance"])
     assert "{{" not in text and text.count("million") == 2 and "$" in text
     item = db.execute(select(WorkItem).where(WorkItem.item_type == "review.commentary_approval")).scalar_one()
     dropped = {n["check"] for n in item.guardrail_notes}
-    assert dropped == {"figure_untraceable", "prohibited_phrase"} and item.status == "open"
+    assert dropped == {"figure_untraceable"} and item.status == "open"
 
     analyst, manager = user(db, "analyst"), user(db, "portfolio_manager")
     with pytest.raises(PermissionError):
@@ -127,7 +129,7 @@ def test_draft_is_checked_stored_as_agent_written_and_needs_a_person(db, world, 
     workflow.drain(db)
     assert sheet_row.status == "reviewed" and sheet_row.approved_by == manager.id
     current = {c.section: c.status for c in review_service.current_commentary(db, sheet_row)}
-    assert current == {"summary": "approved", "performance": "approved", "covenants": "approved"}
+    assert current == {"summary": "approved", "performance": "approved", "covenants": "approved", "risks": "approved"}
     assert cycle.status == "closed"  # nothing else was open, so the cycle ran to its close
 
 
@@ -171,12 +173,12 @@ def test_withheld_sections_are_named_to_the_approver_with_the_reason(db, world, 
     # the reason says why; the typed figure itself is not repeated, as the agent's figure is unverified
     reason = next(w for w in withheld if w["section"] == "covenants")["reason"]
     assert reason.startswith("a figure was typed, not referenced") and "1.20" not in reason
-    assert item.evidence["sections"] == ["performance", "summary"]
+    assert item.evidence["sections"] == ["performance", "risks", "summary"]
 
     sheet_row = db.execute(select(ReviewSheet).where(ReviewSheet.cycle_id == cycle.id)).scalar_one()
     shown = _sheet_out(db, sheet_row)
     assert [w["section"] for w in shown["withheld_sections"]] == ["collateral", "covenants"]
-    assert {c["section"] for c in shown["commentary"]} == {"summary", "performance"}
+    assert {c["section"] for c in shown["commentary"]} == {"summary", "performance", "risks"}
 
 
 def test_a_full_draft_says_nothing_was_withheld(db, world, monkeypatch):
@@ -188,3 +190,30 @@ def test_a_full_draft_says_nothing_was_withheld(db, world, monkeypatch):
     item = db.execute(select(WorkItem).where(WorkItem.item_type == "review.commentary_approval")).scalar_one()
     assert item.title == f"{borrower.name}: review sheet is ready for approval"
     assert item.evidence["withheld_sections"] == []
+
+
+def _draft(db, world, monkeypatch, sheet, sections):
+    from app.agents.review import draft_commentary
+    borrower, cycle = world
+    script(monkeypatch, sections)
+    client = stages.LLM_FACTORY()
+    return draft_commentary(db, borrower=borrower, cycle=cycle, sheet=sheet, facts={}, labels={}, llm=client)
+
+
+def test_a_sheet_with_no_signals_and_no_open_items_gets_a_risks_sentence_written_by_code(db, world, monkeypatch):
+    from app.agents.review import NO_RISKS_SENTENCE
+    sheet = {"signals": [], "work_items": [{"type": "x", "status": "closed", "decision": "approve"}]}
+    # the model drafted nothing citeable for risks (or nothing at all): the section is still there
+    for risks in ([{"section": "risks", "body": "Nothing to report."}], []):
+        draft = _draft(db, world, monkeypatch, sheet, [{"section": "summary", "body": "A steady quarter."}, *risks])
+        assert draft.sections["risks"] == NO_RISKS_SENTENCE and "risks" not in {n.get("section") for n in draft.notes}
+    assert not any(c.isdigit() for c in NO_RISKS_SENTENCE)
+
+
+def test_a_sheet_with_a_signal_or_an_open_item_still_needs_a_risks_section_that_cites_a_fact(db, world, monkeypatch):
+    body = [{"section": "risks", "body": "Nothing to report."}]
+    for sheet in ({"signals": [{"rule": "r", "severity": "high"}], "work_items": []},
+                  {"signals": [], "work_items": [{"type": "x", "status": "open", "decision": None}]}):
+        draft = _draft(db, world, monkeypatch, sheet, body)
+        assert "risks" not in draft.sections
+        assert [n["section"] for n in draft.notes] == ["risks"] and draft.notes[0]["check"] == "no_facts"
