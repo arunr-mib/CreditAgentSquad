@@ -298,3 +298,12 @@ def test_a_note_may_point_at_a_page_the_document_has(db, setup):
     result, _ = spread(db, setup, perfect_answer(notes=notes))
     shown = [n["detail"] for n in result.notes if n["action"] == "shown"]
     assert shown == [notes[0]]
+
+
+def test_a_units_phrase_is_said_back_only_when_it_is_printed_on_its_page(db, setup):
+    note = "Leverage is two times coverage."
+    result, _ = spread(db, setup, perfect_answer(notes=[note], scale_statement="two times coverage"))
+    assert [n["action"] for n in result.notes if n["layer"] in ("narrative", "agent")] == ["dropped"]
+    verified = "The cover page says the amounts are (in thousands)."
+    result, _ = spread(db, setup, perfect_answer(notes=[verified]))
+    assert [n["detail"] for n in result.notes if n["action"] == "shown"] == [verified]

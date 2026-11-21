@@ -198,3 +198,17 @@ def test_an_extra_that_stored_only_proposed_figures_or_none_is_not_read_and_bill
     assert [c[0] for c in calls] == ["mrr_report"]
     stages.spreading_stage(db, cycle, st)
     assert [c[0] for c in calls] == ["mrr_report"]
+
+
+def test_a_units_answer_on_an_item_with_no_document_is_refused_not_dropped(live_cycle_for):
+    from app.domain.hooks import on_spread_decision
+    db, cycle = live_cycle_for("tidewell-medical")
+    _settle(db, cycle)
+    user = db.execute(select(User)).scalars().first()
+    item = WorkItem(borrower_id=cycle.borrower_id, cycle_id=cycle.id, stage="spreading", item_type="spread.scale_conflict",
+                    severity="high", title="units", question="units?", evidence={}, status="open")
+    db.add(item)
+    db.flush()
+    with pytest.raises(ValueError, match="no document"):
+        on_spread_decision(db, item, user, "in_thousands", "")
+    on_spread_decision(db, item, user, "retry", "")  # a plain retry needs no document

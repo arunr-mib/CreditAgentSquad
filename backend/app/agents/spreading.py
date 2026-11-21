@@ -411,11 +411,16 @@ def spread_document(
     # notes are prose from the model: they may be shown only if they contain no typed figure
     # (a place in the document, a note heading, an account ending or a year is allowed only if the
     # document's own pages have it: the allowance is built here, from the pages, never from the model)
-    structure = DocumentStructure.from_pages(
-        p.text for p in db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)
-                                   .order_by(DocumentPage.page_number)).scalars())
+    doc_pages = list(db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)
+                                .order_by(DocumentPage.page_number)).scalars())
+    structure = DocumentStructure.from_pages(p.text for p in doc_pages)
+    # a quoted units phrase may be said back in a note only when it is printed on the page the agent cites
+    # (the same check units use); an unverified string is never an allowance
+    scale_page = next((p for p in doc_pages if p.page_number == out.scale_page), None)
+    echo = out.scale_statement if (out.scale_statement.strip() and scale_page is not None
+                                   and quote_on_page(scale_page.text, out.scale_statement)) else ""
     for note in out.notes:
-        problems = check_narrative(note, {}, structure=structure, echo=out.scale_statement)
+        problems = check_narrative(note, {}, structure=structure, echo=echo)
         if problems:
             result.notes.append({"layer": "narrative", "check": "figure_untraceable", "action": "dropped",
                                  "detail": "a note from the agent contained a typed figure and was removed"})

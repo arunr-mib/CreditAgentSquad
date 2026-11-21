@@ -150,6 +150,9 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
         return
     if decision in ("in_thousands", "in_dollars", "retry"):
         override = {"in_thousands": 1000, "in_dollars": 1}.get(decision)
+        if override and document is None:
+            raise ValueError("this item names no document, so the units answer has nothing to apply to; "
+                             "request a new document")
         # the answer belongs to this one document, never to the other documents the stage reads
         key = f"scale_override:{document.id}" if override and document else None
         again = {f"retry:{document.id}": True} if document and not override else {}

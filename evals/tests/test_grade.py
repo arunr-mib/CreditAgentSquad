@@ -341,3 +341,28 @@ def test_a_covenant_investigation_that_ends_in_abstain_is_a_wrong_abstain_though
     assert [f["name"] for f in graded["failures"]] == ["wrong-abstain"]
     # a stand-in has no reader for the Covenant Agent: that is not the product's abstain
     assert graded_after(small, "kestrel-bay-packaging", abstained("standin"))["failures"] == []
+
+
+def test_a_step_cap_run_that_did_not_complete_is_counted_once(small):
+    def capped(rec):
+        item = next(w for w in rec["work_items"] if w["type"] == "covenant.reported_mismatch")
+        run = copy.deepcopy(rec["agent_runs"][0])
+        run.update({"agent": "covenant", "status": "failed", "llm_mode": "record", "error": "step cap"})
+        rec["agent_runs"].append(run)
+        item["agent_run_id"] = run["id"]
+        item["recommendation"] = {"recommendation": "abstain", "explanation": None}
+
+    graded = graded_after(small, "kestrel-bay-packaging", capped)
+    assert [f["name"] for f in graded["failures"]] == ["wrong-abstain"]  # the run's, not a second for the item
+
+
+def test_an_unreadable_spreadsheet_item_is_its_own_exception_type_and_does_not_halt(small):
+    from evals.grade import HALTING, STAGE_OF_ITEM
+
+    def sheet(rec):
+        rec["work_items"].append({**rec["work_items"][0], "type": "document.spreadsheet_unreadable",
+                                  "stage": "spreading", "status": "open", "blocks_stage": True})
+    graded = graded_after(small, "harrowgate-precision", sheet)
+    assert [(f["name"], f["item"]) for f in graded["failures"]] == [("false-exception", "document.spreadsheet_unreadable")]
+    assert "document.spreadsheet_unreadable" in graded["raised_exceptions"] and "spread.image_only" not in graded["raised_exceptions"]
+    assert "document.spreadsheet_unreadable" not in HALTING and STAGE_OF_ITEM["document"] == "spreading"

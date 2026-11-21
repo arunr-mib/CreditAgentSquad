@@ -89,9 +89,3 @@ def test_a_stored_runway_metric_for_a_not_meaningful_period_is_an_invented_numbe
     other = copy.deepcopy(recording)
     other["facts"].append({**template, "key": "metric.rml", "period_end": "2025-01-31", "value": "9", "status": "verified"})
     assert grade_borrower(book.get("ferrogate-cloud"), other)["failures"] == []
-
-
-def test_an_unreadable_spreadsheet_item_is_not_the_image_only_exception():
-    """The new type is graded as a spreading-stage item of its own; it never stands in for spread.image_only."""
-    assert STAGE_OF_ITEM["document"] == "spreading"
-    assert "document.spreadsheet_unreadable" not in {"spread.image_only"}

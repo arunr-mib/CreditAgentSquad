@@ -575,9 +575,11 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
         if (w.get("recommendation") or {}).get("recommendation") != "abstain":
             continue
         run = runs_by_id.get(str(w.get("agent_run_id") or ""))
+        if run is not None and run["status"] != "completed":
+            continue  # a run that did not complete is already a wrong-abstain, counted with the agent runs above
         covenant_runs = [run] if run is not None else [r for r in rec["agent_runs"] if r["agent"] == "covenant"]
         if all(r["llm_mode"] == "standin" for r in covenant_runs):
-            continue  # also when the run is not linked and the borrower's Covenant Agent runs are all stand-ins  # the stand-in has no Covenant Agent reader: counted as an observation above
+            continue  # the stand-in has no Covenant Agent reader (an observation above), also when no run is linked
         want = truth.tests.get(w.get("covenant_id") or "")
         if want is not None and want["outcome"] != "cannot_test":
             fail("wrong-abstain", f"investigation of {w['type']} ({w.get('covenant_id')})",
