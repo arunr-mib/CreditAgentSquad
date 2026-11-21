@@ -19,8 +19,19 @@ def test_each_book_has_its_own_oracle_and_covers_every_borrower_in_it():
         assert {r["borrower_id"] for r in rows} >= set(codes), name
 
 
-def test_the_legacy_oracle_is_not_consulted_for_an_innovation_borrower():
-    new = oracle_for(BOOKS["innovation"])
+def _unsigned_copy(src, dest):
+    """The real key is signed; tests that need unsigned rows work on a copy with every row unsigned."""
+    with src.open(newline="") as f:
+        rows = list(csv.DictReader(f))
+    with dest.open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows({**r, "owner_signed_off": "no"} for r in rows)
+    return dest
+
+
+def test_the_legacy_oracle_is_not_consulted_for_an_innovation_borrower(tmp_path):
+    new = _unsigned_copy(oracle_for(BOOKS["innovation"]), tmp_path / "oracle.csv")
     unsigned = unsigned_oracle_rows(["dataflake"], new)
     assert unsigned and all(r["borrower_id"] == "dataflake" for r in unsigned)
     assert unsigned_oracle_rows(["dataflake"], oracle_for(BOOKS["legacy"]))[0]["item"] == "no oracle row"

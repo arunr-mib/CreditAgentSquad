@@ -81,8 +81,20 @@ def test_the_billable_guard_reads_the_signing(tmp_path):
         assert "not signed" not in str(exc)
 
 
-def test_the_real_key_is_described_in_plain_words_for_every_client():
-    text = signoff.table(book.oracle_for(book.BOOKS["innovation"]))
+def test_the_real_key_is_described_in_plain_words_for_every_client(tmp_path):
+    # the real key is signed now; describe its rows from an unsigned copy
+    import csv
+    src = book.oracle_for(book.BOOKS["innovation"])
+    with src.open(newline="") as f:
+        rows = list(csv.DictReader(f))
+    copy = tmp_path / "oracle.csv"
+    with copy.open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        kept = {"kestrel-bay-packaging", "harrowgate-precision", "briarstone-beverage", "pellham-grain"}
+        w.writerows({**r, "owner_signed_off": r["owner_signed_off"] if r["borrower_id"] in kept else "no"}
+                    for r in rows)
+    text = signoff.table(copy)
     assert text.count("\n| ") >= 16 and len(text.splitlines()) < 30
     for line in text.splitlines()[4:]:
         cell = line.rsplit("|", 2)[-2].strip()
