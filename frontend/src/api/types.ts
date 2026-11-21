@@ -149,6 +149,7 @@ export type WorkItemType =
   | 'spread.does_not_foot'
   | 'spread.restatement'
   | 'spread.image_only'
+  | 'document.spreadsheet_unreadable'
   | 'terms.approval_needed'
   | 'terms.unapproved_amendment'
   | 'covenant.breach'

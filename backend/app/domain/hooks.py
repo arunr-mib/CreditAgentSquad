@@ -264,5 +264,50 @@ workflow.DECISION_HOOKS["terms.unapproved_amendment"] = on_unapproved_amendment
 workflow.DECISION_HOOKS["covenant.cannot_test"] = on_cannot_test_decision
 workflow.DECISION_HOOKS["bb.certificate_mismatch"] = on_borrowing_base_decision
 
+def on_spreadsheet_decision(db, item, user, decision: str, reason: str) -> None:
+    """A spreadsheet no agent can read. A new document sets the sheet aside and queues the stage that met it. Keying
+    by hand goes to that stage's own manual entry: the spread (spreading), the entered terms (a credit agreement
+    or amendment) or the keyed certificate figures (covenant testing). A borrowing base has no manual entry."""
+    document = _document(db, item)
+    if decision == "request_new_document":
+        _set_aside(db, document, user, reason or decision)
+        if item.stage:
+            _back_to_pending(db, item, item.stage, user, required=False)
+        return
+    if decision != "key_by_hand":
+        raise ValueError(f"{decision} is not a response to an unreadable spreadsheet")
+    if item.stage == "spreading":
+        return on_spread_decision(db, item, user, "key_by_hand", reason)
+    if item.stage == "covenant_testing" and document is not None and document.doc_type in ("credit_agreement", "amendment"):
+        return on_terms_extraction_decision(db, item, user, "board_by_hand", reason)
+    if item.stage == "covenant_testing":
+        return _certificate_keyed_by_hand(db, item, user, document)
+    raise ValueError("figures from this kind of spreadsheet cannot be keyed by hand here; request a new document")
+
+
+def _certificate_keyed_by_hand(db, item, user, document) -> None:
+    """The certificate figures are keyed through the facts route; the covenants are then tested again."""
+    from app.domain.covenant_service import run_covenant_tests
+
+    cycle = _cycle(db, item)
+    if cycle is None:
+        raise ValueError("this item is not part of an open monitoring cycle")
+    keyed = db.execute(select(Fact.id).where(
+        Fact.borrower_id == item.borrower_id, Fact.period_end == cycle.period_end, Fact.key.like("cert.%"),
+        Fact.kind == "manual", Fact.status.notin_(("rejected", "superseded"))
+    ).limit(1)).first()
+    if keyed is None:
+        raise ValueError("no certificate figure has been keyed by hand for this period. Enter "
+                         "them first (POST /facts), then record this decision")
+    facility = db.get(Facility, item.facility_id) if item.facility_id else None
+    if facility is None:
+        facility = db.execute(select(Facility).where(Facility.borrower_id == item.borrower_id)).scalars().first()
+    if facility is not None:
+        run_covenant_tests(db, borrower=db.get(Borrower, item.borrower_id), facility=facility,
+                           period_end=cycle.period_end, cycle=cycle)
+
+
+workflow.DECISION_HOOKS["document.spreadsheet_unreadable"] = on_spreadsheet_decision
+
 for _type in ("spread.value_unverified", "spread.does_not_foot", "spread.image_only"):
     workflow.DECISION_HOOKS[_type] = on_spread_decision

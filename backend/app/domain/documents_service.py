@@ -171,16 +171,27 @@ def is_spreadsheet(doc: Document) -> bool:
     return (doc.meta or {}).get("format") in ("xlsx", "csv")
 
 
+SPREADSHEET_UNREADABLE = "document.spreadsheet_unreadable"
+# what a person may do with a sheet, by the stage that met it: a borrowing base has no manual entry
+_SHEET_DECISIONS = {"borrowing_base": ["request_new_document"]}
+
+
 def spreadsheet_unreadable_item(db: Session, *, borrower: Borrower, document: Document, cycle, stage: str,
                                 agent: str, facility_id: uuid.UUID | None = None):
-    """No agent reads figures from a spreadsheet yet: a person is asked for a PDF or to key the figures."""
+    """No agent reads figures from a spreadsheet yet: a person is asked for a PDF or to key the figures. It is its
+    own item type (not an image-only page): the repair differs by stage, and `hooks.on_spreadsheet_decision`
+    routes each to that stage's own repair."""
     from app.domain.work_items import raise_item
 
+    keyable = _SHEET_DECISIONS.get(stage, ["request_new_document", "key_by_hand"])
     return raise_item(
         db, borrower_id=borrower.id, facility_id=facility_id, cycle_id=cycle.id if cycle else None, stage=stage,
-        item_type="spread.image_only", severity="medium",
+        item_type=SPREADSHEET_UNREADABLE, severity="medium",
         title=f"{document.file_name} is a spreadsheet and cannot be read for figures yet",
-        question="This spreadsheet can't be read for figures yet; ask for a PDF or key the figures by hand?",
-        allowed_decisions=["request_new_document", "key_by_hand"], required_permission="confirm_spread",
-        evidence={"document_id": str(document.id), "format": document.meta.get("format"), "reason": "spreadsheet"},
+        question=("This spreadsheet can't be read for figures yet; ask for a PDF or key the figures by hand?"
+                  if "key_by_hand" in keyable else
+                  "This spreadsheet can't be read for figures yet; ask for a PDF?"),
+        allowed_decisions=keyable, required_permission="confirm_spread",
+        evidence={"document_id": str(document.id), "format": document.meta.get("format"), "reason": "spreadsheet",
+                  "doc_type": document.doc_type},
         actor=("agent", agent), dedupe_key=f"spreadsheet.unreadable:{document.id}")

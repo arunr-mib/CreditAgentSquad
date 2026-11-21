@@ -162,6 +162,7 @@ def test_a_pdf_only_agent_raises_a_question_for_a_spreadsheet_and_stores_nothing
                               cycle=None, llm=Boom())
     items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower.id)).scalars().all()
     assert len(items) == 1 and items[0].allowed_decisions == ["request_new_document", "key_by_hand"]
+    assert items[0].item_type == "document.spreadsheet_unreadable"
     assert "spreadsheet" in items[0].question and result.unverified and not result.stored
     assert db.execute(select(Fact).where(Fact.borrower_id == borrower.id)).first() is None
 
@@ -180,7 +181,57 @@ def test_the_collateral_agent_raises_a_question_for_a_spreadsheet_and_stores_not
     doc = ingest_document(db, borrower_id=borrower.id, data=b"a,b\nx,1\n", file_name="bbc.csv")
     result = read_collateral(db, borrower=borrower, document=doc, period_end=date(2026, 10, 31), cycle=None, llm=Boom())
     items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower.id)).scalars().all()
-    assert len(items) == 1 and items[0].allowed_decisions == ["request_new_document", "key_by_hand"]
-    assert "spreadsheet" in items[0].question
+    # a borrowing base has no manual entry, so a person may only ask for a new document
+    assert len(items) == 1 and items[0].allowed_decisions == ["request_new_document"]
+    assert items[0].item_type == "document.spreadsheet_unreadable" and "spreadsheet" in items[0].question
     assert result.unverified == [{"what": "document", "reason": "spreadsheet"}]
     assert db.execute(select(Fact).where(Fact.borrower_id == borrower.id)).first() is None
+
+
+def _sheet_item(db, borrower, stage, doc_type=None):
+    from app.domain import hooks
+    from app.domain.documents_service import spreadsheet_unreadable_item
+    doc = ingest_document(db, borrower_id=borrower.id, data=b"a,b\nx,1\n", file_name=f"{stage}.csv")
+    doc.doc_type = doc_type
+    item = spreadsheet_unreadable_item(db, borrower=borrower, document=doc, cycle=None, stage=stage, agent="test")
+    from app.domain.org import User
+    user = User(name="P", email=f"p-{stage}-{doc_type}@example.test", role="analyst", password_hash="x")
+    db.add(user)
+    db.flush()
+    return hooks, doc, item, user
+
+
+@pytest.mark.parametrize("stage,doc_type", [("spreading", None), ("covenant_testing", "compliance_certificate"),
+                                            ("covenant_testing", "credit_agreement"), ("borrowing_base", None)])
+def test_a_new_document_sets_the_sheet_aside_at_every_stage(db, borrower, stage, doc_type):
+    hooks, doc, item, user = _sheet_item(db, borrower, stage, doc_type)
+    assert item.item_type == "document.spreadsheet_unreadable" and item.item_type != "spread.image_only"
+    hooks.on_spreadsheet_decision(db, item, user, "request_new_document", "send a PDF")
+    assert doc.status == "rejected"
+
+
+def test_keying_by_hand_goes_to_the_stage_that_met_the_sheet(db, borrower, monkeypatch):
+    """Spreading keys the spread; a credit agreement's sheet means entering terms; a certificate's means keyed
+    certificate figures; a borrowing base has no manual entry and does not offer it."""
+    seen = []
+    from app.domain import hooks
+    monkeypatch.setattr(hooks, "on_spread_decision", lambda db, item, user, d, r: seen.append(("spread", d)))
+    monkeypatch.setattr(hooks, "on_terms_extraction_decision", lambda db, item, user, d, r: seen.append(("terms", d)))
+    monkeypatch.setattr(hooks, "_certificate_keyed_by_hand", lambda db, item, user, doc: seen.append(("certificate", None)))
+    for stage, doc_type in (("spreading", None), ("covenant_testing", "credit_agreement"),
+                            ("covenant_testing", "amendment"), ("covenant_testing", "compliance_certificate")):
+        _, _, item, user = _sheet_item(db, borrower, stage, doc_type)
+        assert "key_by_hand" in item.allowed_decisions
+        hooks.on_spreadsheet_decision(db, item, user, "key_by_hand", "keyed")
+    assert seen == [("spread", "key_by_hand"), ("terms", "board_by_hand"), ("terms", "board_by_hand"),
+                    ("certificate", None)]
+    _, _, bb, user = _sheet_item(db, borrower, "borrowing_base")
+    assert bb.allowed_decisions == ["request_new_document"]
+    with pytest.raises(ValueError, match="cannot be keyed"):
+        hooks.on_spreadsheet_decision(db, bb, user, "key_by_hand", "keyed")
+
+
+def test_keyed_certificate_figures_are_required_before_the_decision_is_accepted(db, borrower):
+    hooks, doc, item, user = _sheet_item(db, borrower, "covenant_testing", "compliance_certificate")
+    with pytest.raises(ValueError, match="cycle|keyed"):
+        hooks.on_spreadsheet_decision(db, item, user, "key_by_hand", "keyed")

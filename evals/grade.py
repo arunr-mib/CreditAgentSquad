@@ -72,7 +72,7 @@ STAGES = ("awaiting_package", "intake", "spreading", "covenant_testing", "borrow
 PACK_TYPES = frozenset({"annual_financial_statements", "interim_financial_statements", "monthly_financials"})
 STAGE_OF_ITEM = {"intake": "awaiting_package", "spread": "spreading", "covenant": "covenant_testing",
                  "terms": "covenant_testing", "bb": "borrowing_base", "signal": "signals", "review": "review_prep",
-                 "funding_slipped": "signals", "cash": "covenant_testing"}
+                 "funding_slipped": "signals", "cash": "covenant_testing", "document": "spreading"}
 # agents the stand-in reader does not answer; the product must fall back safely for each
 STANDIN_UNANSWERED = frozenset({"covenant", "early_warning", "terms"})
 PASSING = ("compliant", "compliant_variance")

@@ -114,6 +114,7 @@ export const ITEM_GROUP_LABEL: Record<ItemGroup, string> = {
 const GROUP_BY_PREFIX: Record<string, ItemGroup> = {
   covenant: 'covenant',
   spread: 'spreading',
+  document: 'spreading',
   terms: 'terms',
   bb: 'borrowing_base',
   intake: 'intake',
@@ -131,6 +132,7 @@ const ITEM_TYPE_LABEL: Record<string, string> = {
   'spread.does_not_foot': 'Section does not foot',
   'spread.restatement': 'Restated prior period',
   'spread.image_only': 'Image-only page',
+  'document.spreadsheet_unreadable': 'Spreadsheet not readable',
   'terms.approval_needed': 'Terms awaiting approval',
   'terms.unapproved_amendment': 'Amendment not approved into terms',
   'covenant.breach': 'Covenant breach',
