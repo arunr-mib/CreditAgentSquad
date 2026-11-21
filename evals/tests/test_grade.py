@@ -322,3 +322,22 @@ def test_an_agent_the_stand_in_does_not_answer_is_an_observation_but_a_models_fa
     standin = graded_after(small, "kestrel-bay-packaging", unanswered("standin"))
     assert standin["failures"] == [] and "standin-unanswered" in {o["kind"] for o in standin["observations"]}
     assert names(graded_after(small, "kestrel-bay-packaging", unanswered("live"))) == {"wrong-abstain"}
+
+
+def test_a_covenant_investigation_that_ends_in_abstain_is_a_wrong_abstain_though_its_run_completed(small):
+    """The run completes; the guardrail then refuses the final wording and the item carries an abstain. A person
+    is left with no recommendation where the truth has an answer."""
+    def abstained(mode):
+        def change(rec):
+            item = next(w for w in rec["work_items"] if w["type"] == "covenant.reported_mismatch")
+            run = copy.deepcopy(rec["agent_runs"][0])
+            run.update({"agent": "covenant", "status": "completed", "llm_mode": mode})
+            rec["agent_runs"].append(run)
+            item["agent_run_id"] = run["id"]
+            item["recommendation"] = {"recommendation": "abstain", "explanation": None}
+        return change
+
+    graded = graded_after(small, "kestrel-bay-packaging", abstained("record"))
+    assert [f["name"] for f in graded["failures"]] == ["wrong-abstain"]
+    # a stand-in has no reader for the Covenant Agent: that is not the product's abstain
+    assert graded_after(small, "kestrel-bay-packaging", abstained("standin"))["failures"] == []

@@ -566,6 +566,22 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
             if want is None or want["outcome"] in BREACHING:
                 fail("false-compliant", f"recommendation on {w['type']} ({w.get('covenant_id')})",
                      "the Covenant Agent recommends resolve where the truth is a breach")
+    # an investigation that ends in abstain (the run completed, then a guardrail refused the final wording, or it
+    # ran out of steps) leaves a person with no recommendation where the truth has an answer
+    runs_by_id = {r["id"]: r for r in rec["agent_runs"]}
+    for w in items:
+        if w["type"] not in ("covenant.breach", "covenant.reported_mismatch"):
+            continue
+        if (w.get("recommendation") or {}).get("recommendation") != "abstain":
+            continue
+        run = runs_by_id.get(str(w.get("agent_run_id") or ""))
+        covenant_runs = [run] if run is not None else [r for r in rec["agent_runs"] if r["agent"] == "covenant"]
+        if all(r["llm_mode"] == "standin" for r in covenant_runs):
+            continue  # also when the run is not linked and the borrower's Covenant Agent runs are all stand-ins  # the stand-in has no Covenant Agent reader: counted as an observation above
+        want = truth.tests.get(w.get("covenant_id") or "")
+        if want is not None and want["outcome"] != "cannot_test":
+            fail("wrong-abstain", f"investigation of {w['type']} ({w.get('covenant_id')})",
+                 "the Covenant Agent's investigation ended without a recommendation (abstain)")
     for w in items:
         concern = str((w.get("evidence") or {}).get("agent_concern") or "")
         if typed_figures(concern):
