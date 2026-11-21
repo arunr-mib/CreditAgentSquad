@@ -104,6 +104,9 @@ describe('Oversight', () => {
     expect(within(select).getByRole('option', { name: 'Borrowing base' })).toBeInTheDocument();
     await userEvent.selectOptions(select, 'borrowing_base');
     expect(h.ledgerCalls.at(-1)).toMatchObject({ action: 'borrowing_base' });
+    await userEvent.selectOptions(select, 'auth');
+    expect(screen.getByRole('checkbox', { name: 'Hide sign-ins' })).toBeDisabled();
+    await userEvent.selectOptions(select, 'borrowing_base');
     await userEvent.click(screen.getByRole('checkbox', { name: 'Hide sign-ins' }));
     expect(h.ledgerCalls.at(-1)).toMatchObject({ hide_sign_ins: false });
     await userEvent.click(screen.getByRole('button', { name: 'Older events' }));

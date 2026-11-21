@@ -269,7 +269,7 @@ def oversight_ledger(action: str | None = None, before_seq: int | None = Query(d
     query = select(LedgerEvent).order_by(LedgerEvent.seq.desc()).limit(max(1, min(limit, 500)))
     if action:
         query = query.where(or_(LedgerEvent.action == action, LedgerEvent.action.startswith(action + ".", autoescape=True)))
-    if hide_sign_ins:
+    if hide_sign_ins and not (action or "").startswith("auth"):  # asked for sign-ins by name: show them
         query = query.where(not_(LedgerEvent.action.startswith("auth.", autoescape=True)))
     if before_seq:
         query = query.where(LedgerEvent.seq < before_seq)

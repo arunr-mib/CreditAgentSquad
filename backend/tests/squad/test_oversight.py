@@ -158,3 +158,10 @@ def test_briefing_says_whether_oversight_is_offered(db, client, world):
     assert client.get("/api/v1/me/briefing").json()["oversight"] == {"offered": True}
     sign_in(client, "priya.raman")
     assert client.get("/api/v1/me/briefing").json()["oversight"] == {"offered": False}
+
+
+def test_asking_for_sign_ins_shows_them_even_with_sign_ins_hidden(db, client, world):
+    db.commit()
+    sign_in(client, "admin")
+    rows = client.get("/api/v1/oversight/ledger", params={"action": "auth", "hide_sign_ins": "true"}).json()
+    assert rows and all(r["action"].startswith("auth.") for r in rows)

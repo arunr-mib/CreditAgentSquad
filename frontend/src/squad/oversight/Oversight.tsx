@@ -91,7 +91,7 @@ function Ledger() {
             {(families.data ?? []).map((f) => <option key={f.key} value={f.key}>{f.words}</option>)}
           </select>
         </label>
-        <label className="sq-check-label"><input type="checkbox" checked={hideSignIns} onChange={(e) => { setHideSignIns(e.target.checked); setBefore(undefined); }} /> Hide sign-ins</label>
+        <label className="sq-check-label"><input type="checkbox" checked={hideSignIns && action !== 'auth'} disabled={action === 'auth'} onChange={(e) => { setHideSignIns(e.target.checked); setBefore(undefined); }} /> Hide sign-ins</label>
         <button type="button" className="sq-btn" onClick={check} disabled={verification.isFetching}>Verify the chain</button>
       </div>
       {verification.isFetching ? <p role="status" className="sq-muted">Checking the chain.</p> : null}
