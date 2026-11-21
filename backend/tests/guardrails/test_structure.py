@@ -3,7 +3,6 @@ import json
 import pathlib
 
 import pytest
-
 from app.guardrails.narrative import DocumentStructure, check_narrative
 
 ST = DocumentStructure(page_count=5, note_numbers=frozenset({1}), endings=frozenset({"9001", "9002"}),
@@ -74,8 +73,7 @@ def _recorded_notes():
                 except Exception:
                     continue
             if isinstance(inp, dict):
-                for n in inp.get("notes", []):
-                    yield n
+                yield from inp.get("notes", [])
 
 
 def test_recorded_notes_all_pass_with_the_structure_of_their_documents():
