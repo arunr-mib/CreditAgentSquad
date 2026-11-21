@@ -67,7 +67,21 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
           <button type="button" className="sq-link" aria-label={`Open ${message.title}`} onClick={() => source.open({ type: 'document', documentId: message.document_id, page: 1, title: message.title, borrowerCode })}>
             {message.title}
           </button>
-          <p className="sq-muted">{message.doc_type ? words(message.doc_type) : 'Not yet classified'} · {message.pages} {message.pages === 1 ? 'page' : 'pages'}</p>
+          <p className="sq-muted">{message.doc_type_words} · {message.pages} {message.pages === 1 ? 'page' : 'pages'}</p>
+        </article>
+      );
+    case 'arrivals':
+      return (
+        <article className="sq-msg sq-card">
+          <header className="sq-msghead"><b>{message.title}</b> <Time ts={message.ts} /></header>
+          <ul className="sq-plainlist">
+            {message.documents.map((d) => (
+              <li key={d.document_id}>
+                <button type="button" className="sq-link" aria-label={`Open ${d.title}`} onClick={() => source.open({ type: 'document', documentId: d.document_id, page: 1, title: d.title, borrowerCode })}>{d.title}</button>
+                <span className="sq-faint"> · {d.doc_type_words} · {d.pages} {d.pages === 1 ? 'page' : 'pages'}</span>
+              </li>
+            ))}
+          </ul>
         </article>
       );
     case 'held':

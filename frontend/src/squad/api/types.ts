@@ -1,3 +1,4 @@
+import type { FactSummary } from '@/api/schema';
 // Shapes of the real responses from backend/app/squad (briefing.py, threads.py, drafts.py, trail.py, track_record.py).
 export interface BriefingItem {
   key: string;
@@ -26,7 +27,8 @@ export type ThreadMessage = MessageBase &
     | { type: 'report'; agent_name: string; task: string; text: string; run_id: string }
     | { type: 'case'; work_item_id: string; item_type: string; title: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
     | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null; needs_you: boolean; state_words: string }
-    | { type: 'document'; document_id: string; title: string; doc_type: string | null; pages: number; period_end: string | null }
+    | { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }
+    | { type: 'arrivals'; title: string; period_end: string; documents: Array<MessageBase & { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }> }
     | { type: 'held'; document_id: string; title: string; reason: string }
     | { type: 'draft'; draft_id: string; borrower_id: string; to: string; subject: string; body: string; kind: string; status: 'draft' | 'sent'; created_by: string; created_at: string; edited_by: string | null; sent_by: string | null; sent_at: string | null; work_item_id: string | null }
     | { type: 'decision'; work_item_id: string; decision: string | null; decision_words?: string; reason: string; by: string; by_id: string }
@@ -38,6 +40,7 @@ export type ThreadMessage = MessageBase &
 export interface Thread {
   borrower: { id: string; code: string; name: string; template_id: string };
   head_seq: number;
+  opening_id: string | null;
   messages: ThreadMessage[];
 }
 export interface TrailStep { n: number; who: string; role_line: string; text: string; check: string; run_id: string | null }
@@ -104,3 +107,7 @@ export interface ApprovalRow {
   routed_at: string | null;
   returns: number;
 }
+
+export interface MeasurePoint { period_end: string; fact: FactSummary | null; note: string | null }
+export interface MeasureSeries { kind: 'rml' | 'headroom'; label: string; points: MeasurePoint[] }
+export interface FundingEventRow { id: string; kind: string; amount: string; expected_close: string; status: string; evidence_document_ids: string[] }

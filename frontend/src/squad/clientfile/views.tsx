@@ -1,0 +1,279 @@
+// frontend/src/squad/clientfile/views.tsx
+import { useSearch } from '@tanstack/react-router';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useActions, useBorrowerCovenants, useBorrowerOverview, useBorrowerTerms, useBorrowingBase, useDocuments, useFactsById,
+  useReviewSheet, useReviewSheets, useSignals, useSpread, useTimeline,
+} from '@/api/hooks';
+import type { BorrowerRow, FactSummary } from '@/api/schema';
+import { formatDate } from '@/design';
+import { OUTCOME, signalLabel } from '@/domain/labels';
+import { RunStage } from '@/screens/borrower/RunStage';
+import { UploadDocument } from '@/screens/borrower/UploadDocument';
+import { describeEvent } from '@/screens/Governance';
+import { Commentary } from '@/screens/review/Commentary';
+import { useSource } from '@/source/context';
+import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
+import { useFundingEvents, useMeasure } from '../api/hooks';
+import { DocType } from '../DocType';
+import { Time } from '../thread/Time';
+import { MeasureNow, TrendBars } from './Measure';
+
+type Props = { borrower: BorrowerRow };
+
+function Loading({ what }: { what: string }) {
+  return <p role="status" className="sq-muted">Reading {what}.</p>;
+}
+function Failed({ what }: { what: string }) {
+  return <p role="alert">{what} could not be loaded. Try again in a moment.</p>;
+}
+
+export function Overview({ borrower }: Props) {
+  const overview = useBorrowerOverview(borrower.id);
+  const measure = useMeasure(borrower.id);
+  const signals = useSignals({ borrower_id: borrower.id });
+  if (overview.isPending) return <Loading what="the overview" />;
+  if (overview.error || !overview.data) return <Failed what="The overview" />;
+  const { exposure, cycle } = overview.data;
+  return (
+    <div className="sq-filegrid">
+      <section className="sq-card" aria-label="Exposure">
+        <h2 className="sq-h2">Exposure</h2>
+        {Object.keys(exposure).length === 0 ? <p className="sq-muted">No exposure figure is stored for this client.</p> : (
+          <dl className="sq-defs">
+            {Object.entries(exposure).map(([key, fact]) => (
+              <div key={key}><dt>{fact?.label ?? key}</dt><dd>{fact ? <FactFigure fact={fact} /> : <Absent />}</dd></div>
+            ))}
+          </dl>
+        )}
+      </section>
+      <section className="sq-card" aria-label={measure.data?.label ?? 'Measure'} data-measure>
+        <h2 className="sq-h2">{measure.data?.label ?? 'Measure'}</h2>
+        {measure.data ? (
+          <>
+            <span data-measure-now><MeasureNow series={measure.data} /></span>
+            <TrendBars points={measure.data.points} label={measure.data.label} />
+          </>
+        ) : <Loading what="the measure" />}
+      </section>
+      <section className="sq-card" aria-label="This cycle">
+        <h2 className="sq-h2">This cycle</h2>
+        {cycle ? (
+          <>
+            <p>Period ended {formatDate(cycle.period_end)} · {cycle.status === 'closed' ? 'closed' : `at ${cycle.stage.replace(/_/g, ' ')}`}</p>
+            {cycle.status !== 'closed' ? <RunStage cycle={cycle} /> : null}
+          </>
+        ) : <p className="sq-muted">No cycle has been opened for this client yet.</p>}
+      </section>
+      <section className="sq-card" aria-label="Signals">
+        <h2 className="sq-h2">Signals</h2>
+        {(signals.data ?? []).length === 0 ? <p className="sq-muted">No open signal.</p> : (
+          <ul className="sq-plainlist">
+            {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalLabel(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span></li>)}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export function Spreads({ borrower }: Props) {
+  const spread = useSpread(borrower.id);
+  const periods = useMemo(() => (spread.data?.periods ?? []).slice(-6), [spread.data]);
+  const ids = useMemo(() => (spread.data?.lines ?? []).flatMap((l) => periods.map((p) => l.cells[p.period_end]?.fact_id)), [spread.data, periods]);
+  const facts = useFactsById(ids);
+  if (spread.isPending) return <Loading what="the spread" />;
+  if (spread.error || !spread.data) return <Failed what="The spread" />;
+  const lines = spread.data.lines.filter((l) => periods.some((p) => l.cells[p.period_end]));
+  if (lines.length === 0) return <p className="sq-muted">Nothing has been spread for this client yet.</p>;
+  return (
+    <div className="sq-tablewrap">
+      <table className="sq-table" aria-label="Spread">
+        <thead><tr><th scope="col">Line</th>{periods.map((p) => <th key={p.period_end} scope="col" className="sq-num">{formatDate(p.period_end)}{p.months ? ` · ${p.months} mo` : ''}</th>)}</tr></thead>
+        <tbody>
+          {lines.map((l) => (
+            <tr key={l.key}>
+              <th scope="row">{l.label}</th>
+              {periods.map((p) => {
+                const cell = l.cells[p.period_end];
+                const fact: FactSummary | undefined = cell ? facts.data?.[cell.fact_id] : undefined;
+                return <td key={p.period_end} className="sq-num">{cell ? (fact ? <FactFigure fact={fact} align="column" /> : <span className="sq-faint">Reading</span>) : <Absent align="column" />}</td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const NOTE_WORDS: Record<string, string> = { not_meaningful_cash_flow_positive: 'Not meaningful: cash-flow positive' };
+
+export function Covenants({ borrower }: Props) {
+  const covenants = useBorrowerCovenants(borrower.id);
+  if (covenants.isPending) return <Loading what="the covenants" />;
+  if (covenants.error || !covenants.data) return <Failed what="The covenants" />;
+  const { tests, facts } = covenants.data;
+  const latest = tests[0]?.period_end ?? null;
+  const current = tests.filter((t) => t.period_end === latest);
+  if (current.length === 0) return <p className="sq-muted">No covenant has been tested for this client yet.</p>;
+  return (
+    <div className="sq-tablewrap">
+      <p className="sq-faint">Tested for the period ended {formatDate(latest as string)}</p>
+      <table className="sq-table" aria-label="Covenants">
+        <thead><tr><th scope="col">Covenant</th><th scope="col" className="sq-num">Value</th><th scope="col" className="sq-num">Limit</th><th scope="col" className="sq-num">Headroom</th><th scope="col">Outcome</th></tr></thead>
+        <tbody>
+          {current.map((t) => {
+            const note = t.note ? (NOTE_WORDS[t.note] ?? t.note.replace(/_/g, ' ')) : null;
+            return (
+              <tr key={t.id}>
+                <th scope="row">{t.covenant_name}{t.terms_version ? <span className="sq-faint"> · terms v{t.terms_version.version}</span> : null}</th>
+                <td className="sq-num">{t.value_fact_id && facts[t.value_fact_id] ? <FactFigure fact={facts[t.value_fact_id]} align="column" /> : <Absent align="column" reason={note ?? 'Not measured'} />}</td>
+                <td className="sq-num">{t.threshold_fact_id && facts[t.threshold_fact_id] ? <FactFigure fact={facts[t.threshold_fact_id]} align="column" /> : <Absent align="column" />}</td>
+                <td className="sq-num">{t.headroom_fact_id && facts[t.headroom_fact_id] ? <FactFigure fact={facts[t.headroom_fact_id]} align="column" /> : <Absent align="column" />}</td>
+                <td>{['breach', 'breach_reported_compliant'].includes(t.outcome) ? <span className="sq-tag sq-tag-breach">{OUTCOME[t.outcome].label}</span> : OUTCOME[t.outcome]?.label ?? t.outcome}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function Documents({ borrower }: Props) {
+  const documents = useDocuments(borrower.id);
+  const source = useSource();
+  const search = useSearch({ strict: false }) as { document?: string; page?: number };
+  const opened = useRef<string | undefined>(undefined);
+  const [uploading, setUploading] = useState(false);
+  const rows = useMemo(() => documents.data ?? [], [documents.data]);
+  useEffect(() => {
+    const doc = rows.find((d) => d.id === search.document);
+    if (!doc || opened.current === doc.id) return;
+    opened.current = doc.id;
+    source.open({ type: 'document', documentId: doc.id, page: search.page ?? 1, title: doc.title, borrowerCode: borrower.code });
+  }, [rows, search.document, search.page, source, borrower.code]);
+  if (documents.isPending) return <Loading what="the documents" />;
+  if (documents.error) return <Failed what="The documents" />;
+  return (
+    <div>
+      <button type="button" className="sq-btn" onClick={() => setUploading((u) => !u)} aria-expanded={uploading}>File a document</button>
+      {uploading ? <UploadDocument borrowerId={borrower.id} code={borrower.code} onClose={() => setUploading(false)} /> : null}
+      {rows.length === 0 ? <p className="sq-muted">No document is on file for this client.</p> : (
+        <div className="sq-tablewrap"><table className="sq-table" aria-label="Documents">
+          <thead><tr><th scope="col">Document</th><th scope="col">Type</th><th scope="col">Period</th><th scope="col">Received</th></tr></thead>
+          <tbody>
+            {rows.map((d) => (
+              <tr key={d.id}>
+                <th scope="row"><button type="button" className="sq-link" aria-label={`Open ${d.title}`} onClick={() => source.open({ type: 'document', documentId: d.id, page: 1, title: d.title, borrowerCode: borrower.code })}>{d.title}</button>{d.status === 'rejected' ? <span className="sq-faint"> · set aside</span> : null}</th>
+                <td><DocType type={d.doc_type} /></td>
+                <td>{d.period_end ? formatDate(d.period_end) : <span className="sq-faint">None</span>}</td>
+                <td>{d.received_date ? formatDate(d.received_date) : <span className="sq-faint">Not recorded</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table></div>
+      )}
+    </div>
+  );
+}
+
+const FUNDING_KIND: Record<string, string> = { equity_round: 'Equity round', extension: 'Extension', milestone_tranche: 'Milestone tranche', venture_debt: 'Venture debt' };
+
+export function Funding({ borrower }: Props) {
+  const events = useFundingEvents(borrower.id);
+  if (events.isPending) return <Loading what="the funding events" />;
+  if (events.error || !events.data) return <Failed what="The funding events" />;
+  if (events.data.length === 0) return <p className="sq-muted">No funding event is recorded for this client.</p>;
+  return (
+    <div className="sq-tablewrap"><table className="sq-table" aria-label="Funding events">
+      <thead><tr><th scope="col">Event</th><th scope="col" className="sq-num">Amount</th><th scope="col">Expected close</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        {events.data.map((e) => (
+          <tr key={e.id}>
+            <th scope="row">{FUNDING_KIND[e.kind] ?? e.kind}</th>
+            <td className="sq-num">
+              <SourcedFigure value={e.amount} unit="usd" kind="manual" label={`${FUNDING_KIND[e.kind] ?? e.kind} amount`} align="column"
+                source={{ type: 'record', kind: 'manual', title: 'Funding event', value: e.amount, rows: [['Kind', FUNDING_KIND[e.kind] ?? e.kind], ['Expected close', formatDate(e.expected_close)], ['Status', e.status]], note: 'Recorded by a person on the funding event; not read from a document.' }} />
+            </td>
+            <td>{formatDate(e.expected_close)}</td>
+            <td>{e.status === 'slipped' ? <span className="sq-tag sq-tag-attention">Slipped</span> : e.status}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table></div>
+  );
+}
+
+export function Loans({ borrower }: Props) {
+  const terms = useBorrowerTerms(borrower.id);
+  const base = useBorrowingBase(borrower.id);
+  if (terms.isPending) return <Loading what="the loans" />;
+  if (terms.error || !terms.data) return <Failed what="The loans" />;
+  return (
+    <div className="sq-filegrid">
+      {terms.data.map((loan) => (
+        <section key={loan.id} className="sq-card" aria-label={loan.name}>
+          <h2 className="sq-h2">{loan.name}</h2>
+          <p>
+            Commitment{' '}
+            <SourcedFigure value={loan.commitment} unit="usd" kind="system" label={`${loan.name} commitment`}
+              source={{ type: 'record', kind: 'system', title: loan.name, value: loan.commitment, rows: [['Loan', loan.code], ['Type', loan.facility_type.replace('_', ' ')]], note: 'From the loan record.' }} />
+          </p>
+          <ul className="sq-plainlist">
+            {loan.terms_versions.map((v) => (
+              <li key={v.id}>Terms v{v.version} · {v.in_force ? 'in force' : v.status}{v.approved_by_name ? ` · approved by ${v.approved_by_name}` : ''} · {v.covenants.map((c) => c.name).join(', ')}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      {(base.data ?? []).slice(0, 1).map((r) => (
+        <section key={r.id} className="sq-card" aria-label="Borrowing base">
+          <h2 className="sq-h2">Borrowing base · {formatDate(r.period_end)}</h2>
+          <p>Availability {r.availability_fact ? <FactFigure fact={r.availability_fact} /> : <Absent />}</p>
+          <p className="sq-muted">{r.outcome.replace(/_/g, ' ')}</p>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+export function Reviews({ borrower }: Props) {
+  const sheets = useReviewSheets({ borrower_id: borrower.id });
+  const actions = useActions({ status: 'all', borrower_id: borrower.id });
+  const [open, setOpen] = useState<string | null>(null);
+  const sheet = useReviewSheet(open);
+  if (sheets.isPending) return <Loading what="the reviews" />;
+  if (sheets.error || !sheets.data) return <Failed what="The reviews" />;
+  return (
+    <div>
+      {sheets.data.length === 0 ? <p className="sq-muted">No review sheet has been prepared. One is built when the cycle reaches review preparation.</p> : (
+        <ul className="sq-plainlist" aria-label="Review sheets">
+          {sheets.data.map((s) => (
+            <li key={s.id}><button type="button" className="sq-link" aria-expanded={open === s.id} onClick={() => setOpen(open === s.id ? null : s.id)}>Review for the period ended {formatDate(s.period_end)}</button> · <span className="sq-faint">{s.status === 'draft' ? 'draft, not yet approved' : s.status}</span></li>
+          ))}
+        </ul>
+      )}
+      {open && sheet.data ? <Commentary sheet={sheet.data} /> : null}
+      <h2 className="sq-h2">Actions</h2>
+      {(actions.data ?? []).length === 0 ? <p className="sq-muted">No action has been raised for this client.</p> : (
+        <ul className="sq-plainlist">{(actions.data ?? []).map((a) => <li key={a.id}>{a.title} · <span className="sq-faint">{a.owner_name ?? 'No owner'}{a.due_date ? ` · due ${formatDate(a.due_date)}` : ''}</span></li>)}</ul>
+      )}
+    </div>
+  );
+}
+
+export function History({ borrower }: Props) {
+  const timeline = useTimeline(borrower.id);
+  if (timeline.isPending) return <Loading what="the history" />;
+  if (timeline.error || !timeline.data) return <Failed what="The history" />;
+  if (timeline.data.length === 0) return <p className="sq-muted">Nothing has been recorded for this client yet.</p>;
+  return (
+    <ol className="sq-plainlist" aria-label="History">
+      {timeline.data.map((e) => (
+        <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{describeEvent(e) ? ` · ${describeEvent(e)}` : ''}</li>
+      ))}
+    </ol>
+  );
+}

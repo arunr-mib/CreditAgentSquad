@@ -6,7 +6,7 @@ interface Options {
   intervalMs?: number;
   enabled?: boolean;
 }
-const REFRESH = [['briefing'], ['thread'], ['trail'], ['borrowers'], ['case'], ['approvals']] as const;
+const REFRESH = [['briefing'], ['thread'], ['trail'], ['borrowers'], ['case'], ['approvals'], ['measure'], ['funding']] as const;
 const PAGE = 500; // the ledger route's cap
 
 /**

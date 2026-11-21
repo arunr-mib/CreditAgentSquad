@@ -23,6 +23,16 @@ export function ClientThread() {
     el.scrollIntoView?.({ block: 'start' });
   }, [focusId, thread.data]);
 
+  const opened = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    const data = thread.data;
+    if (focusId || !data?.opening_id || opened.current === data.borrower.id) return;
+    const el = document.querySelector(`[data-message-id="${data.opening_id}"]`);
+    if (!el) return;
+    opened.current = data.borrower.id;
+    el.scrollIntoView?.({ block: 'start' });
+  }, [focusId, thread.data]);
+
   if (notFound) {
     return (
       <div role="alert" className="sq-card">
@@ -51,8 +61,10 @@ export function ClientThread() {
       {messages.length === 0 ? <p className="sq-muted">Nothing here yet. Squad will write here as documents arrive and work is done.</p> : null}
       <div className="sq-messages">
         {messages.map((m) => (
-          <MessageView key={m.id} message={m} thread={messages} borrowerCode={borrower.code}
-            focused={Boolean(focusId) && 'work_item_id' in m && m.work_item_id === focusId && (m.type === 'case' || m.type === 'ask')} />
+          <div key={m.id} data-message-id={m.id}>
+            <MessageView message={m} thread={messages} borrowerCode={borrower.code}
+              focused={Boolean(focusId) && 'work_item_id' in m && m.work_item_id === focusId && (m.type === 'case' || m.type === 'ask')} />
+          </div>
         ))}
       </div>
       <Composer borrowerId={borrower.id} borrowerName={borrower.name} />

@@ -96,7 +96,7 @@ describe('links', () => {
   it('addresses a thread and a case in one place', () => {
     expect(threadHref('QFL', 'abc')).toEqual({ to: '/clients/$code', params: { code: 'QFL' }, search: { case: 'abc' } });
     expect(threadHref('QFL')).toEqual({ to: '/clients/$code', params: { code: 'QFL' }, search: {} });
-    expect(clientFile('QFL', 'covenants')).toBe('/borrowers/QFL/covenants');
+    expect(clientFile('QFL', 'covenants')).toBe('/clients/QFL/file/covenants');
   });
 });
 

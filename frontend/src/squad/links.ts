@@ -1,9 +1,9 @@
 // frontend/src/squad/links.ts
-/** Where "Open in client file" and a thread go. One place, so Phase 4b retargets the client file in one edit. */
-export type ClientFileView = 'documents' | 'covenants' | 'spreads' | 'timeline';
+/** Where the client file and a thread live. One place, so every link moves together. */
+export type ClientFileView = 'overview' | 'spreads' | 'covenants' | 'documents' | 'funding' | 'loans' | 'reviews' | 'history';
 
 export function clientFile(code: string, view?: ClientFileView): string {
-  return view ? `/borrowers/${code}/${view}` : `/borrowers/${code}`;
+  return view && view !== 'overview' ? `/clients/${code}/file/${view}` : `/clients/${code}/file`;
 }
 
 export function threadHref(code: string, caseId?: string) {

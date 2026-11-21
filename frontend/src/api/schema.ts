@@ -439,6 +439,7 @@ export interface CovenantTestRow {
   reported_in_compliance: boolean | null;
   outcome: CovenantOutcome;
   error: string | null;
+  note?: string | null;
   loan_name: string | null;
   terms_version: { id: string; version: number; status: string } | null;
   citation: { section: string | null; page: number | null; quote: string | null; document_id: string | null } | null;

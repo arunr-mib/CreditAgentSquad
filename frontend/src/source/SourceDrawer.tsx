@@ -107,27 +107,23 @@ function ViewerLink({
   code,
   documentId,
   page,
-  factId,
-  quote,
   onNavigate,
 }: {
   code?: string;
   documentId: string | null;
   page: number | null;
-  factId?: string;
-  quote?: string | null;
   onNavigate: () => void;
 }) {
   if (!code || !documentId) return null;
   return (
     <Link
-      to="/borrowers/$code/documents/$documentId"
-      params={{ code, documentId }}
-      search={{ page: page ?? 1, ...(factId ? { fact: factId } : {}), ...(quote && !factId ? { quote } : {}) }}
+      to="/clients/$code/file/$view"
+      params={{ code, view: 'documents' }}
+      search={{ document: documentId, page: page ?? 1 }}
       onClick={onNavigate}
       className="link inline-flex items-center gap-0.5 text-body font-medium"
     >
-      Open in the document viewer
+      Open in the client file
       <ArrowUpRight size={12} aria-hidden />
     </Link>
   );
@@ -137,13 +133,11 @@ function ViewerLink({
 function PageBlock({
   page,
   code,
-  factId,
   markLabel,
   onNavigate,
 }: {
   page: SourcePage;
   code?: string;
-  factId?: string;
   markLabel: string;
   onNavigate: () => void;
 }) {
@@ -167,7 +161,7 @@ function PageBlock({
           {page.page_count ? <span className="tnum"> of {page.page_count}</span> : null}
         </span>
         <span className="shrink-0">
-          <ViewerLink code={code} documentId={page.document_id} page={page.page} factId={factId} quote={factId ? null : page.quote} onNavigate={onNavigate} />
+          <ViewerLink code={code} documentId={page.document_id} page={page.page} onNavigate={onNavigate} />
         </span>
       </figcaption>
     </figure>
@@ -216,7 +210,7 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
 
       {page ? (
         <Section title={located ? 'Where the figure is printed' : 'Source page'} note={located ? 'Located by code, not extracted' : 'Cited by the fact'}>
-          <PageBlock page={page} code={data.borrower.code} factId={fact.id} markLabel={`${fact.label} as printed`} onNavigate={onNavigate} />
+          <PageBlock page={page} code={data.borrower.code} markLabel={`${fact.label} as printed`} onNavigate={onNavigate} />
           <dl className="mt-3">
             <Row label="Printed as">
               {page.quote ? <Quote text={`${page.label_text ? `${page.label_text}  ` : ''}${page.quote}`} highlight={page.quote} /> : 'Not recorded'}

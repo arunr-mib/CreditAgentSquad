@@ -75,6 +75,18 @@ export const clientRoute = createRoute({
   validateSearch: (search: Record<string, unknown>): { case?: string } => clean({ case: str(search.case) }),
 });
 
+export const clientFileRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/clients/$code/file',
+  component: lazyRouteComponent(() => import('@/squad/clientfile/ClientFile'), 'ClientFile'),
+});
+export const clientFileViewRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/clients/$code/file/$view',
+  component: lazyRouteComponent(() => import('@/squad/clientfile/ClientFile'), 'ClientFile'),
+  validateSearch: (search: Record<string, unknown>): { document?: string; page?: number } => clean({ document: str(search.document), page: int(search.page) }),
+});
+
 export const approvalsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/approvals',
@@ -184,6 +196,8 @@ const designRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   clientRoute,
+  clientFileRoute,
+  clientFileViewRoute,
   approvalsRoute,
   signInRoute,
   commandCentreRoute,

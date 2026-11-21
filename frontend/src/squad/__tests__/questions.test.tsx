@@ -92,7 +92,7 @@ describe('QaMessage', () => {
   it('shows a refusal as a refusal, with the way to the evidence', () => {
     mount(<QaMessage message={qa({ status: 'refused', answer: 'I cannot answer that from what is on file. No grounding.', fact_ids: [], citations: [] })} borrowerCode="QFL" />);
     expect(screen.getByRole('group', { name: /squad could not answer/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /open the client file/i })).toHaveAttribute('href', '/borrowers/QFL');
+    expect(screen.getByRole('link', { name: /open the client file/i })).toHaveAttribute('href', '/clients/QFL/file');
     expect(screen.queryByText(/checked by code/i)).not.toBeInTheDocument();
   });
 });

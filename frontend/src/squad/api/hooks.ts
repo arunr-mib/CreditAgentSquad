@@ -1,7 +1,7 @@
 // frontend/src/squad/api/hooks.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/api/client';
-import type { ApprovalRow, Briefing, CaseView, Thread, Trail } from './types';
+import type { ApprovalRow, Briefing, CaseView, FundingEventRow, MeasureSeries, Thread, Trail } from './types';
 
 export const useBriefing = () => useQuery({ queryKey: ['briefing'], queryFn: () => get<Briefing>('/me/briefing') });
 export const useThread = (borrowerId?: string) =>
@@ -49,3 +49,10 @@ export const useReturnCase = (id: string) =>
   useWrite<{ reason: string }, CaseView>(() => `/work-items/${id}/return`, (i) => i, CASE_KEYS);
 export const useAttachEvidence = (id: string) =>
   useWrite<{ document_id: string; note?: string }, CaseView>(() => `/work-items/${id}/attach`, (i) => i, CASE_KEYS);
+
+export const useMeasure = (borrowerId?: string) =>
+  useQuery({ queryKey: ['measure', borrowerId], queryFn: () => get<MeasureSeries>(`/borrowers/${borrowerId}/measure`), enabled: Boolean(borrowerId) });
+export const useDocumentTypeWords = () =>
+  useQuery({ queryKey: ['words', 'document-types'], queryFn: () => get<{ types: Record<string, string>; unclassified: string }>('/words/document-types'), staleTime: Infinity });
+export const useFundingEvents = (borrowerId?: string) =>
+  useQuery({ queryKey: ['funding', borrowerId], queryFn: () => get<FundingEventRow[]>(`/borrowers/${borrowerId}/funding-events`), enabled: Boolean(borrowerId) });

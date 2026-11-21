@@ -36,7 +36,7 @@ vi.mock('../thread/DraftMessage', () => ({ DraftMessage: () => null }));
 
 const base = { ts: '2026-11-20T08:00:00Z' };
 const messages: ThreadMessage[] = [
-  { ...base, id: 'doc:1', type: 'document', document_id: 'd1', title: 'October compliance certificate', doc_type: 'compliance_certificate', pages: 2, period_end: '2026-10-31' },
+  { ...base, id: 'doc:1', type: 'document', document_id: 'd1', title: 'October compliance certificate', doc_type: 'compliance_certificate', doc_type_words: 'Compliance certificate', pages: 2, period_end: '2026-10-31' },
   { ...base, id: 'held:1', type: 'held', document_id: 'd2', title: 'Unknown scan', reason: "Not this client's file" },
   { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'covenant.breach', title: 'Cash below minimum', question: 'Is this a breach?', severity: 'critical', status: 'open', allowed_decisions: [], needs_you: false, state_words: 'With the credit officer' },
   { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'funding_slipped', title: 'Funding slipped', question: 'Review the outlook?', severity: 'high', status: 'open', allowed_decisions: [], needs_you: false, state_words: 'Open' },
@@ -44,7 +44,7 @@ const messages: ThreadMessage[] = [
   { ...base, id: 'handoff:1', type: 'handoff', work_item_id: 'w1', assigned_to: 'Helen Strand', assigned_to_id: 'u2', by: 'Priya Raman' },
   { ...base, id: 'run:1', type: 'report', agent_name: 'spreading', task: 'read_statements', text: 'Read the October package.', run_id: 'r1' },
 ];
-const thread = (m: ThreadMessage[]): Thread => ({ borrower: { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', template_id: 'vc-1' }, head_seq: 9, messages: m });
+const thread = (m: ThreadMessage[]): Thread => ({ borrower: { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', template_id: 'vc-1' }, head_seq: 9, opening_id: null, messages: m });
 
 function mount(search = '') {
   const root = createRootRoute();
@@ -69,7 +69,7 @@ describe('ClientThread', () => {
   it('names the client and offers the client file', async () => {
     mount();
     expect(await screen.findByRole('heading', { name: 'Quillfeather Labs, Inc.' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /open in client file/i })).toHaveAttribute('href', '/borrowers/QFL');
+    expect(screen.getByRole('link', { name: /open in client file/i })).toHaveAttribute('href', '/clients/QFL/file');
   });
 
   it('renders each message type in words a person can act on', async () => {
@@ -188,7 +188,7 @@ describe('ClientThread', () => {
   it('gives each case its own client-file link with a distinct name', async () => {
     mount();
     const link = await screen.findByRole('link', { name: 'Open Cash below minimum in the client file' });
-    expect(link).toHaveAttribute('href', '/borrowers/QFL');
+    expect(link).toHaveAttribute('href', '/clients/QFL/file');
     expect(screen.getByRole('link', { name: 'Open Funding slipped in the client file' })).toBeInTheDocument();
   });
 
@@ -226,5 +226,21 @@ describe('ClientThread', () => {
     const card = (await screen.findByText('Cash below minimum')).closest('[data-work-item]') as HTMLElement;
     expect(card.querySelector('time')).not.toBeNull();
     expect(within(card).getByRole('button', { name: /how i got here/i })).toHaveAttribute('aria-controls', 'trail-w1');
+  });
+
+  it('opens at what is new and groups arrivals for one period', async () => {
+    const scrolled: string[] = [];
+    Element.prototype.scrollIntoView = function (this: Element) { scrolled.push(this.getAttribute('data-message-id') ?? ''); };
+    state.thread = { ...thread([
+      { ...base, id: 'arrivals:2026-10', type: 'arrivals', title: '2 documents arrived for October 2026', period_end: '2026-10-31', documents: [
+        { ...base, id: 'doc:1', type: 'document', document_id: 'd1', title: 'MRR report, October 2026', doc_type: 'mrr_report', doc_type_words: 'MRR report', pages: 1, period_end: '2026-10-31' },
+        { ...base, id: 'doc:2', type: 'document', document_id: 'd2', title: 'Account statement, October 2026', doc_type: 'bank_statement', doc_type_words: 'Bank account statement', pages: 1, period_end: '2026-10-31' },
+      ] },
+      { ...base, id: 'case:9', type: 'case', work_item_id: 'w9', item_type: 'x', title: 'New line', question: 'q', severity: 'medium', status: 'open', allowed_decisions: [], needs_you: true, state_words: '' },
+    ]), opening_id: 'case:9' };
+    mount();
+    expect(await screen.findByText('2 documents arrived for October 2026')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Open MRR report, October 2026' })).toBeInTheDocument();
+    expect(scrolled).toEqual(['case:9']);
   });
 });

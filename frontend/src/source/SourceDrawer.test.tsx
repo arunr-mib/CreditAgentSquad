@@ -135,7 +135,7 @@ async function openSource(id: string) {
       </SourceProvider>
     ),
   });
-  const docs = createRoute({ getParentRoute: () => root, path: '/borrowers/$code/documents/$documentId', component: () => null });
+  const docs = createRoute({ getParentRoute: () => root, path: '/clients/$code/file/$view', component: () => null });
   const router = createRouter({ routeTree: root.addChildren([page, docs]), history: createMemoryHistory({ initialEntries: ['/'] }) });
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(
