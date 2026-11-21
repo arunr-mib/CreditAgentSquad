@@ -119,7 +119,7 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 2. Agents reading figures from spreadsheets: backlog, post-MVP.
 3. Kestrel Bay wrong-abstain and Pellham wording re-record: backlog.
 4. "Needs you" does not count signals: agreed.
-5. Bank statement label: owner asked for "Financial statements". Held pending confirmation, because the book already has monthly, interim, quarterly and annual financial statements, so two different documents would carry the same name. Current label stays until confirmed.
+5. Bank statement label: "Bank statement" (owner, 21 Nov).
 6. Asked for a fuller explanation (given in chat, 21 Nov).
 7. Portfolio order agreed: lowest runway/headroom first, then not measured, then cash-flow positive last.
 8. **Package release by the person who prepared it** (new, 21 Nov): today the engine refuses a release only for missing permission, draft commentary or a failed check — the same portfolio manager may prepare and release a package. The commentary inside has already been approved by a second person. Default: keep as is in 4b; say if release should need a second person.
