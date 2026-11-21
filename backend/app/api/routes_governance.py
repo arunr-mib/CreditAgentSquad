@@ -172,8 +172,10 @@ def _agent_limits() -> list[dict[str, Any]]:
         _rule("margin_floor", "Margin floor", _pct(policy.margin_floor_pct),
               "A resolve or a request becomes an escalate when the governing test misses its threshold by more "
               "than this share of the threshold.", "guardrails/policy.py"),
-        _rule("step_cap", "Step cap, covenant agent", f"{policy.max_steps} steps",
-              "A resolve from a run that used every step becomes an abstain.", "guardrails/policy.py"),
+        _rule("step_cap", "Lookup allowance, covenant agent",
+              f"{covenant.SPEC.max_exchanges} turns, {covenant.SPEC.max_steps} lookups",
+              "When either is spent the agent is asked once for a final answer without tools. A resolve from "
+              "such a run becomes an abstain.", "guardrails/policy.py"),
         _rule("prohibited_phrases", "Actions reserved for a person", f"{len(policy.prohibited_phrases)} phrases",
               "Agent text that proposes one becomes an escalate: " + ", ".join(policy.prohibited_phrases) + ".",
               "guardrails/policy.py"),

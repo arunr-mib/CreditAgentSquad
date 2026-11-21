@@ -3,7 +3,7 @@ import json
 import pathlib
 
 import pytest
-from app.guardrails.narrative import DocumentStructure, check_narrative
+from app.guardrails.narrative import DocumentStructure, References, check_narrative
 
 ST = DocumentStructure(page_count=5, note_numbers=frozenset({1}), endings=frozenset({"9001", "9002"}),
                        years=frozenset({2025, 2026}))
@@ -84,3 +84,67 @@ def test_recorded_notes_all_pass_with_the_structure_of_their_documents():
                if check_narrative(n, {}, structure=st,
                                   echo="In thousands of U.S. dollars (in thousands)")]
     assert failing == []
+
+
+# ---- references in a covenant answer: terms versions and section numbers -------------------------
+
+REFS = References(versions=frozenset({1, 2}), sections=frozenset({"6.3", "9.1", "6.12"}))
+
+
+def refs_ok(text, refs=REFS):
+    return check_narrative(text, {}, refs=refs) == []
+
+
+@pytest.mark.parametrize("text", [
+    "Only one terms version is on file (version 1, approved).",
+    "Rerunning the test under version 2 gave the same failure.",
+    "A search found only the agreement's own Section 9.1 clause.",
+    "Revenue to Plan (Section 6.3) is the test.",
+    "The test in Section 6.12(b) applies.",
+])
+def test_known_versions_and_sections_pass_anywhere(text):
+    assert refs_ok(text)
+
+
+@pytest.mark.parametrize("text", [
+    "Under version 7 the ratio was higher.",       # no such version
+    "The limit stood at Section 4.25 on that day.",  # not a section the run read
+    "Leverage was version 1.5x.",
+    "Section 9.1x was the multiple.",
+    "The shortfall is not limited to one month.",   # "to one" stays refused; the retry handles it
+    "Growth over a four-quarter climb.",
+])
+def test_other_versions_sections_and_quantities_stay_refused(text):
+    assert not refs_ok(text)
+
+
+def test_a_four_quarter_basis_names_a_window():
+    assert refs_ok("Measured quarterly on a four-quarter basis.")
+
+
+def _recorded_covenant_answer(path):
+    d = json.loads((ROOT.parent / "covenant" / path).read_text())
+    return json.loads(d["content"][-1]["text"])
+
+
+def _problems(answer, refs):
+    from decimal import Decimal
+
+    from app.guardrails.narrative import FactView, referenced_fact_ids
+    from app.guardrails.numbers import extract_figures
+    facts = {i: FactView(i, Decimal(1), "ratio") for i in referenced_fact_ids(answer["explanation"])}
+    out = [p.subject for p in check_narrative(answer["explanation"], facts, refs=refs)]
+    for c in answer["claims"]:
+        allowed = [f.value for f in extract_figures(c["quote"])]
+        out += [p.subject for p in check_narrative(c["text"], facts, refs=refs, allowed_figures=allowed)]
+    return out
+
+
+def test_recorded_covenant_answers_pass_or_need_exactly_the_one_retry():
+    # Corvane's final answer said the shortfall was "not limited to one month": that is the one retry
+    corvane = _recorded_covenant_answer("corvane-analytics/2026-10-31/revenue_vs_plan/06.json")
+    assert _problems(corvane, References(frozenset({1}), frozenset({"6.3"}))) == ["to one"]
+    pellham = _recorded_covenant_answer("pellham-grain/2026-09-30/fccr/06.json")
+    assert _problems(pellham, References(frozenset({1}), frozenset({"6.1", "9.1"}))) == []
+    # without the references the same answers were refused outright
+    assert _problems(pellham, References()) != []

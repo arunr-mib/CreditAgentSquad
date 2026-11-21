@@ -72,9 +72,9 @@ class CopilotAnswer(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="copilot", version="1",
+    name="copilot", version="2",
     purpose="Answer questions about a borrower or the portfolio from stored facts and documents. Read-only.",
-    prompt_file="copilot.md", output_model=CopilotAnswer, tools=TOOL_NAMES, effort="medium", max_steps=16,
+    prompt_file="copilot.md", output_model=CopilotAnswer, tools=TOOL_NAMES, effort="medium", max_steps=30, max_exchanges=8,
     max_tokens=8000)
 
 

@@ -33,7 +33,8 @@ class AgentSpec:
     output_model: type[BaseModel]
     tools: tuple[str, ...] = ()
     effort: str = "high"
-    max_steps: int = 12
+    max_steps: int = 12  # the cost ceiling: tool calls in one run
+    max_exchanges: int = 8  # model turns that may ask for tools; an agent without tools never reaches it
     max_tokens: int = 32000
     model: str | None = None  # None = the configured default model
 
@@ -50,6 +51,8 @@ class AgentSpec:
         body = {"name": self.name, "version": self.version, "model": self.resolved_model(),
                 "effort": self.effort, "max_steps": self.max_steps, "tools": list(self.tools),
                 "prompt": self.prompt_sha256(), "output": strict_schema(self.output_model)}
+        if self.tools:
+            body["max_exchanges"] = self.max_exchanges
         return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
 
 
@@ -59,6 +62,7 @@ class AgentOutcome:
     status: str  # completed | abstained | failed | refused
     output: BaseModel | None = None
     reason: str | None = None  # why there is no output: step_cap | schema | max_tokens | refusal | error
+    cap_reached: bool = False  # the run's last turn was forced: an allowance was spent before it answered
 
     @property
     def ok(self) -> bool:
@@ -129,7 +133,9 @@ def run_agent(
     state: dict[str, Any] | None = None,
     prose_check: Callable[[BaseModel, dict[str, Any]], list[str]] | None = None,
 ) -> AgentOutcome:
-    """Run the agent until it answers, is refused, fails, or reaches its step cap.
+    """Run the agent until it answers, is refused, or fails. The cap counts model turns (`max_exchanges`),
+    with a larger tool-call budget (`max_steps`) as the cost ceiling; when either is spent the model gets
+    one final turn without tools and `cap_reached` is set on the outcome.
 
     `prose_check(answer, state)` returns what in a valid answer's text fails the number check. A
     first failure is sent back once, asking for fact references in place of typed figures; the
@@ -146,7 +152,7 @@ def run_agent(
     ledger.record(db, actor_type="agent", actor_id=f"{spec.name}@{spec.version}", action="agent.run_started",
                   entity_type="agent_run", entity_id=run.id,
                   payload={"task": task, "scope": scope.to_json(), "model": run.model, "mode": llm.mode})
-    ctx = ToolContext(db=db, scope=scope, run=run, state=dict(state or {}))
+    ctx = ToolContext(db=db, scope=scope, run=run, state={**(state or {}), "run_id": run.id})
     messages: list[dict[str, Any]] = [{"role": "user", "content": content}]
     tools = gateway.definitions(spec.tools)
     schema = strict_schema(spec.output_model)
@@ -155,6 +161,7 @@ def run_agent(
                                     effort=spec.effort, max_tokens=spec.max_tokens, model=run.model)
     retried_shape = False
     retried_prose = False
+    cap_reached = False
     exchange = 0
 
     while True:
@@ -190,21 +197,33 @@ def run_agent(
             messages.append({"role": "assistant", "content": response.content})
             results = []
             for call in response.tool_uses():
-                if run.steps_count >= spec.max_steps:
+                if cap_reached or run.steps_count >= spec.max_steps:
                     results.append({"type": "tool_result", "tool_use_id": call["id"], "is_error": True,
-                                    "content": "step cap reached; no further tool calls are possible"})
+                                    "content": "the allowance of lookups is spent; no further tool calls are possible"})
                     continue
                 outcome = gateway.call(ctx, call["name"], call.get("input"), allowed=spec.tools)
                 results.append({"type": "tool_result", "tool_use_id": call["id"],
                                 "is_error": outcome.refused,
                                 "content": json.dumps(outcome.content, default=str)})
-            messages.append({"role": "user", "content": results})
-            if run.steps_count >= spec.max_steps:
-                run.raw_output = {"note": "step cap reached before an answer"}
+            if cap_reached:
+                # the model was told no tools remain and asked for one anyway: nothing more is offered
+                messages.append({"role": "user", "content": results})
+                run.raw_output = {"note": "tools requested after the final turn was forced"}
                 _add_step(ctx, "guardrail", "step_cap", run.steps_count, "abstain",
                           {"layer": "runtime", "check": "step_cap", "action": "abstain"})
                 _finish(db, run, "abstained", "step_cap")
-                return AgentOutcome(run, "abstained", reason="step_cap")
+                return AgentOutcome(run, "abstained", reason="step_cap", cap_reached=True)
+            if exchange >= spec.max_exchanges or run.steps_count >= spec.max_steps:
+                # one last turn, with no tools: answer from what has been read, or abstain
+                cap_reached = True
+                results.append({"type": "text", "text": (
+                    "You have used your allowance of lookups. Answer now from what you have read, or abstain "
+                    "if it is not enough. Do not call tools.")})
+                _add_step(ctx, "guardrail", "step_cap", run.steps_count, "final_turn_forced",
+                          {"layer": "runtime", "check": "step_cap", "action": "final_turn_forced",
+                           "exchanges": exchange, "tool_calls": run.steps_count})
+                tools = []
+            messages.append({"role": "user", "content": results})
             continue
 
         # the model has answered
@@ -229,7 +248,7 @@ def run_agent(
         if parsed is not None:
             run.output = parsed.model_dump(mode="json")
             _finish(db, run, "completed", None)
-            return AgentOutcome(run, "completed", output=parsed)
+            return AgentOutcome(run, "completed", output=parsed, cap_reached=cap_reached)
         if retried_shape:
             _add_step(ctx, "guardrail", "schema", problem, "abstain",
                       {"layer": "runtime", "check": "schema", "action": "abstain", "detail": problem})

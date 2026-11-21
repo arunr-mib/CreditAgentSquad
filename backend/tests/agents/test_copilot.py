@@ -572,13 +572,18 @@ def test_a_borrower_that_does_not_exist_is_reported_as_not_found(db):
     assert guess.status == "refused" and "1.90" not in json.dumps(guess.to_json())
 
 
+def together(*calls):
+    """Several lookups asked for in one model turn."""
+    return LLMResponse(content=[b for c in calls for b in c.content], stop_reason="tool_use")
+
+
 def test_a_run_changes_nothing_but_the_trace_and_the_ledger(db):
     kestrel = borrower(db, "kestrel-bay-packaging")
     test = leverage_test(db)
     doc = agreement(db)
     before = snapshot(db)
     trace_before = {name: len(rows) for name, rows in snapshot(db, skip=set()).items() if name in RUN_TABLES}
-    response, _ = ask(db, [
+    response, _ = ask(db, [together(
         tool_call("borrower_overview", {}), tool_call("covenant_tests", {"period_end": None}),
         tool_call("calculation_breakdown", {"calculation_id": str(test.calc_run_id)}),
         tool_call("spread_lines", {"keys": ["is.revenue"], "period_ends": ["2026-09-30"]}),
@@ -589,7 +594,7 @@ def test_a_run_changes_nothing_but_the_trace_and_the_ledger(db):
         tool_call("read_page", {"document_id": str(doc.id), "page": 7}),
         tool_call("portfolio_query", {"covenant_status": "breach", "headroom_below_percent": None,
                                       "min_signal_severity": "any", "open_items_only": False,
-                                      "rank_by": "exposure", "limit": 10}),
+                                      "rank_by": "exposure", "limit": 10})),
         final(f"The Total Leverage Ratio is {{{{fact:{test.value_fact_id}}}}}.")], borrower_id=kestrel.id)
     assert response.status == "answered"
     steps = db.execute(select(AgentStep).where(AgentStep.run_id == response.agent_run_id, AgentStep.kind == "tool")).scalars().all()
@@ -701,3 +706,12 @@ def test_spread_lines_follow_the_borrowers_template(db):
     assert "is.subscription_revenue" in keys and "is.revenue" not in keys
     # a real line from the other template is refused, not silently read
     assert desk.call("spread_lines", keys=["is.revenue"], period_ends=["2026-09-30"]).refused
+
+
+def test_a_question_that_spends_the_turn_allowance_still_gets_a_final_answer(db):
+    kestrel = borrower(db, "kestrel-bay-packaging")
+    test = leverage_test(db)
+    answered, client = ask(db, [tool_call("covenant_tests", {"period_end": None})] * copilot.SPEC.max_exchanges
+                           + [final(f"The Total Leverage Ratio is {{{{fact:{test.value_fact_id}}}}}.")],
+                           borrower_id=kestrel.id)
+    assert answered.status == "answered" and client.requests[-1].tools == []

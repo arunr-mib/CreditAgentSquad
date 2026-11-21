@@ -104,10 +104,42 @@ def test_unknown_tool_is_refused(db):
     assert step.refused
 
 
-def test_step_cap_abstains(db):
+def test_spent_tool_budget_forces_one_final_turn_without_tools(db):
+    outcome, llm = run(db, [tool_call("lookup", {"key": "a"}), tool_call("lookup", {"key": "b"}),
+                            tool_call("lookup", {"key": "c"}), answer('{"verdict": "ok", "note": "late"}')])
+    assert outcome.ok and outcome.cap_reached and outcome.output.note == "late"
+    final = llm.requests[-1]
+    assert final.tools == [] and final.messages[-1]["content"][-1]["type"] == "text"
+    assert "abstain" in final.messages[-1]["content"][-1]["text"]
+    assert len(llm.requests) == 4
+
+
+def test_a_forced_turn_that_still_asks_for_tools_abstains(db):
     outcome, _ = run(db, [tool_call("lookup", {"key": "a"}), tool_call("lookup", {"key": "b"}),
-                          tool_call("lookup", {"key": "c"}), answer('{"verdict": "ok", "note": "late"}')])
+                          tool_call("lookup", {"key": "c"}), tool_call("lookup", {"key": "d"})])
     assert outcome.status == "abstained" and outcome.reason == "step_cap" and outcome.output is None
+
+
+def test_exchanges_are_capped_separately_from_tool_calls(db):
+    spec = AgentSpec(name="test_agent_x", version="1", purpose="test", prompt_file="_test.md",
+                     output_model=Answer, tools=("lookup",), max_steps=30, max_exchanges=2)
+    outcome, llm = run(db, [tool_call("lookup", {"key": "a"}), tool_call("lookup", {"key": "b"}),
+                            answer('{"verdict": "ok", "note": "x"}')], spec=spec)
+    assert outcome.ok and outcome.cap_reached and outcome.run.steps_count == 2 and llm.requests[-1].tools == []
+
+
+def test_parallel_calls_count_as_one_exchange_and_the_budget_still_bounds_them(db):
+    many = LLMResponse(content=[{"type": "tool_use", "id": f"t{i}", "name": "lookup", "input": {"key": "a"}}
+                                for i in range(5)], stop_reason="tool_use")
+    outcome, llm = run(db, [many, answer('{"verdict": "ok", "note": "x"}')])
+    assert outcome.ok and outcome.cap_reached and outcome.run.steps_count == 3  # budget of 3
+    results = llm.requests[1].messages[-1]["content"]
+    assert [r.get("is_error") for r in results if r["type"] == "tool_result"] == [False] * 3 + [True] * 2
+
+
+def test_an_answer_inside_the_allowance_is_not_marked_capped(db):
+    outcome, _ = run(db, [tool_call("lookup", {"key": "a"}), answer('{"verdict": "ok", "note": "x"}')])
+    assert outcome.ok and not outcome.cap_reached
 
 
 def test_bad_shape_gets_one_retry_without_tools(db):

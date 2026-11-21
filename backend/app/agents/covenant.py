@@ -23,13 +23,14 @@ from app.agents.tools import Scope, ToolGateway
 from app.calc.terms import Terms, compare_terms
 from app.core import ledger
 from app.domain import covenant_service
+from app.domain.agents import AgentStep
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
 from app.domain.facts import CalcRun, Fact
 from app.domain.monitoring import CovenantTest, Cycle, WorkItem
 from app.domain.terms import TermsVersion
 from app.domain.terms_service import resolve_document
-from app.guardrails.narrative import FactView, Note, check_narrative, render
+from app.guardrails.narrative import FactView, Note, References, check_narrative, render, sections_printed
 from app.guardrails.numbers import extract_figures, same_number
 from app.guardrails.policy import PolicySettings, apply_policy
 from app.guardrails.quotes import quote_on_page
@@ -70,12 +71,12 @@ class CovenantAnswer(BaseModel):
 
 
 SPEC = AgentSpec(
-    name="covenant", version="1",
+    name="covenant", version="2",
     purpose="Investigate a covenant exception and recommend; code verifies every claim and figure.",
     prompt_file="covenant.md", output_model=CovenantAnswer, tools=tuple(t.name for t in COVENANT_TOOLS),
-    effort="high", max_steps=12, max_tokens=16000)
+    effort="high", max_steps=30, max_exchanges=8, max_tokens=16000)
 GATEWAY = ToolGateway(list(COVENANT_TOOLS))
-POLICY = PolicySettings(max_steps=SPEC.max_steps)
+POLICY = PolicySettings()
 AGENT_ID = f"{SPEC.name}@{SPEC.version}"
 
 
@@ -215,6 +216,22 @@ def _terms_drift(governing: CalcRun, approved_row: TermsVersion, approved: Terms
     return False
 
 
+def _references(db: Session, facility: Facility, run_id: uuid.UUID,
+                surviving: list[tuple[Claim, Document]]) -> References:
+    """The terms version numbers on this facility, and the section numbers printed in a verified quote or
+    on a page this run read (the text the tools returned). Code reads both from stored records."""
+    versions = frozenset(db.execute(select(TermsVersion.version).where(TermsVersion.facility_id == facility.id)).scalars())
+    sections: set[str] = set()
+    for claim, _ in surviving:
+        sections |= sections_printed(claim.quote)
+    for step in db.execute(select(AgentStep).where(AgentStep.run_id == run_id, AgentStep.kind == "tool",
+                                                   AgentStep.name == "read_page")).scalars():
+        text = (step.detail.get("output") or {}).get("text") if isinstance(step.detail, dict) else None
+        if isinstance(text, str):
+            sections |= sections_printed(text)
+    return References(versions=versions, sections=frozenset(sections))
+
+
 # ---- the pipeline ----------------------------------------------------------------------------
 
 
@@ -258,8 +275,28 @@ def investigate(db: Session, work_item: WorkItem, llm: LLMClient) -> Investigati
     scope = Scope(borrower_id=borrower.id, facility_id=facility.id, period_end=test.period_end, months=months,
                   cycle_id=cycle.id if cycle else None)
 
+    origin = db.get(CalcRun, test.calc_run_id) if test.calc_run_id else None
+
+    def typed_figures(answer: CovenantAnswer, state: dict[str, Any]) -> list[str]:
+        """What in the answer's text would not pass the number check, so the model may correct it once."""
+        calcs = ([origin] if origin is not None else []) + run_calcs(db, state["run_id"])
+        facts = _evidence_facts(db, test, calcs)
+        approved_row, approved_version = covenant_service.governing_terms(db, facility, test.period_end)
+        thresholds = _thresholds(calcs, approved_version.terms, test.covenant_id) if approved_row is not None else []
+        ratios = thresholds if test.unit == "ratio" else []
+        surviving = _verify_claims(db, borrower.id, answer.claims, Investigation(recommendation="abstain"))
+        refs = _references(db, facility, state["run_id"], surviving)
+        allowed = thresholds + [f.value for c, _ in surviving for f in extract_figures(c.quote, ratios)]
+        found = [("explanation", p) for p in check_narrative(answer.explanation, facts, allowed_figures=allowed,
+                                                             known_ratios=ratios, refs=refs)]
+        for n, (claim, _) in enumerate(surviving, 1):
+            claim_allowed = thresholds + [f.value for f in extract_figures(claim.quote, ratios)]
+            found += [(f"claim {n}", p) for p in check_narrative(claim.text, facts, allowed_figures=claim_allowed,
+                                                                 known_ratios=ratios, refs=refs)]
+        return [f"{where}: {p.detail}" + (f" (text: {p.subject!r})" if p.subject else "") for where, p in found]
+
     outcome = run_agent(
-        db, SPEC, task="investigate_covenant_exception", scope=scope,
+        db, SPEC, task="investigate_covenant_exception", scope=scope, prose_check=typed_figures,
         content=[{"type": "text", "text": _brief(work_item, test, borrower, facility)}], llm=llm, gateway=GATEWAY,
         record_key=f"covenant/{borrower.code}/{test.period_end}/{test.covenant_id}",
         state={"work_item_id": str(work_item.id), "covenant_test_id": str(test.id),
@@ -269,7 +306,6 @@ def investigate(db: Session, work_item: WorkItem, llm: LLMClient) -> Investigati
 
     # evidence is gathered by code: the originating test's calculation, then every calculation
     # this run logged, in order. The last one logged governs.
-    origin = db.get(CalcRun, test.calc_run_id) if test.calc_run_id else None
     logged = run_calcs(db, run.id)
     calcs = ([origin] if origin is not None else []) + logged
     governing = logged[-1] if logged else origin
@@ -296,16 +332,17 @@ def investigate(db: Session, work_item: WorkItem, llm: LLMClient) -> Investigati
 
     # 1. every quote is on the page it cites, or the claim goes
     surviving = _verify_claims(db, borrower.id, answer.claims, result)
+    refs = _references(db, facility, run.id, surviving)
     if answer.claims and not surviving:
         _note(result, "quotes", "no_claim_survived", "abstain", "none of the cited quotes was found on its page")
         recommendation = "abstain"
 
     # 2. no typed figure: fact references, figures inside verified quotes and known thresholds only
     allowed = thresholds + [f.value for c, _ in surviving for f in extract_figures(c.quote, ratios)]
-    problems = check_narrative(answer.explanation, facts, allowed_figures=allowed, known_ratios=ratios)
+    problems = check_narrative(answer.explanation, facts, allowed_figures=allowed, known_ratios=ratios, refs=refs)
     kept: list[tuple[Claim, Document]] = []
     for claim, doc in surviving:
-        claim_problems = check_narrative(claim.text, facts, known_ratios=ratios,
+        claim_problems = check_narrative(claim.text, facts, known_ratios=ratios, refs=refs,
                                          allowed_figures=thresholds + [f.value for f in extract_figures(claim.quote, ratios)])
         if claim_problems:
             _note(result, "narrative", claim_problems[0].check, "claim_dropped",
@@ -350,7 +387,7 @@ def investigate(db: Session, work_item: WorkItem, llm: LLMClient) -> Investigati
 
     # 5. policy has the last word and only ever makes the recommendation more cautious
     text = " ".join([answer.explanation, *(c.text for c, _ in surviving), *result.missing_evidence])
-    policy = apply_policy(recommendation, text=text, steps_count=run.steps_count, governing_passed=passed,
+    policy = apply_policy(recommendation, text=text, cap_reached=outcome.cap_reached, governing_passed=passed,
                           governing_headroom_pct=headroom_pct, surviving_claims=len(surviving), settings=POLICY)
     _take(result, policy.notes)
     result.recommendation = policy.recommendation

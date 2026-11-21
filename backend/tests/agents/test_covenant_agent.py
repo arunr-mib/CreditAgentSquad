@@ -8,6 +8,7 @@ import pytest
 from app.agents import covenant
 from app.agents.covenant import ABSTAIN_NO_ANSWER, ABSTAIN_UNVERIFIED, investigate
 from app.agents.covenant_tools import COVENANT_TOOLS, run_calcs
+from app.agents.llm import LLMResponse
 from app.core.ledger import LedgerEvent, verify_chain
 from app.domain.agents import AgentStep, Lesson
 from app.domain.credit import Borrower, Facility
@@ -94,13 +95,14 @@ def resolve_answer(results, amendment, details, **over) -> dict:
     return {**body, **over}
 
 
-def vantry_flow(amendment, details, final) -> FlowClient:
+def vantry_flow(amendment, details, final, answers=1) -> FlowClient:
+    """`answers` > 1 repeats the final answer: a text that fails the number check is sent back once."""
     return FlowClient([
         tool_call("get_exception"),
         tool_call("list_unapproved_amendments"),
         tool_call("read_page", {"document_id": str(amendment.id), "page": details["page"]}),
         tool_call("recalculate_with_cited_change", what_if_call(amendment, details)),
-        lambda request: answer(final(tool_results(request))),
+        *[lambda request: answer(final(tool_results(request))) for _ in range(answers)],
     ])
 
 
@@ -164,7 +166,7 @@ def test_a_typed_figure_in_the_explanation_forces_abstain(vantry):
         body = resolve_answer(results, amendment, details)
         return {**body, "explanation": body["explanation"] + " In short the ratio is 1.62x after the amendment."}
 
-    result = investigate(db, item, vantry_flow(amendment, details, final))
+    result = investigate(db, item, vantry_flow(amendment, details, final, answers=2))
     assert result.model_recommendation == "resolve" and result.recommendation == "abstain"
     assert ("figure_untraceable", "abstain") in [(n["check"], n["action"]) for n in result.notes]
     assert item.recommendation["explanation"] == item.recommendation["explanation_rendered"] == ABSTAIN_UNVERIFIED
@@ -482,3 +484,57 @@ def test_only_open_covenant_exceptions_are_investigated(book):
     item.status = "decided"
     with pytest.raises(ValueError, match="open"):
         investigate(db, item, FlowClient([]))
+
+
+def test_the_cap_counts_model_turns_and_the_last_turn_is_an_answer_not_an_abstain(vantry):
+    db, item, amendment, details = vantry
+    steps = [tool_call("get_exception"), tool_call("list_unapproved_amendments"),
+             tool_call("read_page", {"document_id": str(amendment.id), "page": details["page"]}),
+             tool_call("recalculate_with_cited_change", what_if_call(amendment, details)),
+             *[tool_call("list_documents") for _ in range(covenant.SPEC.max_exchanges - 4)]]
+    llm = FlowClient([*steps, lambda request: answer(resolve_answer(
+        [tool_results(request)[0], tool_results(request)[3]], amendment, details))])
+    result = investigate(db, item, llm)
+    assert llm.requests[-1].tools == [] and len(llm.requests) == covenant.SPEC.max_exchanges + 1
+    # it answered from what it had read; a resolve from a run that was cut off is still held back
+    assert result.model_recommendation == "resolve" and result.recommendation == "abstain"
+    assert ("policy", "step_cap", "abstain") in [(n["layer"], n["check"], n["action"]) for n in result.notes]
+
+
+def test_parallel_page_reads_are_one_turn_not_many(vantry):
+    db, item, amendment, details = vantry
+    page = {"document_id": str(amendment.id), "page": details["page"]}
+    parallel = LLMResponse(content=[{"type": "tool_use", "id": f"p{i}", "name": "read_page", "input": page}
+                                    for i in range(6)], stop_reason="tool_use")
+    llm = FlowClient([tool_call("get_exception"), parallel, tool_call("recalculate_with_cited_change",
+                                                                    what_if_call(amendment, details)),
+                      lambda request: answer(resolve_answer(tool_results(request), amendment, details))])
+    result = investigate(db, item, llm)
+    assert result.recommendation == "resolve" and "step_cap" not in checks(result)
+
+
+def test_a_figure_in_words_is_sent_back_once_and_the_corrected_answer_stands(vantry):
+    db, item, amendment, details = vantry
+    answers = iter(["The shortfall is not limited to one month. ", ""])
+
+    def final(results):
+        body = resolve_answer(results, amendment, details)
+        return {**body, "explanation": next(answers) + body["explanation"]}
+
+    llm = vantry_flow(amendment, details, final, answers=2)
+    result = investigate(db, item, llm)
+    assert len(llm.requests) == 6 and llm.requests[-1].tools == []
+    assert "Some of your text did not pass the number check" in str(llm.requests[-1].messages[-1])
+    assert result.recommendation == "resolve" and "figure_untraceable" not in checks(result)
+
+
+def test_a_terms_version_on_file_may_be_named_and_one_that_is_not_may_not(vantry):
+    db, item, amendment, details = vantry
+
+    def named(version):
+        def final(results):
+            body = resolve_answer(results, amendment, details)
+            return {**body, "explanation": body["explanation"] + f" Terms version {version} governs."}
+        return final
+
+    assert investigate(db, item, vantry_flow(amendment, details, named(1))).recommendation == "resolve"

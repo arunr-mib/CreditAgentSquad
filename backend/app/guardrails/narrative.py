@@ -62,7 +62,8 @@ _OTHER_QUANTITY_WORDS = re.compile(
     r"|\b(?<!first\s)(?<!second\s)(?<!latter\s)(?<!first-)(?<!second-)hal(?:f|ves)\b"
     r"|\b(?:by|nearly|about|roughly|almost|around|approximately|over|under)\s+(?:a|one|two|three)[\s-](?:thirds?|quarters?|fifths?|tenths?)\b"
     r"|\b(?:a|one|two|three)[\s-](?:thirds?|quarters?|fifths?|tenths?)\s+of\b"
-    r"|\b(?:one|two|three|four)-(?:thirds?|quarters?|fifths?|tenths?)\b"
+    r"|\b(?:one|two|three|four)-(?:thirds?|fifths?|tenths?)\b"
+    r"|\b(?:one|two|three|four)-quarters?\b(?!\s+(?:basis|period|window|test|measurement|average|trailing|rolling)\b)"
     r"|\b(?:single|double|triple)[\s-]digits?\b|\b(?:tens|hundreds|thousands|millions|billions)\s+of\b"
     # "seven figures", "a six-figure loss", "high single figures": a size stated in words. Any other word before
     # "figures" ("the certificate figures", "reported figures") names figures and states none.
@@ -124,6 +125,36 @@ class DocumentStructure:
             for m in re.finditer(r"\b(20[0-3]\d)\b", text):
                 years.add(int(m.group(1)))
         return cls(len(pages), frozenset(notes), frozenset(endings), frozenset(years))
+
+
+@dataclass(frozen=True)
+class References:
+    """Places a covenant answer may name, built by code from the run: the version numbers of the
+    facility's terms and the section numbers printed in a verified quote or on a page the run read."""
+
+    versions: frozenset[int] = frozenset()
+    sections: frozenset[str] = frozenset()
+
+
+_VERSION_REF = re.compile(r"\bversions?\s+(?P<n>\d{1,3})\b(?![.,]\d|\s*(?:x\b|%|percent|times|turns?))", re.I)
+_SECTION_REF = re.compile(
+    r"\b(?:Sections?|§)\s*(?P<n>\d{1,3}(?:\.\d{1,3})*)(?:\([A-Za-z0-9]{1,4}\))*(?![\w]|[.,]\d|%|\s*(?:x\b|percent|times|turns?))")
+_SECTION_PRINTED = re.compile(r"(?:\bSections?\s+|§\s*|(?m:^)\s*)(\d{1,3}(?:\.\d{1,3})+)")
+
+
+def sections_printed(text: str) -> set[str]:
+    """Section numbers a piece of document text names or heads (6.3, 9.1)."""
+    return {m.group(1) for m in _SECTION_PRINTED.finditer(text)}
+
+
+def _blank_refs(text: str, refs: References) -> str:
+    chars = list(text)
+    for pattern, ok in ((_VERSION_REF, lambda g: int(g) in refs.versions), (_SECTION_REF, lambda g: g in refs.sections)):
+        for m in pattern.finditer(text):
+            if ok(m.group("n")):
+                for i in range(m.start(), m.end()):
+                    chars[i] = " "
+    return "".join(chars)
 
 
 def _blank_structure(text: str, st: DocumentStructure) -> str:
@@ -195,6 +226,7 @@ def check_narrative(
     known_ratios: Iterable[Decimal] = (),
     echo: str = "",
     structure: DocumentStructure | None = None,
+    refs: References | None = None,
 ) -> list[Note]:
     """Findings for a piece of agent text. An empty list means the text may be shown.
 
@@ -203,6 +235,8 @@ def check_narrative(
       the agent cited and constants from approved terms) or a known ratio;
     - `structure` (built by code from the document's own pages) lets a note point at a page, a note
       heading, an account ending or a comparative year that the document really has;
+    - `refs` (built by code from the terms versions and the pages the run read) lets text name a terms
+      version or a section number that exists;
     - a quantity in words is refused unless the same words are in `echo`, the text of the
       question the answer responds to (a person's own threshold may be said back to them).
     """
@@ -232,6 +266,8 @@ def check_narrative(
     # superscript digits read as digits)
     ratios = list(known_ratios)
     outside = unicodedata.normalize("NFKC", _ANY_REF.sub(lambda m: " " * len(m.group(0)), text))
+    if refs is not None:
+        outside = _blank_refs(outside, refs)
     if structure is not None:
         # a page the document does not have is refused, whatever else allows a page number
         for m in _PAGE_REF.finditer(outside):

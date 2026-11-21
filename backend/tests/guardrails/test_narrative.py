@@ -59,10 +59,10 @@ def test_format_fact_rounds_half_up(fact, fmt, expected):
 
 
 def test_policy_only_makes_a_recommendation_more_cautious():
-    base = dict(steps_count=5, governing_passed=True, governing_headroom_pct=D("0.04"), surviving_claims=2)
+    base = dict(cap_reached=False, governing_passed=True, governing_headroom_pct=D("0.04"), surviving_claims=2)
     assert apply_policy("resolve", text="Explained by the amendment.", **base).recommendation == "resolve"
     assert apply_policy("resolve", text="We should waive the covenant.", **base).recommendation == "escalate"
-    assert apply_policy("resolve", text="ok", **{**base, "steps_count": 12}).recommendation == "abstain"
+    assert apply_policy("resolve", text="ok", **{**base, "cap_reached": True}).recommendation == "abstain"
     assert apply_policy("resolve", text="ok", **{**base, "governing_passed": False}).recommendation == "escalate"
     assert apply_policy("resolve", text="ok", **{**base, "surviving_claims": 0}).recommendation == "escalate"
     assert apply_policy("request", text="ok", **{**base, "governing_headroom_pct": D("-0.20")}).recommendation == "escalate"

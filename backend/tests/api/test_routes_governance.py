@@ -81,7 +81,7 @@ def test_the_policy_register_reads_its_figures_from_the_code_that_enforces_them(
     body = client.get("/api/v1/governance/policy").json()
     limits = rules(body, "agent_limits")
     assert limits["margin_floor"]["setting"] == "15%" and covenant.POLICY.margin_floor_pct == Decimal("0.15")
-    assert limits["step_cap"]["setting"] == f"{covenant.POLICY.max_steps} steps"
+    assert limits["step_cap"]["setting"] == f"{covenant.SPEC.max_exchanges} turns, {covenant.SPEC.max_steps} lookups"
     for phrase in covenant.POLICY.prohibited_phrases:
         assert phrase in limits["prohibited_phrases"]["effect"]
     tolerances = rules(body, "tolerances")

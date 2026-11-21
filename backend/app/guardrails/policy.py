@@ -12,7 +12,6 @@ PROHIBITED_PHRASES = (
 
 @dataclass(frozen=True)
 class PolicySettings:
-    max_steps: int = 12
     # a "resolve" or "request" is not allowed when the governing test misses by more than this
     # share of the threshold (0.15 = fifteen percent)
     margin_floor_pct: Decimal = Decimal("0.15")
@@ -30,7 +29,7 @@ def apply_policy(
     recommendation: str,
     *,
     text: str,
-    steps_count: int,
+    cap_reached: bool = False,
     governing_passed: bool | None,
     governing_headroom_pct: Decimal | None,
     surviving_claims: int,
@@ -51,10 +50,10 @@ def apply_policy(
         return result
 
     if recommendation == "resolve":
-        if steps_count >= settings.max_steps:
+        if cap_reached:
             result.recommendation = "abstain"
             result.notes.append(Note("policy", "step_cap", "abstain",
-                                     f"the run used {steps_count} steps (cap {settings.max_steps})"))
+                                     "the run spent its allowance of lookups and was asked for a final answer"))
             return result
         if governing_passed is not True or surviving_claims < 1:
             result.recommendation = "escalate"
