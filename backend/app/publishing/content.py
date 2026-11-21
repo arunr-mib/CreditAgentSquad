@@ -576,10 +576,12 @@ def build_borrower(db: Session, reg: Registry, borrower: Borrower, period_end: d
         rows.sort(key=lambda c: (SECTION_ORDER.index(c.section) if c.section in SECTION_ORDER else 99, c.section))
         for c in rows:
             author = "Review Agent" if c.author_type == "agent" else (
+                "Written by code" if c.author_type == "system" else
                 reg.user_name(uuid.UUID(c.author_id)) if len(c.author_id) == 36 else c.author_id)
             commentary.append({
                 "id": str(c.id), "section": c.section, "version": c.version, "status": c.status,
-                "written_by_agent": c.author_type == "agent", "author": author,
+                "written_by_agent": c.author_type == "agent", "written_by_code": c.author_type == "system",
+                "author": author,
                 "approved_by": reg.user_name(c.approved_by), "body": c.body,
                 "segments": reg.narrative(c.body, f"the {c.section} commentary")})
 

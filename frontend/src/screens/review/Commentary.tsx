@@ -83,6 +83,17 @@ export function Commentary({ sheet }: { sheet: ReviewSheetDetail }) {
               <AgentBody text={row.body} />
               {editButton(row)}
             </AgentNote>
+          ) : row.written_by_code ? (
+            <section aria-label={`${humanize(row.section)}, written by code`} className="rounded-md border border-hairline-strong px-4 py-3" data-written-by-code>
+              <div className="flex items-center justify-between gap-3 text-caption">
+                <span className="font-semibold text-ink">
+                  {humanize(row.section)}, version {row.version} · Written by code, no agent
+                </span>
+                <StatusDot tone={row.status === 'approved' ? 'pass' : 'attention'}>{row.status === 'approved' ? 'Approved' : 'Draft, not yet approved'}</StatusDot>
+              </div>
+              <AgentBody text={row.body} className="mt-1.5" />
+              {editButton(row)}
+            </section>
           ) : (
             <section aria-label={`${humanize(row.section)}, written by ${row.author_name ?? 'a person'}`} className="rounded-md border border-hairline-strong px-4 py-3">
               <div className="flex items-center justify-between gap-3 text-caption">

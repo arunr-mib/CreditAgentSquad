@@ -42,8 +42,9 @@ def _sheet_out(db: Session, sheet: ReviewSheet) -> dict:
         # sections the agent drafted that a check withheld, so the approver sees what is not there
         "withheld_sections": (sheet.content or {}).get("withheld_sections", []),
         "commentary": [{**row(c), "rendered": review_service.rendered(db, c),
-                        "author_name": users.get(uuid.UUID(c.author_id)) if c.author_type == "user" else "Review Agent",
-                        "written_by_agent": c.author_type == "agent"} for c in commentary],
+                        "author_name": users.get(uuid.UUID(c.author_id)) if c.author_type == "user" else (
+                            "Written by code" if c.author_type == "system" else "Review Agent"),
+                        "written_by_agent": c.author_type == "agent", "written_by_code": c.author_type == "system"} for c in commentary],
     }
 
 

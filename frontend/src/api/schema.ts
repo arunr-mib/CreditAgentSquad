@@ -716,9 +716,10 @@ export interface CommentaryRow {
   body: string;
   rendered: string;
   fact_ids: string[];
-  author_type: 'agent' | 'user';
+  author_type: 'agent' | 'user' | 'system';
   author_name: string | null;
   written_by_agent: boolean;
+  written_by_code?: boolean;
   status: 'draft' | 'approved' | 'superseded';
   agent_run_id: string | null;
   created_at: string;

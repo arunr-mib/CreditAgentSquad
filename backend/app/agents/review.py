@@ -36,11 +36,22 @@ SPEC = AgentSpec(name="review", version="1", purpose="Draft review commentary us
                  prompt_file="review.md", output_model=ReviewDraft, tools=(), effort="high", max_tokens=8000)
 
 
+def nothing_to_say(sheet: dict[str, Any]) -> bool:
+    """True when the sheet has no fired signal, no open item, no covenant test that is not a clean pass and no
+    collateral that disagrees: only then is "nothing" the whole truth about risks, so code may say it."""
+    collateral = sheet.get("collateral")
+    return (not sheet.get("signals")
+            and not any(i.get("status") == "open" for i in sheet.get("work_items", []))
+            and all(c.get("outcome") == "compliant" for c in sheet.get("covenants", []))
+            and (collateral is None or (collateral.get("outcome") == "agrees" and not collateral.get("mismatched_lines"))))
+
+
 @dataclass
 class DraftResult:
     run_id: uuid.UUID | None = None
     sections: dict[str, str] = field(default_factory=dict)  # section -> body with references
     notes: list[dict[str, Any]] = field(default_factory=list)
+    code_sections: set[str] = field(default_factory=set)  # sections written by code, not by the model
 
 
 def draft_commentary(db: Session, *, borrower: Borrower, cycle: Cycle, sheet: dict[str, Any],
@@ -89,8 +100,9 @@ def draft_commentary(db: Session, *, borrower: Borrower, cycle: Cycle, sheet: di
             result.sections[section.section] = section.body
     # a sheet with no fired signal and no open item has nothing for a risks section to cite: code writes the
     # sentence, whatever the model drafted (a model's "risks" there could only be invented or empty)
-    if not sheet.get("signals") and not any(i.get("status") == "open" for i in sheet.get("work_items", [])):
+    if nothing_to_say(sheet):
         result.sections["risks"] = NO_RISKS_SENTENCE
+        result.code_sections.add("risks")
         result.notes = [n for n in result.notes if n.get("section") != "risks"]
     outcome.run.guardrail_notes = result.notes
     return result

@@ -99,7 +99,10 @@ def test_draft_is_checked_stored_as_agent_written_and_needs_a_person(db, world, 
     # the risks draft was refused by policy, but this sheet has no signal and no open item: code wrote that section
     assert set(stored) == {"summary", "performance", "risks"}
     assert stored["risks"].body == "No signals fired and no items are open for this period."
-    assert all(c.author_type == "agent" and c.status == "draft" for c in stored.values())
+    assert (stored["risks"].author_type, stored["risks"].author_id, stored["risks"].agent_run_id) == ("system", "review", None)
+    assert stored["summary"].author_type == "agent"
+    assert all(c.author_type == "agent" and c.status == "draft" for s, c in stored.items() if s != "risks")
+    assert stored["risks"].status == "draft"
     text = review_service.rendered(db, stored["performance"])
     assert "{{" not in text and text.count("million") == 2 and "$" in text
     item = db.execute(select(WorkItem).where(WorkItem.item_type == "review.commentary_approval")).scalar_one()
@@ -217,3 +220,17 @@ def test_a_sheet_with_a_signal_or_an_open_item_still_needs_a_risks_section_that_
         draft = _draft(db, world, monkeypatch, sheet, body)
         assert "risks" not in draft.sections
         assert [n["section"] for n in draft.notes] == ["risks"] and draft.notes[0]["check"] == "no_facts"
+
+
+def test_a_failing_covenant_or_a_collateral_mismatch_keeps_the_risks_rule(db, world, monkeypatch):
+    from app.agents.review import nothing_to_say
+    clean = {"signals": [], "work_items": [], "covenants": [{"outcome": "compliant"}], "collateral": None}
+    assert nothing_to_say(clean)
+    assert nothing_to_say({**clean, "collateral": {"outcome": "agrees", "mismatched_lines": []}})
+    for bad in ({"covenants": [{"outcome": "compliant"}, {"outcome": "breach"}]},
+                {"covenants": [{"outcome": "compliant_variance"}]},
+                {"collateral": {"outcome": "mismatch", "mismatched_lines": ["ar"]}},
+                {"collateral": {"outcome": "agrees", "mismatched_lines": ["ar"]}}):
+        assert not nothing_to_say({**clean, **bad})
+        draft = _draft(db, world, monkeypatch, {**clean, **bad}, [{"section": "risks", "body": "Nothing to report."}])
+        assert "risks" not in draft.sections and draft.notes[0]["check"] == "no_facts"

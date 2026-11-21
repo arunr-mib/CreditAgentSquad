@@ -87,6 +87,17 @@ describe('a fact reference in commentary', () => {
   });
 });
 
+describe('a section written by code', () => {
+  it('is not shown as written by the Review Agent, nor as written by a person', () => {
+    mockApi({ body: {} });
+    const code = { id: 'k-3', section: 'risks', version: 1, body: 'No signals fired and no items are open for this period.', rendered: '', fact_ids: [], author_type: 'system' as const, author_name: 'Written by code', written_by_agent: false, written_by_code: true, status: 'draft' as const, agent_run_id: null, created_at: '2026-11-17T08:00:00' };
+    const { container } = show(sheet({ commentary: [code] }));
+    expect(container.querySelector('[data-written-by-code]')).not.toBeNull();
+    expect(screen.getByText(/Written by code, no agent/)).toBeInTheDocument();
+    expect(screen.queryByText(/Review Agent/)).toBeNull();
+  });
+});
+
 describe('editing commentary in the review room', () => {
   it('offers no editing to a role that cannot write commentary, or on a released sheet', () => {
     mockApi({ body: {} });

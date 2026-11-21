@@ -167,7 +167,10 @@ def prepare_review(db: Session, *, cycle: Cycle, llm: LLMClient) -> ReviewSheet:
     db.flush()
     draft = draft_commentary(db, borrower=borrower, cycle=cycle, sheet=sheet, facts=facts, labels=labels, llm=llm)
     for section, body in draft.sections.items():
-        _store_commentary(db, row, section, body, author=("agent", "review@1"), agent_run_id=draft.run_id)
+        if section in draft.code_sections:  # written by code: no model text, so not shown as agent-written
+            _store_commentary(db, row, section, body, author=("system", "review"))
+        else:
+            _store_commentary(db, row, section, body, author=("agent", "review@1"), agent_run_id=draft.run_id)
     withheld = withheld_sections(draft.notes)
     row.content = {**row.content, "withheld_sections": withheld}
     title, question = _approval_wording(borrower.name, bool(draft.sections), withheld)
