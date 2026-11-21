@@ -233,7 +233,7 @@ describe('ClientThread', () => {
     afterEach(() => { Element.prototype.scrollIntoView = original; });
     const arrivals: ThreadMessage = { ...base, id: 'arrivals:2026-10', type: 'arrivals', title: '2 documents arrived for October 2026', period_end: '2026-10-31', documents: [
       { ...base, id: 'doc:1', type: 'document', document_id: 'd1', title: 'MRR report, October 2026', doc_type: 'mrr_report', doc_type_words: 'MRR report', pages: 1, period_end: '2026-10-31' },
-      { ...base, id: 'doc:2', type: 'document', document_id: 'd2', title: 'Account statement, October 2026', doc_type: 'bank_statement', doc_type_words: 'Bank account statement', pages: 1, period_end: '2026-10-31' },
+      { ...base, id: 'doc:2', type: 'document', document_id: 'd2', title: 'Account statement, October 2026', doc_type: 'bank_statement', doc_type_words: 'Bank statement', pages: 1, period_end: '2026-10-31' },
     ] };
     const older: ThreadMessage = { ...base, id: 'doc:0', type: 'document', document_id: 'd0', title: 'MRR report, September 2026', doc_type: 'mrr_report', doc_type_words: 'MRR report', pages: 1, period_end: '2026-09-30' };
     const later: ThreadMessage = { ...base, id: 'run:9', type: 'report', agent_name: 'spreading', task: 't', text: 'Read it.', run_id: 'r9' };

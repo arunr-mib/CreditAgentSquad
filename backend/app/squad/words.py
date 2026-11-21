@@ -39,7 +39,7 @@ def question_choice(evidence: dict[str, Any] | None, decision: str | None) -> st
 
 
 DOCUMENT_TYPE_WORDS = {
-    "mrr_report": "MRR report", "bank_statement": "Bank account statement", "bank_statements": "Bank account statement",
+    "mrr_report": "MRR report", "bank_statement": "Bank statement", "bank_statements": "Bank statement",
     "monthly_financials": "Monthly financial statements", "credit_agreement": "Credit agreement",
     "compliance_certificate": "Compliance certificate", "borrowing_base_certificate": "Borrowing base certificate",
     "receivables_aging": "Receivables aging", "annual_statements": "Annual financial statements",
@@ -50,7 +50,7 @@ DOCUMENT_TYPE_WORDS = {
 
 
 def document_type_words(doc_type: str | None) -> str:
-    """"MRR report", "Bank account statement": a document type as people say it. The document's own printed title
+    """"MRR report", "Bank statement": a document type as people say it. The document's own printed title
     ("Account statement, August 2026") is shown beside it unchanged. The one table: the browser is served it
     (`GET /words/document-types`) and keeps no list of its own."""
     if not doc_type:

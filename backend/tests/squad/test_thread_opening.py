@@ -30,7 +30,7 @@ def test_documents_for_one_period_arrive_as_one_message(db, world):
     arrivals = [m for m in msgs if m["type"] == "arrivals"]
     assert len(arrivals) == 1 and arrivals[0]["title"] == "3 documents arrived for October 2026"
     assert sorted(d["doc_type_words"] for d in arrivals[0]["documents"]) == [
-        "Bank account statement", "MRR report", "Monthly financial statements"]
+        "Bank statement", "MRR report", "Monthly financial statements"]
     assert [m["type"] for m in msgs].count("document") == 1  # the agreement has no period and stands alone
 
 
@@ -55,8 +55,8 @@ def test_an_empty_thread_opens_nowhere(db, world):
 
 def test_document_types_read_in_plain_words():
     assert document_type_words("mrr_report") == "MRR report"
-    assert document_type_words("bank_statement") == "Bank account statement"
-    assert document_type_words("bank_statements") == "Bank account statement"
+    assert document_type_words("bank_statement") == "Bank statement"
+    assert document_type_words("bank_statements") == "Bank statement"
     assert document_type_words(None) == "Not yet classified"
     assert document_type_words("new_kind") == "New kind"
 
