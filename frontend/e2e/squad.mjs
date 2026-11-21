@@ -112,6 +112,8 @@ journey('portfolio: every client appears once, by measure, and each row opens it
 });
 
 journey('portfolio: every client row shows what its client file shows as the latest point', async ({ page }) => {
+  const pageErrors = [];
+  page.on('pageerror', (e) => pageErrors.push(e.message));
   await signIn(page, ANALYST);
   const data = await api(page, '/me/portfolio');
   const all = data.sections.flatMap((s) => s.rows);
@@ -129,7 +131,8 @@ journey('portfolio: every client row shows what its client file shows as the lat
     if (there !== shown[r.code]) mismatches += 1;
     assert((await page.getByRole('alert').count()) === 0, `${r.code}: the client file shows an error`);
   }
-  console.log(`      checked ${all.length} clients, ${mismatches} mismatches`);
+  console.log(`      checked ${all.length} clients, ${mismatches} mismatches, ${pageErrors.length} page errors`);
+  assert(pageErrors.length === 0, `page errors: ${pageErrors.join(' | ')}`);
   assert(mismatches === 0, `${mismatches} portfolio rows differ from their client file`);
 });
 

@@ -55,7 +55,7 @@
 .sq-grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sq-navfoot { margin-top: auto; display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--sq-line); width: 100%; }
 .sq-stage { flex: 1; min-width: 0; }
-.sq-main { max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }
+.sq-main { min-width: 0; max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }
 /* A legacy cockpit screen keeps the width the old shell gave it (tables, spreads, covenant grids need it). */
 .sq-main[data-surface='cockpit'] { max-width: 1480px; padding-top: 24px; }
 /* Legacy fills are written `bg-cobalt text-white`; the look supplies the readable text colour (white on Night's pale cobalt is 1.7:1). */
@@ -142,7 +142,7 @@
 .sq-tab { padding: 6px 10px; color: var(--sq-ink2); text-decoration: none; border-bottom: 2px solid transparent; }
 .sq-tab[aria-current='page'] { color: var(--sq-ink); border-bottom-color: var(--sq-ink); font-weight: 600; }
 .sq-filegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
-.sq-tablewrap { overflow-x: auto; }
+.sq-tablewrap { overflow-x: auto; position: relative; }
 .sq-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .sq-table th, .sq-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--sq-line); vertical-align: baseline; }
 .sq-table .sq-num { text-align: right; }
