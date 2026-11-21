@@ -14,7 +14,7 @@ const READ: Record<string, string> = {
 };
 
 /**
- * File a PDF for the borrower. The route takes the file and an optional title and nothing else:
+ * File a PDF, .xlsx or .csv for the borrower. The route takes the file and an optional title and nothing else:
  * the document is filed as unclassified, and intake classifies and dates it. What the server
  * answers is shown as it is: the filed document, or its refusal.
  */
@@ -30,7 +30,7 @@ export function UploadDocument({ borrowerId, code, onClose }: { borrowerId: stri
   function submit(event: FormEvent) {
     event.preventDefault();
     if (!file) {
-      setProblem('Choose a PDF file first.');
+      setProblem('Choose a document file first.');
       return;
     }
     setProblem(null);
@@ -51,7 +51,7 @@ export function UploadDocument({ borrowerId, code, onClose }: { borrowerId: stri
       <CardHeader
         as="h3"
         title="File a document"
-        meta="PDF only. It is filed as unclassified; the Intake Agent classifies and dates it when the borrower’s monitoring cycle next runs intake."
+        meta="A PDF, an Excel workbook (.xlsx) or a CSV file. It is filed as unclassified; the Intake Agent classifies and dates it when the borrower’s monitoring cycle next runs intake."
         actions={
           onClose ? (
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -64,13 +64,13 @@ export function UploadDocument({ borrowerId, code, onClose }: { borrowerId: stri
         <div className="grid items-start gap-3 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_auto]">
           <div>
             <label htmlFor={fileId} className={fieldLabelClass}>
-              PDF file
+              Document file
             </label>
             <input
               id={fileId}
               ref={input}
               type="file"
-              accept="application/pdf,.pdf"
+              accept="application/pdf,.pdf,.xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
               aria-invalid={problem ? true : undefined}
               aria-describedby={`${fileId}-note`}
               onChange={(event) => {

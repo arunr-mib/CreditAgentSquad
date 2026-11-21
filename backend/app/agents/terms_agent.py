@@ -32,7 +32,12 @@ from app.core import clock, ledger
 from app.core.roles import Permission
 from app.domain.credit import Borrower, Facility
 from app.domain.documents import Document, DocumentPage
-from app.domain.documents_service import get_page, read_file
+from app.domain.documents_service import (
+    get_page,
+    is_spreadsheet,
+    read_file,
+    spreadsheet_unreadable_item,
+)
 from app.domain.monitoring import Cycle, WorkItem
 from app.domain.terms import TermsVersion
 from app.domain.terms_service import TermsRefused, propose_terms
@@ -777,6 +782,13 @@ def extract_terms(db: Session, *, facility: Facility, documents: list[Document],
     result = TermsResult(status="proposed")
     borrower = db.get(Borrower, facility.borrower_id)
     documents, problem = _ordered(list(documents))
+    sheet = next((d for d in documents if is_spreadsheet(d)), None)
+    if sheet is not None:
+        result.status = "needs_person"
+        result.work_item = spreadsheet_unreadable_item(
+            db, borrower=borrower, document=sheet, cycle=cycle, stage="covenant_testing", agent="terms",
+            facility_id=facility.id)
+        return result
     if problem is None and any(d.status == "image_only" for d in documents):
         problem = "a document is a scanned image with no readable text"
     if problem is not None:

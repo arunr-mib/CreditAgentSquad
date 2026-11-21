@@ -18,7 +18,12 @@ from app.agents.tools import Scope, ToolGateway
 from app.calc.borrowing_base import LINE_NAMES
 from app.domain.credit import Borrower
 from app.domain.documents import Document
-from app.domain.documents_service import get_page, read_file
+from app.domain.documents_service import (
+    get_page,
+    is_spreadsheet,
+    read_file,
+    spreadsheet_unreadable_item,
+)
 from app.domain.facts_service import store_extracted_cell
 from app.domain.monitoring import Cycle
 from app.guardrails.numbers import extract_figures, parse_printed_figure
@@ -187,6 +192,11 @@ def inventory_category(printed: str) -> str:
 def read_collateral(db: Session, *, borrower: Borrower, document: Document, period_end: date,
                     cycle: Cycle | None, llm: LLMClient) -> CollateralResult:
     result = CollateralResult()
+    if is_spreadsheet(document):
+        spreadsheet_unreadable_item(db, borrower=borrower, document=document, cycle=cycle, stage="borrowing_base",
+                                    agent="collateral")
+        result.unverified.append({"what": "document", "reason": "spreadsheet"})
+        return result
     lines = "\n".join(f"- {name} | {LINE_HELP[name]}" for name in LINE_NAMES)
     content = [
         {"type": "document", "source": {"type": "base64", "media_type": "application/pdf",

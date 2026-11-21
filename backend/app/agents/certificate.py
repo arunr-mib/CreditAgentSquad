@@ -19,7 +19,12 @@ from app.agents.tools import Scope, ToolGateway
 from app.calc.terms import Terms
 from app.domain.credit import Borrower
 from app.domain.documents import Document, DocumentPage
-from app.domain.documents_service import get_page, read_file
+from app.domain.documents_service import (
+    get_page,
+    is_spreadsheet,
+    read_file,
+    spreadsheet_unreadable_item,
+)
 from app.domain.facts_service import add_fact, store_extracted_cell
 from app.domain.monitoring import Cycle
 from app.guardrails.numbers import extract_figures, parse_printed_figure
@@ -136,6 +141,11 @@ def _split_actual(printed: str, unit: str) -> tuple[str, bool]:
 def read_certificate(db: Session, *, borrower: Borrower, document: Document, period_end: date, terms: Terms,
                      cycle: Cycle | None, llm: LLMClient) -> CertificateResult:
     result = CertificateResult()
+    if is_spreadsheet(document):
+        spreadsheet_unreadable_item(db, borrower=borrower, document=document, cycle=cycle, stage="covenant_testing",
+                                    agent="certificate")
+        result.unverified.append({"reason": "spreadsheet", "detail": "a spreadsheet cannot be read for figures yet"})
+        return result
     covenants = {c.id: c for c in terms.covenants}
     listing = "\n".join(f"- {c.id} | {c.name}" for c in terms.covenants)
     content = [

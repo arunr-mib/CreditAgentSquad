@@ -362,3 +362,17 @@ def test_a_breach_lists_the_open_questions_that_may_change_it(client, db, world)
     related = client.get(f"/api/v1/work-items/{breach.id}").json()["related_items"]
     assert [r["id"] for r in related] == [str(amendment.id)] and "amendment" in related[0]["relation"]
     assert client.get(f"/api/v1/work-items/{amendment.id}").json()["related_items"] == []
+
+
+def test_a_spreadsheet_is_served_as_an_attachment_with_its_own_media_type(client, world, tmp_path, monkeypatch):
+    from app.core.config import get_settings
+    monkeypatch.setenv("FILE_STORE_DIR", str(tmp_path))
+    get_settings.cache_clear()
+    borrower, _ = world
+    sign_in(client, "priya.raman")
+    up = client.post(f"/api/v1/borrowers/{borrower.id}/documents", files={"file": ("m.csv", b"Month,MRR\n2025-01,100\n")})
+    assert up.status_code == 201
+    file = client.get(f"/api/v1/documents/{up.json()['id']}/file")
+    assert file.headers["content-type"].startswith("text/csv")
+    assert file.headers["content-disposition"].startswith("attachment")
+    get_settings.cache_clear()

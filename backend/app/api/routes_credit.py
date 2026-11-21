@@ -235,11 +235,18 @@ def get_document(document_id: uuid.UUID, db: Session = Depends(get_db), _: User 
     return {**row(doc, exclude=("storage_path",)), "facts_by_page": {str(p): n for p, n in cited if p}}
 
 
+SHEET_MEDIA = {"xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "csv": "text/csv"}
+
+
 @router.get("/documents/{document_id}/file")
 def get_document_file(document_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> Response:
     doc = db.get(Document, document_id)
     if doc is None:
         raise HTTPException(404, "Document not found.")
+    sheet = SHEET_MEDIA.get((doc.meta or {}).get("format"))
+    if sheet is not None:  # a spreadsheet is downloaded, never rendered in the browser
+        return Response(read_file(doc), media_type=sheet,
+                        headers={"Content-Disposition": f'attachment; filename="{doc.file_name}"'})
     return Response(read_file(doc), media_type="application/pdf",
                     headers={"Content-Disposition": f'inline; filename="{doc.file_name}"'})
 

@@ -63,3 +63,104 @@ def test_the_export_is_held_with_one_question_and_never_filed(innovation_cycle):
     held = db.execute(select(WorkItem).where(WorkItem.borrower_id == row.id,
                                              WorkItem.item_type == "intake.unclassified")).scalars().all()
     assert len(held) == 1 and "mrr_export.xlsx" in held[0].title
+
+
+def _workbook(build) -> bytes:
+    import io
+
+    from openpyxl import Workbook
+    wb = Workbook()
+    build(wb)
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+def test_caps_refuse_oversized_files_with_a_plain_reason(db, borrower):
+    import io
+    import zipfile
+
+    from app.domain import spreadsheets
+
+    def many_sheets(wb):
+        for i in range(spreadsheets.MAX_SHEETS + 1):
+            wb.create_sheet(f"s{i}")
+
+    for data, name, why in (
+        (_workbook(many_sheets), "a.xlsx", "sheets"),
+        (_workbook(lambda wb: wb.active.__setitem__("A20001", "x")), "b.xlsx", "rows"),
+        (_workbook(lambda wb: wb.active.__setitem__("GT1", "x")), "c.xlsx", "columns"),
+    ):
+        with pytest.raises(DocumentRefused, match=why):
+            ingest_document(db, borrower_id=borrower.id, data=data, file_name=name)
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("big.xml", b"0" * (101 * 1024 * 1024))
+    with pytest.raises(DocumentRefused, match="too large"):
+        ingest_document(db, borrower_id=borrower.id, data=buf.getvalue(), file_name="d.xlsx")
+
+
+def test_a_declared_huge_dimension_is_refused_without_reading_the_rows():
+    import io
+    import zipfile
+
+    sheet = ('<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+             '<dimension ref="A1:B1000000"/><sheetData/></worksheet>')
+    base = _workbook(lambda wb: wb.active.__setitem__("A1", "x"))
+    out = io.BytesIO()
+    with zipfile.ZipFile(io.BytesIO(base)) as zin, zipfile.ZipFile(out, "w") as zout:
+        for item in zin.infolist():
+            zout.writestr(item, sheet if item.filename == "xl/worksheets/sheet1.xml" else zin.read(item.filename))
+    with pytest.raises(Exception, match="rows"):
+        spreadsheet_pages(out.getvalue(), "e.xlsx")
+
+
+def test_formulas_without_a_value_dates_and_numbers_are_worded_canonically():
+    import datetime
+
+    def build(wb):
+        ws = wb.active
+        ws["A1"], ws["B1"], ws["C1"] = "Total", "=1+2", 12.50
+        ws["A2"], ws["B2"] = "Day", datetime.datetime(2025, 1, 31)
+        ws["A3"], ws["B3"] = "Count", 4.0
+
+    page = spreadsheet_pages(_workbook(build), "f.xlsx")[0]
+    assert "Sheet!B1" not in page.lines
+    assert any(line.endswith("| =1+2 (formula, not calculated)") for line in page.lines)
+    assert page.uncalculated == ["B1"]
+    assert "Sheet!C1 | Total | 12.5" in "\n".join(page.lines).replace(page.name, "Sheet")
+    assert any(line.endswith("| Day | 2025-01-31") for line in page.lines)
+    assert any(line.endswith("| Count | 4") for line in page.lines)
+
+
+def test_csv_delimiters_encodings_and_binary_are_handled():
+    semi = spreadsheet_pages(b"Month;MRR\n2025-01;100\n", "a.csv")[0]
+    tab = spreadsheet_pages(b"Month\tMRR\n2025-01\t100\n", "b.csv")[0]
+    assert semi.lines == tab.lines and semi.lines[-1].endswith("| 2025-01 | 100")
+    cp = spreadsheet_pages("Caf\xe9,MRR\nx,1\n".encode("cp1252"), "c.csv")[0]
+    assert any("Caf\xe9" in line or "Caf" in line for line in cp.lines)
+    from app.domain.spreadsheets import SpreadsheetRefused
+    with pytest.raises(SpreadsheetRefused):
+        spreadsheet_pages(b"a,b\n\x00\x01,2\n", "d.csv")
+
+
+def test_a_pdf_only_agent_raises_a_question_for_a_spreadsheet_and_stores_nothing(db, borrower):
+    from app.agents.certificate import read_certificate
+    from app.domain.facts import Fact
+    from app.domain.monitoring import WorkItem
+
+    class Boom:
+        def complete(self, *a, **k):
+            raise AssertionError("a spreadsheet must never reach the model")
+
+    from datetime import date
+    doc = ingest_document(db, borrower_id=borrower.id, data=b"a,b\nx,1\n", file_name="cert.csv")
+
+    class T:
+        covenants: list = []
+    result = read_certificate(db, borrower=borrower, document=doc, period_end=date(2026, 10, 31), terms=T(),
+                              cycle=None, llm=Boom())
+    items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower.id)).scalars().all()
+    assert len(items) == 1 and items[0].allowed_decisions == ["request_new_document", "key_by_hand"]
+    assert "spreadsheet" in items[0].question and result.unverified and not result.stored
+    assert db.execute(select(Fact).where(Fact.borrower_id == borrower.id)).first() is None

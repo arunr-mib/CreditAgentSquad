@@ -21,9 +21,9 @@ describe('filing a document', () => {
     vi.stubGlobal('fetch', fetchMock);
     show();
     await userEvent.click(screen.getByRole('button', { name: 'File the document' }));
-    const field = screen.getByLabelText('PDF file');
+    const field = screen.getByLabelText('Document file');
     expect(field).toBeInvalid();
-    expect(field).toHaveAccessibleDescription('Choose a PDF file first.');
+    expect(field).toHaveAccessibleDescription('Choose a document file first.');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -38,7 +38,7 @@ describe('filing a document', () => {
     );
     show();
     const file = new File(['not a pdf'], 'meeting-notes.pdf', { type: 'application/pdf' });
-    await userEvent.upload(screen.getByLabelText('PDF file'), file);
+    await userEvent.upload(screen.getByLabelText('Document file'), file);
     expect(screen.getByText('meeting-notes.pdf is ready to file.')).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText('Title (optional)'), '  Meeting notes  ');
     await userEvent.click(screen.getByRole('button', { name: 'File the document' }));
@@ -55,5 +55,13 @@ describe('filing a document', () => {
     expect(form.get('title')).toBe('Meeting notes');
     // Only the fields the route takes are sent.
     expect([...form.keys()]).toEqual(['file', 'title']);
+  });
+
+  it('offers PDF, Excel and CSV files in the picker', () => {
+    show();
+    const accept = screen.getByLabelText('Document file').getAttribute('accept') ?? '';
+    expect(accept).toContain('.pdf');
+    expect(accept).toContain('.xlsx');
+    expect(accept).toContain('.csv');
   });
 });

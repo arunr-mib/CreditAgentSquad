@@ -13,8 +13,9 @@ from sqlalchemy.orm import Session
 
 from app.core import ledger
 from app.core.config import get_settings
+from app.domain.credit import Borrower
 from app.domain.documents import DOCUMENT_TYPES, Document, DocumentPage
-from app.domain.spreadsheets import spreadsheet_pages
+from app.domain.spreadsheets import SpreadsheetRefused, spreadsheet_pages
 
 MIN_TEXT_CHARS = 20  # a page with less text than this is treated as an image
 
@@ -100,15 +101,18 @@ def ingest_document(db: Session, *, borrower_id: uuid.UUID, data: bytes, file_na
 
 def _ingest_sheets(
     db: Session, *, borrower_id: uuid.UUID, data: bytes, file_name: str, title: str | None = None,
-    facility_id: uuid.UUID | None = None, doc_type: str | None = None, doc_type_source: str = "unclassified",
-    period_end: date | None = None, received_date: date | None = None, effective_date: date | None = None,
-    source: str = "upload", uploaded_by: uuid.UUID | None = None, actor: tuple[str, str] = ("system", "intake"),
+    facility_id: uuid.UUID | None = None, doc_type: str | None = None,
+    doc_type_source: str = "unclassified", period_end: date | None = None, received_date: date | None = None,
+    effective_date: date | None = None, source: str = "upload", uploaded_by: uuid.UUID | None = None,
+    actor: tuple[str, str] = ("system", "intake"),
 ) -> Document:
     if doc_type is not None and doc_type not in DOCUMENT_TYPES:
         raise DocumentRefused(f"Unknown document type {doc_type!r}.")
     kind = "csv" if file_name.lower().endswith(".csv") else "xlsx"
     try:
         sheets = spreadsheet_pages(data, file_name)
+    except SpreadsheetRefused as exc:
+        raise DocumentRefused(str(exc)) from exc
     except Exception as exc:  # noqa: BLE001
         raise DocumentRefused(f"The file could not be read as a spreadsheet: {exc}") from exc
     if not sheets:
@@ -124,7 +128,8 @@ def _ingest_sheets(
     for index, sheet in enumerate(sheets, start=1):
         db.add(DocumentPage(document_id=doc.id, page_number=index, text="\n".join(sheet.lines), words=[],
                             width=0.0, height=0.0, has_text=bool(sheet.lines)))
-    doc.meta = {"image_only_pages": [], "format": kind, "sheets": [s.name for s in sheets]}
+    doc.meta = {"image_only_pages": [], "format": kind, "sheets": [s.name for s in sheets],
+                "formulas_not_calculated": [f"{s.name}!{ref}" for s in sheets for ref in s.uncalculated]}
     doc.status = "indexed"
     ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="document.received",
                   entity_type="document", entity_id=doc.id,
@@ -160,3 +165,22 @@ def read_file(doc: Document) -> bytes:
         if fallback is not None:
             return fallback.read_bytes()
     return path.read_bytes()
+
+
+def is_spreadsheet(doc: Document) -> bool:
+    return (doc.meta or {}).get("format") in ("xlsx", "csv")
+
+
+def spreadsheet_unreadable_item(db: Session, *, borrower: Borrower, document: Document, cycle, stage: str,
+                                agent: str, facility_id: uuid.UUID | None = None):
+    """No agent reads figures from a spreadsheet yet: a person is asked for a PDF or to key the figures."""
+    from app.domain.work_items import raise_item
+
+    return raise_item(
+        db, borrower_id=borrower.id, facility_id=facility_id, cycle_id=cycle.id if cycle else None, stage=stage,
+        item_type="spread.image_only", severity="medium",
+        title=f"{document.file_name} is a spreadsheet and cannot be read for figures yet",
+        question="This spreadsheet can't be read for figures yet; ask for a PDF or key the figures by hand?",
+        allowed_decisions=["request_new_document", "key_by_hand"], required_permission="confirm_spread",
+        evidence={"document_id": str(document.id), "format": document.meta.get("format"), "reason": "spreadsheet"},
+        actor=("agent", agent), dedupe_key=f"spreadsheet.unreadable:{document.id}")

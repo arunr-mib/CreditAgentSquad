@@ -23,7 +23,12 @@ from app.calc import template
 from app.core import ledger
 from app.domain.credit import Borrower
 from app.domain.documents import Document, DocumentPage
-from app.domain.documents_service import get_page, read_file
+from app.domain.documents_service import (
+    get_page,
+    is_spreadsheet,
+    read_file,
+    spreadsheet_unreadable_item,
+)
 from app.domain.facts import CalcRun, Fact
 from app.domain.facts_service import add_fact, current_fact, label_confirmed, store_extracted_cell
 from app.domain.monitoring import Cycle, WorkItem
@@ -364,6 +369,12 @@ def spread_document(
     """`scale_override` is a person's answer to a units question; it replaces the units check."""
     result = SpreadResult(status="spread")
     result.context = {"document_id": str(document.id), "period_end": period_end.isoformat(), "months": months}
+    if is_spreadsheet(document):
+        row = spreadsheet_unreadable_item(db, borrower=borrower, document=document, cycle=cycle, stage="spreading",
+                                          agent="spreading")
+        result.work_items.append(row)
+        result.status = "needs_person"
+        return result
     if document.status == "image_only" or document.meta.get("image_only_pages"):
         _item(db, result, borrower, cycle, document, item_type="spread.image_only", severity="medium",
               title=f"{document.title} has pages with no readable text",
