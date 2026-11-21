@@ -113,3 +113,12 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 6. **"Squad gathers what was asked" on a return:** default: code lists the client's documents not yet attached and a person attaches one (or drafts a request to the client); Squad attaches nothing by itself.
 7. **My Portfolio order:** default: lowest runway/headroom first, then clients with no measurement (for example a late package), then cash-flow-positive clients last — a client we know least about should not sit at the bottom.
    - **Owner, 21 Nov:** keep the review room. Task 5 moves it into Squad's look instead of deleting it. Packages: keep too (owner "yes Keep packages") — Task 5 adds a Packages view in the client file and release for the portfolio manager. Calendar is deleted.
+
+### Owner answers, 21 Nov (Phase 4b questions)
+1. Keep packages and the review room; calendar deleted.
+2. Agents reading figures from spreadsheets: backlog, post-MVP.
+3. Kestrel Bay wrong-abstain and Pellham wording re-record: backlog.
+4. "Needs you" does not count signals: agreed.
+5. Bank statement label: owner asked for "Financial statements". Held pending confirmation, because the book already has monthly, interim, quarterly and annual financial statements, so two different documents would carry the same name. Current label stays until confirmed.
+6. Asked for a fuller explanation (given in chat, 21 Nov).
+7. Portfolio order agreed: lowest runway/headroom first, then not measured, then cash-flow positive last.
