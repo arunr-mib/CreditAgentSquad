@@ -99,7 +99,7 @@ describe('package schedules on the packages tab', () => {
     await screen.findByRole('table');
     expect(screen.queryByRole('button', { name: 'Run schedules that are due' })).toBeNull();
     expect(screen.queryByRole('form', { name: 'New package schedule' })).toBeNull();
-    expect(screen.getByText('Creating and running schedules needs a portfolio manager or a credit officer. Your role, Credit analyst, can read them.')).toBeInTheDocument();
+    expect(screen.getByText('Your role can read package schedules but cannot create or run them; the server decides who may.')).toBeInTheDocument();
   });
 
   it('checks the form, sends exactly the fields the route takes, and shows a refusal in the server’s words', async () => {

@@ -3,11 +3,12 @@ import { useState, type FormEvent } from 'react';
 import { API, ApiError, errorMessage, get, post } from '@/api/client';
 import { useCycles } from '@/api/hooks';
 import { useAuth } from '@/auth/context';
-import { Button, Card, CardHeader, formatDate, Select, StatusDot, useToast } from '@/design';
+import { Button, Card, CardHeader, formatDate, Select, StatusDot } from '@/design';
 import { formatTimestamp, humanize, quarterLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
-import { EmptyCard, Load, Notice } from '../parts';
-import { useCurrentBorrower } from './BorrowerLayout';
+import type { BorrowerRow } from '@/api/schema';
+import { usePresence } from '../presence/Presence';
+import { EmptyCard, Load, Notice } from '@/screens/parts';
 import { PackageSchedules } from './PackageSchedules';
 
 interface PackageFile {
@@ -54,7 +55,7 @@ function refusal(error: unknown): string {
 
 function PackageCard({ item }: { item: PackageRow }) {
   const client = useQueryClient();
-  const toast = useToast();
+  const { say } = usePresence();
   const { can } = useAuth();
   const verify = useMutation({ mutationFn: () => post<VerifyReport>(`/packages/${item.id}/verify`) });
   const release = useMutation({
@@ -62,7 +63,7 @@ function PackageCard({ item }: { item: PackageRow }) {
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['packages'] });
       void client.invalidateQueries({ queryKey: ['ledger'] });
-      toast({ tone: 'pass', title: 'Package released', description: 'The snapshot is frozen and the release is in the ledger.' });
+      say('Package released · the snapshot is frozen · recorded');
     },
   });
   const released = item.status === 'released';
@@ -99,7 +100,7 @@ function PackageCard({ item }: { item: PackageRow }) {
             <span className="text-caption text-ink-500 max-sm:col-span-2 max-sm:row-start-3">
               <span className="tnum">{file.facts_used}</span> facts cited · <span className="ident">{file.sha256.slice(0, 10)}</span>
             </span>
-            <a href={`${API}/packages/${item.id}/files/${encodeURIComponent(file.name)}`} className="link font-medium" download>
+            <a href={`${API}/packages/${item.id}/files/${encodeURIComponent(file.name)}`} className="link font-medium" aria-label={`Download ${file.name}`} download>
               Download
             </a>
           </li>
@@ -150,16 +151,15 @@ function PackageCard({ item }: { item: PackageRow }) {
           </Notice>
         </div>
       ) : null}
-      {!released && !can('release_package') ? <p className="border-t border-hairline px-4 py-2 text-caption text-ink-500">Releasing needs a portfolio manager or a credit officer; the server will refuse your role.</p> : null}
+      {!released && !can('release_package') ? <p className="border-t border-hairline px-4 py-2 text-caption text-ink-500">Your role cannot release a package; the server would refuse it.</p> : null}
     </Card>
   );
 }
 
 /** Published packages for one borrower: prepare, download, verify against the snapshot, release. */
-export function Packages() {
-  const borrower = useCurrentBorrower();
+export function Packages({ borrower }: { borrower: BorrowerRow }) {
   const client = useQueryClient();
-  const toast = useToast();
+  const { say } = usePresence();
   const packages = useQuery({ queryKey: ['packages', borrower.id], queryFn: () => get<PackageRow[]>('/packages', { borrower_id: borrower.id }) });
   const cycles = useCycles({ borrower_id: borrower.id });
   const periods = (cycles.data ?? []).map((cycle) => cycle.period_end);
@@ -170,7 +170,7 @@ export function Packages() {
     mutationFn: () => post<PackageRow>('/packages', { scope: 'borrower', borrower_id: borrower.id, period_end: chosen, formats }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['packages'] });
-      toast({ tone: 'pass', title: 'Package prepared', description: 'The files and their snapshot are listed below. Nothing is released yet.' });
+      say('Package prepared · nothing is released yet');
     },
   });
 

@@ -10,7 +10,7 @@ describe('old addresses', () => {
     ['/borrowers/QFL/timeline', '/clients/QFL/file/history'],
     ['/borrowers/QFL/borrowing-base', '/clients/QFL/file/loans'],
     ['/borrowers/QFL/signals', '/clients/QFL/file'],
-    ['/borrowers/QFL/packages', '/clients/QFL/file'],
+    ['/borrowers/QFL/packages', '/clients/QFL/file/packages'],
     ['/borrowers', '/portfolio'],
     ['/agent-activity', '/oversight/activity'],
     ['/governance', '/oversight/governance'],

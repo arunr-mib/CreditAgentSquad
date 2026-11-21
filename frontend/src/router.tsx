@@ -161,7 +161,6 @@ export const borrowingBaseRoute = createRoute({
 });
 const signalsRoute = borrowerChild('/signals', () => import('@/screens/borrower/Signals'), 'Signals');
 const reviewsRoute = borrowerChild('/reviews', () => import('@/screens/borrower/Reviews'), 'Reviews');
-const packagesRoute = borrowerChild('/packages', () => import('@/screens/borrower/Packages'), 'Packages');
 const timelineRoute = borrowerChild('/timeline', () => import('@/screens/borrower/Timeline'), 'Timeline');
 
 const calendarRoute = createRoute({
@@ -172,7 +171,7 @@ const calendarRoute = createRoute({
 export const reviewRoomRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/review-room',
-  component: lazyRouteComponent(() => import('@/screens/ReviewRoom'), 'ReviewRoom'),
+  component: lazyRouteComponent(() => import('@/squad/review/ReviewRoom'), 'ReviewRoom'),
   validateSearch: (search: Record<string, unknown>): { meeting?: string; sheet?: string } => clean({ meeting: str(search.meeting), sheet: str(search.sheet) }),
 });
 export const oversightRoute = createRoute({ getParentRoute: () => rootRoute, path: '/oversight', component: lazyRouteComponent(() => import('@/squad/oversight/Oversight'), 'Oversight') });
@@ -216,7 +215,6 @@ const routeTree = rootRoute.addChildren([
     borrowingBaseRoute,
     signalsRoute,
     reviewsRoute,
-    packagesRoute,
     timelineRoute,
   ]),
   calendarRoute,

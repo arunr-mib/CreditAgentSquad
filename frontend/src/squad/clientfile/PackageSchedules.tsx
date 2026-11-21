@@ -3,9 +3,9 @@ import { useId, useState, type FormEvent } from 'react';
 import { get, post } from '@/api/client';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Input, Select, StatusDot } from '@/design';
-import { quarterLabel, roleLabel, ROLES_WITH } from '@/domain/labels';
+import { quarterLabel } from '@/domain/labels';
 import { Refusal } from '@/repair/FigureForm';
-import { Load } from '../parts';
+import { Load } from '@/screens/parts';
 
 /** A row of GET /package-schedules. */
 export interface PackageSchedule {
@@ -147,7 +147,7 @@ function NewSchedule({ borrowerId, borrowerName }: { borrowerId: string; borrowe
  */
 export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: string; borrowerName: string }) {
   const client = useQueryClient();
-  const { user, can } = useAuth();
+  const { can } = useAuth();
   const schedules = useQuery({ queryKey: ['package-schedules'], queryFn: () => get<PackageSchedule[]>('/package-schedules') });
   const run = useMutation({
     mutationFn: () => post<ScheduleRunReport>('/package-schedules/run'),
@@ -156,7 +156,6 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
     },
   });
   const allowed = can('release_package');
-  const holders = (ROLES_WITH.release_package ?? []).map((role) => `a ${roleLabel(role).toLowerCase()}`).join(' or ');
   const titles = Object.fromEntries((schedules.data ?? []).map((row) => [row.id, row.title]));
 
   return (
@@ -241,7 +240,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
         <p className="mt-2 text-caption text-pretty text-ink-500">
           {allowed
             ? 'Running prepares the package for every schedule that has fallen due on the workspace’s date, for any borrower, once; a schedule that is not due is left alone.'
-            : `Creating and running schedules needs ${holders || 'another role'}.${user ? ` Your role, ${roleLabel(user.role)}, can read them.` : ''}`}
+            : 'Your role can read package schedules but cannot create or run them; the server decides who may.'}
         </p>
       </section>
       {allowed ? <NewSchedule borrowerId={borrowerId} borrowerName={borrowerName} /> : null}

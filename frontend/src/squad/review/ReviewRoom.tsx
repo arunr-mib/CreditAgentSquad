@@ -18,13 +18,15 @@ import {
 } from '@/api/hooks';
 import type { ActionRow, Meeting, ReviewSheetDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
-import { Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, useToast, type Step } from '@/design';
+import { Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, type Step } from '@/design';
 import { humanize, OUTCOME, quarterLabel, signalLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { FactFigure } from '@/source/figures';
-import { EmptyCard, ErrorNotice, Load, Notice, SeverityDot } from './parts';
-import { Commentary } from './review/Commentary';
-import { WorkItemPanel } from './work/WorkItemPanel';
+import { EmptyCard, ErrorNotice, Load, Notice, SeverityDot } from '@/screens/parts';
+import { Commentary } from '@/squad/clientfile/review/Commentary';
+import { CasePanel } from '../case/CasePanel';
+import { clientFile, threadHref } from '../links';
+import { usePresence } from '../presence/Presence';
 
 const PHASES: Array<{ id: Meeting['phase']; label: string; detail: string }> = [
   { id: 'before', label: 'Before', detail: 'Sheets are prepared and commentary is approved' },
@@ -36,7 +38,7 @@ const PHASES: Array<{ id: Meeting['phase']; label: string; detail: string }> = [
 function MeetingCard({ meeting, onOpenSheet, sheetId }: { meeting: Meeting; onOpenSheet: (id: string) => void; sheetId: string | undefined }) {
   const setPhase = useSetMeetingPhase();
   const { can } = useAuth();
-  const toast = useToast();
+  const { say } = usePresence();
   const index = PHASES.findIndex((phase) => phase.id === meeting.phase);
   const next = PHASES[index + 1];
   const steps: Step[] = PHASES.map((phase, position) => ({
@@ -57,7 +59,7 @@ function MeetingCard({ meeting, onOpenSheet, sheetId }: { meeting: Meeting; onOp
             <Button
               variant="primary"
               disabled={setPhase.isPending}
-              onClick={() => setPhase.mutate({ id: meeting.id, phase: next.id }, { onSuccess: () => toast({ tone: 'pass', title: `Meeting moved to: ${next.label.toLowerCase()}`, description: 'Recorded in the ledger.' }) })}
+              onClick={() => setPhase.mutate({ id: meeting.id, phase: next.id }, { onSuccess: () => say(`Meeting moved to: ${next.label.toLowerCase()} · recorded`) })}
             >
               Move to {next.label.toLowerCase()}
             </Button>
@@ -98,7 +100,7 @@ function MeetingCard({ meeting, onOpenSheet, sheetId }: { meeting: Meeting; onOp
 
 function NewMeeting({ periods }: { periods: string[] }) {
   const create = useCreateMeeting();
-  const toast = useToast();
+  const { say } = usePresence();
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [period, setPeriod] = useState(periods[0] ?? '');
@@ -109,7 +111,7 @@ function NewMeeting({ periods }: { periods: string[] }) {
       { title: title.trim(), meeting_date: date, period_end: period },
       {
         onSuccess: () => {
-          toast({ tone: 'pass', title: 'Meeting created', description: 'Review sheets for the period were attached. Recorded in the ledger.' });
+          say('Meeting created · review sheets for the period attached · recorded');
           setTitle('');
           setDate('');
         },
@@ -139,6 +141,7 @@ function NewMeeting({ periods }: { periods: string[] }) {
 }
 
 function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
+  const navigate = useNavigate();
   const ids = useMemo(() => {
     const out: Array<string | null> = [];
     for (const metric of sheet.content.metrics ?? []) out.push(metric.current, metric.year_earlier);
@@ -167,8 +170,8 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
               {code ? (
                 <>
                   {' · '}
-                  <Link to="/borrowers/$code" params={{ code }} className="link">
-                    Open the borrower
+                  <Link to={clientFile(code)} className="link">
+                    Open the client file
                   </Link>
                 </>
               ) : null}
@@ -269,8 +272,9 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
         ) : null}
       </Card>
       {approval ? (
-        <aside aria-label="Approval of this commentary" className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
-          <WorkItemPanel key={approval.id} itemId={approval.id} />
+        <aside aria-label="Approval of this commentary" data-work-item={approval.id} className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
+          <h3 className="sq-h2">{approval.title}</h3>
+          <CasePanel key={approval.id} workItemId={approval.id} onOpenCase={(id) => code && void navigate(threadHref(code, id))} />
         </aside>
       ) : null}
     </div>
@@ -284,7 +288,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
   const create = useCreateAction();
   const setStatus = useSetActionStatus();
   const { can } = useAuth();
-  const toast = useToast();
+  const { say } = usePresence();
   const [borrowerId, setBorrowerId] = useState('none');
   const [title, setTitle] = useState('');
   const [owner, setOwner] = useState('none');
@@ -299,7 +303,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
       { borrower_id: borrowerId, title: title.trim(), owner_id: owner === 'none' ? null : owner, due_date: due || null, meeting_id: meetingId ?? null },
       {
         onSuccess: () => {
-          toast({ tone: 'pass', title: 'Action raised', description: 'Recorded in the ledger.' });
+          say('Action raised · recorded');
           setTitle('');
           setDue('');
         },
@@ -308,7 +312,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
   }
 
   const change = (action: ActionRow, status: ActionRow['status'], note?: string) =>
-    setStatus.mutate({ id: action.id, status, note }, { onSuccess: () => (setClosing(null), toast({ tone: 'pass', title: `Action marked ${humanize(status).toLowerCase()}`, description: 'Recorded in the ledger.' })) });
+    setStatus.mutate({ id: action.id, status, note }, { onSuccess: () => (setClosing(null), say(`Action marked ${humanize(status).toLowerCase()} · recorded`)) });
 
   return (
     <Card>
@@ -397,7 +401,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
           ) : null}
         </form>
       ) : (
-        <p className="border-t border-hairline-strong px-4 py-3 text-caption text-ink-500">Your role can read actions but not raise or change them.</p>
+        <p className="border-t border-hairline-strong px-4 py-3 text-caption text-ink-500">Your role can read actions but not raise or change them; the server decides who may.</p>
       )}
     </Card>
   );
@@ -418,7 +422,7 @@ export function ReviewRoom() {
 
   return (
     <div data-ready={meetings.data ? '' : undefined} className="space-y-5">
-      <PageHeader eyebrow="Bank of Stoic · Commercial lending" title="Review room" meta={<span>Before the meeting: sheets and commentary. During: decisions and actions. After: actions followed to completion.</span>} />
+      <PageHeader eyebrow="Credit Squad" title="Review room" meta={<span>Before the meeting: sheets and commentary. During: decisions and actions. After: actions followed to completion.</span>} />
       <Load query={meetings} what="The review meetings" rows={6}>
         {(rows) => (
           <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
@@ -437,7 +441,7 @@ export function ReviewRoom() {
               ) : (
                 <EmptyCard
                   title="No review meeting yet"
-                  description={can('manage_actions') ? 'Create one for the period under review. Sheets prepared for that period are attached to it.' : 'A portfolio manager or credit officer creates the meeting for the period under review.'}
+                  description={can('manage_actions') ? 'Create one for the period under review. Sheets prepared for that period are attached to it.' : 'Your role cannot create a meeting; the server decides who may.'}
                 />
               )}
               {loose.length > 0 ? (

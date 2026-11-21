@@ -103,7 +103,7 @@ describe('editing commentary in the review room', () => {
     mockApi({ body: {} });
     const { unmount } = show(sheet(), reviewer);
     expect(screen.queryByRole('button', { name: /Edit|Write this section/ })).toBeNull();
-    expect(screen.getByText(/Writing commentary needs a credit analyst or a portfolio manager\. Your role, Credit review, can read it\./)).toBeInTheDocument();
+    expect(screen.getByText(/Your role can read commentary but cannot write it; the server decides who may\./)).toBeInTheDocument();
     unmount();
     show(sheet({ status: 'released' }));
     expect(screen.queryByRole('button', { name: /Edit|Write this section/ })).toBeNull();

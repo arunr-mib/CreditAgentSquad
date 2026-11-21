@@ -1,5 +1,5 @@
 // frontend/src/squad/clientfile/views.tsx
-import { useRouterState, useSearch } from '@tanstack/react-router';
+import { Link, useRouterState, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useActions, useBorrowerCovenants, useBorrowerOverview, useBorrowerTerms, useBorrowingBase, useDocuments, useFactsById,
@@ -11,7 +11,7 @@ import { OUTCOME, signalLabel } from '@/domain/labels';
 import { RunStage } from '@/screens/borrower/RunStage';
 import { UploadDocument } from '@/screens/borrower/UploadDocument';
 import { describeEvent } from '@/squad/oversight/describeEvent';
-import { Commentary } from '@/screens/review/Commentary';
+import { Commentary } from '@/squad/clientfile/review/Commentary';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
 import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
@@ -279,7 +279,7 @@ export function Reviews({ borrower }: Props) {
       {sheets.data.length === 0 ? <p className="sq-muted">No review sheet has been prepared. One is built when the cycle reaches review preparation.</p> : (
         <ul className="sq-plainlist" aria-label="Review sheets">
           {sheets.data.map((s) => (
-            <li key={s.id}><button type="button" className="sq-link" aria-expanded={open === s.id} onClick={() => setOpen(open === s.id ? null : s.id)}>Review for the period ended {formatDate(s.period_end)}</button> · <span className="sq-faint">{s.status === 'draft' ? 'draft, not yet approved' : s.status}</span></li>
+            <li key={s.id}><button type="button" className="sq-link" aria-expanded={open === s.id} onClick={() => setOpen(open === s.id ? null : s.id)}>Review for the period ended {formatDate(s.period_end)}</button> · <span className="sq-faint">{s.status === 'draft' ? 'draft, not yet approved' : s.status}</span> · <Link to="/review-room" search={{ sheet: s.id }} className="sq-link">Open in the review room</Link></li>
           ))}
         </ul>
       )}

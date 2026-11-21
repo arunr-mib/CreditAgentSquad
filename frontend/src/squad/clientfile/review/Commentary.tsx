@@ -3,9 +3,9 @@ import { useState } from 'react';
 import type { CommentaryRow, ReviewSheetDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { AgentNote, Button, Select, StatusDot } from '@/design';
-import { humanize, roleLabel, ROLES_WITH } from '@/domain/labels';
+import { humanize } from '@/domain/labels';
 import { AgentBody } from '@/source/AgentBody';
-import { Notice } from '../parts';
+import { Notice } from '@/screens/parts';
 import { CommentaryEditor, SECTIONS } from './CommentaryEditor';
 
 const order = (section: string) => {
@@ -54,7 +54,6 @@ export function Commentary({ sheet }: { sheet: ReviewSheetDetail }) {
   const sections = [...sheet.commentary].sort((a, b) => order(a.section) - order(b.section) || a.section.localeCompare(b.section));
   const missing = SECTIONS.filter((name) => !sheet.commentary.some((row) => row.section === name));
   const toAdd = missing.includes(adding as (typeof SECTIONS)[number]) ? adding : (missing[0] ?? '');
-  const holders = (ROLES_WITH.edit_commentary ?? []).map(roleLabel);
 
   const done = (section: string) => (warnings: string[]) => {
     setSaved((current) => ({ ...current, [section]: warnings }));
@@ -121,7 +120,7 @@ export function Commentary({ sheet }: { sheet: ReviewSheetDetail }) {
       {released ? <p className="text-caption text-ink-500">This review sheet is released: its commentary can no longer be edited.</p> : null}
       {!released && !can('edit_commentary') && user ? (
         <p className="text-caption text-ink-500">
-          Writing commentary needs {holders.length > 0 ? `a ${holders.join(' or a ').toLowerCase()}` : 'another role'}. Your role, {roleLabel(user.role)}, can read it.
+          Your role can read commentary but cannot write it; the server decides who may.
         </p>
       ) : null}
     </div>

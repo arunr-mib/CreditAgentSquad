@@ -16,6 +16,7 @@ export function buildCommands({ clients, go, setLook, oversight, approvals }: Co
     { id: 'go-squad', group: 'Go to', label: 'Squad', hint: 'The briefing', run: () => go('/') },
     { id: 'go-portfolio', group: 'Go to', label: 'My Portfolio', hint: 'All clients with trend', run: () => go('/portfolio') },
   ];
+  commands.push({ id: 'go-review-room', group: 'Go to', label: 'Review room', hint: 'Meetings, sheets, commentary and actions', run: () => go('/review-room') });
   if (approvals) commands.push({ id: 'go-approvals', group: 'Go to', label: 'Approvals', hint: 'Decisions waiting for you', run: () => go('/approvals') });
   if (oversight) {
     commands.push(

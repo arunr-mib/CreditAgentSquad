@@ -21,7 +21,7 @@ function mountNav(props: Partial<Parameters<typeof SquadNav>[0]> = {}) {
         pathname="/" userName="Priya Raman" onSignOut={() => {}} {...{ oversight: false, ...props }} />
     ),
   });
-  const routes = ['/', '/portfolio', '/approvals', '/clients/$code', '/oversight'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
+  const routes = ['/', '/portfolio', '/approvals', '/review-room', '/clients/$code', '/oversight'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
   const router = createRouter({ routeTree: root.addChildren(routes), history: createMemoryHistory({ initialEntries: ['/'] }) });
   return render(<RouterProvider router={router} />);
 }
@@ -61,6 +61,11 @@ describe('SquadNav', () => {
     expect(onToggle).toHaveBeenCalled();
   });
 
+  it('links the review room for every person, whatever the server offers', async () => {
+    mountNav({ showApprovals: false, oversight: false });
+    expect(await screen.findByRole('link', { name: 'Review room' })).toHaveAttribute('href', '/review-room');
+  });
+
   it('lists oversight only for the roles that have it', async () => {
     const { unmount } = mountNav({ oversight: false });
     await screen.findByRole('link', { name: /my portfolio/i });
@@ -84,6 +89,12 @@ describe('palette commands', () => {
     expect(run).toHaveBeenCalledWith('/clients/QFL');
     expect(commands.find((c) => c.label === 'My Portfolio')).toBeTruthy();
     expect(commands.find((c) => c.label === 'Squad')).toBeTruthy();
+  });
+
+  it('offers the review room to everyone', () => {
+    const c = buildCommands({ clients, go: run, setLook: run, oversight: false, approvals: false }).find((x) => x.label === 'Review room')!;
+    c.run();
+    expect(run).toHaveBeenCalledWith('/review-room');
   });
 
   it('hides oversight commands from roles without it', () => {

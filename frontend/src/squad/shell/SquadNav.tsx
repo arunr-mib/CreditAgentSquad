@@ -1,6 +1,6 @@
 // frontend/src/squad/shell/SquadNav.tsx
 import { Link } from '@tanstack/react-router';
-import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, FolderOpen, Landmark, LogOut, Stamp } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, FolderOpen, Landmark, LogOut, Presentation, Stamp } from 'lucide-react';
 import { SquadMark } from '../mark/SquadMark';
 import { LookMenu } from '../LookMenu';
 import type { Briefing } from '../api/types';
@@ -41,6 +41,10 @@ export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClient
           <span className="sq-navlabel">Approvals</span>
         </Link>
       ) : null}
+      <Link to="/review-room" className="sq-navlink" aria-current={pathname.startsWith('/review-room') ? 'page' : undefined} title="Review room">
+        <Presentation size={18} aria-hidden />
+        <span className="sq-navlabel">Review room</span>
+      </Link>
       {openClients.length > 0 && collapsed ? (
         <button type="button" className="sq-navlink sq-navbtn" onClick={onToggle} title="Open cases"
           aria-label={`Open cases: ${openClients.length} ${openClients.length === 1 ? 'client' : 'clients'}`}>

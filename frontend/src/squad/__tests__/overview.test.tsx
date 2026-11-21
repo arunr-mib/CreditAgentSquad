@@ -30,7 +30,7 @@ vi.mock('@/source/context', () => ({ useSource: () => ({ open: () => {}, close: 
 vi.mock('@/screens/borrower/RunStage', () => ({ RunStage: () => null }));
 vi.mock('@/screens/borrower/UploadDocument', () => ({ UploadDocument: () => null }));
 vi.mock('@/screens/Governance', () => ({ describeEvent: () => '' }));
-vi.mock('@/screens/review/Commentary', () => ({ Commentary: () => null }));
+vi.mock('@/squad/clientfile/review/Commentary', () => ({ Commentary: () => null }));
 
 const borrower = { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', template_id: 'vc-1' } as never;
 const mount = () => render(<QueryClientProvider client={new QueryClient()}><Overview borrower={borrower} /></QueryClientProvider>);

@@ -2,7 +2,7 @@ import { clientFile, type ClientFileView } from './links';
 
 const OLD_VIEWS: Record<string, ClientFileView> = {
   '': 'overview', loans: 'loans', documents: 'documents', spreads: 'spreads', covenants: 'covenants',
-  'borrowing-base': 'loans', signals: 'overview', reviews: 'reviews', packages: 'overview', timeline: 'history',
+  'borrowing-base': 'loans', signals: 'overview', reviews: 'reviews', packages: 'packages', timeline: 'history',
 };
 
 /** Where an address from the retired cockpit now lives, or null for an address that is not an old one. */
