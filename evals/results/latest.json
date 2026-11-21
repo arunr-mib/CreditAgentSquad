@@ -4,20 +4,24 @@
   "mode": "standin",
   "standin": true,
   "label": "STAND-IN: a perfect reader built from the book's ground truth answered in place of the model. This proves the pipeline, the workflow and the grader. It is not model performance.",
-  "generated_at": "2026-11-20T17:48:33+00:00",
-  "commit": "802e9e7f2024b9d876b00edcaada3818adc850fc",
-  "borrowers": 21,
+  "generated_at": "2026-11-21T00:29:14+00:00",
+  "commit": "aa93f32a25199fac3ba2740339e01fbb29e36a41",
+  "borrowers": 20,
   "scope": "whole book",
   "decide": true,
   "passes": 1,
-  "seconds": 151.4,
-  "unsigned_oracle_rows": 0,
+  "seconds": 164.0,
+  "unsigned_oracle_rows": 91,
   "standin_print_vs_truth_disagreements": [],
-  "eval_run_id": "150589bc-19c0-42e4-a3df-16fdc5bc2d50"
+  "accepted_stale": [],
+  "prompt_only_verified": 0,
+  "eval_run_id": "632204ee-6a79-4a58-b01d-f5b93ed04ba2"
  },
  "gate": {
   "passed": true,
   "reasons": [],
+  "run_errors": [],
+  "nothing_read": [],
   "rule": "any invented-number or false-compliant in any pass fails; the stand-in suite must also agree with the truth in full, apart from listed known findings",
   "known_findings_applied": [],
   "unexplained": [],
@@ -25,18 +29,18 @@
  },
  "metrics": {
   "extraction_accuracy": 1.0,
-  "extraction_facts_expected": 2677,
-  "extraction_facts_correct": 2677,
+  "extraction_facts_expected": 1621,
+  "extraction_facts_correct": 1621,
   "extraction_abstain_rate": 0.0,
-  "cycles_needing_no_person": 0.4762,
-  "cycles_expected_to_need_no_person": 0.4762,
+  "cycles_needing_no_person": 0.55,
+  "cycles_expected_to_need_no_person": 0.55,
   "exception_precision": 1.0,
   "exception_recall": 1.0,
-  "covenant_outcome_accuracy": 1.0,
+  "covenant_outcome_accuracy": 0.9492,
   "covenant_abstain_rate": 0.0,
-  "cycles_run": 21,
-  "cycles_closed": 17,
-  "cycles_reaching_signals": 17,
+  "cycles_run": 20,
+  "cycles_closed": 18,
+  "cycles_reaching_signals": 18,
   "disagreements": 0,
   "input_tokens": null,
   "output_tokens": null
@@ -53,89 +57,6 @@
   "stale-terms": 0
  },
  "borrowers": {
-  "ashgrove-fleet": {
-   "borrower": "ashgrove-fleet",
-   "scenario": "missing_page",
-   "error": null,
-   "expected_exceptions": [
-    "spread.does_not_foot"
-   ],
-   "stage_reached": "spreading",
-   "stage_status": "needs_person",
-   "cycle_status": "open",
-   "last_stage_done": "intake",
-   "raised_exceptions": [
-    "spread.does_not_foot"
-   ],
-   "routine_approvals": [],
-   "not_reached": [],
-   "failures": [],
-   "disagreements": [],
-   "observations": [],
-   "extraction": {
-    "expected": 72,
-    "correct": 72,
-    "missing": 0,
-    "wrong": 0,
-    "accuracy": 1.0,
-    "abstain_rate": 0.0,
-    "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 72,
-      "correct": 72
-     }
-    },
-    "ungraded_facts": {}
-   },
-   "covenants": {
-    "expected": 3,
-    "correct": 3,
-    "abstained": 0
-   },
-   "needs_no_person": false,
-   "stops": [
-    {
-     "stage": "spreading",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "spread.does_not_foot",
-       "blocks_stage": true,
-       "stage": "spreading"
-      }
-     ],
-     "decisions": []
-    }
-   ],
-   "agent_runs": [
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": [
-      {
-       "check": "note",
-       "layer": "agent",
-       "action": "shown",
-       "detail": "A page appears to be missing from the statements, so the lines printed on it are not reported."
-      }
-     ]
-    }
-   ],
-   "held_cells": [],
-   "unshown_text": [],
-   "tokens": null,
-   "ledger_ok": true,
-   "seconds": 6.36
-  },
   "briarstone-beverage": {
    "borrower": "briarstone-beverage",
    "scenario": "over_advance",
@@ -290,11 +211,11 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 8.01
+   "seconds": 6.87
   },
-  "brindlewood-home-health": {
-   "borrower": "brindlewood-home-health",
-   "scenario": "clean",
+  "brightvane-energy": {
+   "borrower": "brightvane-energy",
+   "scenario": "runway_falling",
    "error": null,
    "expected_exceptions": [],
    "stage_reached": "closed",
@@ -308,26 +229,40 @@
    "not_reached": [],
    "failures": [],
    "disagreements": [],
-   "observations": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
    "extraction": {
-    "expected": 105,
-    "correct": 105,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 96,
-      "correct": 96
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
       "expected": 9,
       "correct": 9
      }
     },
     "ungraded_facts": {
-     "metric": 15
+     "metric": 1
     }
    },
    "covenants": {
@@ -373,11 +308,39 @@
      "guardrail_notes": []
     },
     {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
     },
     {
      "agent": "review",
@@ -391,21 +354,21 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.31
+   "seconds": 8.09
   },
-  "calder-finch-staffing": {
-   "borrower": "calder-finch-staffing",
-   "scenario": "step_up",
+  "corvane-analytics": {
+   "borrower": "corvane-analytics",
+   "scenario": "plan_miss",
    "error": null,
    "expected_exceptions": [
-    "covenant.reported_mismatch"
+    "covenant.breach"
    ],
    "stage_reached": "closed",
    "stage_status": "done",
    "cycle_status": "closed",
    "last_stage_done": "closed",
    "raised_exceptions": [
-    "covenant.reported_mismatch"
+    "covenant.breach"
    ],
    "routine_approvals": [
     "review.commentary_approval"
@@ -426,29 +389,37 @@
     }
    ],
    "extraction": {
-    "expected": 100,
-    "correct": 100,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 94,
-      "correct": 94
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
      }
     },
     "ungraded_facts": {
-     "metric": 15
+     "metric": 1
     }
    },
    "covenants": {
-    "expected": 2,
-    "correct": 2,
+    "expected": 3,
+    "correct": 3,
     "abstained": 0
    },
    "needs_no_person": false,
@@ -458,14 +429,14 @@
      "stage_status": "needs_person",
      "open_items": [
       {
-       "type": "covenant.reported_mismatch",
+       "type": "covenant.breach",
        "blocks_stage": true,
        "stage": "covenant_testing"
       }
      ],
      "decisions": [
       {
-       "type": "covenant.reported_mismatch",
+       "type": "covenant.breach",
        "decision": "escalate_to_committee",
        "by_role": "credit_officer",
        "error": null
@@ -495,6 +466,20 @@
    "agent_runs": [
     {
      "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -554,11 +539,340 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.28
+   "seconds": 8.42
   },
-  "dunmore-industrial-supply": {
-   "borrower": "dunmore-industrial-supply",
-   "scenario": "clean",
+  "dataflake": {
+   "borrower": "dataflake",
+   "scenario": "pledged_cash",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch",
+    "signal.high"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.reported_mismatch",
+    "signal.high"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "covenant",
+     "detail": "1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    },
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 62,
+    "correct": 62,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {
+     "metric": 1
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.reported_mismatch",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.reported_mismatch",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "signals",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "signal.high",
+       "blocks_stage": true,
+       "stage": "signals"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "signal.high",
+       "decision": "acknowledged",
+       "by_role": "analyst",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 8.42
+  },
+  "ferrogate-cloud": {
+   "borrower": "ferrogate-cloud",
+   "scenario": "cash_flow_positive",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 64,
+    "correct": 64,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 11,
+      "correct": 11
+     }
+    },
+    "ungraded_facts": {
+     "cert": 1
+    }
+   },
+   "covenants": {
+    "expected": 4,
+    "correct": 4,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 8.39
+  },
+  "halcyon-grid": {
+   "borrower": "halcyon-grid",
+   "scenario": "funding_expected",
    "error": null,
    "expected_exceptions": [],
    "stage_reached": "closed",
@@ -580,29 +894,31 @@
     }
    ],
    "extraction": {
-    "expected": 187,
-    "correct": 187,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 90,
-      "correct": 90
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
       "expected": 9,
       "correct": 9
-     },
-     "bbc-2026-09-30.pdf": {
-      "expected": 88,
-      "correct": 88
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
     "expected": 3,
@@ -647,14 +963,21 @@
      "guardrail_notes": []
     },
     {
-     "agent": "certificate_reader",
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
     },
     {
-     "agent": "borrowing_base_reader",
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -686,190 +1009,7 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.89
-  },
-  "eastmere-building": {
-   "borrower": "eastmere-building",
-   "scenario": "late_reporting",
-   "error": null,
-   "expected_exceptions": [
-    "intake.missing_document"
-   ],
-   "stage_reached": "awaiting_package",
-   "stage_status": "needs_person",
-   "cycle_status": "open",
-   "last_stage_done": null,
-   "raised_exceptions": [
-    "intake.missing_document"
-   ],
-   "routine_approvals": [],
-   "not_reached": [],
-   "failures": [],
-   "disagreements": [],
-   "observations": [],
-   "extraction": {
-    "expected": 0,
-    "correct": 0,
-    "missing": 0,
-    "wrong": 0,
-    "accuracy": null,
-    "abstain_rate": null,
-    "by_document": {},
-    "ungraded_facts": {}
-   },
-   "covenants": {
-    "expected": 2,
-    "correct": 2,
-    "abstained": 0
-   },
-   "needs_no_person": false,
-   "stops": [
-    {
-     "stage": "awaiting_package",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "intake.missing_document",
-       "blocks_stage": true,
-       "stage": "awaiting_package"
-      }
-     ],
-     "decisions": []
-    }
-   ],
-   "agent_runs": [],
-   "held_cells": [],
-   "unshown_text": [],
-   "tokens": null,
-   "ledger_ok": true,
-   "seconds": 5.45
-  },
-  "halvorsen-plastics": {
-   "borrower": "halvorsen-plastics",
-   "scenario": "restated_comparative",
-   "error": null,
-   "expected_exceptions": [
-    "spread.restatement"
-   ],
-   "stage_reached": "closed",
-   "stage_status": "done",
-   "cycle_status": "closed",
-   "last_stage_done": "closed",
-   "raised_exceptions": [
-    "spread.restatement"
-   ],
-   "routine_approvals": [
-    "review.commentary_approval"
-   ],
-   "not_reached": [],
-   "failures": [],
-   "disagreements": [],
-   "observations": [],
-   "extraction": {
-    "expected": 191,
-    "correct": 191,
-    "missing": 0,
-    "wrong": 0,
-    "accuracy": 1.0,
-    "abstain_rate": 0.0,
-    "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 96,
-      "correct": 96
-     },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
-     },
-     "bbc-2026-09-30.pdf": {
-      "expected": 89,
-      "correct": 89
-     }
-    },
-    "ungraded_facts": {
-     "metric": 15
-    }
-   },
-   "covenants": {
-    "expected": 2,
-    "correct": 2,
-    "abstained": 0
-   },
-   "needs_no_person": false,
-   "stops": [
-    {
-     "stage": "review_prep",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "spread.restatement",
-       "blocks_stage": false,
-       "stage": "spreading"
-      },
-      {
-       "type": "review.commentary_approval",
-       "blocks_stage": true,
-       "stage": "review_prep"
-      }
-     ],
-     "decisions": [
-      {
-       "type": "spread.restatement",
-       "decision": "ask_borrower",
-       "by_role": "analyst",
-       "error": null
-      },
-      {
-       "type": "review.commentary_approval",
-       "decision": "approve",
-       "by_role": "portfolio_manager",
-       "error": null
-      }
-     ]
-    }
-   ],
-   "agent_runs": [
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "borrowing_base_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "review",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    }
-   ],
-   "held_cells": [],
-   "unshown_text": [],
-   "tokens": null,
-   "ledger_ok": true,
-   "seconds": 7.89
+   "seconds": 8.71
   },
   "harrowgate-precision": {
    "borrower": "harrowgate-precision",
@@ -981,7 +1121,148 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 8.07
+   "seconds": 7.13
+  },
+  "kelvra-bio": {
+   "borrower": "kelvra-bio",
+   "scenario": "funding_expected",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
+   "extraction": {
+    "expected": 62,
+    "correct": 62,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 9.9
   },
   "kestrel-bay-packaging": {
    "borrower": "kestrel-bay-packaging",
@@ -1144,10 +1425,66 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.9
+   "seconds": 6.18
   },
-  "larkspur-environmental": {
-   "borrower": "larkspur-environmental",
+  "lumora-health": {
+   "borrower": "lumora-health",
+   "scenario": "late_package",
+   "error": null,
+   "expected_exceptions": [
+    "intake.missing_document"
+   ],
+   "stage_reached": "awaiting_package",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": null,
+   "raised_exceptions": [
+    "intake.missing_document"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 0,
+    "correct": 0,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": null,
+    "abstain_rate": null,
+    "by_document": {},
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "awaiting_package",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.41
+  },
+  "mosswell-robotics": {
+   "borrower": "mosswell-robotics",
    "scenario": "clean",
    "error": null,
    "expected_exceptions": [],
@@ -1170,25 +1507,31 @@
     }
    ],
    "extraction": {
-    "expected": 103,
-    "correct": 103,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 94,
-      "correct": 94
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
       "expected": 9,
       "correct": 9
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
     "expected": 3,
@@ -1220,6 +1563,20 @@
    "agent_runs": [
     {
      "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1265,44 +1622,64 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.15
+   "seconds": 8.69
   },
-  "marlowe-ridge-logistics": {
-   "borrower": "marlowe-ridge-logistics",
-   "scenario": "clean",
+  "nimbusfield-security": {
+   "borrower": "nimbusfield-security",
+   "scenario": "funding_slipped",
    "error": null,
-   "expected_exceptions": [],
+   "expected_exceptions": [
+    "funding_slipped",
+    "signal.high"
+   ],
    "stage_reached": "closed",
    "stage_status": "done",
    "cycle_status": "closed",
    "last_stage_done": "closed",
-   "raised_exceptions": [],
+   "raised_exceptions": [
+    "funding_slipped",
+    "signal.high"
+   ],
    "routine_approvals": [
     "review.commentary_approval"
    ],
    "not_reached": [],
    "failures": [],
    "disagreements": [],
-   "observations": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
    "extraction": {
-    "expected": 107,
-    "correct": 107,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 98,
-      "correct": 98
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
       "expected": 9,
       "correct": 9
      }
     },
     "ungraded_facts": {
-     "metric": 15
+     "metric": 1
     }
    },
    "covenants": {
@@ -1310,131 +1687,22 @@
     "correct": 3,
     "abstained": 0
    },
-   "needs_no_person": true,
-   "stops": [
-    {
-     "stage": "review_prep",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "review.commentary_approval",
-       "blocks_stage": true,
-       "stage": "review_prep"
-      }
-     ],
-     "decisions": [
-      {
-       "type": "review.commentary_approval",
-       "decision": "approve",
-       "by_role": "portfolio_manager",
-       "error": null
-      }
-     ]
-    }
-   ],
-   "agent_runs": [
-    {
-     "agent": "intake",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "spreading",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "review",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    }
-   ],
-   "held_cells": [],
-   "unshown_text": [],
-   "tokens": null,
-   "ledger_ok": true,
-   "seconds": 7.38
-  },
-  "northgale-electrical": {
-   "borrower": "northgale-electrical",
-   "scenario": "miscounted_ineligible",
-   "error": null,
-   "expected_exceptions": [
-    "bb.certificate_mismatch"
-   ],
-   "stage_reached": "closed",
-   "stage_status": "done",
-   "cycle_status": "closed",
-   "last_stage_done": "closed",
-   "raised_exceptions": [
-    "bb.certificate_mismatch"
-   ],
-   "routine_approvals": [
-    "review.commentary_approval"
-   ],
-   "not_reached": [],
-   "failures": [],
-   "disagreements": [],
-   "observations": [],
-   "extraction": {
-    "expected": 189,
-    "correct": 189,
-    "missing": 0,
-    "wrong": 0,
-    "accuracy": 1.0,
-    "abstain_rate": 0.0,
-    "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 90,
-      "correct": 90
-     },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
-     },
-     "bbc-2026-09-30.pdf": {
-      "expected": 93,
-      "correct": 93
-     }
-    },
-    "ungraded_facts": {
-     "metric": 15
-    }
-   },
-   "covenants": {
-    "expected": 2,
-    "correct": 2,
-    "abstained": 0
-   },
    "needs_no_person": false,
    "stops": [
     {
-     "stage": "borrowing_base",
+     "stage": "signals",
      "stage_status": "needs_person",
      "open_items": [
       {
-       "type": "bb.certificate_mismatch",
+       "type": "signal.high",
        "blocks_stage": true,
-       "stage": "borrowing_base"
+       "stage": "signals"
       }
      ],
      "decisions": [
       {
-       "type": "bb.certificate_mismatch",
-       "decision": "bank_figures_stand",
+       "type": "signal.high",
+       "decision": "acknowledged",
        "by_role": "analyst",
        "error": null
       }
@@ -1476,6 +1744,20 @@
      "guardrail_notes": []
     },
     {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
@@ -1483,11 +1765,18 @@
      "guardrail_notes": []
     },
     {
-     "agent": "borrowing_base_reader",
-     "status": "completed",
+     "agent": "early_warning",
+     "status": "failed",
      "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
     },
     {
      "agent": "review",
@@ -1501,10 +1790,10 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.17
+   "seconds": 8.7
   },
-  "ostrander-valley-foods": {
-   "borrower": "ostrander-valley-foods",
+  "orbitline-systems": {
+   "borrower": "orbitline-systems",
    "scenario": "clean",
    "error": null,
    "expected_exceptions": [],
@@ -1519,31 +1808,39 @@
    "not_reached": [],
    "failures": [],
    "disagreements": [],
-   "observations": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
    "extraction": {
-    "expected": 201,
-    "correct": 201,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 98,
-      "correct": 98
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
       "expected": 9,
       "correct": 9
-     },
-     "bbc-2026-09-30.pdf": {
-      "expected": 94,
-      "correct": 94
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
     "expected": 3,
@@ -1588,6 +1885,20 @@
      "guardrail_notes": []
     },
     {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
@@ -1595,11 +1906,18 @@
      "guardrail_notes": []
     },
     {
-     "agent": "borrowing_base_reader",
-     "status": "completed",
+     "agent": "early_warning",
+     "status": "failed",
      "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
     },
     {
      "agent": "review",
@@ -1613,7 +1931,7 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.84
+   "seconds": 8.57
   },
   "pellham-grain": {
    "borrower": "pellham-grain",
@@ -1787,11 +2105,11 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.44
+   "seconds": 7.11
   },
-  "quillfeather-bakery": {
-   "borrower": "quillfeather-bakery",
-   "scenario": "addback_over_cap",
+  "pellucid-sensors": {
+   "borrower": "pellucid-sensors",
+   "scenario": "clean",
    "error": null,
    "expected_exceptions": [],
    "stage_reached": "closed",
@@ -1813,29 +2131,35 @@
     }
    ],
    "extraction": {
-    "expected": 104,
-    "correct": 104,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 98,
-      "correct": 98
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
-    "expected": 2,
-    "correct": 2,
+    "expected": 3,
+    "correct": 3,
     "abstained": 0
    },
    "needs_no_person": true,
@@ -1863,6 +2187,20 @@
    "agent_runs": [
     {
      "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -1908,10 +2246,10 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.01
+   "seconds": 10.15
   },
-  "sablewood-dental": {
-   "borrower": "sablewood-dental",
+  "quillon-ai": {
+   "borrower": "quillon-ai",
    "scenario": "clean",
    "error": null,
    "expected_exceptions": [],
@@ -1926,31 +2264,43 @@
    "not_reached": [],
    "failures": [],
    "disagreements": [],
-   "observations": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
    "extraction": {
-    "expected": 98,
-    "correct": 98,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 92,
-      "correct": 92
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
-    "expected": 2,
-    "correct": 2,
+    "expected": 3,
+    "correct": 3,
     "abstained": 0
    },
    "needs_no_person": true,
@@ -1991,11 +2341,39 @@
      "guardrail_notes": []
     },
     {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
      "agent": "certificate_reader",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "failed",
+     "llm_mode": "standin",
+     "served_model": null,
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
+      }
+     ]
     },
     {
      "agent": "review",
@@ -2009,50 +2387,89 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.19
+   "seconds": 8.29
   },
-  "stanmoor-mechanical": {
-   "borrower": "stanmoor-mechanical",
-   "scenario": "image_only",
+  "stripple-tech": {
+   "borrower": "stripple-tech",
+   "scenario": "stripple_package",
    "error": null,
    "expected_exceptions": [
-    "spread.image_only"
+    "intake.unclassified",
+    "spread.value_unverified"
    ],
    "stage_reached": "spreading",
    "stage_status": "needs_person",
    "cycle_status": "open",
    "last_stage_done": "intake",
    "raised_exceptions": [
-    "spread.image_only"
+    "intake.unclassified",
+    "spread.value_unverified"
    ],
    "routine_approvals": [],
-   "not_reached": [],
+   "not_reached": [
+    "covenant test min_unrestricted_cash",
+    "covenant test min_runway_months",
+    "covenant test revenue_vs_plan",
+    "signals"
+   ],
    "failures": [],
    "disagreements": [],
    "observations": [],
    "extraction": {
-    "expected": 0,
-    "correct": 0,
+    "expected": 50,
+    "correct": 50,
     "missing": 0,
     "wrong": 0,
-    "accuracy": null,
-    "abstain_rate": null,
-    "by_document": {},
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 43,
+      "correct": 43
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     }
+    },
     "ungraded_facts": {}
    },
    "covenants": {
     "expected": 3,
-    "correct": 3,
+    "correct": 0,
     "abstained": 0
    },
    "needs_no_person": false,
    "stops": [
     {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "intake.unclassified",
+       "decision": "not_needed",
+       "by_role": "analyst",
+       "error": null
+      }
+     ]
+    },
+    {
      "stage": "spreading",
      "stage_status": "needs_person",
      "open_items": [
       {
-       "type": "spread.image_only",
+       "type": "spread.value_unverified",
        "blocks_stage": true,
        "stage": "spreading"
       }
@@ -2067,16 +2484,69 @@
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
      "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     }
    ],
-   "held_cells": [],
-   "unshown_text": [],
+   "held_cells": [
+    {
+     "item": "spread.value_unverified",
+     "key": "bs.capitalised_software",
+     "printed_label": "Capitalised software development costs",
+     "row_label": "Capitalised software development costs",
+     "reason": "mapping_doubt",
+     "page": 1
+    },
+    {
+     "item": "spread.value_unverified",
+     "key": "bs.deferred_revenue_current",
+     "printed_label": "Contract liabilities",
+     "row_label": "Contract liabilities",
+     "reason": "mapping_doubt",
+     "page": 1
+    },
+    {
+     "item": "spread.value_unverified",
+     "key": "cf.capitalised_software_spend",
+     "printed_label": "Software development costs",
+     "row_label": "Software development costs",
+     "reason": "mapping_doubt",
+     "page": 3
+    }
+   ],
+   "unshown_text": [
+    {
+     "agent": "intake",
+     "record_key": "intake/stripple-tech/2026-10-31/01",
+     "text": "The file names no company and shows a different year.",
+     "typed_figures": []
+    }
+   ],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 5.58
+   "seconds": 7.63
   },
-  "tallwater-foodservice": {
-   "borrower": "tallwater-foodservice",
+  "tessaract-labs": {
+   "borrower": "tessaract-labs",
    "scenario": "clean",
    "error": null,
    "expected_exceptions": [],
@@ -2091,35 +2561,43 @@
    "not_reached": [],
    "failures": [],
    "disagreements": [],
-   "observations": [],
+   "observations": [
+    {
+     "kind": "standin-unanswered",
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+    }
+   ],
    "extraction": {
-    "expected": 202,
-    "correct": 202,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 98,
-      "correct": 98
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
      },
-     "bbc-2026-09-30.pdf": {
-      "expected": 98,
-      "correct": 98
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
-    "expected": 2,
-    "correct": 2,
+    "expected": 3,
+    "correct": 3,
     "abstained": 0
    },
    "needs_no_person": true,
@@ -2160,131 +2638,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "certificate_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "borrowing_base_reader",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    },
-    {
-     "agent": "review",
-     "status": "completed",
-     "llm_mode": "standin",
-     "served_model": "stand-in-perfect-reader",
-     "guardrail_notes": []
-    }
-   ],
-   "held_cells": [],
-   "unshown_text": [],
-   "tokens": null,
-   "ledger_ok": true,
-   "seconds": 9.04
-  },
-  "thornbury-metal": {
-   "borrower": "thornbury-metal",
-   "scenario": "deteriorating_trend",
-   "error": null,
-   "expected_exceptions": [
-    "signal.high"
-   ],
-   "stage_reached": "closed",
-   "stage_status": "done",
-   "cycle_status": "closed",
-   "last_stage_done": "closed",
-   "raised_exceptions": [
-    "signal.high"
-   ],
-   "routine_approvals": [
-    "review.commentary_approval"
-   ],
-   "not_reached": [],
-   "failures": [],
-   "disagreements": [],
-   "observations": [
-    {
-     "kind": "standin-unanswered",
-     "item": "early_warning",
-     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
-    }
-   ],
-   "extraction": {
-    "expected": 105,
-    "correct": 105,
-    "missing": 0,
-    "wrong": 0,
-    "accuracy": 1.0,
-    "abstain_rate": 0.0,
-    "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 96,
-      "correct": 96
-     },
-     "cc-2026-09-30.pdf": {
-      "expected": 9,
-      "correct": 9
-     }
-    },
-    "ungraded_facts": {
-     "metric": 15,
-     "signal": 6
-    }
-   },
-   "covenants": {
-    "expected": 3,
-    "correct": 3,
-    "abstained": 0
-   },
-   "needs_no_person": false,
-   "stops": [
-    {
-     "stage": "signals",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "signal.high",
-       "blocks_stage": true,
-       "stage": "signals"
-      }
-     ],
-     "decisions": [
-      {
-       "type": "signal.high",
-       "decision": "acknowledged",
-       "by_role": "analyst",
-       "error": null
-      }
-     ]
-    },
-    {
-     "stage": "review_prep",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "review.commentary_approval",
-       "blocks_stage": true,
-       "stage": "review_prep"
-      }
-     ],
-     "decisions": [
-      {
-       "type": "review.commentary_approval",
-       "decision": "approve",
-       "by_role": "portfolio_manager",
-       "error": null
-      }
-     ]
-    }
-   ],
-   "agent_runs": [
-    {
-     "agent": "intake",
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -2330,103 +2684,117 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 8.59
+   "seconds": 8.03
   },
-  "vantry-freight": {
-   "borrower": "vantry-freight",
-   "scenario": "unapproved_amendment",
+  "tidewell-medical": {
+   "borrower": "tidewell-medical",
+   "scenario": "restricted_account",
    "error": null,
    "expected_exceptions": [
-    "covenant.reported_mismatch",
-    "terms.unapproved_amendment"
+    "cash.statement_mismatch"
    ],
-   "stage_reached": "covenant_testing",
-   "stage_status": "needs_person",
-   "cycle_status": "open",
-   "last_stage_done": "spreading",
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
    "raised_exceptions": [
-    "covenant.reported_mismatch",
-    "terms.unapproved_amendment"
+    "cash.statement_mismatch"
    ],
-   "routine_approvals": [],
-   "not_reached": [
-    "signals"
+   "routine_approvals": [
+    "review.commentary_approval"
    ],
+   "not_reached": [],
    "failures": [],
    "disagreements": [],
    "observations": [
     {
      "kind": "standin-unanswered",
-     "item": "covenant",
-     "detail": "1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
+     "item": "early_warning",
+     "detail": "1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation"
     }
    ],
    "extraction": {
-    "expected": 104,
-    "correct": 104,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 98,
-      "correct": 98
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
-      "expected": 6,
-      "correct": 6
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
      }
     },
     "ungraded_facts": {}
    },
    "covenants": {
-    "expected": 2,
-    "correct": 2,
+    "expected": 3,
+    "correct": 3,
     "abstained": 0
    },
    "needs_no_person": false,
    "stops": [
     {
-     "stage": "covenant_testing",
+     "stage": "review_prep",
      "stage_status": "needs_person",
      "open_items": [
       {
-       "type": "terms.unapproved_amendment",
-       "blocks_stage": true,
+       "type": "cash.statement_mismatch",
+       "blocks_stage": false,
        "stage": "covenant_testing"
       },
       {
-       "type": "covenant.reported_mismatch",
+       "type": "review.commentary_approval",
        "blocks_stage": true,
-       "stage": "covenant_testing"
+       "stage": "review_prep"
       }
      ],
      "decisions": [
       {
-       "type": "covenant.reported_mismatch",
-       "decision": "escalate_to_committee",
+       "type": "cash.statement_mismatch",
+       "decision": "reviewed",
        "by_role": "credit_officer",
+       "error": null
+      },
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
        "error": null
       }
      ]
-    },
-    {
-     "stage": "covenant_testing",
-     "stage_status": "needs_person",
-     "open_items": [
-      {
-       "type": "terms.unapproved_amendment",
-       "blocks_stage": true,
-       "stage": "covenant_testing"
-      }
-     ],
-     "decisions": []
     }
    ],
    "agent_runs": [
     {
      "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -2447,7 +2815,7 @@
      "guardrail_notes": []
     },
     {
-     "agent": "covenant",
+     "agent": "early_warning",
      "status": "failed",
      "llm_mode": "standin",
      "served_model": null,
@@ -2455,21 +2823,28 @@
       {
        "check": "error",
        "layer": "runtime",
-       "action": "abstain",
-       "detail": "the run did not finish"
+       "action": "nothing_stored",
+       "detail": "the Early Warning Agent returned no usable answer; the signals stand as code fired them"
       }
      ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
     }
    ],
    "held_cells": [],
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 6.56
+   "seconds": 8.55
   },
-  "wrenfield-diagnostics": {
-   "borrower": "wrenfield-diagnostics",
-   "scenario": "scale_trap",
+  "veridia-payments": {
+   "borrower": "veridia-payments",
+   "scenario": "clean",
    "error": null,
    "expected_exceptions": [],
    "stage_reached": "closed",
@@ -2491,29 +2866,35 @@
     }
    ],
    "extraction": {
-    "expected": 108,
-    "correct": 108,
+    "expected": 62,
+    "correct": 62,
     "missing": 0,
     "wrong": 0,
     "accuracy": 1.0,
     "abstain_rate": 0.0,
     "by_document": {
-     "ifs-2026-09-30.pdf": {
-      "expected": 96,
-      "correct": 96
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
      },
-     "cc-2026-09-30.pdf": {
-      "expected": 12,
-      "correct": 12
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
      }
     },
-    "ungraded_facts": {
-     "metric": 15
-    }
+    "ungraded_facts": {}
    },
    "covenants": {
-    "expected": 4,
-    "correct": 4,
+    "expected": 3,
+    "correct": 3,
     "abstained": 0
    },
    "needs_no_person": true,
@@ -2541,6 +2922,20 @@
    "agent_runs": [
     {
      "agent": "intake",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "standin",
+     "served_model": "stand-in-perfect-reader",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
      "status": "completed",
      "llm_mode": "standin",
      "served_model": "stand-in-perfect-reader",
@@ -2586,7 +2981,7 @@
    "unshown_text": [],
    "tokens": null,
    "ledger_ok": true,
-   "seconds": 7.99
+   "seconds": 8.72
   }
  },
  "known_findings": [],
@@ -2594,18 +2989,18 @@
   {
    "metrics": {
     "extraction_accuracy": 1.0,
-    "extraction_facts_expected": 2677,
-    "extraction_facts_correct": 2677,
+    "extraction_facts_expected": 1621,
+    "extraction_facts_correct": 1621,
     "extraction_abstain_rate": 0.0,
-    "cycles_needing_no_person": 0.4762,
-    "cycles_expected_to_need_no_person": 0.4762,
+    "cycles_needing_no_person": 0.55,
+    "cycles_expected_to_need_no_person": 0.55,
     "exception_precision": 1.0,
     "exception_recall": 1.0,
-    "covenant_outcome_accuracy": 1.0,
+    "covenant_outcome_accuracy": 0.9492,
     "covenant_abstain_rate": 0.0,
-    "cycles_run": 21,
-    "cycles_closed": 17,
-    "cycles_reaching_signals": 17,
+    "cycles_run": 20,
+    "cycles_closed": 18,
+    "cycles_reaching_signals": 18,
     "disagreements": 0,
     "input_tokens": null,
     "output_tokens": null
@@ -2621,6 +3016,970 @@
     "missed-abstain": 0,
     "stale-terms": 0
    }
+  }
+ ],
+ "mutations": [
+  {
+   "name": "spread-wrong-figure",
+   "what": "a figure with one digit wrong (it still parses)",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-figure-from-another-row",
+   "what": "a real figure from the wrong row",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-prior-year-figure",
+   "what": "a figure from the prior-year column under the current header",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-whole-prior-year-column",
+   "what": "the whole prior-year column spread as the period",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-dropped-line",
+   "what": "a printed line dropped and claimed absent",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.does_not_foot"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.does_not_foot",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-dropped-line-and-totals",
+   "what": "a line dropped together with the printed totals above it",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.does_not_foot"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.does_not_foot",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-dropped-supplemental-line",
+   "what": "a supplemental line (no total covers it) dropped and claimed absent",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.does_not_foot"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.does_not_foot",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-units-omitted",
+   "what": "the 'in thousands' phrase not reported",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [
+    [
+     "spreading",
+     "scale_conflict",
+     "person"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified; guardrail note: spreading scale_conflict -> person",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-rows-swapped-within-a-total",
+   "what": "two rows of one subtotal mapped to each other's template lines",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-debt-mapped-to-payables",
+   "what": "the line of credit and accounts payable mapped to each other's lines",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-prior-year-under-a-spanning-header",
+   "what": "the prior-year column read under a header naming both periods",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-printed-totals-not-read",
+   "what": "no printed total reported, so nothing could be footed",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.does_not_foot"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.does_not_foot",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-supplemental-row-reported-twice",
+   "what": "one printed row reported twice, so its figure would be added twice",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-note-types-a-figure",
+   "what": "a note that types a figure",
+   "borrower": "harrowgate-precision",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "spreading",
+     "figure_untraceable",
+     "dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: spreading figure_untraceable -> dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-misread-threshold",
+   "what": "a threshold misread (1.05x read as 1.50x)",
+   "borrower": "harrowgate-precision",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-threshold-from-another-row",
+   "what": "a threshold taken from another covenant's row",
+   "borrower": "harrowgate-precision",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-units-omitted",
+   "what": "the certificate's 'in thousands' phrase not reported",
+   "borrower": "harrowgate-precision",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-rows-swapped",
+   "what": "two covenant rows attributed to each other's covenants",
+   "borrower": "harrowgate-precision",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-aging-note-dropped",
+   "what": "an affiliate customer's note not reported",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "recovered",
+   "product": false,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "nothing changed and nothing is wrong: code reads this from the page itself, so the reader's omission has no effect",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-aging-figure-misread",
+   "what": "an aging figure with one digit wrong",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "borrowing_base",
+   "error": null
+  },
+  {
+   "name": "bb-aging-row-dropped",
+   "what": "a customer left out of the aging",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "invented-number"
+   ],
+   "evidence": "work item: bb.certificate_mismatch; grader: invented-number [bbc.ar.001.current @ 2026-09-30], invented-number [bbc.ar.001.days_31_60 @ 2026-09-30], invented-number [bbc.ar.001.days_61_90 @ 2026-09-30], invented-number [bbc.ar.001.over_90 @ 2026-09-30] and 59 more",
+   "stage_reached": "borrowing_base",
+   "error": null
+  },
+  {
+   "name": "bb-lines-misnamed",
+   "what": "commitment and loans outstanding attributed to each other's lines",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "borrowing_base",
+   "error": null
+  },
+  {
+   "name": "bb-affiliate-note-and-lines-dropped",
+   "what": "an affiliate's note dropped and the certificate lines that would show it left out",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-contra-note-and-lines-dropped",
+   "what": "a contra note dropped and the certificate lines that would show it left out",
+   "borrower": "harrowgate-precision",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "intake-misclassified",
+   "what": "a compliance certificate classified as interim statements",
+   "borrower": "harrowgate-precision",
+   "agent": "intake",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: intake.missing_document, intake.unclassified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "intake-statements-called-audited",
+   "what": "management statements classified as audited",
+   "borrower": "harrowgate-precision",
+   "agent": "intake",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "intake",
+     "audited_without_report",
+     "quality_changed"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: intake audited_without_report -> quality_changed",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "intake-wrong-period",
+   "what": "a certificate filed by its signing date instead of its period end",
+   "borrower": "harrowgate-precision",
+   "agent": "intake",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "intake.missing_document"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "document-filing"
+   ],
+   "evidence": "work item: intake.missing_document; grader: document-filing [cc-2026-09-30.pdf]",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-types-a-figure",
+   "what": "commentary that types a figure",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-dressed-as-a-date",
+   "what": "commentary with a figure placed so it reads as a date ('above 4 may')",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-as-a-list-marker",
+   "what": "commentary with figures in brackets like list markers",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-quantity-in-words",
+   "what": "commentary stating a ratio in words",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "number_in_words",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review number_in_words -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-as-an-identifier",
+   "what": "commentary with a change written like an identifier ('up-12 percent')",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-figure-as-a-note-number",
+   "what": "commentary with a ratio written as a note number",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "figure_untraceable",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review figure_untraceable -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "review-cites-unknown-fact",
+   "what": "commentary that references a fact that does not exist",
+   "borrower": "harrowgate-precision",
+   "agent": "review",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [],
+   "new_guardrail_notes": [
+    [
+     "review",
+     "fact_unknown",
+     "section_dropped"
+    ]
+   ],
+   "grader_names": [],
+   "evidence": "guardrail note: review fact_unknown -> section_dropped",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "spread-debt-mapped-to-payables-on-a-breach",
+   "what": "the same mis-mapping on a borrower whose leverage fails",
+   "borrower": "kestrel-bay-packaging",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.reported_mismatch"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-term-debt-mapped-to-other-liabilities-on-a-breach",
+   "what": "long-term debt and other liabilities mapped to each other's lines, hiding debt on a borrower whose leverage fails",
+   "borrower": "kestrel-bay-packaging",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.reported_mismatch"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-term-debt-swapped-with-label-fragments",
+   "what": "long-term debt and other liabilities swapped, reporting only fragments of each row label",
+   "borrower": "kestrel-bay-packaging",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.reported_mismatch"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-term-debt-folded-into-other-liabilities",
+   "what": "long-term debt filed as a second row of other liabilities and declared absent",
+   "borrower": "kestrel-bay-packaging",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.reported_mismatch"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-principal-read-from-another-supplemental-row",
+   "what": "scheduled principal read from the financed-capex row (no total covers supplemental lines)",
+   "borrower": "pellham-grain",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.breach"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.breach], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "spread-cash-taxes-read-from-another-supplemental-row",
+   "what": "cash taxes read from the financed-capex row",
+   "borrower": "pellham-grain",
+   "agent": "spreading",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.breach"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "missed-exception",
+    "signals-not-run"
+   ],
+   "evidence": "work item: spread.value_unverified; grader: missed-exception [covenant.breach], signals-not-run [signals @ 2026-09-30]",
+   "stage_reached": "spreading",
+   "error": null
+  },
+  {
+   "name": "cert-claims-compliance",
+   "what": "a certificate read as claiming compliance where it reports a breach",
+   "borrower": "pellham-grain",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.breach"
+   ],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-breach-read-as-passing-value",
+   "what": "the breaching covenant's reported value read as a passing one",
+   "borrower": "pellham-grain",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.breach"
+   ],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-flag-from-the-next-row",
+   "what": "the compliance entry taken from a neighbouring row, with a label fragment found on every row",
+   "borrower": "pellham-grain",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [
+    "covenant.breach"
+   ],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "cert-runway-reported-as-a-number",
+   "what": "a not-meaningful runway reported with a figure",
+   "borrower": "ferrogate-cloud",
+   "agent": "certificate",
+   "applied": true,
+   "baseline_raised": [],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "spread.value_unverified"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: spread.value_unverified",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-ineligible-inventory-named-by-a-fragment",
+   "what": "work in process reported as 'process' with the inventory lines of the certificate left out, turning an over-advance into availability",
+   "borrower": "briarstone-beverage",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [
+    "bb.over_advance"
+   ],
+   "caught_by": "product",
+   "product": true,
+   "grader": false,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [],
+   "evidence": "work item: bb.certificate_mismatch",
+   "stage_reached": "closed",
+   "error": null
+  },
+  {
+   "name": "bb-receivable-filed-as-inventory",
+   "what": "a customer's receivable total added as an inventory row, certificate lines left out",
+   "borrower": "briarstone-beverage",
+   "agent": "collateral",
+   "applied": true,
+   "baseline_raised": [
+    "bb.over_advance"
+   ],
+   "caught_by": "product and grader",
+   "product": true,
+   "grader": true,
+   "new_work_items": [
+    "bb.certificate_mismatch"
+   ],
+   "new_guardrail_notes": [],
+   "grader_names": [
+    "borrowing-base-line",
+    "invented-number"
+   ],
+   "evidence": "work item: bb.certificate_mismatch; grader: borrowing-base-line [availability @ 2026-09-30], borrowing-base-line [borrowing_base @ 2026-09-30], borrowing-base-line [borrowing_limit @ 2026-09-30], borrowing-base-line [inventory_availability @ 2026-09-30] and 4 more",
+   "stage_reached": "closed",
+   "error": null
   }
  ]
 }
