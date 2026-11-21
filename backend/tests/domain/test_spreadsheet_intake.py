@@ -164,3 +164,23 @@ def test_a_pdf_only_agent_raises_a_question_for_a_spreadsheet_and_stores_nothing
     assert len(items) == 1 and items[0].allowed_decisions == ["request_new_document", "key_by_hand"]
     assert "spreadsheet" in items[0].question and result.unverified and not result.stored
     assert db.execute(select(Fact).where(Fact.borrower_id == borrower.id)).first() is None
+
+
+def test_the_collateral_agent_raises_a_question_for_a_spreadsheet_and_stores_nothing(db, borrower):
+    from datetime import date
+
+    from app.agents.collateral import read_collateral
+    from app.domain.facts import Fact
+    from app.domain.monitoring import WorkItem
+
+    class Boom:
+        def complete(self, *a, **k):
+            raise AssertionError("a spreadsheet must never reach the model")
+
+    doc = ingest_document(db, borrower_id=borrower.id, data=b"a,b\nx,1\n", file_name="bbc.csv")
+    result = read_collateral(db, borrower=borrower, document=doc, period_end=date(2026, 10, 31), cycle=None, llm=Boom())
+    items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower.id)).scalars().all()
+    assert len(items) == 1 and items[0].allowed_decisions == ["request_new_document", "key_by_hand"]
+    assert "spreadsheet" in items[0].question
+    assert result.unverified == [{"what": "document", "reason": "spreadsheet"}]
+    assert db.execute(select(Fact).where(Fact.borrower_id == borrower.id)).first() is None

@@ -30,9 +30,11 @@ pytestmark = pytest.mark.skipif(
 KEPT = ("kestrel-bay-packaging", "harrowgate-precision", "briarstone-beverage", "pellham-grain")
 # the engine's own tolerances (covenant_service.DEFAULT_TOLERANCE); a unit it does not list is exact
 TOLERANCE = {"ratio": D("0.005"), "usd": D("1"), "pct": D("0.0005"), "days": D("0.5")}
-# raised by an agent or a reconciliation, not by calculation: pinned so the suite fails when either side moves
-PENDING = {"tidewell-medical": ["cash.statement_mismatch"],
-           "stripple-tech": ["intake.unclassified", "spread.value_unverified"]}  # fmt: skip
+# Raised by the live cycle (the cash reconciliation and the Intake and Spreading Agents), never by the covenant
+# calculation these tests check. Both are now raised and graded end to end by the stand-in suite; this pins the
+# answer key's rows so the calculation checks fail if the key moves.
+RAISED_BY_THE_CYCLE = {"tidewell-medical": ["cash.statement_mismatch"],
+                       "stripple-tech": ["intake.unclassified", "spread.value_unverified"]}  # fmt: skip
 VC_LINES = {line.key: line for line in template_lines("vc-1")}
 VC_KEYS = set(VC_LINES)
 OPTIONAL_KEYS = {key for key, line in VC_LINES.items() if line.optional}  # unmeasured when not printed, never zero
@@ -185,9 +187,9 @@ def test_a_plan_that_stops_short_of_the_test_month_cannot_be_tested_and_names_th
 
 def test_only_agent_raised_exceptions_are_outside_the_calculation_checks(clients):
     pending = {c.id: sorted(x["type"] for x in c.data["expected"]["exceptions"] if x["type"] in
-                            {t for kinds in PENDING.values() for t in kinds})
+                            {t for kinds in RAISED_BY_THE_CYCLE.values() for t in kinds})
                for c in clients}
-    assert {k: v for k, v in pending.items() if v} == PENDING
+    assert {k: v for k, v in pending.items() if v} == RAISED_BY_THE_CYCLE
 
 
 def test_kept_borrowers_are_the_v1_book_byte_for_byte(book, tmp_path):

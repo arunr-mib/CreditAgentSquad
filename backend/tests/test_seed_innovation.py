@@ -26,8 +26,10 @@ from sqlalchemy.orm import Session
 REPO = Path(__file__).resolve().parents[2]
 pytestmark = pytest.mark.slow
 KEPT = ("kestrel-bay-packaging", "harrowgate-precision", "briarstone-beverage", "pellham-grain")
-# raised by a reconciliation that the calculation layer does not do (Phase 3), so seeding cannot raise it
-PENDING = {"cash.statement_mismatch"}
+# Raised by the live cycle's cash reconciliation (Task 6, app/domain/cash_reconciliation.py), which seeding
+# does not run: the seeder stores the certificate's figures without reading bank statements. The live path is
+# pinned by the stand-in suite (evals/tests/test_standin_suite.py), which asserts Tidewell raises it.
+SEED_DOES_NOT_RAISE = {"cash.statement_mismatch"}
 
 
 @pytest.fixture(scope="module")
@@ -136,7 +138,7 @@ def test_each_scenario_raises_exactly_its_exceptions_and_clean_clients_raise_non
     for code, truth in truths.items():
         b = borrower(db, code)
         ours = sorted({w.item_type for w in db.execute(select(WorkItem).where(WorkItem.borrower_id == b.id)).scalars()})
-        expected = sorted({x["type"] for x in truth["expected"]["exceptions"]} - PENDING)
+        expected = sorted({x["type"] for x in truth["expected"]["exceptions"]} - SEED_DOES_NOT_RAISE)
         if ours != expected:
             problems.append(f"{code} ({truth['scenario']['code']}): ours {ours}; book {expected}")
     assert problems == []

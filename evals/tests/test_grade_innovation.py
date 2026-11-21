@@ -37,3 +37,17 @@ def test_expected_facts_include_mrr_and_bank_figures_for_a_monthly_client():
     expected = Truth(book.get("tidewell-medical")).expected_facts()
     assert expected["saas.mrr"][2] == "mrr-2026-10-31.pdf"
     assert expected["bank.cash_unrestricted"][0] == 4300000 and expected["bank.cash_restricted"][0] == 1100000
+
+
+def test_figures_the_book_says_are_held_for_a_person_are_not_expected_as_stored_facts():
+    """Stripple's pack prints a line the template does not know and a capitalised-software figure that may be
+    the wrong measure; the key expects both held, so they are not expected extractions, and the documents
+    after spreading (the certificate) are not read while the cycle rests there. MRR and bank still are."""
+    stripple = Truth(load_book(BOOKS["innovation"], ["stripple-tech"]).get("stripple-tech"))
+    expected = stripple.expected_facts()
+    assert stripple.held == {"bs.deferred_revenue_current", "bs.capitalised_software", "cf.capitalised_software_spend"}
+    assert stripple.held.isdisjoint(expected)
+    assert "bs.cash_unrestricted" in expected and "saas.mrr" in expected
+    assert not [k for k in expected if k.startswith("cert.")]
+    tide = Truth(load_book(BOOKS["innovation"], ["tidewell-medical"]).get("tidewell-medical"))
+    assert tide.held == set() and any(k.startswith("cert.") for k in tide.expected_facts())

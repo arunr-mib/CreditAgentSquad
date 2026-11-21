@@ -84,3 +84,32 @@ def test_a_page_dated_another_month_that_mentions_the_period_is_refused_and_stor
     assert result.status != "spread"
     assert [i.item_type for i in result.work_items] and "wrong_document" in result.work_items[0].allowed_decisions
     assert db.execute(select(Fact).where(Fact.borrower_id == vc.id, Fact.key == "saas.mrr")).first() is None
+
+
+def _bank(closing: str, mention: str | None = None) -> bytes:
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter, invariant=1)
+    c.setFont("Helvetica", 9)
+    c.drawString(72, 740, "Quillfeather Labs, Inc.")
+    c.drawString(72, 726, "BANK STATEMENT - OPERATING ACCOUNT")
+    c.drawString(72, 712, f"Statement period: July 1, 2026 to {closing}")
+    c.drawString(72, 690, "Balance")
+    c.drawRightString(440, 690, f"At {closing}")
+    c.drawString(72, 674, "Total operating accounts (unrestricted)")
+    c.drawRightString(440, 674, "$900")
+    if mention:
+        c.drawString(72, 560, mention)
+    c.drawString(72, 40, "SYNTHETIC - FOR DEMONSTRATION")
+    c.showPage()
+    c.save()
+    return buf.getvalue()
+
+
+def test_a_bank_statement_closing_in_another_month_is_refused_and_stores_no_fact(db, vc):
+    """The statement's own closing date is July 31; the period is the current month, which the page only mentions."""
+    result = _read(db, vc, _bank("July 31, 2026", mention=f"Next statement closes {CUR}."), "$900",
+                   label="Total operating accounts (unrestricted)", doc_type="bank_statement",
+                   key="bank.cash_unrestricted")
+    assert result.status != "spread"
+    assert [i.item_type for i in result.work_items] and "wrong_document" in result.work_items[0].allowed_decisions
+    assert db.execute(select(Fact).where(Fact.borrower_id == vc.id, Fact.key == "bank.cash_unrestricted")).first() is None

@@ -32,9 +32,8 @@ def ferrogate(engine, file_store):
 
 
 def _with_runway(rec, **changes):
-    """The recording with a runway test row added. The stand-in cannot yet get an innovation borrower
-    past spreading (a Task 3 matter), so no real run records a covenant test; the row is built to match
-    what the product records for a cash-flow-positive period."""
+    """The recording with a runway test row added. Built to match what the product records for a
+    cash-flow-positive period, so the runway grading is exercised without a second full cycle."""
     out = copy.deepcopy(rec)
     want = next(t for t in ferrogate_truth().expected_tests(ferrogate_truth().current_period)
                 if t["covenant_id"] == "min_runway_months")

@@ -122,6 +122,10 @@ class Truth:
         self.tests = {t["covenant_id"]: t for t in borrower.expected_tests(self.end)}
         self.expected_bb = borrower.expected_borrowing_base(self.end)
         self.halted = bool(HALTING & set(borrower.expected_exception_types()))
+        # the book expects a figure of the pack held for a person: the cycle rests at spreading until
+        # it is confirmed, so the figures held are not stored and the later documents are not read
+        self.held = self._held_keys()
+        self.holds_figures = bool(self.held)
         self._metric_cache: dict[tuple[str, str], Decimal | None] = {}
 
     # -- expected extracted facts: {fact key: (value, period_end iso, document file)} --
@@ -133,7 +137,10 @@ class Truth:
         # first), so none of its figures are expected; any it does store are still graded
         if s is not None and "spread.image_only" not in self.b.expected_exception_types():
             file, scale = Path(s["path"]).name, Decimal(s.get("scale", 1))
+            held = self.held
             for key in s["figures"]:
+                if key in held:
+                    continue
                 name = STATED + key if key in TOTALS else key
                 out[name] = (Decimal(self.period["values"][key]), s["period_end"], file)
                 prior = (s.get("comparative_printed") or {}).get(key)
@@ -146,7 +153,7 @@ class Truth:
                     for key, figure in d["figures"].items():
                         name = BANK_KEYS.get(key, key) if d["type"] == "bank_statement" else key
                         out[name] = (self._printed(key, figure["printed"], scale), d["period_end"], file)
-        if self.halted:
+        if self.halted or self.holds_figures:
             return out  # the cycle stops at intake or spreading; the other documents are not read
         if self.cert is not None:
             file = self._file("compliance_certificate")
@@ -167,6 +174,16 @@ class Truth:
             for n, row in enumerate(self.bb["inventory"], start=1):
                 out[f"bbc.inventory.{n:03d}"] = (Decimal(row["amount"]), self.end.isoformat(), file)
         return out
+
+    def _held_keys(self) -> set[str]:
+        """The lines the scenario says the product holds for a person (a label the template does not
+        know, a figure that may be the wrong measure). Read from the book's own scenario details."""
+        if "spread.value_unverified" not in self.b.expected_exception_types():
+            return set()
+        details = self.b.truth["scenario"].get("details", {})
+        held = {details.get("new_line", {}).get("belongs_to")}
+        held |= {details.get("capitalised_software", {}).get(k) for k in ("balance_key", "spend_key")}
+        return {k for k in held if k}
 
     def _file(self, doc_type: str) -> str:
         doc = next((d for d in self.docs if d["type"] == doc_type), None)

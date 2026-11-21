@@ -62,6 +62,7 @@ DECISIONS: dict[str, tuple[str, str]] = {
     "bb.over_advance": ("paydown_required", "Borrowings exceed the recalculated borrowing base; paydown required under the agreement."),
     "bb.certificate_mismatch": ("bank_figures_stand", "The certificate differs from the recalculation; the bank's figures stand and the borrower is told."),
     "cash.statement_mismatch": ("reviewed", "Bank statements and the certificate differ on unrestricted cash; reviewed with the analyst and carried into the review."),
+    "intake.unclassified": ("not_needed", "A spreadsheet export is not this period's financial package and carries no figure the bank may rely on; set aside so the cycle continues with the documents that are."),
     "signal.high": ("acknowledged", "High-severity signal acknowledged; carried into the review."),
     "spread.restatement": ("ask_borrower", "The comparative column differs from the confirmed spread; the borrower is asked to confirm the restatement."),
     "review.commentary_approval": ("approve", "Stand-in commentary approved so the scripted cycle can run to its close."),

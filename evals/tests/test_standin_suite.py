@@ -139,3 +139,20 @@ def test_the_run_is_stored_as_an_eval_run_row(suite, engine):
         assert row.results["meta"]["standin"] is True and "recordings" not in row.results
         db.delete(row)
         db.commit()
+
+
+def test_no_untraced_figures_and_no_disagreements(suite):
+    for code, graded in suite["borrowers"].items():
+        assert [o for o in graded["observations"] if o["kind"] == "untraced-figure"] == [], code
+        assert graded["disagreements"] == [], code
+    assert suite["meta"]["standin_print_vs_truth_disagreements"] == []
+
+
+def test_the_scenarios_raise_exactly_what_the_book_expects(suite, book_name):
+    if book_name != "innovation":
+        pytest.skip("the legacy scenarios are covered by test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none")
+    raised = {c: set(g["raised_exceptions"]) for c, g in suite["borrowers"].items()}
+    assert "cash.statement_mismatch" in raised["tidewell-medical"]
+    assert "funding_slipped" in raised["nimbusfield-security"]
+    assert "intake.unclassified" in raised["stripple-tech"] and "spread.value_unverified" in raised["stripple-tech"]
+    assert raised["ferrogate-cloud"] == set()  # compliant, runway "not meaningful", nothing raised
