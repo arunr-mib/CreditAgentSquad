@@ -148,3 +148,10 @@ def test_recorded_covenant_answers_pass_or_need_exactly_the_one_retry():
     assert _problems(pellham, References(frozenset({1}), frozenset({"6.1", "9.1"}))) == []
     # without the references the same answers were refused outright
     assert _problems(pellham, References()) != []
+
+
+def test_a_decimal_at_the_start_of_a_page_line_is_not_a_section_heading():
+    from app.guardrails.narrative import sections_printed
+    assert sections_printed("3.25 : 1 test\n4.50 times\n") == set()
+    assert sections_printed("3.25 Minimum Revenue\nSee Section 6.3 and § 9.1.\n7.2. Waivers") == {"3.25", "6.3", "9.1", "7.2"}
+    assert not refs_ok("The limit stood at Section 3.25.", References(sections=frozenset(sections_printed("3.25 : 1 test"))))

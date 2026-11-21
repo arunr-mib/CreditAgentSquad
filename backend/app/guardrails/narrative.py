@@ -139,12 +139,16 @@ class References:
 _VERSION_REF = re.compile(r"\bversions?\s+(?P<n>\d{1,3})\b(?![.,]\d|\s*(?:x\b|%|percent|times|turns?))", re.I)
 _SECTION_REF = re.compile(
     r"\b(?:Sections?|§)\s*(?P<n>\d{1,3}(?:\.\d{1,3})*)(?:\([A-Za-z0-9]{1,4}\))*(?![\w]|[.,]\d|%|\s*(?:x\b|percent|times|turns?))")
-_SECTION_PRINTED = re.compile(r"(?:\bSections?\s+|§\s*|(?m:^)\s*)(\d{1,3}(?:\.\d{1,3})+)")
+# heading shapes only: "Section 6.3", "§ 6.3", or a line that opens with a number and then a capitalised word
+# ("6.3 Minimum Revenue"). A line that opens with a bare decimal ("3.25 : 1 test") names no section.
+_SECTION_PRINTED = re.compile(
+    r"(?:\bSections?\s+|§\s*)(\d{1,3}(?:\.\d{1,3})+)(?![\w]|[.,]\d|%)"
+    r"|(?m:^)[ \t]*(\d{1,3}(?:\.\d{1,3})+)\.?[ \t]+[A-Z][a-z]")
 
 
 def sections_printed(text: str) -> set[str]:
     """Section numbers a piece of document text names or heads (6.3, 9.1)."""
-    return {m.group(1) for m in _SECTION_PRINTED.finditer(text)}
+    return {m.group(1) or m.group(2) for m in _SECTION_PRINTED.finditer(text)}
 
 
 def _blank_refs(text: str, refs: References) -> str:
