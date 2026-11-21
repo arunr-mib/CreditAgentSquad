@@ -288,6 +288,11 @@ class _Pages:
         return pages[page - 1] if 1 <= page <= len(pages) else None
 
 
+def _is_runway_key(key: str) -> bool:
+    """A stored figure for runway: the library metric or any signal fact that carries it."""
+    return key == "metric.rml" or (key.startswith("signal.") and ("runway" in key or "rml" in key))
+
+
 def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
     truth = Truth(borrower)
     end = truth.end.isoformat()
@@ -430,7 +435,9 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
                 fail("invented-number", item, f"the truth is '{want['note']}' (no figure); recorded value "
                                               f"{got['value']}, reported value {got.get('reported_value')}")
             for fact in rec["facts"]:
-                if fact["period_end"] == end and fact["key"] in (f"cert.{covenant_id}.value", f"cov.{covenant_id}.value"):
+                if fact["period_end"] == end and (
+                        fact["key"] in (f"cert.{covenant_id}.value", f"cov.{covenant_id}.value")
+                        or (covenant_id == "min_runway_months" and _is_runway_key(fact["key"]))):
                     fail("invented-number", item, f"a figure {fact['value']} is stored ({fact['key']}) where the truth is '{want['note']}'")
             if got.get("note") != want["note"]:
                 disagreements.append({"kind": "covenant-outcome", "item": item,

@@ -8,7 +8,9 @@ from decimal import Decimal
 from sqlalchemy.orm import Session
 
 from app.calc import metrics as lib
-from app.calc.expr import evaluate
+from app.calc.covenants import compute_rml
+from app.calc.decimal_utils import round_half_up
+from app.calc.expr import ENGINE_VERSION, evaluate
 from app.calc.metrics import add, const, div, named, t3m
 from app.core import ledger
 from app.domain.covenant_service import fact_provider
@@ -21,7 +23,10 @@ EXTRA = {"revenue_ttm": (lib.ttm("is.revenue"), "usd"), "net_income_ttm": (lib.t
          "cash": (lib.point("bs.cash"), "usd"),
          # venture metrics (vc-1): runway in months is not money, so it is a plain count at six places
          "avg_net_burn": (named("avg_net_burn"), "usd"),
+         # reference definition only (names, workbook audit): runway is stored by `_store_runway` through
+         # `compute_rml`, which says "not meaningful" when burn is zero or negative; this expression is never evaluated
          "rml": (div(named("unrestricted_cash"), named("avg_net_burn")), "count")}
+RUNWAY = "rml"
 _PRECISE = {"rml": 6, "avg_net_burn": 2}  # decimal places, where whole dollars would lose the figure
 REVIEW_METRICS = ("revenue_ttm", "ebitda", "ebitda_margin", "net_income_ttm", "leverage", "interest_coverage",
                   "current_ratio", "dso", "dpo", "cash", "total_debt", "revenue_growth_yoy")
@@ -72,11 +77,43 @@ def store_plan_ratio(db: Session, borrower: Borrower, period_end: date, plan: Ma
                   extra_outputs={"plan_months": months, "plan_total": str(total)})
 
 
+NOT_MEANINGFUL_NOTE = ("not meaningful: the borrower is cash-flow positive (average monthly net burn is zero or "
+                       "negative), so there is no runway figure for this period")
+
+
+def runway_not_meaningful(db: Session, borrower: Borrower, period_end: date) -> bool:
+    """True when runway has no meaning for the period because burn is zero or negative (not when inputs are missing)."""
+    result = compute_rml(period_end, fact_provider(db, borrower.id), borrower.fiscal_year_end_month)
+    return result.not_meaningful and not result.errors
+
+
+def _store_runway(db: Session, borrower: Borrower, period_end: date, actor: tuple[str, str]) -> Fact | None:
+    existing = current_fact(db, borrower.id, f"metric.{RUNWAY}", period_end, 0)
+    if existing is not None:
+        return existing
+    result = compute_rml(period_end, fact_provider(db, borrower.id), borrower.fiscal_year_end_month)
+    if result.errors or result.not_meaningful or result.value is None:
+        return None  # no figure: never a stored zero or a negative runway
+    rounded = round_half_up(result.value, _PRECISE[RUNWAY])
+    calc = CalcRun(
+        id=uuid.uuid4(), borrower_id=borrower.id, formula_key=f"metric.{RUNWAY}", formula_version=lib.METRICS_VERSION,
+        period_end=period_end, engine_version=ENGINE_VERSION,
+        inputs=[i.to_dict() for i in result.trace.inputs],
+        outputs=ledger._jsonable({"value": rounded, "raw_value": result.value, "avg_net_burn": result.burn}),
+        created_by_type=actor[0], created_by_id=actor[1])
+    db.add(calc)
+    db.flush()
+    return add_fact(db, borrower_id=borrower.id, key=f"metric.{RUNWAY}", period_end=period_end, months=0,
+                    value=rounded, unit="count", kind="calculated", calc_run_id=calc.id, actor=actor)
+
+
 def store_metric(db: Session, borrower: Borrower, name: str, period_end: date,
                  actor: tuple[str, str] = ("system", "metrics")) -> Fact | None:
     """The metric as a fact for this period, computed and stored on first use. None when it
     cannot be measured: an unmeasured metric is never stored as zero."""
     key = f"metric.{name}"
+    if name == RUNWAY:
+        return _store_runway(db, borrower, period_end, actor)
     if name in EXTRA:
         expression, unit = EXTRA[name]
         return _store(db, borrower, key, period_end, expression, unit, _PRECISE.get(name, 0), actor)

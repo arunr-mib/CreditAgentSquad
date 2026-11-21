@@ -362,7 +362,10 @@ def _metrics(ctx: ToolContext, args: MetricsInput) -> dict:
     for name in names:
         fact = metrics_service.store_metric(ctx.db, b, name, end)
         entry: dict[str, Any] = {"metric": name, "fact": ref(ctx, fact)}
-        if fact is None:
+        if fact is None and name == metrics_service.RUNWAY and metrics_service.runway_not_meaningful(ctx.db, b, end):
+            entry["note"] = metrics_service.NOT_MEANINGFUL_NOTE
+            entry["not_meaningful"] = True
+        elif fact is None:
             entry["note"] = "cannot be measured from the facts on file for this period; it is unmeasured, not zero"
             if name in lib.METRICS:
                 errors = lib.compute_metric(name, end, fact_provider(ctx.db, b.id), fye_month=b.fiscal_year_end_month).errors

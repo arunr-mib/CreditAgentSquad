@@ -64,3 +64,28 @@ def test_a_certificate_figure_stored_for_a_held_figure_borrower_is_graded_not_un
     assert stripple.value_for(fact) == stripple.expected_facts(every_figure=True)[cert_key][0]
     held = next(iter(stripple.held))
     assert stripple.value_for({"key": held, "period_end": end}) is not None
+
+
+def test_a_stored_runway_metric_for_a_not_meaningful_period_is_an_invented_number(engine, file_store):
+    """Ferrogate is cash-flow positive: runway has no figure, so a metric.rml (or a signal runway fact) stored
+    for the period is invented, however it got there."""
+    import copy
+
+    from evals.grade import grade_borrower
+    from evals.run import run_pass
+    from evals.standin import StandInReader
+
+    book = load_book(BOOKS["innovation"], ["ferrogate-cloud"])
+    recording = run_pass(engine, book, StandInReader(book), decide=True)["ferrogate-cloud"]
+    assert grade_borrower(book.get("ferrogate-cloud"), recording)["failures"] == []
+    end = book.get("ferrogate-cloud").current_period.isoformat()
+    template = recording["facts"][0]
+    for key in ("metric.rml", "signal.runway_below_watch.rml"):
+        tampered = copy.deepcopy(recording)
+        tampered["facts"].append({**template, "key": key, "period_end": end, "value": "-3.5", "status": "verified"})
+        graded = grade_borrower(book.get("ferrogate-cloud"), tampered)
+        assert [f["name"] for f in graded["failures"]] == ["invented-number"], key
+    # a runway fact for another period is not this period's figure
+    other = copy.deepcopy(recording)
+    other["facts"].append({**template, "key": "metric.rml", "period_end": "2025-01-31", "value": "9", "status": "verified"})
+    assert grade_borrower(book.get("ferrogate-cloud"), other)["failures"] == []
