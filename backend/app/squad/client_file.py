@@ -13,6 +13,7 @@ from app.domain.facts import USABLE_STATUSES, Fact
 from app.domain.monitoring import CovenantTest, Cycle
 from app.squad.words import NOTE_WORDS
 
+RUNWAY_COVENANT = "min_runway_months"
 NOT_MEASURED = "Not measured"
 NOT_MEANINGFUL = NOTE_WORDS["not_meaningful_cash_flow_positive"]
 
@@ -61,6 +62,8 @@ def measure_series(db: Session, borrower: Borrower, limit: int = 6, labels: Fact
     points = []
     for end in periods:
         mine = by_period.get(end, [])
+        if venture:
+            mine = [t for t in mine if t.covenant_id == RUNWAY_COVENANT]
         fact: Fact | None
         if venture:
             fact, note = _runway_for(mine, facts)

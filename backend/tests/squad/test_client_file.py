@@ -51,6 +51,18 @@ def test_runway_comes_from_the_stored_covenant_test_even_without_metric_rml(db, 
     assert series["points"][2]["fact"] is None and series["points"][2]["note"] == "Not measured"  # no test at all
 
 
+def test_only_the_runway_covenant_counts_for_runway(db, world):
+    b = world["borrower"]
+    _periods(db, b)
+    fac = _facility(db, b)
+    other = add_fact(db, borrower_id=b.id, key="cov.revenue_vs_plan.value", period_end=ENDS[2], months=0,
+                     value=Decimal("1.05"), kind="seeded", unit="pct", status="verified")
+    _test(db, b, fac, "revenue_vs_plan", ENDS[2], value_fact=other)
+    _test(db, b, fac, "min_runway_months", ENDS[2], note="not_meaningful_cash_flow_positive")
+    point = measure_series(db, b)["points"][2]
+    assert point["fact"] is None and point["note"] == "Not meaningful: cash-flow positive"
+
+
 def test_a_superseded_runway_test_is_not_read(db, world):
     b = world["borrower"]
     _periods(db, b)
