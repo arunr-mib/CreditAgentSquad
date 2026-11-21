@@ -2,7 +2,7 @@
 
 **STAND-IN RUN. NOT MODEL PERFORMANCE.** A perfect reader built from the synthetic book's ground truth answered in place of the model. This run proves the pipeline, the workflow and the grader end to end; it says nothing about how a model reads these documents.
 
-- Generated 2026-11-21T00:29:14+00:00; commit `aa93f32a25199fac3ba2740339e01fbb29e36a41`; 20 borrower(s) (whole book); 1 pass(es); run time 164.0 seconds.
+- Generated 2026-11-21T01:35:19+00:00; commit `f4e6aa9d9d7d288c3f61fe4fe4ca2b9c02a1442f`; 20 borrower(s) (whole book); 1 pass(es); run time 171.4 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 91.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
@@ -67,6 +67,12 @@ Rule: any invented-number or false-compliant in any pass fails; the stand-in sui
 ## Differences from the truth
 
 None. Every borrower's outcome agrees with the book.
+
+## Covenant tests not reached
+
+These tests were not run because the cycle correctly rests on an item a person must settle first. They stay in the covenant accuracy denominator and count as not correct, so accuracy is below 100 percent for this reason alone; they are not failures.
+
+- `stripple-tech`: 3 covenant test(s) not reached. The cycle rests at spreading (spread.value_unverified) on 3 figure(s) held for a person; counted as not correct.
 
 ## Where a person was needed
 
@@ -164,7 +170,7 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 
 Each check tampers with the stand-in's answer in one way a model could be wrong, runs the live cycle, and records who caught it. `product`: refused into a work item or a guardrail note. `grader`: accepted by the product and named only by the grader, which is a finding about the product. `recovered`: code reads that part from the page itself, so the reader's mistake has no effect. `SLIPPED`: caught by neither.
 
-Totals: product 36, product and grader 9, recovered 1.
+Totals: product 36, product and grader 11, recovered 1.
 
 | Mutation | What the reader got wrong | Borrower | Caught by | Evidence |
 |---|---|---|---|---|
@@ -212,6 +218,8 @@ Totals: product 36, product and grader 9, recovered 1.
 | cert-breach-read-as-passing-value | the breaching covenant's reported value read as a passing one | `pellham-grain` | product | work item: spread.value_unverified |
 | cert-flag-from-the-next-row | the compliance entry taken from a neighbouring row, with a label fragment found on every row | `pellham-grain` | product | work item: spread.value_unverified |
 | cert-runway-reported-as-a-number | a not-meaningful runway reported with a figure | `ferrogate-cloud` | product | work item: spread.value_unverified |
+| mrr-figure-tampered | the MRR report's figure with one digit wrong (it still parses) | `mosswell-robotics` | product and grader | work item: spread.value_unverified; grader: signals-not-run [signals @ 2026-10-31] |
+| bank-balance-tampered | the bank statement's unrestricted balance with one digit wrong | `mosswell-robotics` | product and grader | work item: spread.value_unverified; grader: signals-not-run [signals @ 2026-10-31] |
 | bb-ineligible-inventory-named-by-a-fragment | work in process reported as 'process' with the inventory lines of the certificate left out, turning an over-advance into availability | `briarstone-beverage` | product | work item: bb.certificate_mismatch |
 | bb-receivable-filed-as-inventory | a customer's receivable total added as an inventory row, certificate lines left out | `briarstone-beverage` | product and grader | work item: bb.certificate_mismatch; grader: borrowing-base-line [availability @ 2026-09-30], borrowing-base-line [borrowing_base @ 2026-09-30], borrowing-base-line [borrowing_limit @ 2026-09-30], borrowing-base-line [inventory_availability @ 2026-09-30] and 4 more |
 

@@ -2,7 +2,7 @@
 
 **STAND-IN RUN. NOT MODEL PERFORMANCE.** A perfect reader built from the synthetic book's ground truth answered in place of the model. This run proves the pipeline, the workflow and the grader end to end; it says nothing about how a model reads these documents.
 
-- Generated 2026-11-21T00:24:18+00:00; commit `aa93f32a25199fac3ba2740339e01fbb29e36a41`; 21 borrower(s) (whole book); 1 pass(es); run time 148.3 seconds.
+- Generated 2026-11-21T01:30:13+00:00; commit `f4e6aa9d9d7d288c3f61fe4fe4ca2b9c02a1442f`; 21 borrower(s) (whole book); 1 pass(es); run time 145.7 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 0.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
