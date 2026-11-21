@@ -106,6 +106,20 @@ describe('SquadHome', () => {
     expect(within(groups[0]!).getByText(/runway falling, burn rising/)).toBeInTheDocument();
   });
 
+  it('shows a one-row group\u2019s state in its summary, and repeats no client name inside an expanded group', async () => {
+    mount(briefing([
+      item({ key: 's2', kind: 'signal', needs_you: false, state: 'watching \u00b7 October 2026', title: 'Signal: Revenue below plan', work_item_id: null, borrower_id: 'b2', borrower_code: 'ZZZ', borrower_name: 'Zephyr Zinc Works, Inc.' }),
+      item({ key: 'o1', kind: 'overdue_report', needs_you: false, state: '5 days overdue', title: 'MRR report for October 2026 is overdue', work_item_id: null }),
+      item({ key: 'f1', kind: 'funding', needs_you: false, state: 'expected', title: 'Expected equity round closes 30 November', work_item_id: null }),
+    ]));
+    const watching = await screen.findByRole('region', { name: 'Watching' });
+    const single = within(watching).getByRole('group', { name: 'Zephyr Zinc Works, Inc.' });
+    expect(within(single.querySelector('summary')!).getByText(/watching \u00b7 October 2026/)).toBeInTheDocument();
+    const several = within(watching).getByRole('group', { name: 'Quillfeather Labs, Inc.' });
+    expect(within(several).getAllByText(/Quillfeather Labs, Inc\./)).toHaveLength(1); // the summary only, not each row
+    expect(within(several).getByText('5 days overdue')).toBeInTheDocument();
+  });
+
   it('lists what agents did overnight with the client named', async () => {
     mount(briefing([], [{ agent_name: 'spreading', text: 'Read the October package.', borrower_id: 'b1', borrower_code: 'QFL', borrower_name: 'Quillfeather Labs, Inc.', finished_at: '2026-11-20T02:00:00Z' }]));
     await userEvent.click(await screen.findByText(/what squad did overnight/i));

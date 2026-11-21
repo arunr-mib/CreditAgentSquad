@@ -79,13 +79,13 @@ export function Overview({ borrower }: Props) {
         <h2 className="sq-h2">Track record</h2>
         {(track.data ?? []).length === 0 ? <p className="sq-muted">No figure has been read for this client yet.</p> : (
           <table className="sq-table">
-            <thead><tr><th scope="col">Task</th><th scope="col" className="sq-num">Checked</th><th scope="col" className="sq-num">Right</th><th scope="col" className="sq-num">Corrected</th><th scope="col">Last correction</th></tr></thead>
+            <thead><tr><th scope="col">Task</th><th scope="col" className="sq-num">Checked</th><th scope="col" className="sq-num">Right</th><th scope="col" className="sq-num">Corrected</th><th scope="col" className="sq-num">Not yet reviewed</th><th scope="col">Last correction</th></tr></thead>
             <tbody>
               {(track.data ?? []).map((t) => (
                 <tr key={`${t.agent_name}|${t.task}`}>
-                  <th scope="row">{t.agent_name.charAt(0).toUpperCase() + t.agent_name.slice(1)} agent · {t.task.replace(/_/g, ' ')}</th>
-                  <td className="sq-num">{t.checked}</td><td className="sq-num">{t.right}</td><td className="sq-num">{t.corrected}</td>
-                  <td>{t.last_correction_at ? <Time ts={t.last_correction_at} /> : <span className="sq-faint">None</span>}</td>
+                  <th scope="row">{t.agent_label} · {t.task_label} <span className="sq-faint">since {formatDate(t.since)}</span></th>
+                  <td className="sq-num">{t.checked}</td><td className="sq-num">{t.right}</td><td className="sq-num">{t.corrected}</td><td className="sq-num">{t.unreviewed}</td>
+                  <td>{t.last_correction_at ? formatDate(t.last_correction_at) : <span className="sq-faint">None</span>}</td>
                 </tr>
               ))}
             </tbody>

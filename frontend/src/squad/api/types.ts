@@ -58,6 +58,8 @@ export type DraftSendResult = Draft & { delivered: false };
 export interface TrackRecordRow {
   task: string;
   agent_name: string;
+  agent_label: string;
+  task_label: string;
   right: number;
   corrected: number;
   unreviewed: number;

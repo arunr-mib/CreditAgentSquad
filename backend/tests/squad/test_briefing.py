@@ -292,4 +292,25 @@ def test_a_different_signal_for_the_same_client_is_still_listed(db, world):
                question="A high-severity early warning fired. Acknowledge it?", allowed_decisions=["acknowledged"],
                evidence={"signal_id": str(row.id), "rule_id": "runway_below_watch"})
     signals = [i for i in build_briefing(db, world["analyst"])["items"] if i["kind"] == "signal"]
-    assert [s["title"] for s in signals] == ["Signal: burn rising"]
+    assert [s["title"] for s in signals] == ["Signal: Burn rate rising"]
+
+
+def test_every_signal_rule_has_a_plain_label_so_no_row_shows_a_stored_id():
+    from app.calc import signals as sig
+    from app.publishing.content import SIGNAL_LABELS
+    assert [r.id for r in sig.RULES if r.id not in SIGNAL_LABELS] == []
+
+
+def test_a_signal_row_names_its_period_or_the_span_of_its_periods(db, world):
+    from app.domain.monitoring import Signal
+    for rule, end in (("dso_increase", date(2026, 10, 31)), ("net_loss", date(2026, 10, 31))):
+        db.add(Signal(borrower_id=world["borrower"].id, period_end=end, rule_id=rule, rule_version="1", severity="high",
+                      status="open"))
+    db.flush()
+    [row] = [i for i in build_briefing(db, world["analyst"])["items"] if i["kind"] == "signal"]
+    assert row["state"] == "watching \u00b7 October 2026"
+    db.add(Signal(borrower_id=world["borrower"].id, period_end=date(2025, 12, 31), rule_id="cash_decline",
+                  rule_version="1", severity="medium", status="open"))
+    db.flush()
+    [row] = [i for i in build_briefing(db, world["analyst"])["items"] if i["kind"] == "signal"]
+    assert row["state"] == "watching \u00b7 December 2025 to October 2026"

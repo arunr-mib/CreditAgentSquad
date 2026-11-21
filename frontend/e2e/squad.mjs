@@ -79,6 +79,9 @@ journey('nav: "Open cases" lists exactly the clients with something open, and ea
   await page.getByRole('button', { name: /expand navigation/i }).click();
   const links = page.getByRole('navigation', { name: 'Open cases' }).getByRole('link');
   assert((await links.count()) === clients.length, 'Open cases differs from the clients with open work');
+  const portfolio = (await api(page, '/me/portfolio')).sections.flatMap((x) => x.rows);
+  for (const c of clients) assert(portfolio.find((r) => r.code === c.code)?.open === c.open, `${c.name}: the nav count differs from the Portfolio's Open`);
+  assert(portfolio.filter((r) => r.open > 0).length === clients.length, 'a client with open cases is missing from Open cases, or one without is listed');
   for (const c of clients) {
     await page.getByRole('navigation', { name: 'Open cases' }).getByRole('link', { name: new RegExp(c.name) }).click();
     await page.waitForURL(new RegExp(`/clients/${c.code}$`));

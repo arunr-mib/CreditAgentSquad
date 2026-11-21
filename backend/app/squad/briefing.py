@@ -17,6 +17,7 @@ from app.domain.terms import ReportingObligation
 from app.publishing.content import SIGNAL_LABELS
 from app.squad import rules
 from app.squad.cases import build_approvals
+from app.squad.portfolio import open_work_item_counts
 from app.squad.threads import REPORT_TEXT_KEYS
 from app.squad.words import decision_words, document_type_words, question_choice
 
@@ -110,7 +111,10 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
     for bid, rows in by_client.items():
         labels = list(dict.fromkeys(SIGNAL_LABELS.get(s.rule_id, s.rule_id.replace("_", " ")) for s in rows))
         title = f"Signal: {labels[0]}" if len(labels) == 1 else f"Signals: {', '.join(labels)}"
-        items.append({**ref(bid), "key": f"signal:{bid}", "kind": "signal", "title": title, "state": "watching",
+        first, last = min(s.period_end for s in rows), max(s.period_end for s in rows)
+        period = f"{last:%B %Y}" if first == last else f"{first:%B %Y} to {last:%B %Y}"
+        items.append({**ref(bid), "key": f"signal:{bid}", "kind": "signal", "title": title,
+                      "state": f"watching \u00b7 {period}",
                       "severity": rows[0].severity, "needs_you": False, "work_item_id": None, "_due": None})
 
     horizon = today + timedelta(days=FUNDING_WINDOW_DAYS)
@@ -140,12 +144,9 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         if len(overnight) == OVERNIGHT_LIMIT:
             break
 
-    open_clients: dict[str, dict[str, Any]] = {}
-    for i in items:
-        if i["kind"] != "decided":
-            c = open_clients.setdefault(i["borrower_id"], {"borrower_id": i["borrower_id"], "code": i["borrower_code"],
-                                                            "name": i["borrower_name"], "open": 0})
-            c["open"] += 1
+    counts = open_work_item_counts(db)  # the same count the Portfolio's "Open" column shows
+    open_clients = sorted(({"borrower_id": str(bid), "code": borrowers[bid].code, "name": borrowers[bid].name, "open": n}
+                           for bid, n in counts.items() if bid in borrowers and n > 0), key=lambda c: c["name"])
     return {"as_of": today.isoformat(), "needs_you": sum(1 for i in items if i["needs_you"]), "items": items,
-            "overnight": overnight, "open_clients": sorted(open_clients.values(), key=lambda c: c["name"]),
+            "overnight": overnight, "open_clients": open_clients,
             "approvals": {"offered": offered, "waiting": len(build_approvals(db, user)) if offered else 0}}

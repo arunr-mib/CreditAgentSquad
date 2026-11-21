@@ -21,20 +21,27 @@ SECTIONS = (("vc-1", "Innovation clients", "Runway (months)"),
 
 
 def _latest_value(row: dict[str, Any]) -> tuple[int, Decimal]:
-    """Measured first, lowest first; then cash-flow positive clients (no runway because they burn nothing, the safest);
-    then clients with nothing measured. The Decimal(0) on the last two only fills the tuple."""
+    """Measured first, lowest first; then clients with nothing measured (not knowing is a risk); then cash-flow
+    positive clients last (no runway because they burn nothing, the safest). The Decimal(0) on the last two only
+    fills the tuple."""
     points = row["measure"]["points"]
     last = points[-1] if points else None
     if last and last["fact"]:
         return 0, Decimal(last["fact"]["value"])
-    return (1, Decimal(0)) if last and last["note"] == NOT_MEANINGFUL else (2, Decimal(0))
+    return (2, Decimal(0)) if last and last["note"] == NOT_MEANINGFUL else (1, Decimal(0))
+
+
+def open_work_item_counts(db: Session) -> dict[uuid.UUID, int]:
+    """Open work items per client: the one count behind the nav's "Open cases" and the Portfolio's "Open" column.
+    A signal, a funding event or an overdue report is watched, not a case, and is not counted."""
+    return dict(db.execute(select(WorkItem.borrower_id, func.count()).where(WorkItem.status == "open")
+                           .group_by(WorkItem.borrower_id)).all())
 
 
 def build_portfolio(db: Session, user: User) -> dict[str, Any]:
     names = {u.id: u.name for u in db.execute(select(User)).scalars()}
     labels = FactLabels(db)  # built once for the whole book
-    open_items = dict(db.execute(select(WorkItem.borrower_id, func.count()).where(WorkItem.status == "open")
-                                 .group_by(WorkItem.borrower_id)).all())
+    open_items = open_work_item_counts(db)
     rows: dict[str, list[dict[str, Any]]] = {t: [] for t, _, _ in SECTIONS}
     for b in db.execute(select(Borrower).order_by(Borrower.name)).scalars():
         rows.setdefault(b.template_id, []).append({
@@ -46,7 +53,8 @@ def build_portfolio(db: Session, user: User) -> dict[str, Any]:
         if rows.get(template_id):
             sections.append({"template_id": template_id, "title": title, "measure_label": label,
                              "rows": sorted(rows[template_id], key=lambda r: (*_latest_value(r), r["name"]))})
-    return {"as_of": clock.today(db).isoformat(), "sections": sections}
+    owns = any(r["mine"] for rs in rows.values() for r in rs)
+    return {"as_of": clock.today(db).isoformat(), "owns_clients": owns, "sections": sections}
 
 
 def lessons_for(db: Session, borrower_id: uuid.UUID, topic: str | None = None,

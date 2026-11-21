@@ -10,7 +10,8 @@ const row = (code: string, name: string, mine: boolean, value: string | null, no
   borrower_id: code, code, name, analyst: mine ? 'Priya Raman' : 'Tomas Keller', mine, open: mine ? 2 : 0,
   measure: { kind: 'rml', label: 'Runway (months)', points: [{ period_end: '2026-10-31', note, fact: value ? { id: `f-${code}`, key: 'metric.rml', label: 'Runway', value, unit: 'count', kind: 'calculated', status: 'verified', period_end: '2026-10-31', months: 0, borrower_id: code, document_id: null, page: null, calc_run_id: 'c' } : null }] },
 });
-const data = { as_of: '2026-11-21', sections: [{ template_id: 'vc-1', title: 'Innovation clients', measure_label: 'Runway (months)', rows: [row('SHT', 'Shortfield Bio, Inc.', true, '7.1'), row('LNG', 'Longwater Robotics, Inc.', false, '22.5'), row('NON', 'Nonesuch Analytics, Inc.', false, null, 'Not meaningful: cash-flow positive')] }] };
+const shown = vi.hoisted(() => ({ owns: true }));
+const data = { as_of: '2026-11-21', get owns_clients() { return shown.owns; }, sections: [{ template_id: 'vc-1', title: 'Innovation clients', measure_label: 'Runway (months)', rows: [row('SHT', 'Shortfield Bio, Inc.', true, '7.1'), row('LNG', 'Longwater Robotics, Inc.', false, '22.5'), row('NON', 'Nonesuch Analytics, Inc.', false, null, 'Not meaningful: cash-flow positive')] }] };
 vi.mock('../api/hooks', () => ({ usePortfolio: () => ({ data, isPending: false, error: null, refetch: vi.fn() }) }));
 vi.mock('@/source/figures', () => ({ FactFigure: ({ fact }: { fact: { value: string } }) => <span>{fact.value} months</span>, Absent: () => <span>Not measured</span> }));
 
@@ -35,6 +36,14 @@ describe('Portfolio', () => {
     mount();
     expect(await screen.findByText('Not meaningful: cash-flow positive')).toBeInTheDocument();
     expect(screen.queryByText(/^0 months/)).not.toBeInTheDocument();
+  });
+
+  it('offers "Only my clients" only to someone the server says owns clients', async () => {
+    shown.owns = false;
+    mount();
+    await screen.findByRole('table', { name: 'Innovation clients' });
+    expect(screen.queryByRole('checkbox', { name: 'Only my clients' })).not.toBeInTheDocument();
+    shown.owns = true;
   });
 
   it('narrows to the analyst\u2019s own clients and back', async () => {

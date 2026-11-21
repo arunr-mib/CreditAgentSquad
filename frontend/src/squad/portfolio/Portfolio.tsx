@@ -16,13 +16,13 @@ export function Portfolio() {
         <button type="button" className="sq-btn" onClick={() => void portfolio.refetch()}>Try again</button>
       </div>
     );
-  const { sections } = portfolio.data;
+  const { sections, owns_clients: owns } = portfolio.data;
   return (
     <div className="sq-portfolio" data-ready="">
       <h1 className="sq-h1">My Portfolio</h1>
-      <label className="sq-check"><input type="checkbox" checked={mineOnly} onChange={(e) => setMineOnly(e.target.checked)} /> Only my clients</label>
+      {owns ? <label className="sq-check"><input type="checkbox" checked={mineOnly} onChange={(e) => setMineOnly(e.target.checked)} /> Only my clients</label> : null}
       {sections.map((s) => {
-        const rows = s.rows.filter((r) => !mineOnly || r.mine);
+        const rows = s.rows.filter((r) => !(owns && mineOnly) || r.mine);
         return (
           <section key={s.template_id} aria-label={s.title}>
             <h2 className="sq-h2">{s.title}</h2>

@@ -60,3 +60,14 @@ def document_type_words(doc_type: str | None) -> str:
 
 # Stored covenant-test notes in plain words: the one source for the client file's overview and covenants view.
 NOTE_WORDS = {"not_meaningful_cash_flow_positive": "Not meaningful: cash-flow positive"}
+
+
+def agent_words(recorded: str) -> str:
+    """An agent's name in words: "Certificate reader agent". A name recorded with its version ("review@2") is the
+    same agent. The one source for every screen that names an agent; the browser keeps no table."""
+    name = recorded.split("@")[0]
+    return "Copilot" if name == "copilot" else f"{name.replace('_', ' ').capitalize()} agent"
+
+
+def task_words(task: str) -> str:
+    return task.replace("_", " ").capitalize()

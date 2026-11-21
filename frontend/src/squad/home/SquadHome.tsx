@@ -7,15 +7,14 @@ import { threadHref } from '../links';
 
 const word = (n: number) => (n === 1 ? '1 needs you' : `${n} need you`);
 
-function Row({ item }: { item: BriefingItem }) {
+function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boolean }) {
   const href = threadHref(item.borrower_code, item.work_item_id ?? undefined);
   return (
     <li>
       <Link {...href} className={item.needs_you ? 'sq-row sq-row-needs' : 'sq-row'} aria-label={`${item.borrower_name}: ${item.title}. ${item.state}`}>
         <span className={`sq-dotmark sq-sev-${item.severity}`} aria-hidden />
         <span className="sq-grow">
-          <b>{item.borrower_name}</b>
-          <span className="sq-muted"> · {item.title}</span>
+          {showClient ? <><b>{item.borrower_name}</b><span className="sq-muted"> · {item.title}</span></> : <span>{item.title}</span>}
         </span>
         <span className={item.needs_you ? 'sq-state sq-state-needs' : 'sq-state'}>{item.state}</span>
       </Link>
@@ -55,8 +54,8 @@ export function SquadHome() {
             const rows = watching.filter((i) => i.borrower_id === id);
             return (
               <details key={id} className="sq-group" aria-label={name}>
-                <summary><b>{name}</b> <span className="sq-faint">· {rows.length === 1 ? rows[0]?.title : `${rows.length} things to watch`}</span></summary>
-                <ul className="sq-list">{rows.map((i) => <Row key={i.key} item={i} />)}</ul>
+                <summary><b>{name}</b> <span className="sq-faint">· {rows.length === 1 ? `${rows[0]?.title} · ${rows[0]?.state}` : `${rows.length} things to watch`}</span></summary>
+                <ul className="sq-list">{rows.map((i) => <Row key={i.key} item={i} showClient={false} />)}</ul>
               </details>
             );
           })}

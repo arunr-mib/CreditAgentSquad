@@ -57,7 +57,7 @@ export const useDocumentTypeWords = () =>
 export const useFundingEvents = (borrowerId?: string) =>
   useQuery({ queryKey: ['funding', borrowerId], queryFn: () => get<FundingEventRow[]>(`/borrowers/${borrowerId}/funding-events`), enabled: Boolean(borrowerId) });
 
-export const usePortfolio = () => useQuery({ queryKey: ['my-portfolio'], queryFn: () => get<{ as_of: string; sections: PortfolioSection[] }>('/me/portfolio') });
+export const usePortfolio = () => useQuery({ queryKey: ['my-portfolio'], queryFn: () => get<{ as_of: string; owns_clients: boolean; sections: PortfolioSection[] }>('/me/portfolio') });
 export const useTrackRecord = (borrowerId?: string) =>
   useQuery({ queryKey: ['track-record', borrowerId], queryFn: () => get<TrackRecordRow[]>(`/borrowers/${borrowerId}/track-record`), enabled: Boolean(borrowerId) });
 export const useLessons = (borrowerId?: string) =>

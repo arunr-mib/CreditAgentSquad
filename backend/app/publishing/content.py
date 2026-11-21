@@ -70,6 +70,8 @@ SIGNAL_LABELS = {
     "cash_decline": "Cash down year on year", "line_usage_high": "Line of credit usage high",
     "availability_low": "Availability low against the commitment", "reporting_late": "Reporting received late",
     "payment_past_due": "Payment past due", "auditor_opinion": "Auditor opinion qualified",
+    "runway_below_watch": "Runway below the watch level", "runway_falling": "Runway falling",
+    "burn_rising": "Burn rate rising", "revenue_below_plan": "Revenue below plan",
 }
 SIGNAL_METRIC = {"revenue_ttm_decline": "revenue_ttm", "ebitda_margin_decline": "ebitda_margin", "dso_increase": "dso",
                  "dpo_increase": "dpo", "leverage_increase": "leverage", "net_loss": "net_income_ttm",

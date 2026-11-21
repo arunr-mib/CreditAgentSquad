@@ -76,6 +76,8 @@ def test_track_record_counts_right_corrected_and_unreviewed_from_the_record(db, 
     [row] = track_record(db, world["borrower"].id)
     assert (row["task"], row["right"], row["corrected"], row["unreviewed"], row["checked"]) == ("read_statements", 1, 2, 1, 4)
     assert row["last_correction_at"] is not None and isinstance(row["since"], str)
+    assert row["task_label"] == "Read statements" and row["agent_label"].endswith("agent")
+    assert "_" not in row["agent_label"] and row["agent_label"][0].isupper()
 
 
 def test_a_supersede_by_a_non_person_is_not_a_correction(db, world):
@@ -121,3 +123,10 @@ def test_squad_demo_seed_is_idempotent_and_visible_in_the_briefing(db, client, w
     sign_in(client, "priya.raman")
     kinds = {i["kind"] for i in client.get("/api/v1/me/briefing").json()["items"]}
     assert "question" in kinds
+
+
+def test_agent_and_task_words_come_from_one_place():
+    from app.squad.words import agent_words, task_words
+    assert agent_words("certificate_reader") == "Certificate reader agent"
+    assert agent_words("review@2") == "Review agent" and agent_words("copilot") == "Copilot"
+    assert task_words("read_certificate") == "Read certificate"

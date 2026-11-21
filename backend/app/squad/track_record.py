@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.core.ledger import LedgerEvent
 from app.domain.agents import AgentRun
 from app.domain.facts import USABLE_STATUSES, Fact
+from app.squad.words import agent_words, task_words
 
 
 def track_record(db: Session, borrower_id: uuid.UUID) -> list[dict[str, Any]]:
@@ -42,6 +43,7 @@ def track_record(db: Session, borrower_id: uuid.UUID) -> list[dict[str, Any]]:
                 row["last_correction_at"] = max(row["last_correction_at"] or when, when)
     result = []
     for r in out.values():
+        r["agent_label"], r["task_label"] = agent_words(r["agent_name"]), task_words(r["task"])
         r["checked"] = r["right"] + r["corrected"] + r["unreviewed"]
         r["since"] = r["since"].isoformat()
         r["last_correction_at"] = r["last_correction_at"].isoformat() if r["last_correction_at"] else None

@@ -132,7 +132,8 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
                              "needs_you": needs_you, "state_words": words,
                              "habits": [{"id": h["id"], "text": h["text"], "by": h["by"], "at": h["at"]}
                                         for h in lessons if h["topic"] == (i.evidence or {}).get("topic")
-                                        and h["work_item_id"] != str(i.id)]})
+                                        and h["work_item_id"] != str(i.id)
+                                        and datetime.fromisoformat(h["at"]) <= i.created_at]})
         else:
             messages.append({"id": f"case:{i.id}", "type": "case", "ts": _iso(i.created_at), "work_item_id": str(i.id),
                              "item_type": i.item_type, "title": i.title, "question": i.question,
