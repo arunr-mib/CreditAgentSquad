@@ -7,6 +7,8 @@
 """
 import hashlib
 import json
+import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
@@ -81,6 +83,73 @@ class RecordingStale(Exception):
     """A saved model response was made under another version or prompt of the agent than the one asking."""
 
 
+# ---- stable ids for replay ---------------------------------------------------------------------------
+# Fact, document and calculation ids are random per run, so a recorded answer that cites one cites an id
+# that does not exist in the replay. The harness (never the product) fixes that by value: at record time
+# it saves, beside each response, a descriptor of every id the request showed the model; at replay it
+# describes the ids in the replay's request and rewrites the recorded ids to the replay's where the
+# descriptor matches exactly once. A resolver is `uuid string -> descriptor dict | None`; the product
+# never supplies one, ids stay random and the ledger is untouched.
+
+_UUID = re.compile(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+IdResolver = Callable[[str], "dict[str, Any] | None"]
+
+
+def uuids_in(value: Any) -> list[str]:
+    """Every uuid in a request or response, lower case, first appearance first."""
+    seen: list[str] = []
+    for m in _UUID.finditer(json.dumps(value, default=str)):
+        u = m.group(0).lower()
+        if u not in seen:
+            seen.append(u)
+    return seen
+
+
+def describe_ids(value: Any, resolver: IdResolver) -> dict[str, dict[str, Any]]:
+    out = {}
+    for u in uuids_in(value):
+        descriptor = resolver(u)
+        if descriptor is not None:
+            out[u] = descriptor
+    return out
+
+
+def _descriptor_key(descriptor: dict[str, Any]) -> str:
+    return json.dumps(descriptor, sort_keys=True, default=str)
+
+
+def remap_ids(record_key: str, recorded: dict[str, Any], replay_request: LLMRequest, resolver: IdResolver,
+              ) -> dict[str, str]:
+    """Recorded id -> replay id, for each id the recorded response cites that has a descriptor. A cited id
+    with no descriptor (one the model invented) is not mapped. An id whose descriptor matches no replay id
+    (the value or the source changed) or more than one (ambiguous) raises RecordingStale."""
+    described: dict[str, dict[str, Any]] = recorded.get("_ids") or {}
+    cited = [u for u in uuids_in({k: v for k, v in recorded.items() if not k.startswith("_")}) if u in described]
+    if not cited:
+        return {}
+    index: dict[str, list[str]] = {}
+    for u, d in describe_ids({"m": replay_request.messages}, resolver).items():
+        index.setdefault(_descriptor_key(d), []).append(u)
+    mapping: dict[str, str] = {}
+    for u in cited:
+        matches = index.get(_descriptor_key(described[u]), [])
+        if len(matches) != 1:
+            why = "matches no id in this run (the value or the source changed)" if not matches else \
+                f"matches {len(matches)} ids in this run (ambiguous)"
+            raise RecordingStale(f"{record_key}: the recorded answer cites {u}, described as "
+                                 f"{_descriptor_key(described[u])}, which {why}")
+        mapping[u] = matches[0]
+    return mapping
+
+
+def _rewrite(content: Any, mapping: dict[str, str]) -> Any:
+    if not mapping:
+        return content
+    text = json.dumps(content)
+    text = _UUID.sub(lambda m: mapping.get(m.group(0).lower(), m.group(0)), text)
+    return json.loads(text)
+
+
 class LiveClient:
     """Calls the Claude Messages API. Streaming is used so long outputs do not time out."""
 
@@ -142,9 +211,11 @@ def _recording_path(root: Path, record_key: str) -> Path:
 class RecordedClient:
     mode = "recorded"
 
-    def __init__(self, root: str | Path | None = None, accept_stale: frozenset[str] = frozenset()):
+    def __init__(self, root: str | Path | None = None, accept_stale: frozenset[str] = frozenset(),
+                 resolver: IdResolver | None = None):
         self.root = Path(root or get_settings().squad_recordings_dir)
         self.accept_stale = frozenset(accept_stale)
+        self.resolver = resolver
         self.prompt_only_verified = 0  # recordings replayed on a prompt-only stamp
 
     def create(self, request: LLMRequest) -> LLMResponse:
@@ -169,21 +240,30 @@ class RecordedClient:
             if not names & self.accept_stale:
                 raise RecordingStale(f"{path} was recorded under {stamp or 'no stamp'}, this request is {request.spec}"
                                      + ("" if stamp else " (no stamp: an old recording)"))
-        return LLMResponse.from_json({k: v for k, v in data.items() if not k.startswith("_")})
+        response = LLMResponse.from_json({k: v for k, v in data.items() if not k.startswith("_")})
+        if self.resolver is not None and data.get("_ids"):
+            mapping = remap_ids(request.record_key, data, request, self.resolver)
+            response.content = _rewrite(response.content, mapping)
+        return response
 
 
 class RecordingClient:
     mode = "record"
 
-    def __init__(self, inner: LLMClient, root: str | Path | None = None):
+    def __init__(self, inner: LLMClient, root: str | Path | None = None, resolver: IdResolver | None = None):
         self.inner = inner
         self.root = Path(root or get_settings().squad_recordings_dir)
+        self.resolver = resolver
 
     def create(self, request: LLMRequest) -> LLMResponse:
+        # described before the call, while the ids the model is shown are the ones in the database
+        ids = describe_ids({"m": request.messages}, self.resolver) if self.resolver is not None else None
         response = self.inner.create(request)
         path = _recording_path(self.root, request.record_key)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({**response.to_json(), "_spec": request.spec, "_basis": "full"}, indent=1, sort_keys=True))
+        extra = {"_ids": ids} if ids is not None else {}
+        path.write_text(json.dumps({**response.to_json(), "_spec": request.spec, "_basis": "full", **extra},
+                                   indent=1, sort_keys=True))
         return response
 
 

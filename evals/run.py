@@ -213,14 +213,18 @@ class LoadedBorrower:
                                      "seed_seconds": self.seed_seconds}
         savepoint = self.conn.begin_nested()
         db = Session(bind=self.conn, join_transaction_mode="create_savepoint", expire_on_commit=False)
+        from evals.idmap import RESOLVER
+
         previous_factory = stages.LLM_FACTORY
         stages.LLM_FACTORY = llm_factory
+        RESOLVER.db = db
         try:
             self._cycle(db, recording, decide)
         except Exception as exc:  # noqa: BLE001 - a crash is part of the result, never a silent pass
             recording["error"] = f"{type(exc).__name__}: {exc}"[:1000]
         finally:
             stages.LLM_FACTORY = previous_factory
+            RESOLVER.db = None
             db.close()
             if savepoint.is_active:
                 savepoint.rollback()
@@ -382,12 +386,18 @@ def make_client(mode: str, book: Book, *, recordings: Path = RECORDINGS_DIR, tam
         from evals.standin import StandInReader
 
         return StandInReader(book, tamper=tamper)
-    from app.agents.llm import RecordedClient, client_for
+    from app.agents.llm import RecordedClient, RecordingClient, client_for
     from app.core.config import Settings
 
+    from evals.idmap import RESOLVER
+
     if mode == "recorded":
-        return RecordedClient(recordings, accept_stale)
-    return client_for(Settings(squad_llm_mode=mode, squad_recordings_dir=str(recordings)))
+        # a recorded answer that cites an id is mapped onto this run's id by value (evals/idmap.py)
+        return RecordedClient(recordings, accept_stale, resolver=RESOLVER)
+    client = client_for(Settings(squad_llm_mode=mode, squad_recordings_dir=str(recordings)))
+    if isinstance(client, RecordingClient):
+        client.resolver = RESOLVER  # saves what each id stands for beside the response
+    return client
 
 
 def check_may_start(mode: str, codes: list[str], *, oracle: Path, allow_unsigned: bool = False, confirm_billable: bool = False,
