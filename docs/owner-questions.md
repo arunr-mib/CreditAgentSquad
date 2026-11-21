@@ -92,3 +92,8 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 
 The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low severity) is in `docs/owner-signoff-2026-11-21.md`, with the rulings to know while signing. Signing is required before the live pass, and nothing live runs until you also say go on the cost estimate.
 
+
+## Owner decisions, 21 November 2026 (Phase 3 gates)
+
+- **Answer key:** "Approve all". All 91 unsigned rows of `synthetic/books/innovation/oracle.csv` signed with `evals.signoff apply` (107 of 107 now signed).
+- **Live record pass:** approved on Opus 5.5 (the model the product ships with), cap **$21** (estimate mid $12.65, high $20.23; `docs/live-run-estimate-2026-11-21.md`). One client is measured first; the run stops if that projects above the cap.
