@@ -4,7 +4,7 @@
 
 **Goal:** Finish Credit Squad on this branch: an analyst routes a case with her view and the credit officer decides, reserves rights or returns it in the same client thread; a redesigned client file, My Portfolio and Oversight replace the cockpit screens; the cockpit is deleted; every client is walked end to end in both roles, and the branch is merge-ready.
 
-**Architecture:** The hand-off rules (who may receive a case, who may return it, the router becomes the preparer so the engine's two-person rule keeps her from deciding it) are a new engine module, `backend/app/domain/routing.py`, beside `decide_work_item`; Squad's read models stay under `backend/app/squad/` (`cases.py`, `client_file.py`, `portfolio.py`) behind `backend/app/api/routes_squad.py`, and every "may" they return is the engine's rule read for the viewer. No migration: routing uses the existing `work_items` columns and new ledger actions. The front end adds `src/squad/case/`, `approvals/`, `clientfile/`, `portfolio/`, `oversight/` and retargets `src/squad/links.ts`; Task 5 then deletes the cockpit (`src/shell/`, `src/drawer/`, the cockpit screens) after moving the few parts Squad still uses.
+**Architecture:** The hand-off rules (who may receive a case, who may return it, the router becomes the preparer so the engine's two-person rule keeps her from deciding it) are a new engine module, `backend/app/domain/routing.py`, beside `decide_work_item`; Squad's read models stay under `backend/app/squad/` (`cases.py`, `client_file.py`, `portfolio.py`) behind `backend/app/api/routes_squad.py`, and every "may" they return is the engine's rule read for the viewer. No migration: routing uses the existing `work_items` columns and new ledger actions. The front end adds `src/squad/case/`, `approvals/`, `clientfile/`, `portfolio/`, `oversight/` and retargets `src/squad/links.ts`; Task 5b then deletes the cockpit (`src/shell/`, `src/drawer/`, the cockpit screens) after moving the few parts Squad still uses.
 
 **Tech Stack:** Python 3.13, FastAPI, SQLAlchemy 2, pytest (`uv run pytest`); React 19, Vite, TypeScript, TanStack Router and Query, vitest + Testing Library; the globally installed Playwright (as `frontend/e2e/squad.mjs` already uses it) with axe-core.
 
@@ -15,12 +15,13 @@
 - **Scope is the 4a plan's "Phase 4b outline", in its order**, with the first-look findings placed in the task that owns the code (table below). "Release" in Task 6 means merge-ready on `slice-1/monitoring-cycle`; hosting is Phase 5.
 - **A route is not an assignment.** `POST /work-items/{id}/assign` (owner and due date, `work_item.assigned`) stays as it is. Routing is a new engine action, `work_item.routed`, which needs the router's view and assigns the case to a person who may decide it. The engine (`decide_work_item`) refuses anyone who routed the item with `SecondPersonRequired` (409), whoever prepared it, tested at the engine and the API; no screen decides this.
 - **One answer to "who may decide".** `workflow.decision_refusal(db, item, user_id=, user_role=, decision=, reason=)` is the engine's single predicate; `decide_work_item`, Squad's `rules.can_act`, routing's `may_receive` and the case view's `permitted` flags all call it. Whether to offer the Approvals screen is the server's answer too (`briefing.approvals.offered`, from `core.roles.APPROVER_PERMISSIONS`); the browser holds no permission list.
-- **One table of document-type words.** `app/squad/words.py::DOCUMENT_TYPE_WORDS`, served at `GET /words/document-types`; the browser reads it (`useDocWords`) and Task 5 deletes the old front-end table.
-- **Nothing of the cockpit's case content is dropped.** `CasePanel` shows the cockpit's evidence rows, the agent's recommendation with its guardrail notes, the "no recommendation" statement, the open questions that may change the result and each decision's hint; Approvals also shows the case's trail. Task 5 moves those parts (and their tests) beside `CasePanel` instead of deleting them. Oversight keeps the cockpit's run steps and checks, ledger filters, agent inventory and signal rules. The repair journeys (`e2e/repair.mjs`) are retargeted, not deleted.
+- **One table of document-type words.** `app/squad/words.py::DOCUMENT_TYPE_WORDS`, served at `GET /words/document-types`; the browser reads it (`useDocWords`) and Task 5b deletes the old front-end table.
+- **Nothing of the cockpit's case content is dropped.** `CasePanel` shows the cockpit's evidence rows, the agent's recommendation with its guardrail notes, the "no recommendation" statement, the open questions that may change the result and each decision's hint; Approvals also shows the case's trail. Task 5b moves those parts (and their tests) beside `CasePanel` instead of deleting them. Oversight keeps the cockpit's run steps and checks, ledger filters, agent inventory and signal rules. The repair journeys (`e2e/repair.mjs`) are retargeted, not deleted.
 - **A return is not a decision.** `work_item.returned` sends the open case back to the person who routed it, with a reason; the case stays open; the officer decides only after it is routed again. Decisions remain the item's own allowed decisions (for a breach: waiver requested, reservation of rights, escalate to committee, not a breach). The spec's "approve / reserve rights / return" maps to those decisions plus Return.
 - **"Squad gathers what was asked" means code gathers, a person attaches.** The case view lists the client's documents not yet attached, newest first; the analyst attaches one (`work_item.evidence_attached`) or drafts a request to the client with the 4a drafts. Nothing is attached without a person (lesson: the model must not choose its evidence).
 - **Signals are listed, not counted** (finding 5). A signal that needs a decision already has a work item (`signal.high`, raised by the engine), and that item counts. The briefing lists the rest under "Watching", one row per client naming every open signal.
-- **Retiring the cockpit keeps every repair path.** `HeldFigures`, `KeyFigures`, `UploadDocument`, `RunStage` and the commentary editor move into `src/squad/`; only screens whose job a Squad screen now does are deleted. Packages, the review room and the calendar have no place in the Squad spec's structure (section 3); they are deleted in their own commit, before the rest of the cockpit, and stay in v1 (git 2292b38). This is owner question 1 below; Task 5 stops if the owner says keep.
+- **Retiring the cockpit keeps every repair path.** `HeldFigures`, `KeyFigures`, `UploadDocument`, `RunStage` and the commentary editor move into `src/squad/`; only screens whose job a Squad screen now does are deleted.
+- **The review room and packages stay; the calendar goes** (owner decision, 21 November 2026, answering owner question 1). Task 5a moves the review room (meetings and their phases, review sheets, commentary approved through Squad's case, actions) to a Squad screen at `/review-room`, and packages with their schedules into the client file (`/clients/<code>/file/packages`), before Task 5b deletes the cockpit and the calendar. Who may act stays the server's (route permissions, `release_package`, the engine's predicate for the commentary approval); the browser reads only the person's served permissions.
 - **No migration, no billable run.** Nothing in this plan calls a model. The eval gate in Task 6 is the stand-in run and the recorded replay (no model call).
 
 **Findings and carry items, and where each goes**
@@ -64,7 +65,7 @@
 1. **A case's state after every hand-off step must read the same everywhere, for both people.** Routed, returned, re-routed, decided: the home count, the case card's words and button, the Approvals list and the presence line agree for the analyst and for the officer, and the analyst can never decide what she routed, even when someone else prepared it (the engine refuses with 409, shown in the server's words). A plain assignment never reads as "returned to you". Tests: Task 1 (`test_routing.py` at the engine and the API, `test_cases.py`, `case.test.tsx`, the hand-off journey).
 2. **Opening a client lands at what is new, not at the oldest document.** With no `?case=`, the thread scrolls to the first open case, open ask or unsent draft; with only documents, to the newest arrivals; with `?case=`, the case wins. Tests: Task 2 (`test_thread_opening.py`, `thread.test.tsx`).
 3. **Unmeasured figures stay unmeasured.** A venture client that is cash-flow positive shows "not meaningful" for runway, a period with no stored figure shows "Not measured", and neither draws a bar at zero; a measured zero or breached (negative) headroom is drawn as a low bar, never as missing. Tests: Task 2 (`test_client_file.py`, `TrendBars` tests with zero and negative points), Task 3 (`portfolio.test.tsx`), Task 6 (`checkUnmeasured` against the API on every client's overview and portfolio row, with a self-check that it fails on a wrong page).
-4. **Every old address still lands somewhere sensible.** `/borrowers/<code>/covenants`, `/borrowers/<code>/documents/<id>?page=3`, `/borrowers`, `/command-centre`, `/agent-activity`, `/governance` redirect to the Squad place that replaced them; an unknown client code says so and offers the way home. Tests: Task 2 (`redirects.test.tsx` for `/borrowers…`), Task 4 (`oversight.test.tsx` for `/agent-activity`, `/governance`, `/command-centre`), Task 5 (`redirects.test.tsx` for `/calendar`, `/review-room`, `/design`, and the journey "old addresses" through the router).
+4. **Every old address still lands somewhere sensible.** `/borrowers/<code>/covenants`, `/borrowers/<code>/documents/<id>?page=3`, `/borrowers`, `/command-centre`, `/agent-activity`, `/governance` redirect to the Squad place that replaced them; an unknown client code says so and offers the way home. Tests: Task 2 (`redirects.test.tsx` for `/borrowers…`), Task 4 (`oversight.test.tsx` for `/agent-activity`, `/governance`, `/command-centre`), Task 5a (`redirects.test.tsx` for `/borrowers/<code>/packages`), Task 5b (`redirects.test.tsx` for `/calendar`, `/design`, and the journey "old addresses" through the router).
 5. **People who take no credit decision are offered none.** An administrator and a credit reviewer see no decide, route, return or attach control on any case, in the thread, in Approvals or in Oversight, and the API refuses them if called directly. Tests: Task 1 (`test_case_view_says_what_each_person_may_do`, route API 403), Task 4 (`oversight.test.tsx`), Task 6 (administrator journey).
 
 ---
@@ -90,17 +91,18 @@
 | `backend/tests/squad/test_thread_opening.py`, `test_client_file.py` | 2 | New |
 | `backend/tests/squad/test_portfolio.py` | 3 | New; `test_briefing.py` updated for the signal rule |
 | `frontend/src/squad/api/types.ts`, `hooks.ts`, `polling.ts` | 1–4 | Types, queries, writes, refresh keys |
-| `frontend/src/squad/case/CasePanel.tsx` | 1 | New; shows the cockpit's evidence, recommendation and related items; Task 5 moves `WorkItemPanel.tsx` (as `parts.tsx`), `HeldFigures.tsx`, `KeyFigures.tsx` beside it |
+| `frontend/src/squad/case/CasePanel.tsx` | 1 | New; shows the cockpit's evidence, recommendation and related items; Task 5b moves `WorkItemPanel.tsx` (as `parts.tsx`), `HeldFigures.tsx`, `KeyFigures.tsx` beside it |
 | `frontend/src/squad/DocType.tsx` | 2 | New: `useDocWords`, `DocType` (served words) |
 | `frontend/src/squad/approvals/Approvals.tsx` | 1 | New |
 | `frontend/src/squad/thread/messages.tsx`, `AskMessage.tsx`, `ClientThread.tsx` | 1, 2 | Case opens inline; new messages; asks per viewer; opening position; arrivals |
-| `frontend/src/squad/clientfile/*` | 2 | New: `ClientFile.tsx`, `views.tsx`, `Measure.tsx`; Task 5 moves `UploadDocument`, `RunStage`, review editor here |
+| `frontend/src/squad/clientfile/*` | 2 | New: `ClientFile.tsx`, `views.tsx`, `Measure.tsx`; Task 5a moves the commentary editor and packages here, Task 5b `UploadDocument` and `RunStage` |
 | `frontend/src/squad/links.ts` | 2 | Client file addresses |
 | `frontend/src/squad/portfolio/Portfolio.tsx`, `home/SquadHome.tsx`, `shell/SquadNav.tsx` | 3 | New portfolio; calmer briefing; nav |
 | `frontend/src/squad/oversight/*` | 4 | New: `Oversight.tsx`, `describeEvent.ts` |
 | `frontend/src/squad/shell/surface.ts`, `commands.ts`, `SquadShell.tsx` | 1–5 | Surfaces, commands, nav props; drawer removed (5) |
 | `frontend/src/router.tsx` | 1–5 | Routes and redirects |
-| `frontend/src/shell/`, `src/drawer/`, cockpit screens, `e2e/run.mjs` | 5 | Deleted (packages, review room, calendar in their own commit) |
+| `frontend/src/squad/review/ReviewRoom.tsx`, `squad/clientfile/Packages.tsx`, `PackageSchedules.tsx` | 5a | Moved from the cockpit into Squad |
+| `frontend/src/shell/`, `src/drawer/`, cockpit screens (calendar included), `e2e/run.mjs` | 5b | Deleted |
 | `frontend/e2e/repair.mjs` | 5 | Retargeted at the client thread and client file |
 | `frontend/e2e/squad.mjs`, `frontend/scripts/serve.mjs` | 1, 5, 6 | Journeys; Squad pages for screenshots and a11y |
 | `README.md`, `docs/HANDOFF.md`, `frontend/DESIGN.md` | 5, 6 | Docs |
@@ -118,7 +120,7 @@
 - Modify: `frontend/src/screens/work/WorkItemPanel.tsx` (export `Evidence` and `Recommendation`; `RelatedItems` takes `onOpen`), `frontend/src/squad/api/types.ts`, `hooks.ts`, `polling.ts`, `frontend/src/squad/thread/messages.tsx`, `AskMessage.tsx`, `frontend/src/squad/shell/surface.ts`, `SquadNav.tsx`, `SquadShell.tsx`, `commands.ts`, `frontend/src/squad/squad.css`, `frontend/src/router.tsx`, `frontend/src/squad/__tests__/thread.test.tsx`, `questions.test.tsx`, `home.test.tsx`, `shell.test.tsx`, `cockpitSurface.test.tsx`, `frontend/e2e/squad.mjs`
 
 **Interfaces:**
-- Consumes (4a): `rules.is_clients_analyst`, `workflow.decide_work_item`, `workflow.needs_reason(item_type, decision)`, `workflow.DECISION_PERMISSIONS`, `work_items.offered`, `require_second_person`, `build_thread(db, borrower_id, viewer)`, `build_briefing(db, user)`; front end `useWrite` in `squad/api/hooks.ts`, `threadHref(code, caseId)`, `usePresence().say`, `Time`, `Trail`; cockpit parts `Evidence`, `Recommendation`, `RelatedItems`, `KeyFigures`, `HeldFigures` (moved beside `CasePanel` in Task 5).
+- Consumes (4a): `rules.is_clients_analyst`, `workflow.decide_work_item`, `workflow.needs_reason(item_type, decision)`, `workflow.DECISION_PERMISSIONS`, `work_items.offered`, `require_second_person`, `build_thread(db, borrower_id, viewer)`, `build_briefing(db, user)`; front end `useWrite` in `squad/api/hooks.ts`, `threadHref(code, caseId)`, `usePresence().say`, `Time`, `Trail`; cockpit parts `Evidence`, `Recommendation`, `RelatedItems`, `KeyFigures`, `HeldFigures` (moved beside `CasePanel` in Task 5b).
 - Produces (engine): `workflow.decision_refusal(db, item, *, user_id, user_role, decision: str | None = None, reason: str | None = None) -> Exception | None` — the one answer to "may this person decide this item (and take this decision)"; `None` means yes, otherwise the exception `decide_work_item` raises (`ValueError`, `PermissionError`, `SecondPersonRequired`), in the order it has always checked. It refuses anyone who routed the item (`routed_by`), whoever prepared it. `workflow.routed_by(db, item) -> set[str]`; `workflow.ROUTED`, `RETURNED`, `ATTACHED` (ledger action names). `core.roles.APPROVER_PERMISSIONS: frozenset[Permission]`, `core.roles.approves(role) -> bool`.
 - Produces (routing): `app.domain.routing.route_work_item(db, item, *, user: User, to_user_id: uuid.UUID, view: str) -> WorkItem`; `return_work_item(db, item, *, user: User, reason: str) -> WorkItem`; `attach_evidence(db, item, *, user: User, document_id: uuid.UUID, note: str = "") -> WorkItem` (the ledger is the only record of attachments); `may_receive(db, person: User, item) -> bool`; `latest_route(db, item)`.
 - Produces (Squad rules): `rules.can_act(user, item, borrower)` now built on `decision_refusal`; `rules.awaits_reroute(user, item) -> bool` (true only when the latest routed-or-returned event is a return to this person); `rules.needs(user, item, borrower) -> bool`; `rules.state_words(item, names, borrower=None) -> str`; `rules.prepared_by(user, item)` now also true for a person who routed the item.
@@ -1022,7 +1024,7 @@ vi.mock('../api/hooks', () => ({
 vi.mock('@/api/hooks', () => ({ useWorkItem: () => ({ data: state.detail }) }));
 vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say: state.say }) }));
 // The real evidence rows, recommendation and related items are tested where they live (decision.test.tsx now,
-// src/squad/case/parts.test.tsx after Task 5); here only that the case panel shows them, in order.
+// src/squad/case/parts.test.tsx after Task 5b); here only that the case panel shows them, in order.
 vi.mock('@/screens/work/WorkItemPanel', () => ({
   Evidence: () => <p>evidence rows</p>,
   Recommendation: () => <p>agent recommendation</p>,
@@ -1284,7 +1286,7 @@ In `frontend/src/squad/api/polling.ts`: `const REFRESH = [['briefing'], ['thread
 
 - [ ] **Step 14: The case panel, carrying the cockpit's evidence, recommendation and related questions**
 
-First, in `frontend/src/screens/work/WorkItemPanel.tsx` (it moves beside `CasePanel` in Task 5; nothing of it is dropped): put `export` before `function Evidence(` and `function Recommendation(`, and give `RelatedItems` an `onOpen` prop so it no longer needs the cockpit drawer when Squad renders it:
+First, in `frontend/src/screens/work/WorkItemPanel.tsx` (it moves beside `CasePanel` in Task 5b; nothing of it is dropped): put `export` before `function Evidence(` and `function Recommendation(`, and give `RelatedItems` an `onOpen` prop so it no longer needs the cockpit drawer when Squad renders it:
 
 ```tsx
 export function RelatedItems({ items, headingLevel: Heading, onOpen }: { items: RelatedItem[]; headingLevel: 'h3' | 'h4'; onOpen?: (id: string) => void }) {
@@ -1606,7 +1608,7 @@ export function Approvals() {
 `frontend/src/squad/shell/surface.ts`:
 
 ```ts
-/** Conversation: home and threads (narrow, presence line). Squad: Squad's own wide screens (presence line). Cockpit: a legacy screen kept until Task 5. */
+/** Conversation: home and threads (narrow, presence line). Squad: Squad's own wide screens (presence line). Cockpit: a legacy screen kept until Task 5b. */
 export type Surface = 'conversation' | 'squad' | 'cockpit';
 
 const SQUAD = ['/approvals'];
@@ -1821,9 +1823,9 @@ Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
 - Modify: `frontend/src/squad/links.ts`, `frontend/src/squad/api/types.ts`, `hooks.ts`, `frontend/src/squad/thread/ClientThread.tsx`, `messages.tsx`, `frontend/src/source/SourceDrawer.tsx` (`ViewerLink`), `frontend/src/api/schema.ts` (`CovenantTestRow.note`), `frontend/src/router.tsx`, `frontend/src/squad/squad.css`, `frontend/src/squad/__tests__/shell.test.tsx`, `thread.test.tsx`, `cockpitSurface.test.tsx`
 
 **Interfaces:**
-- Consumes: Task 1's `Surface 'squad'`, `CasePanel`; 4a `threadHref`, `useThread`; existing hooks `useBorrowerByCode`, `useBorrowerOverview`, `useSpread`, `useFactsById`, `useBorrowerCovenants`, `useDocuments`, `useBorrowerTerms`, `useBorrowingBase`, `useSignals`, `useTimeline`, `useReviewSheets`, `useReviewSheet`, `useActions`; components `FactFigure`, `SourcedFigure`, `Absent` (`@/source/figures`), `RunStage`, `UploadDocument`, `Commentary` (still in `src/screens/` until Task 5), `describeEvent` (`@/screens/Governance` until Task 4); `metrics_service.runway_not_meaningful(db, borrower, period_end)`; `routes_ui._Labels`, `routes_ui._summary` (moved in Step 5 to `app/api/fact_labels.py` as `FactLabels`, `fact_summary`, so Squad imports no private name of a route module).
+- Consumes: Task 1's `Surface 'squad'`, `CasePanel`; 4a `threadHref`, `useThread`; existing hooks `useBorrowerByCode`, `useBorrowerOverview`, `useSpread`, `useFactsById`, `useBorrowerCovenants`, `useDocuments`, `useBorrowerTerms`, `useBorrowingBase`, `useSignals`, `useTimeline`, `useReviewSheets`, `useReviewSheet`, `useActions`; components `FactFigure`, `SourcedFigure`, `Absent` (`@/source/figures`), `RunStage`, `UploadDocument`, `Commentary` (still in `src/screens/` until Task 5a), `describeEvent` (`@/screens/Governance` until Task 4); `metrics_service.runway_not_meaningful(db, borrower, period_end)`; `routes_ui._Labels`, `routes_ui._summary` (moved in Step 5 to `app/api/fact_labels.py` as `FactLabels`, `fact_summary`, so Squad imports no private name of a route module).
 - Produces (backend): `app.squad.words.DOCUMENT_TYPE_WORDS: dict[str, str]` and `document_type_words(doc_type: str | None) -> str` (the one table; served to the browser at `GET /api/v1/words/document-types`); `app.api.fact_labels.FactLabels`, `fact_summary(fact, labels)`; `app.squad.client_file.measure_series(db, borrower, limit: int = 6, labels: FactLabels | None = None) -> {"kind": "rml" | "headroom", "label": str, "points": [{"period_end": iso, "fact": FactSummary | None, "note": str | None}]}`; `GET /api/v1/borrowers/{id}/measure`. Thread: `document` messages gain `doc_type_words`; new message `arrivals` `{id: "arrivals:YYYY-MM", ts, title, period_end, documents: [document message, …]}`; the thread gains `opening_id: str | None`.
-- Produces (front end): `ClientFileView = 'overview' | 'spreads' | 'covenants' | 'documents' | 'funding' | 'loans' | 'reviews' | 'history'`; `clientFile(code, view?) -> '/clients/<code>/file[/<view>]'`; routes `/clients/$code/file` and `/clients/$code/file/$view` (search `document?`, `page?`); `oldAddress(pathname: string, search: Record<string, unknown>) -> string | null` in `src/squad/redirects.ts` (unit-tested here, wired into the router in Task 5); `TrendBars({ points, label })` and `MeasureNow({ series })` in `clientfile/Measure.tsx`; `useDocWords()` and `DocType({ type })` in `src/squad/DocType.tsx`; hooks `useMeasure(borrowerId)`, `useFundingEvents(borrowerId)`, `useDocumentTypeWords()`; types `MeasurePoint`, `MeasureSeries`, `FundingEventRow`.
+- Produces (front end): `ClientFileView = 'overview' | 'spreads' | 'covenants' | 'documents' | 'funding' | 'loans' | 'reviews' | 'history'`; `clientFile(code, view?) -> '/clients/<code>/file[/<view>]'`; routes `/clients/$code/file` and `/clients/$code/file/$view` (search `document?`, `page?`); `oldAddress(pathname: string, search: Record<string, unknown>) -> string | null` in `src/squad/redirects.ts` (unit-tested here, wired into the router in Task 5b); `TrendBars({ points, label })` and `MeasureNow({ series })` in `clientfile/Measure.tsx`; `useDocWords()` and `DocType({ type })` in `src/squad/DocType.tsx`; hooks `useMeasure(borrowerId)`, `useFundingEvents(borrowerId)`, `useDocumentTypeWords()`; types `MeasurePoint`, `MeasureSeries`, `FundingEventRow`.
 
 - [ ] **Step 1: Write the failing backend tests**
 
@@ -2280,7 +2282,7 @@ Update the existing tests: in `shell.test.tsx` the `clientFile('QFL', 'covenants
   });
 ```
 
-In `cockpitSurface.test.tsx`, add `'/clients/QFL/file'` and `'/clients/QFL/file/covenants'` to the Squad list (the `/borrowers…` paths stay cockpit screens until Task 5).
+In `cockpitSurface.test.tsx`, add `'/clients/QFL/file'` and `'/clients/QFL/file/covenants'` to the Squad list (the `/borrowers…` paths stay cockpit screens until Task 5b).
 
 - [ ] **Step 8: Run them to see them fail**
 
@@ -2357,7 +2359,7 @@ import { useDocumentTypeWords } from './api/hooks';
 
 /** Document types in the server's words (`GET /words/document-types`, one table in `app/squad/words.py`). The browser
  * keeps no list: before the table arrives, or for a type the table lacks, the stored type is shown as the identifier
- * it is. Task 5 points every remaining user of the old `docTypeLabel` here and deletes that table. */
+ * it is. Task 5b points every remaining user of the old `docTypeLabel` here and deletes that table. */
 export function useDocWords(): (type: string | null | undefined) => string {
   const table = useDocumentTypeWords().data;
   return (type) => (!table ? '' : !type ? table.unclassified : (table.types[type] ?? type));
@@ -2753,7 +2755,7 @@ export const clientFileViewRoute = createRoute({
 });
 ```
 
-Leave the cockpit routes (`/borrowers…`, `/command-centre`, `/agent-activity`, `/governance`, `/calendar`, `/review-room`, `/design`) registered: the cockpit screens are typed against their ids (`useSearch({ from: '/borrowers/$code/covenants' })` and others) and would stop compiling. Nothing in Squad links to them any more after this task; Task 5 deletes the screens and swaps those routes for redirects through `oldAddress` in the same commit.
+Leave the cockpit routes (`/borrowers…`, `/command-centre`, `/agent-activity`, `/governance`, `/calendar`, `/review-room`, `/design`) registered: the cockpit screens are typed against their ids (`useSearch({ from: '/borrowers/$code/covenants' })` and others) and would stop compiling. Nothing in Squad links to them any more after this task; Task 5b deletes the screens and swaps those routes for redirects through `oldAddress` in the same commit.
 
 In `frontend/src/source/SourceDrawer.tsx`, `ViewerLink` points into the client file:
 
@@ -3154,7 +3156,7 @@ In `shell.test.tsx`: in "names every link when collapsed" remove `/quillfeather/
   });
 ```
 
-In `cockpitSurface.test.tsx`, move `'/portfolio'` from the cockpit list to the Squad list; in `mountAt`, the route list becomes `['/', '/calendar', '/portfolio']`; the test "gives a legacy cockpit route the full width and no presence line" mounts `/calendar` (still a cockpit screen until Task 5); add a test that `/portfolio` mounts with `data-surface="squad"` and a presence line.
+In `cockpitSurface.test.tsx`, move `'/portfolio'` from the cockpit list to the Squad list; in `mountAt`, the route list becomes `['/', '/calendar', '/portfolio']`; the test "gives a legacy cockpit route the full width and no presence line" mounts `/calendar` (still a cockpit screen until Task 5b); add a test that `/portfolio` mounts with `data-surface="squad"` and a presence line.
 
 - [ ] **Step 7: Run them to see them fail**
 
@@ -3427,7 +3429,7 @@ Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
 
 **Interfaces:**
 - Consumes: existing endpoints and hooks: `useAgentRuns()` (`GET /agent-runs`), `useAgentRun(id)` (`GET /agent-runs/{id}`, `steps: AgentStepRow[]`), `useAgents()` (`GET /agents`, `AgentSpec[]`), `useLedger(filter: LedgerFilter)` (`action`, `entity_type`, `before_seq`, `limit`), `useLedgerVerification(run)`, `useRolesAndPermissions()`, `usePolicyRegister()` (`sections`, `signal_rules.rules: PolicySignalRule[]`), `useClock(signedIn)`, `useSetClock().mutate(date)`; `GET /evals/latest` envelope; `OVERSIGHT_ROLES` (`admin`, `credit_review`, `credit_admin`); Task 2's `useDocWords()`.
-- Produces: `app.squad.oversight.evaluation_rows(metrics: dict) -> list[{"key", "label", "value": str | None, "unit": "pct" | "count"}]` (shares become percentages on the server with Decimals; unmeasured stays null) and `GET /api/v1/oversight/evaluation` → `{"mode", "standin", "notice", "gate_passed", "created_at", "rows"}` (404 when no evaluation exists); route `/oversight` and `/oversight/$tab` with `tab ∈ 'activity' | 'ledger' | 'governance' | 'evaluations' | 'clock'` (`clock` only where `can('advance_clock')`); `describeEvent(event: LedgerEvent, docWords?: (type: string | null) => string) -> string` in `src/squad/oversight/describeEvent.ts`; hook `useEvaluation()`; `oldAddress` maps `/agent-activity`, `/governance`, `/command-centre` (wired into the router in Task 5).
+- Produces: `app.squad.oversight.evaluation_rows(metrics: dict) -> list[{"key", "label", "value": str | None, "unit": "pct" | "count"}]` (shares become percentages on the server with Decimals; unmeasured stays null) and `GET /api/v1/oversight/evaluation` → `{"mode", "standin", "notice", "gate_passed", "created_at", "rows"}` (404 when no evaluation exists); route `/oversight` and `/oversight/$tab` with `tab ∈ 'activity' | 'ledger' | 'governance' | 'evaluations' | 'clock'` (`clock` only where `can('advance_clock')`); `describeEvent(event: LedgerEvent, docWords?: (type: string | null) => string) -> string` in `src/squad/oversight/describeEvent.ts`; hook `useEvaluation()`; `oldAddress` maps `/agent-activity`, `/governance`, `/command-centre` (wired into the router in Task 5b).
 
 **What Oversight keeps from the cockpit screens it replaces** (`AgentActivity`, `Governance`): every run with its steps and the guardrail notes its record names; the ledger with an action filter, "hide sign-ins", paging to older events and chain verification; the role and permission matrix and second-person rule; the policy register; the agent inventory; the signal-rule register; the evaluation scorecard; the clock. **Dropped, listed in the rulings:** the cockpit's per-record "see it in the ledger" deep links (a client's history in its client file replaces them) and the run timeline grouped by day (Oversight lists newest first).
 
@@ -3628,7 +3630,7 @@ export function describeEvent(event: LedgerEvent, docWords: (type: string | null
   if (text('view')) parts.push(`“${text('view')}”`);
 ```
 
-(the last line goes before the `parts.length === 0` fallback). Remove any import that lint then reports unused in `Governance.tsx`. In `Governance.tsx`, replace the cut code with `export { describeEvent } from '@/squad/oversight/describeEvent';` so the cockpit screen still builds until Task 5 deletes it. Point `src/__tests__/workspace.test.tsx` and `src/squad/clientfile/views.tsx` at `@/squad/oversight/describeEvent`; in `views.tsx` `History`, call `describeEvent(e, words)` with `const words = useDocWords();` (from `../DocType`).
+(the last line goes before the `parts.length === 0` fallback). Remove any import that lint then reports unused in `Governance.tsx`. In `Governance.tsx`, replace the cut code with `export { describeEvent } from '@/squad/oversight/describeEvent';` so the cockpit screen still builds until Task 5b deletes it. Point `src/__tests__/workspace.test.tsx` and `src/squad/clientfile/views.tsx` at `@/squad/oversight/describeEvent`; in `views.tsx` `History`, call `describeEvent(e, words)` with `const words = useDocWords();` (from `../DocType`).
 
 - [ ] **Step 5: The hook, redirects and the Oversight screen**
 
@@ -3856,7 +3858,7 @@ export function Oversight() {
 
 - [ ] **Step 6: Routes, nav and commands**
 
-In `router.tsx`, add the two Oversight routes and list both in `routeTree` (the cockpit `/agent-activity` and `/governance` routes stay until Task 5 swaps them for redirects):
+In `router.tsx`, add the two Oversight routes and list both in `routeTree` (the cockpit `/agent-activity` and `/governance` routes stay until Task 5b swaps them for redirects):
 
 ```tsx
 const oversightRoute = createRoute({ getParentRoute: () => rootRoute, path: '/oversight', component: lazyRouteComponent(() => import('@/squad/oversight/Oversight'), 'Oversight') });
@@ -3894,22 +3896,325 @@ Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
 
 ---
 
-### Task 5: Retire the cockpit
+### Task 5a: The review room and packages move into Squad
+
+Owner decision (21 November 2026): the review room and packages stay in v2; the calendar goes. This task moves both into Squad's shell and looks before Task 5b deletes the cockpit, so neither ever depends on a cockpit piece again. No backend change: the review and package routes (`backend/app/api/routes_reviews.py`, `routes_packages.py`) and the publishing service already decide who may act (`require(Permission.MANAGE_ACTIONS)`, `EDIT_COMMENTARY`, `RELEASE_PACKAGE`; `service.release_package` refuses a draft-commentary or unverified package), and the browser reads only the signed-in person's served permissions (`useAuth().can`), never a role list.
 
 **Files:**
-- Move (`git mv`): `frontend/src/screens/work/WorkItemPanel.tsx` → `frontend/src/squad/case/parts.tsx` (its evidence rows, recommendation, guardrail notes and related items stay; only the cockpit decision form, authority gate, recorded-decision card and panel shell go); `frontend/src/screens/work/decision.test.tsx` → `frontend/src/squad/case/parts.test.tsx`; `frontend/src/screens/work/HeldFigures.tsx` → `frontend/src/squad/case/HeldFigures.tsx`; `frontend/src/screens/work/KeyFigures.tsx` → `frontend/src/squad/case/KeyFigures.tsx`; `frontend/src/screens/borrower/RunStage.tsx`, `RunStage.test.tsx`, `UploadDocument.tsx`, `UploadDocument.test.tsx` → `frontend/src/squad/clientfile/`; `frontend/src/screens/review/Commentary.tsx`, `CommentaryEditor.tsx`, `commentary.test.tsx` → `frontend/src/squad/clientfile/review/`
-- Delete, in its own commit first (owner question 1): `frontend/src/screens/Calendar.tsx`, `Calendar.test.ts`, `ReviewRoom.tsx`, `frontend/src/screens/borrower/Packages.tsx`, `PackageSchedules.tsx`, `PackageSchedules.test.tsx`, and their three routes
-- Delete (`git rm`), in the main commit: `frontend/src/shell/` (all), `frontend/src/drawer/` (all), `frontend/src/fixtures/` (all; only `DesignPage` used them), `frontend/src/screens/AgentActivity.tsx`, `AgentActivity.test.tsx`, `CommandCentre.tsx`, `CommandCentre.test.ts`, `DesignPage.tsx`, `Governance.tsx`, `Governance.test.tsx`, `Portfolio.tsx`, `Portfolio.test.tsx`, what remains of `frontend/src/screens/borrower/` after the moves, `frontend/e2e/run.mjs`
-- Keep: `frontend/src/screens/SignIn.tsx` and `frontend/src/screens/parts.tsx` (shared by `SignIn`, the moved parts and `repair/`); `frontend/e2e/repair.mjs` and `frontend/e2e/seed_repair.py`, retargeted at Squad's screens (lesson: a gate needs a repair path, and it keeps its browser test)
+- Move (`git mv`): `frontend/src/screens/ReviewRoom.tsx` → `frontend/src/squad/review/ReviewRoom.tsx`; `frontend/src/screens/review/Commentary.tsx`, `CommentaryEditor.tsx`, `commentary.test.tsx` → `frontend/src/squad/clientfile/review/`; `frontend/src/screens/borrower/Packages.tsx` → `frontend/src/squad/clientfile/Packages.tsx`; `frontend/src/screens/borrower/PackageSchedules.tsx`, `PackageSchedules.test.tsx` → `frontend/src/squad/clientfile/`
+- Create: `frontend/src/squad/__tests__/reviewRoom.test.tsx`, `frontend/src/squad/__tests__/packages.test.tsx`
+- Modify: `frontend/src/squad/links.ts` (`'packages'` view), `frontend/src/squad/clientfile/ClientFile.tsx`, `frontend/src/squad/clientfile/views.tsx` (Reviews links to the review room; Commentary import path), `frontend/src/squad/redirects.ts`, `frontend/src/squad/__tests__/redirects.test.tsx`, `frontend/src/squad/shell/SquadNav.tsx`, `commands.ts`, `surface.ts`, `frontend/src/router.tsx`, `frontend/src/squad/__tests__/shell.test.tsx`, `cockpitSurface.test.tsx`, `frontend/e2e/squad.mjs`, `frontend/e2e/repair.mjs`
+
+**Interfaces:**
+- Consumes: Task 1's `CasePanel({ workItemId, onOpenCase })` (replaces `WorkItemPanel` in the review room); Task 2's `clientFile`, `ClientFile`'s `VIEWS`/`BODY`, `oldAddress`; 4a's `usePresence().say`, `threadHref`; existing hooks `useMeetings`, `useReviewSheets`, `useReviewSheet`, `useCreateMeeting`, `useSetMeetingPhase`, `useActions`, `useCreateAction`, `useSetActionStatus`, `useCycles`, `useWorkItems`; endpoints `GET/POST /packages`, `POST /packages/{id}/verify`, `POST /packages/{id}/release`, `GET /packages/{id}/files/{name}`, `GET/POST /package-schedules`, `POST /package-schedules/run`.
+- Produces: route `/review-room` (search `meeting?`, `sheet?`) rendering `@/squad/review/ReviewRoom` on the `squad` surface; client file view `packages` (`/clients/<code>/file/packages`) rendering `Packages({ borrower }: { borrower: BorrowerRow })` with `PackageSchedules({ borrowerId, borrowerName })` beneath; `ClientFileView` gains `'packages'`; `oldAddress('/borrowers/<code>/packages')` → `/clients/<code>/file/packages` (the review room keeps its address). Nav and palette gain "Review room" (every signed-in person may read it; what each may change is the server's).
+
+- [ ] **Step 1: Write the failing tests**
+
+```tsx
+// frontend/src/squad/__tests__/reviewRoom.test.tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
+import { render, screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { AuthContext } from '@/auth/context';
+import { ToastProvider, TooltipProvider } from '@/design';
+import { ReviewRoom } from '../review/ReviewRoom';
+
+const MEETING = { id: 'm1', title: 'Quarterly portfolio review', meeting_date: '2026-11-25', period_end: '2026-09-30', phase: 'before', chair_id: null, notes: '', sheets: [{ id: 's1', borrower_name: 'Larkspur Environmental Services', status: 'draft' }] };
+const SHEET = { id: 's1', borrower_id: 'b1', borrower_name: 'Larkspur Environmental Services', cycle_id: 'c1', meeting_id: 'm1', status: 'draft', period_end: '2026-09-30', approved_by: null, approved_by_name: null, content: { metrics: [], covenants: [], signals: [] }, commentary: [] };
+const q = (data: unknown) => ({ data, isPending: false, error: null, refetch: vi.fn() });
+const m = () => ({ mutate: vi.fn(), mutateAsync: vi.fn(), isPending: false, error: null, reset: vi.fn() });
+vi.mock('@/api/hooks', () => ({
+  useMeetings: () => q([MEETING]),
+  useReviewSheets: () => q([SHEET]),
+  useReviewSheet: (id?: string) => q(id ? SHEET : undefined),
+  useCycles: () => q([{ id: 'c1', period_end: '2026-09-30' }]),
+  useFactsById: () => q({}),
+  useWorkItems: () => q([{ id: 'w-approve', item_type: 'review.commentary_approval', title: 'Commentary awaiting approval', status: 'open' }]),
+  useBorrowers: () => q([{ id: 'b1', code: 'LES', name: 'Larkspur Environmental Services' }]),
+  useActions: () => q([]),
+  useUsers: () => q([]),
+  useCreateMeeting: m, useSetMeetingPhase: m, useCreateAction: m, useSetActionStatus: m,
+}));
+vi.mock('../case/CasePanel', () => ({ CasePanel: ({ workItemId }: { workItemId: string }) => <p>case {workItemId}</p> }));
+vi.mock('@/squad/clientfile/review/Commentary', () => ({ Commentary: () => <p>commentary</p> }));
+vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say: vi.fn() }) }));
+
+function mount(permissions: string[], path = '/review-room?sheet=s1') {
+  const root = createRootRoute();
+  const room = createRoute({ getParentRoute: () => root, path: '/review-room', component: ReviewRoom, validateSearch: (s: Record<string, unknown>) => ({ meeting: typeof s.meeting === 'string' ? s.meeting : undefined, sheet: typeof s.sheet === 'string' ? s.sheet : undefined }) });
+  const file = createRoute({ getParentRoute: () => root, path: '/clients/$code/file', component: () => null });
+  const router = createRouter({ routeTree: root.addChildren([room, file]), history: createMemoryHistory({ initialEntries: [path] }) });
+  const user = { id: 'u1', email: 'd@x', name: 'Dana Whitfield', title: '', role: 'portfolio_manager', permissions };
+  return render(
+    <QueryClientProvider client={new QueryClient()}>
+      <AuthContext.Provider value={{ user, status: 'signed-in', can: (p: string) => permissions.includes(p), signIn: async () => user, signOut: async () => {}, retry: () => {} }}>
+        <TooltipProvider><ToastProvider><RouterProvider router={router} /></ToastProvider></TooltipProvider>
+      </AuthContext.Provider>
+    </QueryClientProvider>,
+  );
+}
+
+describe('ReviewRoom in Squad', () => {
+  it('keeps the meeting with its phases, its sheets and the commentary approval as a Squad case', async () => {
+    mount(['view', 'manage_actions', 'approve_commentary']);
+    expect(await screen.findByText('Quarterly portfolio review')).toBeInTheDocument();
+    for (const phase of ['Before', 'During', 'After']) expect(screen.getAllByText(phase).length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: 'Move to during' })).toBeInTheDocument();
+    const approval = screen.getByRole('complementary', { name: 'Approval of this commentary' });
+    expect(within(approval).getByText('Commentary awaiting approval')).toBeInTheDocument();
+    expect(within(approval).getByText('case w-approve')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open the client file' })).toHaveAttribute('href', '/clients/LES/file');
+  });
+
+  it('offers no meeting control to a person whose served permissions lack it, and names no role', async () => {
+    const { container } = mount(['view']);
+    expect(await screen.findByText('Quarterly portfolio review')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /move to/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Create the meeting' })).not.toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/portfolio manager|credit officer|credit analyst/i);
+  });
+});
+```
+
+```tsx
+// frontend/src/squad/__tests__/packages.test.tsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { AuthContext } from '@/auth/context';
+import { ToastProvider, TooltipProvider } from '@/design';
+import { Packages } from '../clientfile/Packages';
+
+const say = vi.fn();
+vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say }) }));
+const PKG = { id: 'p1', title: 'Larkspur Environmental Services, Q3 2026', scope: 'borrower', status: 'generated', period_end: '2026-09-30', borrower_id: 'b1', borrower_name: 'Larkspur Environmental Services', released_at: null, released_by: null, files: [{ format: 'xlsx', name: 'larkspur-q3.xlsx', sha256: 'abc', size: 1000, borrower_id: 'b1', facts_used: 42 }], snapshot: { id: 'sn1', sha256: 'def', as_of: '2026-11-21T08:00:00Z', facts: 42, derived: 3 }, draft_commentary: [], can_release: true };
+const BORROWER = { id: 'b1', code: 'LES', name: 'Larkspur Environmental Services' } as never;
+
+function api(answers: Record<string, { status: number; body: unknown }>) {
+  const calls: string[] = [];
+  vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+    const key = `${init?.method ?? 'GET'} ${url.split('?')[0]}`;
+    calls.push(key);
+    const hit = answers[key] ?? { status: 200, body: [] };
+    return { ok: hit.status < 400, status: hit.status, text: async () => JSON.stringify(hit.body) } as Response;
+  }));
+  return calls;
+}
+
+function mount(permissions: string[]) {
+  const user = { id: 'u1', email: 'd@x', name: 'Dana Whitfield', title: '', role: 'portfolio_manager', permissions };
+  return render(
+    <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+      <AuthContext.Provider value={{ user, status: 'signed-in', can: (p: string) => permissions.includes(p), signIn: async () => user, signOut: async () => {}, retry: () => {} }}>
+        <TooltipProvider><ToastProvider><Packages borrower={BORROWER} /></ToastProvider></TooltipProvider>
+      </AuthContext.Provider>
+    </QueryClientProvider>,
+  );
+}
+
+afterEach(() => { vi.unstubAllGlobals(); say.mockClear(); });
+
+describe('Packages in the client file', () => {
+  it('lists a package with its files to download and verifies them on request', async () => {
+    const calls = api({ 'GET /api/v1/packages': { status: 200, body: [PKG] }, 'POST /api/v1/packages/p1/verify': { status: 200, body: { ok: true, figures_checked: 42, snapshot_sha256: 'def', problems: [] } } });
+    mount(['view', 'release_package', 'edit_commentary']);
+    expect(await screen.findByRole('link', { name: /larkspur-q3\.xlsx/ })).toHaveAttribute('href', '/api/v1/packages/p1/files/larkspur-q3.xlsx');
+    await userEvent.click(screen.getByRole('button', { name: 'Verify the files' }));
+    expect(calls).toContain('POST /api/v1/packages/p1/verify');
+  });
+
+  it('shows the server’s refusal of a release in its own words', async () => {
+    api({ 'GET /api/v1/packages': { status: 200, body: [PKG] }, 'POST /api/v1/packages/p1/release': { status: 409, body: { detail: 'This package did not pass verification: 1 figure(s) or file(s) do not resolve to the snapshot.' } } });
+    mount(['view', 'release_package']);
+    await userEvent.click(await screen.findByRole('button', { name: 'Release' }));
+    expect(await screen.findByText(/did not pass verification/)).toBeInTheDocument();
+  });
+
+  it('tells a person without the served release permission that the server would refuse, naming no role', async () => {
+    api({ 'GET /api/v1/packages': { status: 200, body: [PKG] } });
+    const { container } = mount(['view', 'edit_commentary']);
+    expect(await screen.findByText('Your role cannot release a package; the server would refuse it.')).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/portfolio manager|credit officer|credit analyst/i);
+  });
+});
+```
+
+In `PackageSchedules.test.tsx` (moved), the expectation at its line 102 becomes `expect(screen.getByText('Your role can read package schedules but cannot create or run them; the server decides who may.')).toBeInTheDocument();`. In `redirects.test.tsx`, the row `['/borrowers/QFL/packages', '/clients/QFL/file']` becomes `['/borrowers/QFL/packages', '/clients/QFL/file/packages']`. In `cockpitSurface.test.tsx`, add `'/review-room'` and `'/clients/QFL/file/packages'` to the Squad list. In `shell.test.tsx`, add `'/review-room'` to `mountNav`'s routes and a test that the nav has a link named `Review room` to `/review-room` for every role, and that `buildCommands` offers "Review room".
+
+- [ ] **Step 2: Run them to see them fail**
+
+Run: `cd frontend && pnpm vitest run src/squad/__tests__/reviewRoom.test.tsx src/squad/__tests__/packages.test.tsx src/squad/__tests__/redirects.test.tsx src/squad/__tests__/shell.test.tsx src/squad/__tests__/cockpitSurface.test.tsx`
+Expected: FAIL (`Cannot find module '../review/ReviewRoom'`, `'../clientfile/Packages'`; the redirect, nav and surface tests on the new rows).
+
+- [ ] **Step 3: Move the files**
+
+```bash
+cd frontend
+mkdir -p src/squad/review src/squad/clientfile/review
+git mv src/screens/ReviewRoom.tsx src/squad/review/ReviewRoom.tsx
+git mv src/screens/review/Commentary.tsx src/squad/clientfile/review/Commentary.tsx
+git mv src/screens/review/CommentaryEditor.tsx src/squad/clientfile/review/CommentaryEditor.tsx
+git mv src/screens/review/commentary.test.tsx src/squad/clientfile/review/commentary.test.tsx
+git mv src/screens/borrower/Packages.tsx src/squad/clientfile/Packages.tsx
+git mv src/screens/borrower/PackageSchedules.tsx src/squad/clientfile/PackageSchedules.tsx
+git mv src/screens/borrower/PackageSchedules.test.tsx src/squad/clientfile/PackageSchedules.test.tsx
+sed -i "s#from '\./parts'#from '@/screens/parts'#; s#from '\./review/Commentary'#from '@/squad/clientfile/review/Commentary'#" src/squad/review/ReviewRoom.tsx
+sed -i "s#from '\.\./parts'#from '@/screens/parts'#" src/squad/clientfile/review/Commentary.tsx src/squad/clientfile/Packages.tsx src/squad/clientfile/PackageSchedules.tsx
+sed -i "s#@/screens/review/Commentary#@/squad/clientfile/review/Commentary#" src/squad/clientfile/views.tsx
+```
+
+- [ ] **Step 4: The review room in Squad**
+
+In `src/squad/review/ReviewRoom.tsx`:
+- Replace the import of `WorkItemPanel` with `import { CasePanel } from '../case/CasePanel';` and add `import { clientFile, threadHref } from '../links';` and `import { usePresence } from '../presence/Presence';`.
+- In `Sheet`, the borrower link becomes `<Link to={clientFile(code)} className="link">Open the client file</Link>`, and the approval aside becomes:
+
+```tsx
+      {approval ? (
+        <aside aria-label="Approval of this commentary" data-work-item={approval.id} className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
+          <h3 className="sq-h2">{approval.title}</h3>
+          <CasePanel key={approval.id} workItemId={approval.id} onOpenCase={(id) => code && void navigate(threadHref(code, id))} />
+        </aside>
+      ) : null}
+```
+
+with `const navigate = useNavigate();` at the top of `Sheet`. The commentary approval is now decided through Squad's case (the engine's predicate decides who may approve; a second-person refusal is shown in the server's words).
+- Confirmations go to the presence line, never a toast: in `MeetingCard`, `NewMeeting` and `Actions`, replace `const toast = useToast();` with `const { say } = usePresence();` and each `toast({ tone, title, description })` with `say(title)` (for example `say(`Meeting moved to: ${next.label.toLowerCase()} · recorded`)`). Remove `useToast` from the `@/design` import.
+- No role names in copy: the empty-meeting description for a person without `manage_actions` becomes `'Your role cannot create a meeting; the server decides who may.'`. Leave every `can('manage_actions')` check: it reads the signed-in person's permissions as the server sent them.
+- `PageHeader`'s eyebrow `Bank of Stoic · Commercial lending` becomes `Credit Squad`.
+
+In `router.tsx`, `reviewRoomRoute` loads `@/squad/review/ReviewRoom` (export `ReviewRoom`; path and `validateSearch` unchanged). In `surface.ts`, add `'/review-room'` to `SQUAD`. In `SquadNav.tsx`, after the Approvals link, add for everyone:
+
+```tsx
+      <Link to="/review-room" className="sq-navlink" aria-current={pathname.startsWith('/review-room') ? 'page' : undefined} title="Review room">
+        <Presentation size={18} aria-hidden />
+        <span className="sq-navlabel">Review room</span>
+      </Link>
+```
+
+(`Presentation` from `lucide-react`.) In `commands.ts`, push `{ id: 'go-review-room', group: 'Go to', label: 'Review room', hint: 'Meetings, sheets, commentary and actions', run: () => go('/review-room') }` after My Portfolio. In `clientfile/views.tsx` `Reviews`, each sheet row gains `<Link to="/review-room" search={{ sheet: s.id }} className="sq-link">Open in the review room</Link>`.
+
+- [ ] **Step 5: Packages in the client file**
+
+In `src/squad/clientfile/Packages.tsx`:
+- `export function Packages({ borrower }: { borrower: BorrowerRow })` (import `BorrowerRow` from `@/api/schema`); delete the `useCurrentBorrower` import and call.
+- Replace `useToast`/`toast(...)` with `usePresence().say(title)` as in Step 4 (`say('Package prepared · nothing is released yet')`, `say('Package released · recorded')`).
+- The release note for a person without the served `release_package` permission becomes `Your role cannot release a package; the server would refuse it.`. The Release button stays wherever a package is not released: the server refuses with its reason (draft commentary, verification, permission) and the card quotes it, as it does today.
+
+In `src/squad/clientfile/PackageSchedules.tsx`: delete `ROLES_WITH`, `roleLabel` and `holders`; the note for a person without `release_package` becomes `'Your role can read package schedules but cannot create or run them; the server decides who may.'`; toasts become `say(...)` as above.
+
+In `src/squad/links.ts`, `ClientFileView` gains `'packages'`. In `ClientFile.tsx`, add `['packages', 'Packages']` to `VIEWS` after `'reviews'` and `packages: Packages` to `BODY` (import from `./Packages`). In `redirects.ts`, `OLD_VIEWS.packages` becomes `'packages'`.
+
+The old cockpit route `/borrowers/$code/packages` (`packagesRoute` in `router.tsx`) loaded the moved file: delete `packagesRoute` and its `routeTree` entry now (Task 5b turns every `/borrowers…` address into a redirect; until then `/borrowers/<code>/packages` is not found).
+
+- [ ] **Step 6: Journeys: a review-room meeting, and generate → verify → release**
+
+Append to `frontend/e2e/squad.mjs`:
+
+```js
+journey('review room: a portfolio manager opens a meeting, moves it to during and raises an action; an analyst reads it without controls', async ({ browser }) => {
+  const pm = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const p = await pm.newPage();
+  await signIn(p, 'dana.whitfield@bankofstoic.example');
+  await p.goto(`${BASE}/review-room`);
+  await p.locator('.sq-main[data-surface="squad"]').waitFor();
+  const title = `Portfolio review ${new Date().toISOString().slice(11, 19)}`;
+  // the meeting form only: the actions form on the same page has fields of its own
+  const form = p.locator('form').filter({ has: p.getByRole('button', { name: 'Create the meeting' }) });
+  await form.getByLabel('Title').fill(title);
+  await form.getByLabel('Meeting date').fill('2026-11-30');
+  await form.getByRole('button', { name: 'Create the meeting' }).click();
+  await p.getByText(title).first().waitFor();
+  const meetings = await api(p, '/review-meetings');
+  const meeting = meetings.find((m) => m.title === title);
+  await p.goto(`${BASE}/review-room?meeting=${meeting.id}`);
+  await p.getByRole('button', { name: 'Move to during' }).click();
+  await p.getByText(/Meeting moved to: during · recorded/).waitFor();
+  assert((await api(p, '/review-meetings')).find((m) => m.id === meeting.id).phase === 'during', 'the phase was not recorded');
+  await pm.close();
+  const an = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const a = await an.newPage();
+  await signIn(a, ANALYST);
+  await a.goto(`${BASE}/review-room?meeting=${meeting.id}`);
+  await a.getByText(title).first().waitFor();
+  assert((await a.getByRole('button', { name: /^Move to / }).count()) === 0, 'an analyst was offered the meeting phase');
+  await an.close();
+});
+```
+
+(If the "Raise an action" form's labels are needed, read them from `Actions` in the moved file; the journey asserts the meeting and phase, which are the spec's before/during/after.)
+
+In `frontend/e2e/repair.mjs` (the repair seed holds Larkspur's drafted commentary waiting for approval, which is what a release needs):
+- The commentary journey (it opens `/review-room`) keeps its address; its approval check becomes `await page.locator('[data-work-item] [data-case]').waitFor();` and `assert((await page.locator('[data-work-item] [data-case]').getAttribute('data-item-status')) === 'open', 'saving does not approve the commentary');`.
+- The schedules journey opens `` `${BASE}/clients/larkspur-environmental/file/packages` `` (both places it opened the cockpit tab); its last assertion reads the new note `Your role can read package schedules but cannot create or run them; the server decides who may.`.
+- Add, after the commentary journey, a journey that a portfolio manager approves the commentary in the review room, then prepares, verifies and releases the package:
+
+```js
+  {
+    name: 'a portfolio manager approves the commentary in the review room, prepares the package, verifies every figure and releases it',
+    async run(page) {
+      await signIn(page, MANAGER);
+      await page.goto(`${BASE}/review-room`);
+      await page.waitForSelector('[data-ready]');
+      await page.getByRole('button', { name: /Larkspur Environmental Services/ }).first().click();
+      const approval = page.getByRole('complementary', { name: 'Approval of this commentary' });
+      await approval.getByRole('radio', { name: /^Approve/ }).check();
+      await approval.getByRole('button', { name: 'Record decision' }).click();
+      await approval.locator('[data-case][data-item-status="decided"]').waitFor();
+      await page.goto(`${BASE}/clients/larkspur-environmental/file/packages`);
+      await page.waitForSelector('[data-ready]');
+      const before = await page.locator('[data-package]').count();
+      await page.getByRole('button', { name: 'Prepare the package' }).click();
+      await page.waitForFunction((n) => document.querySelectorAll('[data-package]').length === n, before + 1);
+      const card = page.locator('[data-package]').first();
+      await card.getByRole('button', { name: 'Verify the files' }).click();
+      await card.getByText(/figures? checked/).waitFor();
+      await card.getByRole('button', { name: 'Release' }).click();
+      await card.getByText(/^Released/).waitFor();
+      const id = await card.getAttribute('data-package');
+      const pkg = await (await page.request.get(`${BASE}/api/v1/packages/${id}`)).json();
+      assert(pkg.status === 'released', 'the package was not released on the server');
+    },
+  },
+```
+
+(The commentary journey before it was saved by Priya, so Dana is a second person for the approval. If `Verify the files`' success text differs, read it from `PackageCard` in the moved file and match that.)
+
+- [ ] **Step 7: Run the checks**
+
+Run: `cd frontend && pnpm vitest run && pnpm typecheck && pnpm lint`
+Expected: PASS. Then on the innovation seed `pnpm e2e:squad`, and on a database loaded by `e2e/seed_repair.py` `pnpm e2e:repair`: every journey passes.
+
+- [ ] **Step 8: Commit**
+
+```bash
+(cd frontend && pnpm vitest run && pnpm typecheck && pnpm lint) && git add -A frontend/src frontend/e2e && \
+git commit -m "feat(p4b): the review room and packages move into Squad: meetings, sheets, commentary approval through the case, actions; packages and schedules in the client file
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
+```
+
+---
+
+### Task 5b: Retire the cockpit
+
+**Files:**
+- Move (`git mv`): `frontend/src/screens/work/WorkItemPanel.tsx` → `frontend/src/squad/case/parts.tsx` (its evidence rows, recommendation, guardrail notes and related items stay; only the cockpit decision form, authority gate, recorded-decision card and panel shell go); `frontend/src/screens/work/decision.test.tsx` → `frontend/src/squad/case/parts.test.tsx`; `frontend/src/screens/work/HeldFigures.tsx` → `frontend/src/squad/case/HeldFigures.tsx`; `frontend/src/screens/work/KeyFigures.tsx` → `frontend/src/squad/case/KeyFigures.tsx`; `frontend/src/screens/borrower/RunStage.tsx`, `RunStage.test.tsx`, `UploadDocument.tsx`, `UploadDocument.test.tsx` → `frontend/src/squad/clientfile/` (the commentary editor, the review room and packages moved in Task 5a)
+- Delete (`git rm`): `frontend/src/screens/Calendar.tsx`, `Calendar.test.ts` (owner decision, 21 November: the calendar leaves v2), `frontend/src/shell/` (all), `frontend/src/drawer/` (all), `frontend/src/fixtures/` (all; only `DesignPage` used them), `frontend/src/screens/AgentActivity.tsx`, `AgentActivity.test.tsx`, `CommandCentre.tsx`, `CommandCentre.test.ts`, `DesignPage.tsx`, `Governance.tsx`, `Governance.test.tsx`, `Portfolio.tsx`, `Portfolio.test.tsx`, what remains of `frontend/src/screens/borrower/` after the moves, `frontend/e2e/run.mjs`
+- Keep: `frontend/src/screens/SignIn.tsx` and `frontend/src/screens/parts.tsx` (shared by `SignIn`, the moved parts and `repair/`); `src/squad/review/ReviewRoom.tsx`, `src/squad/clientfile/Packages.tsx`, `PackageSchedules.tsx` (moved in Task 5a); `frontend/e2e/repair.mjs` and `frontend/e2e/seed_repair.py`, retargeted at Squad's screens (lesson: a gate needs a repair path, and it keeps its browser test)
 - Create: `frontend/src/squad/__tests__/retired.test.ts`
 - Rename: `frontend/src/squad/__tests__/cockpitSurface.test.tsx` → `surface.test.tsx`
 - Modify: `frontend/src/router.tsx`, `frontend/src/squad/shell/SquadShell.tsx`, `surface.ts`, `frontend/src/squad/redirects.ts`, `frontend/src/squad/case/CasePanel.tsx`, `frontend/src/squad/clientfile/views.tsx`, `frontend/src/repair/repair.test.tsx`, `frontend/src/source/SourceDrawer.tsx` (document words), `frontend/src/domain/labels.ts` (the old document-type table goes), `frontend/src/squad/squad.css`, `frontend/src/squad/__tests__/shell.test.tsx`, `thread.test.tsx`, `case.test.tsx`, `frontend/src/squad/home/SquadHome.tsx`, `frontend/src/squad/thread/ClientThread.tsx` (`data-ready`), `frontend/package.json`, `frontend/scripts/serve.mjs`, `frontend/e2e/squad.mjs`, `frontend/e2e/repair.mjs`, `README.md`, `docs/HANDOFF.md`, `frontend/DESIGN.md`
 
 **Interfaces:**
-- Consumes: Tasks 1–4 (every Squad screen and redirect exists before anything is deleted); Task 2's `useDocWords()`.
-- Produces: `Surface = 'conversation' | 'squad'` (no `'cockpit'`); `oldAddress` also moves `/calendar`, `/review-room` and `/design` to `/`; new paths `@/squad/case/parts` (`Evidence`, `Recommendation`, `RelatedItems`, `EvidenceRow` as they were), `@/squad/case/HeldFigures`, `@/squad/case/KeyFigures`, `@/squad/clientfile/RunStage`, `@/squad/clientfile/UploadDocument`, `@/squad/clientfile/review/Commentary`. Document-type words come only from the server (`useDocWords`); `domain/labels.ts` no longer has `DOC_TYPE_LABEL` or `docTypeLabel`. The legacy-token bridge in `looks.ts` stays: `src/design/` components and the moved parts still read those names (checked in Step 7).
+- Consumes: Tasks 1–4 and 5a (every Squad screen, the review room and packages exist in Squad before anything is deleted); Task 2's `useDocWords()`.
+- Produces: `Surface = 'conversation' | 'squad'` (no `'cockpit'`); `oldAddress` also moves `/calendar` and `/design` to `/` (the review room keeps `/review-room`); new paths `@/squad/case/parts` (`Evidence`, `Recommendation`, `RelatedItems`, `EvidenceRow` as they were), `@/squad/case/HeldFigures`, `@/squad/case/KeyFigures`, `@/squad/clientfile/RunStage`, `@/squad/clientfile/UploadDocument`. Document-type words come only from the server (`useDocWords`); `domain/labels.ts` no longer has `DOC_TYPE_LABEL` or `docTypeLabel`. The legacy-token bridge in `looks.ts` stays: `src/design/` components and the moved parts still read those names (checked in Step 6).
 
-**Owner question 1 decides one branch here:** the packages, review-room and calendar deletions are their own commit (Step 3), made before the rest of the cockpit goes, so the owner's answer can be acted on in one place. If the owner has said to keep any of them, do not run Task 5 at all: stop and report, because each of those screens imports cockpit pieces this task deletes (the drawer, `BorrowerLayout`, `WorkItemPanel`) and first needs its own Squad screen, a separate task the owner must see. With no answer, proceed: v1 keeps them (git 2292b38) and their APIs stay.
+**Owner decision (21 November 2026):** the review room and packages stay (moved into Squad by Task 5a, which must be done first); the calendar is deleted here with the rest of the cockpit. v1 keeps every cockpit screen at git 2292b38.
 
 - [ ] **Step 1: Write the failing guard test**
 
@@ -3938,34 +4243,14 @@ describe('the cockpit is retired', () => {
 });
 ```
 
-In `frontend/src/squad/__tests__/surface.test.tsx` (renamed from `cockpitSurface.test.tsx`): the `surfaceOf` cases become `['/', '/clients/QFL']` → `'conversation'` and `['/approvals', '/portfolio', '/clients/QFL/file', '/oversight', '/anything-else']` → `'squad'`; drop the `WorkspaceDrawerProvider` wrapper from `mountAt`; delete the test that mounts `/calendar` as a cockpit screen; the CSS test becomes `expect(css).toMatch(/\.sq-main\[data-surface='squad'\]\s*\{[^}]*max-width:\s*1280px/)` and `expect(css).not.toMatch(/data-surface='cockpit'/)`. Keep the "legacy cockpit tokens stay legible in every look" tests (the bridge stays). In `shell.test.tsx`, delete the `describe('SquadShell and the legacy drawer', …)` block and the `WorkspaceDrawerProvider` import. In `redirects.test.tsx`, add `['/calendar', '/'], ['/review-room', '/'], ['/design', '/']` to the table.
+In `frontend/src/squad/__tests__/surface.test.tsx` (renamed from `cockpitSurface.test.tsx`): the `surfaceOf` cases become `['/', '/clients/QFL']` → `'conversation'` and `['/approvals', '/portfolio', '/clients/QFL/file', '/oversight', '/anything-else']` → `'squad'`; drop the `WorkspaceDrawerProvider` wrapper from `mountAt`; delete the test that mounts `/calendar` as a cockpit screen; the CSS test becomes `expect(css).toMatch(/\.sq-main\[data-surface='squad'\]\s*\{[^}]*max-width:\s*1280px/)` and `expect(css).not.toMatch(/data-surface='cockpit'/)`. Keep the "legacy cockpit tokens stay legible in every look" tests (the bridge stays). In `shell.test.tsx`, delete the `describe('SquadShell and the legacy drawer', …)` block and the `WorkspaceDrawerProvider` import. In `redirects.test.tsx`, add `['/calendar', '/'], ['/design', '/']` to the table and assert `oldAddress('/review-room', {})` is `null` (it is a Squad address). In `surface.test.tsx`, `'/review-room'` is in the Squad list.
 
 - [ ] **Step 2: Run them to see them fail**
 
 Run: `cd frontend && pnpm vitest run src/squad/__tests__/retired.test.ts src/squad/__tests__/surface.test.tsx src/squad/__tests__/redirects.test.tsx`
 Expected: the guard's self-check PASSES (the expression catches all four retired forms); the second guard test FAILS listing `src/router.tsx`, `src/squad/shell/SquadShell.tsx`, `src/squad/case/CasePanel.tsx`, `src/squad/clientfile/views.tsx`, `src/repair/repair.test.tsx`, `src/squad/__tests__/case.test.tsx` and others; the surface and redirect tests fail on `'cockpit'` and `/calendar`.
 
-- [ ] **Step 3: Delete packages, the review room and the calendar, in their own commit (owner question 1)**
-
-```bash
-cd frontend
-git rm -q src/screens/Calendar.tsx src/screens/Calendar.test.ts src/screens/ReviewRoom.tsx \
-  src/screens/borrower/Packages.tsx src/screens/borrower/PackageSchedules.tsx src/screens/borrower/PackageSchedules.test.tsx
-```
-
-In `router.tsx`, delete `calendarRoute`, `reviewRoomRoute` and `packagesRoute` and their entries in `routeTree`; in `e2e/repair.mjs`, delete the packages journeys (the two that open `/borrowers/larkspur-environmental/packages`). Nothing else imports the four screens, so the tree still builds; this commit holds only these deletions (nothing else is staged yet: the moves come in Step 4):
-
-```bash
-(cd frontend && pnpm typecheck && pnpm vitest run) && git add -A frontend/src/screens/Calendar.tsx frontend/src/screens/Calendar.test.ts frontend/src/screens/ReviewRoom.tsx \
-  frontend/src/screens/borrower/Packages.tsx frontend/src/screens/borrower/PackageSchedules.tsx frontend/src/screens/borrower/PackageSchedules.test.tsx \
-  frontend/src/router.tsx frontend/e2e/repair.mjs && \
-git commit -m "chore(p4b): packages, review room and calendar leave v2 (owner question 1; v1 keeps them at 2292b38)
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
-```
-
-- [ ] **Step 4: Move what Squad still uses, keep the case content, and point imports at the new places**
+- [ ] **Step 3: Move what Squad still uses, keep the case content, and point imports at the new places**
 
 ```bash
 cd frontend
@@ -3977,13 +4262,9 @@ git mv src/screens/borrower/RunStage.tsx src/squad/clientfile/RunStage.tsx
 git mv src/screens/borrower/RunStage.test.tsx src/squad/clientfile/RunStage.test.tsx
 git mv src/screens/borrower/UploadDocument.tsx src/squad/clientfile/UploadDocument.tsx
 git mv src/screens/borrower/UploadDocument.test.tsx src/squad/clientfile/UploadDocument.test.tsx
-mkdir -p src/squad/clientfile/review
-git mv src/screens/review/Commentary.tsx src/squad/clientfile/review/Commentary.tsx
-git mv src/screens/review/CommentaryEditor.tsx src/squad/clientfile/review/CommentaryEditor.tsx
-git mv src/screens/review/commentary.test.tsx src/squad/clientfile/review/commentary.test.tsx
-sed -i "s#from '\.\./parts'#from '@/screens/parts'#" src/squad/clientfile/RunStage.tsx src/squad/clientfile/UploadDocument.tsx src/squad/clientfile/review/Commentary.tsx src/squad/case/parts.tsx
+sed -i "s#from '\.\./parts'#from '@/screens/parts'#" src/squad/clientfile/RunStage.tsx src/squad/clientfile/UploadDocument.tsx src/squad/case/parts.tsx
 sed -i "s#@/screens/work/HeldFigures#@/squad/case/HeldFigures#; s#@/screens/work/KeyFigures#@/squad/case/KeyFigures#; s#@/screens/work/WorkItemPanel#@/squad/case/parts#" src/squad/case/CasePanel.tsx src/squad/__tests__/case.test.tsx src/repair/repair.test.tsx
-sed -i "s#@/screens/borrower/RunStage#@/squad/clientfile/RunStage#; s#@/screens/borrower/UploadDocument#@/squad/clientfile/UploadDocument#; s#@/screens/review/Commentary#@/squad/clientfile/review/Commentary#" src/squad/clientfile/views.tsx
+sed -i "s#@/screens/borrower/RunStage#@/squad/clientfile/RunStage#; s#@/screens/borrower/UploadDocument#@/squad/clientfile/UploadDocument#" src/squad/clientfile/views.tsx
 ```
 
 Then edit `src/squad/case/parts.tsx` (the former `WorkItemPanel.tsx`), keeping every evidence, recommendation, guardrail-note and related-item piece:
@@ -4040,24 +4321,24 @@ Then fix the two links inside the moved client-file files: in `RunStage.tsx`, `<
 Last, the old document-type table: in `src/source/SourceDrawer.tsx` replace `docTypeLabel(page.doc_type)` with `words(page.doc_type)` from `const words = useDocWords();` (from `@/squad/DocType`) in the component that renders it; delete `DOC_TYPE_LABEL` and `docTypeLabel` from `src/domain/labels.ts`. `grep -rn docTypeLabel src` must print nothing.
 
 Run: `pnpm typecheck`
-Expected: errors only in files Step 5 deletes (cockpit screens importing the moved files) and in `router.tsx`.
+Expected: errors only in files Step 4 deletes (cockpit screens importing the moved files) and in `router.tsx`.
 
-- [ ] **Step 5: Delete the rest of the cockpit**
+- [ ] **Step 4: Delete the rest of the cockpit**
 
 ```bash
 cd frontend
 git rm -r -q src/shell src/drawer src/fixtures src/screens/borrower
-git rm -q src/screens/AgentActivity.tsx src/screens/AgentActivity.test.tsx src/screens/CommandCentre.tsx src/screens/CommandCentre.test.ts \
+git rm -q src/screens/Calendar.tsx src/screens/Calendar.test.ts src/screens/AgentActivity.tsx src/screens/AgentActivity.test.tsx src/screens/CommandCentre.tsx src/screens/CommandCentre.test.ts \
   src/screens/DesignPage.tsx src/screens/Governance.tsx src/screens/Governance.test.tsx src/screens/Portfolio.tsx src/screens/Portfolio.test.tsx \
   e2e/run.mjs
 ls src/screens   # expect: SignIn.tsx parts.tsx
 ```
 
-(`src/screens/work/` and `src/screens/review/` are empty after Step 4's moves; `src/screens/borrower/` then holds only cockpit screens.)
+(`src/screens/work/` and `src/screens/review/` are empty after Step 3's moves and Task 5a's; `src/screens/borrower/` then holds only cockpit screens.)
 
-- [ ] **Step 6: Router, shell, surface, redirects**
+- [ ] **Step 5: Router, shell, surface, redirects**
 
-In `frontend/src/router.tsx`: remove the imports of `CommandCentre`, `WorkspaceDrawerProvider`, `CopilotConversationProvider`; `Root` renders `<SourceProvider><SquadShell /></SourceProvider>`. Delete `commandCentreRoute`, `borrowersRoute`, `borrowerRoute` and every child of it (`summaryRoute` … `timelineRoute`, `documentRoute`, `spreadsRoute`, `covenantsRoute`, `borrowingBaseRoute`), `agentActivityRoute`, `governanceRoute`, `designRoute`, and register redirect routes in their place (import `redirect` from `@tanstack/react-router` and `oldAddress` from `@/squad/redirects`):
+In `frontend/src/router.tsx`: remove the imports of `CommandCentre`, `WorkspaceDrawerProvider`, `CopilotConversationProvider`; `Root` renders `<SourceProvider><SquadShell /></SourceProvider>`. Delete `commandCentreRoute`, `borrowersRoute`, `borrowerRoute` and every child of it (`summaryRoute` … `timelineRoute`, `documentRoute`, `spreadsRoute`, `covenantsRoute`, `borrowingBaseRoute`), `calendarRoute`, `agentActivityRoute`, `governanceRoute`, `designRoute`, and register redirect routes in their place (import `redirect` from `@tanstack/react-router` and `oldAddress` from `@/squad/redirects`):
 
 ```tsx
 const toNew = ({ location }: { location: { pathname: string; search: Record<string, unknown> } }) => {
@@ -4067,13 +4348,13 @@ const toNew = ({ location }: { location: { pathname: string; search: Record<stri
 const old = (path: string) => createRoute({ getParentRoute: () => rootRoute, path, beforeLoad: toNew, component: () => null });
 const oldRoutes = [
   '/borrowers', '/borrowers/$code', '/borrowers/$code/$view', '/borrowers/$code/documents/$documentId',
-  '/command-centre', '/agent-activity', '/governance', '/calendar', '/review-room', '/design',
+  '/command-centre', '/agent-activity', '/governance', '/calendar', '/design',
 ].map(old);
 ```
 
 and add `...oldRoutes` to `routeTree`. (If TanStack's typed `createRoute` refuses a `path` typed as `string`, write the ten `createRoute` calls out one by one with literal paths.) `Notice` stays imported from `@/screens/parts`.
 
-In `frontend/src/squad/redirects.ts`, extend the `moved` map: `'/calendar': '/', '/review-room': '/', '/design': '/'`.
+In `frontend/src/squad/redirects.ts`, extend the `moved` map: `'/calendar': '/', '/design': '/'`. The `reviewRoomRoute` (Squad's review room since Task 5a) stays.
 
 In `frontend/src/squad/shell/SquadShell.tsx`: remove `defaultCopilotScope`, `useWorkspaceDrawer`, `WorkspaceDrawer`, the Ctrl J effect and `<WorkspaceDrawer />`; the `PresenceLine` renders on every surface.
 
@@ -4093,12 +4374,12 @@ In `squad.css`, delete the `.sq-main[data-surface='cockpit']` rule and its comme
 
 In `frontend/package.json` scripts: delete `"e2e"` (its file is gone); keep `"e2e:squad"`, `"e2e:repair"`, `"screenshots"`, `"a11y"`.
 
-- [ ] **Step 7: Check the legacy-token bridge is still read, and say so**
+- [ ] **Step 6: Check the legacy-token bridge is still read, and say so**
 
 Run: `cd frontend && grep -rlE "text-ink|bg-surface|border-hairline|text-cobalt|bg-canvas" src/design src/squad src/repair src/source | head`
-Expected: several files (the `src/design/` components, `HeldFigures`, `KeyFigures`, `repair/`, `SourceDrawer`). The bridge stays; Step 10 records why in `frontend/DESIGN.md`. If the command prints nothing, delete `legacyTokens`, `LEGACY_TOKENS` and their use in `looks.ts` and the "legacy cockpit tokens" tests in `surface.test.tsx` instead.
+Expected: several files (the `src/design/` components, `HeldFigures`, `KeyFigures`, `repair/`, `SourceDrawer`). The bridge stays; Step 9 records why in `frontend/DESIGN.md`. If the command prints nothing, delete `legacyTokens`, `LEGACY_TOKENS` and their use in `looks.ts` and the "legacy cockpit tokens" tests in `surface.test.tsx` instead.
 
-- [ ] **Step 8: Scripts and journeys on Squad's screens, repair journeys kept**
+- [ ] **Step 7: Scripts and journeys on Squad's screens, repair journeys kept**
 
 In `frontend/scripts/serve.mjs`: `signIn` waits for `` `${BASE}/` `` and `.sq-main` (replace `waitForURL('**/command-centre**')` and the `[data-ready]` wait); `BREACH` becomes `'kestrel-bay-packaging'` on the legacy book or `'corvane-analytics'` on the innovation book (set `const BREACH = process.env.SHOT_CLIENT ?? 'corvane-analytics';`); replace `PAGES` with:
 
@@ -4175,11 +4456,11 @@ async function openHeld(page, code, itemType = 'spread.value_unverified') {
 
 - Journey 1 (held spread): replace the queue lookup (`rows`, `held`, `before`, `held.first().click()`, `panel = page.locator('[data-work-item]')`, `itemId = …getAttribute`) with `const { panel, itemId, borrower } = await openHeld(page, 'harrowgate-precision');`. The figure actions inside `[data-held-figures]` are unchanged (the moved `HeldFigures` keeps every accessible name). The decision steps keep `panel.getByRole('form', { name: 'Record a decision' })`, the radio by name and `Record decision` (the `CasePanel` form keeps those names). Replace the two queue-count waits after the decision with `await page.waitForFunction((id) => document.querySelector(`[data-case="${id}"]`)?.getAttribute('data-item-status') === 'decided', itemId);` and an API check that no new `spread.does_not_foot` item opened for the borrower. The closing check on the cockpit spread grid becomes `/clients/harrowgate-precision/file/spreads`: assert the corrected line's cell button names the entered figure (`FactFigure` names start with the figure and the line label, as on the cockpit grid), or read the value through `/api/v1/borrowers/{id}/spread`.
 - Journey 2 (correct a figure from the source drawer): start at `/clients/halvorsen-plastics/file/spreads`, open the figure by its button (same accessible-name rule); the drawer steps are unchanged (the source drawer did not move); the closing check reads the covenant outcome from `/api/v1/ui/borrowers/{id}/covenants` and then opens `/clients/halvorsen-plastics/file/covenants` to see it.
-- Journey 3 (commentary in place): start at `/clients/<the seeded commentary client>/file/reviews`, click the sheet's button to show its commentary (`Commentary` is unchanged, so the edit, insert-a-figure and save steps keep their names); replace the `[data-work-item]` "Commentary awaiting approval" check with an API check that the `review.commentary_approval` item is still `open`.
+- Journey 3 (commentary in place) and the approve-prepare-verify-release journey stay on `/review-room` and the client file's packages view, as Task 5a set them.
 - Journey 4 (upload): start at `/clients/larkspur-environmental/file/documents` and click "File a document" (the moved `UploadDocument` keeps its names).
-- The packages journeys left in Step 3.
+- The package-schedules journey already opens the client file's packages view (Task 5a).
 
-- [ ] **Step 9: Run everything the front end has**
+- [ ] **Step 8: Run everything the front end has**
 
 Run: `cd frontend && pnpm vitest run && pnpm typecheck && pnpm lint && pnpm build`
 Expected: PASS; `retired.test.ts` passes; the build has no chunk for a deleted screen.
@@ -4190,13 +4471,13 @@ Expected: every journey prints `PASS`.
 Then on a separate database loaded by `e2e/seed_repair.py` (its header says how): `pnpm e2e:repair`
 Expected: `PASSED` for every remaining journey. Point the API at the repair database for this run only, and back after.
 
-- [ ] **Step 10: Documents**
+- [ ] **Step 9: Documents**
 
 - `README.md`, "Check it": the front-end line becomes `(cd frontend && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm e2e:squad)`, with the sentence "The Squad journeys need the seeded stack and `uv run python -m app.squad_demo`; they record a hand-off and a decision, so run them on a fresh seed." The "Workspace" row of "Where things are" becomes `Credit Squad: frontend/src/squad/ (design rules in frontend/DESIGN.md; spec docs/specs/2026-11-20-squad-experience-design.md)`.
-- `frontend/DESIGN.md`: replace the "Shell" section with a "Shell (Credit Squad)" section: collapsible left nav (Squad with its needs-you count, My Portfolio, Approvals for roles that decide breaches or approve terms, Open cases by name when expanded and as one button when collapsed, Oversight for administrators and reviewers, the person, the look and sign-out); the presence line under the mark carries every confirmation; the evidence drawer pushes content; Ctrl K palette; no Ctrl J (the Copilot is the composer in each thread). In "The product on real data", rename the `WorkItemPanel` row to `squad/case/parts` ("the evidence rows, the agent's recommendation with its guardrail notes, and the open questions that may change a result, shown inside `CasePanel`"); replace the `screens/AgentActivity` and `screens/Governance` rows with one `squad/oversight` row ("runs with their steps and named checks; the ledger with an action filter, hidden sign-ins, paging and verification; roles and permissions, the policy register, the agent inventory, the signal rules; the evaluation with shares as the server's percentages; the clock for the role that may move it"); delete the `borrower/PackageSchedules` row; rename `work/HeldFigures` to `squad/case/HeldFigures`, `review/Commentary` to `squad/clientfile/review/Commentary`, `borrower/UploadDocument` to `squad/clientfile/UploadDocument`; add rows for `squad/case/CasePanel` ("one case: the router's view, the evidence, and only the actions the server allows; a refusal is named and quoted, a second-person refusal is never pre-empted"), `squad/clientfile` ("every figure is a stored fact or a record field with its glyph; unmeasured is 'Not measured' or the stored note, never zero") and `squad/clientfile/Measure` ("plot positions only; an unmeasured period is an outline"). Add one sentence under Colour tokens: "`src/squad/looks.ts` bridges these names to each look, because `src/design/` components and the case and repair parts still read them." Replace the "Checks" block with `pnpm typecheck && pnpm lint && pnpm test && pnpm build`, `pnpm e2e:squad`, `pnpm e2e:repair` (on a database loaded by `e2e/seed_repair.py`), `node scripts/screenshots.mjs`, `node scripts/a11y.mjs`, and keep the final checklist paragraph unchanged.
-- `docs/HANDOFF.md`: in the phase table, row 4 reads "4a done and merged (20 Nov). 4b: `docs/plans/2026-11-21-phase-4b-squad-approvals-and-client-file.md`, tasks 1–5 done; cockpit retired (v1 at git 2292b38)". Under "Known gaps carried to later phases", add the three carry items listed at the top of this plan (spreadsheet reading, Kestrel Bay wrong-abstain, Pellham wording) with "needs a billable re-record to show any fix; owner to approve".
+- `frontend/DESIGN.md`: replace the "Shell" section with a "Shell (Credit Squad)" section: collapsible left nav (Squad with its needs-you count, My Portfolio, Approvals where the server offers it, Review room, Open cases by name when expanded and as one button when collapsed, Oversight for administrators and reviewers, the person, the look and sign-out); the presence line under the mark carries every confirmation; the evidence drawer pushes content; Ctrl K palette; no Ctrl J (the Copilot is the composer in each thread). In "The product on real data", rename the `WorkItemPanel` row to `squad/case/parts` ("the evidence rows, the agent's recommendation with its guardrail notes, and the open questions that may change a result, shown inside `CasePanel`"); replace the `screens/AgentActivity` and `screens/Governance` rows with one `squad/oversight` row ("runs with their steps and named checks; the ledger with an action filter, hidden sign-ins, paging and verification; roles and permissions, the policy register, the agent inventory, the signal rules; the evaluation with shares as the server's percentages; the clock for the role that may move it"); rename `borrower/PackageSchedules` to `squad/clientfile/PackageSchedules` and add a `squad/clientfile/Packages` row ("prepare, download, verify against the snapshot, release: the server refuses a draft-commentary or unverified package, or a role without `release_package`, and the card quotes it") and a `squad/review/ReviewRoom` row ("meetings with their phases before, during, after and closed; review sheets from stored facts; commentary edited in place and approved through the case; actions"); rename `work/HeldFigures` to `squad/case/HeldFigures`, `review/Commentary` to `squad/clientfile/review/Commentary`, `borrower/UploadDocument` to `squad/clientfile/UploadDocument`; add rows for `squad/case/CasePanel` ("one case: the router's view, the evidence, and only the actions the server allows; a refusal is named and quoted, a second-person refusal is never pre-empted"), `squad/clientfile` ("every figure is a stored fact or a record field with its glyph; unmeasured is 'Not measured' or the stored note, never zero") and `squad/clientfile/Measure` ("plot positions only; an unmeasured period is an outline"). Add one sentence under Colour tokens: "`src/squad/looks.ts` bridges these names to each look, because `src/design/` components and the case and repair parts still read them." Replace the "Checks" block with `pnpm typecheck && pnpm lint && pnpm test && pnpm build`, `pnpm e2e:squad`, `pnpm e2e:repair` (on a database loaded by `e2e/seed_repair.py`), `node scripts/screenshots.mjs`, `node scripts/a11y.mjs`, and keep the final checklist paragraph unchanged.
+- `docs/HANDOFF.md`: in the phase table, row 4 reads "4a done and merged (20 Nov). 4b: `docs/plans/2026-11-21-phase-4b-squad-approvals-and-client-file.md`, tasks 1–5b done; review room and packages kept in Squad, calendar removed; cockpit retired (v1 at git 2292b38)". Under "Known gaps carried to later phases", add the three carry items listed at the top of this plan (spreadsheet reading, Kestrel Bay wrong-abstain, Pellham wording) with "needs a billable re-record to show any fix; owner to approve".
 
-- [ ] **Step 11: Commit**
+- [ ] **Step 10: Commit**
 
 ```bash
 (cd frontend && pnpm vitest run && pnpm typecheck && pnpm lint && pnpm build) && \
@@ -4226,7 +4507,7 @@ Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
 Append to `frontend/e2e/squad.mjs`, before the runner:
 
 ```js
-const VIEWS = ['', '/spreads', '/covenants', '/documents', '/funding', '/loans', '/reviews', '/history'];
+const VIEWS = ['', '/spreads', '/covenants', '/documents', '/funding', '/loans', '/reviews', '/packages', '/history'];
 
 async function noScroll(page, where) {
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `horizontal page scroll on ${where}`);
@@ -4320,7 +4601,7 @@ for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER]]) {
 /** Every Squad screen a person of this kind can reach; the contrast and width journeys walk all of them. */
 async function screensFor(page, kind) {
   const [b] = await api(page, '/borrowers');
-  const shared = ['/', `/clients/${b.code}`, `/clients/${b.code}/file`, `/clients/${b.code}/file/spreads`, `/clients/${b.code}/file/covenants`, `/clients/${b.code}/file/documents`, '/portfolio'];
+  const shared = ['/', `/clients/${b.code}`, `/clients/${b.code}/file`, `/clients/${b.code}/file/spreads`, `/clients/${b.code}/file/covenants`, `/clients/${b.code}/file/documents`, `/clients/${b.code}/file/packages`, '/portfolio', '/review-room'];
   if (kind === 'officer') return [...shared, '/approvals'];
   if (kind === 'admin') return ['/', '/oversight', '/oversight/ledger', '/oversight/governance', '/oversight/evaluations', '/oversight/clock'];
   return shared;
@@ -4434,12 +4715,13 @@ Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
 
 ## Owner questions
 
-1. **Packages, the review room and the calendar.** The Squad spec's structure (section 3) has no place for them, so Task 5 deletes them in their own commit, before the rest of the cockpit; v1 keeps them (git 2292b38) and their APIs stay. Keep any of them in v2? If yes, each needs its own Squad screen, as a separate task.
+1. **Packages, the review room and the calendar.** *Answered 21 November 2026: keep the review room and packages, delete the calendar.* Task 5a moves the first two into Squad; Task 5b deletes the calendar.
 2. **Agents reading figures from spreadsheets.** Out of 4b (a new reading capability, not experience). Which phase should own it?
 3. **Kestrel Bay's covenant investigation (wrong-abstain) and Pellham's re-recorded wording.** Both are agent behaviour; neither can be shown fixed without a new record pass, which is billable. Approve a small targeted re-record after a fix, in a later phase? An estimate will come with the request (for scale only: the 21 November re-record of three agents over the whole book measured 2.56 US dollars).
 4. **Signals no longer counted in "needs you"** (finding 5, Task 3). A signal that needs a decision already raises a work item, which counts. Confirm.
 5. **"Bank account statement"** is the plain-words name for `bank_statement` beside the document's own printed title ("Account statement, August 2026"). Confirm or name the wording you want.
 6. **"Squad gathers what was asked"** (spec section 10). The plan has code list the client's documents not yet attached and a person attach one (or draft a request to the client); Squad attaches nothing by itself. Confirm this reading.
+7. **A second person for releasing a package.** The engine today refuses a release for a role without `release_package`, a package with draft commentary, or one that fails verification (`publishing/service.py::release_package`); it does not refuse the person who prepared the package (`packages.prepared_by_id`). Task 5a keeps that rule as it is. Should releasing need a second person, as approvals do? It would be one engine check with its tests.
 
 ## Rulings where the spec was silent (each can be overruled)
 
@@ -4470,10 +4752,12 @@ Claude-Session: https://claude.ai/code/session_01LdgDGWNkubuJiXXErhFMLq"
 - §15 decisions: product name unchanged; client file redesigned (Task 2); default looks unchanged.
 - Findings: every one placed (table at the top); bugs 1–3 were already fixed and are re-checked by Task 6's journeys.
 
-**Pre-flight scan (`.superpowers/sdd/2026-11-21-phase-4b-squad-approvals-and-client-file/preflight.md`) applied.** B1 (seeded facts), B2 (ask vs case in the every-client journey), I1 with the controller's ruling (case content ported, tests ported in Task 5, trail on Approvals), I2 with the controller's ruling (the engine refuses the router; engine and API tests), I3 and I4 (one engine predicate; Approvals offered by the server), I5 (one served words table; a test with a wording only the server could give), I6 (`checkUnmeasured` against the API, with a self-check that fails on a wrong page), I7 (zero and negative drawn as low bars), I8 (runs with steps and checks, ledger filters and paging, agent inventory, signal rules; two drops listed in the rulings), I9 (repair journeys retargeted), I10 (1000–1920 only; `/approvals` and `/oversight` in the contrast and width scans), I11 (the `case` message written out and tested), I12 (a return read from the ledger; a plain assignment test), I13 (the owner-question deletions in their own commit), M1–M5, M7–M16. Not applied: M6 (the commit trailer): this plan's two lines were given by the controller and are kept.
+**Pre-flight scan (`.superpowers/sdd/2026-11-21-phase-4b-squad-approvals-and-client-file/preflight.md`) applied.** B1 (seeded facts), B2 (ask vs case in the every-client journey), I1 with the controller's ruling (case content ported, tests ported in Task 5b, trail on Approvals), I2 with the controller's ruling (the engine refuses the router; engine and API tests), I3 and I4 (one engine predicate; Approvals offered by the server), I5 (one served words table; a test with a wording only the server could give), I6 (`checkUnmeasured` against the API, with a self-check that fails on a wrong page), I7 (zero and negative drawn as low bars), I8 (runs with steps and checks, ledger filters and paging, agent inventory, signal rules; two drops listed in the rulings), I9 (repair journeys retargeted), I10 (1000–1920 only; `/approvals` and `/oversight` in the contrast and width scans), I11 (the `case` message written out and tested), I12 (a return read from the ledger; a plain assignment test), I13 (overtaken by the owner's answer of 21 November: the review room and packages move into Squad in Task 5a, the calendar is deleted in Task 5b), M1–M5, M7–M16. Not applied: M6 (the commit trailer): this plan's two lines were given by the controller and are kept.
 
-**Placeholder scan.** No "TBD" or "add tests for the above". Two steps name a check the executor runs before writing (Task 5 Step 7 decides whether the legacy-token bridge stays, with both outcomes spelled out; Task 5's owner-question branch, stop or proceed, spelled out). Mechanical moves are given as commands.
+**Placeholder scan.** No "TBD" or "add tests for the above". Two steps name a check the executor runs before writing (Task 5b Step 6 decides whether the legacy-token bridge stays, with both outcomes spelled out; Task 5a Step 6's fallback if a success text differs, spelled out). Mechanical moves are given as commands.
 
-**Type and name consistency.** `CaseView` fields match `build_case` keys (`may_route`, `may_return`, `may_attach`, `decisions[].permitted`, `decisions[].needs_reason`, `view.{text,by,at}`, `history[].kind ∈ routed|returned|evidence_attached`). `ApprovalRow` matches `build_approvals`; `Briefing.approvals` matches the briefing's `approvals`. `decision_refusal` keyword arguments (`user_id`, `user_role`, `decision`, `reason`) are the same in `workflow.py`, `rules.py`, `routing.py`, `cases.py` and the tests. `RelatedItems` takes `onOpen` in Task 1 (optional) and Task 5 (required); `CasePanel` takes `onOpenCase` everywhere it is rendered (thread, Approvals, tests). Thread message types `returned`, `attached`, `arrivals` and the fields `view`, `doc_type_words`, `habits`, `needs_you`, `state_words`, `opening_id` match between `threads.py` and `types.ts`. `MeasureSeries`/`MeasurePoint` match `measure_series`. `clientFile(code, view)` and `ClientFileView` are the same in `links.ts`, `redirects.ts`, `ClientFile.tsx` and the tests. Hook names (`useCase`, `useApprovals`, `useDecideCase`, `useRouteCase`, `useReturnCase`, `useAttachEvidence`, `useMeasure`, `useFundingEvents`, `useDocumentTypeWords`, `usePortfolio`, `useTrackRecord`, `useLessons`, `useEvaluation`; `useDocWords` in `DocType.tsx`) are defined once and used with those names. The squad `usePortfolio` (key `['my-portfolio']`) is a different hook from the deleted cockpit `usePortfolio` in `@/api/hooks` (key `['portfolio']`); `Portfolio.tsx` imports it from `../api/hooks`.
+**Type and name consistency.** `CaseView` fields match `build_case` keys (`may_route`, `may_return`, `may_attach`, `decisions[].permitted`, `decisions[].needs_reason`, `view.{text,by,at}`, `history[].kind ∈ routed|returned|evidence_attached`). `ApprovalRow` matches `build_approvals`; `Briefing.approvals` matches the briefing's `approvals`. `decision_refusal` keyword arguments (`user_id`, `user_role`, `decision`, `reason`) are the same in `workflow.py`, `rules.py`, `routing.py`, `cases.py` and the tests. `RelatedItems` takes `onOpen` in Task 1 (optional) and Task 5b (required); `CasePanel` takes `onOpenCase` everywhere it is rendered (thread, Approvals, tests). Thread message types `returned`, `attached`, `arrivals` and the fields `view`, `doc_type_words`, `habits`, `needs_you`, `state_words`, `opening_id` match between `threads.py` and `types.ts`. `MeasureSeries`/`MeasurePoint` match `measure_series`. `clientFile(code, view)` and `ClientFileView` are the same in `links.ts`, `redirects.ts`, `ClientFile.tsx` and the tests. Hook names (`useCase`, `useApprovals`, `useDecideCase`, `useRouteCase`, `useReturnCase`, `useAttachEvidence`, `useMeasure`, `useFundingEvents`, `useDocumentTypeWords`, `usePortfolio`, `useTrackRecord`, `useLessons`, `useEvaluation`; `useDocWords` in `DocType.tsx`) are defined once and used with those names. The squad `usePortfolio` (key `['my-portfolio']`) is a different hook from the deleted cockpit `usePortfolio` in `@/api/hooks` (key `['portfolio']`); `Portfolio.tsx` imports it from `../api/hooks`.
 
-**Review Focus coverage.** 1: `test_routing.py` (loop order, return counts for the analyst only, a plain assignment is no return, the engine and the API refuse the router whoever prepared the item), `test_cases.py`, `case.test.tsx`, the hand-off journey. 2: `test_thread_opening.py`, the thread test "opens at what is new". 3: `test_client_file.py`, `clientFile.test.tsx` (`TrendBars`, `MeasureNow`), `portfolio.test.tsx`, Task 6's `checkUnmeasured` (compared with the API, with its self-check). 4: `redirects.test.tsx`, `oversight.test.tsx`, Task 5's "old addresses" journey. 5: `test_the_case_view_says_what_each_person_may_do`, `test_route_api_refuses_an_administrator`, `case.test.tsx` ("offers an administrator nothing to do"), `oversight.test.tsx`, Task 6's administrator journey.
+**Owner decision of 21 November applied.** Review room and packages kept and moved into Squad (Task 5a: screens, nav, palette, client file view, redirects, tests, a review-room journey and a prepare-verify-release journey); the calendar deleted (Task 5b); Task 6 scans `/review-room` and the packages view. Owner question 7 asks whether release needs a second person; today's engine has no such rule and the plan adds none.
+
+**Review Focus coverage.** 1: `test_routing.py` (loop order, return counts for the analyst only, a plain assignment is no return, the engine and the API refuse the router whoever prepared the item), `test_cases.py`, `case.test.tsx`, the hand-off journey. 2: `test_thread_opening.py`, the thread test "opens at what is new". 3: `test_client_file.py`, `clientFile.test.tsx` (`TrendBars`, `MeasureNow`), `portfolio.test.tsx`, Task 6's `checkUnmeasured` (compared with the API, with its self-check). 4: `redirects.test.tsx`, `oversight.test.tsx`, Task 5b's "old addresses" journey. 5: `test_the_case_view_says_what_each_person_may_do`, `test_route_api_refuses_an_administrator`, `case.test.tsx` ("offers an administrator nothing to do"), `oversight.test.tsx`, Task 6's administrator journey.
