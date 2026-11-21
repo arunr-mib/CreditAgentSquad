@@ -20,8 +20,8 @@ export function buildCommands({ clients, go, setLook, role, approvals }: Command
   if (approvals) commands.push({ id: 'go-approvals', group: 'Go to', label: 'Approvals', hint: 'Decisions waiting for you', run: () => go('/approvals') });
   if (OVERSIGHT_ROLES.includes(role)) {
     commands.push(
-      { id: 'go-activity', group: 'Oversight', label: 'Agent activity', run: () => go('/agent-activity') },
-      { id: 'go-governance', group: 'Oversight', label: 'Governance and the ledger', run: () => go('/governance') },
+      { id: 'go-oversight', group: 'Oversight', label: 'Oversight', hint: 'Agent activity, ledger, governance, evaluations', run: () => go('/oversight') },
+      { id: 'go-ledger', group: 'Oversight', label: 'The ledger', run: () => go('/oversight/ledger') },
     );
   }
   for (const c of clients) commands.push({ id: `client-${c.code}`, group: 'Clients', label: c.name, hint: c.code, searchOnly: true, run: () => go(`/clients/${c.code}`) });

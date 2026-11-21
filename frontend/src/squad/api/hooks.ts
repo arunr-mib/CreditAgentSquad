@@ -1,6 +1,8 @@
 // frontend/src/squad/api/hooks.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/api/client';
+import type { AgentRunRow, AgentSpec } from '@/api/schema';
+import type { GuardrailNote } from '@/api/types';
 import type { ApprovalRow, Briefing, CaseView, FundingEventRow, LessonRow, MeasureSeries, PortfolioSection, Thread, TrackRecordRow, Trail } from './types';
 
 export const useBriefing = () => useQuery({ queryKey: ['briefing'], queryFn: () => get<Briefing>('/me/briefing') });
@@ -62,3 +64,13 @@ export const useTrackRecord = (borrowerId?: string) =>
   useQuery({ queryKey: ['track-record', borrowerId], queryFn: () => get<TrackRecordRow[]>(`/borrowers/${borrowerId}/track-record`), enabled: Boolean(borrowerId) });
 export const useLessons = (borrowerId?: string) =>
   useQuery({ queryKey: ['lessons', borrowerId], queryFn: () => get<LessonRow[]>(`/borrowers/${borrowerId}/lessons`), enabled: Boolean(borrowerId) });
+
+export interface EvaluationRow { key: string; label: string; value: string | null; unit: 'pct' | 'count' }
+export interface Evaluation { mode: string | null; standin: boolean; notice: string | null; gate_passed: boolean | null; created_at: string | null; rows: EvaluationRow[] }
+export const useEvaluation = () => useQuery({ queryKey: ['oversight-evaluation'], queryFn: () => get<Evaluation>('/oversight/evaluation'), retry: false });
+
+// Runs and agents in the server's words (`app/squad/oversight.py`); the browser builds no names.
+export type OversightRun = Omit<AgentRunRow, 'guardrail_notes'> & { agent_label: string; task_label: string; status_label: string; guardrail_notes: Array<GuardrailNote & { words: string }> };
+export const useOversightRuns = () => useQuery({ queryKey: ['oversight-runs'], queryFn: () => get<OversightRun[]>('/oversight/runs') });
+export type OversightAgent = AgentSpec & { label: string };
+export const useOversightAgents = () => useQuery({ queryKey: ['oversight-agents'], queryFn: () => get<OversightAgent[]>('/oversight/agents') });

@@ -10,12 +10,12 @@ import { formatDate } from '@/design';
 import { OUTCOME, signalLabel } from '@/domain/labels';
 import { RunStage } from '@/screens/borrower/RunStage';
 import { UploadDocument } from '@/screens/borrower/UploadDocument';
-import { describeEvent } from '@/screens/Governance';
+import { describeEvent } from '@/squad/oversight/describeEvent';
 import { Commentary } from '@/screens/review/Commentary';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
 import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
-import { DocType } from '../DocType';
+import { DocType, useDocWords } from '../DocType';
 import { Time } from '../thread/Time';
 import { MeasureNow, TrendBars } from './Measure';
 
@@ -294,13 +294,14 @@ export function Reviews({ borrower }: Props) {
 
 export function History({ borrower }: Props) {
   const timeline = useTimeline(borrower.id);
+  const words = useDocWords();
   if (timeline.isPending) return <Loading what="the history" />;
   if (timeline.error || !timeline.data) return <Failed what="The history" />;
   if (timeline.data.length === 0) return <p className="sq-muted">Nothing has been recorded for this client yet.</p>;
   return (
     <ol className="sq-plainlist" aria-label="History">
       {timeline.data.map((e) => (
-        <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{describeEvent(e) ? ` · ${describeEvent(e)}` : ''}</li>
+        <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{describeEvent(e, words) ? ` · ${describeEvent(e, words)}` : ''}</li>
       ))}
     </ol>
   );

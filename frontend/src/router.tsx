@@ -175,6 +175,8 @@ export const reviewRoomRoute = createRoute({
   component: lazyRouteComponent(() => import('@/screens/ReviewRoom'), 'ReviewRoom'),
   validateSearch: (search: Record<string, unknown>): { meeting?: string; sheet?: string } => clean({ meeting: str(search.meeting), sheet: str(search.sheet) }),
 });
+export const oversightRoute = createRoute({ getParentRoute: () => rootRoute, path: '/oversight', component: lazyRouteComponent(() => import('@/squad/oversight/Oversight'), 'Oversight') });
+export const oversightTabRoute = createRoute({ getParentRoute: () => rootRoute, path: '/oversight/$tab', component: lazyRouteComponent(() => import('@/squad/oversight/Oversight'), 'Oversight') });
 export const agentActivityRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/agent-activity',
@@ -219,6 +221,8 @@ const routeTree = rootRoute.addChildren([
   ]),
   calendarRoute,
   reviewRoomRoute,
+  oversightRoute,
+  oversightTabRoute,
   agentActivityRoute,
   governanceRoute,
   designRoute,

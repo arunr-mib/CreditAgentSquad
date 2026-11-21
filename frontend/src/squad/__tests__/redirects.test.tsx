@@ -12,6 +12,9 @@ describe('old addresses', () => {
     ['/borrowers/QFL/signals', '/clients/QFL/file'],
     ['/borrowers/QFL/packages', '/clients/QFL/file'],
     ['/borrowers', '/portfolio'],
+    ['/agent-activity', '/oversight/activity'],
+    ['/governance', '/oversight/governance'],
+    ['/command-centre', '/'],
   ])('%s goes to %s', (from, to) => expect(oldAddress(from, {})).toBe(to));
 
   it('keeps the document and page of a document link', () => {

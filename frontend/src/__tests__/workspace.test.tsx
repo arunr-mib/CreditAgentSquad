@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, errorMessage, onUnauthorized, request, withQuery } from '@/api/client';
 import type { Calculation, FactSummary, LedgerEvent } from '@/api/schema';
 import { decisionLabel, decisionNeedsReason, formatTimestamp, humanize, itemGroup, periodLabel, quarterLabel, toFact } from '@/domain/labels';
-import { describeEvent } from '@/screens/Governance';
+import { describeEvent } from '@/squad/oversight/describeEvent';
 import { AgentBody, referencedFactIds } from '@/source/AgentBody';
 import { CalculationBreakdown } from '@/source/CalculationBreakdown';
 import { SourceContext, type SourceRef } from '@/source/context';

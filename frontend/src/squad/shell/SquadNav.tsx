@@ -1,6 +1,6 @@
 // frontend/src/squad/shell/SquadNav.tsx
 import { Link } from '@tanstack/react-router';
-import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, FolderOpen, LogOut, Stamp } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, FolderOpen, Landmark, LogOut, Stamp } from 'lucide-react';
 import { SquadMark } from '../mark/SquadMark';
 import { LookMenu } from '../LookMenu';
 import { OVERSIGHT_ROLES } from './commands';
@@ -62,11 +62,10 @@ export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClient
         </nav>
       ) : null}
       {OVERSIGHT_ROLES.includes(role) ? (
-        <div className="sq-cases">
-          <p className="sq-navhead sq-navlabel">Oversight</p>
-          <Link to="/agent-activity" className="sq-navlink" title="Agent activity"><span className="sq-initial" aria-hidden>A</span><span className="sq-navlabel">Agent activity</span></Link>
-          <Link to="/governance" className="sq-navlink" title="Governance"><span className="sq-initial" aria-hidden>G</span><span className="sq-navlabel">Governance</span></Link>
-        </div>
+        <Link to="/oversight" className="sq-navlink" title="Oversight" aria-current={pathname.startsWith('/oversight') ? 'page' : undefined}>
+          <Landmark size={18} aria-hidden />
+          <span className="sq-navlabel">Oversight</span>
+        </Link>
       ) : null}
       <div className="sq-navfoot">
         <span className="sq-avatar" title={userName}>{initials}</span>

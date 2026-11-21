@@ -21,7 +21,7 @@ function mountNav(props: Partial<Parameters<typeof SquadNav>[0]> = {}) {
         pathname="/" userName="Priya Raman" onSignOut={() => {}} {...{ role: 'analyst', ...props }} />
     ),
   });
-  const routes = ['/', '/portfolio', '/approvals', '/clients/$code', '/governance', '/agent-activity'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
+  const routes = ['/', '/portfolio', '/approvals', '/clients/$code', '/oversight'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
   const router = createRouter({ routeTree: root.addChildren(routes), history: createMemoryHistory({ initialEntries: ['/'] }) });
   return render(<RouterProvider router={router} />);
 }
@@ -64,10 +64,10 @@ describe('SquadNav', () => {
   it('lists oversight only for the roles that have it', async () => {
     const { unmount } = mountNav({ role: 'analyst' });
     await screen.findByRole('link', { name: /my portfolio/i });
-    expect(screen.queryByRole('link', { name: /oversight|agent activity/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /oversight/i })).not.toBeInTheDocument();
     unmount();
     mountNav({ role: 'admin' });
-    expect(await screen.findByRole('link', { name: /agent activity/i })).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Oversight' })).toHaveAttribute('href', '/oversight');
   });
 });
 
@@ -105,7 +105,7 @@ describe('collapsed nav', () => {
     mountNav({ collapsed: true, role: 'admin' });
     const home = await screen.findByRole('link', { name: /squad.*2 need you/i });
     expect(home).toHaveAttribute('title', 'Squad');
-    for (const name of [/my portfolio/i, /agent activity/i, /governance/i]) {
+    for (const name of [/my portfolio/i, /oversight/i]) {
       expect(screen.getByRole('link', { name })).toBeInTheDocument();
     }
     for (const link of screen.getAllByRole('link')) expect(link).toHaveAccessibleName();
