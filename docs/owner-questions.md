@@ -110,3 +110,4 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 3. **Kestrel Bay wrong-abstain and Pellham wording** need a small billable re-record to prove fixed. Default: none in 4b; I will bring an estimate later.
 4. **"Needs you" no longer counts signals** (a signal needing a decision already raises a work item). Default: accepted.
 5. **Plain-words name for bank statements:** default "Bank account statement".
+6. **"Squad gathers what was asked" on a return:** default: code lists the client's documents not yet attached and a person attaches one (or drafts a request to the client); Squad attaches nothing by itself.
