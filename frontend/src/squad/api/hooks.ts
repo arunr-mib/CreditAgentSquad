@@ -1,7 +1,7 @@
 // frontend/src/squad/api/hooks.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/api/client';
-import type { Briefing, Thread, Trail } from './types';
+import type { ApprovalRow, Briefing, CaseView, Thread, Trail } from './types';
 
 export const useBriefing = () => useQuery({ queryKey: ['briefing'], queryFn: () => get<Briefing>('/me/briefing') });
 export const useThread = (borrowerId?: string) =>
@@ -36,3 +36,16 @@ export const useCreateDraft = (borrowerId: string) =>
 export const useEditDraft = () =>
   useWrite<{ draft_id: string; subject?: string; body?: string }, DraftResult>((i) => `/drafts/${i.draft_id}/edit`, ({ subject, body }) => ({ subject, body }));
 export const useSendDraft = () => useWrite<{ draft_id: string }, DraftResult>((i) => `/drafts/${i.draft_id}/send`, () => ({}));
+
+export const useCase = (id?: string) =>
+  useQuery({ queryKey: ['case', id], queryFn: () => get<CaseView>(`/cases/${id}`), enabled: Boolean(id) });
+export const useApprovals = () => useQuery({ queryKey: ['approvals'], queryFn: () => get<ApprovalRow[]>('/me/approvals') });
+const CASE_KEYS = ['case', 'approvals', 'trail', 'work-item', 'borrowers'];
+export const useDecideCase = (id: string) =>
+  useWrite<{ decision: string; reason: string }, unknown>(() => `/work-items/${id}/decide`, (i) => i, CASE_KEYS);
+export const useRouteCase = (id: string) =>
+  useWrite<{ to: string; view: string }, CaseView>(() => `/work-items/${id}/route`, (i) => i, CASE_KEYS);
+export const useReturnCase = (id: string) =>
+  useWrite<{ reason: string }, CaseView>(() => `/work-items/${id}/return`, (i) => i, CASE_KEYS);
+export const useAttachEvidence = (id: string) =>
+  useWrite<{ document_id: string; note?: string }, CaseView>(() => `/work-items/${id}/attach`, (i) => i, CASE_KEYS);

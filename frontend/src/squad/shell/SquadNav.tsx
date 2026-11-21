@@ -1,6 +1,6 @@
 // frontend/src/squad/shell/SquadNav.tsx
 import { Link } from '@tanstack/react-router';
-import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, LogOut } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, LogOut, Stamp } from 'lucide-react';
 import { SquadMark } from '../mark/SquadMark';
 import { LookMenu } from '../LookMenu';
 import { OVERSIGHT_ROLES } from './commands';
@@ -10,6 +10,7 @@ export interface SquadNavProps {
   collapsed: boolean;
   onToggle: () => void;
   needs: number;
+  showApprovals: boolean;
   openClients: Briefing['open_clients'];
   pathname: string;
   userName: string;
@@ -17,7 +18,7 @@ export interface SquadNavProps {
   onSignOut: () => void;
 }
 
-export function SquadNav({ collapsed, onToggle, needs, openClients, pathname, userName, role, onSignOut }: SquadNavProps) {
+export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClients, pathname, userName, role, onSignOut }: SquadNavProps) {
   const initials = userName.split(/\s+/).map((p) => p[0]).slice(0, 2).join('');
   return (
     <aside className="sq-nav" data-collapsed={collapsed} aria-label="Credit Squad">
@@ -35,6 +36,12 @@ export function SquadNav({ collapsed, onToggle, needs, openClients, pathname, us
         <ChartNoAxesColumn size={18} aria-hidden />
         <span className="sq-navlabel">My Portfolio</span>
       </Link>
+      {showApprovals ? (
+        <Link to="/approvals" className="sq-navlink" aria-current={pathname.startsWith('/approvals') ? 'page' : undefined} title="Approvals">
+          <Stamp size={18} aria-hidden />
+          <span className="sq-navlabel">Approvals</span>
+        </Link>
+      ) : null}
       {openClients.length > 0 ? (
         <nav aria-label="Open cases" className="sq-cases">
           <p className="sq-navhead sq-navlabel">Open cases</p>

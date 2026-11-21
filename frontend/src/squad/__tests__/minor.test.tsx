@@ -65,7 +65,7 @@ describe('Time', () => {
 
 const ask = (over: Partial<Extract<ThreadMessage, { type: 'ask' }>> = {}): Extract<ThreadMessage, { type: 'ask' }> => ({
   id: 'ask:1', ts: 't', type: 'ask', work_item_id: 'w1', title: 'T', question: 'Which?', options: [{ id: 'a', label: 'A', evidence: '' }, { id: 'b', label: 'B', evidence: '' }],
-  status: 'open', choice: null, chosen_by: null, ...over,
+  status: 'open', choice: null, chosen_by: null, needs_you: true, state_words: '', ...over,
 });
 
 describe('AskMessage when it is no longer open', () => {

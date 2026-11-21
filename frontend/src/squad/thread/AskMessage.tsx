@@ -13,7 +13,7 @@ type Ask = Extract<ThreadMessage, { type: 'ask' }>;
 
 /** Squad asks: options with their evidence, one choice. "Remember" needs the person's own words; the engine records it with her name. */
 export function AskMessage({ message, focused }: { message: Ask; focused: boolean }) {
-  const { user, can } = useAuth();
+  const { user } = useAuth();
   const answer = useAnswer(message.work_item_id);
   const { say, pulse } = usePresence();
   const group = useId();
@@ -23,7 +23,7 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const open = message.status === 'open';
-  const mayAnswer = can('decide_work_item');
+  const mayAnswer = message.status === 'open' && message.needs_you;
   const reason = note.trim();
   const ready = choice !== null && (!remember || reason !== '');
 
@@ -43,6 +43,7 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
     <article className="sq-msg sq-card sq-squad" data-work-item={message.work_item_id} data-focused={focused ? 'true' : undefined} aria-current={focused ? 'true' : undefined}>
       <header className="sq-msghead"><SquadMark size={22} /> <b>Squad asks</b> <Time ts={message.ts} /></header>
       <p>{message.question}</p>
+      {open && !message.needs_you ? <p className="sq-muted">{message.state_words}</p> : null}
       {open ? (
         <fieldset className="sq-options" disabled={!mayAnswer}>
           <legend className="sq-sr">{message.question}</legend>
@@ -71,7 +72,6 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
           </div>
         </>
       ) : null}
-      {open && !mayAnswer ? <p className="sq-muted">Waiting for an analyst.</p> : null}
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
       <Trail workItemId={message.work_item_id} />
     </article>

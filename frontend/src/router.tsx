@@ -75,6 +75,13 @@ export const clientRoute = createRoute({
   validateSearch: (search: Record<string, unknown>): { case?: string } => clean({ case: str(search.case) }),
 });
 
+export const approvalsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/approvals',
+  component: lazyRouteComponent(() => import('@/squad/approvals/Approvals'), 'Approvals'),
+  validateSearch: (search: Record<string, unknown>): { case?: string } => clean({ case: str(search.case) }),
+});
+
 const signInRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/sign-in',
@@ -177,6 +184,7 @@ const designRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   clientRoute,
+  approvalsRoute,
   signInRoute,
   commandCentreRoute,
   portfolioRoute,

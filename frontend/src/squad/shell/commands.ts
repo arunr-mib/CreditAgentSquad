@@ -9,13 +9,15 @@ export interface CommandInput {
   go: (path: string) => void;
   setLook: (id: LookId) => void;
   role: string;
+  approvals: boolean;
 }
 
-export function buildCommands({ clients, go, setLook, role }: CommandInput): Command[] {
+export function buildCommands({ clients, go, setLook, role, approvals }: CommandInput): Command[] {
   const commands: Command[] = [
     { id: 'go-squad', group: 'Go to', label: 'Squad', hint: 'The briefing', run: () => go('/') },
     { id: 'go-portfolio', group: 'Go to', label: 'My Portfolio', hint: 'All clients with trend', run: () => go('/portfolio') },
   ];
+  if (approvals) commands.push({ id: 'go-approvals', group: 'Go to', label: 'Approvals', hint: 'Decisions waiting for you', run: () => go('/approvals') });
   if (OVERSIGHT_ROLES.includes(role)) {
     commands.push(
       { id: 'go-activity', group: 'Oversight', label: 'Agent activity', run: () => go('/agent-activity') },

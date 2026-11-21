@@ -81,7 +81,7 @@ function EvidenceRow({
 
 const openClass = 'link inline-flex items-center gap-0.5 font-medium';
 
-function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail; code: string | undefined; headingLevel: 'h3' | 'h4' }) {
+export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail; code: string | undefined; headingLevel: 'h3' | 'h4' }) {
   const source = useSource();
   const evidence = item.evidence;
   const valueId = text(evidence.value_fact_id);
@@ -306,7 +306,7 @@ const HEADLINE: Record<string, string> = {
   draft: 'Drafted for approval',
 };
 
-function Recommendation({
+export function Recommendation({
   recommendation,
   item,
   headingLevel,
@@ -393,8 +393,9 @@ function Recommendation({
  * Open questions on the same borrower that may change this item's result: an amendment not yet
  * approved into terms, held figures, a correction. Shown before the decision; it does not block it.
  */
-export function RelatedItems({ items, headingLevel: Heading }: { items: RelatedItem[]; headingLevel: 'h3' | 'h4' }) {
+export function RelatedItems({ items, headingLevel: Heading, onOpen }: { items: RelatedItem[]; headingLevel: 'h3' | 'h4'; onOpen?: (id: string) => void }) {
   const drawer = useWorkspaceDrawer();
+  const open = onOpen ?? drawer.openItem;
   const headingId = useId();
   if (items.length === 0) return null;
   return (
@@ -411,7 +412,7 @@ export function RelatedItems({ items, headingLevel: Heading }: { items: RelatedI
       <ul className="mt-1.5 space-y-1 pl-[13px]">
         {items.map((related) => (
           <li key={related.id} className="text-body">
-            <button type="button" className="link text-left font-medium" onClick={() => drawer.openItem(related.id)}>
+            <button type="button" className="link text-left font-medium" onClick={() => open(related.id)}>
               {related.title}
             </button>
             <span className="text-ink-700">

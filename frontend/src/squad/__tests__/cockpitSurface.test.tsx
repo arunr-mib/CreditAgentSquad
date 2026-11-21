@@ -13,6 +13,7 @@ import { surfaceOf } from '../shell/surface';
 
 describe('surfaceOf', () => {
   it.each(['/', '/clients/QFL'])('%s is Squad\'s own conversation', (path) => expect(surfaceOf(path)).toBe('conversation'));
+  it.each(['/approvals'])('%s is a Squad screen', (path) => expect(surfaceOf(path)).toBe('squad'));
   it.each(['/portfolio', '/borrowers', '/borrowers/QFL', '/borrowers/QFL/covenants', '/borrowers/QFL/spreads', '/borrowers/QFL/packages', '/command-centre', '/calendar', '/governance', '/agent-activity', '/design'])(
     '%s is a cockpit screen',
     (path) => expect(surfaceOf(path)).toBe('cockpit'),

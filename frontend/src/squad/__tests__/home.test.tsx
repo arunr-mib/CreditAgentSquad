@@ -17,7 +17,7 @@ const item = (over: Partial<BriefingItem>): BriefingItem => ({
   state: 'waiting for you', severity: 'medium', needs_you: true, work_item_id: 'w1', ...over,
 });
 const briefing = (items: BriefingItem[], overnight: Briefing['overnight'] = []): Briefing => ({
-  as_of: '2026-11-20', needs_you: items.filter((i) => i.needs_you).length, items, overnight, open_clients: [],
+  as_of: '2026-11-20', needs_you: items.filter((i) => i.needs_you).length, items, overnight, open_clients: [], approvals: { offered: false, waiting: 0 },
 });
 
 function mount(b: Briefing) {

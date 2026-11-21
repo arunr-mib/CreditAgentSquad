@@ -1,10 +1,10 @@
 // frontend/src/squad/thread/messages.tsx
-import { Link } from '@tanstack/react-router';
-import { useWorkspaceDrawer } from '@/drawer/context';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import type { ThreadMessage } from '../api/types';
-import { clientFile } from '../links';
+import { CasePanel } from '../case/CasePanel';
+import { clientFile, threadHref } from '../links';
 import { SquadMark } from '../mark/SquadMark';
 import { AskMessage } from './AskMessage';
 import { DraftMessage } from './DraftMessage';
@@ -17,21 +17,22 @@ const agent = (name: string) => `${name.charAt(0).toUpperCase()}${name.slice(1)}
 
 const SEVERITY: Record<string, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
 
-/** Where a case stands, in words: its decision, whether the server says it is yours (the briefing's own rule), a handoff, or who holds it. */
+/** Where a case stands, in words: its decision, whether the server says it is yours (the briefing's own rule), a handoff or return, or who holds it. */
 export function caseState(message: Extract<ThreadMessage, { type: 'case' }>, all: ThreadMessage[]): { text: string; needsYou: boolean } {
   const mine = all.filter((m) => 'work_item_id' in m && m.work_item_id === message.work_item_id);
   const decision = mine.find((m): m is Extract<ThreadMessage, { type: 'decision' }> => m.type === 'decision');
   if (decision) return { text: `${decision.decision_words ?? words(decision.decision)} by ${decision.by}`, needsYou: false };
   if (message.status !== 'open') return { text: words(message.status).replace(/^./, (c) => c.toUpperCase()), needsYou: false };
-  if (message.needs_you) return { text: 'Needs your call', needsYou: true };
-  const handoff = [...mine].reverse().find((m): m is Extract<ThreadMessage, { type: 'handoff' }> => m.type === 'handoff');
-  if (handoff) return { text: `With ${handoff.assigned_to ?? 'no one in particular'}`, needsYou: false };
+  const last = [...mine].reverse().find((m) => m.type === 'handoff' || m.type === 'returned');
+  if (message.needs_you) return { text: last?.type === 'returned' ? 'Returned to you' : 'Needs your call', needsYou: true };
+  if (last?.type === 'returned') return { text: `Returned to ${last.to ?? 'the analyst'}`, needsYou: false };
+  if (last?.type === 'handoff') return { text: `With ${last.assigned_to ?? 'no one in particular'}`, needsYou: false };
   return { text: message.state_words || 'Open', needsYou: false };
 }
 
 export function MessageView({ message, focused, borrowerCode, thread = [] }: { message: ThreadMessage; focused: boolean; borrowerCode: string; thread?: ThreadMessage[] }) {
   const source = useSource();
-  const drawer = useWorkspaceDrawer();
+  const navigate = useNavigate();
   switch (message.type) {
     case 'report':
       return (
@@ -47,11 +48,14 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
           <header className="sq-msghead"><b>{message.title}</b> <span className="sq-tag">{SEVERITY[message.severity] ?? words(message.severity)}</span> <span className={state.needsYou ? 'sq-tag sq-tag-needs' : 'sq-tag'}>{state.text}</span> <Time ts={message.ts} /></header>
           <p>{message.question}</p>
           <div className="sq-actions">
-            {state.needsYou ? (
-              <button type="button" className="sq-btn sq-btn-primary" aria-label={`Decide ${message.title}`} onClick={() => drawer.openItem(message.work_item_id)}>Decide</button>
-            ) : null}
+            {focused ? null : (
+              <Link {...threadHref(borrowerCode, message.work_item_id)} className={state.needsYou ? 'sq-btn sq-btn-primary' : 'sq-btn'} aria-label={`Open the case ${message.title}`}>
+                {state.needsYou ? 'Open the case' : 'See the case'}
+              </Link>
+            )}
             <Link to={clientFile(borrowerCode)} className="sq-link" aria-label={`Open ${message.title} in the client file`}>Open in client file</Link>
           </div>
+          {focused ? <CasePanel workItemId={message.work_item_id} onOpenCase={(id) => void navigate(threadHref(borrowerCode, id))} /> : null}
           <Trail workItemId={message.work_item_id} />
         </article>
       );
@@ -82,7 +86,27 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
         </article>
       );
     case 'handoff':
-      return <p className="sq-msg sq-faint" data-work-item={message.work_item_id}>{message.by} handed this to {message.assigned_to ?? 'no one in particular'}. <Time ts={message.ts} /></p>;
+      return (
+        <div className="sq-msg" data-work-item={message.work_item_id}>
+          <p className="sq-faint">{message.by} {message.view ? 'sent this to' : 'handed this to'} {message.assigned_to ?? 'no one in particular'}{message.view ? ' with this view:' : '.'} <Time ts={message.ts} /></p>
+          {message.view ? <blockquote className="sq-quote">{message.view}</blockquote> : null}
+        </div>
+      );
+    case 'returned':
+      return (
+        <div className="sq-msg" data-work-item={message.work_item_id}>
+          <p className="sq-faint">{message.by} returned this to {message.to ?? 'the analyst'}: <Time ts={message.ts} /></p>
+          <blockquote className="sq-quote">{message.reason}</blockquote>
+        </div>
+      );
+    case 'attached':
+      return (
+        <p className="sq-msg sq-faint" data-work-item={message.work_item_id}>
+          {message.by} attached{' '}
+          <button type="button" className="sq-link" aria-label={`Open ${message.title}`} onClick={() => source.open({ type: 'document', documentId: message.document_id, page: 1, title: message.title, borrowerCode })}>{message.title}</button>
+          {message.note ? ` · ${message.note}` : ''} <Time ts={message.ts} />
+        </p>
+      );
     case 'ask':
       return <AskMessage message={message} focused={focused} />;
     case 'qa':

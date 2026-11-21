@@ -17,6 +17,7 @@ export interface Briefing {
   items: BriefingItem[];
   overnight: Array<{ agent_name: string; text: string; borrower_id: string; borrower_code: string; borrower_name: string; finished_at: string }>;
   open_clients: Array<{ borrower_id: string; code: string; name: string; open: number }>;
+  approvals: { offered: boolean; waiting: number };
 }
 export interface AskOption { id: string; label: string; evidence: string }
 interface MessageBase { id: string; ts: string }
@@ -24,12 +25,14 @@ export type ThreadMessage = MessageBase &
   (
     | { type: 'report'; agent_name: string; task: string; text: string; run_id: string }
     | { type: 'case'; work_item_id: string; item_type: string; title: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
-    | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null }
+    | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null; needs_you: boolean; state_words: string }
     | { type: 'document'; document_id: string; title: string; doc_type: string | null; pages: number; period_end: string | null }
     | { type: 'held'; document_id: string; title: string; reason: string }
     | { type: 'draft'; draft_id: string; borrower_id: string; to: string; subject: string; body: string; kind: string; status: 'draft' | 'sent'; created_by: string; created_at: string; edited_by: string | null; sent_by: string | null; sent_at: string | null; work_item_id: string | null }
     | { type: 'decision'; work_item_id: string; decision: string | null; decision_words?: string; reason: string; by: string; by_id: string }
-    | { type: 'handoff'; work_item_id: string; assigned_to: string | null; assigned_to_id: string | null; by: string }
+    | { type: 'handoff'; work_item_id: string; assigned_to: string | null; assigned_to_id: string | null; by: string; view?: string | null }
+    | { type: 'returned'; work_item_id: string; reason: string; by: string; to: string | null }
+    | { type: 'attached'; work_item_id: string; document_id: string; title: string; note: string; by: string }
     | { type: 'qa'; question: string; answer: string; fact_ids: string[]; citations: Array<{ document_id: string; page: number }>; status: string; run_id: string; asked_by: string }
   );
 export interface Thread {
@@ -58,4 +61,46 @@ export interface TrackRecordRow {
   checked: number;
   since: string;
   last_correction_at: string | null;
+}
+export interface CaseHistoryEntry { kind: 'routed' | 'returned' | 'evidence_attached'; seq: number; at: string; by: string; by_id: string; to: string | null; to_id: string | null; text: string; document_id: string | null }
+export interface CaseDecisionOption { id: string; needs_reason: boolean; permitted: boolean }
+export interface CaseView {
+  work_item_id: string;
+  borrower: { id: string; code: string; name: string };
+  item_type: string;
+  title: string;
+  question: string;
+  severity: string;
+  status: string;
+  due_date: string | null;
+  decision: string | null;
+  decision_words: string | null;
+  decision_reason: string;
+  decided_by: string | null;
+  requires_second_person: boolean;
+  with: string | null;
+  state_words: string;
+  needs_you: boolean;
+  view: { text: string; by: string; at: string } | null;
+  history: CaseHistoryEntry[];
+  attached: Array<{ document_id: string; title: string; by: string; note: string }>;
+  candidates: Array<{ document_id: string; title: string; doc_type: string | null; pages: number }>;
+  decisions: CaseDecisionOption[];
+  route_to: Array<{ id: string; name: string; title: string }>;
+  may_route: boolean;
+  may_return: boolean;
+  may_attach: boolean;
+}
+export interface ApprovalRow {
+  work_item_id: string;
+  borrower_id: string;
+  borrower_code: string;
+  borrower_name: string;
+  title: string;
+  severity: string;
+  due_date: string | null;
+  view: string | null;
+  routed_by: string | null;
+  routed_at: string | null;
+  returns: number;
 }

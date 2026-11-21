@@ -41,11 +41,13 @@ function Frame() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [drawerOpen, drawerTab, drawerItem, drawerBorrower, openCopilot, closeDrawer, pathname]);
+  const showApprovals = briefing.data?.approvals.offered ?? false;
   const commands = buildCommands({
     clients: (borrowers.data ?? []).map((b) => ({ code: b.code, name: b.name })),
     go: (path) => void navigate({ to: path }),
     setLook,
     role: user?.role ?? '',
+    approvals: showApprovals,
   });
   const needs = briefing.data?.needs_you ?? 0;
   const surface = surfaceOf(pathname);
@@ -53,11 +55,11 @@ function Frame() {
     <PresenceProvider needs={needs}>
       <div className="sq-shell" data-collapsed={navCollapsed}>
         <a href="#main" className="sq-skip">Skip to content</a>
-        <SquadNav collapsed={navCollapsed} onToggle={toggle} needs={needs} openClients={briefing.data?.open_clients ?? []}
+        <SquadNav collapsed={navCollapsed} onToggle={toggle} needs={needs} showApprovals={showApprovals} openClients={briefing.data?.open_clients ?? []}
           pathname={pathname} userName={user?.name ?? ''} role={user?.role ?? ''} onSignOut={() => void signOut()} />
         <div className="sq-stage">
           <main id="main" tabIndex={-1} className="sq-main" data-surface={surface}>
-            {surface === 'conversation' ? <PresenceLine /> : null}
+            {surface !== 'cockpit' ? <PresenceLine /> : null}
             <Outlet />
           </main>
         </div>

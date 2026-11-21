@@ -100,10 +100,16 @@ describe('QaMessage', () => {
 const ask = (over: Partial<Extract<ThreadMessage, { type: 'ask' }>> = {}): Extract<ThreadMessage, { type: 'ask' }> => ({
   id: 'ask:1', ts: 't', type: 'ask', work_item_id: 'w1', title: 'How should I map this line?', question: "Is 'Recurring revenue' ARR or MRR?",
   options: [{ id: 'map_to_arr', label: 'Map it to ARR', evidence: 'Page 3 says ARR.' }, { id: 'map_to_mrr', label: 'Map it to MRR', evidence: 'Page 3 also shows monthly.' }],
-  status: 'open', choice: null, chosen_by: null, ...over,
+  status: 'open', choice: null, chosen_by: null, needs_you: true, state_words: '', ...over,
 });
 
 describe('AskMessage', () => {
+  it('disables the options for a viewer the server says is not the one to answer, and says whose it is', async () => {
+    render(<AskMessage message={ask({ needs_you: false, state_words: 'With Priya Raman' })} focused={false} />);
+    expect(screen.getByText('With Priya Raman')).toBeInTheDocument();
+    for (const radio of screen.getAllByRole('radio')) expect(radio).toBeDisabled();
+  });
+
   it('renders agent-written option text through AgentBody, so a fact reference becomes a stored figure', () => {
     mount(<AskMessage message={ask({ options: [{ id: 'a', label: 'Use {{fact:f1}}', evidence: 'Cash was {{fact:f2}}.' }, { id: 'b', label: 'Ignore it', evidence: '' }] })} focused={false} />);
     const bodies = screen.getAllByTestId('body').map((n) => n.textContent);
@@ -169,8 +175,8 @@ describe('AskMessage', () => {
   });
 
   it('is read-only for a person who cannot decide it', () => {
-    mount(<AskMessage message={ask()} focused={false} />, false);
-    expect(screen.getByText(/waiting for an analyst/i)).toBeInTheDocument();
+    mount(<AskMessage message={ask({ needs_you: false, state_words: 'With the client’s analyst' })} focused={false} />, false);
+    expect(screen.getByText(/with the client’s analyst/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /confirm/i })).not.toBeInTheDocument();
   });
 });

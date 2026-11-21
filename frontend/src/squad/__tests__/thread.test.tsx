@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Thread, ThreadMessage } from '../api/types';
 import { ClientThread } from '../thread/ClientThread';
 
-const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, borrowersError: false, refetchBorrowers: vi.fn(), open: vi.fn(), openItem: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
+const state = vi.hoisted(() => ({ thread: undefined as unknown, notFound: false, borrowersError: false, refetchBorrowers: vi.fn(), open: vi.fn(), trail: undefined as unknown, trailError: false, subs: new Set<() => void>(), refetch: vi.fn() }));
 vi.mock('@/api/hooks', () => ({
   useBorrowerByCode: (code: string) => ({ borrower: state.notFound || state.borrowersError ? undefined : { id: 'b1', code, name: 'Quillfeather Labs, Inc.' }, notFound: state.notFound, isPending: false, error: state.borrowersError ? new Error('down') : null, refetch: state.refetchBorrowers }),
 }));
@@ -26,7 +26,7 @@ vi.mock('../api/hooks', async () => {
   useTrail: () => ({ data: state.trail, isPending: false, error: state.trailError ? new Error('x') : null, refetch: state.refetch }),
   };
 });
-vi.mock('@/drawer/context', () => ({ useWorkspaceDrawer: () => ({ openItem: state.openItem }) }));
+vi.mock('../case/CasePanel', () => ({ CasePanel: ({ workItemId }: { workItemId: string }) => <p>case panel {workItemId}</p> }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: state.open, close: () => {}, current: null }) }));
 vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 vi.mock('../thread/Composer', () => ({ Composer: () => null }));
@@ -154,16 +154,27 @@ describe('ClientThread', () => {
     expect(screen.queryByText('closed')).not.toBeInTheDocument();
   });
 
-  it('offers Decide only on a case the viewer can act on, and opens that item in the drawer', async () => {
-    mount();
-    const cash = (await screen.findByText('Cash below minimum')).closest('[data-work-item]') as HTMLElement;
-    expect(within(cash).queryByRole('button', { name: /decide/i })).not.toBeInTheDocument();
-    expect(within(cash).getByText('With Helen Strand')).toBeInTheDocument();
+  it('opens the case inline on the thread a person can act on, through the address', async () => {
     state.thread = thread([{ ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'], needs_you: true, state_words: '' }]);
-    state.subs.forEach((f) => act(f));
+    mount();
     const mine = (await screen.findByText('Mine')).closest('[data-work-item]') as HTMLElement;
-    await userEvent.click(within(mine).getByRole('button', { name: 'Decide Mine' }));
-    expect(state.openItem).toHaveBeenCalledWith('w1');
+    expect(within(mine).getByRole('link', { name: 'Open the case Mine' })).toHaveAttribute('href', '/clients/QFL?case=w1');
+    mount('?case=w1');
+    expect(await screen.findByText('case panel w1')).toBeInTheDocument();
+  });
+
+  it('says a returned case is back with the person it came back to', async () => {
+    state.thread = thread([
+      { ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Back', question: 'q', severity: 'high', status: 'open', allowed_decisions: [], needs_you: true, state_words: 'With Priya Raman' },
+      { ...base, id: 'handoff:1', type: 'handoff', work_item_id: 'w1', assigned_to: 'Helen Strand', assigned_to_id: 'u2', by: 'Priya Raman', view: 'Recommend reserving rights.' },
+      { ...base, id: 'returned:2', type: 'returned', work_item_id: 'w1', reason: 'Attach the term sheet.', by: 'Helen Strand', to: 'Priya Raman' },
+    ]);
+    mount();
+    const card = (await screen.findByText('Back')).closest('[data-work-item]') as HTMLElement;
+    expect(within(card).getByText('Returned to you')).toBeInTheDocument();
+    expect(screen.getByText(/Helen Strand returned this to Priya Raman/)).toBeInTheDocument();
+    expect(screen.getByText('Attach the term sheet.')).toBeInTheDocument();
+    expect(screen.getByText('Recommend reserving rights.')).toBeInTheDocument();
   });
 
   it('reads a case the viewer cannot act on in the backend words, not as their call', async () => {

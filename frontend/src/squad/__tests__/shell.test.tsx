@@ -17,16 +17,25 @@ const clients = [{ code: 'QFL', name: 'Quillfeather Labs, Inc.' }, { code: 'ZZZ'
 function mountNav(props: Partial<Parameters<typeof SquadNav>[0]> = {}) {
   const root = createRootRoute({
     component: () => (
-      <SquadNav collapsed={false} onToggle={() => {}} needs={2} openClients={[{ borrower_id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', open: 2 }]}
+      <SquadNav collapsed={false} onToggle={() => {}} needs={2} showApprovals={false} openClients={[{ borrower_id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', open: 2 }]}
         pathname="/" userName="Priya Raman" onSignOut={() => {}} {...{ role: 'analyst', ...props }} />
     ),
   });
-  const routes = ['/', '/portfolio', '/clients/$code', '/governance', '/agent-activity'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
+  const routes = ['/', '/portfolio', '/approvals', '/clients/$code', '/governance', '/agent-activity'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
   const router = createRouter({ routeTree: root.addChildren(routes), history: createMemoryHistory({ initialEntries: ['/'] }) });
   return render(<RouterProvider router={router} />);
 }
 
 describe('SquadNav', () => {
+  it('shows an Approvals link only when the server says it is offered', async () => {
+    const { unmount } = mountNav({ showApprovals: true });
+    expect(await screen.findByRole('link', { name: 'Approvals' })).toHaveAttribute('href', '/approvals');
+    unmount();
+    mountNav({ showApprovals: false });
+    await screen.findByRole('link', { name: /My Portfolio/ });
+    expect(screen.queryByRole('link', { name: 'Approvals' })).not.toBeInTheDocument();
+  });
+
   it('has the Squad row with its needs-you count, My Portfolio, and only clients with something open', async () => {
     mountNav();
     const home = await screen.findByRole('link', { name: /squad.*2 need you/i });
@@ -67,7 +76,7 @@ describe('palette commands', () => {
   beforeEach(() => run.mockClear());
 
   it('offers navigation, every client by name (search only), and the five looks', () => {
-    const commands = buildCommands({ clients, go: run, setLook: run, role: 'analyst' });
+    const commands = buildCommands({ clients, go: run, setLook: run, role: 'analyst', approvals: false });
     expect(commands.filter((c) => c.group === 'Look')).toHaveLength(5);
     const client = commands.find((c) => c.label === 'Quillfeather Labs, Inc.')!;
     expect(client.searchOnly).toBe(true);
@@ -78,8 +87,8 @@ describe('palette commands', () => {
   });
 
   it('hides oversight commands from roles without it', () => {
-    expect(buildCommands({ clients, go: run, setLook: run, role: 'analyst' }).some((c) => c.group === 'Oversight')).toBe(false);
-    expect(buildCommands({ clients, go: run, setLook: run, role: 'credit_review' }).some((c) => c.group === 'Oversight')).toBe(true);
+    expect(buildCommands({ clients, go: run, setLook: run, role: 'analyst', approvals: false }).some((c) => c.group === 'Oversight')).toBe(false);
+    expect(buildCommands({ clients, go: run, setLook: run, role: 'credit_review', approvals: false }).some((c) => c.group === 'Oversight')).toBe(true);
   });
 });
 
