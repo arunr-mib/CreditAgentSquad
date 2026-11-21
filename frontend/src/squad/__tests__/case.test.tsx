@@ -58,6 +58,18 @@ describe('CasePanel', () => {
     expect(screen.queryByRole('button', { name: /record decision/i })).not.toBeInTheDocument();
   });
 
+  it('with several people who may decide, preselects nobody and sends only to the one chosen', async () => {
+    state.view = { ...base, route_to: [{ id: 'u3', name: 'Graham Sedgwick', title: 'Credit Officer' }, { id: 'u2', name: 'Helen Strand', title: 'Senior Credit Officer' }] };
+    panel();
+    await userEvent.type(screen.getByLabelText(/your view/i), 'Cash fell under the floor.');
+    const send = screen.getByRole('button', { name: 'Choose who decides' });
+    expect(send).toBeDisabled();
+    expect(screen.getByLabelText('Send to')).toHaveValue('');
+    await userEvent.selectOptions(screen.getByLabelText('Send to'), 'u2');
+    await userEvent.click(screen.getByRole('button', { name: 'Send to Helen Strand' }));
+    expect(state.route).toHaveBeenCalledWith({ to: 'u2', view: 'Cash fell under the floor.' });
+  });
+
   it('shows the officer the view, a reason box the server says is required, and Return', async () => {
     state.view = { ...base, needs_you: true, may_route: false, may_return: true, may_attach: true, view: { text: 'Recommend reserving rights.', by: 'Priya Raman', at: '2026-11-21T09:00:00Z' },
       decisions: base.decisions.map((d) => ({ ...d, permitted: true })) };

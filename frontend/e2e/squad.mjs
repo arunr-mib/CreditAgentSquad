@@ -41,6 +41,8 @@ async function record(page) {
 
 /** The route form lists everyone who may decide the case; the journey sends it to Helen Strand. */
 async function chooseOfficer(card) {
+  assert((await card.getByLabel('Send to').inputValue()) === '', 'the route form preselected a person');
+  assert(await card.getByRole('button', { name: 'Choose who decides' }).isDisabled(), 'Send was enabled before a person was chosen');
   const value = await card.locator('select option', { hasText: 'Helen Strand' }).first().getAttribute('value');
   await card.getByLabel('Send to').selectOption(value);
 }

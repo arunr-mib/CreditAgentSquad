@@ -81,9 +81,11 @@ function DecideForm({ c }: { c: CaseView }) {
 function RouteForm({ c }: { c: CaseView }) {
   const route = useRouteCase(c.work_item_id);
   const { say } = usePresence();
-  const [to, setTo] = useState(c.route_to[0]?.id ?? '');
+  const [picked, setTo] = useState('');
   const [view, setView] = useState('');
   const [error, setError] = useState<unknown>(null);
+  // with several people who may decide nobody is preselected: the analyst chooses; with exactly one it is that person
+  const to = c.route_to.length === 1 ? (c.route_to[0]?.id ?? '') : picked;
   const person = c.route_to.find((p) => p.id === to);
   async function submit() {
     setError(null);
@@ -101,13 +103,14 @@ function RouteForm({ c }: { c: CaseView }) {
         <label className="sq-field">
           Send to
           <select className="sq-input" value={to} onChange={(e) => setTo(e.target.value)}>
+            <option value="" disabled>Choose who decides</option>
             {c.route_to.map((p) => <option key={p.id} value={p.id}>{p.name}, {p.title}</option>)}
           </select>
         </label>
       ) : null}
       <Field label="Your view (required): what you found and what you recommend" value={view} onChange={setView} />
       <Refused error={error} />
-      <button type="submit" className="sq-btn" disabled={!view.trim() || !person || route.isPending}>Send to {person?.name ?? 'a person who may decide'}</button>
+      <button type="submit" className="sq-btn" disabled={!view.trim() || !person || route.isPending}>{person ? `Send to ${person.name}` : 'Choose who decides'}</button>
     </form>
   );
 }
