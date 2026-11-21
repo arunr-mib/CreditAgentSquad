@@ -7,7 +7,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import current_user, require
-from app.api.routes_work import _item
+from app.api.routes_evals import latest_eval
+from app.api.routes_work import _item, list_agent_runs, list_agents
 from app.core.db import get_db
 from app.core.roles import Permission, SecondPersonRequired
 from app.domain import routing
@@ -18,12 +19,13 @@ from app.squad import drafts
 from app.squad.briefing import build_briefing
 from app.squad.cases import build_approvals, build_case
 from app.squad.client_file import measure_series
+from app.squad.oversight import OVERSIGHT_ROLES, evaluation_rows, run_words
 from app.squad.portfolio import build_portfolio, lessons_for
 from app.squad.questions import answer_question
 from app.squad.threads import build_thread
 from app.squad.track_record import track_record
 from app.squad.trail import case_trail
-from app.squad.words import DOCUMENT_TYPE_WORDS, NOTE_WORDS, document_type_words
+from app.squad.words import DOCUMENT_TYPE_WORDS, NOTE_WORDS, agent_words, document_type_words
 
 router = APIRouter(tags=["squad"])
 
@@ -219,3 +221,30 @@ def borrower_measure(borrower_id: uuid.UUID, db: Session = Depends(get_db),
     if borrower is None:
         raise HTTPException(404, "Client not found.")
     return measure_series(db, borrower)
+
+
+def _oversight_only(user: User) -> None:
+    if user.role not in OVERSIGHT_ROLES:
+        raise HTTPException(403, "Oversight is for administrators, credit administration and credit review.")
+
+
+@router.get("/oversight/runs")
+def oversight_runs(limit: int = 100, db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
+    """Agent runs with the words for agent, task, outcome and each guardrail note. Read only."""
+    _oversight_only(user)
+    return [run_words(r) for r in list_agent_runs(limit=limit, db=db, _=user)]
+
+
+@router.get("/oversight/agents")
+def oversight_agents(db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
+    _oversight_only(user)
+    return [{**a, "label": agent_words(a["name"])} for a in list_agents(db=db, _=user)]
+
+
+@router.get("/oversight/evaluation")
+def oversight_evaluation(db: Session = Depends(get_db), user: User = Depends(current_user)) -> dict:
+    _oversight_only(user)
+    envelope = latest_eval(db=db, _=user)  # raises 404 when no evaluation has been run
+    results = envelope.pop("results") or {}
+    return {**{k: envelope[k] for k in ("mode", "standin", "notice", "gate_passed", "created_at")},
+            "rows": evaluation_rows(results.get("metrics") or {})}
