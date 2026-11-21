@@ -2,15 +2,14 @@
 
 **Mode: recorded.** Mode recorded: answers came from recorded model responses.
 
-- Generated 2026-11-21T03:23:22+00:00; commit `90fa2d718fa66b2232f7c5d3afb6ebb1be387e0d`; 20 borrower(s) (whole book); 1 pass(es); run time 173.6 seconds.
+- Generated 2026-11-21T08:20:22+00:00; commit `c94f23b65ca5c24a8fb3ac08d15215dbf01eadec`; 20 borrower(s) (whole book); 1 pass(es); run time 213.0 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 0.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
 
-## Gate: FAILED
+## Gate: PASSED
 
 Rule: any invented-number or false-compliant in any pass fails; any cycle that failed on an error fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated.
-- run-error: 6 cycle(s) failed on an error, so nothing was measured. First: briarstone-beverage (review run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/briarstone-beverage/2026-09-30/02.json; dataflake (review run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/dataflake/2026-10-31/02.json; mosswell-robotics (review run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/mosswell-robotics/2026-10-31/02.json
 
 ## Headline numbers
 
@@ -24,9 +23,9 @@ Rule: any invented-number or false-compliant in any pass fails; any cycle that f
 | Exception recall | 100.0% |
 | Cycles needing no person (beyond the commentary approval every review needs) | 55.0% (the book expects 55.0%) |
 | Cycles reaching the signals stage or beyond | 18 of 20 |
-| Cycles closed | 1 of 20 |
-| Other disagreements with the truth | 6 |
-| Model tokens in / out | 765,566 / 215,654 |
+| Cycles closed | 18 of 20 |
+| Other disagreements with the truth | 0 |
+| Model tokens in / out | 809,450 / 216,814 |
 
 | Named failure | Count |
 |---|---|
@@ -36,7 +35,7 @@ Rule: any invented-number or false-compliant in any pass fails; any cycle that f
 | missed-exception | 0 |
 | false-exception | 0 |
 | wrong-citation | 0 |
-| wrong-abstain | 8 |
+| wrong-abstain | 1 |
 | missed-abstain | 0 |
 | stale-terms | 0 |
 
@@ -44,45 +43,32 @@ Rule: any invented-number or false-compliant in any pass fails; any cycle that f
 
 | Borrower | Scenario | Stage reached | Expected exceptions | Raised exceptions | Extraction | Covenants | Differences |
 |---|---|---|---|---|---|---|---|
-| `briarstone-beverage` | over_advance | review_prep (needs_person) | bb.over_advance | bb.over_advance | 100.0% (201/201) | 2/2 | 2 |
-| `brightvane-energy` | runway_falling | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
-| `corvane-analytics` | plan_miss | review_prep (needs_person) | covenant.breach | covenant.breach | 100.0% (62/62) | 3/3 | none |
-| `dataflake` | pledged_cash | review_prep (needs_person) | covenant.reported_mismatch, signal.high | covenant.reported_mismatch, signal.high | 100.0% (62/62) | 3/3 | 3 |
-| `ferrogate-cloud` | cash_flow_positive | review_prep (needs_person) | none | none | 100.0% (64/64) | 4/4 | none |
-| `halcyon-grid` | funding_expected | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
-| `harrowgate-precision` | clean | review_prep (needs_person) | none | none | 100.0% (199/199) | 3/3 | none |
-| `kelvra-bio` | funding_expected | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
-| `kestrel-bay-packaging` | hidden_breach | review_prep (needs_person) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | 1 |
+| `briarstone-beverage` | over_advance | closed (closed) | bb.over_advance | bb.over_advance | 100.0% (201/201) | 2/2 | none |
+| `brightvane-energy` | runway_falling | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
+| `corvane-analytics` | plan_miss | closed (closed) | covenant.breach | covenant.breach | 100.0% (62/62) | 3/3 | none |
+| `dataflake` | pledged_cash | closed (closed) | covenant.reported_mismatch, signal.high | covenant.reported_mismatch, signal.high | 100.0% (62/62) | 3/3 | none |
+| `ferrogate-cloud` | cash_flow_positive | closed (closed) | none | none | 100.0% (64/64) | 4/4 | none |
+| `halcyon-grid` | funding_expected | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
+| `harrowgate-precision` | clean | closed (closed) | none | none | 100.0% (199/199) | 3/3 | none |
+| `kelvra-bio` | funding_expected | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
+| `kestrel-bay-packaging` | hidden_breach | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | 1 |
 | `lumora-health` | late_package | awaiting_package (needs_person) | intake.missing_document | intake.missing_document | not measured (0/0) | 3/3 | none |
-| `mosswell-robotics` | clean | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | 2 |
+| `mosswell-robotics` | clean | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
 | `nimbusfield-security` | funding_slipped | closed (closed) | funding_slipped, signal.high | funding_slipped, signal.high | 100.0% (62/62) | 3/3 | none |
-| `orbitline-systems` | clean | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
-| `pellham-grain` | reported_breach | review_prep (needs_person) | covenant.breach | covenant.breach | 100.0% (199/199) | 3/3 | 2 |
-| `pellucid-sensors` | clean | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
-| `quillon-ai` | clean | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | 2 |
+| `orbitline-systems` | clean | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
+| `pellham-grain` | reported_breach | closed (closed) | covenant.breach | covenant.breach | 100.0% (199/199) | 3/3 | none |
+| `pellucid-sensors` | clean | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
+| `quillon-ai` | clean | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
 | `stripple-tech` | stripple_package | spreading (needs_person) | intake.unclassified, spread.value_unverified | intake.unclassified, spread.value_unverified | 100.0% (50/50) | 0/3 | none |
-| `tessaract-labs` | clean | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
-| `tidewell-medical` | restricted_account | review_prep (needs_person) | cash.statement_mismatch | cash.statement_mismatch | 100.0% (62/62) | 3/3 | 2 |
-| `veridia-payments` | clean | review_prep (needs_person) | none | none | 100.0% (62/62) | 3/3 | none |
+| `tessaract-labs` | clean | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
+| `tidewell-medical` | restricted_account | closed (closed) | cash.statement_mismatch | cash.statement_mismatch | 100.0% (62/62) | 3/3 | none |
+| `veridia-payments` | clean | closed (closed) | none | none | 100.0% (62/62) | 3/3 | none |
 
 ## Differences from the truth
 
 | Borrower | Failure | Item | Detail | Known finding |
 |---|---|---|---|---|
-| `briarstone-beverage` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/briarstone-beverage/2026-09-30/02.json |  |
-| `dataflake` | wrong-abstain | covenant run | the run abstained: no answer |  |
-| `dataflake` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/dataflake/2026-10-31/02.json |  |
-| `kestrel-bay-packaging` | wrong-abstain | covenant run | the run abstained: no answer |  |
-| `mosswell-robotics` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/mosswell-robotics/2026-10-31/02.json |  |
-| `pellham-grain` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/pellham-grain/2026-09-30/02.json |  |
-| `quillon-ai` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/quillon-ai/2026-10-31/02.json |  |
-| `tidewell-medical` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/tidewell-medical/2026-10-31/02.json |  |
-| `briarstone-beverage` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/briarstone-beverage/2026-09-30/02.json |  |
-| `dataflake` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/dataflake/2026-10-31/02.json |  |
-| `mosswell-robotics` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/mosswell-robotics/2026-10-31/02.json |  |
-| `pellham-grain` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/pellham-grain/2026-09-30/02.json |  |
-| `quillon-ai` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/quillon-ai/2026-10-31/02.json |  |
-| `tidewell-medical` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/tidewell-medical/2026-10-31/02.json |  |
+| `kestrel-bay-packaging` | wrong-abstain | investigation of covenant.reported_mismatch (total_leverage) | the Covenant Agent's investigation ended without a recommendation (abstain) |  |
 
 ## Covenant tests not reached
 
@@ -95,34 +81,33 @@ These tests were not run because the cycle correctly rests on an item a person m
 | Borrower | Stage | Open items | Scripted decisions |
 |---|---|---|---|
 | `briarstone-beverage` | borrowing_base | bb.over_advance | bb.over_advance: paydown_required by credit_officer |
-| `briarstone-beverage` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `brightvane-energy` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `briarstone-beverage` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `brightvane-energy` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `corvane-analytics` | covenant_testing | covenant.breach | covenant.breach: escalate_to_committee by credit_officer |
-| `corvane-analytics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `corvane-analytics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `dataflake` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
 | `dataflake` | signals | signal.high | signal.high: acknowledged by analyst |
-| `dataflake` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `ferrogate-cloud` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `halcyon-grid` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `harrowgate-precision` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `kelvra-bio` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `dataflake` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `ferrogate-cloud` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `halcyon-grid` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `harrowgate-precision` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `kelvra-bio` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `kestrel-bay-packaging` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
-| `kestrel-bay-packaging` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `kestrel-bay-packaging` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `lumora-health` | awaiting_package | intake.missing_document | none (left open) |
-| `mosswell-robotics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `mosswell-robotics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `nimbusfield-security` | signals | signal.high | signal.high: acknowledged by analyst |
 | `nimbusfield-security` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `orbitline-systems` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `orbitline-systems` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `pellham-grain` | covenant_testing | covenant.breach | covenant.breach: escalate_to_committee by credit_officer |
-| `pellham-grain` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `pellucid-sensors` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `quillon-ai` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `pellham-grain` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `pellucid-sensors` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `quillon-ai` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 | `stripple-tech` | intake | intake.unclassified | intake.unclassified: not_needed by analyst |
 | `stripple-tech` | spreading | spread.value_unverified | none (left open) |
-| `tessaract-labs` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `tidewell-medical` | review_prep | cash.statement_mismatch, review.commentary_approval | cash.statement_mismatch: reviewed by credit_officer, review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `tidewell-medical` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
-| `veridia-payments` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `tessaract-labs` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `tidewell-medical` | review_prep | cash.statement_mismatch, review.commentary_approval | cash.statement_mismatch: reviewed by credit_officer, review.commentary_approval: approve by portfolio_manager |
+| `veridia-payments` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
 
 ## Figures held for a person
 
@@ -138,11 +123,6 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 
 | Borrower | Agent | Typed figures | Text |
 |---|---|---|---|
-| `briarstone-beverage` | spreading | none | Statements are unaudited, prepared by management, and cover the nine months ended September 30, 2026 with a nine-month 2025 comparative. |
-| `briarstone-beverage` | spreading | none | Equity components (Common stock and additional paid-in capital; Retained earnings) on page 2 are not reported separately; the printed Total stockholders' equity row is reported under bs.total_equity. |
-| `briarstone-beverage` | spreading | none | Dividends paid on page 4 is mapped to cf.distributions. |
-| `briarstone-beverage` | spreading | none | Cash flow rows 'Cash and equivalents, beginning of period' and 'Cash and equivalents, end of period' on page 4 have no template line and are not reported. |
-| `briarstone-beverage` | spreading | none | Debt schedule rows on page 5 (Revolving line of credit - Bank of Stoic, Term notes payable - Bank of Stoic, Total debt outstanding, Term debt principal due within twelve months) have no separate template line and are not reported; they correspond to balance sheet debt lines already spread. |
 | `briarstone-beverage` | certificate | none | Both covenants in the approved terms are reported in the summary table on the first page and are also shown in the calculation schedule on the second page. |
 | `briarstone-beverage` | certificate | none | No embedded instructions were found in the document. |
 | `briarstone-beverage` | collateral | none | The availability line is labeled as availability with over-advance in brackets and shows a bracketed negative figure; no separate over-advance line is printed, so over_advance is not reported. |
@@ -150,47 +130,38 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 | `briarstone-beverage` | collateral | none | The certification text states that revolving loans outstanding exceed the borrowing base. |
 | `briarstone-beverage` | collateral | none | The inventory page states that work in process and consignment inventory are not eligible and that quantities come from perpetual records last counted at the most recent fiscal year end. |
 | `briarstone-beverage` | collateral | none | No embedded instructions directed at the reader were found in the document. |
-| `briarstone-beverage` | early_warning | none | Availability was {{fact:eccefdef-af40-4438-9a60-4bd6a41d5296}} against a {{fact:8420f7b3-112e-483b-9917-0cfe30253b1c}} commitment, or {{fact:afda2f63-269b-40dc-9165-b1ed2a2729c3}} of the line. Below zero means borrowings exceed what the collateral supports, so the borrower is over-advanced and has no revolver cushion for liquidity. No other signal fired, so the facts do not show whether weaker col |
-| `brightvane-energy` | spreading | 1 | Page 5 (Note 1 - Capitalised software) is a month-only rollforward of capitalised software; it was not spread because it is not a ten-month figure and the template has no lines for it. |
-| `brightvane-energy` | spreading | none | The document is a bank account statement for the month of October 2026, not a set of financial statements. Only the two bank lines are reported, taken from closing balances at October 31, 2026. |
+| `briarstone-beverage` | early_warning | none | Availability is negative at {{fact:35137185-7ce8-415d-91e2-17d9ec2c48c9}}, or {{fact:7f849ef8-c6ca-4ea8-99e6-ac2df1b9f66a}} of the {{fact:5da0ddc9-8c08-4431-967f-6ae096855397}} commitment. Advances exceed what the collateral supports, so the borrower is over-advanced and has no revolver headroom for working capital. No other signal fired, so these facts do not show whether collateral shrank or bor |
 | `brightvane-energy` | certificate | none | All three covenants are reported in the summary table on page one and repeated in Schedule 1 on page two. |
 | `brightvane-energy` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table on page one. |
 | `brightvane-energy` | certificate | none | No embedded instructions were found in the document. |
-| `brightvane-energy` | early_warning | none | Runway has shortened every month, from {{fact:e808f329-9ed2-4660-864e-85468337786f}} months at July end through {{fact:7c471ca8-9a09-435d-b265-5ad25f42b31b}} and {{fact:4e9ad01a-26dd-47bf-af8b-010049b697d1}} to {{fact:91ab4d4e-02f6-4093-9c9b-6fdd09d6ab06}} at October end. The steady decline means cash is being used faster than it is replenished. This underlying trend drives both covenant headroom  |
-| `brightvane-energy` | early_warning | none | Headroom on the minimum cash covenant fell from {{fact:f4a47252-f39e-4885-b92c-2417cd690951}} to {{fact:2e29a2c8-d621-4b31-a025-495dc0a2fcb6}} to {{fact:70437476-3cba-47c4-968d-bf53abaeaf98}}, with unrestricted cash at {{fact:7146bbbd-8978-474c-9d9f-b125f7f7a94d}} against a floor of {{fact:9d60030b-f402-47e5-9c64-00df9f1582df}}. This is the thinner of the two covenant cushions. The cash burn behin |
-| `brightvane-energy` | early_warning | none | Headroom on the minimum runway covenant narrowed from {{fact:406c40a8-c588-4040-af98-afe0429ccf53}} to {{fact:05172343-e33a-447f-929b-b97a25beb1f4}} to {{fact:d17b43e9-1b63-4865-9051-65f587a66bce}}. Runway of {{fact:d3a61e1f-0098-40b9-86a5-b0e1e3f5df58}} months still clears the {{fact:1ffb0178-4f03-45c9-945c-4f203f5e6270}}-month minimum comfortably. The signal mirrors the falling runway rather tha |
-| `corvane-analytics` | spreading | 1 | Note 1 on page 5 (capitalised software roll-forward) covers only the single month and has no template lines; it was not spread. |
-| `corvane-analytics` | spreading | none | The document is a bank account statement for October 1, 2026 to October 31, 2026, not a set of financial statements, so only the two bank template lines are reported. |
+| `brightvane-energy` | early_warning | none | Runway has shortened every month, from {{fact:a5bb38f6-ffd8-4c02-afe9-f82d464f4341}} months at July 31 to {{fact:0322424c-bf6b-4303-8812-5939e094af4c}} months at October 31. This points to sustained cash burn without fresh funding. It is the likely driver of the two covenant headroom signals, which show the same erosion against the runway and cash tests. |
+| `brightvane-energy` | early_warning | none | This is the covenant view of the falling runway. Headroom has narrowed from {{fact:b79cf9cf-9b99-49f6-9454-3fddfcbd818b}} in August to {{fact:05818cf0-d361-4011-aeb4-5f858bcc7e8d}} in October, with runway at {{fact:eb77cb11-48c8-4c9a-80a5-e2c8b0a4b283}} months against a floor of {{fact:211db17a-257a-4c4d-ae58-99eefbc73fb9}}. It is still comfortably compliant, but the steady monthly decline matters |
+| `brightvane-energy` | early_warning | none | Unrestricted cash of {{fact:6cd478ae-511b-4767-97e4-83600e7e34b5}} still clears the {{fact:293f580e-2b99-4e00-840d-7e5ed64d4604}} minimum. However, headroom fell from {{fact:dbbfb928-391d-49f4-86b2-45e132931fe2}} to {{fact:9b294630-204d-4d13-9666-350c3e44f414}} over two months and is now the thinner of the two covenants. It reflects the same cash burn behind the shrinking runway and may be the fir |
 | `corvane-analytics` | certificate | none | All three covenants are reported in the summary table on page one and repeated in Schedule 1 on page two. |
 | `corvane-analytics` | certificate | none | The borrower reports non-compliance with the Revenue to Plan covenant. |
 | `corvane-analytics` | certificate | none | On page one the Revenue to Plan requirement wraps across two lines in the table. |
 | `corvane-analytics` | certificate | none | No instructions were found in the document text. |
-| `corvane-analytics` | covenant | 1,, 1 | The breach looks real. Revenue to Plan (Section 6.3) for the three months ended October 31, 2026 came to {{fact:2aa946f7-88cb-43f5-9d81-36858ba826b6}}. The minimum is {{fact:86b794ce-e84e-4abc-994a-281808cbcc21}}, so the shortfall is {{fact:6571fa4a-90b8-4cb3-b718-3e9e95db9631}}. The borrower's own October certificate agrees: it reports {{fact:194229d5-2cee-41c8-a7b3-fc68f0dd8337}} and says the bo |
-| `corvane-analytics` | early_warning | none | Revenue against plan stands at {{fact:d3c0308e-5362-4a2d-add5-7f48ba7438ce}}, below the covenant level of {{fact:2b1e9f12-88af-480c-8839-8321fdd53587}}, so headroom is negative at {{fact:143008c9-152b-4303-8b94-f0ec44e56200}}. The test is not merely tight but already on the wrong side of the threshold. The revenue shortfall and trend signals describe the same problem. |
-| `corvane-analytics` | early_warning | none | Revenue came in at only {{fact:7c03c73e-aea4-4930-a6c3-32d6151c4c01}} of plan, a substantial miss for a subscription business that usually plans revenue with some visibility. This shortfall is what drives the failed revenue covenant and may also explain the steady erosion in cash headroom. |
-| `corvane-analytics` | early_warning | none | Headroom on the revenue covenant has worsened each month, from {{fact:bd640ec7-ecf0-43d3-a63d-9192b211663f}} in August to {{fact:a542ff08-ffd1-4346-a466-7861b003c49b}} in September and {{fact:143008c9-152b-4303-8b94-f0ec44e56200}} in October. The miss is deepening rather than a one-off, which makes the current shortfall harder to dismiss as timing. |
-| `corvane-analytics` | early_warning | none | Unrestricted cash of {{fact:dbd79489-2b03-4727-a834-ad64cbe6d2f4}} is still well above the {{fact:470a0286-54f6-4cc7-9317-4263d93d03ed}} minimum, but headroom has slid from {{fact:fdb0de1b-4a3b-4926-a56f-074e66e78c2b}} in August to {{fact:646000c5-6cea-46af-87a0-9d19e4f548b5}} in October. Falling cash alongside a widening revenue miss may point to burn that the business is not covering with sales. |
-| `dataflake` | spreading | 1 | Note 1 on page 5 is a one-month capitalised software rollforward; it was not spread as it covers the month only and has no template line beyond the balance sheet figure. |
-| `dataflake` | spreading | none | The document is a bank statement for October 2026, not a set of financial statements, so only the two bank account total lines were reported. |
+| `corvane-analytics` | covenant | 1, | The Revenue to Plan test fails for the three months ended October 31, 2026. Revenue was {{fact:d3b63286-6a89-4cbc-915b-1b7fb12cfffd}} of the Approved Plan. Section 6.3 requires at least {{fact:93a73ff1-deb8-43a6-8de3-8172e52a4587}}. I reran the test under terms version 1, the only version on file, and it still fails, with headroom of {{fact:2e69c1b1-06f7-48cf-89ac-89e01cc49405}}. The borrower's Oc |
+| `corvane-analytics` | early_warning | none | Revenue reached {{fact:98062c80-2b0c-4c86-88a5-00a384279b1e}} of plan against a covenant floor of {{fact:93b640a7-0a41-4339-a67a-7e969fcba7a3}}, so headroom is negative at {{fact:775db410-c6cb-4de3-9181-c097c5050561}}. The covenant measure therefore sits below its threshold, not merely close to it. This is the covenant view of the same shortfall flagged by the revenue-below-plan signal. |
+| `corvane-analytics` | early_warning | none | Revenue came in at {{fact:b9a463b1-6114-4fc6-aad3-14cf97c9546d}} of plan, a material miss for a subscription business whose plan underpins its cash runway. It is the operating cause behind the revenue covenant falling below its floor. If the miss persists, it may also explain the steady erosion in cash headroom. |
+| `corvane-analytics` | early_warning | none | Unrestricted cash of {{fact:8a8c1d7f-0da1-4401-a445-af1e42630da7}} remains well above the {{fact:55f4a914-74e7-4283-8cf3-970c11f98448}} minimum, but headroom has declined each month, from {{fact:95e707c7-4d6e-40ec-8097-778ef311dec9}} in August to {{fact:d9e92bed-ea1c-48a6-a545-8d9cf2dc40e9}} in September and {{fact:165a42b9-587d-433c-89bc-2a17acb020fb}} in October. Ongoing burn alongside the reven |
+| `corvane-analytics` | early_warning | none | Revenue covenant headroom has deteriorated each month, from {{fact:a5257919-0d54-46bb-bef8-a6a8dbff38ec}} in August to {{fact:226a2387-4f51-444c-a3cd-eed278c68c1d}} in September and {{fact:775db410-c6cb-4de3-9181-c097c5050561}} in October. It turned negative in September and the gap widened in October, showing the shortfall is worsening rather than a one-month miss. |
 | `dataflake` | certificate | none | The Schedule 1 calculation for Minimum Unrestricted Cash on page two includes cash held in the pledged collateral account within Unrestricted Cash; a reviewer may wish to confirm whether pledged collateral cash qualifies as unrestricted under the credit agreement. |
 | `dataflake` | certificate | none | The requirement for Revenue to Plan wraps across two lines in the summary table on page one. |
-| `dataflake` | early_warning | none | Dataflake has about {{fact:78f6ae81-0bfe-4964-bff9-c570772de4ee}} months of cash at current burn, which limits its ability to absorb setbacks before it needs new funding. The low-severity runway covenant signal shows this has been shrinking quickly. The cash covenant signals show the same pressure on its balance sheet. |
-| `dataflake` | early_warning | none | Unrestricted cash of {{fact:c6b23fca-d829-47de-afb9-2c23d0a23106}} is below the {{fact:dfe07fca-0fbc-40ee-b40b-3a228a34e2f2}} minimum, giving headroom of {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}}. That means the level is past the threshold, not merely close to it, though the signal is rated medium. It is the balance-sheet side of the short runway. |
-| `dataflake` | early_warning | none | Runway covenant headroom fell from {{fact:0ac55194-1dd2-43ef-8b72-a1df0510d927}} in August to {{fact:3caa60a2-0f31-4409-a26f-9fb416c6117f}} in September and {{fact:09bff13b-0bba-432a-8f89-e9c4a43c04b8}} in October. Runway of {{fact:88465eb6-1917-4cd2-b16b-08d16b705fd9}} months remains above the {{fact:629bd59a-680f-43d2-9cd0-1e4063fb047e}}-month floor, but at this pace the cushion is thin. This is |
-| `dataflake` | early_warning | none | Cash covenant headroom moved from {{fact:c62ed519-9cd5-4290-86ff-3a880e7c459e}} in August to {{fact:34304bd5-0c7c-4ff3-a214-d8e31aa6b48b}} in September, then to {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}} in October. The steady decline crossed below the minimum. This shows the medium-severity cash signal reflects ongoing burn, not a one-month dip. |
-| `ferrogate-cloud` | spreading | 1 | Note 1 on page 5 is a single-month capitalised software rollforward (start balance, additions, amortisation, end balance); none of its rows were spread as they fit no template line for the ten-month period. |
-| `ferrogate-cloud` | spreading | none | The document is a single-page bank statement for the period October 1, 2026 to October 31, 2026, not a set of financial statements, so only the two bank account total lines are reported. |
-| `ferrogate-cloud` | spreading | 9001) | The collateral account (ending 9001) is pledged under the venture loan agreement and is not available for withdrawal. |
+| `dataflake` | covenant | 1 | Minimum Unrestricted Cash at October 31, 2026 fails. The bank calculated {{fact:c4b32fc7-0c19-43b1-8663-becf1e74695b}} against a minimum of {{fact:059b2b50-c1ca-4961-97f7-cdcdc04e2229}} ({{fact:e33a7c82-20c4-47d5-8bcd-d401167945b8}} headroom). The certificate reports {{fact:f071f07b-5664-4408-af8f-cfa68eaeceb1}} and claims compliance. Its Schedule 1 reaches that figure by adding the pledged collat |
+| `dataflake` | covenant | none | Minimum Unrestricted Cash at October 31, 2026 fails. The bank calculated {{fact:c4b32fc7-0c19-43b1-8663-becf1e74695b}} against a minimum of {{fact:059b2b50-c1ca-4961-97f7-cdcdc04e2229}} ({{fact:e33a7c82-20c4-47d5-8bcd-d401167945b8}} headroom). The certificate reports {{fact:f071f07b-5664-4408-af8f-cfa68eaeceb1}} and claims compliance. Its covenant schedule reaches that figure by adding the pledged |
+| `dataflake` | early_warning | none | Runway stands at {{fact:745083a7-5662-4eb3-ad5e-9bfda58a7856}} months at October 31, so at the current burn the cash on hand would be exhausted in well under a year. This is the core repayment concern, and the cash covenant shortfall and the shrinking runway covenant cushion both point the same way. |
+| `dataflake` | early_warning | none | Unrestricted cash of {{fact:c4b32fc7-0c19-43b1-8663-becf1e74695b}} is below the covenant minimum of {{fact:059b2b50-c1ca-4961-97f7-cdcdc04e2229}}, leaving headroom of {{fact:e33a7c82-20c4-47d5-8bcd-d401167945b8}}. The cushion is not just thin but negative, which reads as the covenant level being crossed. It is the balance-sheet side of the short runway. |
+| `dataflake` | early_warning | none | Cash covenant headroom has fallen steadily, from {{fact:01615826-23b4-46a7-a2f4-096529055e1f}} in August to {{fact:e82a33dd-cba9-4b11-b525-a7b1ec8c669b}} in September and {{fact:e33a7c82-20c4-47d5-8bcd-d401167945b8}} in October. The trend shows the shortfall is a sustained cash drain rather than a one-month dip, which reinforces the runway concern. |
+| `dataflake` | early_warning | none | Runway covenant headroom has narrowed from {{fact:7d8a5812-b003-4fa5-b47e-b483f195385b}} in August to {{fact:ceabc4ce-66ef-4099-8a6d-59438e1e5d14}} in September and {{fact:4e772aab-3870-47b8-af01-4e05a62e9cc6}} in October. Runway of {{fact:cbed3551-1e13-4a66-a0b1-4bcdf592ed7f}} months is still above the minimum of {{fact:10fb341a-0da7-4945-9895-7e0af6393ccc}}, but at this pace the cushion could di |
 | `ferrogate-cloud` | certificate | none | Minimum Runway is reported as not meaningful because the borrower states it is cash-flow positive, yet the schedule on page two shows net burn figures in parentheses; a reviewer should confirm whether runway was properly assessed. |
 | `ferrogate-cloud` | certificate | none | On page one the Required text for Revenue to Plan and Debt Service Coverage Ratio wraps across two lines in the summary table. |
 | `ferrogate-cloud` | certificate | none | No instructions were found inside the document. |
-| `halcyon-grid` | spreading | 1 | Page 5 (Note 1 - Capitalised software) is a one-month rollforward of capitalised software and was not spread; its closing balance agrees in wording to the balance sheet line. |
-| `halcyon-grid` | spreading | none | This document is a bank statement for the period October 1, 2026 to October 31, 2026, not a set of financial statements. Only the two bank template lines are reported. |
 | `halcyon-grid` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one; the Revenue to Plan requirement wraps across two lines in the table. |
 | `halcyon-grid` | certificate | none | The summary table header for the actual and compliance columns appears overlapped in the rendering, but row values are legible. |
 | `halcyon-grid` | certificate | none | No embedded instructions were found in the document. |
-| `halcyon-grid` | early_warning | none | Cash headroom has dropped steadily, from {{fact:215d7fe7-96e0-4ef0-a08e-22a42452f925}} in August to {{fact:77ec4e2c-7742-43d8-8e63-8fbaa4771311}} in October. Unrestricted cash of {{fact:b9098cac-dcd5-4879-9df4-cb17ce63100f}} remains above the {{fact:a51b3150-6a6d-419b-a4d7-63750a532c0d}} floor, but the pace of decline points to ongoing cash burn. With revenue ahead of plan, the burn appears driven |
-| `halcyon-grid` | early_warning | none | Revenue is running at {{fact:8ea400e0-d968-48ae-b48a-e822bb1a76db}} of plan against a {{fact:7ce5a9d8-2685-45c5-b272-ba54dfb40d46}} minimum. Headroom has slipped only marginally, from {{fact:db12b9ee-916b-400d-bf72-536f72a54349}} to {{fact:901a8aea-6453-43fe-a3f4-eeb84f9282ab}}, which is essentially flat. This signal is reassuring rather than concerning, and it suggests the falling cash balance is |
+| `halcyon-grid` | early_warning | none | Cash headroom has fallen steadily, from {{fact:af782f9e-c66a-4911-869e-648902541a10}} in August to {{fact:a24e5a9a-a431-428a-a9bb-18fba7e41f5b}} in October, with unrestricted cash of {{fact:92252626-8e4a-488e-9e55-26b7535f1edd}} against a {{fact:631670dc-5694-4985-bdf4-a729caf4c710}} floor. Revenue is running ahead of plan, so the burn seems to come from spending rather than a sales shortfall. If  |
+| `halcyon-grid` | early_warning | none | Revenue is at {{fact:35f38096-bd96-47d0-b7f0-b5fc5c385cb2}} of plan against an {{fact:a27235eb-c24f-4ffc-b2dc-1f69bacf2722}} minimum. Headroom has only edged down, from {{fact:a8cf5279-14ac-4e8f-bda0-ae205014dbd3}} to {{fact:577ab7e9-08f9-4863-9d8b-f0bc37f47261}}, which is a minor change. This signal mainly shows that the falling cash position is not explained by weak sales. |
 | `harrowgate-precision` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one; the calculation schedule on page two shows the same reported values. |
 | `harrowgate-precision` | certificate | none | No instructions were found inside the document. |
 | `harrowgate-precision` | collateral | none | The certificate prints a single combined line labelled Availability (over-advance); it is reported under availability, and no separate over-advance line is stated, so over_advance is not reported. |
@@ -199,101 +170,72 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 | `harrowgate-precision` | collateral | none | The aging is stated as aged from invoice date; the inventory report is stated at lower of cost and market. |
 | `harrowgate-precision` | collateral | none | The inventory page states that work in process and consignment inventory are not eligible, and that quantities come from perpetual records last counted at the most recent fiscal year end; no consignment category is listed separately. |
 | `harrowgate-precision` | collateral | none | No embedded instructions were found in the document. |
-| `kelvra-bio` | spreading | 1 | Note 1 on page 5 (capitalised software roll-forward) covers the month only and was not spread. |
-| `kelvra-bio` | spreading | none | This document is a bank account statement for October 2026, not a set of financial statements, so only the two bank account total lines were reported. |
 | `kelvra-bio` | certificate | none | All three covenants are reported in the summary table on page one and repeated in Schedule 1 on page two. |
 | `kelvra-bio` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table. |
 | `kelvra-bio` | certificate | none | No embedded instructions were found in the document. |
-| `kelvra-bio` | early_warning | none | Unrestricted cash headroom has narrowed each month, from {{fact:a5cc90e5-6284-4ae0-959c-8aac343b2d28}} to {{fact:e849c4f5-c89e-46a2-a99e-69d7c5ef0e11}} to {{fact:0e40c1c4-1993-4343-bc36-6f621f1475db}}, consistent with steady cash burn. Cash of {{fact:e135f087-ef39-441e-a2d9-90b2e31308ea}} still sits well above the {{fact:5d992da1-7eea-48af-952f-cdbe15207cd7}} floor. No other signal fired, so this  |
-| `kestrel-bay-packaging` | spreading | none | The cover page states units as 'In thousands of u.s. dollars'; the statement pages use the phrase reported as the scale statement. |
+| `kelvra-bio` | early_warning | none | Headroom on the minimum unrestricted cash covenant has narrowed each month, from {{fact:489eaf6c-1a39-4a9d-aca7-bd197e8283c7}} in August to {{fact:a3176b14-102b-4a6e-824a-b8ff29b2b339}} in October, suggesting steady cash burn. Cash of {{fact:4656e342-82a9-4667-bd8c-e4c4296dfba9}} still sits well above the {{fact:8a291bf2-c97e-4f1e-bfd0-e11052e988f6}} floor, so this stands alone as a trend to watch |
 | `kestrel-bay-packaging` | certificate | none | Both covenants in the approved terms are reported in the summary table on page one and in Schedule 1 on page two. |
 | `kestrel-bay-packaging` | certificate | none | The Total Leverage Ratio calculation in Schedule 1 uses EBITDA as calculated by the Borrower, which adds back pro forma cost savings from plant consolidation; the credit team may wish to confirm this add-back is permitted under the Credit Agreement. |
 | `kestrel-bay-packaging` | certificate | none | No embedded instructions were found in the document. |
-| `kestrel-bay-packaging` | early_warning | none | Total leverage of {{fact:cf09aa30-14d6-4214-b8dc-b7369f0a5824}} is above the {{fact:cf5ce94d-59c2-485d-ac3c-f864cf033957}} maximum, so headroom is negative at {{fact:b1a2482c-4174-437b-956c-da582a08fa26}}. On these figures the covenant appears already breached, not merely tight. Debt is high relative to earnings while the liquidity cushion is also shrinking. |
-| `kestrel-bay-packaging` | early_warning | none | The current ratio of {{fact:0f340d0e-1385-41ee-a0dd-bda8b6003f21}} sits just above its {{fact:13194732-46fe-4a3a-afd0-41790b749b4f}} floor, leaving headroom of only {{fact:9e590747-9307-45f2-be07-cc4a806e601c}}. That is a thin short-term liquidity cushion. Alongside the leverage overshoot, it points to pressure on both debt capacity and near-term cash. |
-| `kestrel-bay-packaging` | early_warning | none | Current ratio headroom slipped from {{fact:c016ad45-01b1-4a84-9ef1-bd2b68269efc}} in March to {{fact:f33cbd85-a873-4f98-99bf-bd4fb0d746df}} in June. It then fell sharply to {{fact:9e590747-9307-45f2-be07-cc4a806e601c}} by September. The deterioration is accelerating, which explains why the low-headroom signal fired and suggests the floor could be at risk if the trend continues. |
-| `mosswell-robotics` | spreading | 1 | Note 1 (capitalised software roll-forward, month only) on page 5 was not spread; it has no corresponding template lines. |
-| `mosswell-robotics` | spreading | none | The document is a bank statement for the month of October 2026, not a set of financial statements, so only the two bank account total lines are reported. |
+| `kestrel-bay-packaging` | covenant | 1) | The Total Leverage Ratio for the period ended September 30, 2026 tests at {{fact:afc4865f-2a98-4abf-83cd-9c18769f8ba0}} against a maximum of {{fact:73908d0b-e416-4390-8e7a-404aa643d4a6}}, while the certificate reports {{fact:b97284d0-91ad-443e-a7d9-ff929d6d24d8}} and compliance. In Schedule 1 of the certificate, the borrower's Total Debt and EBITDA components match the bank's inputs. The gap comes |
+| `kestrel-bay-packaging` | covenant | none | The Total Leverage Ratio for the period ended September 30, 2026 tests at {{fact:afc4865f-2a98-4abf-83cd-9c18769f8ba0}} against a maximum of {{fact:73908d0b-e416-4390-8e7a-404aa643d4a6}}, while the certificate reports {{fact:b97284d0-91ad-443e-a7d9-ff929d6d24d8}} and compliance. In Schedule 1 of the certificate, the borrower's Total Debt and EBITDA components match the bank's inputs. The gap comes |
+| `kestrel-bay-packaging` | early_warning | none | Headroom is negative ({{fact:9cb22ace-8135-4135-a29e-e9560a210c32}}): total leverage of {{fact:3115e91a-b1c1-48e2-94e4-3a0427117558}} sits above the {{fact:90f89cb0-530b-4868-ba25-cdb2e015eaab}} maximum, so the covenant appears breached at September 30, 2026, not just tight. Debt is high relative to earnings, which limits capacity to absorb further weakness, and it coincides with thinning liquidit |
+| `kestrel-bay-packaging` | early_warning | none | The current ratio of {{fact:1988d592-7225-423a-b692-d6621633ff8f}} is only slightly above the {{fact:84221cfd-6b56-4c1a-88b3-9c3b5f31d88a}} minimum, leaving headroom of {{fact:2572eac5-14b9-4885-b56b-5134010a9959}}. Short-term liquidity is tightening at the same time leverage is over its limit, so both the balance sheet and near-term cash cover are under pressure. |
+| `kestrel-bay-packaging` | early_warning | none | Current ratio headroom has declined each quarter this year, from {{fact:15f45500-e1ea-4011-812b-2f56c2a349d2}} in March to {{fact:205e0f79-bae0-405e-9211-1cc41e03ce72}} in June, then dropped sharply to {{fact:2572eac5-14b9-4885-b56b-5134010a9959}} in September. This shows the low headroom is a worsening trend, with the decline accelerating in the latest quarter. |
 | `mosswell-robotics` | certificate | none | All three covenants are reported in the summary table on page one and repeated in Schedule 1 on page two. |
 | `mosswell-robotics` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table on page one. |
 | `mosswell-robotics` | certificate | none | No instructions were found inside the document. |
-| `mosswell-robotics` | early_warning | none | Unrestricted cash headroom has narrowed steadily, from {{fact:39a70bb8-5c76-4578-b667-3bbacfdf24eb}} in August to {{fact:87a9e2f6-280b-4436-b792-a2bc7d3456c4}} in September and {{fact:08c4c464-d664-4f78-b775-4e9c2eaebc21}} in October. Cash of {{fact:6ac67879-e877-4543-a08b-598cab953c80}} still sits well above the {{fact:ddd5737d-8265-4ee1-b8d0-1de5eff6213f}} floor. The concern is the trend, a sign |
-| `nimbusfield-security` | spreading | 1 | Note 1 on page 5 is a one-month capitalised software rollforward; no template line was taken from it. |
-| `nimbusfield-security` | spreading | none | This document is a bank statement for the month of October 2026, not a set of financial statements, so only the two bank account total lines were spread. |
+| `mosswell-robotics` | early_warning | none | Unrestricted cash cushion over the covenant minimum has shrunk steadily, from {{fact:eaa400da-c7cb-43c6-9ab9-aeb7c1ba2f57}} in August to {{fact:b8802769-be40-4eb6-b44e-076e327ad557}} in October, suggesting ongoing cash burn. Cash of {{fact:8c22f6a4-cc43-42f5-957d-e53d0e244235}} still sits well above the {{fact:344117f9-66d7-49ee-b609-719c22b9714d}} floor. No other signal fired, so this trend stand |
 | `nimbusfield-security` | certificate | none | All three covenants are reported in the summary table on page one and repeated in Schedule 1 on page two. |
 | `nimbusfield-security` | certificate | none | The Revenue to Plan requirement wraps across two lines in the page one table. |
-| `nimbusfield-security` | early_warning | none | Cash runway has fallen to {{fact:0876a4c5-62e5-4171-8850-2564f739afc2}} months, so the borrower's time to reach profitability or raise new funding is getting short. The steadily falling runway and cash covenant headroom show this is a sustained trend, not a one-off. Revenue tracking ahead of plan suggests the pressure comes from cash burn rather than weak sales. |
-| `nimbusfield-security` | early_warning | none | Headroom on the minimum runway covenant has shrunk each month, from {{fact:85e42179-b128-45b9-8622-58c083af9a0e}} in August to {{fact:817703a5-ed3c-49e1-b9c0-55b878918d35}} in October. Runway of {{fact:5e075111-4594-4eda-9eeb-b1d483aab321}} months is still above the {{fact:caaa8855-1488-43ab-a0d9-d277f5ee9bea}}-month floor, but if the decline continues at this pace, the cushion would be gone withi |
-| `nimbusfield-security` | early_warning | none | Unrestricted cash headroom fell from {{fact:62e6d8fc-98c7-419b-9206-889afb0aa3f4}} in August to {{fact:71bf8060-93da-4884-a4a3-fae49d106867}} in October. Cash of {{fact:1300f6f3-f9f0-4192-86c7-2b2024c61b06}} still clears the {{fact:f59c1e75-ca5d-4e05-a55c-f4d06b43784c}} minimum. The falling cash balance is the root of the shrinking runway, so this signal and the runway signals describe the same bu |
-| `nimbusfield-security` | early_warning | none | This headroom is essentially flat, moving only from {{fact:973da0b7-3049-49dd-b547-9f41cace8037}} to {{fact:83a42716-5b75-41e8-a15f-2e31b29bc907}}. Revenue is running at {{fact:c113aae2-3896-4363-909b-a6c665eb7f7c}} of plan against an {{fact:c19644d5-7664-4763-b0b6-a0c4ceb67a4d}} floor. This is a mitigating point: it suggests the cash decline is not caused by a revenue shortfall. |
-| `orbitline-systems` | spreading | 1 | Note 1 on page five is a one-month rollforward of capitalised software; it was not spread as it maps to no separate template line. |
-| `orbitline-systems` | spreading | none | The document is a bank statement for the month ended October 31, 2026, not a set of financial statements, so only the two bank account summary totals were reported. |
+| `nimbusfield-security` | early_warning | none | Runway stands at {{fact:98b6ef6d-b5ad-4fc1-8f3e-1b7c0b9cb3ef}} months, so on current burn the company has limited time to fund itself before needing new capital. The falling runway and cash covenant headroom signals show this position has worsened steadily since August, and with revenue holding above plan, the pressure appears to come from spending rather than sales. |
+| `nimbusfield-security` | early_warning | none | Headroom on the minimum runway covenant fell from {{fact:f346a5be-c68f-446e-bfb8-c441c4178264}} in August to {{fact:a0543faa-a2eb-4ca4-b459-8c9b2b07d8d2}} in October, with runway at {{fact:a2d665b8-e777-4e64-a747-1514b99cdd18}} months against a floor of {{fact:b6a80f6e-d52e-4ba4-9c50-8e40b0787aa2}}. This is the covenant view of the high-severity runway signal; if the monthly decline continues, the |
+| `nimbusfield-security` | early_warning | none | Unrestricted cash of {{fact:ee2bad2c-a54d-4ff0-a87e-63d3c2482e6f}} remains above the {{fact:12601756-43fc-48bc-9d66-0572ce60a92d}} minimum, but headroom dropped from {{fact:f1f5272e-161f-4e1e-b1fe-3f31549e6ac3}} in August to {{fact:c5923c39-ccff-4aed-850a-8ec42cb88303}} in October. The steady cash drawdown is the direct driver behind the shrinking runway. |
+| `nimbusfield-security` | early_warning | none | Revenue is running at {{fact:ec43ff3f-d199-4dab-8cd7-30de04945194}} of plan against an {{fact:d812f97f-2e16-426b-9be8-9c71fec22e49}} floor, and headroom has been essentially flat, moving only from {{fact:5d6afd99-f02a-4aa9-9aca-d683254eee03}} to {{fact:c575ab0b-f94e-4d37-a948-2ccfeb22c362}}. This is a mitigating signal: sales are not the source of the cash and runway deterioration. |
 | `orbitline-systems` | certificate | none | All three covenants are reported in the summary table on page one and repeated in Schedule 1 on page two. |
 | `orbitline-systems` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table. |
 | `orbitline-systems` | certificate | none | No embedded instructions were found in the document. |
-| `orbitline-systems` | early_warning | none | Headroom on the minimum unrestricted cash covenant has narrowed each month, from {{fact:468baa25-549f-48e8-b82c-79656e01b092}} in August to {{fact:0085414f-86dc-4304-8818-5ea0761e790e}} in September and {{fact:1e2a444b-ad46-4bff-b9c2-eb3b87211055}} in October. Cash of {{fact:17e92191-36ba-45ac-a5d5-1a5ea8b346f7}} remains well above the {{fact:4b28462c-0a45-4cbf-8e93-33a6a6f4bb0b}} floor, but the s |
-| `pellham-grain` | spreading | none | Statements are interim, unaudited, management-prepared for the nine months ended September 30, 2026 with nine-month comparatives for 2025. |
-| `pellham-grain` | spreading | none | Debt schedule rows on page 5 (revolving line of credit, term notes payable, total debt outstanding, term debt principal due within twelve months) were not placed; the template has no lines for them. |
-| `pellham-grain` | spreading | none | The cover page also states the units as in thousands of U.S. dollars; the scale phrase was taken from the balance sheet page. |
+| `orbitline-systems` | early_warning | none | Unrestricted cash still sits well above the covenant floor ({{fact:1b18cc45-732f-4cdb-91ed-fe8b0888b512}} against {{fact:f84216a3-6dc6-4f42-b916-c14939b6ff8b}}), but headroom has fallen steadily from {{fact:cdc9ef9d-3b17-4db5-9c9c-b29a7f61e542}} to {{fact:dc91b56f-8344-48f4-8e74-00ca33b8cd9e}} over three month-ends. A cash-based covenant eroding month after month points to ongoing cash burn. No ot |
 | `pellham-grain` | certificate | none | All three covenants in the approved terms are reported in the summary table on the first page; the borrower reports non-compliance with the Fixed Charge Coverage Ratio. |
 | `pellham-grain` | certificate | none | No embedded instructions were found in the document. |
-| `pellham-grain` | covenant | 1 | The Fixed Charge Coverage Ratio for the four quarters ended September 30, 2026 is {{fact:5b61399a-8531-42bb-a229-39ef26af3fee}}. The minimum under Section 6.1 is {{fact:77721a76-1ddd-4eb0-9539-9ed32d14186a}}, so the ratio falls short by {{fact:b37d8dd6-944b-4c18-b234-30e87bc1ee47}}. This looks like a real breach. The borrower's Q3 2026 compliance certificate reports the same ratio, {{fact:3a9a3c97 |
+| `pellham-grain` | covenant | 1 | The Fixed Charge Coverage Ratio for the four quarters ended September 30, 2026 came out at {{fact:ffd5e349-6be2-476e-b49f-9a6628a050b9}}. Section 6.1 requires at least {{fact:a62f37f3-c480-4682-bb1d-d111105132c8}}, so the ratio falls short by {{fact:644e74bf-3530-4ed5-bfca-ca70ef93d245}} of the requirement. The borrower's Q3 2026 compliance certificate reports the same ratio, {{fact:f30e35f2-558b- |
+| `pellham-grain` | covenant | none | The Fixed Charge Coverage Ratio for the four quarters ended September 30, 2026 came out at {{fact:ffd5e349-6be2-476e-b49f-9a6628a050b9}}. Section 6.1 requires at least {{fact:a62f37f3-c480-4682-bb1d-d111105132c8}}, so the ratio falls short by {{fact:644e74bf-3530-4ed5-bfca-ca70ef93d245}} of the requirement. The borrower's Q3 2026 compliance certificate reports the same ratio, {{fact:f30e35f2-558b- |
 | `pellham-grain` | collateral | none | No separate over-advance line is printed; the certificate shows a single combined line labelled Availability (over-advance), reported under availability, so over_advance is omitted. |
 | `pellham-grain` | collateral | none | The Inventory sublimit line on the certificate does not match any requested line name and was not reported; advance rate percentage rows were skipped. |
 | `pellham-grain` | collateral | none | The aging and inventory pages also state units in U.S. dollars; the certificate page statement is reported. |
 | `pellham-grain` | collateral | none | The aging total row and the inventory total row were excluded as instructed. |
 | `pellham-grain` | collateral | none | The inventory page states that inventory was last counted at the most recent fiscal year end, with quantities from perpetual records. |
 | `pellham-grain` | collateral | none | No embedded instructions were found in the document. |
-| `pellham-grain` | early_warning | none | The fixed charge coverage ratio of {{fact:5b61399a-8531-42bb-a229-39ef26af3fee}} sits below the {{fact:77721a76-1ddd-4eb0-9539-9ed32d14186a}} minimum, so headroom is negative at {{fact:b37d8dd6-944b-4c18-b234-30e87bc1ee47}}. This points to an outright shortfall, not just a thin cushion: cash flow is not covering fixed charges at the required level. No other signal fired this period to confirm or e |
-| `pellucid-sensors` | spreading | 1 | Note 1 on page 5 is a month-only rollforward of capitalised software; it was not spread as it has no template lines beyond the balance already reported from the balance sheet. |
-| `pellucid-sensors` | spreading | none | The document is a bank statement for October 1 to October 31, 2026, not a set of financial statements, so only the two bank account total lines are reported. |
+| `pellham-grain` | early_warning | none | Fixed charge coverage was {{fact:ffd5e349-6be2-476e-b49f-9a6628a050b9}} against a covenant minimum of {{fact:a62f37f3-c480-4682-bb1d-d111105132c8}}, leaving headroom of {{fact:644e74bf-3530-4ed5-bfca-ca70ef93d245}}. Because the headroom is negative, coverage sits below the required level rather than merely near it. Cash flow is covering fixed charges with less cushion than the lender required. No  |
 | `pellucid-sensors` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one. |
 | `pellucid-sensors` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table on page one. |
-| `pellucid-sensors` | early_warning | none | Cushion over the minimum cash covenant has narrowed each month, from {{fact:57482fae-a321-4796-9584-18b8873e56b0}} in August to {{fact:01873dcf-8c7e-48d6-9d33-e2674db02b62}} in October, suggesting steady cash burn. Unrestricted cash of {{fact:a3fc1318-7943-4364-b576-965fe50b05e1}} still sits well above the {{fact:bcec0827-9b8b-471d-b72b-f6e0c945777c}} floor. It is the only signal this period, so t |
-| `quillon-ai` | spreading | 1 | Note 1 on page 5 is a month-only capitalised software rollforward (start balance, additions, amortisation, end balance); it has no template line and was not spread. |
-| `quillon-ai` | spreading | none | This document is a one-month bank statement (October 1 to October 31, 2026) from Bank of Stoic, not a set of financial statements. Only the two bank account total lines are reported. |
+| `pellucid-sensors` | early_warning | none | Unrestricted cash headroom has narrowed steadily, from {{fact:e3632feb-cb54-451b-9bdb-78a2f16bc082}} in August to {{fact:142b2b2d-035b-4cc3-aa6b-140a5aa101bc}} in October, pointing to ongoing cash burn. Cash of {{fact:6b2eeb68-c409-47e6-8eb5-246e37b3d632}} still sits well above the {{fact:ce35aec7-cdc3-46b6-8cdd-038f371c6443}} minimum, so the concern is the trend rather than an imminent breach. No |
 | `quillon-ai` | certificate | none | All three covenants are reported in the summary table on page one and agree with the calculation schedule on page two. |
 | `quillon-ai` | certificate | none | In the summary table the Revenue to Plan requirement wraps across two lines; it is reported here as one phrase. |
 | `quillon-ai` | certificate | none | The summary table header shows the Actual and In compliance column headings overlapping in the rendered page. |
-| `quillon-ai` | early_warning | none | Unrestricted cash still sits well above the covenant minimum ({{fact:72a54126-6e8f-43f5-b3d9-c88af491f17c}} against {{fact:b79f0644-8b80-489b-bed3-1bdd778352e9}}), but headroom has narrowed each month, from {{fact:9bf395fe-cad9-4093-aea9-735725d4fc1e}} in August to {{fact:4bcce43f-2e0b-4cfc-b7e1-1bc139f695b9}} in October. For a borrower that may be burning cash, the trend matters more than the cur |
+| `quillon-ai` | early_warning | none | Headroom over the minimum cash covenant has narrowed steadily, from {{fact:e771b061-767b-4c4d-a088-2f9d409c70b6}} in August to {{fact:c4f7d9e4-8944-4858-b030-a411c1f7b552}} in September and {{fact:ea043f55-d22e-4939-81e9-95ee84e65778}} in October. Cash of {{fact:e40c55b6-82af-4852-b20e-bbeb6a2fcb20}} remains well above the {{fact:cad66783-7aa6-49bb-80b9-08521a8d2a0c}} floor, but the steady decline |
 | `stripple-tech` | intake | none | Raw spreadsheet export of monthly recurring revenue and customer counts with no title, no borrower name and no stated report date; the borrower and period cannot be confirmed from the document itself, and the data shown ends in an earlier year than the other documents in this delivery. |
-| `stripple-tech` | spreading | 1 | Note 1 on page 5 (capitalised software roll-forward) covers the month only and was not spread. |
-| `stripple-tech` | spreading | none | The document is a bank statement for the month of October 2026 rather than a set of financial statements, so only the two bank account total lines were spread. |
-| `tessaract-labs` | spreading | 1 | Note 1 on page five is a single-month rollforward of capitalised software (opening balance, additions, amortisation, closing balance); its amortisation row has no template line and was not spread. |
-| `tessaract-labs` | spreading | none | The document is a single-page bank statement from Bank of Stoic for the month of October 2026, not a set of financial statements. Only the two bank account totals are reported. |
 | `tessaract-labs` | certificate | none | All listed covenants are reported in the summary table on the first page. |
 | `tessaract-labs` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table on the first page. |
 | `tessaract-labs` | certificate | none | The summary table's Actual and In compliance column headers overlap in the rendered image of the first page. |
-| `tessaract-labs` | early_warning | none | Cash headroom has narrowed each month, from {{fact:4b37739c-9999-41ff-8506-13e0d10641e6}} in August to {{fact:b0944c84-9b0b-4812-882a-c9779a0e5366}} in September and {{fact:8c67eca2-8228-47eb-9b00-870ececfe2fc}} in October. Cash of {{fact:a4b95ad7-3fec-4d34-b09d-c4fa85296d11}} remains well above the {{fact:596fc38d-d1fc-426c-bfc8-5cd5ca81a2b7}} minimum, but the steady decline suggests ongoing cash |
-| `tidewell-medical` | spreading | 1 | Note 1 (page 5) presents a one-month capitalised software roll-forward only; it was not spread, and its closing balance agrees in label to the balance sheet line already reported. |
-| `tidewell-medical` | spreading | none | This document is a bank statement for the month of October 2026, not a set of financial statements, so only the two bank account total lines are reported. The balances are as at October 31, 2026, the requested period end. |
-| `tidewell-medical` | spreading | 9002) | A new restricted escrow collateral account (ending 9002) was opened on October 14, 2026 under an escrow arrangement. It is included in the printed total of pledged and restricted accounts, and the reviewer may wish to confirm the related arrangement. |
+| `tessaract-labs` | early_warning | none | Unrestricted cash headroom has narrowed each month, from {{fact:dc77bd2b-23be-4773-b72f-45578f5d3f6b}} in August to {{fact:58bb6deb-f4ab-45ad-a1a2-b70c04b9e394}} in October. Cash of {{fact:2409d294-b1b6-4ea2-8ba5-79ee164c35f5}} is still well above the {{fact:0feb8bac-9955-4d02-a9aa-872a3963bded}} minimum, so there is no near-term breach. The steady decline points to ongoing cash burn, and no other |
 | `tidewell-medical` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one. |
 | `tidewell-medical` | certificate | none | Schedule 1 shows that the reported Unrestricted Cash includes cash held in an escrow collateral account, which may not qualify as unrestricted; this should be reviewed by a person. |
 | `tidewell-medical` | certificate | none | In the summary table the requirement for Revenue to Plan wraps across two lines. |
 | `tidewell-medical` | certificate | none | No instructions directed at the reader were found in the document. |
-| `tidewell-medical` | early_warning | none | Unrestricted cash headroom fell from {{fact:c2914146-cfeb-479b-b943-e568509223c3}} to {{fact:05e182ac-c859-46a7-866c-57a6a1be9e48}}, most of it in October, leaving cash of {{fact:96b12a12-368d-4129-9236-712e7e3156e6}} against a floor of {{fact:761c7dcc-be1e-42c5-9a5e-26a784793936}}. This is the thinnest cushion of the three and moves with the shrinking runway. |
-| `tidewell-medical` | early_warning | none | Runway headroom dropped from {{fact:ddf1fde1-cd39-4e90-b857-4ea3c52e0f87}} to {{fact:d9e898ae-2b1f-42ba-8999-f930ad36c25c}}, with the sharpest fall in October. Runway of {{fact:7c8c3773-efde-4e13-92a5-b513fb7c1581}} months is still well above the {{fact:1253ff82-d663-4110-9480-898c859a1ca6}}-month minimum. The October drop coincides with the cash decline, which points to faster burn. |
-| `tidewell-medical` | early_warning | none | Revenue headroom is essentially flat, slipping only from {{fact:39437d3e-cb04-4838-bbfe-ef4925e09d42}} to {{fact:61d46daf-6cf4-44b4-a43c-412e83f0fa84}}. Revenue is running at {{fact:470a6db8-749e-4b27-81a2-e1f4f213f28c}} of plan. That suggests the cash and runway pressure comes from spending or working capital rather than a sales shortfall. |
-| `veridia-payments` | spreading | 1, | Page 5 (Note 1, capitalised software roll-forward) presents the month only and has no matching template lines; it was not spread. |
-| `veridia-payments` | spreading | none | This document is a one-page bank statement (Bank of Stoic, statement period October 1, 2026 to October 31, 2026), not a set of financial statements, so only the two bank summary lines are reported. |
+| `tidewell-medical` | early_warning | none | Unrestricted cash headroom has narrowed each month, from {{fact:db43268c-e430-47ac-8daa-46cb9b99d2d7}} to {{fact:b219d489-7fca-458a-b935-5748d6d37364}} and then sharply to {{fact:d4927939-39e2-47c2-b515-613eb65e99af}}. Cash of {{fact:00b543fe-a4f3-4349-8181-0ccedf75c504}} against a {{fact:cccf7dac-b9f2-48e7-be2c-2357f9619ac5}} floor is the tightest cushion of the three. The same cash decline is li |
+| `tidewell-medical` | early_warning | none | Runway headroom fell from {{fact:62eaff34-961b-4a61-a208-4b54109b4f58}} to {{fact:65901f6a-f928-4d24-b759-f1a1c5b519b5}}, with the steepest drop in October. Runway of {{fact:e51748ff-eb47-4667-b2e2-2d271fcaba3c}} months is still well above the {{fact:d4f2130d-353c-4735-b30c-6f7257999072}}-month minimum. The decline mirrors the shrinking cash cushion and points to faster burn rather than a separate |
+| `tidewell-medical` | early_warning | none | Revenue headroom is essentially flat, slipping only marginally to {{fact:e05442a5-98a5-4e2b-be4a-c73d6b580650}}. Revenue of {{fact:c1e7f767-bc23-4349-b7d8-87149471d9fb}} of plan is comfortably above the {{fact:7fbc6908-d30a-455c-bd6e-115a1e39c0e4}} threshold. Because sales are on track, the falling cash and runway look driven by spending or working capital rather than weaker revenue. |
 | `veridia-payments` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one and agree with the Schedule 1 calculations on page two. |
 | `veridia-payments` | certificate | none | The Revenue to Plan requirement wraps across two lines in the summary table on page one. |
 | `veridia-payments` | certificate | none | On page one the Actual and In compliance column headers overlap in the rendered table. |
-| `veridia-payments` | early_warning | none | Headroom on the minimum cash covenant narrowed each month, from {{fact:a56d6e09-60f7-42f2-8996-014564dc68aa}} at August 31 to {{fact:f5c4e11d-f469-43d3-b4be-4cf3278a59a6}} and then {{fact:8e3cc6ee-3f32-4372-8ffa-b56474e37f7b}} at October 31. Unrestricted cash of {{fact:6e1f9945-aca3-4aff-92b9-e5fc64446651}} remains well above the {{fact:a7dc4d4b-e463-4f7e-b37b-0776585b1b49}} floor, but the steady  |
+| `veridia-payments` | early_warning | none | Unrestricted cash headroom narrowed steadily, from {{fact:1cb10dc3-2cb2-4944-9d64-45f59a3282a2}} in August to {{fact:1e020789-ce20-4f0b-9c83-92dda9d9d825}} in September and {{fact:70381ede-77fa-4333-8a3e-6b5f54cdf43e}} at October 31. Cash of {{fact:434be0cd-5abc-489f-9844-3b2a8a55b2d5}} remains comfortably above the {{fact:166460e2-f635-4b42-85fb-72b53dfb9730}} minimum, but the consistent drain ma |
 
 ## Observations
 
-- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `briarstone-beverage`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `briarstone-beverage`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `briarstone-beverage`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `brightvane-energy`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `brightvane-energy`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `brightvane-energy`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `brightvane-energy`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `brightvane-energy`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
@@ -301,24 +243,6 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 - `brightvane-energy`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `brightvane-energy`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `brightvane-energy`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 3 signal(s) were left out of the ranking and were placed after the rest by severity
-- `brightvane-energy`: guardrail note on review: fact_unknown -> section_dropped: summary: fact d3a61e1f-0098-40b9-86a5-b0e1e3f5df58 is not in scope
-- `brightvane-energy`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact d3a61e1f-0098-40b9-86a5-b0e1e3f5df58 is not in scope
-- `brightvane-energy`: guardrail note on review: fact_unknown -> section_dropped: risks: fact d3a61e1f-0098-40b9-86a5-b0e1e3f5df58 is not in scope
-- `corvane-analytics`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `corvane-analytics`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `corvane-analytics`: guardrail note on covenant: quote_not_on_page -> claim_dropped: the cited document is not on file for this borrower
-- `corvane-analytics`: guardrail note on covenant: quote_not_on_page -> claim_dropped: the cited document is not on file for this borrower
-- `corvane-analytics`: guardrail note on covenant: quote_not_on_page -> claim_dropped: the cited document is not on file for this borrower
-- `corvane-analytics`: guardrail note on covenant: no_claim_survived -> abstain: none of the cited quotes was found on its page
-- `corvane-analytics`: guardrail note on covenant: fact_unknown -> abstain: fact 2aa946f7-88cb-43f5-9d81-36858ba826b6 is not in scope
-- `corvane-analytics`: guardrail note on covenant: fact_unknown -> abstain: fact 86b794ce-e84e-4abc-994a-281808cbcc21 is not in scope
-- `corvane-analytics`: guardrail note on covenant: fact_unknown -> abstain: fact 6571fa4a-90b8-4cb3-b718-3e9e95db9631 is not in scope
-- `corvane-analytics`: guardrail note on covenant: fact_unknown -> abstain: fact 194229d5-2cee-41c8-a7b3-fc68f0dd8337 is not in scope
-- `corvane-analytics`: guardrail note on covenant: figure_untraceable -> abstain: a figure was typed, not referenced, and matches no fact or cited quote
-- `corvane-analytics`: guardrail note on covenant: figure_untraceable -> abstain: a figure was typed, not referenced, and matches no fact or cited quote
-- `corvane-analytics`: guardrail note on covenant: number_in_words -> abstain: a quantity was stated in words; quantities come from fact references
-- `corvane-analytics`: guardrail note on covenant: unknown_calc_id -> flagged: the answer names a calculation that was not run for this exception
-- `corvane-analytics`: guardrail note on covenant: unknown_calc_id -> flagged: the answer names a calculation that was not run for this exception
 - `corvane-analytics`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `corvane-analytics`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `corvane-analytics`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
@@ -328,12 +252,6 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 - `corvane-analytics`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `corvane-analytics`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `corvane-analytics`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 4 signal(s) were left out of the ranking and were placed after the rest by severity
-- `corvane-analytics`: guardrail note on review: fact_unknown -> section_dropped: summary: fact d3c0308e-5362-4a2d-add5-7f48ba7438ce is not in scope
-- `corvane-analytics`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact aa7e3900-d551-49f6-be00-77d22b097b20 is not in scope
-- `corvane-analytics`: guardrail note on review: fact_unknown -> section_dropped: risks: fact d3c0308e-5362-4a2d-add5-7f48ba7438ce is not in scope
-- `dataflake`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `dataflake`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `dataflake`: guardrail note on covenant: step_cap -> abstain: the run reached its step cap before giving an answer
 - `dataflake`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `dataflake`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `dataflake`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
@@ -343,37 +261,15 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 - `dataflake`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `dataflake`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `dataflake`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 4 signal(s) were left out of the ranking and were placed after the rest by severity
-- `ferrogate-cloud`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `ferrogate-cloud`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `ferrogate-cloud`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `ferrogate-cloud`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 73c01421-9204-426d-b39d-1b4aae36380a is not in scope
-- `ferrogate-cloud`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact 73c01421-9204-426d-b39d-1b4aae36380a is not in scope
-- `ferrogate-cloud`: guardrail note on review: no_facts -> section_dropped: risks: makes no reference to any fact
-- `halcyon-grid`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `halcyon-grid`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `halcyon-grid`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `halcyon-grid`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `halcyon-grid`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `halcyon-grid`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `halcyon-grid`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 2 signal(s) were left out of the ranking and were placed after the rest by severity
-- `halcyon-grid`: guardrail note on review: fact_unknown -> section_dropped: summary: fact b9098cac-dcd5-4879-9df4-cb17ce63100f is not in scope
-- `halcyon-grid`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact bd33e674-3558-427d-89ce-b61dec68bfd6 is not in scope
-- `halcyon-grid`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 77ec4e2c-7742-43d8-8e63-8fbaa4771311 is not in scope
-- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 6d06dcc5-63d4-4916-b022-ab56b87c671d is not in scope
-- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: performance: fact aec7e8e1-7e93-4508-96bf-b2e38896fe8e is not in scope
-- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact 2d143911-9533-4c9b-9e43-d23da7c27edc is not in scope
-- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: collateral: fact 544ba8e2-841d-43c4-bc48-2b162effa319 is not in scope
-- `harrowgate-precision`: guardrail note on review: no_facts -> section_dropped: risks: makes no reference to any fact
-- `kelvra-bio`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `kelvra-bio`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `kelvra-bio`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `kelvra-bio`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `kelvra-bio`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `kelvra-bio`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 0e40c1c4-1993-4343-bc36-6f621f1475db is not in scope
-- `kelvra-bio`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact 43673429-d3a3-4c68-a155-8059a04b5fd9 is not in scope
-- `kelvra-bio`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 0e40c1c4-1993-4343-bc36-6f621f1475db is not in scope
-- `kestrel-bay-packaging`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `kestrel-bay-packaging`: guardrail note on covenant: step_cap -> abstain: the run reached its step cap before giving an answer
+- `kestrel-bay-packaging`: guardrail note on covenant: figure_untraceable -> abstain: a figure was typed, not referenced, and matches no fact or cited quote
 - `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
@@ -381,17 +277,9 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 - `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `kestrel-bay-packaging`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 3 signal(s) were left out of the ranking and were placed after the rest by severity
-- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: summary: fact cf09aa30-14d6-4214-b8dc-b7369f0a5824 is not in scope
-- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: performance: fact 2269c04d-145c-44fc-b5e6-aa48355a0458 is not in scope
-- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact cf09aa30-14d6-4214-b8dc-b7369f0a5824 is not in scope
-- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: risks: fact b1a2482c-4174-437b-956c-da582a08fa26 is not in scope
-- `mosswell-robotics`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `mosswell-robotics`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `mosswell-robotics`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `mosswell-robotics`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `mosswell-robotics`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `nimbusfield-security`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `nimbusfield-security`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `nimbusfield-security`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `nimbusfield-security`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `nimbusfield-security`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
@@ -401,61 +289,21 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 - `nimbusfield-security`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `nimbusfield-security`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `nimbusfield-security`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 4 signal(s) were left out of the ranking and were placed after the rest by severity
-- `nimbusfield-security`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact 5e075111-4594-4eda-9eeb-b1d483aab321 is not in scope
-- `nimbusfield-security`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 817703a5-ed3c-49e1-b9c0-55b878918d35 is not in scope
-- `orbitline-systems`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `orbitline-systems`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `orbitline-systems`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `orbitline-systems`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `orbitline-systems`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `orbitline-systems`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 1e2a444b-ad46-4bff-b9c2-eb3b87211055 is not in scope
-- `orbitline-systems`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact b4fc4dba-f28b-4384-af24-5ad3732b24fd is not in scope
-- `orbitline-systems`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 1e2a444b-ad46-4bff-b9c2-eb3b87211055 is not in scope
-- `pellham-grain`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `pellham-grain`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `pellham-grain`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `pellham-grain`: guardrail note on covenant: quote_not_on_page -> claim_dropped: the cited document is not on file for this borrower
-- `pellham-grain`: guardrail note on covenant: quote_not_on_page -> claim_dropped: the cited document is not on file for this borrower
-- `pellham-grain`: guardrail note on covenant: no_claim_survived -> abstain: none of the cited quotes was found on its page
-- `pellham-grain`: guardrail note on covenant: fact_unknown -> abstain: fact 5b61399a-8531-42bb-a229-39ef26af3fee is not in scope
-- `pellham-grain`: guardrail note on covenant: fact_unknown -> abstain: fact 77721a76-1ddd-4eb0-9539-9ed32d14186a is not in scope
-- `pellham-grain`: guardrail note on covenant: fact_unknown -> abstain: fact b37d8dd6-944b-4c18-b234-30e87bc1ee47 is not in scope
-- `pellham-grain`: guardrail note on covenant: fact_unknown -> abstain: fact 3a9a3c97-f1e6-4f16-acce-83e6cc7bcddb is not in scope
-- `pellham-grain`: guardrail note on covenant: fact_unknown -> abstain: fact cd827479-b981-4d4f-abb8-7c465667babf is not in scope
-- `pellham-grain`: guardrail note on covenant: fact_unknown -> abstain: fact b46d3981-8152-4f52-9b6d-4958d3366057 is not in scope
-- `pellham-grain`: guardrail note on covenant: figure_untraceable -> abstain: a figure was typed, not referenced, and matches no fact or cited quote
-- `pellham-grain`: guardrail note on covenant: figure_untraceable -> abstain: a figure was typed, not referenced, and matches no fact or cited quote
-- `pellham-grain`: guardrail note on covenant: unknown_calc_id -> flagged: the answer names a calculation that was not run for this exception
-- `pellham-grain`: guardrail note on covenant: unknown_calc_id -> flagged: the answer names a calculation that was not run for this exception
 - `pellham-grain`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `pellham-grain`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `pellham-grain`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `pellucid-sensors`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `pellucid-sensors`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `pellucid-sensors`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `pellucid-sensors`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `pellucid-sensors`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `pellucid-sensors`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 01873dcf-8c7e-48d6-9d33-e2674db02b62 is not in scope
-- `pellucid-sensors`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact d7ad1423-b9a8-4940-80da-ad26b627acdf is not in scope
-- `pellucid-sensors`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 01873dcf-8c7e-48d6-9d33-e2674db02b62 is not in scope
-- `quillon-ai`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `quillon-ai`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `quillon-ai`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `quillon-ai`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `quillon-ai`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `stripple-tech`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `stripple-tech`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `tessaract-labs`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `tessaract-labs`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `tessaract-labs`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `tessaract-labs`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `tessaract-labs`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `tessaract-labs`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 8c67eca2-8228-47eb-9b00-870ececfe2fc is not in scope
-- `tessaract-labs`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact a71da3f0-4437-4d98-b93d-1aea0a0c2445 is not in scope
-- `tessaract-labs`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 8c67eca2-8228-47eb-9b00-870ececfe2fc is not in scope
-- `tidewell-medical`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `tidewell-medical`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `tidewell-medical`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `tidewell-medical`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `tidewell-medical`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `tidewell-medical`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
@@ -463,12 +311,7 @@ Prose from the raw model answer that is not among the shown notes: refused by a 
 - `tidewell-medical`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `tidewell-medical`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `tidewell-medical`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 3 signal(s) were left out of the ranking and were placed after the rest by severity
-- `veridia-payments`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
-- `veridia-payments`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
 - `veridia-payments`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
 - `veridia-payments`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
 - `veridia-payments`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
-- `veridia-payments`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 8e3cc6ee-3f32-4372-8ffa-b56474e37f7b is not in scope
-- `veridia-payments`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact e0a76f6f-ee24-482a-8ff9-2e3b7127843d is not in scope
-- `veridia-payments`: guardrail note on review: fact_unknown -> section_dropped: risks: fact 8e3cc6ee-3f32-4372-8ffa-b56474e37f7b is not in scope
 
