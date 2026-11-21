@@ -39,6 +39,12 @@ async function record(page) {
   return { b, needs: b.items.filter((i) => i.needs_you), clients: b.open_clients };
 }
 
+/** The route form lists everyone who may decide the case; the journey sends it to Helen Strand. */
+async function chooseOfficer(card) {
+  const value = await card.locator('select option', { hasText: 'Helen Strand' }).first().getAttribute('value');
+  await card.getByLabel('Send to').selectOption(value);
+}
+
 const journeys = [];
 const journey = (name, fn) => journeys.push({ name, fn });
 
@@ -51,7 +57,7 @@ journey('home: the count equals the items listed, and each item opens its own cl
   assert(needs.length > 0, 'the seeded book should leave the analyst something to do (run app.squad_demo)');
   for (const item of needs) {
     await page.goto(`${BASE}/`);
-    await page.getByRole('link', { name: new RegExp(`${item.borrower_name}: ${item.title}`) }).first().click();
+    await page.getByRole('link', { name: new RegExp(`${item.borrower_name}: ${item.title}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click();
     await page.waitForURL(new RegExp(`/clients/${item.borrower_code}`));
     await page.getByRole('heading', { level: 1, name: item.borrower_name }).waitFor();
     if (item.work_item_id) {
@@ -239,6 +245,54 @@ journey('the officer sees only what she can act on, and the count agrees', async
   const { needs } = await record(page);
   const sentence = needs.length ? (needs.length === 1 ? '1 needs you' : `${needs.length} need you`) : 'Nothing needs you.';
   await page.getByText(sentence, { exact: true }).waitFor();
+});
+
+journey('hand-off: the analyst routes a breach with her view, the officer returns it, it comes back, and the officer decides', async ({ browser }) => {
+  const analystCtx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const a = await analystCtx.newPage();
+  await signIn(a, ANALYST);
+  const breaches = await api(a, '/work-items?item_type=covenant.breach');
+  const open = breaches.find((w) => !w.assigned_to);
+  assert(open, 'the seeded book should hold an open, unassigned covenant breach');
+  const borrower = await api(a, `/borrowers/${open.borrower_id}`);
+  await a.goto(`${BASE}/clients/${borrower.code}?case=${open.id}`);
+  const card = a.locator(`[data-work-item="${open.id}"][data-focused="true"]`);
+  await chooseOfficer(card); // more than one person may decide a breach
+  await card.getByLabel(/your view/i).fill('Cash under the floor two months running; recommend reserving rights.');
+  await card.getByRole('button', { name: /^Send to / }).click();
+  await a.getByText(/with your view · recorded/).waitFor();
+  assert((await card.getByRole('button', { name: 'Record decision' }).count()) === 0, 'the analyst was offered a decision she routed');
+
+  const officerCtx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const o = await officerCtx.newPage();
+  await signIn(o, OFFICER);
+  await o.goto(`${BASE}/approvals?case=${open.id}`);
+  await o.getByText('Cash under the floor two months running; recommend reserving rights.').first().waitFor();
+  await o.getByLabel(/what is missing/i).fill('Attach the signed term sheet for the new round.');
+  await o.getByRole('button', { name: 'Return to Priya Raman' }).click();
+  await o.getByText(/Returned to Priya Raman · recorded/).waitFor();
+
+  await a.goto(`${BASE}/`);
+  const back = (await record(a)).needs.find((i) => i.work_item_id === open.id);
+  assert(back && back.state === 'returned to you', 'the returned case does not need the analyst');
+  await a.goto(`${BASE}/clients/${borrower.code}?case=${open.id}`);
+  await a.getByText('Attach the signed term sheet for the new round.').first().waitFor();
+  await card.getByText(/on file you can attach$/).click(); // the seeded client has documents on file: none here is a defect
+  await card.getByRole('button', { name: /^Attach / }).first().click();
+  await a.getByText(/attached · recorded$/).waitFor();
+  await chooseOfficer(card);
+  await card.getByLabel(/your view/i).fill('Term sheet attached; my view stands.');
+  await card.getByRole('button', { name: /^Send to / }).click();
+
+  await o.goto(`${BASE}/approvals?case=${open.id}`);
+  await o.getByRole('radio', { name: /^Reserve rights/ }).check();
+  await o.getByLabel(/^Reason/).fill('Reserving rights until the round closes.');
+  await o.getByRole('button', { name: 'Record decision' }).click();
+  await o.getByText(/· recorded$/).waitFor();
+  const done = await api(o, `/cases/${open.id}`);
+  assert(done.status === 'decided' && done.decided_by === 'Helen Strand', 'the officer’s decision was not recorded');
+  await analystCtx.close();
+  await officerCtx.close();
 });
 
 mkdirSync(failuresDir, { recursive: true });
