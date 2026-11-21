@@ -1,6 +1,6 @@
 # Handoff
 
-Current state of the build, for whoever (person or agent) continues it. Updated 2026-11-20.
+Current state of the build, for whoever (person or agent) continues it. Updated 2026-11-21.
 
 ## v2 "Credit Squad" (from 20 November 2026)
 
@@ -124,6 +124,14 @@ uv run python -m evals.run --mode live --only kestrel-bay-packaging briarstone-b
 ```
 
 Report the scorecard (`evals/results/latest.md`) with its real token counts and cost, misses included; nothing on the hosted link changes (each borrower runs inside a rolled-back transaction).
+
+## Done: the live record pass (21 November 2026, claude-opus-5-5, owner cap 21 US dollars)
+
+- **Measured spend (from recorded `usage`, not an invoice): 8.31 US dollars** for 164 recorded model exchanges (estimate was mid 12.65, high 20.23). Per batch: Dataflake alone 0.50; Brightvane, Corvane, Ferrogate, Halcyon 1.81; Kelvra, Lumora, Mosswell, Nimbusfield 1.26; Orbitline, Pellham, Pellucid, Quillon 1.73; Stripple, Tessaract, Tidewell, Veridia 1.55; the kept three re-recorded in full 1.46. Any retry the API made inside a call is not visible in the recordings.
+- **Live scorecard (record mode, whole innovation book of 20 incl. the kept three; per-batch scorecards in `evals/results/live-2026-11-21-*`):** gate passed in every batch. Extraction 1,621 of 1,621; covenant outcomes 56 of 59 (Stripple's 3 held for a person); exception precision and recall 100%; 18 of 20 cycles closed; 55% need no person (the key expects 55%). No invented-number, false-compliant, run-error or nothing-read. Wrong-abstain 2 (Covenant Agent step cap: Dataflake, Kestrel Bay). Legacy book: only the kept three are recorded and live-measured (extraction 502 of 502, covenants 100%); the other 18 legacy borrowers have no recordings.
+- **Replay fails** (`evals/results/latest.md`, `latest-legacy.md`): fact ids are random per run, so recorded Review/Early Warning/Covenant answers cannot be replayed (6 innovation run-errors at `review/02`). See `docs/lessons/a-recorded-model-run-cannot-replay-agents-that-cite-fact-ids.md`. Next: stable fact ids or an id mapping in `RecordedClient`, then the replay can gate again.
+- **Defects for the controller:** number guardrail drops honest spreading notes ("Note 1", "page five", "ending 9001"; 41 notes); Covenant Agent step cap counts tool calls (2 of 4 investigations abstained); Review `risks` section dropped when it cites no fact; two evals tests assume an unsigned key.
+- Prompt versions were not changed; the recordings are stamped `_basis: "full"` and are current for intake@4 and spreading@5.
 
 ## Done: the first live measurement (18 November 2026)
 

@@ -1,31 +1,32 @@
-# Evaluation scorecard: monitoring-cycle (standin)
+# Evaluation scorecard: monitoring-cycle (recorded)
 
-**STAND-IN RUN. NOT MODEL PERFORMANCE.** A perfect reader built from the synthetic book's ground truth answered in place of the model. This run proves the pipeline, the workflow and the grader end to end; it says nothing about how a model reads these documents.
+**Mode: recorded.** Mode recorded: answers came from recorded model responses.
 
-- Generated 2026-11-21T01:30:13+00:00; commit `f4e6aa9d9d7d288c3f61fe4fe4ca2b9c02a1442f`; 21 borrower(s) (whole book); 1 pass(es); run time 145.7 seconds.
+- Generated 2026-11-21T03:27:40+00:00; commit `90fa2d718fa66b2232f7c5d3afb6ebb1be387e0d`; 3 borrower(s) (['kestrel-bay-packaging', 'harrowgate-precision', 'briarstone-beverage']); 1 pass(es); run time 22.2 seconds.
 - Scripted decisions where a person is needed: yes.
 - Oracle rows in scope not signed by the owner: 0.
 - Graded by deterministic code against `truth/<borrower>.json`; no model judged a model.
 
-## Gate: PASSED
+## Gate: FAILED
 
-Rule: any invented-number or false-compliant in any pass fails; the stand-in suite must also agree with the truth in full, apart from listed known findings.
+Rule: any invented-number or false-compliant in any pass fails; any cycle that failed on an error fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated.
+- run-error: 1 cycle(s) failed on an error, so nothing was measured. First: briarstone-beverage (review run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/briarstone-beverage/2026-09-30/02.json
 
 ## Headline numbers
 
 | Measure | Value |
 |---|---|
-| Extraction accuracy (verified facts equal to truth, over facts expected) | 100.0% (2677 of 2677) |
+| Extraction accuracy (verified facts equal to truth, over facts expected) | 100.0% (502 of 502) |
 | Extraction abstain rate (expected facts with no usable fact) | 0.0% |
 | Covenant outcome accuracy | 100.0% |
 | Covenant abstain rate (cannot test where the truth has an outcome) | 0.0% |
 | Exception precision | 100.0% |
 | Exception recall | 100.0% |
-| Cycles needing no person (beyond the commentary approval every review needs) | 47.6% (the book expects 47.6%) |
-| Cycles reaching the signals stage or beyond | 17 of 21 |
-| Cycles closed | 17 of 21 |
-| Other disagreements with the truth | 0 |
-| Model tokens in / out | not measured / not measured |
+| Cycles needing no person (beyond the commentary approval every review needs) | 33.3% (the book expects 33.3%) |
+| Cycles reaching the signals stage or beyond | 3 of 3 |
+| Cycles closed | 0 of 3 |
+| Other disagreements with the truth | 1 |
+| Model tokens in / out | 123,645 / 40,656 |
 
 | Named failure | Count |
 |---|---|
@@ -35,7 +36,7 @@ Rule: any invented-number or false-compliant in any pass fails; the stand-in sui
 | missed-exception | 0 |
 | false-exception | 0 |
 | wrong-citation | 0 |
-| wrong-abstain | 0 |
+| wrong-abstain | 2 |
 | missed-abstain | 0 |
 | stale-terms | 0 |
 
@@ -43,147 +44,89 @@ Rule: any invented-number or false-compliant in any pass fails; the stand-in sui
 
 | Borrower | Scenario | Stage reached | Expected exceptions | Raised exceptions | Extraction | Covenants | Differences |
 |---|---|---|---|---|---|---|---|
-| `ashgrove-fleet` | missing_page | spreading (needs_person) | spread.does_not_foot | spread.does_not_foot | 100.0% (72/72) | 3/3 | none |
-| `briarstone-beverage` | over_advance | closed (closed) | bb.over_advance | bb.over_advance | 100.0% (201/201) | 2/2 | none |
-| `brindlewood-home-health` | clean | closed (closed) | none | none | 100.0% (105/105) | 3/3 | none |
-| `calder-finch-staffing` | step_up | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (100/100) | 2/2 | none |
-| `dunmore-industrial-supply` | clean | closed (closed) | none | none | 100.0% (187/187) | 3/3 | none |
-| `eastmere-building` | late_reporting | awaiting_package (needs_person) | intake.missing_document | intake.missing_document | not measured (0/0) | 2/2 | none |
-| `halvorsen-plastics` | restated_comparative | closed (closed) | spread.restatement | spread.restatement | 100.0% (191/191) | 2/2 | none |
-| `harrowgate-precision` | clean | closed (closed) | none | none | 100.0% (199/199) | 3/3 | none |
-| `kestrel-bay-packaging` | hidden_breach | closed (closed) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | none |
-| `larkspur-environmental` | clean | closed (closed) | none | none | 100.0% (103/103) | 3/3 | none |
-| `marlowe-ridge-logistics` | clean | closed (closed) | none | none | 100.0% (107/107) | 3/3 | none |
-| `northgale-electrical` | miscounted_ineligible | closed (closed) | bb.certificate_mismatch | bb.certificate_mismatch | 100.0% (189/189) | 2/2 | none |
-| `ostrander-valley-foods` | clean | closed (closed) | none | none | 100.0% (201/201) | 3/3 | none |
-| `pellham-grain` | reported_breach | closed (closed) | covenant.breach | covenant.breach | 100.0% (199/199) | 3/3 | none |
-| `quillfeather-bakery` | addback_over_cap | closed (closed) | none | none | 100.0% (104/104) | 2/2 | none |
-| `sablewood-dental` | clean | closed (closed) | none | none | 100.0% (98/98) | 2/2 | none |
-| `stanmoor-mechanical` | image_only | spreading (needs_person) | spread.image_only | spread.image_only | not measured (0/0) | 3/3 | none |
-| `tallwater-foodservice` | clean | closed (closed) | none | none | 100.0% (202/202) | 2/2 | none |
-| `thornbury-metal` | deteriorating_trend | closed (closed) | signal.high | signal.high | 100.0% (105/105) | 3/3 | none |
-| `vantry-freight` | unapproved_amendment | covenant_testing (needs_person) | covenant.reported_mismatch, terms.unapproved_amendment | covenant.reported_mismatch, terms.unapproved_amendment | 100.0% (104/104) | 2/2 | none |
-| `wrenfield-diagnostics` | scale_trap | closed (closed) | none | none | 100.0% (108/108) | 4/4 | none |
+| `briarstone-beverage` | over_advance | review_prep (needs_person) | bb.over_advance | bb.over_advance | 100.0% (201/201) | 2/2 | 2 |
+| `harrowgate-precision` | clean | review_prep (needs_person) | none | none | 100.0% (199/199) | 3/3 | none |
+| `kestrel-bay-packaging` | hidden_breach | review_prep (needs_person) | covenant.reported_mismatch | covenant.reported_mismatch | 100.0% (102/102) | 2/2 | 1 |
 
 ## Differences from the truth
 
-None. Every borrower's outcome agrees with the book.
+| Borrower | Failure | Item | Detail | Known finding |
+|---|---|---|---|---|
+| `briarstone-beverage` | wrong-abstain | review run | the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/briarstone-beverage/2026-09-30/02.json |  |
+| `kestrel-bay-packaging` | wrong-abstain | covenant run | the run abstained: no answer |  |
+| `briarstone-beverage` | run-error | review run | RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/review/briarstone-beverage/2026-09-30/02.json |  |
 
 ## Where a person was needed
 
 | Borrower | Stage | Open items | Scripted decisions |
 |---|---|---|---|
-| `ashgrove-fleet` | spreading | spread.does_not_foot | none (left open) |
 | `briarstone-beverage` | borrowing_base | bb.over_advance | bb.over_advance: paydown_required by credit_officer |
-| `briarstone-beverage` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `brindlewood-home-health` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `calder-finch-staffing` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
-| `calder-finch-staffing` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `dunmore-industrial-supply` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `eastmere-building` | awaiting_package | intake.missing_document | none (left open) |
-| `halvorsen-plastics` | review_prep | review.commentary_approval, spread.restatement | spread.restatement: ask_borrower by analyst, review.commentary_approval: approve by portfolio_manager |
-| `harrowgate-precision` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `briarstone-beverage` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+| `harrowgate-precision` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
 | `kestrel-bay-packaging` | covenant_testing | covenant.reported_mismatch | covenant.reported_mismatch: escalate_to_committee by credit_officer |
-| `kestrel-bay-packaging` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `larkspur-environmental` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `marlowe-ridge-logistics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `northgale-electrical` | borrowing_base | bb.certificate_mismatch | bb.certificate_mismatch: bank_figures_stand by analyst |
-| `northgale-electrical` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `ostrander-valley-foods` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `pellham-grain` | covenant_testing | covenant.breach | covenant.breach: escalate_to_committee by credit_officer |
-| `pellham-grain` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `quillfeather-bakery` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `sablewood-dental` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `stanmoor-mechanical` | spreading | spread.image_only | none (left open) |
-| `tallwater-foodservice` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `thornbury-metal` | signals | signal.high | signal.high: acknowledged by analyst |
-| `thornbury-metal` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
-| `vantry-freight` | covenant_testing | covenant.reported_mismatch, terms.unapproved_amendment | covenant.reported_mismatch: escalate_to_committee by credit_officer |
-| `vantry-freight` | covenant_testing | terms.unapproved_amendment | none (left open) |
-| `wrenfield-diagnostics` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager |
+| `kestrel-bay-packaging` | review_prep | review.commentary_approval | review.commentary_approval: approve by portfolio_manager REFUSED ValueError: there is no commentary to approve; write at least a summary first |
+
+## Agent text no person was shown
+
+Prose from the raw model answer that is not among the shown notes: refused by a guardrail, or placed where the product does not show it. Read each one: a refused honest sentence is a defect, and the text is the test case.
+
+| Borrower | Agent | Typed figures | Text |
+|---|---|---|---|
+| `briarstone-beverage` | spreading | none | Statements are unaudited, prepared by management, and cover the nine months ended September 30, 2026 with a nine-month 2025 comparative. |
+| `briarstone-beverage` | spreading | none | Equity components (Common stock and additional paid-in capital; Retained earnings) on page 2 are not reported separately; the printed Total stockholders' equity row is reported under bs.total_equity. |
+| `briarstone-beverage` | spreading | none | Dividends paid on page 4 is mapped to cf.distributions. |
+| `briarstone-beverage` | spreading | none | Cash flow rows 'Cash and equivalents, beginning of period' and 'Cash and equivalents, end of period' on page 4 have no template line and are not reported. |
+| `briarstone-beverage` | spreading | none | Debt schedule rows on page 5 (Revolving line of credit - Bank of Stoic, Term notes payable - Bank of Stoic, Total debt outstanding, Term debt principal due within twelve months) have no separate template line and are not reported; they correspond to balance sheet debt lines already spread. |
+| `briarstone-beverage` | certificate | none | Both covenants in the approved terms are reported in the summary table on the first page and are also shown in the calculation schedule on the second page. |
+| `briarstone-beverage` | certificate | none | No embedded instructions were found in the document. |
+| `briarstone-beverage` | collateral | none | The availability line is labeled as availability with over-advance in brackets and shows a bracketed negative figure; no separate over-advance line is printed, so over_advance is not reported. |
+| `briarstone-beverage` | collateral | none | The inventory sublimit line on the certificate has no matching line name in the request and was not reported; advance rate percentage rows were skipped. |
+| `briarstone-beverage` | collateral | none | The certification text states that revolving loans outstanding exceed the borrowing base. |
+| `briarstone-beverage` | collateral | none | The inventory page states that work in process and consignment inventory are not eligible and that quantities come from perpetual records last counted at the most recent fiscal year end. |
+| `briarstone-beverage` | collateral | none | No embedded instructions directed at the reader were found in the document. |
+| `briarstone-beverage` | early_warning | none | Availability was {{fact:eccefdef-af40-4438-9a60-4bd6a41d5296}} against a {{fact:8420f7b3-112e-483b-9917-0cfe30253b1c}} commitment, or {{fact:afda2f63-269b-40dc-9165-b1ed2a2729c3}} of the line. Below zero means borrowings exceed what the collateral supports, so the borrower is over-advanced and has no revolver cushion for liquidity. No other signal fired, so the facts do not show whether weaker col |
+| `harrowgate-precision` | certificate | none | All three covenants in the approved terms are reported in the summary table on page one; the calculation schedule on page two shows the same reported values. |
+| `harrowgate-precision` | certificate | none | No instructions were found inside the document. |
+| `harrowgate-precision` | collateral | none | The certificate prints a single combined line labelled Availability (over-advance); it is reported under availability, and no separate over-advance line is stated, so over_advance is not reported. |
+| `harrowgate-precision` | collateral | none | The certificate's Inventory sublimit row does not match any requested line name and is not reported; the advance rate percentage rows were skipped. |
+| `harrowgate-precision` | collateral | none | Cross-aged accounts, concentration in excess of limit, and letters of credit outstanding are printed as dashes on the certificate. |
+| `harrowgate-precision` | collateral | none | The aging is stated as aged from invoice date; the inventory report is stated at lower of cost and market. |
+| `harrowgate-precision` | collateral | none | The inventory page states that work in process and consignment inventory are not eligible, and that quantities come from perpetual records last counted at the most recent fiscal year end; no consignment category is listed separately. |
+| `harrowgate-precision` | collateral | none | No embedded instructions were found in the document. |
+| `kestrel-bay-packaging` | spreading | none | The cover page states units as 'In thousands of u.s. dollars'; the statement pages use the phrase reported as the scale statement. |
+| `kestrel-bay-packaging` | certificate | none | Both covenants in the approved terms are reported in the summary table on page one and in Schedule 1 on page two. |
+| `kestrel-bay-packaging` | certificate | none | The Total Leverage Ratio calculation in Schedule 1 uses EBITDA as calculated by the Borrower, which adds back pro forma cost savings from plant consolidation; the credit team may wish to confirm this add-back is permitted under the Credit Agreement. |
+| `kestrel-bay-packaging` | certificate | none | No embedded instructions were found in the document. |
+| `kestrel-bay-packaging` | early_warning | none | Total leverage of {{fact:cf09aa30-14d6-4214-b8dc-b7369f0a5824}} is above the {{fact:cf5ce94d-59c2-485d-ac3c-f864cf033957}} maximum, so headroom is negative at {{fact:b1a2482c-4174-437b-956c-da582a08fa26}}. On these figures the covenant appears already breached, not merely tight. Debt is high relative to earnings while the liquidity cushion is also shrinking. |
+| `kestrel-bay-packaging` | early_warning | none | The current ratio of {{fact:0f340d0e-1385-41ee-a0dd-bda8b6003f21}} sits just above its {{fact:13194732-46fe-4a3a-afd0-41790b749b4f}} floor, leaving headroom of only {{fact:9e590747-9307-45f2-be07-cc4a806e601c}}. That is a thin short-term liquidity cushion. Alongside the leverage overshoot, it points to pressure on both debt capacity and near-term cash. |
+| `kestrel-bay-packaging` | early_warning | none | Current ratio headroom slipped from {{fact:c016ad45-01b1-4a84-9ef1-bd2b68269efc}} in March to {{fact:f33cbd85-a873-4f98-99bf-bd4fb0d746df}} in June. It then fell sharply to {{fact:9e590747-9307-45f2-be07-cc4a806e601c}} by September. The deterioration is accelerating, which explains why the low-headroom signal fired and suggests the floor could be at risk if the trend continues. |
 
 ## Observations
 
-- `briarstone-beverage`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `calder-finch-staffing`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `calder-finch-staffing`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `dunmore-industrial-supply`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `kestrel-bay-packaging`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `kestrel-bay-packaging`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `larkspur-environmental`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `pellham-grain`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `pellham-grain`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `quillfeather-bakery`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `thornbury-metal`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `vantry-freight`: standin-unanswered: 1 covenant call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `wrenfield-diagnostics`: standin-unanswered: 1 early_warning call(s) were left unanswered by the stand-in; the product fell back without a recommendation or explanation
-- `briarstone-beverage`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `calder-finch-staffing`: guardrail note on covenant: error -> abstain: the run did not finish
-- `calder-finch-staffing`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `dunmore-industrial-supply`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `kestrel-bay-packaging`: guardrail note on covenant: error -> abstain: the run did not finish
-- `kestrel-bay-packaging`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `larkspur-environmental`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `pellham-grain`: guardrail note on covenant: error -> abstain: the run did not finish
-- `pellham-grain`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `quillfeather-bakery`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `thornbury-metal`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-- `vantry-freight`: guardrail note on covenant: error -> abstain: the run did not finish
-- `wrenfield-diagnostics`: guardrail note on early_warning: error -> nothing_stored: the Early Warning Agent returned no usable answer; the signals stand as code fired them
-
-## Mutation checks
-
-Each check tampers with the stand-in's answer in one way a model could be wrong, runs the live cycle, and records who caught it. `product`: refused into a work item or a guardrail note. `grader`: accepted by the product and named only by the grader, which is a finding about the product. `recovered`: code reads that part from the page itself, so the reader's mistake has no effect. `SLIPPED`: caught by neither.
-
-Totals: product 37, product and grader 9, recovered 1.
-
-| Mutation | What the reader got wrong | Borrower | Caught by | Evidence |
-|---|---|---|---|---|
-| spread-wrong-figure | a figure with one digit wrong (it still parses) | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-figure-from-another-row | a real figure from the wrong row | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-prior-year-figure | a figure from the prior-year column under the current header | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-whole-prior-year-column | the whole prior-year column spread as the period | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-dropped-line | a printed line dropped and claimed absent | `harrowgate-precision` | product | work item: spread.does_not_foot |
-| spread-dropped-line-and-totals | a line dropped together with the printed totals above it | `harrowgate-precision` | product | work item: spread.does_not_foot |
-| spread-dropped-supplemental-line | a supplemental line (no total covers it) dropped and claimed absent | `harrowgate-precision` | product | work item: spread.does_not_foot |
-| spread-units-omitted | the 'in thousands' phrase not reported | `harrowgate-precision` | product | work item: spread.value_unverified; guardrail note: spreading scale_conflict -> person |
-| spread-rows-swapped-within-a-total | two rows of one subtotal mapped to each other's template lines | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-debt-mapped-to-payables | the line of credit and accounts payable mapped to each other's lines | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-prior-year-under-a-spanning-header | the prior-year column read under a header naming both periods | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-printed-totals-not-read | no printed total reported, so nothing could be footed | `harrowgate-precision` | product | work item: spread.does_not_foot |
-| spread-supplemental-row-reported-twice | one printed row reported twice, so its figure would be added twice | `harrowgate-precision` | product | work item: spread.value_unverified |
-| spread-note-types-a-figure | a note that types a figure | `harrowgate-precision` | product | guardrail note: spreading figure_untraceable -> dropped |
-| cert-misread-threshold | a threshold misread (1.05x read as 1.50x) | `harrowgate-precision` | product | work item: spread.value_unverified |
-| cert-threshold-from-another-row | a threshold taken from another covenant's row | `harrowgate-precision` | product | work item: spread.value_unverified |
-| cert-units-omitted | the certificate's 'in thousands' phrase not reported | `harrowgate-precision` | product | work item: spread.value_unverified |
-| cert-rows-swapped | two covenant rows attributed to each other's covenants | `harrowgate-precision` | product | work item: spread.value_unverified |
-| bb-aging-note-dropped | an affiliate customer's note not reported | `harrowgate-precision` | recovered | nothing changed and nothing is wrong: code reads this from the page itself, so the reader's omission has no effect |
-| bb-aging-figure-misread | an aging figure with one digit wrong | `harrowgate-precision` | product | work item: bb.certificate_mismatch |
-| bb-aging-row-dropped | a customer left out of the aging | `harrowgate-precision` | product and grader | work item: bb.certificate_mismatch; grader: invented-number [bbc.ar.001.current @ 2026-09-30], invented-number [bbc.ar.001.days_31_60 @ 2026-09-30], invented-number [bbc.ar.001.days_61_90 @ 2026-09-30], invented-number [bbc.ar.001.over_90 @ 2026-09-30] and 59 more |
-| bb-lines-misnamed | commitment and loans outstanding attributed to each other's lines | `harrowgate-precision` | product | work item: bb.certificate_mismatch |
-| bb-affiliate-note-and-lines-dropped | an affiliate's note dropped and the certificate lines that would show it left out | `harrowgate-precision` | product | work item: bb.certificate_mismatch |
-| bb-contra-note-and-lines-dropped | a contra note dropped and the certificate lines that would show it left out | `harrowgate-precision` | product | work item: bb.certificate_mismatch |
-| intake-misclassified | a compliance certificate classified as interim statements | `harrowgate-precision` | product | work item: intake.missing_document, intake.unclassified |
-| intake-statements-called-audited | management statements classified as audited | `harrowgate-precision` | product | guardrail note: intake audited_without_report -> quality_changed |
-| intake-wrong-period | a certificate filed by its signing date instead of its period end | `harrowgate-precision` | product and grader | work item: intake.missing_document; grader: document-filing [cc-2026-09-30.pdf] |
-| review-types-a-figure | commentary that types a figure | `harrowgate-precision` | product | guardrail note: review figure_untraceable -> section_dropped |
-| review-figure-dressed-as-a-date | commentary with a figure placed so it reads as a date ('above 4 may') | `harrowgate-precision` | product | guardrail note: review figure_untraceable -> section_dropped |
-| review-figure-as-a-list-marker | commentary with figures in brackets like list markers | `harrowgate-precision` | product | guardrail note: review figure_untraceable -> section_dropped |
-| review-quantity-in-words | commentary stating a ratio in words | `harrowgate-precision` | product | guardrail note: review number_in_words -> section_dropped |
-| review-figure-as-an-identifier | commentary with a change written like an identifier ('up-12 percent') | `harrowgate-precision` | product | guardrail note: review figure_untraceable -> section_dropped |
-| review-figure-as-a-note-number | commentary with a ratio written as a note number | `harrowgate-precision` | product | guardrail note: review figure_untraceable -> section_dropped |
-| review-cites-unknown-fact | commentary that references a fact that does not exist | `harrowgate-precision` | product | guardrail note: review fact_unknown -> section_dropped |
-| spread-units-invented | an 'in thousands' phrase reported for a statement in whole dollars | `sablewood-dental` | product | work item: spread.value_unverified; guardrail note: spreading scale_quote -> person |
-| spread-debt-mapped-to-payables-on-a-breach | the same mis-mapping on a borrower whose leverage fails | `kestrel-bay-packaging` | product and grader | work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30] |
-| spread-term-debt-mapped-to-other-liabilities-on-a-breach | long-term debt and other liabilities mapped to each other's lines, hiding debt on a borrower whose leverage fails | `kestrel-bay-packaging` | product and grader | work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30] |
-| spread-term-debt-swapped-with-label-fragments | long-term debt and other liabilities swapped, reporting only fragments of each row label | `kestrel-bay-packaging` | product and grader | work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30] |
-| spread-term-debt-folded-into-other-liabilities | long-term debt filed as a second row of other liabilities and declared absent | `kestrel-bay-packaging` | product and grader | work item: spread.value_unverified; grader: missed-exception [covenant.reported_mismatch], signals-not-run [signals @ 2026-09-30] |
-| spread-principal-read-from-another-supplemental-row | scheduled principal read from the financed-capex row (no total covers supplemental lines) | `pellham-grain` | product and grader | work item: spread.value_unverified; grader: missed-exception [covenant.breach], signals-not-run [signals @ 2026-09-30] |
-| spread-cash-taxes-read-from-another-supplemental-row | cash taxes read from the financed-capex row | `pellham-grain` | product and grader | work item: spread.value_unverified; grader: missed-exception [covenant.breach], signals-not-run [signals @ 2026-09-30] |
-| cert-claims-compliance | a certificate read as claiming compliance where it reports a breach | `pellham-grain` | product | work item: spread.value_unverified |
-| cert-breach-read-as-passing-value | the breaching covenant's reported value read as a passing one | `pellham-grain` | product | work item: spread.value_unverified |
-| cert-flag-from-the-next-row | the compliance entry taken from a neighbouring row, with a label fragment found on every row | `pellham-grain` | product | work item: spread.value_unverified |
-| bb-ineligible-inventory-named-by-a-fragment | work in process reported as 'process' with the inventory lines of the certificate left out, turning an over-advance into availability | `briarstone-beverage` | product | work item: bb.certificate_mismatch |
-| bb-receivable-filed-as-inventory | a customer's receivable total added as an inventory row, certificate lines left out | `briarstone-beverage` | product and grader | work item: bb.certificate_mismatch; grader: borrowing-base-line [availability @ 2026-09-30], borrowing-base-line [borrowing_base @ 2026-09-30], borrowing-base-line [borrowing_limit @ 2026-09-30], borrowing-base-line [inventory_availability @ 2026-09-30] and 4 more |
-| bb-letters-of-credit-from-an-empty-row | letters of credit read from another line's empty cell | `tallwater-foodservice` | product | work item: bb.certificate_mismatch |
+- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `briarstone-beverage`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `briarstone-beverage`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
+- `briarstone-beverage`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
+- `briarstone-beverage`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 1 signal(s) were left out of the ranking and were placed after the rest by severity
+- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: summary: fact 6d06dcc5-63d4-4916-b022-ab56b87c671d is not in scope
+- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: performance: fact aec7e8e1-7e93-4508-96bf-b2e38896fe8e is not in scope
+- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact 2d143911-9533-4c9b-9e43-d23da7c27edc is not in scope
+- `harrowgate-precision`: guardrail note on review: fact_unknown -> section_dropped: collateral: fact 544ba8e2-841d-43c4-bc48-2b162effa319 is not in scope
+- `harrowgate-precision`: guardrail note on review: no_facts -> section_dropped: risks: makes no reference to any fact
+- `kestrel-bay-packaging`: guardrail note on spreading: figure_untraceable -> dropped: a note from the agent contained a typed figure and was removed
+- `kestrel-bay-packaging`: guardrail note on covenant: step_cap -> abstain: the run reached its step cap before giving an answer
+- `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
+- `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
+- `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the answer explained a signal that code did not fire; it was ignored
+- `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
+- `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
+- `kestrel-bay-packaging`: guardrail note on early_warning: unknown_signal -> ignored: the ranking named a signal that code did not fire
+- `kestrel-bay-packaging`: guardrail note on early_warning: ranking_incomplete -> completed_by_code: 3 signal(s) were left out of the ranking and were placed after the rest by severity
+- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: summary: fact cf09aa30-14d6-4214-b8dc-b7369f0a5824 is not in scope
+- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: performance: fact 2269c04d-145c-44fc-b5e6-aa48355a0458 is not in scope
+- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: covenants: fact cf09aa30-14d6-4214-b8dc-b7369f0a5824 is not in scope
+- `kestrel-bay-packaging`: guardrail note on review: fact_unknown -> section_dropped: risks: fact b1a2482c-4174-437b-956c-da582a08fa26 is not in scope
 

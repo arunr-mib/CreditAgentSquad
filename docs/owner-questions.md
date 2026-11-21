@@ -97,3 +97,7 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 
 - **Answer key:** "Approve all". All 91 unsigned rows of `synthetic/books/innovation/oracle.csv` signed with `evals.signoff apply` (107 of 107 now signed).
 - **Live record pass:** approved on Opus 5.5 (the model the product ships with), cap **$21** (estimate mid $12.65, high $20.23; `docs/live-run-estimate-2026-11-21.md`). One client is measured first; the run stops if that projects above the cap.
+
+## Live record pass (owner, 21 Nov: "Opus, cap $21")
+
+- Measured spend 8.31 US dollars (from recorded token counts; the estimate was mid 12.65). Gate passed on the live record scorecards; the replay of the recordings does not pass because fact ids differ per run (a product and harness fix, not a model result). Details: `docs/HANDOFF.md`, `docs/lessons/a-recorded-model-run-cannot-replay-agents-that-cite-fact-ids.md`.

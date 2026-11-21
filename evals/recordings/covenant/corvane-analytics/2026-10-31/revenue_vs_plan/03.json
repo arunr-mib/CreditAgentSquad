@@ -1,0 +1,56 @@
+{
+ "_basis": "full",
+ "_spec": "covenant@1:297ca24fdcef",
+ "content": [
+  {
+   "signature": "CAQS1wYKEAgUGAI4AUIIdGhpbmtpbmcSDLD+hC8o1j4DB+kWgBoMMViUuSM3ES1BcMe3IjA8co5mx0SuMf86xOTInfiCzdYr78SSCOdhxWVrrV0BXF6Ll8BEAV+NHYISnRGZ/osq9AX9CisyZmNhMfeUEV5Ua0/SsSf4Un7WLaZo2WTDlJ8vJ1uMsKYYySWq/MobNmMYwZCTh69ejwEiEqbb8Yjpj5aWW8G/b52omk+kUy0MuUotB4JSCDPexaiqyz8w9S/QgJbjGb6r35K4N9KZrGdSeNNKw56v4XGcKqccZZF2lMPnb2nBSrZ5ioynm2ezdtn9darc5izXbLRGoHCzCsdklRCN6i11S1WpPozf1JGsKc1+/uWj9ZPs7zTv6CkjzCpLIUk7ByzGfekBMBlEdZG4kcj/Mjnoa2iVKX4dayCYTvpogqLO17ss9GKXZ5R1nXnLeZEPXIb9dmLtQa5wIkFYNFMpAnN2rtmtiOATMnhYb/YY9qE2nmlSB8D4+lNE8sxuBHQrzPYbhrmPAt68Y+UjaFZvjtovdVxDxHEiag6IQ/48dKzahYwgakDPd70rVhn2Ma/5EuIDsDUKhtmZNcAiLKYw63xPrneCYvBL0DMQWzMw5sYPjIbu0A4zPlIKOe0WGMhHuYDeETVNax4pTMsc3rBcFd53bZTQF96N3qva9x49Stdk1xcl2cmuXYwSKVj1/Cio7tvkRNsQNxwUmSsF0u4Sl/U+CpthlrLTuDTkIcKLJuNP2/mkpxYD1dy2Jk5x2cTNLyUII2MpoOTraakkHTMfmU+8294o+C8jc5hrGSLHgvWYdMNogaQ1yZWxKvSdW/lhmdTHs58f3jFdCoo+an9ohVNzGD4hG4WSf3aqH4E5ZzRnzgV1mV6Pm7LYJiGy0VMd3vGSeF2ZOQrqm5RKgAAOp0nFnc80Fkch/H7wWtBaQUkFE91X8hz1NSUnUH0/cHwh9KCUlV26GTh/URVYoL+5rAuA6J0HRt3XnKJ3jU0iyVsi6iai1VCSdJdYCiXtJcgN8k3cZBFLh5QygLxeedOxQu+tvXYg9oD/0cTzN4Z2egrnOgQ9nBsexxM3Vam3ARtW9zBfFUZ7UiOuALIzgzKtrIMSdx15ie7HUAhz3r8Cl4qaxM0YAQ==",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01NghDGCSj4YmuUengS5RLxB",
+   "input": {
+    "document_id": "52a9e701-11b7-4213-b3bd-dc4a75fef29b",
+    "page": 1
+   },
+   "name": "read_page",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01Jxf2U8DoQPBvmNwK1g58Jj",
+   "input": {
+    "document_id": "52a9e701-11b7-4213-b3bd-dc4a75fef29b",
+    "page": 2
+   },
+   "name": "read_page",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01JrBzvzhvUnW6QcwxufjMXr",
+   "input": {
+    "tag": "true_breach"
+   },
+   "name": "search_lessons",
+   "type": "tool_use"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "tool_use",
+ "usage": {
+  "cache_creation_input_tokens": 1974,
+  "cache_read_input_tokens": 5661,
+  "input_tokens": 2,
+  "output_tokens": 283
+ }
+}

@@ -1,39 +1,15 @@
 {
- "_basis": "prompt-only",
- "_spec": "covenant@1:520b81879014",
+ "_basis": "full",
+ "_spec": "covenant@1:297ca24fdcef",
  "content": [
   {
    "caller": {
     "type": "direct"
    },
-   "id": "toolu_0129C3x3JwqPxJyJHCVwJjb8",
+   "id": "toolu_014ZWZdZizjP3JJ7fJWe9FCg",
    "input": {
-    "document_id": "98920db2-70b7-4490-b8e2-cbe029d9d165",
-    "page": 4
-   },
-   "name": "read_page",
-   "type": "tool_use"
-  },
-  {
-   "caller": {
-    "type": "direct"
-   },
-   "id": "toolu_013t2sLZDoijSgRsgx1UALf2",
-   "input": {
-    "document_type": null,
-    "query": "pro forma"
-   },
-   "name": "search_documents",
-   "type": "tool_use"
-  },
-  {
-   "caller": {
-    "type": "direct"
-   },
-   "id": "toolu_0193nvXbXVJVGvnhcSSbZqF7",
-   "input": {
-    "document_type": null,
-    "query": "amendment"
+    "document_type": "credit_agreement",
+    "query": "\"EBITDA\" means"
    },
    "name": "search_documents",
    "type": "tool_use"
@@ -44,9 +20,9 @@
  "stop_details": null,
  "stop_reason": "tool_use",
  "usage": {
-  "cache_creation_input_tokens": 935,
-  "cache_read_input_tokens": 10124,
+  "cache_creation_input_tokens": 1755,
+  "cache_read_input_tokens": 10152,
   "input_tokens": 2,
-  "output_tokens": 235
+  "output_tokens": 83
  }
 }
