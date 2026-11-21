@@ -1,7 +1,7 @@
 """A client's thread: the record, mapped to the message types the conversation shows (spec 6).
 Nothing here is stored; the thread is rebuilt on every read so it cannot drift from the ledger."""
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
 
 from sqlalchemy import func, select
@@ -16,9 +16,9 @@ from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.domain.work_items import offered
 from app.squad import rules
-from app.squad.words import decision_words, question_choice
+from app.squad.words import decision_words, document_type_words, question_choice
 
-RANK = {"document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4,
+RANK = {"arrivals": 0, "document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4,
         "handoff": 5, "returned": 5, "attached": 5, "decision": 6}
 REPORT_TEXT_KEYS = ("narrative", "summary", "explanation")  # an agent's written output, with {{fact:…}} references
 
@@ -65,6 +65,36 @@ def drafts_messages(db: Session, borrower_id: uuid.UUID, names: dict[str, str]) 
             for d in drafts_for(db, borrower_id)]
 
 
+def _group_arrivals(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Documents for one period become one message ("3 documents arrived for October 2026"). A lone document, a held
+    one, or one with no period stays on its own. The group sits where its last document arrived."""
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for m in messages:
+        if m["type"] == "document" and m.get("period_end"):
+            groups.setdefault(m["period_end"][:7], []).append(m)
+    grouped = {k: v for k, v in groups.items() if len(v) > 1}
+    out = [m for m in messages if not (m["type"] == "document" and (m.get("period_end") or "")[:7] in grouped)]
+    for key, docs in grouped.items():
+        label = date.fromisoformat(docs[0]["period_end"]).strftime("%B %Y")
+        out.append({"id": f"arrivals:{key}", "type": "arrivals", "ts": max(d["ts"] for d in docs),
+                    "title": f"{len(docs)} documents arrived for {label}", "period_end": docs[0]["period_end"],
+                    "documents": sorted(docs, key=lambda d: d["title"])})
+    return out
+
+
+def _opening(messages: list[dict[str, Any]]) -> str | None:
+    """Where a person starts reading: the first thing still open (a case or ask, an unsent draft); else the newest
+    arrivals or document; else the last message."""
+    for m in messages:
+        if (m["type"] in ("case", "ask") and m.get("status") == "open") or (
+                m["type"] == "draft" and m.get("status") == "draft"):
+            return m["id"]
+    for m in reversed(messages):
+        if m["type"] in ("arrivals", "document", "held"):
+            return m["id"]
+    return messages[-1]["id"] if messages else None
+
+
 def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None) -> dict[str, Any]:
     borrower = db.get(Borrower, borrower_id)
     if borrower is None:
@@ -81,7 +111,8 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
             event = aside.get(str(d.id))
             messages.append({**base, "type": "held", "reason": (event.payload or {}).get("reason", "") if event else ""})
         else:
-            messages.append({**base, "type": "document", "doc_type": d.doc_type, "pages": d.page_count,
+            messages.append({**base, "type": "document", "doc_type": d.doc_type,
+                             "doc_type_words": document_type_words(d.doc_type), "pages": d.page_count,
                              "period_end": plain(d.period_end)})
 
     items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower_id)).scalars().all()
@@ -148,9 +179,10 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
                          "run_id": e.entity_id, "asked_by": names.get(e.actor_id, e.actor_id)})
 
     messages += drafts_messages(db, borrower_id, names)
+    messages = _group_arrivals(messages)
     # Ledger instants are whole seconds while rows carry microseconds, so order by the second and then by
     # how a case unfolds (documents in, then the case, then who it was handed to, then the decision).
     messages.sort(key=_sort_key)
     head = db.execute(select(func.coalesce(func.max(LedgerEvent.seq), 0))).scalar_one()
     return {"borrower": {"id": bid, "code": borrower.code, "name": borrower.name, "template_id": borrower.template_id},
-            "head_seq": int(head), "messages": messages}
+            "head_seq": int(head), "opening_id": _opening(messages), "messages": messages}

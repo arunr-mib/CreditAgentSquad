@@ -17,10 +17,12 @@ from app.domain.org import User
 from app.squad import drafts
 from app.squad.briefing import build_briefing
 from app.squad.cases import build_approvals, build_case
+from app.squad.client_file import measure_series
 from app.squad.questions import answer_question
 from app.squad.threads import build_thread
 from app.squad.track_record import track_record
 from app.squad.trail import case_trail
+from app.squad.words import DOCUMENT_TYPE_WORDS, document_type_words
 
 router = APIRouter(tags=["squad"])
 
@@ -188,3 +190,18 @@ def attach_to_case(item_id: uuid.UUID, body: AttachIn, db: Session = Depends(get
     item = _open_item(db, item_id)
     _engine(db, routing.attach_evidence, item, user=user, document_id=body.document_id, note=body.note)
     return build_case(db, item, user)
+
+
+@router.get("/words/document-types")
+def document_type_words_table(_: User = Depends(current_user)) -> dict:
+    """The plain words for every document type, and the words for an unclassified document; the browser has no list."""
+    return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None)}
+
+
+@router.get("/borrowers/{borrower_id}/measure")
+def borrower_measure(borrower_id: uuid.UUID, db: Session = Depends(get_db),
+                     _: User = Depends(require(Permission.VIEW))) -> dict:
+    borrower = db.get(Borrower, borrower_id)
+    if borrower is None:
+        raise HTTPException(404, "Client not found.")
+    return measure_series(db, borrower)

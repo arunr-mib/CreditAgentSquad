@@ -18,7 +18,7 @@ from app.publishing.content import SIGNAL_LABELS
 from app.squad import rules
 from app.squad.cases import build_approvals
 from app.squad.threads import REPORT_TEXT_KEYS
-from app.squad.words import decision_words, question_choice
+from app.squad.words import decision_words, document_type_words, question_choice
 
 BREACH_TYPES = frozenset({"covenant.breach", "covenant.reported_breach_unconfirmed", "bb.over_advance"})
 KIND_RANK = {"breach": 0, "overdue_report": 1, "signal": 2, "question": 3, "review": 4, "funding": 5, "decided": 6}
@@ -89,7 +89,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         if ob.borrower_id in borrowers:
             days = (today - ob.due_date).days
             items.append({**ref(ob.borrower_id), "key": f"overdue:{ob.id}", "kind": "overdue_report",
-                          "title": f"{ob.document_type.replace('_', ' ').capitalize()} for {ob.period_end:%B %Y} is overdue",
+                          "title": f"{document_type_words(ob.document_type)} for {ob.period_end:%B %Y} is overdue",
                           "state": _days(days), "severity": "medium",
                           "needs_you": mine(ob.borrower_id),
                           "work_item_id": None, "_due": ob.due_date})

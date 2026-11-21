@@ -36,3 +36,23 @@ def question_choice(evidence: dict[str, Any] | None, decision: str | None) -> st
     """The label of the option a question was answered with."""
     options = (evidence or {}).get("options", [])
     return next((o["label"] for o in options if o.get("id") == decision), None)
+
+
+DOCUMENT_TYPE_WORDS = {
+    "mrr_report": "MRR report", "bank_statement": "Bank account statement", "bank_statements": "Bank account statement",
+    "monthly_financials": "Monthly financial statements", "credit_agreement": "Credit agreement",
+    "compliance_certificate": "Compliance certificate", "borrowing_base_certificate": "Borrowing base certificate",
+    "receivables_aging": "Receivables aging", "annual_statements": "Annual financial statements",
+    "interim_statements": "Interim financial statements", "quarterly_statements": "Quarterly financial statements",
+    "tax_return": "Tax return", "term_sheet": "Term sheet", "investor_update": "Investor update",
+    "amendment": "Amendment", "waiver": "Waiver", "other": "Other document",
+}
+
+
+def document_type_words(doc_type: str | None) -> str:
+    """"MRR report", "Bank account statement": a document type as people say it. The document's own printed title
+    ("Account statement, August 2026") is shown beside it unchanged. The one table: the browser is served it
+    (`GET /words/document-types`) and keeps no list of its own."""
+    if not doc_type:
+        return "Not yet classified"
+    return DOCUMENT_TYPE_WORDS.get(doc_type, doc_type.replace("_", " ").capitalize())
