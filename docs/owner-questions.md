@@ -101,3 +101,4 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 ## Live record pass (owner, 21 Nov: "Opus, cap $21")
 
 - Measured spend 8.31 US dollars (from recorded token counts; the estimate was mid 12.65). Gate passed on the live record scorecards; the replay of the recordings does not pass because fact ids differ per run (a product and harness fix, not a model result). Details: `docs/HANDOFF.md`, `docs/lessons/a-recorded-model-run-cannot-replay-agents-that-cite-fact-ids.md`.
+- **Re-record (21 Nov, after the Phase 3 fix waves):** approved — Covenant, Review and Early Warning agents on Opus 5.5 for both books, cap **$5** (estimate $1.50–$3.50), to start only after the full test run passes.
