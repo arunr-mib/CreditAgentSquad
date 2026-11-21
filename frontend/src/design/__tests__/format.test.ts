@@ -25,6 +25,17 @@ describe('formatFigure', () => {
     expect(formatFigure('-6.7', 'pct').text).toBe('−6.7%');
     expect(formatFigure('11.43', 'pct').text).toBe('11.4%');
   });
+  it('shows runway in months at one place, never a whole month', () => {
+    expect(formatFigure('13', 'months').text).toBe('13.0 months');
+    expect(formatFigure('14.000000', 'months').text).toBe('14.0 months');
+    expect(formatFigure('7.076923', 'months').text).toBe('7.1 months');
+    expect(formatFigure('6.4', 'months').text).toBe('6.4 months');
+    expect(formatFigure('18.4', 'months', { unitMark: false }).text).toBe('18.4');
+  });
+  it('shows an unknown unit as its stored text with the unit, never throws', () => {
+    expect(formatFigure('12.5', 'furlongs' as never)).toEqual({ text: '12.5 furlongs', negative: false });
+    expect(formatFigure('-3', 'furlongs' as never).negative).toBe(true);
+  });
   it('formats days and counts', () => {
     expect(formatFigure('13', 'days').text).toBe('13 days');
     expect(formatFigure('1200', 'count').text).toBe('1,200');

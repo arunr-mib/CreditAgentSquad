@@ -13,12 +13,19 @@ const BODY = { overview: Overview, spreads: Spreads, covenants: Covenants, docum
 /** The client file: the detail behind a thread. Every figure opens its source in the evidence drawer, which pushes the file aside. */
 export function ClientFile() {
   const { code, view = 'overview' } = useParams({ strict: false }) as { code: string; view?: string };
-  const { borrower, notFound } = useBorrowerByCode(code);
+  const { borrower, notFound, error, refetch } = useBorrowerByCode(code);
   if (notFound)
     return (
       <div role="alert" className="sq-card">
         <p>There is no client with that code.</p>
         <Link to="/" className="sq-link">Back to Squad</Link>
+      </div>
+    );
+  if (!borrower && error)
+    return (
+      <div role="alert" className="sq-card">
+        <p>The client list could not be loaded.</p>
+        <button type="button" className="sq-btn" onClick={() => void refetch()}>Try again</button>
       </div>
     );
   if (!borrower) return <p role="status" className="sq-muted">Opening the client file.</p>;

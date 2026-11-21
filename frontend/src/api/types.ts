@@ -3,7 +3,7 @@
  * Values are decimal strings: the workspace formats them, it never does float arithmetic on them.
  */
 
-export type Unit = 'usd' | 'ratio' | 'days' | 'pct' | 'count';
+export type Unit = 'usd' | 'ratio' | 'days' | 'pct' | 'count' | 'months';
 export type FactStatus = 'proposed' | 'verified' | 'confirmed' | 'rejected' | 'superseded';
 /** `seeded` marks a fact loaded from the synthetic book's ground truth: demonstration data only, never extracted. */
 export type ProvenanceKind = 'extracted' | 'calculated' | 'system' | 'manual' | 'seeded';

@@ -1,5 +1,5 @@
 // frontend/src/squad/clientfile/views.tsx
-import { useSearch } from '@tanstack/react-router';
+import { useRouterState, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useActions, useBorrowerCovenants, useBorrowerOverview, useBorrowerTerms, useBorrowingBase, useDocuments, useFactsById,
@@ -14,7 +14,7 @@ import { describeEvent } from '@/screens/Governance';
 import { Commentary } from '@/screens/review/Commentary';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
-import { useFundingEvents, useMeasure } from '../api/hooks';
+import { useDocumentTypeWords, useFundingEvents, useMeasure } from '../api/hooks';
 import { DocType } from '../DocType';
 import { Time } from '../thread/Time';
 import { MeasureNow, TrendBars } from './Measure';
@@ -107,10 +107,9 @@ export function Spreads({ borrower }: Props) {
   );
 }
 
-const NOTE_WORDS: Record<string, string> = { not_meaningful_cash_flow_positive: 'Not meaningful: cash-flow positive' };
-
 export function Covenants({ borrower }: Props) {
   const covenants = useBorrowerCovenants(borrower.id);
+  const noteWords = useDocumentTypeWords().data?.notes ?? {};
   if (covenants.isPending) return <Loading what="the covenants" />;
   if (covenants.error || !covenants.data) return <Failed what="The covenants" />;
   const { tests, facts } = covenants.data;
@@ -124,7 +123,7 @@ export function Covenants({ borrower }: Props) {
         <thead><tr><th scope="col">Covenant</th><th scope="col" className="sq-num">Value</th><th scope="col" className="sq-num">Limit</th><th scope="col" className="sq-num">Headroom</th><th scope="col">Outcome</th></tr></thead>
         <tbody>
           {current.map((t) => {
-            const note = t.note ? (NOTE_WORDS[t.note] ?? t.note.replace(/_/g, ' ')) : null;
+            const note = t.note ? (noteWords[t.note] ?? t.note.replace(/_/g, ' ')) : null;
             return (
               <tr key={t.id}>
                 <th scope="row">{t.covenant_name}{t.terms_version ? <span className="sq-faint"> · terms v{t.terms_version.version}</span> : null}</th>
@@ -144,20 +143,24 @@ export function Covenants({ borrower }: Props) {
 export function Documents({ borrower }: Props) {
   const documents = useDocuments(borrower.id);
   const source = useSource();
-  const search = useSearch({ strict: false }) as { document?: string; page?: number };
+  const search = useSearch({ strict: false }) as { document?: string; page?: number; quote?: string };
   const opened = useRef<string | undefined>(undefined);
+  const nav = useRouterState({ select: (s) => (s.location.state as { visit?: number }).visit }); // the drawer's link stamps each visit, so a second click on the same address opens it again
   const [uploading, setUploading] = useState(false);
   const rows = useMemo(() => documents.data ?? [], [documents.data]);
   useEffect(() => {
     const doc = rows.find((d) => d.id === search.document);
-    if (!doc || opened.current === doc.id) return;
-    opened.current = doc.id;
-    source.open({ type: 'document', documentId: doc.id, page: search.page ?? 1, title: doc.title, borrowerCode: borrower.code });
-  }, [rows, search.document, search.page, source, borrower.code]);
+    const visit = `${doc?.id}|${nav}`;
+    if (!doc || opened.current === visit) return;
+    opened.current = visit;
+    source.open({ type: 'document', documentId: doc.id, page: search.page ?? 1, quote: search.quote ?? null, title: doc.title, borrowerCode: borrower.code });
+  }, [rows, search.document, search.page, search.quote, source, borrower.code, nav]);
   if (documents.isPending) return <Loading what="the documents" />;
   if (documents.error) return <Failed what="The documents" />;
+  const missing = Boolean(search.document) && !rows.some((d) => d.id === search.document);
   return (
     <div>
+      {missing ? <p role="alert">That document is not on file for this client.</p> : null}
       <button type="button" className="sq-btn" onClick={() => setUploading((u) => !u)} aria-expanded={uploading}>File a document</button>
       {uploading ? <UploadDocument borrowerId={borrower.id} code={borrower.code} onClose={() => setUploading(false)} /> : null}
       {rows.length === 0 ? <p className="sq-muted">No document is on file for this client.</p> : (

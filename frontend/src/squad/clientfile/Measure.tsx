@@ -1,3 +1,4 @@
+import { formatDate, formatFigure } from '@/design';
 import { Absent, FactFigure } from '@/source/figures';
 import type { MeasurePoint, MeasureSeries } from '../api/types';
 
@@ -9,7 +10,13 @@ export function TrendBars({ points, label }: { points: MeasurePoint[]; label: st
   const values = points.map((p) => (p.fact ? Number(p.fact.value) : null)); // parsed for the plot position only
   const max = Math.max(0, ...values.filter((v): v is number => v !== null));
   return (
-    <span className="sq-bars" role="img" aria-label={`${label}, last ${points.length} ${points.length === 1 ? 'period' : 'periods'}`}>
+    <>
+      <ul className="sq-sr" aria-label={`${label} by period`}>
+        {points.map((p) => (
+          <li key={p.period_end}>{formatDate(p.period_end)}: {p.fact ? formatFigure(p.fact.value, p.fact.unit).text : (p.note ?? 'Not measured')}</li>
+        ))}
+      </ul>
+    <span className="sq-bars" aria-hidden>
       {points.map((p, i) => {
         const v = values[i];
         if (v === null || v === undefined) return <span key={p.period_end} className="sq-bar sq-bar-none" data-point="none" />;
@@ -17,6 +24,7 @@ export function TrendBars({ points, label }: { points: MeasurePoint[]; label: st
         return <span key={p.period_end} className="sq-bar" data-point="measured" style={{ height: `${Math.max(12, Math.round((v / max) * 100))}%` }} />;
       })}
     </span>
+    </>
   );
 }
 

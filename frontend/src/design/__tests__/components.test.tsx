@@ -90,6 +90,14 @@ describe('Figure', () => {
     expect(container.querySelector('.tnum')).toHaveTextContent('1.12x');
     expect(container.querySelector('.ident')).toBeNull();
   });
+
+  it('shows a runway in months and does not throw on a unit it does not know', () => {
+    const runway: Fact = { ...ratioFact, id: 'F-3', value: '13', unit: 'months' };
+    const { container } = render(<Figure fact={runway} />);
+    expect(container.querySelector('.tnum')).toHaveTextContent('13.0 months');
+    const odd = render(<Figure fact={{ ...ratioFact, id: 'F-4', value: '4.5', unit: 'furlongs' as never }} />);
+    expect(odd.container.querySelector('.tnum')).toHaveTextContent('4.5 furlongs');
+  });
 });
 
 describe('AgentText and AgentNote', () => {

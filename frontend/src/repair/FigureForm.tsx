@@ -11,6 +11,7 @@ const UNIT_LABEL: Record<Unit, string> = {
   pct: 'a fraction: 0.072 is 7.2%',
   days: 'days',
   count: 'a count',
+  months: 'months',
 };
 
 /** The number a person typed, without grouping commas or spaces; null when it is not a plain decimal. */

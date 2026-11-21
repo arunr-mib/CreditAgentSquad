@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeft, ArrowUpRight, X } from 'lucide-react';
 import { Dialog as RadixDialog } from 'radix-ui';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -107,20 +107,30 @@ function ViewerLink({
   code,
   documentId,
   page,
+  quote,
   onNavigate,
 }: {
   code?: string;
   documentId: string | null;
   page: number | null;
+  quote?: string | null;
   onNavigate: () => void;
 }) {
+  const navigate = useNavigate();
   if (!code || !documentId) return null;
+  const search = { document: documentId, page: page ?? 1, ...(quote ? { quote } : {}) };
   return (
     <Link
       to="/clients/$code/file/$view"
       params={{ code, view: 'documents' }}
-      search={{ document: documentId, page: page ?? 1 }}
-      onClick={onNavigate}
+      search={search}
+      onClick={(event) => {
+        onNavigate();
+        // A plain click stamps the visit, so following the link again to the same address opens the document again.
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        void navigate({ to: '/clients/$code/file/$view', params: { code, view: 'documents' }, search, state: { visit: Date.now() } as never });
+      }}
       className="link inline-flex items-center gap-0.5 text-body font-medium"
     >
       Open in the client file
@@ -161,7 +171,7 @@ function PageBlock({
           {page.page_count ? <span className="tnum"> of {page.page_count}</span> : null}
         </span>
         <span className="shrink-0">
-          <ViewerLink code={code} documentId={page.document_id} page={page.page} onNavigate={onNavigate} />
+          <ViewerLink code={code} documentId={page.document_id} page={page.page} quote={page.quote} onNavigate={onNavigate} />
         </span>
       </figcaption>
     </figure>

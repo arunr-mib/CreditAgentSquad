@@ -53,6 +53,6 @@ export const useAttachEvidence = (id: string) =>
 export const useMeasure = (borrowerId?: string) =>
   useQuery({ queryKey: ['measure', borrowerId], queryFn: () => get<MeasureSeries>(`/borrowers/${borrowerId}/measure`), enabled: Boolean(borrowerId) });
 export const useDocumentTypeWords = () =>
-  useQuery({ queryKey: ['words', 'document-types'], queryFn: () => get<{ types: Record<string, string>; unclassified: string }>('/words/document-types'), staleTime: Infinity });
+  useQuery({ queryKey: ['words', 'document-types'], queryFn: () => get<{ types: Record<string, string>; unclassified: string; notes: Record<string, string> }>('/words/document-types'), staleTime: Infinity });
 export const useFundingEvents = (borrowerId?: string) =>
   useQuery({ queryKey: ['funding', borrowerId], queryFn: () => get<FundingEventRow[]>(`/borrowers/${borrowerId}/funding-events`), enabled: Boolean(borrowerId) });

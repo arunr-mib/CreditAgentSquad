@@ -59,6 +59,16 @@ export function formatFigure(value: string, unit: Unit, format: FigureFormat = {
       const { negative, int } = split(round(value, 0));
       return { text: `${negative ? MINUS : ''}${group(int)}`, negative };
     }
+    case 'months': {
+      // Runway: one decimal place, like the covenant figure; never rounded to a whole month (6.4 is not 6).
+      const { negative, int, frac } = split(round(value, format.dp ?? 1));
+      return { text: `${negative ? MINUS : ''}${group(int)}${frac ? `.${frac}` : ''}${unitMark ? ' months' : ''}`, negative };
+    }
+    default: {
+      // A unit this build does not know: show the stored value with its unit rather than fail the whole screen.
+      const { negative } = split(value);
+      return { text: `${value} ${String(unit)}`, negative };
+    }
   }
 }
 
