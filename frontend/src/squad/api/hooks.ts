@@ -1,7 +1,7 @@
 // frontend/src/squad/api/hooks.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { get, post } from '@/api/client';
-import type { AgentRunRow, AgentSpec } from '@/api/schema';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { get, post, type Query } from '@/api/client';
+import type { AgentRunRow, AgentSpec, LedgerEvent } from '@/api/schema';
 import type { GuardrailNote } from '@/api/types';
 import type { ApprovalRow, Briefing, CaseView, FundingEventRow, LessonRow, MeasureSeries, PortfolioSection, Thread, TrackRecordRow, Trail } from './types';
 
@@ -66,11 +66,22 @@ export const useLessons = (borrowerId?: string) =>
   useQuery({ queryKey: ['lessons', borrowerId], queryFn: () => get<LessonRow[]>(`/borrowers/${borrowerId}/lessons`), enabled: Boolean(borrowerId) });
 
 export interface EvaluationRow { key: string; label: string; value: string | null; unit: 'pct' | 'count' }
-export interface Evaluation { mode: string | null; standin: boolean; notice: string | null; gate_passed: boolean | null; created_at: string | null; rows: EvaluationRow[] }
+export interface Evaluation {
+  source: 'database' | 'file'; id: string | null; suite: string | null; commit: string | null; borrowers: number | null;
+  mode: string | null; standin: boolean; notice: string | null; gate_passed: boolean | null; created_at: string | null; rows: EvaluationRow[];
+}
 export const useEvaluation = () => useQuery({ queryKey: ['oversight-evaluation'], queryFn: () => get<Evaluation>('/oversight/evaluation'), retry: false });
 
-// Runs and agents in the server's words (`app/squad/oversight.py`); the browser builds no names.
-export type OversightRun = Omit<AgentRunRow, 'guardrail_notes'> & { agent_label: string; task_label: string; status_label: string; guardrail_notes: Array<GuardrailNote & { words: string }> };
-export const useOversightRuns = () => useQuery({ queryKey: ['oversight-runs'], queryFn: () => get<OversightRun[]>('/oversight/runs') });
+// Runs, agents and ledger events in the server's words (`app/squad/oversight.py`, `app/squad/words.py`); the browser builds no names.
+export type OversightRun = Omit<AgentRunRow, 'guardrail_notes'> & { agent_label: string; task_label: string; status_label: string; tool_calls: number; error: string | null; guardrail_notes: Array<GuardrailNote & { words: string }> };
+export const RUNS_PAGE = 100;
+export const useOversightRuns = (offset = 0) =>
+  useQuery({ queryKey: ['oversight-runs', offset], queryFn: () => get<OversightRun[]>('/oversight/runs', { limit: RUNS_PAGE, offset }), placeholderData: keepPreviousData });
 export type OversightAgent = AgentSpec & { label: string };
 export const useOversightAgents = () => useQuery({ queryKey: ['oversight-agents'], queryFn: () => get<OversightAgent[]>('/oversight/agents') });
+export type OversightEvent = LedgerEvent & { actor_label: string };
+export interface OversightLedgerFilter { action?: string; before_seq?: number; hide_sign_ins: boolean; limit: number }
+export const useOversightLedger = (filter: OversightLedgerFilter) =>
+  useQuery({ queryKey: ['oversight-ledger', filter], queryFn: () => get<OversightEvent[]>('/oversight/ledger', filter as unknown as Query), placeholderData: keepPreviousData });
+export const useLedgerActions = () =>
+  useQuery({ queryKey: ['oversight-ledger-actions'], queryFn: () => get<Array<{ key: string; words: string }>>('/oversight/ledger-actions') });

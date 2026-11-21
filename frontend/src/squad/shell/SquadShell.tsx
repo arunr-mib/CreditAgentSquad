@@ -42,11 +42,12 @@ function Frame() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [drawerOpen, drawerTab, drawerItem, drawerBorrower, openCopilot, closeDrawer, pathname]);
   const showApprovals = briefing.data?.approvals.offered ?? false;
+  const oversight = briefing.data?.oversight?.offered ?? false;
   const commands = buildCommands({
     clients: (borrowers.data ?? []).map((b) => ({ code: b.code, name: b.name })),
     go: (path) => void navigate({ to: path }),
     setLook,
-    role: user?.role ?? '',
+    oversight,
     approvals: showApprovals,
   });
   const needs = briefing.data?.needs_you ?? 0;
@@ -56,7 +57,7 @@ function Frame() {
       <div className="sq-shell" data-collapsed={navCollapsed}>
         <a href="#main" className="sq-skip">Skip to content</a>
         <SquadNav collapsed={navCollapsed} onToggle={toggle} needs={needs} showApprovals={showApprovals} openClients={briefing.data?.open_clients ?? []}
-          pathname={pathname} userName={user?.name ?? ''} role={user?.role ?? ''} onSignOut={() => void signOut()} />
+          pathname={pathname} userName={user?.name ?? ''} oversight={oversight} onSignOut={() => void signOut()} />
         <div className="sq-stage">
           <main id="main" tabIndex={-1} className="sq-main" data-surface={surface}>
             {surface !== 'cockpit' ? <PresenceLine /> : null}

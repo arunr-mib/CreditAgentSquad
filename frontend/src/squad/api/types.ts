@@ -19,6 +19,7 @@ export interface Briefing {
   overnight: Array<{ agent_name: string; text: string; borrower_id: string; borrower_code: string; borrower_name: string; finished_at: string }>;
   open_clients: Array<{ borrower_id: string; code: string; name: string; open: number }>;
   approvals: { offered: boolean; waiting: number };
+  oversight: { offered: boolean };
 }
 export interface AskOption { id: string; label: string; evidence: string }
 interface MessageBase { id: string; ts: string }

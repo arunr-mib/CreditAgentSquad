@@ -7,6 +7,7 @@ import { useAuth } from '@/auth/context';
 import { AgentMark, Button, Card, DataTable, EmptyState, formatDate, Input, PageHeader, Select, StatusDot, tabClass, tabListClass, Tag, useToast, type DataColumn } from '@/design';
 import { actionLabel, formatTimestamp, humanize, roleLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
+import { describeEvent } from '@/squad/oversight/describeEvent';
 import { useAsOf } from '@/shell/AsOf';
 import { Load, Notice, SectionHead, SeverityDot, ShortId } from './parts';
 
@@ -52,8 +53,7 @@ const LEDGER_PAGE = 100;
 /** With sign-ins hidden, more is read than is shown, so that a page is still a page. */
 const LEDGER_FETCH = 500;
 
-export { describeEvent } from '@/squad/oversight/describeEvent';
-import { describeEvent } from '@/squad/oversight/describeEvent';
+export { describeEvent };
 
 function Ledger() {
   const search = useSearch({ from: '/governance' });

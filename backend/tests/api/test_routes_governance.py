@@ -156,3 +156,15 @@ def test_a_run_says_whom_it_is_about_and_how_long_it_took(client, db, people):
     assert still["duration_ms"] is None and still["borrower_code"] is None and still["borrower_name"] is None
     detail = client.get(f"/api/v1/agent-runs/{finished.id}").json()
     assert detail["duration_ms"] == 12400 and detail["borrower_code"] == "HTD" and detail["steps"] == []
+
+
+def test_no_signal_rule_reads_as_its_own_identifier_and_the_venture_rules_carry_their_figures(client, people):
+    listed = {r["id"]: r for r in client.get("/api/v1/governance/policy").json()["signal_rules"]["rules"]}
+    for rule in signals.RULES:
+        assert listed[rule.id]["trigger"] != rule.kind.replace("_", " ").capitalize(), rule.id
+    assert listed["runway_below_watch"]["trigger"] == "Runway below 12 months; high severity below 9 months"
+    assert listed["runway_falling"]["trigger"] == "Runway down by more than 1 month in each of 3 months running"
+    assert listed["burn_rising"]["trigger"] == "Average net burn up more than 20% on the figure 3 months earlier"
+    assert listed["revenue_below_plan"]["trigger"] == "Revenue below 100% of plan"
+    assert listed["runway_below_watch"]["name"] == "Runway below the watch level"
+    assert listed["net_loss"]["severity_label"] == "High"

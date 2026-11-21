@@ -71,3 +71,41 @@ def agent_words(recorded: str) -> str:
 
 def task_words(task: str) -> str:
     return task.replace("_", " ").capitalize()
+
+
+RUN_STATUS_WORDS = {"running": "Running", "completed": "Completed", "abstained": "Abstained", "failed": "Failed",
+                    "refused": "Refused"}
+
+
+def run_status_words(status: str) -> str:
+    return RUN_STATUS_WORDS.get(status, status.replace("_", " ").capitalize())
+
+
+def guardrail_note_words(note: dict[str, Any]) -> str:
+    """"figure untraceable · dropped": what a guardrail check found and did."""
+    check = str(note.get("check") or "").replace("_", " ")
+    return f"{check} · {note.get('action') or ''}".strip(" ·")
+
+
+# The families of ledger events (the part of an action before its first dot), in the words the Oversight filter shows.
+LEDGER_FAMILY_WORDS = {
+    "auth": "Sign-ins", "work_item": "Cases", "document": "Documents", "fact": "Facts", "cycle": "Cycles",
+    "copilot": "Copilot", "draft": "Drafts", "lesson": "Lessons", "terms": "Terms", "clock": "Clock",
+    "user": "People", "agent": "Agent runs", "obligation": "Reporting obligations", "covenant": "Covenant tests",
+    "signal": "Signals", "borrowing_base": "Borrowing base", "funding_event": "Funding events",
+    "review": "Reviews", "action": "Actions", "package": "Review packages", "facility": "Facilities",
+    "borrower": "Clients",
+}
+
+
+def ledger_family_words(family: str) -> str:
+    return LEDGER_FAMILY_WORDS.get(family, family.replace("_", " ").capitalize())
+
+
+def actor_words(actor_type: str, actor_id: str, user_names: dict[str, str]) -> str:
+    """Who acted: a person by name, an agent by its words, the system as "System"."""
+    if actor_type == "agent":
+        return agent_words(actor_id)
+    if actor_type == "user":
+        return user_names.get(actor_id, "A person")
+    return "System"

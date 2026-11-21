@@ -232,6 +232,7 @@ _METRIC_WORDS = {
     "dso": "Receivable days",
     "dpo": "Payable days",
     "leverage": "Leverage",
+    "avg_net_burn": "Average net burn",
 }
 _COMPARE = {"yoy": "on the same period a year earlier", "prior_period": "on the period before"}
 
@@ -278,14 +279,24 @@ def signal_trigger(rule: signals.SignalRule) -> str:
             return f"A reporting requirement more than {p['days']} days late"
         case "past_due":
             return f"A payment more than {p['days']} days past due"
+        case "rml_below":
+            return f"Runway below {_num(p['watch'])} months; high severity below {_num(p['high_below'])} months"
+        case "rml_falling":
+            return (f"Runway down by more than {_num(p['min_fall'])} {'month' if p['min_fall'] == 1 else 'months'} "
+                    f"in each of {p['periods']} months running")
+        case "pct_increase":
+            return f"{metric} up more than {_pct(p['threshold'])} on the figure {p['compare_months']} months earlier"
+        case "plan_ratio_below":
+            return f"Revenue below {_pct(p['threshold'])} of plan"
         case "auditor_opinion":
             return "Auditor's opinion " + " or ".join(_plain(o) for o in p["opinions"])
     return _plain(rule.kind).capitalize()  # a kind added later is named, never left blank
 
 
 def _signal_rules() -> list[dict[str, Any]]:
-    return [{"id": rule.id, "name": _SIGNAL_NAME.get(rule.id, _plain(rule.id).capitalize()),
-             "severity": rule.severity, "trigger": signal_trigger(rule)} for rule in signals.RULES]
+    return [{"id": rule.id, "name": _SIGNAL_NAME.get(rule.id) or content.SIGNAL_LABELS.get(rule.id) or _plain(rule.id).capitalize(),
+             "severity": rule.severity, "severity_label": rule.severity.capitalize(),
+             "trigger": signal_trigger(rule)} for rule in signals.RULES]
 
 
 def _versions() -> list[dict[str, Any]]:

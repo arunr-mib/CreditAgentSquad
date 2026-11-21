@@ -18,7 +18,7 @@ function mountNav(props: Partial<Parameters<typeof SquadNav>[0]> = {}) {
   const root = createRootRoute({
     component: () => (
       <SquadNav collapsed={false} onToggle={() => {}} needs={2} showApprovals={false} openClients={[{ borrower_id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', open: 2 }]}
-        pathname="/" userName="Priya Raman" onSignOut={() => {}} {...{ role: 'analyst', ...props }} />
+        pathname="/" userName="Priya Raman" onSignOut={() => {}} {...{ oversight: false, ...props }} />
     ),
   });
   const routes = ['/', '/portfolio', '/approvals', '/clients/$code', '/oversight'].map((path) => createRoute({ getParentRoute: () => root, path, component: () => null }));
@@ -62,11 +62,11 @@ describe('SquadNav', () => {
   });
 
   it('lists oversight only for the roles that have it', async () => {
-    const { unmount } = mountNav({ role: 'analyst' });
+    const { unmount } = mountNav({ oversight: false });
     await screen.findByRole('link', { name: /my portfolio/i });
     expect(screen.queryByRole('link', { name: /oversight/i })).not.toBeInTheDocument();
     unmount();
-    mountNav({ role: 'admin' });
+    mountNav({ oversight: true });
     expect(await screen.findByRole('link', { name: 'Oversight' })).toHaveAttribute('href', '/oversight');
   });
 });
@@ -76,7 +76,7 @@ describe('palette commands', () => {
   beforeEach(() => run.mockClear());
 
   it('offers navigation, every client by name (search only), and the five looks', () => {
-    const commands = buildCommands({ clients, go: run, setLook: run, role: 'analyst', approvals: false });
+    const commands = buildCommands({ clients, go: run, setLook: run, oversight: false, approvals: false });
     expect(commands.filter((c) => c.group === 'Look')).toHaveLength(5);
     const client = commands.find((c) => c.label === 'Quillfeather Labs, Inc.')!;
     expect(client.searchOnly).toBe(true);
@@ -87,8 +87,16 @@ describe('palette commands', () => {
   });
 
   it('hides oversight commands from roles without it', () => {
-    expect(buildCommands({ clients, go: run, setLook: run, role: 'analyst', approvals: false }).some((c) => c.group === 'Oversight')).toBe(false);
-    expect(buildCommands({ clients, go: run, setLook: run, role: 'credit_review', approvals: false }).some((c) => c.group === 'Oversight')).toBe(true);
+    expect(buildCommands({ clients, go: run, setLook: run, oversight: false, approvals: false }).some((c) => c.group === 'Oversight')).toBe(false);
+    expect(buildCommands({ clients, go: run, setLook: run, oversight: true, approvals: false }).some((c) => c.group === 'Oversight')).toBe(true);
+  });
+});
+
+describe('palette: oversight', () => {
+  it('a search for ledger finds the ledger, not Oversight, first', () => {
+    const commands = buildCommands({ clients, go: vi.fn(), setLook: vi.fn(), oversight: true, approvals: false });
+    const mentions = commands.filter((c) => `${c.label} ${c.hint ?? ''}`.toLowerCase().includes('ledger'));
+    expect(mentions.map((c) => c.id)).toEqual(['go-ledger']);
   });
 });
 
@@ -102,7 +110,7 @@ describe('links', () => {
 
 describe('collapsed nav', () => {
   it('names every link when collapsed', async () => {
-    mountNav({ collapsed: true, role: 'admin' });
+    mountNav({ collapsed: true, oversight: true });
     const home = await screen.findByRole('link', { name: /squad.*2 need you/i });
     expect(home).toHaveAttribute('title', 'Squad');
     for (const name of [/my portfolio/i, /oversight/i]) {

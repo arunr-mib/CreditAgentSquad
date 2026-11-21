@@ -676,6 +676,7 @@ export interface PolicySignalRule {
   name: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
   trigger: string;
+  severity_label?: string;
 }
 
 export interface PolicyAgent {

@@ -5,12 +5,10 @@ source (`app.squad.words`); the browser builds no names."""
 from decimal import Decimal
 from typing import Any
 
-from app.squad.words import agent_words, task_words
+from app.squad.words import agent_words, guardrail_note_words, run_status_words, task_words
 
-OVERSIGHT_ROLES = frozenset({"admin", "credit_review", "credit_admin"})
+OVERSIGHT_ROLES = frozenset({"admin", "credit_review", "credit_admin"})  # the one copy; the browser is told
 SHARE_MARKERS = ("accuracy", "rate", "precision", "recall", "needing_no_person", "to_need_no_person")
-STATUS_WORDS = {"running": "Running", "completed": "Completed", "abstained": "Abstained", "failed": "Failed",
-                "refused": "Refused"}
 
 
 def _label(key: str) -> str:
@@ -32,13 +30,8 @@ def evaluation_rows(metrics: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def note_words(note: dict[str, Any]) -> str:
-    check = str(note.get("check") or "").replace("_", " ")
-    return f"{check} · {note.get('action') or ''}".strip(" ·")
-
-
 def run_words(run: dict[str, Any]) -> dict[str, Any]:
     """A run's row with the words for its agent, task, outcome and each guardrail note."""
     return {**run, "agent_label": agent_words(run["agent_name"]), "task_label": task_words(run["task"]),
-            "status_label": STATUS_WORDS.get(run["status"], str(run["status"]).replace("_", " ").capitalize()),
-            "guardrail_notes": [{**n, "words": note_words(n)} for n in run.get("guardrail_notes") or []]}
+            "status_label": run_status_words(run["status"]),
+            "guardrail_notes": [{**n, "words": guardrail_note_words(n)} for n in run.get("guardrail_notes") or []]}

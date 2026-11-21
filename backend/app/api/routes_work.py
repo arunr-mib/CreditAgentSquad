@@ -220,9 +220,10 @@ def list_signals(status: str = "open", borrower_id: uuid.UUID | None = None, db:
 
 
 @router.get("/agent-runs")
-def list_agent_runs(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | None = None, limit: int = 100,
+def list_agent_runs(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | None = None, limit: int = 100, offset: int = 0,
                     db: Session = Depends(get_db), _: User = Depends(current_user)) -> list[dict]:
-    query = select(AgentRun).order_by(AgentRun.created_at.desc()).limit(max(1, min(limit, 500)))
+    query = (select(AgentRun).order_by(AgentRun.created_at.desc(), AgentRun.id)
+             .limit(max(1, min(limit, 500))).offset(max(0, offset)))
     if borrower_id:
         query = query.where(AgentRun.borrower_id == borrower_id)
     if cycle_id:

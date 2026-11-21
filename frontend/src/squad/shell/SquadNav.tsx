@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router';
 import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, FolderOpen, Landmark, LogOut, Stamp } from 'lucide-react';
 import { SquadMark } from '../mark/SquadMark';
 import { LookMenu } from '../LookMenu';
-import { OVERSIGHT_ROLES } from './commands';
 import type { Briefing } from '../api/types';
 
 export interface SquadNavProps {
@@ -14,11 +13,11 @@ export interface SquadNavProps {
   openClients: Briefing['open_clients'];
   pathname: string;
   userName: string;
-  role: string;
+  oversight: boolean;
   onSignOut: () => void;
 }
 
-export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClients, pathname, userName, role, onSignOut }: SquadNavProps) {
+export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClients, pathname, userName, oversight, onSignOut }: SquadNavProps) {
   const initials = userName.split(/\s+/).map((p) => p[0]).slice(0, 2).join('');
   return (
     <aside className="sq-nav" data-collapsed={collapsed} aria-label="Credit Squad">
@@ -61,7 +60,7 @@ export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClient
           ))}
         </nav>
       ) : null}
-      {OVERSIGHT_ROLES.includes(role) ? (
+      {oversight ? (
         <Link to="/oversight" className="sq-navlink" title="Oversight" aria-current={pathname.startsWith('/oversight') ? 'page' : undefined}>
           <Landmark size={18} aria-hidden />
           <span className="sq-navlabel">Oversight</span>

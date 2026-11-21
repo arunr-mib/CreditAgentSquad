@@ -2,14 +2,17 @@
 import uuid
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
+from sqlalchemy import func, not_, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import current_user, require
 from app.api.routes_evals import latest_eval
 from app.api.routes_work import _item, list_agent_runs, list_agents
+from app.api.serialize import row
 from app.core.db import get_db
+from app.core.ledger import LedgerEvent
 from app.core.roles import Permission, SecondPersonRequired
 from app.domain import routing
 from app.domain.credit import Borrower
@@ -25,7 +28,14 @@ from app.squad.questions import answer_question
 from app.squad.threads import build_thread
 from app.squad.track_record import track_record
 from app.squad.trail import case_trail
-from app.squad.words import DOCUMENT_TYPE_WORDS, NOTE_WORDS, agent_words, document_type_words
+from app.squad.words import (
+    DOCUMENT_TYPE_WORDS,
+    NOTE_WORDS,
+    actor_words,
+    agent_words,
+    document_type_words,
+    ledger_family_words,
+)
 
 router = APIRouter(tags=["squad"])
 
@@ -229,10 +239,11 @@ def _oversight_only(user: User) -> None:
 
 
 @router.get("/oversight/runs")
-def oversight_runs(limit: int = 100, db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
-    """Agent runs with the words for agent, task, outcome and each guardrail note. Read only."""
+def oversight_runs(limit: int = 100, offset: int = 0, db: Session = Depends(get_db),
+                   user: User = Depends(current_user)) -> list[dict]:
+    """Agent runs, newest first, with the words for agent, task, outcome and each guardrail note. Read only."""
     _oversight_only(user)
-    return [run_words(r) for r in list_agent_runs(limit=limit, db=db, _=user)]
+    return [run_words(r) for r in list_agent_runs(limit=limit, offset=offset, db=db, _=user)]
 
 
 @router.get("/oversight/agents")
@@ -241,10 +252,38 @@ def oversight_agents(db: Session = Depends(get_db), user: User = Depends(current
     return [{**a, "label": agent_words(a["name"])} for a in list_agents(db=db, _=user)]
 
 
+@router.get("/oversight/ledger-actions")
+def oversight_ledger_actions(db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
+    """The families of event the ledger holds (the part of an action before its first dot), in words."""
+    _oversight_only(user)
+    families = db.execute(select(func.split_part(LedgerEvent.action, ".", 1)).distinct()).scalars()
+    return sorted(({"key": f, "words": ledger_family_words(f)} for f in families), key=lambda x: x["words"])
+
+
+@router.get("/oversight/ledger")
+def oversight_ledger(action: str | None = None, before_seq: int | None = Query(default=None, ge=1, le=2**63 - 1),
+                     hide_sign_ins: bool = False, limit: int = 100, db: Session = Depends(get_db),
+                     user: User = Depends(current_user)) -> list[dict]:
+    """Newest first. `action` is a family; sign-ins can be left out here so a page is still a page. Read only."""
+    _oversight_only(user)
+    query = select(LedgerEvent).order_by(LedgerEvent.seq.desc()).limit(max(1, min(limit, 500)))
+    if action:
+        query = query.where(or_(LedgerEvent.action == action, LedgerEvent.action.startswith(action + ".", autoescape=True)))
+    if hide_sign_ins:
+        query = query.where(not_(LedgerEvent.action.startswith("auth.", autoescape=True)))
+    if before_seq:
+        query = query.where(LedgerEvent.seq < before_seq)
+    names = {str(u.id): u.name for u in db.execute(select(User)).scalars()}
+    return [{**row(e, exclude=("prev_hash",)), "actor_name": names.get(e.actor_id),
+             "actor_label": actor_words(e.actor_type, e.actor_id, names)} for e in db.execute(query).scalars()]
+
+
 @router.get("/oversight/evaluation")
 def oversight_evaluation(db: Session = Depends(get_db), user: User = Depends(current_user)) -> dict:
+    """The latest scorecard and where it came from: a run in this database, or the repository's results file."""
     _oversight_only(user)
     envelope = latest_eval(db=db, _=user)  # raises 404 when no evaluation has been run
     results = envelope.pop("results") or {}
-    return {**{k: envelope[k] for k in ("mode", "standin", "notice", "gate_passed", "created_at")},
+    return {**{k: envelope[k] for k in ("source", "id", "suite", "commit", "mode", "standin", "notice", "gate_passed", "created_at")},
+            "borrowers": (results.get("meta") or {}).get("borrowers"),
             "rows": evaluation_rows(results.get("metrics") or {})}

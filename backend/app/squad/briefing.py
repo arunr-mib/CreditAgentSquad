@@ -17,6 +17,7 @@ from app.domain.terms import ReportingObligation
 from app.publishing.content import SIGNAL_LABELS
 from app.squad import rules
 from app.squad.cases import build_approvals
+from app.squad.oversight import OVERSIGHT_ROLES
 from app.squad.portfolio import open_work_item_counts
 from app.squad.threads import REPORT_TEXT_KEYS
 from app.squad.words import decision_words, document_type_words, question_choice
@@ -149,4 +150,5 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                            for bid, n in counts.items() if bid in borrowers and n > 0), key=lambda c: c["name"])
     return {"as_of": today.isoformat(), "needs_you": sum(1 for i in items if i["needs_you"]), "items": items,
             "overnight": overnight, "open_clients": open_clients,
-            "approvals": {"offered": offered, "waiting": len(build_approvals(db, user)) if offered else 0}}
+            "approvals": {"offered": offered, "waiting": len(build_approvals(db, user)) if offered else 0},
+            "oversight": {"offered": user.role in OVERSIGHT_ROLES}}
