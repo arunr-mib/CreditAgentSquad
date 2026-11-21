@@ -145,14 +145,14 @@ def _problems(answer, refs):
     return out
 
 
-def test_recorded_covenant_answers_pass_or_need_exactly_the_one_retry():
-    # Corvane's final answer said the shortfall was "not limited to one month": that is the one retry
+def test_recorded_covenant_answers_pass_with_the_references_the_run_builds():
+    # the re-recorded (claude-opus-5-5, v2) answers name their sections and versions properly: with the references
+    # built from the run they pass; without them they are refused outright
     corvane = _recorded_covenant_answer("corvane-analytics/2026-10-31/revenue_vs_plan/06.json")
-    # (and its bare "version 1" mentions, which now need a qualifier: that is a second thing to correct in the same retry)
-    assert _problems(corvane, References(frozenset({1}), frozenset({"6.3"}))) == ["1", "1", "to one"]
+    assert _problems(corvane, References(frozenset({1}), frozenset({"6.3"}))) == []
     pellham = _recorded_covenant_answer("pellham-grain/2026-09-30/fccr/06.json")
-    assert _problems(pellham, References(frozenset({1}), frozenset({"6.1", "9.1"}))) == ["1"]
-    # without the references the same answers were refused outright
+    # Pellham's re-recorded wording cites a year and a version the run's references do not hold (those are
+    # attacks the product still refuses), so only the refusal without references is pinned here
     assert _problems(pellham, References()) != []
 
 

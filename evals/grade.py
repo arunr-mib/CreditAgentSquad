@@ -102,6 +102,27 @@ def typed_figures(text: str) -> list[str]:
     return re.findall(r"\(?\$?\d[\d,]*(?:\.\d+)?\)?[%xXkKmM]?", stripped)
 
 
+def note_types_figure(run: dict[str, Any], text: str) -> bool:
+    """Whether a note stored on an agent run types a figure the product's own rule refuses. A spreading note is
+    judged by `check_narrative` with the document-structure allowance built from the document's pages (the run
+    carries it as `note_allowance`), exactly as `agents/spreading.py` enforces it; a place in the document that
+    the document really has (a page, a note heading, an account ending, a year) is not a figure, any other
+    figure is. Notes of other agents keep the plain rule."""
+    if run.get("agent") != "spreading":
+        return bool(typed_figures(text))
+    from app.guardrails.narrative import DocumentStructure, check_narrative
+
+    allowance = run.get("note_allowance")
+    structure = None
+    echo = ""
+    if allowance is not None:
+        structure = DocumentStructure(int(allowance["page_count"]), frozenset(int(n) for n in allowance["note_numbers"]),
+                                      frozenset(str(e) for e in allowance["endings"]),
+                                      frozenset(int(y) for y in allowance["years"]))
+        echo = str(allowance.get("echo") or "")
+    return bool(check_narrative(text, {}, structure=structure, echo=echo))
+
+
 # ---- the truth, per key ---------------------------------------------------------------------
 
 
@@ -543,7 +564,7 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
     unanswered: Counter = Counter()
     for run in rec["agent_runs"]:
         for note in run.get("guardrail_notes") or []:
-            if isinstance(note, dict) and note.get("action") == "shown" and typed_figures(str(note.get("detail", ""))):
+            if isinstance(note, dict) and note.get("action") == "shown" and note_types_figure(run, str(note.get("detail", ""))):
                 fail("invented-number", f"{run['agent']} note", f"a note shown to a person types a figure: {note['detail']!r}"[:300])
         if run["status"] != "completed":
             if run["llm_mode"] == "standin" and run["agent"] in STANDIN_UNANSWERED:

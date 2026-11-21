@@ -87,3 +87,45 @@ def test_unshown_text_skips_row_notes_and_ids_under_prose_fields():
                {"rows": [{"note": "Contra 20,800"}, {"note": "Affiliate"}],
                 "reason": "54e8fe6e-dcb1-4bce-a6c5-13c08f506ce3"})}]}]}
     assert unshown_text(rec) == []
+
+
+# ---- stored spreading notes are judged by the product's rule with the document-structure allowance ----
+
+
+def _run(allowance):
+    return {"agent": "spreading", "note_allowance": allowance}
+
+
+ALLOW = {"page_count": 6, "note_numbers": [1], "endings": ["9001"], "years": [2025], "echo": ""}
+
+
+def test_an_honest_spreading_note_is_not_an_invented_number():
+    from evals.grade import note_types_figure
+
+    assert not note_types_figure(_run(ALLOW), "Note 1 on page 5 describes the revolver.")
+    assert not note_types_figure(_run(ALLOW), "Cash is held in the operating account (ending 9001).")
+
+
+def test_a_figure_the_product_would_refuse_is_still_an_invented_number():
+    from evals.grade import note_types_figure
+
+    assert note_types_figure(_run(ALLOW), "Revenue rose to 1,250,000 on page 5.")
+    assert note_types_figure(_run(ALLOW), "Note 7 on page 5 describes the revolver.")  # no such note
+    assert note_types_figure(_run(ALLOW), "See page 40.")  # no such page
+    assert note_types_figure(_run(ALLOW), "Account (ending 1234) holds cash.")  # not printed in the document
+    assert note_types_figure(_run(None), "Note 1 on page 5 describes the revolver.")  # no allowance, plain rule
+
+
+def test_other_agents_notes_keep_the_plain_rule():
+    from evals.grade import note_types_figure
+
+    assert note_types_figure({"agent": "review"}, "Revenue was 4,000.")
+    assert not note_types_figure({"agent": "review"}, "Nothing to report.")
+
+
+def test_a_quoted_units_phrase_is_allowed_only_when_the_run_verified_it():
+    from evals.grade import note_types_figure
+
+    note = "The cover page states units as 'In thousands of U.S. dollars'."
+    assert not note_types_figure(_run({**ALLOW, "echo": "In thousands of U.S. dollars"}), note)
+    assert note_types_figure(_run({**ALLOW, "echo": ""}), note)

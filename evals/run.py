@@ -346,7 +346,8 @@ class LoadedBorrower:
             {"id": str(r.id), "agent": r.agent_name, "version": r.agent_version, "task": r.task, "status": r.status,
              "llm_mode": r.llm_mode, "model": r.model, "served_model": r.served_model, "steps": r.steps_count,
              "input_tokens": r.input_tokens, "output_tokens": r.output_tokens, "cache_read_tokens": r.cache_read_tokens,
-             "guardrail_notes": plain(r.guardrail_notes), "error": r.error}
+             "guardrail_notes": plain(r.guardrail_notes), "error": r.error,
+             "note_allowance": _note_allowance(db, r)}
             for r in db.execute(select(AgentRun).where(AgentRun.borrower_id == row.id)
                                 .order_by(AgentRun.created_at, AgentRun.id)).scalars()]
         sheet = db.execute(select(ReviewSheet).where(ReviewSheet.cycle_id == cycle.id)).scalar_one_or_none()
@@ -358,6 +359,29 @@ class LoadedBorrower:
                                                .order_by(Commentary.section, Commentary.version)).scalars()]}
         ok, events, problem = ledger.verify_chain(db)
         recording["ledger"] = {"ok": ok, "events": events, "problem": problem}
+
+
+def _note_allowance(db: Session, run: Any) -> dict[str, Any] | None:
+    """For a spreading run: the document-structure allowance the product used for its notes, rebuilt from the
+    document's pages with the product's own builder, so the grader judges stored notes by the same rule."""
+    if run.agent_name != "spreading":
+        return None
+    from app.agents.spreading import note_allowance
+    from app.domain.documents import DocumentPage
+
+    ids = (run.scope or {}).get("document_ids") or []
+    pages = [p for i in ids for p in db.execute(select(DocumentPage).where(DocumentPage.document_id == uuid.UUID(str(i)))
+                                                 .order_by(DocumentPage.page_number)).scalars()]
+    raw = run.output if isinstance(run.output, dict) and "scale_statement" in run.output else {}
+    if not raw and isinstance((run.raw_output or {}).get("text"), str):
+        try:  # the model's own answer, as the product parsed it
+            parsed = json.loads(run.raw_output["text"])
+            raw = parsed if isinstance(parsed, dict) else {}
+        except ValueError:
+            raw = {}
+    structure, echo = note_allowance(pages, raw.get("scale_page"), str(raw.get("scale_statement") or ""))
+    return {"page_count": structure.page_count, "note_numbers": sorted(structure.note_numbers),
+            "endings": sorted(structure.endings), "years": sorted(structure.years), "echo": echo}
 
 
 def run_borrower(engine: Engine, book: Book, borrower: Borrower, llm_factory: Callable[[], Any], *,

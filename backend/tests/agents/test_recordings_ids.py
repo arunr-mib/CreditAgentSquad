@@ -70,11 +70,35 @@ def test_a_changed_value_refuses_to_replay(tmp_path):
         RecordedClient(tmp_path, resolver=Table({a2: {**REV, "value": "48251"}, b2: COGS})).create(request(a2, b2))
 
 
-def test_an_ambiguous_match_refuses_to_replay(tmp_path):
+def test_ids_with_an_identical_descriptor_are_interchangeable_and_pair_by_order_of_appearance(tmp_path):
+    a, b = uid(), uid()  # two calc runs identical in every value shown
+    CALC = {"type": "calc", "formula_key": "metric.fccr", "period_end": "2026-10-31", "terms_version": 1,
+            "outputs": {"value": "1.25"}}
+    RecordingClient(ScriptedClient([answer(f"{{{{fact:{b}}}}} then {{{{fact:{a}}}}}")]), tmp_path,
+                    resolver=Table({a: CALC, b: CALC})).create(request(a, b))
+    x, y = uid(), uid()
+    out = RecordedClient(tmp_path, resolver=Table({x: CALC, y: CALC})).create(request(x, y))
+    assert out.text() == f"{{{{fact:{y}}}}} then {{{{fact:{x}}}}}"  # first appearance <-> first appearance
+    again = RecordedClient(tmp_path, resolver=Table({x: CALC, y: CALC})).create(request(x, y))
+    assert again.text() == out.text()  # deterministic
+
+
+def test_identical_facts_pair_the_same_way_and_a_shorter_replay_group_reuses_the_last(tmp_path):
+    a, b = record(tmp_path, None, "{{{{fact:{a}}}}} {{{{fact:{b}}}}}")
+    c, d = uid(), uid()
+    # a recording of two identical revenue facts, replayed against one: both resolve to it
+    x = uid()
+    RecordingClient(ScriptedClient([answer(f"{{{{fact:{c}}}}} {{{{fact:{d}}}}}")]), tmp_path / "t",
+                    resolver=Table({c: REV, d: REV})).create(request(c, d))
+    out = RecordedClient(tmp_path / "t", resolver=Table({x: REV})).create(request(x))
+    assert out.text() == f"{{{{fact:{x}}}}} {{{{fact:{x}}}}}"
+
+
+def test_ids_whose_descriptors_differ_are_never_confused(tmp_path):
     record(tmp_path, None, "Revenue {{{{fact:{a}}}}}")
     x, y = uid(), uid()
-    with pytest.raises(RecordingStale, match="ambiguous"):
-        RecordedClient(tmp_path, resolver=Table({x: REV, y: REV})).create(request(x, y))
+    with pytest.raises(RecordingStale, match="matches no id"):
+        RecordedClient(tmp_path, resolver=Table({x: {**REV, "value": "1"}, y: {**REV, "value": "2"}})).create(request(x, y))
 
 
 def test_an_id_the_model_invented_stays_as_it_was_and_is_not_an_error(tmp_path):

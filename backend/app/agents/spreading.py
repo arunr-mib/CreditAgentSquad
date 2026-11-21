@@ -361,6 +361,18 @@ def _sum_fact(db: Session, borrower: Borrower, key: str, parts: list[Fact]) -> F
                     value=total, kind="calculated", calc_run_id=calc.id, actor=("agent", "spreading"))
 
 
+def note_allowance(doc_pages: list[DocumentPage], scale_page: int | None, scale_statement: str,
+                   ) -> tuple[DocumentStructure, str]:
+    """What a spreading note may mention beyond the guardrail's plain rule, built by code from the document's
+    pages: its structure (pages, note headings, account endings, years) and the units phrase the agent quoted,
+    only when that phrase is printed on the page it cites. The evaluation grades stored notes with this."""
+    structure = DocumentStructure.from_pages(p.text for p in doc_pages)
+    page = next((p for p in doc_pages if p.page_number == scale_page), None)
+    echo = scale_statement if (scale_statement.strip() and page is not None
+                               and quote_on_page(page.text, scale_statement)) else ""
+    return structure, echo
+
+
 def spread_document(
     db: Session, *, borrower: Borrower, document: Document, period_end: date, months: int,
     cycle: Cycle | None, llm: LLMClient, prior_fye_cash: Decimal | None = None,
@@ -413,12 +425,7 @@ def spread_document(
     # document's own pages have it: the allowance is built here, from the pages, never from the model)
     doc_pages = list(db.execute(select(DocumentPage).where(DocumentPage.document_id == document.id)
                                 .order_by(DocumentPage.page_number)).scalars())
-    structure = DocumentStructure.from_pages(p.text for p in doc_pages)
-    # a quoted units phrase may be said back in a note only when it is printed on the page the agent cites
-    # (the same check units use); an unverified string is never an allowance
-    scale_page = next((p for p in doc_pages if p.page_number == out.scale_page), None)
-    echo = out.scale_statement if (out.scale_statement.strip() and scale_page is not None
-                                   and quote_on_page(scale_page.text, out.scale_statement)) else ""
+    structure, echo = note_allowance(doc_pages, out.scale_page, out.scale_statement)
     for note in out.notes:
         problems = check_narrative(note, {}, structure=structure, echo=echo)
         if problems:

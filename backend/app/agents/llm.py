@@ -122,7 +122,8 @@ def remap_ids(record_key: str, recorded: dict[str, Any], replay_request: LLMRequ
               ) -> dict[str, str]:
     """Recorded id -> replay id, for each id the recorded response cites that has a descriptor. A cited id
     with no descriptor (one the model invented) is not mapped. An id whose descriptor matches no replay id
-    (the value or the source changed) or more than one (ambiguous) raises RecordingStale."""
+    (the value or the source changed) raises RecordingStale; several replay ids with an identical descriptor
+    are interchangeable and are paired by order of first appearance in the request."""
     described: dict[str, dict[str, Any]] = recorded.get("_ids") or {}
     cited = [u for u in uuids_in({k: v for k, v in recorded.items() if not k.startswith("_")}) if u in described]
     if not cited:
@@ -130,15 +131,23 @@ def remap_ids(record_key: str, recorded: dict[str, Any], replay_request: LLMRequ
     index: dict[str, list[str]] = {}
     for u, d in describe_ids({"m": replay_request.messages}, resolver).items():
         index.setdefault(_descriptor_key(d), []).append(u)
+    # ids that share one descriptor (two calc runs or facts identical in every value the model is shown) are
+    # interchangeable for citation purposes: the n-th of them in the recorded request maps to the n-th in the
+    # replay request (an old recording without `_ids_order` pairs in the order its file lists them: still one-to-one
+    # and deterministic). Ids whose descriptors differ are never confused: no match still raises.
+    recorded_order: dict[str, list[str]] = {}
+    for u in [i for i in recorded.get("_ids_order") or [] if i in described] or list(described):
+        d = described[u]
+        recorded_order.setdefault(_descriptor_key(d), []).append(u)
     mapping: dict[str, str] = {}
     for u in cited:
-        matches = index.get(_descriptor_key(described[u]), [])
-        if len(matches) != 1:
-            why = "matches no id in this run (the value or the source changed)" if not matches else \
-                f"matches {len(matches)} ids in this run (ambiguous)"
-            raise RecordingStale(f"{record_key}: the recorded answer cites {u}, described as "
-                                 f"{_descriptor_key(described[u])}, which {why}")
-        mapping[u] = matches[0]
+        dkey = _descriptor_key(described[u])
+        matches = index.get(dkey, [])
+        if not matches:
+            raise RecordingStale(f"{record_key}: the recorded answer cites {u}, described as {dkey}, which "
+                                 "matches no id in this run (the value or the source changed)")
+        position = recorded_order[dkey].index(u)
+        mapping[u] = matches[min(position, len(matches) - 1)]
     return mapping
 
 
@@ -261,7 +270,8 @@ class RecordingClient:
         response = self.inner.create(request)
         path = _recording_path(self.root, request.record_key)
         path.parent.mkdir(parents=True, exist_ok=True)
-        extra = {"_ids": ids} if ids is not None else {}
+        # the dict is written key-sorted, so the order the ids first appeared in the request is kept beside it
+        extra = {"_ids": ids, "_ids_order": list(ids)} if ids is not None else {}
         path.write_text(json.dumps({**response.to_json(), "_spec": request.spec, "_basis": "full", **extra},
                                    indent=1, sort_keys=True))
         return response
