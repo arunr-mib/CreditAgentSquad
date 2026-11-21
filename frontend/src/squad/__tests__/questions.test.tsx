@@ -100,7 +100,7 @@ describe('QaMessage', () => {
 const ask = (over: Partial<Extract<ThreadMessage, { type: 'ask' }>> = {}): Extract<ThreadMessage, { type: 'ask' }> => ({
   id: 'ask:1', ts: 't', type: 'ask', work_item_id: 'w1', title: 'How should I map this line?', question: "Is 'Recurring revenue' ARR or MRR?",
   options: [{ id: 'map_to_arr', label: 'Map it to ARR', evidence: 'Page 3 says ARR.' }, { id: 'map_to_mrr', label: 'Map it to MRR', evidence: 'Page 3 also shows monthly.' }],
-  status: 'open', choice: null, chosen_by: null, needs_you: true, state_words: '', ...over,
+  status: 'open', choice: null, chosen_by: null, needs_you: true, state_words: '', habits: [], ...over,
 });
 
 describe('AskMessage', () => {
@@ -114,6 +114,11 @@ describe('AskMessage', () => {
     mount(<AskMessage message={ask({ options: [{ id: 'a', label: 'Use {{fact:f1}}', evidence: 'Cash was {{fact:f2}}.' }, { id: 'b', label: 'Ignore it', evidence: '' }] })} focused={false} />);
     const bodies = screen.getAllByTestId('body').map((n) => n.textContent);
     expect(bodies).toEqual(expect.arrayContaining(['Use {{fact:f1}}', 'Cash was {{fact:f2}}.']));
+  });
+
+  it('shows what Squad remembers for this kind of question, in the words of the person who taught it', () => {
+    mount(<AskMessage message={ask({ habits: [{ id: 'l1', text: 'Recurring revenue here is ARR.', by: 'Priya Raman', at: '2026-11-01T10:00:00Z' }] })} focused={false} />);
+    expect(screen.getByText('Squad remembers: Recurring revenue here is ARR. (Priya Raman)')).toBeInTheDocument();
   });
 
   it('cannot be confirmed until an option is chosen', async () => {

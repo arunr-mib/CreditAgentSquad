@@ -13,8 +13,8 @@ import { surfaceOf } from '../shell/surface';
 
 describe('surfaceOf', () => {
   it.each(['/', '/clients/QFL'])('%s is Squad\'s own conversation', (path) => expect(surfaceOf(path)).toBe('conversation'));
-  it.each(['/approvals', '/clients/QFL/file', '/clients/QFL/file/covenants'])('%s is a Squad screen', (path) => expect(surfaceOf(path)).toBe('squad'));
-  it.each(['/portfolio', '/borrowers', '/borrowers/QFL', '/borrowers/QFL/covenants', '/borrowers/QFL/spreads', '/borrowers/QFL/packages', '/command-centre', '/calendar', '/governance', '/agent-activity', '/design'])(
+  it.each(['/approvals', '/portfolio', '/clients/QFL/file', '/clients/QFL/file/covenants'])('%s is a Squad screen', (path) => expect(surfaceOf(path)).toBe('squad'));
+  it.each(['/borrowers', '/borrowers/QFL', '/borrowers/QFL/covenants', '/borrowers/QFL/spreads', '/borrowers/QFL/packages', '/command-centre', '/calendar', '/governance', '/agent-activity', '/design'])(
     '%s is a cockpit screen',
     (path) => expect(surfaceOf(path)).toBe('cockpit'),
   );
@@ -23,7 +23,7 @@ describe('surfaceOf', () => {
 function mountAt(path: string) {
   vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 404, text: async () => '{"detail":"Not found"}' }) as Response));
   const root = createRootRoute({ component: SquadShell });
-  const routes = ['/', '/portfolio'].map((p) => createRoute({ getParentRoute: () => root, path: p, component: () => <p>screen {p}</p> }));
+  const routes = ['/', '/calendar', '/portfolio'].map((p) => createRoute({ getParentRoute: () => root, path: p, component: () => <p>screen {p}</p> }));
   const router = createRouter({ routeTree: root.addChildren(routes), history: createMemoryHistory({ initialEntries: [path] }) });
   const user = { id: 'u1', email: 'p@x', name: 'Priya Raman', title: 't', role: 'analyst', permissions: ['view'] };
   const auth = { user, status: 'signed-in', can: () => true, signIn: vi.fn(), signOut: vi.fn(), retry: () => {} };
@@ -51,10 +51,17 @@ describe('the shell by surface', () => {
   });
 
   it('gives a legacy cockpit route the full width and no presence line', async () => {
-    const { container } = mountAt('/portfolio');
-    await screen.findByText('screen /portfolio');
+    const { container } = mountAt('/calendar');
+    await screen.findByText('screen /calendar');
     expect(container.querySelector('.sq-main')).toHaveAttribute('data-surface', 'cockpit');
     expect(container.querySelector('.sq-presence')).toBeNull();
+  });
+
+  it('mounts My Portfolio as a Squad screen with the presence line', async () => {
+    const { container } = mountAt('/portfolio');
+    await screen.findByText('screen /portfolio');
+    expect(container.querySelector('.sq-main')).toHaveAttribute('data-surface', 'squad');
+    expect(container.querySelector('.sq-presence')).not.toBeNull();
   });
 
   it('caps the conversation at 860 px and a cockpit screen at the old shell\'s 1480 px', () => {

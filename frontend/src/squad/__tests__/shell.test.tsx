@@ -105,10 +105,20 @@ describe('collapsed nav', () => {
     mountNav({ collapsed: true, role: 'admin' });
     const home = await screen.findByRole('link', { name: /squad.*2 need you/i });
     expect(home).toHaveAttribute('title', 'Squad');
-    for (const name of [/my portfolio/i, /quillfeather/i, /agent activity/i, /governance/i]) {
+    for (const name of [/my portfolio/i, /agent activity/i, /governance/i]) {
       expect(screen.getByRole('link', { name })).toBeInTheDocument();
     }
     for (const link of screen.getAllByRole('link')) expect(link).toHaveAccessibleName();
+  });
+
+  it('shows one Open cases button when collapsed, not a circle per client, and expands to the names', async () => {
+    const toggle = vi.fn();
+    mountNav({ collapsed: true, onToggle: toggle });
+    expect(await screen.findByRole('link', { name: /squad/i })).toBeInTheDocument();
+    expect(screen.queryByRole('navigation', { name: /open cases/i })).not.toBeInTheDocument();
+    expect(document.querySelectorAll('.sq-initial')).toHaveLength(0);
+    await userEvent.click(screen.getByRole('button', { name: 'Open cases: 1 client' }));
+    expect(toggle).toHaveBeenCalled();
   });
 
   it('shows the product name when expanded', async () => {

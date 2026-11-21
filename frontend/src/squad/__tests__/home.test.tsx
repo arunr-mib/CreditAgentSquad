@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { ApiUser } from '@/api/schema';
 import { AuthContext } from '@/auth/context';
@@ -91,8 +92,23 @@ describe('SquadHome', () => {
     expect(await screen.findByRole('link', { name: /signal/i })).toHaveAttribute('href', '/clients/QFL');
   });
 
+  it('lists signals under Watching, grouped by client, and never counts them', async () => {
+    mount(briefing([
+      item({ key: 'a', needs_you: true }),
+      item({ key: 's1', kind: 'signal', needs_you: false, state: 'watching', title: 'Signals: runway falling, burn rising', work_item_id: null }),
+      item({ key: 'f1', kind: 'funding', needs_you: false, state: 'expected', title: 'Expected equity round closes 30 November', work_item_id: null }),
+      item({ key: 's2', kind: 'signal', needs_you: false, state: 'watching', title: 'Signal: revenue below plan', work_item_id: null, borrower_id: 'b2', borrower_code: 'ZZZ', borrower_name: 'Zephyr Zinc Works, Inc.' }),
+    ]));
+    expect(await screen.findByText('1 needs you')).toBeInTheDocument();
+    const watching = screen.getByRole('region', { name: 'Watching' });
+    const groups = within(watching).getAllByRole('group');
+    expect(groups.map((g) => within(g).getAllByText(/Inc\./)[0]!.textContent)).toEqual(['Quillfeather Labs, Inc.', 'Zephyr Zinc Works, Inc.']);
+    expect(within(groups[0]!).getByText(/runway falling, burn rising/)).toBeInTheDocument();
+  });
+
   it('lists what agents did overnight with the client named', async () => {
     mount(briefing([], [{ agent_name: 'spreading', text: 'Read the October package.', borrower_id: 'b1', borrower_code: 'QFL', borrower_name: 'Quillfeather Labs, Inc.', finished_at: '2026-11-20T02:00:00Z' }]));
+    await userEvent.click(await screen.findByText(/what squad did overnight/i));
     expect(await screen.findByText('Read the October package.')).toBeInTheDocument();
     expect(screen.getByText(/spreading agent/i)).toBeInTheDocument();
   });

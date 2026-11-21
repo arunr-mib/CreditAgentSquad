@@ -44,6 +44,11 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
       <header className="sq-msghead"><SquadMark size={22} /> <b>Squad asks</b> <Time ts={message.ts} /></header>
       <p>{message.question}</p>
       {open && !message.needs_you ? <p className="sq-muted">{message.state_words}</p> : null}
+      {message.habits.length > 0 ? (
+        <div className="sq-habits" aria-label="What Squad remembers">
+          {message.habits.map((h) => <p key={h.id} className="sq-faint">Squad remembers: {h.text} ({h.by})</p>)}
+        </div>
+      ) : null}
       {open ? (
         <fieldset className="sq-options" disabled={!mayAnswer}>
           <legend className="sq-sr">{message.question}</legend>

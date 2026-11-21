@@ -14,7 +14,7 @@ import { describeEvent } from '@/screens/Governance';
 import { Commentary } from '@/screens/review/Commentary';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
-import { useDocumentTypeWords, useFundingEvents, useMeasure } from '../api/hooks';
+import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
 import { DocType } from '../DocType';
 import { Time } from '../thread/Time';
 import { MeasureNow, TrendBars } from './Measure';
@@ -32,6 +32,8 @@ export function Overview({ borrower }: Props) {
   const overview = useBorrowerOverview(borrower.id);
   const measure = useMeasure(borrower.id);
   const signals = useSignals({ borrower_id: borrower.id });
+  const track = useTrackRecord(borrower.id);
+  const lessons = useLessons(borrower.id);
   if (overview.isPending) return <Loading what="the overview" />;
   if (overview.error || !overview.data) return <Failed what="The overview" />;
   const { exposure, cycle } = overview.data;
@@ -71,6 +73,29 @@ export function Overview({ borrower }: Props) {
           <ul className="sq-plainlist">
             {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalLabel(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span></li>)}
           </ul>
+        )}
+      </section>
+      <section className="sq-card" aria-label="Track record">
+        <h2 className="sq-h2">Track record</h2>
+        {(track.data ?? []).length === 0 ? <p className="sq-muted">No figure has been read for this client yet.</p> : (
+          <table className="sq-table">
+            <thead><tr><th scope="col">Task</th><th scope="col" className="sq-num">Checked</th><th scope="col" className="sq-num">Right</th><th scope="col" className="sq-num">Corrected</th><th scope="col">Last correction</th></tr></thead>
+            <tbody>
+              {(track.data ?? []).map((t) => (
+                <tr key={`${t.agent_name}|${t.task}`}>
+                  <th scope="row">{t.agent_name.charAt(0).toUpperCase() + t.agent_name.slice(1)} agent · {t.task.replace(/_/g, ' ')}</th>
+                  <td className="sq-num">{t.checked}</td><td className="sq-num">{t.right}</td><td className="sq-num">{t.corrected}</td>
+                  <td>{t.last_correction_at ? <Time ts={t.last_correction_at} /> : <span className="sq-faint">None</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+      <section className="sq-card" aria-label="What Squad remembers">
+        <h2 className="sq-h2">What Squad remembers</h2>
+        {(lessons.data ?? []).length === 0 ? <p className="sq-muted">Nothing has been taught for this client yet.</p> : (
+          <ul className="sq-plainlist">{(lessons.data ?? []).map((l) => <li key={l.id}>{l.text} <span className="sq-faint">· {l.by}, <Time ts={l.at} /></span></li>)}</ul>
         )}
       </section>
     </div>

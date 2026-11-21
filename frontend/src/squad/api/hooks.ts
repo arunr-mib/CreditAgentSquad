@@ -1,7 +1,7 @@
 // frontend/src/squad/api/hooks.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/api/client';
-import type { ApprovalRow, Briefing, CaseView, FundingEventRow, MeasureSeries, Thread, Trail } from './types';
+import type { ApprovalRow, Briefing, CaseView, FundingEventRow, LessonRow, MeasureSeries, PortfolioSection, Thread, TrackRecordRow, Trail } from './types';
 
 export const useBriefing = () => useQuery({ queryKey: ['briefing'], queryFn: () => get<Briefing>('/me/briefing') });
 export const useThread = (borrowerId?: string) =>
@@ -56,3 +56,9 @@ export const useDocumentTypeWords = () =>
   useQuery({ queryKey: ['words', 'document-types'], queryFn: () => get<{ types: Record<string, string>; unclassified: string; notes: Record<string, string> }>('/words/document-types'), staleTime: Infinity });
 export const useFundingEvents = (borrowerId?: string) =>
   useQuery({ queryKey: ['funding', borrowerId], queryFn: () => get<FundingEventRow[]>(`/borrowers/${borrowerId}/funding-events`), enabled: Boolean(borrowerId) });
+
+export const usePortfolio = () => useQuery({ queryKey: ['my-portfolio'], queryFn: () => get<{ as_of: string; sections: PortfolioSection[] }>('/me/portfolio') });
+export const useTrackRecord = (borrowerId?: string) =>
+  useQuery({ queryKey: ['track-record', borrowerId], queryFn: () => get<TrackRecordRow[]>(`/borrowers/${borrowerId}/track-record`), enabled: Boolean(borrowerId) });
+export const useLessons = (borrowerId?: string) =>
+  useQuery({ queryKey: ['lessons', borrowerId], queryFn: () => get<LessonRow[]>(`/borrowers/${borrowerId}/lessons`), enabled: Boolean(borrowerId) });

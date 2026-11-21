@@ -26,7 +26,7 @@ export type ThreadMessage = MessageBase &
   (
     | { type: 'report'; agent_name: string; task: string; text: string; run_id: string }
     | { type: 'case'; work_item_id: string; item_type: string; title: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
-    | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null; needs_you: boolean; state_words: string }
+    | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null; needs_you: boolean; state_words: string; habits: Habit[] }
     | { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }
     | { type: 'arrivals'; title: string; period_end: string; documents: Array<MessageBase & { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }> }
     | { type: 'held'; document_id: string; title: string; reason: string }
@@ -111,3 +111,8 @@ export interface ApprovalRow {
 export interface MeasurePoint { period_end: string; fact: FactSummary | null; note: string | null }
 export interface MeasureSeries { kind: 'rml' | 'headroom'; label: string; points: MeasurePoint[] }
 export interface FundingEventRow { id: string; kind: string; amount: string; expected_close: string; status: string; evidence_document_ids: string[] }
+
+export interface PortfolioRow { borrower_id: string; code: string; name: string; analyst: string | null; mine: boolean; open: number; measure: MeasureSeries }
+export interface PortfolioSection { template_id: 'vc-1' | 'ci-1'; title: string; measure_label: string; rows: PortfolioRow[] }
+export interface Habit { id: string; text: string; by: string; at: string }
+export interface LessonRow extends Habit { topic: string; tag: string | null; work_item_id: string | null }

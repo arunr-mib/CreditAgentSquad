@@ -95,12 +95,42 @@ journey('palette: Ctrl K reaches any client by name, from any screen', async ({ 
   await page.waitForURL(new RegExp(`/clients/${first.code}$`));
 });
 
-journey('portfolio: the nav row opens My Portfolio and a row opens that client', async ({ page }) => {
+journey('portfolio: every client appears once, by measure, and each row opens its own thread', async ({ page }) => {
   await signIn(page, ANALYST);
   await page.getByRole('link', { name: /my portfolio/i }).click();
   await page.waitForURL(`${BASE}/portfolio`);
-  // Phase 4b redesigns the screen; here we only require the route to load without an error alert.
-  assert((await page.getByRole('alert').count()) === 0, 'portfolio route shows an error');
+  const data = await api(page, '/me/portfolio');
+  const all = data.sections.flatMap((s) => s.rows);
+  const borrowers = await api(page, '/borrowers');
+  assert(all.length === borrowers.length && new Set(all.map((r) => r.code)).size === all.length, 'a client is missing or listed twice');
+  for (const r of all.slice(0, 3)) {
+    await page.goto(`${BASE}/portfolio`);
+    await page.getByRole('link', { name: r.name, exact: true }).click();
+    await page.waitForURL(new RegExp(`/clients/${r.code}$`));
+    await page.getByRole('heading', { level: 1, name: r.name }).waitFor();
+  }
+});
+
+journey('portfolio: every client row shows what its client file shows as the latest point', async ({ page }) => {
+  await signIn(page, ANALYST);
+  const data = await api(page, '/me/portfolio');
+  const all = data.sections.flatMap((s) => s.rows);
+  await page.goto(`${BASE}/portfolio`);
+  await page.locator('[data-ready]').waitFor();
+  const shown = {};
+  for (const r of all) shown[r.code] = (await page.locator(`tr[data-borrower="${r.code}"] [data-measure-cell]`).innerText()).trim();
+  let mismatches = 0;
+  for (const r of all) {
+    const file = await api(page, `/borrowers/${r.borrower_id}/measure`);
+    if (JSON.stringify(file.points.at(-1)) !== JSON.stringify(r.measure.points.at(-1))) mismatches += 1;
+    await page.goto(`${BASE}/clients/${r.code}/file`);
+    await page.locator('[data-measure-now]').waitFor();
+    const there = (await page.locator('[data-measure-now]').innerText()).trim();
+    if (there !== shown[r.code]) mismatches += 1;
+    assert((await page.getByRole('alert').count()) === 0, `${r.code}: the client file shows an error`);
+  }
+  console.log(`      checked ${all.length} clients, ${mismatches} mismatches`);
+  assert(mismatches === 0, `${mismatches} portfolio rows differ from their client file`);
 });
 
 journey('deep link: an unknown case id shows the thread, not an error', async ({ page }) => {
@@ -214,17 +244,17 @@ journey('looks: every look keeps text readable and the officer starts in Warm pa
   await analyst.close();
 });
 
-journey('legacy cockpit route: /portfolio in Night is full width, has no presence line and passes the contrast checks', async ({ browser }) => {
+journey('My Portfolio in Night is a Squad screen: not full width, presence line shown, contrast checks pass', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 1920, height: 900 } });
   const page = await context.newPage();
   await signIn(page, ANALYST);
   assert((await page.evaluate(() => document.querySelector('.sq-root').dataset.look)) === 'night', 'the analyst did not start in Night');
   await page.goto(`${BASE}/portfolio`);
-  await page.locator('.sq-main[data-surface="cockpit"]').waitFor();
-  await page.getByRole('heading', { level: 1 }).first().waitFor();
+  await page.locator('.sq-main[data-surface="squad"]').waitFor();
+  await page.getByRole('heading', { level: 1, name: 'My Portfolio' }).waitFor();
   const width = (await page.locator('.sq-main').boundingBox()).width;
-  assert(width > 1200 && width <= 1480, `the portfolio is ${Math.round(width)}px wide in the shell (expected the cockpit width, up to 1480)`);
-  assert((await page.locator('.sq-presence').count()) === 0, 'the presence line shows on a cockpit screen');
+  assert(width <= 1280, `the portfolio is ${Math.round(width)}px wide in the shell (expected at most 1280)`);
+  assert((await page.locator('.sq-presence').count()) === 1, 'the presence line is missing on My Portfolio');
   await page.addScriptTag({ content: axeSource });
   const result = await page.evaluate(() => window.axe.run(document.body, { runOnly: ['color-contrast', 'label', 'button-name', 'link-name'] }));
   const bad = result.violations.map((v) => `${v.id}: ${v.nodes.length}`);

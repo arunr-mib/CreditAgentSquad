@@ -113,7 +113,7 @@ export const commandCentreRoute = createRoute({
 const portfolioRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/portfolio',
-  component: lazyRouteComponent(() => import('@/screens/Portfolio'), 'Portfolio'),
+  component: lazyRouteComponent(() => import('@/squad/portfolio/Portfolio'), 'Portfolio'),
 });
 
 const borrowersRoute = createRoute({

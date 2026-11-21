@@ -1,6 +1,6 @@
 // frontend/src/squad/shell/SquadNav.tsx
 import { Link } from '@tanstack/react-router';
-import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, LogOut, Stamp } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, ChartNoAxesColumn, FolderOpen, LogOut, Stamp } from 'lucide-react';
 import { SquadMark } from '../mark/SquadMark';
 import { LookMenu } from '../LookMenu';
 import { OVERSIGHT_ROLES } from './commands';
@@ -42,14 +42,20 @@ export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClient
           <span className="sq-navlabel">Approvals</span>
         </Link>
       ) : null}
-      {openClients.length > 0 ? (
+      {openClients.length > 0 && collapsed ? (
+        <button type="button" className="sq-navlink sq-navbtn" onClick={onToggle} title="Open cases"
+          aria-label={`Open cases: ${openClients.length} ${openClients.length === 1 ? 'client' : 'clients'}`}>
+          <FolderOpen size={18} aria-hidden />
+          <span className="sq-count">{openClients.length}</span>
+        </button>
+      ) : null}
+      {openClients.length > 0 && !collapsed ? (
         <nav aria-label="Open cases" className="sq-cases">
           <p className="sq-navhead sq-navlabel">Open cases</p>
           {openClients.map((c) => (
             <Link key={c.borrower_id} to="/clients/$code" params={{ code: c.code }} className="sq-navlink" title={c.name}
               aria-current={pathname === `/clients/${c.code}` ? 'page' : undefined}>
-              <span className="sq-initial" aria-hidden>{c.name[0]}</span>
-              <span className="sq-navlabel">{c.name}</span>
+              <span className="sq-navlabel sq-grow">{c.name}</span>
               <span className="sq-count sq-navlabel">{c.open}</span>
             </Link>
           ))}
