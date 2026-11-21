@@ -56,3 +56,7 @@ def document_type_words(doc_type: str | None) -> str:
     if not doc_type:
         return "Not yet classified"
     return DOCUMENT_TYPE_WORDS.get(doc_type, doc_type.replace("_", " ").capitalize())
+
+
+# Stored covenant-test notes in plain words: the one source for the client file's overview and covenants view.
+NOTE_WORDS = {"not_meaningful_cash_flow_positive": "Not meaningful: cash-flow positive"}

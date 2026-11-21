@@ -22,7 +22,7 @@ from app.squad.questions import answer_question
 from app.squad.threads import build_thread
 from app.squad.track_record import track_record
 from app.squad.trail import case_trail
-from app.squad.words import DOCUMENT_TYPE_WORDS, document_type_words
+from app.squad.words import DOCUMENT_TYPE_WORDS, NOTE_WORDS, document_type_words
 
 router = APIRouter(tags=["squad"])
 
@@ -195,7 +195,7 @@ def attach_to_case(item_id: uuid.UUID, body: AttachIn, db: Session = Depends(get
 @router.get("/words/document-types")
 def document_type_words_table(_: User = Depends(current_user)) -> dict:
     """The plain words for every document type, and the words for an unclassified document; the browser has no list."""
-    return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None)}
+    return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None), "notes": NOTE_WORDS}
 
 
 @router.get("/borrowers/{borrower_id}/measure")

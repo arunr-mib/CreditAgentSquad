@@ -3,7 +3,6 @@ from decimal import Decimal
 
 from app.domain.facts_service import add_fact
 from app.domain.workflow import open_cycle
-from app.squad import client_file
 from app.squad.client_file import measure_series
 
 from .conftest import sign_in
@@ -16,55 +15,70 @@ def _periods(db, borrower):
         open_cycle(db, borrower_id=borrower.id, period_end=end, months=1, cycle_type="monthly")
 
 
-def test_runway_points_carry_stored_facts_and_never_a_zero(db, world, monkeypatch):
+def _facility(db, borrower):
+    from app.domain.credit import Facility
+    f = Facility(borrower_id=borrower.id, code=f"{borrower.code}-TL", name="Term loan", facility_type="term_loan",
+                 commitment=Decimal("1000000"))
+    db.add(f)
+    db.flush()
+    return f
+
+
+def _test(db, borrower, facility, covenant, end, *, value_fact=None, note=None, superseded=False):
+    from app.domain.monitoring import CovenantTest
+    t = CovenantTest(borrower_id=borrower.id, facility_id=facility.id, covenant_id=covenant, covenant_name=covenant,
+                     period_end=end, value_fact_id=value_fact.id if value_fact else None,
+                     value=value_fact.value if value_fact else None, outcome="pass" if value_fact else "not_meaningful",
+                     note=note, superseded=superseded)
+    db.add(t)
+    db.flush()
+    return t
+
+
+def test_runway_comes_from_the_stored_covenant_test_even_without_metric_rml(db, world):
     b = world["borrower"]  # vc-1
     _periods(db, b)
-    # `seeded`: a `calculated` fact must name its calculation run (check constraint `calculated_has_calc`)
-    fact = add_fact(db, borrower_id=b.id, key="metric.rml", period_end=ENDS[0], months=0, value=Decimal("14.2"),
-                    kind="seeded", unit="count", status="verified")
-    asked: list = []
-    monkeypatch.setattr(client_file, "runway_not_meaningful",
-                        lambda db, borrower, period_end: asked.append(period_end) or period_end == ENDS[2])
+    fac = _facility(db, b)
+    fact = add_fact(db, borrower_id=b.id, key="cov.min_runway_months.value", period_end=ENDS[0], months=0,
+                    value=Decimal("13.0"), kind="seeded", unit="months", status="verified")
+    _test(db, b, fac, "min_runway_months", ENDS[0], value_fact=fact)
+    _test(db, b, fac, "min_runway_months", ENDS[1], note="not_meaningful_cash_flow_positive")
     series = measure_series(db, b)
     assert series["kind"] == "rml" and series["label"] == "Runway (months)"
     assert [p["period_end"] for p in series["points"]] == [e.isoformat() for e in ENDS]
     assert series["points"][0]["fact"]["id"] == str(fact.id) and series["points"][0]["note"] is None
-    assert series["points"][1]["fact"] is None and series["points"][1]["note"] == "Not measured"
-    assert series["points"][2]["fact"] is None and series["points"][2]["note"] == "Not meaningful: cash-flow positive"
-    assert asked == [ENDS[2]]  # the full runway computation runs for the latest point only
+    assert series["points"][1]["fact"] is None and series["points"][1]["note"] == "Not meaningful: cash-flow positive"
+    assert series["points"][2]["fact"] is None and series["points"][2]["note"] == "Not measured"  # no test at all
 
 
-def test_a_proposed_runway_is_not_shown_as_measured(db, world, monkeypatch):
+def test_a_superseded_runway_test_is_not_read(db, world):
     b = world["borrower"]
     _periods(db, b)
-    add_fact(db, borrower_id=b.id, key="metric.rml", period_end=ENDS[2], months=0, value=Decimal("9.0"),
-             kind="seeded", unit="count", status="proposed")
-    monkeypatch.setattr(client_file, "runway_not_meaningful", lambda *a: False)
+    fac = _facility(db, b)
+    old = add_fact(db, borrower_id=b.id, key="cov.min_runway_months.value", period_end=ENDS[2], months=0,
+                   value=Decimal("9.0"), kind="seeded", unit="months", status="verified")
+    _test(db, b, fac, "min_runway_months", ENDS[2], value_fact=old, superseded=True)
     assert measure_series(db, b)["points"][2]["fact"] is None
 
 
-def test_headroom_picks_the_tightest_stored_headroom_per_period(db, world):
+def test_headroom_picks_the_tightest_headroom_of_live_tests(db, world):
     b = world["other"]
     b.template_id = "ci-1"
     _periods(db, b)
+    fac = _facility(db, b)
     loose = add_fact(db, borrower_id=b.id, key="cov.leverage.headroom_pct", period_end=ENDS[2], months=0,
                      value=Decimal("0.31"), kind="seeded", unit="pct", status="verified")
     tight = add_fact(db, borrower_id=b.id, key="cov.fccr.headroom_pct", period_end=ENDS[2], months=0,
-                     value=Decimal("0.04"), kind="seeded", unit="pct", status="verified")
+                     value=Decimal("-0.08"), kind="seeded", unit="pct", status="verified")
+    dropped = add_fact(db, borrower_id=b.id, key="cov.capex.headroom_pct", period_end=ENDS[2], months=0,
+                       value=Decimal("-0.5"), kind="seeded", unit="pct", status="verified")
+    _test(db, b, fac, "leverage", ENDS[2])
+    _test(db, b, fac, "fccr", ENDS[2])
+    _test(db, b, fac, "capex", ENDS[2], superseded=True)  # an amendment dropped it: its old headroom must not win
     series = measure_series(db, b)
-    assert series["kind"] == "headroom" and series["points"][2]["fact"]["id"] == str(tight.id) != str(loose.id)
+    assert series["kind"] == "headroom" and series["points"][2]["fact"]["id"] == str(tight.id)
+    assert str(loose.id) != str(tight.id) != str(dropped.id)
     assert series["points"][0]["note"] == "Not measured"
-
-
-def test_a_breached_headroom_is_the_tightest_not_missing(db, world):
-    b = world["other"]
-    b.template_id = "ci-1"
-    _periods(db, b)
-    add_fact(db, borrower_id=b.id, key="cov.leverage.headroom_pct", period_end=ENDS[2], months=0,
-             value=Decimal("0.31"), kind="seeded", unit="pct", status="verified")
-    breach = add_fact(db, borrower_id=b.id, key="cov.fccr.headroom_pct", period_end=ENDS[2], months=0,
-                      value=Decimal("-0.08"), kind="seeded", unit="pct", status="verified")
-    assert measure_series(db, b)["points"][2]["fact"]["id"] == str(breach.id)
 
 
 def test_the_browser_is_served_the_one_document_words_table(db, client, world):
@@ -74,6 +88,9 @@ def test_the_browser_is_served_the_one_document_words_table(db, client, world):
     served = client.get("/api/v1/words/document-types").json()
     assert served["types"] == DOCUMENT_TYPE_WORDS and served["unclassified"] == document_type_words(None)
     assert all(document_type_words(k) == v for k, v in served["types"].items())
+    from app.squad.words import NOTE_WORDS
+    assert served["notes"] == NOTE_WORDS
+    assert NOTE_WORDS["not_meaningful_cash_flow_positive"] == "Not meaningful: cash-flow positive"
 
 
 def test_measure_endpoint(db, client, world):
