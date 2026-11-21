@@ -162,3 +162,18 @@ failures raised by name.
 | `results/` | `latest.json`, `latest.md` |
 | `recordings/` | saved model responses (none yet) |
 | `../backend/app/api/routes_evals.py` | the scorecard for the governance screen |
+
+## Stand-in reader coverage and the gate (Phase 3)
+
+| Document | Read by the stand-in | Notes |
+|---|---|---|
+| Financial packs (annual, interim, monthly) | every cell as printed | the three Stripple lines the key expects held are graded as held, not as missing |
+| MRR report, bank statement | the as-of figure, with the document's stated date checked | a page dated another month is refused |
+| Compliance certificate | all forms, percentages stored as fractions | |
+| Borrowing base certificate | as before | |
+| Spreadsheets (.xlsx, .csv) | not read; held with one question | Stripple's export is set aside by a scripted `not_needed` decision |
+
+- `--book legacy|innovation|both`: `both` runs the legacy book, then the innovation book, and writes `latest-legacy.*` and `latest.*`.
+- Covenant accuracy counts every expected test; a test the cycle never reached (Stripple rests on its held figures) is listed as unmeasured and lowers the headline, so innovation reads 94.9 percent.
+- `--accept-stale` replays recordings whose agent stamp is stale, and the scorecard names them.
+- Gate: no `invented-number`, no `false-compliant`, no run error, no unlisted difference; `known_findings.json` is empty.

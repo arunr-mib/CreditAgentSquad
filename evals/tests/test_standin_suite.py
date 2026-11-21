@@ -63,7 +63,7 @@ def test_the_only_differences_from_the_truth_are_the_listed_known_findings(suite
     assert differences(suite) == known
 
 
-def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none(suite):
+def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none(suite, book_name):
     known = {(k["borrower"], k["item"]) for k in load_known_findings() if k["name"].endswith("-exception")}
     problems = []
     for code, graded in suite["borrowers"].items():
@@ -73,16 +73,16 @@ def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_
             problems.append((code, graded["scenario"], sorted(unexplained)))
     assert problems == []
     clean = [g for g in suite["borrowers"].values() if g["scenario"] == "clean"]
-    assert len(clean) == 8
+    assert len(clean) == {"legacy": 8, "innovation": 7}[book_name]
 
 
-def test_every_expected_fact_was_extracted_and_equals_the_truth(suite):
+def test_every_expected_fact_was_extracted_and_equals_the_truth(suite, book_name):
     known = {k["borrower"] for k in load_known_findings() if k["name"] == "extraction-incomplete"}
     for code, graded in suite["borrowers"].items():
         extraction = graded["extraction"]
         if code not in known:
             assert extraction["correct"] == extraction["expected"], (code, extraction)
-    assert suite["metrics"]["extraction_facts_expected"] > 2500
+    assert suite["metrics"]["extraction_facts_expected"] > {"legacy": 2500, "innovation": 1500}[book_name]
 
 
 def test_everything_the_stand_in_produced_is_labelled_as_stand_in(suite):
