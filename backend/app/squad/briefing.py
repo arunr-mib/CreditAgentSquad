@@ -7,7 +7,7 @@ from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from app.core import clock
-from app.core.roles import Permission, can
+from app.core.roles import Permission, approves, can
 from app.domain.agents import AgentRun
 from app.domain.credit import Borrower
 from app.domain.funding import FundingEvent
@@ -16,6 +16,7 @@ from app.domain.org import User
 from app.domain.terms import ReportingObligation
 from app.publishing.content import SIGNAL_LABELS
 from app.squad import rules
+from app.squad.cases import build_approvals
 from app.squad.threads import REPORT_TEXT_KEYS
 from app.squad.words import decision_words, question_choice
 
@@ -66,6 +67,9 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                 state = "Squad asks" if kind == "question" else "waiting for you"
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": state, "needs_you": True,
                               "_due": w.due_date})
+            elif rules.awaits_reroute(user, w):
+                items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": "returned to you",
+                              "needs_you": True, "_due": w.due_date})
             elif (rules.holds_permission(user, w) and not second_person_blocked and w.assigned_to is None
                   and user.role == "analyst"):  # an analyst's colleague's client: listed, not counted
                 owner = names.get(borrowers[w.borrower_id].analyst_id, "a colleague")
@@ -141,4 +145,5 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                                                             "name": i["borrower_name"], "open": 0})
             c["open"] += 1
     return {"as_of": today.isoformat(), "needs_you": sum(1 for i in items if i["needs_you"]), "items": items,
-            "overnight": overnight, "open_clients": sorted(open_clients.values(), key=lambda c: c["name"])}
+            "overnight": overnight, "open_clients": sorted(open_clients.values(), key=lambda c: c["name"]),
+            "approvals": {"offered": approves(user.role), "waiting": len(build_approvals(db, user))}}

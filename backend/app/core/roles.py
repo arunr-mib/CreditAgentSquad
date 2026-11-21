@@ -62,6 +62,15 @@ def can(role: Role | str, permission: Permission) -> bool:
         return False
 
 
+# Decisions that belong to an approver rather than to the analyst who works the client. The one list the Approvals
+# screen is built from; the server tells the browser whether to offer the screen (the briefing's `approvals`).
+APPROVER_PERMISSIONS = frozenset({Permission.DECIDE_BREACH, Permission.APPROVE_TERMS, Permission.APPROVE_COMMENTARY})
+
+
+def approves(role: Role | str) -> bool:
+    return any(can(role, p) for p in APPROVER_PERMISSIONS)
+
+
 class SecondPersonRequired(Exception):
     """Raised when the approver is the same person who prepared the work."""
 

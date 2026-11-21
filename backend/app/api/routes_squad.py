@@ -10,11 +10,13 @@ from app.api.deps import current_user, require
 from app.api.routes_work import _item
 from app.core.db import get_db
 from app.core.roles import Permission, SecondPersonRequired
+from app.domain import routing
 from app.domain.credit import Borrower
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.squad import drafts
 from app.squad.briefing import build_briefing
+from app.squad.cases import build_approvals, build_case
 from app.squad.questions import answer_question
 from app.squad.threads import build_thread
 from app.squad.track_record import track_record
@@ -118,3 +120,71 @@ def borrower_track_record(borrower_id: uuid.UUID, db: Session = Depends(get_db),
     if db.get(Borrower, borrower_id) is None:
         raise HTTPException(404, "Client not found.")
     return track_record(db, borrower_id)
+
+
+def _open_item(db: Session, item_id: uuid.UUID) -> WorkItem:
+    item = db.get(WorkItem, item_id)
+    if item is None:
+        raise HTTPException(404, "Case not found.")
+    return item
+
+
+def _engine(db: Session, fn, *args, **kwargs) -> None:
+    try:
+        fn(db, *args, **kwargs)
+    except PermissionError as exc:
+        raise HTTPException(403, str(exc)) from exc
+    except SecondPersonRequired as exc:
+        raise HTTPException(409, str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    db.commit()
+
+
+@router.get("/cases/{work_item_id}")
+def get_case(work_item_id: uuid.UUID, db: Session = Depends(get_db),
+             user: User = Depends(require(Permission.VIEW))) -> dict:
+    return build_case(db, _open_item(db, work_item_id), user)
+
+
+@router.get("/me/approvals")
+def my_approvals(db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
+    return build_approvals(db, user)
+
+
+class RouteIn(BaseModel):
+    to: uuid.UUID
+    view: str = Field(max_length=4000)
+
+
+class ReturnIn(BaseModel):
+    reason: str = Field(max_length=4000)
+
+
+class AttachIn(BaseModel):
+    document_id: uuid.UUID
+    note: str = Field(default="", max_length=500)
+
+
+@router.post("/work-items/{item_id}/route")
+def route_case(item_id: uuid.UUID, body: RouteIn, db: Session = Depends(get_db),
+               user: User = Depends(require(Permission.MANAGE_ACTIONS))) -> dict:
+    item = _open_item(db, item_id)
+    _engine(db, routing.route_work_item, item, user=user, to_user_id=body.to, view=body.view)
+    return build_case(db, item, user)
+
+
+@router.post("/work-items/{item_id}/return")
+def return_case(item_id: uuid.UUID, body: ReturnIn, db: Session = Depends(get_db),
+                user: User = Depends(current_user)) -> dict:
+    item = _open_item(db, item_id)
+    _engine(db, routing.return_work_item, item, user=user, reason=body.reason)
+    return build_case(db, item, user)
+
+
+@router.post("/work-items/{item_id}/attach")
+def attach_to_case(item_id: uuid.UUID, body: AttachIn, db: Session = Depends(get_db),
+                   user: User = Depends(current_user)) -> dict:
+    item = _open_item(db, item_id)
+    _engine(db, routing.attach_evidence, item, user=user, document_id=body.document_id, note=body.note)
+    return build_case(db, item, user)

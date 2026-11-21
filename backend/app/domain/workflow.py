@@ -315,27 +315,60 @@ def needs_reason(item_type: str, decision: str) -> bool:
     return decision in DECISIONS_NEEDING_REASON or item_type in ITEM_TYPES_NEEDING_REASON
 
 
+ROUTED, RETURNED, ATTACHED = "work_item.routed", "work_item.returned", "work_item.evidence_attached"
+
+
+def routed_by(db: Session, item: WorkItem) -> set[str]:
+    """Everyone who has sent this item for a decision with their view. The ledger is the record."""
+    from app.core.ledger import LedgerEvent
+
+    return set(db.execute(select(LedgerEvent.actor_id).where(
+        LedgerEvent.entity_type == "work_item", LedgerEvent.entity_id == str(item.id),
+        LedgerEvent.action == ROUTED)).scalars())
+
+
+def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, decision: str | None = None,
+                     reason: str | None = None) -> Exception | None:
+    """The engine's one answer to "may this person decide this item, and take this decision?". None means yes;
+    otherwise the exception `decide_work_item` raises, checked in the order it always has been. Squad's read models
+    call this to say what a person may do, so a screen and the engine cannot disagree. Pass `decision` to include the
+    decision's own rules, and `reason` (even "") to include the reason rule."""
+    from app.core.roles import Permission, SecondPersonRequired, can, require_second_person
+
+    if item.status != "open":
+        return ValueError("this item has already been decided")
+    allowed = work_items.offered(item.item_type, item.allowed_decisions)
+    if decision is not None and decision not in allowed:
+        return ValueError(f"{decision!r} is not one of the allowed decisions: {allowed}")
+    try:
+        needed = Permission(item.required_permission)
+    except ValueError:
+        return PermissionError(f"no role can decide this item ({item.required_permission})")
+    if not can(user_role, needed):
+        return PermissionError(f"your role cannot decide this item ({item.required_permission})")
+    extra = DECISION_PERMISSIONS.get((item.item_type, decision)) if decision is not None else None
+    if extra is not None and not can(user_role, Permission(extra)):
+        return PermissionError(f"your role cannot take the decision {decision!r} on this item ({extra})")
+    if decision is not None and reason is not None and needs_reason(item.item_type, decision) and not reason.strip():
+        return ValueError("this decision needs a reason")
+    if item.requires_second_person:
+        try:
+            require_second_person(item.prepared_by_id, user_id)
+        except SecondPersonRequired as exc:
+            return exc
+    if str(user_id) in routed_by(db, item):
+        return SecondPersonRequired("You sent this case for a decision with your view; a second person must decide it.")
+    return None
+
+
 def decide_work_item(
     db: Session, item: WorkItem, *, user_id: uuid.UUID, user_role: str, decision: str, reason: str = "",
 ) -> WorkItem:
     """Record a person's decision on an exception, then let the cycle move on."""
-    from app.core.roles import Permission, can, require_second_person
-
-    if item.status != "open":
-        raise ValueError("this item has already been decided")
-    allowed = work_items.offered(item.item_type, item.allowed_decisions)
-    if decision not in allowed:
-        raise ValueError(f"{decision!r} is not one of the allowed decisions: {allowed}")
-    if not can(user_role, Permission(item.required_permission)):
-        raise PermissionError(f"your role cannot decide this item ({item.required_permission})")
-    extra = DECISION_PERMISSIONS.get((item.item_type, decision))
-    if extra is not None and not can(user_role, Permission(extra)):
-        raise PermissionError(f"your role cannot take the decision {decision!r} on this item ({extra})")
+    refusal = decision_refusal(db, item, user_id=user_id, user_role=user_role, decision=decision, reason=reason or "")
+    if refusal is not None:
+        raise refusal
     reason = (reason or "").strip()
-    if needs_reason(item.item_type, decision) and not reason:
-        raise ValueError("this decision needs a reason")
-    if item.requires_second_person:
-        require_second_person(item.prepared_by_id, user_id)
     # The decision is recorded first and its hook runs second, inside one savepoint. A hook that
     # refuses undoes the record. A hook that finds the problem still there raises a fresh item,
     # instead of being handed back the very item that is being closed.

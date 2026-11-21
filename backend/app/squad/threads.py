@@ -18,22 +18,24 @@ from app.domain.work_items import offered
 from app.squad import rules
 from app.squad.words import decision_words, question_choice
 
-RANK = {"document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4, "handoff": 5, "decision": 6}
+RANK = {"document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4,
+        "handoff": 5, "returned": 5, "attached": 5, "decision": 6}
 REPORT_TEXT_KEYS = ("narrative", "summary", "explanation")  # an agent's written output, with {{fact:…}} references
 
 
 EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
 
 
-def _sort_key(m: dict[str, Any]) -> tuple[datetime, int, str]:
-    """Order by the second, then by how a case unfolds. A message without a timestamp sorts first."""
+def _sort_key(m: dict[str, Any]) -> tuple[datetime, int, int, str]:
+    """Order by the second, then by how a case unfolds, then by ledger sequence (one transaction writes many
+    events in the same second: lesson latest-means-a-sequence-not-a-timestamp)."""
     try:
         ts = datetime.fromisoformat(m["ts"]).replace(microsecond=0)
     except (KeyError, TypeError, ValueError):
         ts = EPOCH
     if ts.tzinfo is None:
         ts = ts.replace(tzinfo=UTC)
-    return ts, RANK[m["type"]], m["id"]
+    return ts, RANK[m["type"]], int(m.get("seq") or 0), m["id"]
 
 
 def _names(db: Session) -> dict[str, str]:
@@ -86,32 +88,48 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
     question_ids = {str(i.id) for i in items if i.item_type == "question"}  # their answer is the ask's choice
     item_ids = [str(i.id) for i in items]
     for i in items:
+        needs_you = viewer is not None and rules.needs(viewer, i, borrower)
+        words = rules.state_words(i, names, borrower) if i.status == "open" else ""
         if i.item_type == "question":
             options = (i.evidence or {}).get("options", [])
             messages.append({"id": f"ask:{i.id}", "type": "ask", "ts": _iso(i.created_at), "work_item_id": str(i.id),
                              "title": i.title, "question": i.question, "options": options, "status": i.status,
                              "choice": question_choice(i.evidence, i.decision),
-                             "chosen_by": names.get(str(i.decided_by)) if i.decided_by else None})
+                             "chosen_by": names.get(str(i.decided_by)) if i.decided_by else None,
+                             "needs_you": needs_you, "state_words": words})
         else:
             messages.append({"id": f"case:{i.id}", "type": "case", "ts": _iso(i.created_at), "work_item_id": str(i.id),
                              "item_type": i.item_type, "title": i.title, "question": i.question,
                              "severity": i.severity, "status": i.status,
                              "allowed_decisions": offered(i.item_type, i.allowed_decisions),
-                             # the briefing's own rule, for this viewer: the count and the button never disagree
-                             "needs_you": viewer is not None and rules.can_act(viewer, i, borrower),
-                             "state_words": rules.state_words(i, names) if i.status == "open" else ""})
+                             "needs_you": needs_you, "state_words": words})
 
     for e in _events(db, "work_item.decided", item_ids):
         if e.entity_id in question_ids:
             continue
         p = e.payload or {}
-        messages.append({"id": f"decision:{e.seq}", "type": "decision", "ts": _iso(e.ts), "work_item_id": e.entity_id,
-                         "decision": p.get("decision"), "decision_words": decision_words(p.get("decision")), "reason": p.get("reason", ""),
+        messages.append({"id": f"decision:{e.seq}", "type": "decision", "seq": e.seq, "ts": _iso(e.ts),
+                         "work_item_id": e.entity_id, "decision": p.get("decision"),
+                         "decision_words": decision_words(p.get("decision")), "reason": p.get("reason", ""),
                          "by": names.get(e.actor_id, e.actor_id), "by_id": e.actor_id})
-    for e in _events(db, "work_item.assigned", item_ids):
-        to = (e.payload or {}).get("assigned_to")
-        messages.append({"id": f"handoff:{e.seq}", "type": "handoff", "ts": _iso(e.ts), "work_item_id": e.entity_id,
-                         "assigned_to": names.get(str(to)) if to else None, "assigned_to_id": to,
+    for e in [*_events(db, "work_item.assigned", item_ids), *_events(db, "work_item.routed", item_ids)]:
+        p = e.payload or {}
+        to = p.get("assigned_to")
+        messages.append({"id": f"handoff:{e.seq}", "type": "handoff", "seq": e.seq, "ts": _iso(e.ts),
+                         "work_item_id": e.entity_id, "assigned_to": names.get(str(to)) if to else None,
+                         "assigned_to_id": to, "by": names.get(e.actor_id, e.actor_id), "view": p.get("view")})
+    for e in _events(db, "work_item.returned", item_ids):
+        p = e.payload or {}
+        to = p.get("returned_to")
+        messages.append({"id": f"returned:{e.seq}", "type": "returned", "seq": e.seq, "ts": _iso(e.ts),
+                         "work_item_id": e.entity_id, "reason": p.get("reason", ""),
+                         "by": names.get(e.actor_id, e.actor_id), "to": names.get(str(to)) if to else None})
+    titles = {str(d.id): d.title for d in docs}
+    for e in _events(db, "work_item.evidence_attached", item_ids):
+        p = e.payload or {}
+        messages.append({"id": f"attached:{e.seq}", "type": "attached", "seq": e.seq, "ts": _iso(e.ts),
+                         "work_item_id": e.entity_id, "document_id": p.get("document_id"),
+                         "title": titles.get(str(p.get("document_id")), "A document"), "note": p.get("note", ""),
                          "by": names.get(e.actor_id, e.actor_id)})
 
     for run in db.execute(select(AgentRun).where(AgentRun.borrower_id == borrower_id, AgentRun.status == "completed",
