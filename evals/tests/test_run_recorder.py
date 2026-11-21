@@ -76,3 +76,21 @@ def test_a_wrong_note_is_a_covenant_outcome_disagreement(ferrogate):
     graded = grade_borrower(borrower, _with_runway(rec, note=None))
     assert any(d["kind"] == "covenant-outcome" and d["item"].startswith("min_runway_months")
                for d in graded["disagreements"])
+
+
+def test_a_wrong_certificate_figure_stored_for_a_held_figure_borrower_is_an_invented_number(engine, file_store):
+    """Stripple rests at spreading, so no certificate fact is expected; one stored anyway is still graded."""
+    book = load_book(BOOKS["innovation"], ["stripple-tech"])
+    borrower = book.get("stripple-tech")
+    with LoadedBorrower(engine, book, borrower) as loaded:
+        recording = loaded.run(lambda: StandInReader(book), decide=True)
+    clean = grade_borrower(borrower, recording)
+    assert clean["failures"] == [] and clean["disagreements"] == []
+    tampered = copy.deepcopy(recording)
+    donor = next(f for f in tampered["facts"] if f["status"] == "verified" and f["kind"] == "extracted")
+    from evals.grade import Truth
+    truth = Truth(borrower)
+    key = next(k for k in truth.expected_facts(every_figure=True) if k.endswith(".value") and k.startswith("cert."))
+    tampered["facts"].append({**donor, "key": key, "period_end": truth.end.isoformat(), "value": "123456789.000000"})
+    graded = grade_borrower(borrower, tampered)
+    assert [f["name"] for f in graded["failures"]] == ["invented-number"] and graded["failures"][0]["item"].startswith("cert.")

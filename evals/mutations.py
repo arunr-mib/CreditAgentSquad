@@ -53,6 +53,19 @@ def _bump(figure: str) -> str:
     return figure[:index] + str((int(figure[index]) + 1) % 10) + figure[index + 1:]
 
 
+# ---- as-of documents (MRR report, bank statement): the tamper reaches every spreading call, so it only changes
+# an answer that carries the line ----------------------------------------------------------------------
+
+
+def _bump_if_present(key: str) -> Callable[[Answer], Answer]:
+    def change(answer: Answer) -> Answer:
+        for cell in answer["cells"]:
+            if cell["key"] == key:
+                cell["printed_figure"] = _bump(cell["printed_figure"])
+        return answer
+    return change
+
+
 # ---- spreading -------------------------------------------------------------------------------
 
 
@@ -357,6 +370,7 @@ REPORTED_BREACH = "pellham-grain"  # fixed charge coverage fails and the certifi
 DOLLARS = "sablewood-dental"  # clean, statements in whole dollars
 HIDDEN_BREACH = "kestrel-bay-packaging"  # leverage fails; the certificate claims compliance
 
+CLEAN_VC = "mosswell-robotics"  # innovation book: clean, monthly MRR report and bank statements
 NOT_MEANINGFUL = "ferrogate-cloud"  # innovation book: cash-flow positive, its runway is "Not meaningful"
 
 MUTATIONS: tuple[Mutation, ...] = (
@@ -385,6 +399,8 @@ MUTATIONS: tuple[Mutation, ...] = (
     Mutation("cert-breach-read-as-passing-value", "the breaching covenant's reported value read as a passing one", REPORTED_BREACH, "certificate", breach_reported_as_a_passing_value),
     Mutation("cert-flag-from-the-next-row", "the compliance entry taken from a neighbouring row, with a label fragment found on every row", REPORTED_BREACH, "certificate", compliance_flag_from_the_next_row),
     Mutation("cert-runway-reported-as-a-number", "a not-meaningful runway reported with a figure", NOT_MEANINGFUL, "certificate", runway_reported_as_a_number, book="innovation"),
+    Mutation("mrr-figure-tampered", "the MRR report's figure with one digit wrong (it still parses)", CLEAN_VC, "spreading", _bump_if_present("saas.mrr"), book="innovation"),
+    Mutation("bank-balance-tampered", "the bank statement's unrestricted balance with one digit wrong", CLEAN_VC, "spreading", _bump_if_present("bank.cash_unrestricted"), book="innovation"),
     Mutation("cert-misread-threshold", "a threshold misread (1.05x read as 1.50x)", CLEAN_BB, "certificate", misread_threshold),
     Mutation("cert-threshold-from-another-row", "a threshold taken from another covenant's row", CLEAN_BB, "certificate", threshold_from_another_row),
     Mutation("cert-units-omitted", "the certificate's 'in thousands' phrase not reported", CLEAN_BB, "certificate", certificate_units_omitted),

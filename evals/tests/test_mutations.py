@@ -79,7 +79,10 @@ EXPECTED = {
     "bb-contra-note-and-lines-dropped": "product",
     "bb-letters-of-credit-from-an-empty-row": "product",
     "cert-runway-reported-as-a-number": "grader",  # innovation book; see its own test below
+    "mrr-figure-tampered": "product and grader",  # innovation book; see its own test below
+    "bank-balance-tampered": "product and grader",
 }
+INNOVATION = {"cert-runway-reported-as-a-number", "mrr-figure-tampered", "bank-balance-tampered"}
 
 
 @pytest.fixture(scope="module")
@@ -110,7 +113,7 @@ def test_nothing_slips_through_both_the_product_and_the_grader(outcomes):
     assert [n for n, o in outcomes.items() if o["caught_by"] == "SLIPPED"] == []
 
 
-@pytest.mark.parametrize("name", sorted(set(EXPECTED) - {"cert-runway-reported-as-a-number"}))
+@pytest.mark.parametrize("name", sorted(set(EXPECTED) - INNOVATION))
 def test_mutation_is_caught_where_expected(outcomes, name):
     assert outcomes[name]["caught_by"] == EXPECTED[name], outcomes[name]["evidence"]
 
@@ -143,3 +146,13 @@ def test_a_mis_mapped_debt_row_can_no_longer_hide_a_breach(outcomes):
     assert "spread.value_unverified" in outcome["new_work_items"] and outcome["product"] is True
     assert "false-compliant" not in outcome["grader_names"]
     assert "invented-number" not in outcome["grader_names"]
+
+
+def test_a_tampered_mrr_figure_and_bank_balance_are_refused_by_the_product(engine, file_store):
+    from evals.book import BOOKS
+    book = load_book(BOOKS["innovation"], ["mosswell-robotics"])
+    for outcome in run_mutations(engine, book, ["mrr-figure-tampered", "bank-balance-tampered"]):
+        assert outcome["applied"] and not outcome["error"], outcome
+        assert outcome["product"], outcome["evidence"]  # the grader also notes the signals the held cycle never reached
+        assert "spread.value_unverified" in outcome["new_work_items"], outcome["evidence"]
+        assert "invented-number" not in outcome["grader_names"], outcome["name"]

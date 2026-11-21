@@ -130,14 +130,19 @@ class Truth:
 
     # -- expected extracted facts: {fact key: (value, period_end iso, document file)} --
 
-    def expected_facts(self) -> dict[str, tuple[Decimal, str, str]]:
+    def expected_facts(self, *, every_figure: bool = False) -> dict[str, tuple[Decimal, str, str]]:
+        """The facts the cycle should have stored. `every_figure` ignores what the scenario says the cycle
+        never reaches or holds: a figure the book prints is still graded if one is stored, wherever it is."""
+        halted = self.halted and not every_figure
+        stops_at_spreading = self.holds_figures and not every_figure
         out: dict[str, tuple[Decimal, str, str]] = {}
         s = self.statements
         # a statement with an image-only page is not spread at all (the product asks a person
         # first), so none of its figures are expected; any it does store are still graded
-        if s is not None and "spread.image_only" not in self.b.expected_exception_types():
+        if s is not None and (
+                "spread.image_only" not in self.b.expected_exception_types() or every_figure):
             file, scale = Path(s["path"]).name, Decimal(s.get("scale", 1))
-            held = self.held
+            held = set() if every_figure else self.held
             for key in s["figures"]:
                 if key in held:
                     continue
@@ -146,14 +151,14 @@ class Truth:
                 prior = (s.get("comparative_printed") or {}).get(key)
                 if prior is not None and s.get("comparative_period_end"):
                     out[name + COMPARATIVE] = (self._printed(key, prior, scale), s["comparative_period_end"], file)
-        if not self.halted:
+        if not halted:
             for d in self.docs:
                 if d["type"] in ("mrr_report", "bank_statement") and "figures" in d:
                     file, scale = Path(d["path"]).name, Decimal(d.get("scale", 1))
                     for key, figure in d["figures"].items():
                         name = BANK_KEYS.get(key, key) if d["type"] == "bank_statement" else key
                         out[name] = (self._printed(key, figure["printed"], scale), d["period_end"], file)
-        if self.halted or self.holds_figures:
+        if halted or stops_at_spreading:
             return out  # the cycle stops at intake or spreading; the other documents are not read
         if self.cert is not None:
             file = self._file("compliance_certificate")
@@ -202,7 +207,7 @@ class Truth:
     def value_for(self, fact: dict[str, Any]) -> Decimal | None:
         """The true value for this fact's key and period, or None when the book holds none."""
         key, end = fact["key"], fact["period_end"]
-        expected = self.expected_facts().get(key)
+        expected = self.expected_facts(every_figure=True).get(key)
         if expected is not None and expected[1] == end:
             return expected[0]
         base = key[len(STATED):] if key.startswith(STATED) else key
@@ -369,6 +374,9 @@ def grade_borrower(borrower: Borrower, rec: dict[str, Any]) -> dict[str, Any]:
                     fact["label"] and squash(fact["label"]) not in text):
                 fail("wrong-citation", label, f"{fact['document']} page {fact['page']} does not print "
                                               f"{fact['quote']!r} with the label {fact['label']!r}")
+            if base in truth.held and fact["period_end"] == end and COMPARATIVE not in fact["key"]:
+                fail("missed-abstain", label, "the book expects this figure held for a person; the product stored it "
+                                              "as verified")
             if base in unreadable and fact["period_end"] == end and COMPARATIVE not in fact["key"]:
                 fail("missed-abstain", label, "the truth says this line cannot be read in the document received")
         if true_value is None:

@@ -51,3 +51,16 @@ def test_figures_the_book_says_are_held_for_a_person_are_not_expected_as_stored_
     assert not [k for k in expected if k.startswith("cert.")]
     tide = Truth(load_book(BOOKS["innovation"], ["tidewell-medical"]).get("tidewell-medical"))
     assert tide.held == set() and any(k.startswith("cert.") for k in tide.expected_facts())
+
+
+def test_a_certificate_figure_stored_for_a_held_figure_borrower_is_graded_not_ungraded():
+    """Stripple's cycle rests at spreading, so the certificate is not expected; a certificate or held figure that
+    is stored anyway still has a true value, so a wrong one is an invented-number and never 'ungraded'."""
+    stripple = Truth(load_book(BOOKS["innovation"], ["stripple-tech"]).get("stripple-tech"))
+    end = stripple.end.isoformat()
+    cert_key = next(iter(k for k in stripple.expected_facts(every_figure=True) if k.startswith("cert.")))
+    assert cert_key not in stripple.expected_facts()
+    fact = {"key": cert_key, "period_end": end}
+    assert stripple.value_for(fact) == stripple.expected_facts(every_figure=True)[cert_key][0]
+    held = next(iter(stripple.held))
+    assert stripple.value_for({"key": held, "period_end": end}) is not None

@@ -63,7 +63,7 @@ def test_the_only_differences_from_the_truth_are_the_listed_known_findings(suite
     assert differences(suite) == known
 
 
-def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none(suite, book_name):
+def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none(suite, book_root):
     known = {(k["borrower"], k["item"]) for k in load_known_findings() if k["name"].endswith("-exception")}
     problems = []
     for code, graded in suite["borrowers"].items():
@@ -73,16 +73,17 @@ def test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_
             problems.append((code, graded["scenario"], sorted(unexplained)))
     assert problems == []
     clean = [g for g in suite["borrowers"].values() if g["scenario"] == "clean"]
-    assert len(clean) == {"legacy": 8, "innovation": 7}[book_name]
+    assert len(clean) == len([b for b in load_book(book_root) if b.scenario == "clean"]) > 0
 
 
-def test_every_expected_fact_was_extracted_and_equals_the_truth(suite, book_name):
+def test_every_expected_fact_was_extracted_and_equals_the_truth(suite, book_root):
     known = {k["borrower"] for k in load_known_findings() if k["name"] == "extraction-incomplete"}
     for code, graded in suite["borrowers"].items():
         extraction = graded["extraction"]
         if code not in known:
             assert extraction["correct"] == extraction["expected"], (code, extraction)
-    assert suite["metrics"]["extraction_facts_expected"] > {"legacy": 2500, "innovation": 1500}[book_name]
+    from evals.grade import Truth
+    assert suite["metrics"]["extraction_facts_expected"] == sum(len(Truth(b).expected_facts()) for b in load_book(book_root)) > 1000
 
 
 def test_everything_the_stand_in_produced_is_labelled_as_stand_in(suite):
@@ -156,3 +157,13 @@ def test_the_scenarios_raise_exactly_what_the_book_expects(suite, book_name):
     assert "funding_slipped" in raised["nimbusfield-security"]
     assert "intake.unclassified" in raised["stripple-tech"] and "spread.value_unverified" in raised["stripple-tech"]
     assert raised["ferrogate-cloud"] == set()  # compliant, runway "not meaningful", nothing raised
+
+
+def test_scorecard_says_why_covenant_accuracy_is_below_100_percent(suite):
+    body = render_markdown(json.loads(json.dumps(suite)))
+    unreached = {c: [n for n in g["not_reached"] if n.startswith("covenant test")] for c, g in suite["borrowers"].items()}
+    unreached = {c: n for c, n in unreached.items() if n}
+    if not unreached:
+        assert "Covenant tests not reached" not in body
+    for code, names in unreached.items():
+        assert "## Covenant tests not reached" in body and f"`{code}`: {len(names)} covenant test(s) not reached" in body

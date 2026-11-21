@@ -137,6 +137,25 @@ def render_markdown(results: dict[str, Any]) -> str:
             out.append(f"| `{code}` | {name} | {_cell(item)} | {_cell(detail)[:260]} | {_cell(note)[:200]} |")
     out.append("")
 
+    unreached = [(code, g) for code, g in results["borrowers"].items()
+                 if any(n.startswith("covenant test") for n in g.get("not_reached", []))]
+    if unreached:
+        out.append("## Covenant tests not reached")
+        out.append("")
+        out.append("These tests were not run because the cycle correctly rests on an item a person must settle first. "
+                   "They stay in the covenant accuracy denominator and count as not correct, so accuracy is below "
+                   "100 percent for this reason alone; they are not failures.")
+        out.append("")
+        for code, g in unreached:
+            n = sum(1 for x in g["not_reached"] if x.startswith("covenant test"))
+            last = (g.get("stops") or [{}])[-1]
+            items = ", ".join(sorted({i["type"] for i in last.get("open_items", [])})) or "an open item"
+            held = len(g.get("held_cells", []))
+            why = f" on {held} figure(s) held for a person" if held else ""
+            out.append(f"- `{code}`: {n} covenant test(s) not reached. The cycle rests at {g['stage_reached']} "
+                       f"({items}){why}; counted as not correct.")
+        out.append("")
+
     stops = [(code, s) for code, g in results["borrowers"].items() for s in g.get("stops", [])]
     if stops:
         out.append("## Where a person was needed")
