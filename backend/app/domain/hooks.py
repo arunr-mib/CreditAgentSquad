@@ -150,7 +150,10 @@ def on_spread_decision(db, item, user, decision: str, reason: str) -> None:
         return
     if decision in ("in_thousands", "in_dollars", "retry"):
         override = {"in_thousands": 1000, "in_dollars": 1}.get(decision)
-        _back_to_pending(db, item, "spreading", user, **({"scale_override": override} if override else {}))
+        # the answer belongs to this one document, never to the other documents the stage reads
+        key = f"scale_override:{document.id}" if override and document else None
+        again = {f"retry:{document.id}": True} if document and not override else {}
+        _back_to_pending(db, item, "spreading", user, **({key: override} if key else {}), **again)
         return
     if decision == "key_by_hand":
         # the figures are keyed through the facts route in whole dollars, and nothing is taken as

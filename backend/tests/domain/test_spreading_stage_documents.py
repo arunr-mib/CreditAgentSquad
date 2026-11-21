@@ -115,3 +115,64 @@ def test_running_the_stage_again_does_not_read_a_read_document_again(live_cycle_
     before = count()
     stages.spreading_stage(db, cycle, st)
     assert before >= 1 and count() == before
+
+
+def _spy(monkeypatch):
+    from app.agents import spreading
+    calls = []
+    real = spreading.spread_document
+
+    def spy(db, **kw):
+        calls.append((kw["document"].doc_type, kw.get("scale_override")))
+        return real(db, **kw)
+    monkeypatch.setattr(spreading, "spread_document", spy)
+    return calls
+
+
+def _stage(db, cycle):
+    return next(s for s in workflow.stages(db, cycle) if s.stage == "spreading")
+
+
+def test_a_units_answer_for_the_mrr_report_does_not_rescale_the_pack(live_cycle_for, monkeypatch):
+    db, cycle = live_cycle_for("tidewell-medical")
+    _settle(db, cycle)
+    st = _stage(db, cycle)
+    mrr = stages._documents(db, cycle, "mrr_report")[0]
+    calls = _spy(monkeypatch)
+    st.detail = {**st.detail, f"scale_override:{mrr.id}": 1000}
+    stages.spreading_stage(db, cycle, st)
+    assert calls == [("mrr_report", 1000)]  # the pack is settled and not read again; the bank statement is not asked
+    assert f"scale_override:{mrr.id}" not in st.detail  # carried out once, then forgotten
+    calls.clear()
+    stages.spreading_stage(db, cycle, st)
+    assert calls == []  # a later run of the stage re-reads (and re-bills) nothing
+
+
+def test_a_units_answer_for_the_pack_does_not_rescale_the_mrr_report(live_cycle_for, monkeypatch):
+    db, cycle = live_cycle_for("tidewell-medical")
+    _settle(db, cycle)
+    st = _stage(db, cycle)
+    pack = stages._documents(db, cycle, stages.statements_wanted(cycle, db.get(Borrower, cycle.borrower_id)))[-1]
+    calls = _spy(monkeypatch)
+    st.detail = {**st.detail, f"scale_override:{pack.id}": 1000}
+    stages.spreading_stage(db, cycle, st)
+    assert calls and all(scale == 1000 for kind, scale in calls if kind not in ("mrr_report", "bank_statement"))
+    assert [c for c in calls if c[0] in ("mrr_report", "bank_statement")] == []
+
+
+def test_the_units_decision_keys_the_answer_by_document(live_cycle_for):
+    """The hook files the answer under the item's own document, not the stage as a whole."""
+    from app.domain.documents import Document
+    from app.domain.hooks import on_spread_decision
+    db, cycle = live_cycle_for("tidewell-medical")
+    _settle(db, cycle)
+    mrr = db.execute(select(Document).where(Document.borrower_id == cycle.borrower_id,
+                                            Document.doc_type == "mrr_report")).scalars().first()
+    user = db.execute(select(User)).scalars().first()
+    item = WorkItem(borrower_id=cycle.borrower_id, cycle_id=cycle.id, stage="spreading", item_type="spread.scale_conflict",
+                    severity="high", title="units", question="units?", evidence={"document_id": str(mrr.id)}, status="open")
+    db.add(item)
+    db.flush()
+    on_spread_decision(db, item, user, "in_thousands", "")
+    detail = _stage(db, cycle).detail
+    assert detail.get(f"scale_override:{mrr.id}") == 1000 and "scale_override" not in detail

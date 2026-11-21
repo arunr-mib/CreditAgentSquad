@@ -116,23 +116,30 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
         return "waiting"
     prior_end = prior_fiscal_year_end(cycle.period_end, borrower.fiscal_year_end_month)
     prior_cash = current_fact(db, borrower.id, template.cash_roll_keys(borrower.template_id)[1], prior_end, 0)
-    result = spreading.spread_document(
-        db, borrower=borrower, document=documents[-1], period_end=cycle.period_end, months=cycle.months,
-        cycle=cycle, llm=_llm(), prior_fye_cash=prior_cash.value if prior_cash else None,
-        scale_override=st.detail.get("scale_override"))
-    st.detail = {**st.detail, "status": result.status, "run_id": str(result.run_id) if result.run_id else None,
-                 "unverified": len(result.unverified), "failed_checks": len(result.failed_checks)}
-    if result.status == "spread":
-        _review_reading(db, cycle, borrower, documents[-1], "spreading", "financial statements", result.run_id)
+    pack = documents[-1]
+    # a person's units answer belongs to the one document it was given for (`scale_override:<document_id>`);
+    # a pack whose figures are all verified or confirmed is not read again unless a person asked for it
+    if _asked_again(st, pack) or not _facts_all_settled(db, pack):
+        result = spreading.spread_document(
+            db, borrower=borrower, document=pack, period_end=cycle.period_end, months=cycle.months,
+            cycle=cycle, llm=_llm(), prior_fye_cash=prior_cash.value if prior_cash else None,
+            scale_override=st.detail.get(f"scale_override:{pack.id}"))
+        _consume_request(st, pack)
+        st.detail = {**st.detail, "status": result.status, "run_id": str(result.run_id) if result.run_id else None,
+                     "unverified": len(result.unverified), "failed_checks": len(result.failed_checks)}
+        if result.status == "spread":
+            _review_reading(db, cycle, borrower, pack, "spreading", "financial statements", result.run_id)
     # an MRR report and a bank statement share no inputs with the pack: each is read in its own call, whatever
-    # became of the pack, and any item it raises blocks the stage on its own. A document already read (every
-    # fact on file is verified or confirmed) is not read again when the stage runs again.
+    # became of the pack, and any item it raises blocks the stage on its own. A document is read once per stage
+    # run (the read is marked in the stage detail, even when it stored nothing or only proposed figures) and
+    # again only when a person asked for it.
     for extra in _documents(db, cycle, "mrr_report", "bank_statement"):
-        if _already_read(db, extra):
+        if _already_read(db, st, extra):
             continue
         extra_result = spreading.spread_document(
             db, borrower=borrower, document=extra, period_end=cycle.period_end, months=cycle.months,
-            cycle=cycle, llm=_llm(), prior_fye_cash=None, scale_override=st.detail.get("scale_override"))
+            cycle=cycle, llm=_llm(), prior_fye_cash=None, scale_override=st.detail.get(f"scale_override:{extra.id}"))
+        _consume_request(st, extra)
         st.detail = {**st.detail, f"read_{extra.doc_type}_{extra.id}": extra_result.status}
         if extra_result.status == "spread":
             what = "MRR report" if extra.doc_type == "mrr_report" else "bank statement"
@@ -140,10 +147,33 @@ def spreading_stage(db: Session, cycle: Cycle, st: CycleStage) -> str:
     return "done"
 
 
-def _already_read(db: Session, document: Document) -> bool:
+def _asked_again(st: CycleStage, document: Document) -> bool:
+    """A person answered a units question for this document or asked for it to be read again."""
+    return st.detail.get(f"scale_override:{document.id}") is not None or bool(st.detail.get(f"retry:{document.id}"))
+
+
+def _consume_request(st: CycleStage, document: Document) -> None:
+    """The request is carried out by the read that follows it; the stage detail forgets it, so a later run of the
+    stage does not read (and bill) the document a second time."""
+    st.detail = {k: v for k, v in st.detail.items() if k not in (f"scale_override:{document.id}", f"retry:{document.id}")}
+
+
+def _facts_all_settled(db: Session, document: Document) -> bool:
     facts = list(db.execute(select(Fact.status).where(
         Fact.document_id == document.id, Fact.status != "rejected", Fact.status != "superseded")).scalars())
     return bool(facts) and all(status in ("verified", "confirmed") for status in facts)
+
+
+def _already_read(db: Session, st: CycleStage, document: Document) -> bool:
+    if _asked_again(st, document):
+        return False
+    return (_facts_all_settled(db, document) or st.detail.get(f"read_{document.doc_type}_{document.id}") is not None
+            or _has_facts(db, document))
+
+
+def _has_facts(db: Session, document: Document) -> bool:
+    return db.execute(select(Fact.id).where(Fact.document_id == document.id, Fact.status != "rejected",
+                                            Fact.status != "superseded").limit(1)).first() is not None
 
 
 @workflow.stage_handler("covenant_testing")
