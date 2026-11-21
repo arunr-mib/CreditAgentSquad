@@ -87,3 +87,8 @@ Each has the decision taken in the meantime; overrule any and I'll rework.
 9. **Sign the new answer key.** `synthetic/books/innovation/oracle.csv` has 107 rows: 91 unsigned (63 plus 28 expected signals: covenant tests, funding events, expected exceptions and current-period signals for the 16 innovation clients) and 16 signed (the four kept borrowers' v1 rows, unchanged). It will arrive as one short table (standing approval 3).
 10. **Lumora's October tests are `cannot_test`.** Lumora's October package is late (the scenario is "October reporting 12 days late"), so the October covenant tests have no figures and the key records `cannot_test`, with `intake.missing_document` exceptions for the missing bank statements and MRR report. *Taken: as stated.* Overrule if you would rather the repaired pack test cleanly.
 11. **Runway falling is stricter.** Runway falling now means losing more than one month of runway per month for three months (faster than the calendar), with four meaningful runway readings; it fires for Brightvane only. Before, any three-month decline fired, which is true of almost every startup that is burning cash. *Taken by the controller; overrule if you meant any decline.* The answer key lost three unsigned rows (Dataflake, Nimbusfield, Tidewell).
+
+## Sign the answer key (Phase 3)
+
+The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low severity) is in `docs/owner-signoff-2026-11-21.md`, with the rulings to know while signing. Signing is required before the live pass, and nothing live runs until you also say go on the cost estimate.
+
