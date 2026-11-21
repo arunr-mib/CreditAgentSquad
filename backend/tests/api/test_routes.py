@@ -376,3 +376,25 @@ def test_a_spreadsheet_is_served_as_an_attachment_with_its_own_media_type(client
     assert file.headers["content-type"].startswith("text/csv")
     assert file.headers["content-disposition"].startswith("attachment")
     get_settings.cache_clear()
+
+
+def test_a_file_name_outside_latin_1_or_with_a_quote_cannot_break_the_download_header(client, world, tmp_path, monkeypatch):
+    from urllib.parse import unquote
+
+    from app.api.disposition import content_disposition
+    from app.core.config import get_settings
+
+    name = 'Bilan — 月次 "Q3".csv'
+    header = content_disposition("attachment", name)
+    header.encode("latin-1")  # a header value must be Latin-1 clean
+    assert header.startswith('attachment; filename="') and header.count('"') == 2 and "filename*=UTF-8''" in header
+    assert unquote(header.split("filename*=UTF-8''")[1]) == name
+    monkeypatch.setenv("FILE_STORE_DIR", str(tmp_path))
+    get_settings.cache_clear()
+    borrower, _ = world
+    sign_in(client, "priya.raman")
+    up = client.post(f"/api/v1/borrowers/{borrower.id}/documents", files={"file": (name, b"Month,MRR\n2025-01,100\n")})
+    assert up.status_code == 201
+    file = client.get(f"/api/v1/documents/{up.json()['id']}/file")
+    assert file.status_code == 200 and "filename*=UTF-8''" in file.headers["content-disposition"]
+    get_settings.cache_clear()

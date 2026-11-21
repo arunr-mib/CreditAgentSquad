@@ -176,3 +176,25 @@ def test_the_units_decision_keys_the_answer_by_document(live_cycle_for):
     on_spread_decision(db, item, user, "in_thousands", "")
     detail = _stage(db, cycle).detail
     assert detail.get(f"scale_override:{mrr.id}") == 1000 and "scale_override" not in detail
+
+
+def test_an_extra_that_stored_only_proposed_figures_or_none_is_not_read_and_billed_again(live_cycle_for, monkeypatch):
+    from sqlalchemy import update
+    db, cycle = live_cycle_for("tidewell-medical")
+    _settle(db, cycle)
+    st = _stage(db, cycle)
+    mrr = stages._documents(db, cycle, "mrr_report")[0]
+    bank = stages._documents(db, cycle, "bank_statement")[0]
+    # the MRR report's figures are held (proposed); the bank statement stored nothing (its facts are rejected)
+    db.execute(update(Fact).where(Fact.document_id == mrr.id).values(status="proposed"))
+    db.execute(update(Fact).where(Fact.document_id == bank.id).values(status="rejected"))
+    db.flush()
+    calls = _spy(monkeypatch)
+    stages.spreading_stage(db, cycle, st)
+    assert calls == []  # the stage already read both once; nothing asks for a retry
+    # a person's retry request reads that one document again, once
+    st.detail = {**st.detail, f"retry:{mrr.id}": True}
+    stages.spreading_stage(db, cycle, st)
+    assert [c[0] for c in calls] == ["mrr_report"]
+    stages.spreading_stage(db, cycle, st)
+    assert [c[0] for c in calls] == ["mrr_report"]

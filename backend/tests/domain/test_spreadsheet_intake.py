@@ -235,3 +235,21 @@ def test_keyed_certificate_figures_are_required_before_the_decision_is_accepted(
     hooks, doc, item, user = _sheet_item(db, borrower, "covenant_testing", "compliance_certificate")
     with pytest.raises(ValueError, match="cycle|keyed"):
         hooks.on_spreadsheet_decision(db, item, user, "key_by_hand", "keyed")
+
+
+def test_empty_cells_that_are_iterated_count_against_a_cap(monkeypatch):
+    from app.domain import spreadsheets
+
+    def wide(wb):
+        wb.active["A1"] = "x"
+        wb.active["J50"] = "y"  # 500 cells iterated, 2 filled
+    data = _workbook(wide)
+    assert spreadsheet_pages(data, "w.xlsx")  # fine under the real cap
+    monkeypatch.setattr(spreadsheets, "MAX_ITERATED_CELLS", 100)
+    with pytest.raises(spreadsheets.SpreadsheetRefused, match="cells"):
+        spreadsheet_pages(data, "w.xlsx")
+
+
+def test_openpyxl_parses_workbooks_with_defusedxml():
+    import openpyxl.xml
+    assert openpyxl.xml.DEFUSEDXML is True

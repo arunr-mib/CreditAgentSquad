@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import current_user, require
+from app.api.disposition import content_disposition
 from app.api.serialize import row
 from app.core import clock
 from app.core.db import get_db
@@ -108,7 +109,7 @@ def download_file(package_id: uuid.UUID, name: str, db: Session = Depends(get_db
     if entry is None or not Path(entry["path"]).exists():
         raise HTTPException(404, "File not found.")
     return Response(Path(entry["path"]).read_bytes(), media_type=service.MEDIA_TYPES[entry["format"]],
-                    headers={"Content-Disposition": f'attachment; filename="{entry["name"]}"',
+                    headers={"Content-Disposition": content_disposition("attachment", entry["name"]),
                              "X-Content-SHA256": entry["sha256"]})
 
 

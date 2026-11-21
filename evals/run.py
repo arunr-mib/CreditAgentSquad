@@ -67,6 +67,15 @@ DECISIONS: dict[str, tuple[str, str]] = {
     "spread.restatement": ("ask_borrower", "The comparative column differs from the confirmed spread; the borrower is asked to confirm the restatement."),
     "review.commentary_approval": ("approve", "Stand-in commentary approved so the scripted cycle can run to its close."),
 }
+
+def _is_sheet_item(db, item) -> bool:
+    """The unclassified document behind this item is a spreadsheet."""
+    from app.domain.documents import Document
+    ref = (item.evidence or {}).get("document_id")
+    doc = db.get(Document, uuid.UUID(ref)) if ref else None
+    return doc is not None and (doc.meta or {}).get("format") in ("xlsx", "csv")
+
+
 ROLE_ORDER = ("analyst", "portfolio_manager", "credit_officer", "credit_admin")
 
 
@@ -258,6 +267,8 @@ class LoadedBorrower:
                 scripted = DECISIONS.get(item.item_type)
                 if scripted is None or scripted[0] not in item.allowed_decisions:
                     continue
+                if item.item_type == "intake.unclassified" and not _is_sheet_item(db, item):
+                    continue  # the scripted answer is true of a spreadsheet export only; any other document is left
                 user = _decider(db, item.required_permission, deciders)
                 entry = {"type": item.item_type, "decision": scripted[0], "by_role": user.role, "error": None}
                 try:

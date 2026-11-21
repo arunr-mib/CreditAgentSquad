@@ -14,6 +14,7 @@ MAX_SHEETS = 50
 MAX_ROWS = 20_000
 MAX_COLUMNS = 200
 MAX_LINES = 200_000
+MAX_ITERATED_CELLS = 2_000_000  # every cell walked, empty or not: a sheet of blanks costs time, not lines
 MAX_UNCOMPRESSED = 100 * 1024 * 1024
 NOT_CALCULATED = "(formula, not calculated)"
 
@@ -48,9 +49,11 @@ def _is_formula(value) -> bool:
     return isinstance(value, str) and value.startswith("=") and len(value) > 1
 
 
-def _rows_to_page(name: str, rows, formulas=None, budget: list[int] | None = None) -> SheetPage:
+def _rows_to_page(name: str, rows, formulas=None, budget: list[int] | None = None,
+                  walked: list[int] | None = None) -> SheetPage:
     page = SheetPage(name)
     budget = budget if budget is not None else [MAX_LINES]
+    walked = walked if walked is not None else [MAX_ITERATED_CELLS]
     for r, row in enumerate(rows, start=1):
         if r > MAX_ROWS:
             raise SpreadsheetRefused(f"Sheet {name!r} has more than {MAX_ROWS:,} rows.")
@@ -58,6 +61,10 @@ def _rows_to_page(name: str, rows, formulas=None, budget: list[int] | None = Non
         formula_row = list(next(formulas)) if formulas is not None else []
         if len(row) > MAX_COLUMNS:
             raise SpreadsheetRefused(f"Sheet {name!r} has more than {MAX_COLUMNS} columns.")
+        walked[0] -= len(row)
+        if walked[0] < 0:
+            raise SpreadsheetRefused(f"The spreadsheet has more than {MAX_ITERATED_CELLS:,} cells to read, empty ones "
+                                     "included.")
         label_at = next((i for i, v in enumerate(row) if isinstance(v, str) and v.strip()), None)
         label = _text(row[label_at]) if label_at is not None else ""
         for c, value in enumerate(row):
@@ -117,9 +124,9 @@ def spreadsheet_pages(data: bytes, file_name: str) -> list[SheetPage]:
                 raise SpreadsheetRefused(f"Sheet {ws.title!r} has more than {MAX_COLUMNS} columns.")
         formulas = load_workbook(io.BytesIO(data), data_only=False, read_only=True)
         try:
-            budget = [MAX_LINES]
+            budget, walked = [MAX_LINES], [MAX_ITERATED_CELLS]
             return [_rows_to_page(ws.title, ws.iter_rows(values_only=True),
-                                  formulas[ws.title].iter_rows(values_only=True), budget) for ws in sheets]
+                                  formulas[ws.title].iter_rows(values_only=True), budget, walked) for ws in sheets]
         finally:
             formulas.close()
     finally:

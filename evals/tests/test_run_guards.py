@@ -160,3 +160,23 @@ def test_a_billable_run_reads_the_oracle_of_the_book_it_runs(monkeypatch):
     check_may_start("live", ["x"], confirm_billable=True, out=io.StringIO(), oracle=oracle_for(BOOKS["legacy"]))
     check_may_start("live", ["x"], confirm_billable=True, out=io.StringIO(), oracle=oracle_for(DEFAULT_BOOK))
     assert seen == [oracle_for(BOOKS["legacy"]), oracle_for(DEFAULT_BOOK)]
+
+
+def test_the_scripted_not_needed_answer_is_for_a_spreadsheet_export_only():
+    """`intake.unclassified` is set aside by script only when its document is a spreadsheet."""
+    from types import SimpleNamespace
+
+    from evals.run import _is_sheet_item
+
+    class Db:
+        def __init__(self, fmt):
+            self.doc = SimpleNamespace(meta={"format": fmt})
+
+        def get(self, model, ident):
+            return self.doc
+
+    import uuid
+    item = SimpleNamespace(evidence={"document_id": str(uuid.uuid4())})
+    assert _is_sheet_item(Db("xlsx"), item) and _is_sheet_item(Db("csv"), item)
+    assert not _is_sheet_item(Db(None), item)
+    assert not _is_sheet_item(Db("pdf"), SimpleNamespace(evidence={}))

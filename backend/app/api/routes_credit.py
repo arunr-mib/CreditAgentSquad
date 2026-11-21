@@ -10,6 +10,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import PageNumber, current_user, require
+from app.api.disposition import content_disposition
 from app.api.routes_ui import _Labels, _summary
 from app.api.serialize import plain, row
 from app.calc import template
@@ -246,9 +247,9 @@ def get_document_file(document_id: uuid.UUID, db: Session = Depends(get_db), _: 
     sheet = SHEET_MEDIA.get((doc.meta or {}).get("format"))
     if sheet is not None:  # a spreadsheet is downloaded, never rendered in the browser
         return Response(read_file(doc), media_type=sheet,
-                        headers={"Content-Disposition": f'attachment; filename="{doc.file_name}"'})
+                        headers={"Content-Disposition": content_disposition("attachment", doc.file_name)})
     return Response(read_file(doc), media_type="application/pdf",
-                    headers={"Content-Disposition": f'inline; filename="{doc.file_name}"'})
+                    headers={"Content-Disposition": content_disposition("inline", doc.file_name)})
 
 
 @router.get("/documents/{document_id}/pages/{page_number}")
