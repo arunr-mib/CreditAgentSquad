@@ -31,7 +31,8 @@ def run(db, client):
         AgentStep(run_id=r.id, n=3, kind="model", name="response", detail={"usage": usage[1]}),
     ])
     db.flush()
-    r = client.post("/api/v1/auth/login", json={"email": "priya.raman@bankofstoic.example", "password": "pw"})
+    # the raw run record is for Oversight roles (final review M7): credit review reads it here
+    r = client.post("/api/v1/auth/login", json={"email": "ruth.calloway@bankofstoic.example", "password": "pw"})
     assert r.status_code == 200
     return db.query(AgentRun).filter(AgentRun.agent_name == "covenant").one(), borrower
 

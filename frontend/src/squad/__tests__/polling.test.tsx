@@ -17,16 +17,28 @@ describe('useLedgerHeartbeat', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
-  it('reads the head once, then refreshes the briefing and threads when something new arrives', async () => {
-    const get = vi.spyOn(client, 'get');
-    get.mockResolvedValueOnce([{ seq: 5 }]); // the head
-    get.mockResolvedValueOnce([]); // nothing new
-    get.mockResolvedValue([{ seq: 6 }]); // something new
+  const briefingRefreshes = () => invalidate.mock.calls.filter((call: unknown[]) => JSON.stringify(call[0]) === JSON.stringify({ queryKey: ['briefing'] })).length;
+
+  it('reads the head, then refreshes the briefing and threads only when the ledger has moved on', async () => {
+    const seen: number[] = []; // the refreshes already made when each poll was sent
+    let calls = 0;
+    vi.spyOn(client, 'get').mockImplementation(async () => {
+      calls += 1;
+      seen.push(briefingRefreshes());
+      return { seq: calls <= 3 ? 5 : 6 }; // the head, twice nothing new, then something new
+    });
     renderHook(() => useLedgerHeartbeat({ intervalMs: 10 }), { wrapper: wrap(qc) });
-    await waitFor(() => expect(get).toHaveBeenCalledWith('/ledger', { after_seq: 5, limit: 500 }, expect.anything()));
-    await waitFor(() => expect(invalidate).toHaveBeenCalledWith({ queryKey: ['briefing'] }));
+    await waitFor(() => expect(calls).toBeGreaterThanOrEqual(5));
+    expect(seen.slice(0, 4)).toEqual([0, 1, 1, 1]); // one refresh for the first read; none while the head stays at 5
+    expect(seen[4]).toBe(2); // the head moved to 6: one more
     expect(invalidate).toHaveBeenCalledWith({ queryKey: ['thread'] });
-    await waitFor(() => expect(get).toHaveBeenCalledWith('/ledger', { after_seq: 6, limit: 500 }, expect.anything()));
+  });
+
+  it('asks only for the newest sequence number, never for events and their payloads (final review M7)', async () => {
+    const get = vi.spyOn(client, 'get').mockResolvedValue({ seq: 1 });
+    renderHook(() => useLedgerHeartbeat({ intervalMs: 10 }), { wrapper: wrap(qc) });
+    await waitFor(() => expect(get.mock.calls.length).toBeGreaterThan(1));
+    expect(new Set(get.mock.calls.map(([path]) => path))).toEqual(new Set(['/ledger/head']));
   });
 
   it('never stacks requests while one is slow', async () => {
@@ -37,7 +49,7 @@ describe('useLedgerHeartbeat', () => {
       peak = Math.max(peak, inFlight);
       await new Promise((r) => setTimeout(r, 40));
       inFlight -= 1;
-      return [];
+      return { seq: 1 };
     });
     renderHook(() => useLedgerHeartbeat({ intervalMs: 5 }), { wrapper: wrap(qc) });
     await new Promise((r) => setTimeout(r, 200));
@@ -46,25 +58,16 @@ describe('useLedgerHeartbeat', () => {
 
   it('survives a failed poll without invalidating or giving up', async () => {
     const get = vi.spyOn(client, 'get');
-    get.mockResolvedValueOnce([{ seq: 1 }]);
+    get.mockResolvedValueOnce({ seq: 1 });
     get.mockRejectedValueOnce(new Error('offline'));
-    get.mockResolvedValue([{ seq: 2 }]);
+    get.mockResolvedValue({ seq: 2 });
     renderHook(() => useLedgerHeartbeat({ intervalMs: 10 }), { wrapper: wrap(qc) });
-    await waitFor(() => expect(invalidate).toHaveBeenCalledWith({ queryKey: ['thread'] }));
-    expect(get).toHaveBeenCalledWith('/ledger', { after_seq: 1, limit: 500 }, expect.anything());
-  });
-
-  it('keeps paging from the new cursor when the ledger returns its 500-row cap', async () => {
-    const get = vi.spyOn(client, 'get');
-    get.mockResolvedValueOnce([{ seq: 10 }]); // head
-    get.mockResolvedValueOnce(Array.from({ length: 500 }, (_, i) => ({ seq: 11 + i }))); // full page, ends at 510
-    get.mockResolvedValue([]);
-    renderHook(() => useLedgerHeartbeat({ intervalMs: 10 }), { wrapper: wrap(qc) });
-    await waitFor(() => expect(get).toHaveBeenCalledWith('/ledger', { after_seq: 510, limit: 500 }, expect.anything()));
+    await waitFor(() => expect(briefingRefreshes()).toBe(2));
+    expect(get.mock.calls.length).toBeGreaterThanOrEqual(3);
   });
 
   it('stops when disabled or unmounted, and waits while the tab is hidden', async () => {
-    const get = vi.spyOn(client, 'get').mockResolvedValue([]);
+    const get = vi.spyOn(client, 'get').mockResolvedValue({ seq: 0 });
     const off = renderHook(() => useLedgerHeartbeat({ intervalMs: 5, enabled: false }), { wrapper: wrap(qc) });
     await new Promise((r) => setTimeout(r, 40));
     expect(get).not.toHaveBeenCalled();
@@ -83,7 +86,7 @@ describe('useLedgerHeartbeat', () => {
       (_p, _q, sig) =>
         new Promise((resolve) => {
           signal = sig;
-          setTimeout(() => resolve([{ seq: 1 }]), 30);
+          setTimeout(() => resolve({ seq: 1 }), 30);
         }) as never,
     );
     const view = renderHook(() => useLedgerHeartbeat({ intervalMs: 5 }), { wrapper: wrap(qc) });
@@ -101,10 +104,10 @@ describe('useLedgerHeartbeat', () => {
 
     it('backs off after failures and resets after a success', async () => {
       const get = vi.spyOn(client, 'get');
-      get.mockResolvedValueOnce([{ seq: 1 }]); // head
+      get.mockResolvedValueOnce({ seq: 1 }); // head
       get.mockRejectedValueOnce(new Error('x'));
       get.mockRejectedValueOnce(new Error('x'));
-      get.mockResolvedValue([]);
+      get.mockResolvedValue({ seq: 1 });
       renderHook(() => useLedgerHeartbeat({ intervalMs: 100 }), { wrapper: wrap(qc) });
       await vi.advanceTimersByTimeAsync(0);
       expect(get).toHaveBeenCalledTimes(1);
@@ -124,16 +127,16 @@ describe('useLedgerHeartbeat', () => {
 
     it('stops for good on a 401', async () => {
       const get = vi.spyOn(client, 'get');
-      get.mockResolvedValueOnce([{ seq: 1 }]);
+      get.mockResolvedValueOnce({ seq: 1 });
       get.mockRejectedValueOnce(new ApiError(401, 'no session'));
-      get.mockResolvedValue([]);
+      get.mockResolvedValue({ seq: 1 });
       renderHook(() => useLedgerHeartbeat({ intervalMs: 100 }), { wrapper: wrap(qc) });
       await vi.advanceTimersByTimeAsync(5000);
       expect(get).toHaveBeenCalledTimes(2);
     });
 
     it('polls at once when the tab becomes visible, without stacking', async () => {
-      const get = vi.spyOn(client, 'get').mockResolvedValue([]);
+      const get = vi.spyOn(client, 'get').mockResolvedValue({ seq: 1 });
       Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
       renderHook(() => useLedgerHeartbeat({ intervalMs: 100000 }), { wrapper: wrap(qc) });
       await vi.advanceTimersByTimeAsync(0);

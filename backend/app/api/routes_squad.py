@@ -74,7 +74,7 @@ def borrower_lessons(borrower_id: uuid.UUID, db: Session = Depends(get_db),
 class AnswerIn(BaseModel):
     option_id: str
     remember: bool = False
-    note: str = ""
+    note: str = Field(default="", max_length=4000)
 
 
 @router.post("/work-items/{item_id}/answer")
@@ -197,7 +197,7 @@ class NeedIn(BaseModel):
 
 class ReturnIn(BaseModel):
     reason: str = Field(max_length=4000)
-    needs: list[NeedIn] = Field(default_factory=list)  # more than five is refused in words by the engine
+    needs: list[NeedIn] = Field(default_factory=list, max_length=5)  # the engine says so in words as well
 
 
 class AttachIn(BaseModel):
@@ -299,7 +299,7 @@ def _oversight_only(user: User) -> None:
 
 
 @router.get("/oversight/runs")
-def oversight_runs(limit: int = 100, offset: int = 0, db: Session = Depends(get_db),
+def oversight_runs(limit: int = 100, offset: int = Query(default=0, ge=0, le=10**6), db: Session = Depends(get_db),
                    user: User = Depends(current_user)) -> list[dict]:
     """Agent runs, newest first, with the words for agent, task, outcome and each guardrail note. Read only."""
     _oversight_only(user)

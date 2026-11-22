@@ -102,6 +102,7 @@ def test_a_grounded_answer_comes_back_rendered_with_its_facts(client, db, world)
     asker = db.execute(select(User).where(User.email == "priya.raman@bankofstoic.example")).scalar_one()
     event = db.execute(select(LedgerEvent).where(LedgerEvent.action == "copilot.asked")).scalar_one()
     assert event.actor_type == "user" and event.actor_id == str(asker.id) and event.entity_id == body["agent_run_id"]
+    sign_in(client, "ruth.calloway")  # the raw run record is for Oversight roles (final review M7)
     run = client.get(f"/api/v1/agent-runs/{body['agent_run_id']}").json()
     assert run["agent_name"] == "copilot" and run["started_by_id"] == str(asker.id)
     assert [s["name"] for s in run["steps"] if s["kind"] == "tool"] == ["find_borrower", "spread_lines"]

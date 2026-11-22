@@ -200,9 +200,25 @@ def list_signals(status: str = "open", borrower_id: uuid.UUID | None = None, db:
     return [{**row(s), "borrower_name": names.get(s.borrower_id)} for s in signals]
 
 
+def _oversight_roles_only(user: User) -> None:
+    """The raw run record (model output, step inputs and outputs, scope) is for Oversight roles; everyone else reads
+    runs in words (`/borrowers/{id}/runs`, `/runs/{id}`)."""
+    from app.squad.oversight import OVERSIGHT_ROLES
+
+    if user.role not in OVERSIGHT_ROLES:
+        raise HTTPException(403, "The full run record is for administrators, credit administration and credit review.")
+
+
 @router.get("/agent-runs")
+def agent_runs_route(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | None = None, limit: int = 100,
+                     offset: int = 0, db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
+    _oversight_roles_only(user)
+    return list_agent_runs(borrower_id=borrower_id, cycle_id=cycle_id, limit=limit, offset=offset, db=db, _=user)
+
+
 def list_agent_runs(borrower_id: uuid.UUID | None = None, cycle_id: uuid.UUID | None = None, limit: int = 100, offset: int = 0,
                     db: Session = Depends(get_db), _: User = Depends(current_user)) -> list[dict]:
+    """Runs, newest first. Not a route: the routes that call it decide who may read what it returns."""
     query = (select(AgentRun).order_by(AgentRun.created_at.desc(), AgentRun.id)
              .limit(max(1, min(limit, 500))).offset(max(0, offset)))
     if borrower_id:
@@ -262,7 +278,13 @@ def _run_extras(run: AgentRun, borrowers: dict[uuid.UUID, tuple[str, str]],
 
 
 @router.get("/agent-runs/{run_id}")
+def agent_run_route(run_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(current_user)) -> dict:
+    _oversight_roles_only(user)
+    return get_agent_run(run_id=run_id, db=db, _=user)
+
+
 def get_agent_run(run_id: uuid.UUID, db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
+    """One run with its steps. Not a route (see `agent_run_route`); `/runs/{id}` reads it to word it."""
     run = db.get(AgentRun, run_id)
     if run is None:
         raise HTTPException(404, "Agent run not found.")
@@ -301,6 +323,14 @@ def list_ledger(entity_type: str | None = None, entity_id: str | None = None, ac
         query = query.order_by(LedgerEvent.seq.desc())
     query = query.limit(max(1, min(limit, 500)))
     return [row(e) for e in db.execute(query).scalars()]
+
+
+@router.get("/ledger/head")
+def ledger_head(db: Session = Depends(get_db), _: User = Depends(current_user)) -> dict:
+    """The newest event's sequence number only: what the browser's heartbeat needs to know that something changed,
+    without reading any event's payload."""
+    head = ledger.head(db)
+    return {"seq": head[0] if head else 0}
 
 
 @router.get("/ledger/verify")

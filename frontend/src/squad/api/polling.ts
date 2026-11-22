@@ -7,10 +7,9 @@ interface Options {
   enabled?: boolean;
 }
 const REFRESH = [['briefing'], ['thread'], ['trail'], ['borrowers'], ['case'], ['approvals'], ['measure'], ['funding'], ['my-portfolio'], ['lessons']] as const;
-const PAGE = 500; // the ledger route's cap
 
 /**
- * No push channel exists (spec 6), so the browser asks the ledger for anything after its cursor.
+ * No push channel exists (spec 6), so the browser asks the ledger for its newest sequence number (`/ledger/head`).
  * One request at a time, paused while the tab is hidden, and a failed poll changes nothing.
  */
 export function useLedgerHeartbeat({ intervalMs = 4000, enabled = true }: Options = {}) {
@@ -35,22 +34,13 @@ export function useLedgerHeartbeat({ intervalMs = 4000, enabled = true }: Option
       }
       inFlight = true;
       try {
-        if (cursor === null) {
-          const [newest] = await get<Array<{ seq: number }>>('/ledger', { limit: 1 }, signal);
-          if (stopped) return;
-          cursor = newest?.seq ?? 0;
-          refresh(); // anything that landed between the page's first read and this one
-        } else {
-          // A full page means more may be waiting: keep paging from the new cursor, skipping nothing.
-          for (;;) {
-            const rows: Array<{ seq: number }> = await get('/ledger', { after_seq: cursor, limit: PAGE }, signal);
-            if (stopped) return;
-            if (rows.length > 0) {
-              cursor = rows[rows.length - 1]!.seq;
-              refresh();
-            }
-            if (rows.length < PAGE) break;
-          }
+        // the ledger's newest sequence number only: no event's payload travels to every screen every few seconds
+        const { seq } = await get<{ seq: number }>('/ledger/head', undefined, signal);
+        if (stopped) return;
+        if (cursor === null || seq > cursor) {
+          // the first read refreshes anything that landed between the page's first read and this one
+          cursor = seq;
+          refresh();
         }
         failures = 0;
       } catch (error) {
