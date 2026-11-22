@@ -15,6 +15,7 @@ const BASE = process.env.BASE_URL ?? 'http://localhost:5173';
 const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 const ANALYST = 'priya.raman@bankofstoic.example';
 const OFFICER = 'helen.strand@bankofstoic.example';
+const MANAGER = 'dana.whitfield@bankofstoic.example';
 const LOOKS = ['Night', 'Warm paper', 'Cool slate', 'Lavender mist', 'Sage'];
 const WIDTHS = [1000, 1280, 1440, 1920];
 const failuresDir = resolve(dirname(fileURLToPath(import.meta.url)), 'failures');
@@ -331,6 +332,57 @@ journey('hand-off: the analyst routes a breach with her view, the officer return
   assert(done.status === 'decided' && done.decided_by === 'Helen Strand', 'the officer’s decision was not recorded');
   await analystCtx.close();
   await officerCtx.close();
+});
+
+journey('review room: a portfolio manager opens a meeting, moves it to during and raises an action; an analyst is offered no approval or release', async ({ browser }) => {
+  const pm = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const p = await pm.newPage();
+  await signIn(p, MANAGER);
+  await p.goto(`${BASE}/review-room`);
+  await p.locator('.sq-main[data-surface="squad"]').waitFor();
+  const title = `Portfolio review ${new Date().toISOString().slice(11, 19)}`;
+  // the meeting form only: the actions form on the same page has fields of its own
+  const form = p.locator('form').filter({ has: p.getByRole('button', { name: 'Create the meeting' }) });
+  await form.getByLabel('Title').fill(title);
+  await form.getByLabel('Meeting date').fill('2026-11-30');
+  await form.getByRole('button', { name: 'Create the meeting' }).click();
+  await p.getByText(/Meeting created · .* recorded/).waitFor();
+  const meetings = await api(p, '/review-meetings');
+  const meeting = meetings.find((m) => m.title === title);
+  assert(meeting, 'the meeting was not recorded');
+  await p.goto(`${BASE}/review-room?meeting=${meeting.id}`);
+  await p.getByRole('button', { name: 'Move to during' }).click();
+  await p.getByText(/Meeting moved to: during · recorded/).waitFor();
+  assert((await api(p, '/review-meetings')).find((m) => m.id === meeting.id).phase === 'during', 'the phase was not recorded');
+  // Raise an action: Borrower, Action, Owner and Due are the form's fields (read from `Actions` in the review room).
+  const actionTitle = `Follow up ${title}`;
+  const actionForm = p.locator('form').filter({ has: p.getByRole('button', { name: 'Raise the action' }) });
+  await actionForm.getByRole('combobox', { name: 'Borrower' }).click();
+  await p.getByRole('option').nth(1).click(); // option 0 is "Choose a borrower"
+  await actionForm.getByLabel('Action').fill(actionTitle);
+  await actionForm.getByLabel('Due').fill('2026-12-15');
+  await actionForm.getByRole('button', { name: 'Raise the action' }).click();
+  await p.getByText(/Action raised · recorded/).waitFor();
+  assert((await api(p, '/actions?status=all')).some((a) => a.title === actionTitle), 'the action was not recorded');
+  await pm.close();
+  const an = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const a = await an.newPage();
+  await signIn(a, ANALYST);
+  await a.goto(`${BASE}/review-room?meeting=${meeting.id}`);
+  await a.getByRole('heading', { name: title }).waitFor();
+  // The server grants an analyst `manage_actions`, so she may move a phase; what she is never offered is an approval or a release.
+  const sheets = await api(a, '/review-sheets');
+  for (const sheet of sheets.slice(0, 5)) {
+    await a.goto(`${BASE}/review-room?sheet=${sheet.id}`);
+    await a.locator('[data-review-sheet]').waitFor();
+    assert((await a.locator('[data-review-sheet]').getByRole('radio', { name: /^Approve/ }).count()) === 0, 'an analyst was offered the commentary approval');
+    assert((await a.locator('[data-review-sheet]').getByRole('button', { name: 'Record decision' }).count()) === 0, 'an analyst was offered to record the approval');
+  }
+  const code = (await api(a, '/borrowers'))[0].code; // a seeded book may hold no review sheet yet: the loop above then has nothing to check
+  await a.goto(`${BASE}/clients/${code}/file/packages`);
+  await a.getByRole('heading', { name: 'Schedules' }).waitFor();
+  assert((await a.getByRole('button', { name: 'Run schedules that are due' }).count()) === 0, 'an analyst was offered the schedule run');
+  await an.close();
 });
 
 mkdirSync(failuresDir, { recursive: true });

@@ -128,7 +128,7 @@ function PackageCard({ item }: { item: PackageRow }) {
           <Button disabled={verify.isPending} onClick={() => verify.mutate()}>
             Verify the files
           </Button>
-          {!released ? (
+          {!released && can('release_package') ? (
             <Button variant="primary" disabled={release.isPending} onClick={() => release.mutate()}>
               {release.isPending ? 'Releasing' : 'Release'}
             </Button>

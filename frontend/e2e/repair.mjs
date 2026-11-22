@@ -38,8 +38,7 @@ async function signIn(page, email) {
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill(PASSWORD);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await page.waitForURL('**/command-centre**');
-  await page.waitForSelector('[data-ready]');
+  await page.waitForURL(`${BASE}/`);
 }
 
 async function shot(page, name) {
@@ -369,8 +368,8 @@ const journeys = [
       await summary.getByText('Draft, not yet approved').waitFor();
       await summary.getByRole('button', { name: new RegExp(`^${picked.replace(/[.$]/g, '\\$&')}, `) }).waitFor();
       // Approval stays where it was: the question for a second person is still beside the sheet.
-      await page.locator('[data-work-item]').getByText('Commentary awaiting approval').waitFor();
-      assert((await page.locator('[data-work-item]').getAttribute('data-item-status')) === 'open', 'saving does not approve the commentary');
+      await page.locator('[data-work-item] [data-case]').waitFor();
+      assert((await page.locator('[data-work-item] [data-case]').getAttribute('data-item-status')) === 'open', 'saving does not approve the commentary');
       await shot(page, 'repair-10-commentary-saved-with-warnings');
 
       // A reference to a fact that does not exist is refused, in the server's words, and nothing is saved.
@@ -383,6 +382,32 @@ const journeys = [
       await again.getByRole('alert').getByText(/The server said: “/).waitFor();
       await again.getByRole('button', { name: 'Cancel' }).click();
       await summary.getByText(/Summary, version \d+ · Priya Raman/).waitFor();
+    },
+  },
+  {
+    name: 'a portfolio manager approves the commentary in the review room, prepares the package, verifies every figure and releases it',
+    async run(page) {
+      await signIn(page, MANAGER);
+      await page.goto(`${BASE}/review-room`);
+      await page.waitForSelector('[data-ready]');
+      await page.getByRole('button', { name: /Larkspur Environmental Services/ }).first().click();
+      const approval = page.getByRole('complementary', { name: 'Approval of this commentary' });
+      await approval.getByRole('radio', { name: /^Approve/ }).check();
+      await approval.getByRole('button', { name: 'Record decision' }).click();
+      await approval.locator('[data-case][data-item-status="decided"]').waitFor();
+      await page.goto(`${BASE}/clients/larkspur-environmental/file/packages`);
+      await page.locator('.sq-file [data-ready]').waitFor(); // the packages list itself has loaded, not only the client file around it
+      const before = await page.locator('[data-package]').count();
+      await page.getByRole('button', { name: 'Prepare the package' }).click();
+      await page.waitForFunction((n) => document.querySelectorAll('[data-package]').length === n, before + 1);
+      const card = page.locator('[data-package]').first();
+      await card.getByRole('button', { name: 'Verify the files' }).click();
+      await card.locator('[data-verify-result]').getByText(/Verified: all .* figures in the files trace to the snapshot/).waitFor();
+      await card.getByRole('button', { name: 'Release' }).click();
+      await card.getByText(/^Released/).waitFor();
+      const id = await card.getAttribute('data-package');
+      const pkg = await (await page.request.get(`${BASE}/api/v1/packages/${id}`)).json();
+      assert(pkg.status === 'released', 'the package was not released on the server');
     },
   },
   {
@@ -434,8 +459,8 @@ const journeys = [
     name: 'a portfolio manager creates a package schedule where packages are listed and runs what is due; an analyst can read schedules but not create or run them',
     async run(page) {
       await signIn(page, MANAGER);
-      await page.goto(`${BASE}/borrowers/larkspur-environmental/packages`);
-      await page.waitForSelector('[data-ready]');
+      await page.goto(`${BASE}/clients/larkspur-environmental/file/packages`);
+      await page.locator('.sq-file [data-ready]').waitFor(); // the packages list itself has loaded, not only the client file around it
       const area = page.locator('[data-package-schedules]');
       const form = area.getByRole('form', { name: 'New package schedule' });
       await expectKeyboardReachable(page, area);
@@ -478,16 +503,15 @@ const journeys = [
       if (said.includes('a package was prepared')) await report.getByText('No schedule was due on 17 Nov 2026. Nothing was generated.').waitFor();
 
       // An analyst can read the schedules but is offered neither control.
-      await page.getByRole('button', { name: /Account menu/ }).click();
-      await page.getByRole('menuitem', { name: 'Sign out' }).click();
+      await page.getByRole('button', { name: 'Sign out' }).click();
       await page.waitForURL('**/sign-in**');
       await signIn(page, ANALYST);
-      await page.goto(`${BASE}/borrowers/larkspur-environmental/packages`);
-      await page.waitForSelector('[data-ready]');
+      await page.goto(`${BASE}/clients/larkspur-environmental/file/packages`);
+      await page.locator('.sq-file [data-ready]').waitFor(); // the packages list itself has loaded, not only the client file around it
       await area.locator('table tbody tr').filter({ hasText: title }).waitFor();
       assert((await area.getByRole('button', { name: 'Run schedules that are due' }).count()) === 0, 'an analyst is not offered the run');
       assert((await area.getByRole('form', { name: 'New package schedule' }).count()) === 0, 'an analyst is not offered the form');
-      await area.getByText(/Creating and running schedules needs a portfolio manager or a credit officer\. Your role, Credit analyst, can read them\./).waitFor();
+      await area.getByText('Your role can read package schedules but cannot create or run them; the server decides who may.').waitFor();
     },
   },
 ];

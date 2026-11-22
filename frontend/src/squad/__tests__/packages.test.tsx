@@ -56,5 +56,6 @@ describe('Packages in the client file', () => {
     const { container } = mount(['view', 'edit_commentary']);
     expect(await screen.findByText('Your role cannot release a package; the server would refuse it.')).toBeInTheDocument();
     expect(container.textContent).not.toMatch(/portfolio manager|credit officer|credit analyst/i);
+    expect(screen.queryByRole('button', { name: 'Release' })).not.toBeInTheDocument();
   });
 });
