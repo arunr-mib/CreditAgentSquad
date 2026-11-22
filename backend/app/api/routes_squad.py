@@ -232,7 +232,8 @@ def attach_to_case(item_id: uuid.UUID, body: AttachIn, db: Session = Depends(get
 @router.get("/words/document-types")
 def document_type_words_table(_: User = Depends(current_user)) -> dict:
     """The plain words for every document type, and the words for an unclassified document; the browser has no list."""
-    return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None), "notes": NOTE_WORDS}
+    return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None), "notes": NOTE_WORDS,
+            "needable": list(routing.NEEDABLE_TYPES)}
 
 
 @router.get("/words/signals")

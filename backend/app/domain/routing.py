@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from app.core import ledger
 from app.core.ledger import LedgerEvent
 from app.core.roles import Permission, can
-from app.domain.documents import Document
+from app.domain.documents import DOCUMENT_TYPES, Document
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
 from app.domain.workflow import ATTACHED, RETURNED, ROUTED, decision_refusal
@@ -24,6 +24,8 @@ MAX_TEXT = 4000
 MAX_NOTE = 500
 MAX_NEEDS = 5
 MATCH_TOPIC = "evidence_match"
+# the types a document can have (what Intake files), minus "other": a need for "other" would match anything
+NEEDABLE_TYPES = tuple(t for t in DOCUMENT_TYPES if t != "other")
 
 
 class RouteBlocked(Exception):
@@ -32,15 +34,13 @@ class RouteBlocked(Exception):
 
 def clean_needs(needs: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
     """What the officer asked for, checked and numbered: each a known document type and a month end."""
-    from app.squad.words import DOCUMENT_TYPE_WORDS
-
     needs = list(needs or [])
     if len(needs) > MAX_NEEDS:
         raise ValueError(f"A return can ask for at most {MAX_NEEDS} documents.")
     out: list[dict[str, Any]] = []
     for need in needs:
         doc_type, period = need.get("doc_type"), need.get("period_end")
-        if doc_type not in DOCUMENT_TYPE_WORDS:
+        if doc_type not in NEEDABLE_TYPES:
             raise ValueError(f"{doc_type!r} is not a document type Squad knows; choose one from the list.")
         if isinstance(period, str):
             try:
@@ -137,9 +137,9 @@ def return_work_item(db: Session, item: WorkItem, *, user: User, reason: str,
                                               "reason": reason, "needs": wanted})
     db.flush()
     if wanted:  # code gathers what was asked: matches attach, gaps are drafted, doubts are asked
-        from app.domain.gathering import gather_requested
+        from app.domain import gathering
 
-        gather_requested(db, item)
+        gathering.gather_safely(db, item)  # never fails the return
     return item
 
 

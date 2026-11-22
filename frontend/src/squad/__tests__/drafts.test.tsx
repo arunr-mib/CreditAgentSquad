@@ -36,6 +36,12 @@ describe('DraftMessage', () => {
     expect(screen.queryByRole('button', { name: /save changes/i })).not.toBeInTheDocument();
   });
 
+  it('shows a request the document made unnecessary as no longer needed, with nothing to send', () => {
+    mount(draft({ status: 'withdrawn' }));
+    expect(screen.getByText('No longer needed')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Send as/ })).not.toBeInTheDocument();
+  });
+
   it('says who drafted it, and who edited it, from the record', () => {
     mount(draft({ created_by: 'Helen Strand', edited_by: 'Priya Raman' }));
     expect(screen.getByText('drafted by Helen Strand')).toBeInTheDocument();

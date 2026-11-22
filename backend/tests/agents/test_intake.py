@@ -99,7 +99,7 @@ def test_documents_are_filed_and_matched_when_code_agrees(db, world):
         dict(doc_type="compliance_certificate", period_end_text="September 30, 2026", quality="na", title_as_printed="COMPLIANCE CERTIFICATE"))
     result = classify_documents(db, borrower=borrower, documents=docs, llm=llm, cycle=cycle, batch_key="t1")
     assert len(result.filed) == 2 and result.work_items == []
-    assert docs[0].doc_type == "interim_statements" and docs[0].period_end == PERIOD and docs[0].doc_type_source == "agent"
+    assert docs[0].doc_type == "interim_statements" and docs[0].period_end == PERIOD and docs[0].doc_type_source == "system"
     assert obligations(db, "received") == [("compliance_certificate", PERIOD), ("interim_statements", PERIOD)]
     # the model saw only text it cannot act on: the request carried no tools
     assert llm.requests[0].tools == []
@@ -225,8 +225,8 @@ def test_a_bank_statement_note_about_the_agreement_is_not_a_credit_agreement():
     assert rule_type("Note: see the Credit Agreement dated March 1, 2024 for terms of the loan.") is None
 
 
-def test_a_document_the_agent_classifies_wakes_gathering_for_a_returned_case(db, world):
-    """Task 5c: classification is where code gathers again; an agent's unconfirmed guess is asked about, not attached."""
+def test_a_document_classified_wakes_gathering_for_a_returned_case(db, world):
+    """Task 5c: classification is where code gathers again; a type the filing rules confirm is attached by Squad."""
     from app.core import ledger
     from app.domain.work_items import raise_item
     from app.domain.workflow import RETURNED
@@ -243,6 +243,40 @@ def test_a_document_the_agent_classifies_wakes_gathering_for_a_returned_case(db,
     llm = answer(dict(doc_type="interim_statements", period_end_text="September 30, 2026", quality="internal",
                       title_as_printed="Balance Sheet"))
     classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="t5c")
-    asks = [w for w in db.execute(select(WorkItem)).scalars()
-            if w.item_type == "question" and w.evidence.get("topic") == "evidence_match"]
-    assert len(asks) == 1 and asks[0].evidence["case_id"] == str(item.id)
+    from app.core.ledger import LedgerEvent
+
+    (attached,) = db.execute(select(LedgerEvent).where(LedgerEvent.entity_id == str(item.id),
+                                                       LedgerEvent.action == "work_item.evidence_attached")).scalars()
+    assert attached.actor_id == "squad" and attached.payload["document_id"] == str(doc.id)
+
+
+def test_a_gathering_failure_leaves_the_classification_standing(db, world, monkeypatch):
+    from app.domain import gathering
+
+    def boom(db_, borrower_id):
+        raise RuntimeError("gathering broke")
+
+    monkeypatch.setattr(gathering, "gather_for_borrower", boom)
+    borrower, cycle = world
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="fs.pdf", received_date=date(2026, 11, 10), data=pdf(
+        "Harrowgate Tool & Die, Inc.", "Balance Sheet", "Nine months ended September 30, 2026", "Unaudited"))
+    llm = answer(dict(doc_type="interim_statements", period_end_text="September 30, 2026", quality="internal",
+                      title_as_printed="Balance Sheet"))
+    result = classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="t5c-fail")
+    assert len(result.filed) == 1 and doc.doc_type == "interim_statements"
+    assert any(n["layer"] == "gathering" and n["action"] == "skipped" for n in result.notes)
+    assert len(llm.requests) == 1  # one model call, none repeated
+
+
+def test_a_type_the_filing_rules_agree_with_is_code_confirmed_and_a_lone_agent_guess_is_not(db, world):
+    borrower, cycle = world
+    ruled = ingest_pdf(db, borrower_id=borrower.id, file_name="fs.pdf", received_date=date(2026, 11, 10), data=pdf(
+        "Harrowgate Tool & Die, Inc.", "Balance Sheet", "Nine months ended September 30, 2026", "Unaudited"))
+    guessed = ingest_pdf(db, borrower_id=borrower.id, file_name="memo.pdf", received_date=date(2026, 11, 10), data=pdf(
+        "Harrowgate Tool & Die, Inc.", "Cash position", "As of September 30, 2026"))
+    llm = answer(
+        dict(doc_type="interim_statements", period_end_text="September 30, 2026", quality="internal", title_as_printed="Balance Sheet"),
+        dict(doc_type="interim_statements", period_end_text="September 30, 2026", quality="internal", title_as_printed="Cash position"))
+    classify_documents(db, borrower=borrower, documents=[ruled, guessed], llm=llm, cycle=cycle, batch_key="t5c-src")
+    assert ruled.doc_type_source == "system"
+    assert guessed.doc_type_source == "agent"

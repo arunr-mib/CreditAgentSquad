@@ -213,3 +213,179 @@ def test_the_case_view_lists_each_need_with_its_state(db, world):
     assert [(n["state"], n["state_words"]) for n in view["needs"]] == [
         ("attached", "Attached: Bank statement, September 2026"), ("requested_from_client", "Asked the client")]
     assert view["needs"][1]["words"] == "MRR report, September 2026"
+
+
+# ---- fix round 1 ----
+from app.domain import gathering as gathering_module  # noqa: E402
+from app.domain.routing import attach_evidence, clean_needs  # noqa: E402
+from app.squad.questions import raise_question  # noqa: E402
+
+
+def _routed(db, world):
+    item = _case(db, world["borrower"])
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    return item
+
+
+def test_c1_an_earlier_rejected_attachment_does_not_meet_a_new_request(db, world):
+    wrong = _doc(db, world["borrower"], title="Wrong account")
+    item = _case(db, world["borrower"])
+    attach_evidence(db, item, user=world["analyst"], document_id=wrong.id)  # before the return
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    wrong.status = "rejected"
+    right = _doc(db, world["borrower"], title="Right account")
+    return_work_item(db, item, user=world["officer"], reason="Wrong account.", needs=[NEED])
+    states = gathering.need_states(db, item)
+    assert states[0]["state"] == "attached" and states[0]["document_id"] == str(right.id)
+    assert str(right.id) in attached_ids(db, item)
+
+
+def test_c1_an_earlier_attachment_that_is_still_valid_does_not_meet_it_either(db, world):
+    earlier = _doc(db, world["borrower"], title="Earlier")
+    item = _case(db, world["borrower"])
+    attach_evidence(db, item, user=world["analyst"], document_id=earlier.id)
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    return_work_item(db, item, user=world["officer"], reason="Not this one.", needs=[NEED])
+    assert gathering.need_states(db, item)[0]["state"] == "requested_from_client"
+
+
+def test_c1_two_right_documents_ask_and_block_routing_while_unsure(db, world):
+    wrong = _doc(db, world["borrower"], title="Wrong account")
+    item = _case(db, world["borrower"])
+    attach_evidence(db, item, user=world["analyst"], document_id=wrong.id)
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    wrong.status = "rejected"
+    _doc(db, world["borrower"], title="Right one")
+    _doc(db, world["borrower"], title="Right two")
+    return_work_item(db, item, user=world["officer"], reason="Wrong account.", needs=[NEED])
+    assert gathering.need_states(db, item)[0]["state"] == "waiting_for_you"
+    with pytest.raises(RouteBlocked):
+        route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view="Done.")
+
+
+def test_c1_an_answer_naming_a_document_rejected_meanwhile_is_refused(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    b = _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    b.status = "rejected"
+    option = next(o for o in q.evidence["options"] if o["label"].startswith("Statement B"))
+    with pytest.raises(ValueError, match="set aside"):
+        answer_question(db, q, world["analyst"], option["id"])
+    assert _events(db, item, "work_item.evidence_attached") == []
+
+
+def test_i2_a_gathering_failure_never_fails_the_return(db, world, monkeypatch):
+    def boom(db_, item_):
+        raise RuntimeError("gathering broke")
+
+    monkeypatch.setattr(gathering_module, "gather_requested", boom)
+    item = _returned(db, world, [NEED])
+    assert len(_events(db, item, "work_item.returned")) == 1
+    failed = _events(db, item, "work_item.gathering_failed")
+    assert len(failed) == 1 and "gathering broke" not in str(failed[0].payload.get("reason", ""))
+    view = build_case(db, item, world["analyst"])
+    assert view["needs"][0]["state_words"] == "Squad could not gather; please attach by hand"
+
+
+def test_m1_none_of_these_offers_a_document_that_arrived_meanwhile(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    c = _doc(db, world["borrower"], title="Corrected statement")
+    gathering.gather_for_borrower(db, world["borrower"].id)  # an open question is left alone
+    assert len(_questions(db, item)) == 1
+    answer_question(db, q, world["analyst"], "none")
+    assert _requests(db, world["borrower"]) == []
+    assert attached_ids(db, item) == {str(c.id)}
+
+
+def test_m1_a_doubtful_newcomer_is_asked_about_not_drafted_for(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    _doc(db, world["borrower"], title="Maybe", source="agent")
+    answer_question(db, q, world["analyst"], "none")
+    assert _requests(db, world["borrower"]) == []
+    opened = [x for x in _questions(db, item) if x.status == "open"]
+    assert len(opened) == 1 and "Maybe" in opened[0].evidence["options"][0]["label"]
+
+
+def test_m1_a_draft_made_earlier_is_marked_no_longer_needed_when_the_document_comes(db, world):
+    item = _returned(db, world, [NEED])
+    (draft,) = _requests(db, world["borrower"])
+    _doc(db, world["borrower"])
+    gathering.gather_for_borrower(db, world["borrower"].id)
+    now = drafts.get_draft(db, draft["draft_id"])
+    assert now["status"] == "withdrawn"
+    with pytest.raises(ValueError, match="no longer needed"):
+        drafts.send_draft(db, draft["draft_id"], world["analyst"])
+    assert [e for e in _events(db, item, "work_item.evidence_attached")]
+
+
+@pytest.mark.parametrize("bad", ["quarterly_statements", "bank_statements", "other"])
+def test_m2_only_types_a_document_can_have_are_accepted(bad):
+    with pytest.raises(ValueError, match="document type"):
+        clean_needs([{"doc_type": bad, "period_end": SEPT}])
+
+
+def test_m2_the_served_words_say_which_types_can_be_asked_for(db, client, world):
+    sign_in(client, "helen.strand")
+    served = client.get("/api/v1/words/document-types").json()
+    assert "bank_statement" in served["needable"] and "other" not in served["needable"]
+    assert "quarterly_statements" not in served["needable"]
+
+
+def test_m3_an_answer_to_a_question_of_another_need_attaches_nothing(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    q.evidence = {**q.evidence, "need_key": "stale"}
+    answer_question(db, q, world["analyst"], next(iter(q.evidence["option_documents"])))
+    assert _events(db, item, "work_item.evidence_attached") == []
+
+
+def test_m5_a_question_closed_without_an_answer_lets_the_need_be_asked_again(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    q.status, q.decision = "decided", None
+    gathering.gather_requested(db, item)
+    assert [x.status for x in _questions(db, item)].count("open") == 1 and len(_questions(db, item)) == 2
+
+
+def test_the_person_who_picks_a_document_confirms_its_type_for_next_time(db, world):
+    _doc(db, world["borrower"], title="Statement A", source="agent")
+    b = _doc(db, world["borrower"], title="Statement B", source="agent")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    option = next(o for o in q.evidence["options"] if o["label"].startswith("Statement B"))
+    answer_question(db, q, world["analyst"], option["id"])
+    assert b.doc_type_source == "person"
+    (event,) = [e for e in db.execute(select(LedgerEvent).where(
+        LedgerEvent.entity_id == str(b.id), LedgerEvent.action == "document.classified")).scalars()]
+    assert event.actor_type == "user" and event.payload["doc_type"] == "bank_statement"
+    assert event.payload["confirmed_by_person"] is True and item.status == "open"
+
+
+def test_n1_a_figure_in_an_option_is_refused_unless_the_question_is_written_by_code(db, world):
+    options = [{"id": "a", "label": "Statement, 5 pages", "evidence": ""}, {"id": "b", "label": "None", "evidence": ""}]
+    with pytest.raises(ValueError, match="figure"):
+        raise_question(db, borrower_id=world["borrower"].id, title="t", question="Which?", options=options,
+                       actor=("system", "other"))
+    raise_question(db, borrower_id=world["borrower"].id, title="t", question="Which?", options=options,
+                   actor=("system", "squad"), written_by_code=True)
+
+
+def test_n2_the_thread_says_by_kind_who_attached(db, world):
+    _doc(db, world["borrower"])
+    item = _returned(db, world, [NEED])
+    other = _doc(db, world["borrower"], title="Another", doc_type="mrr_report")
+    attach_evidence(db, item, user=world["analyst"], document_id=other.id)
+    kinds = [m["by_kind"] for m in build_thread(db, world["borrower"].id, world["analyst"])["messages"]
+             if m["type"] == "attached"]
+    assert kinds == ["squad", "user"]

@@ -29,7 +29,7 @@ def _fold(events: list[LedgerEvent], names: dict[str, str]) -> dict[str, Any]:
              "status": "draft", "created_by": _who(names, first), "created_at": first.ts.isoformat(),
              "edited_by": None, "sent_by": None, "sent_at": None}
     for event in events[1:]:
-        if draft["status"] == "sent":  # nothing after the send counts, whatever the ledger holds
+        if draft["status"] in ("sent", "withdrawn"):  # nothing after the send counts, whatever the ledger holds
             break
         if event.action == "draft.edited":
             draft["subject"] = event.payload.get("subject", draft["subject"])
@@ -37,6 +37,8 @@ def _fold(events: list[LedgerEvent], names: dict[str, str]) -> dict[str, Any]:
             draft["edited_by"] = _who(names, event)
         elif event.action == "draft.sent":
             draft.update(status="sent", sent_by=_who(names, event), sent_at=event.ts.isoformat())
+        elif event.action == "draft.withdrawn":
+            draft["status"] = "withdrawn"
     return draft
 
 
@@ -85,6 +87,8 @@ def edit_draft(db: Session, draft_id: uuid.UUID, user: User, *, subject: str | N
                body: str | None = None) -> dict[str, Any]:
     ledger.lock(db)  # before the status check, so a concurrent send cannot slip in between
     current = get_draft(db, draft_id)
+    if current["status"] == "withdrawn":
+        raise ValueError("this request is no longer needed and cannot be changed")
     if current["status"] == "sent":
         raise ValueError("this draft has been sent and cannot be changed")
     payload: dict[str, Any] = {"borrower_id": current["borrower_id"]}
@@ -103,6 +107,8 @@ def edit_draft(db: Session, draft_id: uuid.UUID, user: User, *, subject: str | N
 def send_draft(db: Session, draft_id: uuid.UUID, user: User) -> dict[str, Any]:
     ledger.lock(db)
     current = get_draft(db, draft_id)
+    if current["status"] == "withdrawn":
+        raise ValueError("this request is no longer needed, so it cannot be sent")
     if current["status"] == "sent":
         raise ValueError("this draft has already been sent")
     if not current["body"].strip():
@@ -110,4 +116,15 @@ def send_draft(db: Session, draft_id: uuid.UUID, user: User) -> dict[str, Any]:
     ledger.record(db, actor_type="user", actor_id=user.id, action="draft.sent", entity_type="draft", entity_id=draft_id,
                   payload={"borrower_id": current["borrower_id"], "to": current["to"], "delivery": "recorded_only"})
     db.flush()
+    return get_draft(db, draft_id)
+
+
+def withdraw_draft(db: Session, draft_id: uuid.UUID) -> dict[str, Any]:
+    """Squad marks a request it made as no longer needed (the document came). Nothing is sent or deleted."""
+    ledger.lock(db)
+    current = get_draft(db, draft_id)
+    if current["status"] == "draft":
+        ledger.record(db, actor_type="system", actor_id="squad", action="draft.withdrawn", entity_type="draft",
+                      entity_id=draft_id, payload={"borrower_id": current["borrower_id"]})
+        db.flush()
     return get_draft(db, draft_id)

@@ -13,7 +13,7 @@ vi.mock('../api/hooks', () => ({
   useRouteCase: () => write(state.route),
   useReturnCase: () => write(state.ret),
   useAttachEvidence: () => write(state.attach),
-  useDocumentTypeWords: () => ({ data: { types: { bank_statement: 'Bank statement', bank_statements: 'Bank statement', mrr_report: 'MRR report' }, unclassified: 'Not yet classified', notes: {} } }),
+  useDocumentTypeWords: () => ({ data: { types: { bank_statement: 'Bank statement', bank_statements: 'Bank statement', mrr_report: 'MRR report' }, unclassified: 'Not yet classified', notes: {}, needable: ['bank_statement', 'mrr_report'] } }),
 }));
 vi.mock('@/api/hooks', () => ({ useWorkItem: () => ({ data: state.detail }) }));
 vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say: state.say }) }));

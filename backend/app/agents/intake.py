@@ -1,6 +1,7 @@
 """Intake Agent: say what each received document is and which period it covers. Code checks the
 answer against the page and its own rules, files the document on the calendar, and raises a
 work item for anything that does not check out or is still missing."""
+import logging
 import re
 import uuid
 from dataclasses import dataclass, field
@@ -255,7 +256,8 @@ def classify_documents(
                                  "detail": f"{doc.file_name}: reported as audited but no auditor's report is in "
                                            f"the document; recorded as {quality}"})
         doc.doc_type = answer.doc_type
-        doc.doc_type_source = "agent"
+        # code confirms a type when the filing rules (a heading line the code reads) say the same as the agent
+        doc.doc_type_source = "system" if by_rule == answer.doc_type else "agent"
         doc.period_end = period_end
         doc.effective_date = effective
         doc.meta = {**doc.meta, "quality": quality, "title_as_printed": answer.title_as_printed,
@@ -275,12 +277,18 @@ def classify_documents(
                 allowed_decisions=["no_action", "request_new_document"], required_permission="upload_document",
                 evidence={"document_id": str(doc.id), "agent_concern": concern},
                 agent_run_id=result.run_id, actor=("agent", "intake"), dedupe_key=f"intake.concern:{doc.id}"))
+    if result.filed:  # code, not the model: returned cases of this client pick up what was just classified
+        from app.domain import gathering
+
+        try:
+            with db.begin_nested():  # a gathering failure never undoes a classification or fails the stage
+                gathering.gather_for_borrower(db, borrower.id)
+        except Exception as exc:  # noqa: BLE001
+            logging.getLogger(__name__).exception("gathering after classification failed")
+            result.notes.append({"layer": "gathering", "check": "gather_requested", "action": "skipped",
+                                 "detail": f"Squad could not gather for returned cases: {type(exc).__name__}"})
     outcome.run.guardrail_notes = result.notes
     db.flush()
-    if result.filed:  # code, not the model: returned cases of this client pick up what was just classified
-        from app.domain.gathering import gather_for_borrower
-
-        gather_for_borrower(db, borrower.id)
     return result
 
 

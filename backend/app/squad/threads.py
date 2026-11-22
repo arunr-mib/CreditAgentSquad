@@ -167,7 +167,8 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
         messages.append({"id": f"attached:{e.seq}", "type": "attached", "seq": e.seq, "ts": _iso(e.ts),
                          "work_item_id": e.entity_id, "document_id": p.get("document_id"),
                          "title": titles.get(str(p.get("document_id")), "A document"), "note": p.get("note", ""),
-                         "by": "Squad" if e.actor_type != "user" else names.get(e.actor_id, e.actor_id)})
+                         "by": "Squad" if e.actor_type != "user" else names.get(e.actor_id, e.actor_id),
+                         "by_kind": "user" if e.actor_type == "user" else "squad"})
 
     for run in db.execute(select(AgentRun).where(AgentRun.borrower_id == borrower_id, AgentRun.status == "completed",
                                                  AgentRun.agent_name != "copilot")).scalars():

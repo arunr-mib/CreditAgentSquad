@@ -20,6 +20,7 @@ export function DraftMessage({ message }: { message: Draft }) {
   const [error, setError] = useState<string | null>(null);
   const [justSent, setJustSent] = useState(false);
   const sent = message.status === 'sent' || justSent;
+  const withdrawn = message.status === 'withdrawn';
   const mayWrite = can('edit_commentary');
   const dirty = body !== message.body;
   const first = user?.name.split(' ')[0] ?? 'you';
@@ -53,11 +54,13 @@ export function DraftMessage({ message }: { message: Draft }) {
         <span className="sq-faint">drafted by {message.created_by}</span>
         {message.edited_by ? <span className="sq-faint">edited by {message.edited_by}</span> : null}
         {sent ? <span className="sq-tag">Sent</span> : null}
+        {withdrawn ? <span className="sq-faint">No longer needed</span> : null}
       </header>
       <p className="sq-muted">Subject: {message.subject}</p>
-      <textarea aria-label={`Message to ${message.to}`} value={sent ? message.body : body} readOnly={sent || !mayWrite} onChange={(e) => setBody(e.target.value)} rows={6} className="sq-paper sq-draftbox" />
+      <textarea aria-label={`Message to ${message.to}`} value={sent ? message.body : body} readOnly={sent || withdrawn || !mayWrite} onChange={(e) => setBody(e.target.value)} rows={6} className="sq-paper sq-draftbox" />
       {sent ? <p className="sq-faint">Sent by {message.sent_by ?? (justSent ? user?.name : null)}{message.sent_at ? <> <Time ts={message.sent_at} /></> : null}. Recorded on the ledger, not emailed.</p> : null}
-      {!sent && mayWrite ? (
+      {withdrawn ? <p className="sq-faint">The document came, so this request is no longer needed. It was not sent.</p> : null}
+      {!sent && !withdrawn && mayWrite ? (
         <div className="sq-actions">
           <button type="button" className="sq-btn sq-btn-primary" disabled={!body.trim() || send.isPending || edit.isPending} onClick={() => void sendIt()}>
             Send as {first}
@@ -65,7 +68,7 @@ export function DraftMessage({ message }: { message: Draft }) {
           {dirty ? <button type="button" className="sq-btn" disabled={edit.isPending} onClick={() => void save().then((ok) => ok && say('Draft saved'))}>Save changes</button> : null}
         </div>
       ) : null}
-      {!sent && !mayWrite ? <p className="sq-muted">You can't send this draft.</p> : null}
+      {!sent && !withdrawn && !mayWrite ? <p className="sq-muted">You can't send this draft.</p> : null}
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
     </article>
   );

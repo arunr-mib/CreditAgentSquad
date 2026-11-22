@@ -6,7 +6,7 @@
 - several documents, or one an agent classified and nobody confirmed: Squad asks the case's holder which
   (a question, topic `evidence_match`); the case cannot be sent back while it is open.
 Every step is idempotent: running again attaches nothing twice and raises no second question or draft."""
-import hashlib
+import logging
 import uuid
 from datetime import date
 from typing import Any
@@ -26,6 +26,10 @@ NONE_OF_THESE = "none"
 MAX_OPTIONS = 5  # a question offers at most six options, one of them "None of these"
 CONFIDENT_SOURCES = ("person", "system")
 RULE = "doc_type+period_end"
+
+log = logging.getLogger(__name__)
+COULD_NOT_GATHER = "Squad could not gather; please attach by hand"
+GATHERING_FAILED = "work_item.gathering_failed"
 
 NeedState = dict[str, Any]
 
@@ -63,14 +67,17 @@ def _attachments(db: Session, item: WorkItem) -> list[LedgerEvent]:
 
 
 def _met_by(db: Session, need: dict[str, Any], ret: LedgerEvent, attachments: list[LedgerEvent]) -> str | None:
-    """The document that answers a need: attached for it by name, or attached by anyone and of that type and period."""
+    """The document that answers a need: attached after this return, for this need or of its type and period, and
+    not set aside since. An attachment made before the return, or of a rejected document, answers nothing."""
     for e in attachments:
+        if e.seq <= ret.seq:
+            continue
         p = e.payload or {}
-        if p.get("matched_need") == need["index"] and p.get("return_seq") == ret.seq:
-            return str(p.get("document_id"))
-    for e in attachments:
-        doc = db.get(Document, uuid.UUID(str((e.payload or {}).get("document_id"))))
-        if doc is not None and doc.doc_type == need["doc_type"] and plain_date(doc.period_end) == need["period_end"]:
+        doc = db.get(Document, uuid.UUID(str(p.get("document_id"))))
+        if doc is None or doc.status == "rejected":
+            continue
+        if (p.get("matched_need") == need["index"] and p.get("return_seq") == ret.seq) or (
+                doc.doc_type == need["doc_type"] and plain_date(doc.period_end) == need["period_end"]):
             return str(doc.id)
     return None
 
@@ -113,7 +120,7 @@ def _state(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any],
     if drafts_:
         return {**base, "state": "requested_from_client", "state_words": "Asked the client",
                 "draft_id": drafts_[0].entity_id}
-    return {**base, "state": "not_gathered", "state_words": "Not gathered yet"}
+    return {**base, "state": "not_gathered", "state_words": COULD_NOT_GATHER}
 
 
 def need_states(db: Session, item: WorkItem) -> list[NeedState]:
@@ -156,6 +163,16 @@ def _attach(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any],
         payload["rule"] = rule
     ledger.record(db, actor_type=actor[0], actor_id=actor[1], action=ATTACHED, entity_type="work_item",
                   entity_id=item.id, payload=payload)
+    _withdraw_requests(db, item, ret, need)
+
+
+def _withdraw_requests(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any]) -> None:
+    """The document is here, so a request made earlier for it is no longer needed. It is marked, never sent."""
+    from app.squad import drafts
+
+    for event in _requests(db, item, _key(item, ret, need)):
+        if drafts.get_draft(db, uuid.UUID(event.entity_id))["status"] == "draft":
+            drafts.withdraw_draft(db, uuid.UUID(event.entity_id))
 
 
 def _ensure_request(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any]) -> None:
@@ -182,11 +199,7 @@ def _option_label(doc: Document) -> str:
 def _ask(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], docs: list[Document]) -> None:
     from app.squad.questions import raise_question
 
-    key = _key(item, ret, need)
     shown = docs[:MAX_OPTIONS]
-    asked_for = hashlib.sha256(",".join(sorted(str(d.id) for d in shown)).encode()).hexdigest()[:12]
-    if any((q.evidence or {}).get("candidates") == asked_for for q in _questions(db, item, key)):
-        return  # this very question was asked before
     options = [{"id": f"doc_{d.id.hex}", "label": _option_label(d), "evidence": ""} for d in shown]
     options.append({"id": NONE_OF_THESE, "label": "None of these", "evidence": ""})
     officer = _holder_name(db, ret.actor_id)
@@ -194,8 +207,8 @@ def _ask(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], do
     q = raise_question(
         db, borrower_id=item.borrower_id, title=f"Which {words}?",
         question=f"Which document is the {words} that {officer} asked for?", options=options, topic=MATCH_TOPIC,
-        actor=("system", "squad"),  # written by code, so the agent figure rule does not apply
-        evidence={"case_id": str(item.id), "need_key": key, "need_index": need["index"], "candidates": asked_for,
+        actor=("system", "squad"), written_by_code=True,  # labels are built here from stored fields, never by a model
+        evidence={"case_id": str(item.id), "need_key": _key(item, ret, need), "need_index": need["index"],
                   "doc_type": need["doc_type"], "period_end": need["period_end"],
                   "option_documents": {o["id"]: str(d.id) for o, d in zip(options, shown, strict=False)}})
     # each option also names its document, so a refused ("None of these") ask is remembered
@@ -205,26 +218,46 @@ def _ask(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], do
     db.flush()
 
 
+def _gather_need(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], officer: str) -> None:
+    if _met_by(db, need, ret, _attachments(db, item)):
+        _withdraw_requests(db, item, ret, need)  # met by hand: the request is no longer needed
+        return
+    if any(q.status == "open" for q in _questions(db, item, _key(item, ret, need))):
+        return  # waiting for the person; a new document does not change the question under them
+    found = _candidates(db, item, need)
+    if len(found) == 1 and found[0].doc_type_source in CONFIDENT_SOURCES:
+        _attach(db, item, ret, need, found[0], ("system", "squad"),
+                f"Attached the {_asked(need)} that {officer} asked for.", rule=RULE)
+    elif not found:
+        _ensure_request(db, item, ret, need)
+    else:
+        _ask(db, item, ret, need, found)
+
+
 def gather_requested(db: Session, item: WorkItem) -> list[NeedState]:
     """Gather what the latest return asked for, then say where each need stands. Safe to run again."""
+    db.execute(select(WorkItem.id).where(WorkItem.id == item.id).with_for_update())  # one gatherer per case at a time
     ret = latest_return(db, item)
     if item.status == "open" and ret is not None:
         officer = _holder_name(db, ret.actor_id)
         for need in _needs_of(ret):
-            if _met_by(db, need, ret, _attachments(db, item)):
-                continue
-            key = _key(item, ret, need)
-            if any(q.status == "open" for q in _questions(db, item, key)):
-                continue  # waiting for the person; a new document does not change the question under them
-            found = _candidates(db, item, need)
-            if len(found) == 1 and found[0].doc_type_source in CONFIDENT_SOURCES:
-                _attach(db, item, ret, need, found[0], ("system", "squad"),
-                        f"Attached the {_asked(need)} that {officer} asked for.", rule=RULE)
-            elif not found:
-                _ensure_request(db, item, ret, need)
-            else:
-                _ask(db, item, ret, need, found)
+            _gather_need(db, item, ret, need, officer)
     return need_states(db, item)
+
+
+def gather_safely(db: Session, item: WorkItem) -> bool:
+    """Gather without ever failing the caller: a failure is undone, logged and recorded in plain words on the case,
+    and the needs read "Squad could not gather; please attach by hand"."""
+    try:
+        with db.begin_nested():
+            gather_requested(db, item)
+        return True
+    except Exception:  # noqa: BLE001 - gathering is an aid; the return and the intake stage must stand without it
+        log.exception("gathering failed for work item %s", item.id)
+        ledger.record(db, actor_type="system", actor_id="squad", action=GATHERING_FAILED, entity_type="work_item",
+                      entity_id=item.id, payload={"borrower_id": item.borrower_id, "reason": COULD_NOT_GATHER + "."})
+        db.flush()
+        return False
 
 
 def gather_for_borrower(db: Session, borrower_id: uuid.UUID) -> int:
@@ -233,25 +266,33 @@ def gather_for_borrower(db: Session, borrower_id: uuid.UUID) -> int:
     for item in db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower_id, WorkItem.status == "open")).scalars():
         last = latest_hand_off(db, item)
         if last is not None and last.action == RETURNED and (last.payload or {}).get("needs"):
-            gather_requested(db, item)
+            gather_safely(db, item)
             n += 1
     return n
 
 
 def apply_match_answer(db: Session, question: WorkItem, user: User, option_id: str) -> None:
-    """A person answered Squad's "which document" question: attach their choice, or, for "None of these", draft the
-    request to the client. The person is the actor of the attachment."""
+    """A person answered Squad's "which document" question: attach their choice, or, for "None of these", look again
+    and ask the client only if nothing else is on file. The person is the actor of the attachment, and their choice
+    confirms the document's type for next time."""
     ev = question.evidence or {}
     item = db.get(WorkItem, uuid.UUID(ev["case_id"]))
     ret = latest_return(db, item) if item is not None else None
     if item is None or item.status != "open" or ret is None:
         return
     need = next((n for n in _needs_of(ret) if n["index"] == ev.get("need_index")), None)
-    if need is None:
-        return
+    if need is None or ev.get("need_key") != _key(item, ret, need):
+        return  # this question belongs to an earlier return
     if option_id == NONE_OF_THESE:
-        _ensure_request(db, item, ret, need)
+        _gather_need(db, item, ret, need, _holder_name(db, ret.actor_id))
         return
     doc = db.get(Document, uuid.UUID(ev["option_documents"][option_id]))
-    if doc is not None and str(doc.id) not in attached_ids(db, item):
+    if doc is None or doc.status == "rejected":
+        raise ValueError("That document has been set aside; choose another, or None of these.")
+    if str(doc.id) not in attached_ids(db, item):
         _attach(db, item, ret, need, doc, ("user", str(user.id)), f"Confirmed as the {_asked(need)}.")
+    if doc.doc_type_source != "person":
+        doc.doc_type_source = "person"
+        ledger.record(db, actor_type="user", actor_id=user.id, action="document.classified", entity_type="document",
+                      entity_id=doc.id, payload={"borrower_id": doc.borrower_id, "doc_type": doc.doc_type,
+                                                 "period_end": doc.period_end, "confirmed_by_person": True})

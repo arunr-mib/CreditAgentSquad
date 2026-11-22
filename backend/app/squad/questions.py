@@ -50,9 +50,12 @@ def _refuse_typed_figures(options: list[dict[str, str]]) -> None:
 
 def raise_question(db: Session, *, borrower_id: uuid.UUID, title: str, question: str, options: list[dict[str, Any]],
                    evidence: dict[str, Any] | None = None, topic: str = "question", cycle_id: uuid.UUID | None = None,
-                   severity: str = "medium", actor: tuple[str, str] = ("agent", "squad")) -> WorkItem:
+                   severity: str = "medium", actor: tuple[str, str] = ("agent", "squad"),
+                   written_by_code: bool = False) -> WorkItem:
+    """`written_by_code` says the options were built by code from stored fields (the caller's word, never a model's);
+    any other question has its options held to the figure rule."""
     clean = _check_options(options)
-    if actor[0] == "agent":
+    if actor[0] != "user" and not written_by_code:  # a person writes their own figures
         _refuse_typed_figures(clean)
     if not 1 <= len(topic) <= TOPIC_MAX:
         raise ValueError(f"a topic is 1 to {TOPIC_MAX} characters")

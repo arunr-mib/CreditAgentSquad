@@ -138,13 +138,13 @@ function RouteForm({ c }: { c: CaseView }) {
 function ReturnForm({ c }: { c: CaseView }) {
   const ret = useReturnCase(c.work_item_id);
   const { say } = usePresence();
-  const types = useDocumentTypeWords().data?.types ?? {};
+  const words = useDocumentTypeWords().data;
   const [reason, setReason] = useState('');
   const [rows, setRows] = useState<Array<{ doc_type: string; month: string }>>([]);
   const [error, setError] = useState<unknown>(null);
   const who = c.view?.by ?? 'the person who sent it';
-  // two keys may share words ("bank_statement", "bank_statements"): one choice per words, as the server spells them
-  const choices = Object.entries(types).filter(([, words], i, all) => all.findIndex(([, w]) => w === words) === i);
+  // only the types a document can have, as the server serves them, in the server's words
+  const choices = (words?.needable ?? []).map((key) => [key, words?.types[key] ?? key] as const);
   const change = (i: number, part: Partial<{ doc_type: string; month: string }>) => setRows((r) => r.map((row, j) => (j === i ? { ...row, ...part } : row)));
   const complete = rows.every((r) => r.doc_type && /^\d{4}-\d{2}$/.test(r.month));
   async function submit() {
@@ -166,7 +166,7 @@ function ReturnForm({ c }: { c: CaseView }) {
           <div key={i} className="sq-need-row">
             <select className="sq-input" aria-label={`Document type ${i + 1}`} value={r.doc_type} onChange={(e) => change(i, { doc_type: e.target.value })}>
               <option value="" disabled>Document type</option>
-              {choices.map(([key, words]) => <option key={key} value={key}>{words}</option>)}
+              {choices.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
             </select>
             <input className="sq-input" type="month" aria-label={`Month ${i + 1}`} value={r.month} onChange={(e) => change(i, { month: e.target.value })} />
             <button type="button" className="sq-btn" aria-label={`Remove need ${i + 1}`} onClick={() => setRows((all) => all.filter((_, j) => j !== i))}>Remove</button>

@@ -115,9 +115,9 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
     case 'attached':
       return (
         <p className="sq-msg sq-faint" data-work-item={message.work_item_id}>
-          {message.by === 'Squad' && message.note ? `${message.note} ` : `${message.by} attached `}
+          {message.by_kind === 'squad' && message.note ? `${message.note} ` : `${message.by} attached `}
           <button type="button" className="sq-link" aria-label={`Open ${message.title}`} onClick={() => source.open({ type: 'document', documentId: message.document_id, page: 1, title: message.title, borrowerCode })}>{message.title}</button>
-          {message.by !== 'Squad' && message.note ? ` · ${message.note}` : ''} <Time ts={message.ts} />
+          {message.by_kind !== 'squad' && message.note ? ` · ${message.note}` : ''} <Time ts={message.ts} />
         </p>
       );
     case 'ask':
