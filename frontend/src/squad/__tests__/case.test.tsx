@@ -24,6 +24,7 @@ vi.mock('@/squad/case/parts', () => ({
   RelatedItems: ({ items, onOpen }: { items: Array<{ id: string; title: string }>; onOpen: (id: string) => void }) =>
     items.length ? <button type="button" onClick={() => onOpen(items[0]!.id)}>{items[0]!.title}</button> : null,
 }));
+vi.mock('../thread/Composer', () => ({ Composer: (p: { borrowerId: string; workItemId?: string }) => <p>case composer {p.borrowerId} {p.workItemId}</p> }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: state.open, close: () => {}, current: null }) }));
 vi.mock('@/squad/case/KeyFigures', () => ({ KeyFigures: () => null }));
 vi.mock('@/squad/case/HeldFigures', () => ({ HeldFigures: () => <p>held figures</p> }));
@@ -47,6 +48,11 @@ beforeEach(() => {
 const panel = () => render(<CasePanel workItemId="w1" onOpenCase={state.openCase} />);
 
 describe('CasePanel', () => {
+  it('lets anyone ask Squad about this open case: the client and the case travel together', () => {
+    panel();
+    expect(screen.getByText('case composer b1 w1')).toBeInTheDocument();
+  });
+
   it('shows a case that is with someone else as theirs, with no way to send or decide it', () => {
     state.view = { ...base, may_route: false, with: 'Helen Strand', state_words: 'With Helen Strand', route_to: [] };
     panel();

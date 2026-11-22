@@ -28,8 +28,15 @@ export interface AnswerInput { option_id: string; remember: boolean; note?: stri
 export const useAnswer = (workItemId: string) =>
   useWrite<AnswerInput, { lesson_id: string | null }>(() => `/work-items/${workItemId}/answer`, (i) => i, ['trail']);
 
+export interface CopilotReply {
+  status: string;
+  answer: string;
+  answer_with_references: string;
+  fact_ids: string[];
+  citations: Array<{ document_id: string; page: number }>;
+}
 export const useAskCopilot = () =>
-  useWrite<{ question: string; borrower_id: string; work_item_id?: string }, { status: string; answer: string }>(() => '/copilot/ask', (i) => ({ ...i, history: [] }));
+  useWrite<{ question: string; borrower_id: string | null; work_item_id?: string }, CopilotReply>(() => '/copilot/ask', (i) => ({ ...i, history: [] }));
 
 // A sent draft is recorded, never emailed: the server says so with delivered: false.
 interface DraftResult { draft_id: string; status: 'draft' | 'sent'; delivered?: false }

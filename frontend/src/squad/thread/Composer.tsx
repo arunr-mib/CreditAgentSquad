@@ -1,10 +1,19 @@
 import { useId, useState, type FormEvent } from 'react';
 import { errorMessage } from '@/api/client';
-import { useAskCopilot } from '../api/hooks';
+import { useAskCopilot, type CopilotReply } from '../api/hooks';
 import { usePresence } from '../presence/Presence';
 
 /** A free question, answered by the engine's Copilot under its own guarantees (spec 7). */
-export function Composer({ borrowerId, borrowerName }: { borrowerId: string; borrowerName: string }) {
+export function Composer({ borrowerId, borrowerName, workItemId, label, onReply }: {
+  /** The client the question is about; null asks about the whole portfolio. */
+  borrowerId: string | null;
+  borrowerName?: string;
+  /** The case open beside the question: the server reads it with the client's scope. */
+  workItemId?: string;
+  label?: string;
+  onReply?: (reply: CopilotReply) => void;
+}) {
+  const name = label ?? `Ask Squad about ${borrowerId === null ? 'the whole portfolio' : (borrowerName ?? 'this client')}`;
   const id = useId();
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +27,8 @@ export function Composer({ borrowerId, borrowerName }: { borrowerId: string; bor
     setError(null);
     const done = beginWork();
     try {
-      await ask.mutateAsync({ question, borrower_id: borrowerId });
+      const reply = await ask.mutateAsync({ question, borrower_id: borrowerId, ...(workItemId ? { work_item_id: workItemId } : {}) });
+      onReply?.(reply);
       setText('');
       pulse();
     } catch (e) {
@@ -29,8 +39,8 @@ export function Composer({ borrowerId, borrowerName }: { borrowerId: string; bor
   }
   return (
     <form onSubmit={(e) => void submit(e)} className="sq-composer">
-      <label htmlFor={id} className="sq-sr">Ask Squad about {borrowerName}</label>
-      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={`Ask Squad about ${borrowerName}`} />
+      <label htmlFor={id} className="sq-sr">{name}</label>
+      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={name} />
       <small id={`${id}-hint`} className="sq-faint">Ctrl or Cmd + Enter to send</small>
       <button type="submit" className="sq-btn sq-btn-primary" disabled={!text.trim() || ask.isPending}>Ask</button>
       {error ? <p role="alert" className="sq-error">{error}</p> : null}

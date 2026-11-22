@@ -1,9 +1,12 @@
 import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useAuth } from '@/auth/context';
 import { AgentBody } from '@/source/AgentBody';
-import { useBriefing } from '../api/hooks';
+import { useSource } from '@/source/context';
+import { useBriefing, type CopilotReply } from '../api/hooks';
 import type { BriefingItem } from '../api/types';
 import { threadHref } from '../links';
+import { Composer } from '../thread/Composer';
 
 const word = (n: number) => (n === 1 ? '1 needs you' : `${n} need you`);
 
@@ -19,6 +22,29 @@ function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boo
         <span className={item.needs_you ? 'sq-state sq-state-needs' : 'sq-state'}>{item.state}</span>
       </Link>
     </li>
+  );
+}
+
+/** A question about the whole portfolio: no thread holds it, so the answer is shown here, under the same guarantees. */
+function PortfolioAsk() {
+  const [reply, setReply] = useState<CopilotReply | null>(null);
+  const source = useSource();
+  return (
+    <section aria-label="Ask about the portfolio">
+      <h2 className="sq-h2">Ask Squad</h2>
+      <Composer borrowerId={null} onReply={setReply} />
+      {reply && reply.status !== 'answered' ? (
+        <div role="group" aria-label="Squad could not answer" className="sq-msg sq-card sq-refusal"><p>{reply.answer}</p></div>
+      ) : reply ? (
+        <div className="sq-msg sq-card sq-squad">
+          <AgentBody text={reply.answer_with_references} />
+          {new Set(reply.fact_ids).size > 0 ? <p className="sq-faint">Checked by code: {new Set(reply.fact_ids).size} stored {new Set(reply.fact_ids).size === 1 ? 'figure' : 'figures'}</p> : null}
+          <div className="sq-actions">
+            {reply.citations.map((c, i) => <button key={i} type="button" className="sq-link" onClick={() => source.open({ type: 'document', documentId: c.document_id, page: c.page })}>Source: page {c.page}</button>)}
+          </div>
+        </div>
+      ) : null}
+    </section>
   );
 }
 
@@ -80,6 +106,7 @@ export function SquadHome() {
           </ul>
         </details>
       ) : null}
+      <PortfolioAsk />
     </div>
   );
 }

@@ -9,7 +9,9 @@ import type { Briefing, BriefingItem } from '../api/types';
 import { SquadHome } from '../home/SquadHome';
 
 const mockBriefing = vi.hoisted(() => ({ data: undefined as unknown, isPending: false, error: null as unknown, refetch: vi.fn() }));
-vi.mock('../api/hooks', () => ({ useBriefing: () => mockBriefing }));
+const ask = vi.hoisted(() => vi.fn());
+vi.mock('../api/hooks', () => ({ useBriefing: () => mockBriefing, useAskCopilot: () => ({ mutateAsync: ask, isPending: false }) }));
+vi.mock('../presence/Presence', () => ({ usePresence: () => ({ beginWork: () => () => {}, pulse: () => {}, say: () => {} }) }));
 vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 
 const priya: ApiUser = { id: 'u1', email: 'p@x', name: 'Priya Raman', title: '', role: 'analyst', permissions: [] };
@@ -36,6 +38,19 @@ function mount(b: Briefing) {
 }
 
 describe('SquadHome', () => {
+  it('asks Squad about the whole portfolio and shows the answer, or its refusal, on the page', async () => {
+    ask.mockResolvedValueOnce({ status: 'answered', answer: 'Kestrel Bay.', answer_with_references: 'Kestrel Bay.', fact_ids: ['f1'], citations: [] });
+    mount(briefing([]));
+    await userEvent.type(await screen.findByLabelText('Ask Squad about the whole portfolio'), 'Which clients have a reported-compliant breach?');
+    await userEvent.click(screen.getByRole('button', { name: /^ask$/i }));
+    expect(ask).toHaveBeenCalledWith({ question: 'Which clients have a reported-compliant breach?', borrower_id: null });
+    expect(await screen.findByText('Kestrel Bay.')).toBeInTheDocument();
+    ask.mockResolvedValueOnce({ status: 'refused', answer: 'I cannot ground that in stored figures.', answer_with_references: '', fact_ids: [], citations: [] });
+    await userEvent.type(screen.getByLabelText('Ask Squad about the whole portfolio'), 'Guess.');
+    await userEvent.click(screen.getByRole('button', { name: /^ask$/i }));
+    expect(await screen.findByRole('group', { name: 'Squad could not answer' })).toHaveTextContent('I cannot ground that');
+  });
+
   it('scopes the ember dot to needs-you rows and makes the count a heading', async () => {
     mount(briefing([
       item({ key: 'a', severity: 'high' }),

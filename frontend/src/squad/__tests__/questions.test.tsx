@@ -55,6 +55,25 @@ describe('Composer', () => {
     expect(calls.ask).toHaveBeenCalledWith({ question: 'Line one\ntwo', borrower_id: 'b1' });
   });
 
+  it('asks about the whole portfolio with no client, and hands the reply to the screen', async () => {
+    const reply = { status: 'answered', answer: 'Two clients.', answer_with_references: 'Two clients.', fact_ids: [], citations: [] };
+    calls.ask.mockResolvedValue(reply);
+    const onReply = vi.fn();
+    mount(<Composer borrowerId={null} onReply={onReply} />);
+    await userEvent.type(screen.getByLabelText('Ask Squad about the whole portfolio'), 'Which clients are in breach?');
+    await userEvent.click(screen.getByRole('button', { name: /^ask$/i }));
+    expect(calls.ask).toHaveBeenCalledWith({ question: 'Which clients are in breach?', borrower_id: null });
+    await waitFor(() => expect(onReply).toHaveBeenCalledWith(reply));
+  });
+
+  it('asks about one case: the client and the open item travel with the question', async () => {
+    calls.ask.mockResolvedValue({ status: 'answered', answer: 'x' });
+    mount(<Composer borrowerId="b1" borrowerName="Quillfeather Labs, Inc." workItemId="w1" label="Ask Squad about this case" />);
+    await userEvent.type(screen.getByLabelText('Ask Squad about this case'), 'Why is this open?');
+    await userEvent.click(screen.getByRole('button', { name: /^ask$/i }));
+    expect(calls.ask).toHaveBeenCalledWith({ question: 'Why is this open?', borrower_id: 'b1', work_item_id: 'w1' });
+  });
+
   it('does not send an empty question', async () => {
     mount(<Composer borrowerId="b1" borrowerName="Q" />);
     expect(screen.getByRole('button', { name: /^ask$/i })).toBeDisabled();

@@ -9,6 +9,7 @@ import { useSource } from '@/source/context';
 import { useAttachEvidence, useCase, useDecideCase, useReturnCase, useRouteCase } from '../api/hooks';
 import type { CaseView } from '../api/types';
 import { usePresence } from '../presence/Presence';
+import { Composer } from '../thread/Composer';
 import { Time } from '../thread/Time';
 
 const HELD = new Set(['spread.value_unverified', 'spread.does_not_foot']);
@@ -233,6 +234,10 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
           {c.may_return ? <ReturnForm c={c} /> : null}
           {c.may_route ? <RouteForm c={c} /> : null}
           {!decides && !c.may_route && !c.may_return ? <p className="sq-muted">{c.state_words}. This case is not yours to decide.</p> : null}
+          <details className="sq-group">
+            <summary>Ask Squad about this case</summary>
+            <Composer borrowerId={c.borrower.id} workItemId={c.work_item_id} label="Ask Squad about this case" />
+          </details>
         </>
       )}
     </section>
