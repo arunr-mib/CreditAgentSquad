@@ -20,3 +20,11 @@ What was checked, by whom, and what is unverified. Screens: `docs/product/screen
 - **Home row titles repeat the client.** "Dataflake Inc · Dataflake Inc: runway below watch" (also Nimbusfield, Lumora, Stripple). The title written by code starts with the client name; the row adds it again.
 - **Stripple rows end in an ellipsis** ("names no company and shows 2025, not Oc...") on home; the full text is on the case.
 - Full-axe run (`pnpm a11y`) is clean (0 serious or critical) on 17 pages; the keyboard pass reached 11 of 21 tab stops on the review room and 37 of 38 on home, 24 of 25 on Packages (every one reached has a focus ring; the unreached ones were not investigated).
+
+## Final fix wave (22 November 2026)
+- **Tab underline: fixed** (a real defect, not a capture artefact: TanStack's prefix-active Link). One tab is current on every view; a component test pins it.
+- **Home and Approvals rows: fixed.** The server serves each title's subject without the client's name in front; rows wrap to two lines; a routed view wraps in full. Journey "rows name the client once, and at 1000 px every Approvals subject is shown unclipped" passes for analyst and officer. Stripple's held-export row now reads "a file names no company or month: which client and month?" (no year in the title).
+- **Keyboard reach, investigated (M16).** On a fresh seed, tabbing from the top at 1440 px (scratchpad probe, same element query as `scripts/a11y.mjs`): review room 18 of 21, Packages 24 of 25, home 17 of 38. Every element not reached is expected, none points to a focus trap:
+  - review room (3) and Packages (1): the hidden native `<select>` that each styled select keeps for forms (`tabindex=-1`); the person tabs to the styled select's own trigger button instead (not checked one by one here);
+  - home (21): rows inside collapsed `<details>` groups (each client's Watching group, Recently decided, What Squad did overnight); a closed `<details>` hides its rows from the tab order by design (opening a group was not tested here). The earlier "37 of 38" was probably taken with groups open (not confirmed).
+- Not re-checked by eye: the screenshots were not recaptured in this wave.

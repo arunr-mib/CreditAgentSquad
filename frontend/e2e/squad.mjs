@@ -60,7 +60,8 @@ journey('home: the count equals the items listed, and each item opens its own cl
   assert(needs.length > 0, 'the seeded book should leave the analyst something to do (run app.squad_demo)');
   for (const item of needs) {
     await page.goto(`${BASE}/`);
-    await page.getByRole('link', { name: new RegExp(`${item.borrower_name} · ${item.title}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click();
+    // the row names the client once: the server's subject is the title without the client's name in front (final review I5)
+    await page.getByRole('link', { name: new RegExp(`${item.borrower_name} · ${item.subject ?? item.title}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click();
     await page.waitForURL(new RegExp(`/clients/${item.borrower_code}`));
     await page.getByRole('heading', { level: 1, name: item.borrower_name }).waitFor();
     if (item.work_item_id) {
@@ -71,6 +72,32 @@ journey('home: the count equals the items listed, and each item opens its own cl
       const text = await page.locator('.sq-messages').innerText();
       for (const name of others) assert(!text.includes(name), `another client's case (${name}) is on ${item.borrower_name}'s thread`);
     }
+  }
+});
+
+journey('rows name the client once, and at 1000 px every Approvals subject is shown unclipped (final review I5)', async ({ page }) => {
+  await page.setViewportSize({ width: 1000, height: 900 });
+  for (const email of [ANALYST, OFFICER]) {
+    await page.context().clearCookies(); // sign the previous person out
+    await signIn(page, email);
+    const { b } = await record(page);
+    await page.getByRole('list', { name: 'Needs you' }).or(page.getByText('Nothing needs you.', { exact: true })).first().waitFor();
+    for (const row of await page.locator('a.sq-row').all()) {
+      const text = await row.innerText();
+      const named = b.items.find((i) => text.includes(i.borrower_name));
+      if (named) assert(text.split(named.borrower_name).length === 2, `a home row names ${named.borrower_name} twice: ${text}`);
+    }
+  }
+  await page.goto(`${BASE}/approvals`);
+  await page.locator('[data-ready]').waitFor();
+  const rows = await page.getByRole('list', { name: 'Decisions waiting' }).locator('.sq-rowtitle').all();
+  assert(rows.length > 0, 'the officer should have decisions waiting in the seeded book');
+  for (const title of rows) {
+    const clipped = await title.evaluate((el) => el.scrollHeight > el.clientHeight + 1);
+    assert(!clipped, `an Approvals subject is clipped at 1000 px: ${await title.innerText()}`);
+    const text = await title.innerText();
+    const name = text.split(' · ')[0];
+    assert(text.split(name).length === 2, `an Approvals row names its client twice: ${text}`);
   }
 });
 
