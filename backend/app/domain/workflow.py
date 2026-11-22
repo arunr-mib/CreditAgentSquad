@@ -355,7 +355,6 @@ def owner_refusal(db: Session, item: WorkItem, *, user_id, user_role: str) -> Pe
     portfolio managers and credit administration are not split by client. None means no refusal."""
     if user_role != ANALYST:
         return None
-    from app.domain.credit import Borrower
     from app.domain.org import User
 
     if item.assigned_to is not None:
@@ -363,12 +362,34 @@ def owner_refusal(db: Session, item: WorkItem, *, user_id, user_role: str) -> Pe
             return None
         holder = db.get(User, item.assigned_to)
         return PermissionError(f"This case is with {holder.name if holder else 'a colleague'}; only they can act on it.")
-    borrower = db.get(Borrower, item.borrower_id) if item.borrower_id else None
+    return _not_her_client(db, item.borrower_id, user_id=user_id, user_role=user_role)
+
+
+def _not_her_client(db: Session, borrower_id, *, user_id, user_role: str) -> PermissionError | None:
+    """The one wording of the ownership refusal: the client is another analyst's."""
+    from app.domain.credit import Borrower
+    from app.domain.org import User
+
+    borrower = db.get(Borrower, borrower_id) if borrower_id else None
     if borrower is None or analyst_owns_client(user_id, user_role, borrower):
         return None
     owner = db.get(User, borrower.analyst_id)
     return PermissionError(f"{borrower.name} is {owner.name if owner else 'another analyst'}'s client; only they, or "
                            "a person the case is sent to, can act on it.")
+
+
+def client_refusal(db: Session, borrower_id, *, user_id, user_role: str) -> PermissionError | None:
+    """The ownership rule for work on a client's figures that is not tied to one case (confirming, correcting,
+    rejecting or keying a figure): an analyst may do it on her own client (`analyst_owns_client`) or on a client one
+    of whose open cases is assigned or routed to her. Other roles are not split by client. None means no refusal."""
+    if user_role != ANALYST:
+        return None
+    holds_a_case = db.execute(select(WorkItem.id).where(
+        WorkItem.borrower_id == borrower_id, WorkItem.status == "open",
+        WorkItem.assigned_to == uuid.UUID(str(user_id)))).first()
+    if holds_a_case is not None:
+        return None
+    return _not_her_client(db, borrower_id, user_id=user_id, user_role=user_role)
 
 
 def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, decision: str | None = None,

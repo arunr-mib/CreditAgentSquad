@@ -185,3 +185,39 @@ def test_route_is_not_offered_while_a_match_question_is_open(db, owned, monkeypa
     view = build_case(db, item, owned["analyst"])
     assert view["may_route"] is False and view["state_words"] == "Confirm which document first"
     assert view["route_blocked_words"] == "Confirm which document first"
+
+
+# ---- fact repair follows the same engine rule (coordinator, after the final fix wave) ----
+
+def _held_fact(db, borrower):
+    from decimal import Decimal
+
+    from app.domain.facts_service import add_fact
+    return add_fact(db, borrower_id=borrower.id, key="bs.cash", period_end=__import__("datetime").date(2026, 9, 30),
+                    months=0, value=Decimal("1000"), kind="seeded", status="proposed")
+
+
+def test_the_engine_refuses_another_analyst_repairing_a_clients_figures(db, owned):
+    refuse = workflow.client_refusal
+    why = refuse(db, owned["borrower"].id, user_id=owned["tomas"].id, user_role="analyst")
+    assert isinstance(why, PermissionError) and "Priya Raman" in str(why)
+    assert refuse(db, owned["borrower"].id, user_id=owned["analyst"].id, user_role="analyst") is None
+    assert refuse(db, owned["borrower"].id, user_id=owned["officer"].id, user_role="credit_officer") is None
+    case = _case(db, owned["borrower"])
+    route_work_item(db, case, user=owned["analyst"], to_user_id=owned["tomas"].id, view=VIEW)
+    assert refuse(db, owned["borrower"].id, user_id=owned["tomas"].id, user_role="analyst") is None  # a case is with him
+
+
+def test_the_fact_repair_routes_refuse_another_analyst_with_403_naming_the_clients_analyst(db, client, owned):
+    fact = _held_fact(db, owned["borrower"])
+    db.commit()
+    sign_in(client, "tomas.keller")
+    for path, body in ((f"/api/v1/facts/{fact.id}/confirm", None),
+                       (f"/api/v1/facts/{fact.id}/correct", {"value": "1200", "reason": "As printed."}),
+                       (f"/api/v1/facts/{fact.id}/reject", {"reason": "Wrong line."}),
+                       (f"/api/v1/borrowers/{owned['borrower'].id}/facts",
+                        {"key": "bs.cash", "period_end": "2026-09-30", "months": 0, "value": "1200", "reason": "Keyed."})):
+        r = client.post(path, json=body) if body is not None else client.post(path)
+        assert r.status_code == 403 and "Priya Raman" in r.json()["detail"], (path, r.status_code, r.text)
+    sign_in(client, "priya.raman")
+    assert client.post(f"/api/v1/facts/{fact.id}/confirm").status_code == 200

@@ -418,11 +418,21 @@ def _fact_or_404(db: Session, fact_id: uuid.UUID) -> Fact:
     return fact
 
 
+def _owns_client(db: Session, borrower_id: uuid.UUID, user: User) -> None:
+    """The engine's ownership rule (`workflow.client_refusal`): another analyst's client is refused with 403."""
+    from app.domain.workflow import client_refusal
+
+    refused = client_refusal(db, borrower_id, user_id=user.id, user_role=user.role)
+    if refused is not None:
+        raise HTTPException(403, str(refused))
+
+
 @router.post("/facts/{fact_id}/confirm")
 def confirm_fact_route(fact_id: uuid.UUID, db: Session = Depends(get_db),
                        user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
     """A person accepts a figure held for review exactly as it was read."""
     fact = _fact_or_404(db, fact_id)
+    _owns_client(db, fact.borrower_id, user)
     try:
         facts_service.confirm_fact(db, fact, user.id)
     except ValueError as exc:
@@ -436,6 +446,7 @@ def correct_fact_route(fact_id: uuid.UUID, body: FactCorrectIn, db: Session = De
                        user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
     """A person replaces a figure. The old fact is kept and marked superseded."""
     fact = _fact_or_404(db, fact_id)
+    _owns_client(db, fact.borrower_id, user)
     try:
         new, recalculation = corrections.correct(db, fact, value=_decimal(body.value), user_id=user.id,
                                                  reason=body.reason)
@@ -449,6 +460,7 @@ def correct_fact_route(fact_id: uuid.UUID, body: FactCorrectIn, db: Session = De
 def reject_fact_route(fact_id: uuid.UUID, body: FactReasonIn, db: Session = Depends(get_db),
                       user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
     fact = _fact_or_404(db, fact_id)
+    _owns_client(db, fact.borrower_id, user)
     if not body.reason.strip():
         raise HTTPException(422, "Rejecting a figure needs a reason.")
     try:
@@ -464,6 +476,7 @@ def enter_fact(borrower_id: uuid.UUID, body: ManualFactIn, db: Session = Depends
                user: User = Depends(require(Permission.CONFIRM_SPREAD))) -> dict:
     """A person keys a statement figure by hand: a template input line, with a reason."""
     borrower = _borrower_or_404(db, borrower_id)
+    _owns_client(db, borrower.id, user)
     line = next((ln for ln in template.template_lines(borrower.template_id) if ln.key == body.key), None)
     if line is None or line.computed:
         raise HTTPException(422, "Only input lines of the spreading template can be entered; totals are calculated.")
