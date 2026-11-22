@@ -34,7 +34,7 @@ const base: CaseView = {
   title: 'Cash below minimum', question: 'How should the bank respond?', severity: 'high', status: 'open', due_date: null,
   decision: null, decision_words: null, decision_reason: '', decided_by: null, requires_second_person: false, with: null,
   state_words: 'With the credit officer', needs_you: false, view: null, history: [], attached: [], candidates: [],
-  decisions: [{ id: 'reservation_of_rights', needs_reason: true, permitted: false }, { id: 'not_a_breach', needs_reason: true, permitted: false }],
+  decisions: [{ id: 'reservation_of_rights', label: 'Reserve rights', hint: 'Send a reservation of rights letter.', needs_reason: true, permitted: false }, { id: 'not_a_breach', label: 'Not a breach', hint: '', needs_reason: true, permitted: false }],
   route_to: [{ id: 'u2', name: 'Helen Strand', title: 'Senior Credit Officer' }], may_route: true, may_return: false, may_attach: true,
 };
 
@@ -101,7 +101,7 @@ describe('CasePanel', () => {
   });
 
   it('shows a second-person refusal in the server’s words, never pre-empted', async () => {
-    state.view = { ...base, decisions: [{ id: 'not_a_breach', needs_reason: false, permitted: true }], may_route: false };
+    state.view = { ...base, decisions: [{ id: 'not_a_breach', label: 'Not a breach', hint: '', needs_reason: false, permitted: true }], may_route: false };
     state.error = new ApiError(409, 'This approval must come from a different person than the preparer.');
     panel();
     await userEvent.click(screen.getByRole('radio', { name: /not a breach/i }));
@@ -156,7 +156,7 @@ describe('CasePanel', () => {
     panel();
     expect(screen.getByText('agent recommendation')).toBeInTheDocument();
     expect(screen.queryByText(/No agent recommendation is attached/)).not.toBeInTheDocument();
-    expect(screen.getByText('Send a reservation of rights letter while the breach is worked through.')).toBeInTheDocument();
+    expect(screen.getByText('Send a reservation of rights letter.')).toBeInTheDocument();
   });
 
   it('names each refusal by what it means', () => {

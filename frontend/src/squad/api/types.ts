@@ -69,7 +69,7 @@ export interface TrackRecordRow {
   last_correction_at: string | null;
 }
 export interface CaseHistoryEntry { kind: 'routed' | 'returned' | 'evidence_attached'; seq: number; at: string; by: string; by_id: string; to: string | null; to_id: string | null; text: string; document_id: string | null }
-export interface CaseDecisionOption { id: string; needs_reason: boolean; permitted: boolean }
+export interface CaseDecisionOption { id: string; label: string; hint: string; needs_reason: boolean; permitted: boolean }
 export interface CaseView {
   work_item_id: string;
   borrower: { id: string; code: string; name: string };

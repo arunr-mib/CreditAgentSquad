@@ -9,9 +9,10 @@ vi.mock('@/api/hooks', () => ({
   useBorrowerCovenants: () => ({
     isPending: false, error: null,
     data: {
-      facts: { v1: fact('v1', 'cov.min_runway_months.value', '13'), t1: fact('t1', 'cov.min_runway_months.threshold', '6') },
+      facts: { v1: fact('v1', 'cov.min_runway_months.value', '13'), t1: fact('t1', 'cov.min_runway_months.threshold', '6'), r1: fact('r1', 'cov.min_runway_months.reported', '12') },
       tests: [
-        { id: 't', covenant_name: 'Minimum runway', period_end: '2026-10-31', value_fact_id: 'v1', threshold_fact_id: 't1', headroom_fact_id: null, outcome: 'pass', terms_version: null, note: null },
+        { id: 't', covenant_name: 'Minimum runway', period_end: '2026-10-31', value_fact_id: 'v1', threshold_fact_id: 't1', headroom_fact_id: null, reported_fact_id: 'r1', outcome: 'compliant', terms_version: null, note: null },
+        { id: 'old', covenant_name: 'Minimum runway', period_end: '2026-09-30', value_fact_id: null, threshold_fact_id: null, headroom_fact_id: null, reported_fact_id: null, outcome: 'breach', terms_version: null, note: null },
         { id: 't2', covenant_name: 'Burn multiple', period_end: '2026-10-31', value_fact_id: null, threshold_fact_id: null, headroom_fact_id: null, outcome: 'not_meaningful', terms_version: null, note: 'not_meaningful_cash_flow_positive' },
       ],
     },
@@ -30,5 +31,18 @@ describe('Covenants for a venture client', () => {
     expect(await screen.findByText('13.0 months')).toBeInTheDocument();
     expect(screen.getByText('6.0 months')).toBeInTheDocument();
     expect(screen.getByText('Not meaningful: cash-flow positive (served)')).toBeInTheDocument();
+  });
+
+  it('shows what the certificate reported beside the calculation, and the earlier periods by outcome', async () => {
+    const root = createRootRoute();
+    const route = createRoute({ getParentRoute: () => root, path: '/', component: () => <Covenants borrower={{ id: 'b1', code: 'QFL', name: 'Q' } as never} /> });
+    const router = createRouter({ routeTree: root.addChildren([route]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    render(<QueryClientProvider client={new QueryClient()}><RouterProvider router={router} /></QueryClientProvider>);
+    await screen.findByText('13.0 months');
+    expect(screen.getByRole('columnheader', { name: 'Reported' })).toBeInTheDocument();
+    expect(screen.getByText('12.0 months')).toBeInTheDocument();
+    const history = screen.getByRole('table', { name: 'Earlier periods' });
+    expect(history).toHaveTextContent('30 Sep 2026');
+    expect(history).toHaveTextContent('Breach');
   });
 });

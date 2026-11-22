@@ -65,7 +65,6 @@ export const STAGE_LABEL: Record<StageId, string> = {
   closed: 'Closed',
 };
 
-export const stageLabel = (stage: string | null | undefined) => (stage ? (STAGE_LABEL[stage as StageId] ?? humanize(stage)) : 'No stage');
 
 export const STAGE_STATUS_LABEL: Record<StageStatus, string> = {
   pending: 'Not started',
@@ -99,99 +98,6 @@ export const OUTCOME: Record<CovenantOutcome, { tone: StatusTone; label: string;
 
 /* ── Work items ───────────────────────────────────────────────────────── */
 
-export type ItemGroup = 'covenant' | 'spreading' | 'terms' | 'borrowing_base' | 'intake' | 'signals' | 'review';
-
-export const ITEM_GROUP_LABEL: Record<ItemGroup, string> = {
-  covenant: 'Covenant',
-  spreading: 'Spreading',
-  terms: 'Terms',
-  borrowing_base: 'Borrowing base',
-  intake: 'Intake',
-  signals: 'Signals',
-  review: 'Review',
-};
-
-const GROUP_BY_PREFIX: Record<string, ItemGroup> = {
-  covenant: 'covenant',
-  spread: 'spreading',
-  document: 'spreading',
-  terms: 'terms',
-  bb: 'borrowing_base',
-  intake: 'intake',
-  signal: 'signals',
-  review: 'review',
-  package: 'review',
-};
-
-export const itemGroup = (itemType: string): ItemGroup => GROUP_BY_PREFIX[itemType.split('.')[0] ?? ''] ?? 'review';
-
-const ITEM_TYPE_LABEL: Record<string, string> = {
-  'intake.missing_document': 'Missing document',
-  'intake.unclassified': 'Unclassified document',
-  'spread.value_unverified': 'Value not verified',
-  'spread.does_not_foot': 'Section does not foot',
-  'spread.restatement': 'Restated prior period',
-  'spread.image_only': 'Image-only page',
-  'document.spreadsheet_unreadable': 'Spreadsheet not readable',
-  'terms.approval_needed': 'Terms awaiting approval',
-  'terms.unapproved_amendment': 'Amendment not approved into terms',
-  'covenant.breach': 'Covenant breach',
-  'reading.review': 'Reading to confirm',
-  'covenant.reported_mismatch': 'Covenant breach, certificate reports compliant',
-  'covenant.reported_breach_unconfirmed': 'Certificate reports a breach the calculation does not show',
-  'fact.correction_changed_outcome': 'Corrected figure changed a covenant outcome',
-  'covenant.cannot_test': 'Covenant cannot be tested',
-  'bb.over_advance': 'Over-advance',
-  'bb.certificate_mismatch': 'Borrowing base certificate mismatch',
-  'signal.high': 'High-severity signal',
-  'review.commentary_approval': 'Commentary awaiting approval',
-  'package.release': 'Package release',
-};
-
-export const itemTypeLabel = (itemType: string) => ITEM_TYPE_LABEL[itemType] ?? humanize(itemType);
-export const isBreachItem = (itemType: string) => itemType === 'covenant.breach' || itemType === 'covenant.reported_mismatch';
-
-/** What each allowed decision means, in the words a person would use. `reason` marks decisions that should carry one. */
-const DECISION: Record<string, { label: string; hint: string; reason?: boolean }> = {
-  waiver_requested: { label: 'Waiver requested', hint: 'The borrower has asked for a waiver; the breach stands until one is granted.', reason: true },
-  reservation_of_rights: { label: 'Reserve rights', hint: 'Send a reservation of rights letter while the breach is worked through.', reason: true },
-  escalate_to_committee: { label: 'Escalate to committee', hint: 'Take the breach to credit committee.', reason: true },
-  ask_for_new_timeline: { label: 'Ask for a new timeline', hint: 'Ask the client for a new expected close. Squad drafts the email; a person sends it.' },
-  note_and_watch: { label: 'Note and keep watching', hint: 'Noted; Squad keeps watching for the close.' },
-  reserve_rights: { label: 'Reserve the bank’s rights', hint: 'The bank reserves its rights while the round is late.', reason: true },
-  escalate: { label: 'Escalate', hint: 'Take it to the credit officer or committee.', reason: true },
-  not_a_breach: { label: 'Not a breach', hint: 'The calculation is wrong or the terms differ. Say why.', reason: true },
-  paydown_required: { label: 'Require a paydown', hint: 'The borrower must repay down to the borrowing base.', reason: true },
-  temporary_overadvance_approved: { label: 'Approve a temporary over-advance', hint: 'Allow the excess for a stated period.', reason: true },
-  bank_figures_stand: { label: 'The bank’s figures stand', hint: 'Use the recalculation; the certificate is wrong.' },
-  borrower_to_resubmit: { label: 'Ask the borrower to resubmit', hint: 'Request a corrected certificate.' },
-  certificate_correct: { label: 'The certificate is correct', hint: 'The recalculation is wrong. Say why.', reason: true },
-  chaser_sent: { label: 'Chaser sent', hint: 'The reminder has gone to the borrower.' },
-  extension_granted: { label: 'Extension granted', hint: 'The borrower has more time. Say until when.', reason: true },
-  received_elsewhere: { label: 'Received elsewhere', hint: 'The document arrived outside the workspace.', reason: true },
-  acknowledged: { label: 'Acknowledge', hint: 'Seen; no change to the risk rating.' },
-  rating_review_requested: { label: 'Request a rating review', hint: 'The risk rating should be looked at again.', reason: true },
-  add_to_watch_list: { label: 'Add to the watch list', hint: 'Monitor this borrower more closely.', reason: true },
-  values_confirmed: { label: 'Values confirmed', hint: 'Every held figure is accepted as read, and the spread is finished from them.' },
-  values_corrected: { label: 'Values corrected', hint: 'The figures have been corrected with a citation.', reason: true },
-  accept_as_reported: { label: 'Accept as reported', hint: 'Use the statement as it stands. Say why.', reason: true },
-  request_new_document: { label: 'Request a new document', hint: 'Ask the borrower for a complete, readable copy.' },
-  key_by_hand: { label: 'Key by hand', hint: 'A person will enter the figures from the page.' },
-  restated_update_prior: { label: 'Restated: update the prior period', hint: 'The borrower restated; supersede the earlier figures.', reason: true },
-  keep_prior: { label: 'Keep the prior figures', hint: 'Leave last year’s confirmed spread as it is.', reason: true },
-  ask_borrower: { label: 'Ask the borrower', hint: 'Find out why the comparative column changed.' },
-  terms_update_requested: { label: 'Request a terms update', hint: 'Prepare a new terms version from the amendment for approval.' },
-  amendment_not_applicable: { label: 'Amendment does not apply', hint: 'The amendment does not change the tested terms. Say why.', reason: true },
-  terms_approved: { label: 'Approve the terms', hint: 'The proposed terms govern from their effective date.' },
-  not_applicable: { label: 'Not applicable', hint: 'Say why this does not apply.', reason: true },
-  approve: { label: 'Approve', hint: 'The commentary is approved as written.' },
-  return_for_rework: { label: 'Return for rework', hint: 'Send it back with what needs to change.', reason: true },
-  reject: { label: 'Reject', hint: 'Say why.', reason: true },
-};
-
-export const decisionLabel = (id: string | null | undefined) => (id ? (DECISION[id]?.label ?? humanize(id)) : '');
-export const decisionHint = (id: string) => DECISION[id]?.hint ?? '';
-export const decisionNeedsReason = (id: string) => DECISION[id]?.reason ?? false;
 
 /* ── People ───────────────────────────────────────────────────────────── */
 
@@ -206,36 +112,7 @@ export const ROLE_LABEL: Record<string, string> = {
 
 export const roleLabel = (role: string | null | undefined) => (role ? (ROLE_LABEL[role] ?? humanize(role)) : '');
 
-const PERMISSION_LABEL: Record<string, string> = {
-  decide_work_item: 'decide work items',
-  decide_breach: 'decide the response to a breach',
-  confirm_spread: 'confirm a spread',
-  prepare_terms: 'prepare terms',
-  approve_terms: 'approve terms',
-  upload_document: 'file documents',
-  approve_commentary: 'approve commentary',
-  edit_commentary: 'write commentary',
-  manage_actions: 'manage actions',
-  release_package: 'release a package',
-  advance_clock: 'set the simulated date',
-};
 
-export const permissionLabel = (permission: string) => PERMISSION_LABEL[permission] ?? humanize(permission).toLowerCase();
-
-/** Roles that hold each permission, for telling a person who can decide (mirrors backend/app/core/roles.py). */
-export const ROLES_WITH: Record<string, string[]> = {
-  decide_breach: ['credit_officer'],
-  confirm_spread: ['analyst'],
-  prepare_terms: ['analyst', 'credit_admin'],
-  approve_terms: ['credit_officer', 'credit_admin'],
-  upload_document: ['analyst', 'portfolio_manager', 'credit_admin'],
-  decide_work_item: ['analyst', 'portfolio_manager', 'credit_officer', 'credit_admin'],
-  approve_commentary: ['portfolio_manager', 'credit_officer'],
-  edit_commentary: ['analyst', 'portfolio_manager'],
-  release_package: ['portfolio_manager', 'credit_officer'],
-  manage_actions: ['analyst', 'portfolio_manager', 'credit_officer', 'credit_admin'],
-  advance_clock: ['admin'],
-};
 
 /* ── Periods and time ─────────────────────────────────────────────────── */
 
@@ -298,34 +175,3 @@ export function toFact(fact: FactSummary): Fact {
 
 /* ── Ledger ───────────────────────────────────────────────────────────── */
 
-const ACTION_LABEL: Record<string, string> = {
-  'auth.signed_in': 'Signed in',
-  'auth.signed_out': 'Signed out',
-  'user.created': 'User created',
-  'clock.set': 'Simulated date set',
-  'document.received': 'Document received',
-  'fact.recorded': 'Fact recorded',
-  'fact.confirmed': 'Fact confirmed',
-  'fact.superseded': 'Fact superseded',
-  'fact.rejected': 'Fact rejected',
-  'cycle.opened': 'Monitoring cycle opened',
-  'cycle.stage_changed': 'Cycle stage changed',
-  'cycle.closed': 'Monitoring cycle closed',
-  'covenant.tested': 'Covenant tested',
-  'borrowing_base.reviewed': 'Borrowing base reviewed',
-  'signal.fired': 'Signal fired',
-  'work_item.raised': 'Work item raised',
-  'work_item.decided': 'Decision recorded',
-  'obligation.received': 'Reporting requirement met',
-  'obligation.overdue': 'Reporting requirement overdue',
-  'terms.approved': 'Terms approved',
-  'terms.proposed': 'Terms proposed',
-  'commentary.written': 'Commentary written',
-  'review_sheet.approved': 'Review sheet approved',
-  'review_meeting.created': 'Review meeting created',
-  'review_meeting.phase_changed': 'Review meeting moved on',
-  'action.raised': 'Action raised',
-  'action.status_changed': 'Action status changed',
-};
-
-export const actionLabel = (action: string) => ACTION_LABEL[action] ?? humanize(action);

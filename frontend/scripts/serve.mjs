@@ -11,6 +11,8 @@ export const PORT = Number(process.env.PREVIEW_PORT ?? 4173);
 export const BASE = `http://127.0.0.1:${PORT}`;
 export const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 export const ANALYST = 'priya.raman@bankofstoic.example';
+/** Each page is scanned as a role that may see it: an analyst has no Approvals or Oversight, and a refusal is not a screen. */
+export const ROLE_EMAIL = { analyst: ANALYST, officer: 'helen.strand@bankofstoic.example', admin: 'admin@bankofstoic.example' };
 
 // The client the shots and the checks open: the legacy book's breach, or the innovation book's first client.
 const BREACH = process.env.SHOT_CLIENT ?? 'corvane-analytics';
@@ -20,18 +22,43 @@ const BREACH = process.env.SHOT_CLIENT ?? 'corvane-analytics';
  * the API); `prepare` drives the page into the state worth looking at. `signedOut` skips sign-in.
  */
 export const PAGES = [
-  { name: 'sign-in', path: '/sign-in', signedOut: true },
-  { name: 'home', path: '/' },
-  { name: 'thread', path: `/clients/${BREACH}` },
-  { name: 'client-file', path: `/clients/${BREACH}/file` },
-  { name: 'spreads', path: `/clients/${BREACH}/file/spreads` },
-  { name: 'covenants', path: `/clients/${BREACH}/file/covenants` },
-  { name: 'documents', path: `/clients/${BREACH}/file/documents` },
-  { name: 'funding', path: `/clients/${BREACH}/file/funding` },
-  { name: 'history', path: `/clients/${BREACH}/file/history` },
-  { name: 'portfolio', path: '/portfolio' },
-  { name: 'oversight', path: '/oversight' },
+  { name: 'sign-in', path: '/sign-in', signedOut: true, as: 'analyst' },
+  { name: 'home', path: '/', as: 'analyst' },
+  { name: 'thread', path: `/clients/${BREACH}`, as: 'analyst' },
+  { name: 'approvals', path: '/approvals', as: 'officer' },
+  { name: 'review-room', path: '/review-room', as: 'analyst' },
+  { name: 'portfolio', path: '/portfolio', as: 'analyst' },
+  ...['overview', 'spreads', 'covenants', 'documents', 'funding', 'loans', 'reviews', 'packages', 'runs', 'history'].map((view) => ({
+    name: `client-file-${view}`,
+    path: view === 'overview' ? `/clients/${BREACH}/file` : `/clients/${BREACH}/file/${view}`,
+    as: 'analyst',
+    // The client file is ready at once; the lists inside it load after: wait for them before scanning.
+    prepare: async (page) => {
+      await page.locator('.sq-file').locator('table, .sq-card, .sq-muted, [data-ready], [role="alert"]').first().waitFor({ timeout: 30000 });
+      await page.waitForLoadState('networkidle');
+    },
+  })),
+  { name: 'oversight', path: '/oversight', as: 'admin' },
 ];
+
+/** Runs `visit(page, target)` for every page (or those `only` names), each in a fresh session as the role that may see it. */
+export async function eachPage(browser, contextOptions, visit, only = null) {
+  for (const role of Object.keys(ROLE_EMAIL)) {
+    const targets = PAGES.filter((t) => t.as === role && (!only || only.includes(t.name)));
+    if (targets.length === 0) continue;
+    const context = await browser.newContext(contextOptions);
+    const page = await context.newPage();
+    let signedIn = false;
+    for (const target of targets) {
+      if (!target.signedOut && !signedIn) {
+        await signIn(page, ROLE_EMAIL[role]);
+        signedIn = true;
+      }
+      await visit(page, target, role);
+    }
+    await context.close();
+  }
+}
 
 export async function signIn(page, email = ANALYST) {
   await page.goto(`${BASE}/sign-in`, { waitUntil: 'networkidle' });
@@ -40,6 +67,7 @@ export async function signIn(page, email = ANALYST) {
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await page.waitForURL(`${BASE}/`);
   await page.locator('.sq-main').waitFor();
+  await page.waitForLoadState('networkidle');
 }
 
 /** Goes to a target and waits until it is worth looking at. */

@@ -6,11 +6,13 @@ import {
   useReviewSheet, useReviewSheets, useSignals, useSpread, useTimeline,
 } from '@/api/hooks';
 import type { BorrowerRow, FactSummary } from '@/api/schema';
+import { useAuth } from '@/auth/context';
 import { formatDate } from '@/design';
 import { OUTCOME } from '@/domain/labels';
 import { RunStage } from '@/squad/clientfile/RunStage';
 import { UploadDocument } from '@/squad/clientfile/UploadDocument';
 import { Commentary } from '@/squad/clientfile/review/Commentary';
+import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
 import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
@@ -72,7 +74,7 @@ export function Overview({ borrower }: Props) {
         <h2 className="sq-h2">Signals</h2>
         {(signals.data ?? []).length === 0 ? <p className="sq-muted">No open signal.</p> : (
           <ul className="sq-plainlist">
-            {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalWords(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span></li>)}
+            {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalWords(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span>{s.explanation?.text ? <AgentBody text={s.explanation.text} /> : null}</li>)}
           </ul>
         )}
       </section>
@@ -146,7 +148,7 @@ export function Covenants({ borrower }: Props) {
     <div className="sq-tablewrap">
       <p className="sq-faint">Tested for the period ended {formatDate(latest as string)}</p>
       <table className="sq-table" aria-label="Covenants">
-        <thead><tr><th scope="col">Covenant</th><th scope="col" className="sq-num">Value</th><th scope="col" className="sq-num">Limit</th><th scope="col" className="sq-num">Headroom</th><th scope="col">Outcome</th></tr></thead>
+        <thead><tr><th scope="col">Covenant</th><th scope="col" className="sq-num">Value</th><th scope="col" className="sq-num">Reported</th><th scope="col" className="sq-num">Limit</th><th scope="col" className="sq-num">Headroom</th><th scope="col">Outcome</th></tr></thead>
         <tbody>
           {current.map((t) => {
             const note = t.note ? (noteWords[t.note] ?? t.note.replace(/_/g, ' ')) : null;
@@ -154,6 +156,7 @@ export function Covenants({ borrower }: Props) {
               <tr key={t.id}>
                 <th scope="row">{t.covenant_name}{t.terms_version ? <span className="sq-faint"> · terms v{t.terms_version.version}</span> : null}</th>
                 <td className="sq-num">{t.value_fact_id && facts[t.value_fact_id] ? <FactFigure fact={facts[t.value_fact_id]} align="column" /> : <Absent align="column" reason={note ?? 'Not measured'} />}</td>
+                <td className="sq-num">{t.reported_fact_id && facts[t.reported_fact_id] ? <FactFigure fact={facts[t.reported_fact_id]} align="column" /> : <Absent align="column" reason="Not reported" />}</td>
                 <td className="sq-num">{t.threshold_fact_id && facts[t.threshold_fact_id] ? <FactFigure fact={facts[t.threshold_fact_id]} align="column" /> : <Absent align="column" />}</td>
                 <td className="sq-num">{t.headroom_fact_id && facts[t.headroom_fact_id] ? <FactFigure fact={facts[t.headroom_fact_id]} align="column" /> : <Absent align="column" />}</td>
                 <td>{['breach', 'breach_reported_compliant'].includes(t.outcome) ? <span className="sq-tag sq-tag-breach">{OUTCOME[t.outcome].label}</span> : OUTCOME[t.outcome]?.label ?? t.outcome}</td>
@@ -162,12 +165,37 @@ export function Covenants({ borrower }: Props) {
           })}
         </tbody>
       </table>
+      {(() => {
+        const periods = [...new Set(tests.map((t) => t.period_end))].filter((p) => p !== latest).sort().reverse().slice(0, 6);
+        if (periods.length === 0) return null;
+        const names = [...new Set(tests.map((t) => t.covenant_name))];
+        return (
+          <>
+            <h2 className="sq-h2">Earlier periods</h2>
+            <table className="sq-table" aria-label="Earlier periods">
+              <thead><tr><th scope="col">Covenant</th>{periods.map((p) => <th key={p} scope="col">{formatDate(p)}</th>)}</tr></thead>
+              <tbody>
+                {names.map((name) => (
+                  <tr key={name}>
+                    <th scope="row">{name}</th>
+                    {periods.map((p) => {
+                      const t = tests.find((x) => x.covenant_name === name && x.period_end === p);
+                      return <td key={p}>{t ? (OUTCOME[t.outcome]?.label ?? t.outcome) : <span className="sq-faint">Not tested</span>}</td>;
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        );
+      })()}
     </div>
   );
 }
 
 export function Documents({ borrower }: Props) {
   const documents = useDocuments(borrower.id);
+  const { can } = useAuth();
   const source = useSource();
   const search = useSearch({ strict: false }) as { document?: string; page?: number; quote?: string };
   const opened = useRef<string | undefined>(undefined);
@@ -187,8 +215,8 @@ export function Documents({ borrower }: Props) {
   return (
     <div>
       {missing ? <p role="alert">That document is not on file for this client.</p> : null}
-      <button type="button" className="sq-btn" onClick={() => setUploading((u) => !u)} aria-expanded={uploading}>File a document</button>
-      {uploading ? <UploadDocument borrowerId={borrower.id} code={borrower.code} onClose={() => setUploading(false)} /> : null}
+      {can('upload_document') ? <button type="button" className="sq-btn" onClick={() => setUploading((u) => !u)} aria-expanded={uploading}>File a document</button> : null}
+      {uploading && can('upload_document') ? <UploadDocument borrowerId={borrower.id} code={borrower.code} onClose={() => setUploading(false)} /> : null}
       {rows.length === 0 ? <p className="sq-muted">No document is on file for this client.</p> : (
         <div className="sq-tablewrap"><table className="sq-table" aria-label="Documents">
           <thead><tr><th scope="col">Document</th><th scope="col">Type</th><th scope="col">Period</th><th scope="col">Received</th></tr></thead>
@@ -287,15 +315,21 @@ export function Reviews({ borrower }: Props) {
 }
 
 export function History({ borrower }: Props) {
-  const timeline = useTimeline(borrower.id);
-  if (timeline.isPending) return <Loading what="the history" />;
-  if (timeline.error || !timeline.data) return <Failed what="The history" />;
-  if (timeline.data.length === 0) return <p className="sq-muted">Nothing has been recorded for this client yet.</p>;
+  const [routine, setRoutine] = useState(false);
+  const timeline = useTimeline(borrower.id, routine);
   return (
-    <ol className="sq-plainlist" aria-label="History">
-      {timeline.data.map((e) => (
-        <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{e.summary ? ` · ${e.summary}` : ''}</li>
-      ))}
-    </ol>
+    <>
+      <label className="sq-option"><input type="checkbox" checked={routine} onChange={(e) => setRoutine(e.target.checked)} /> <span>Include routine events (received, overdue, stage changes)</span></label>
+      {timeline.isPending ? <Loading what="the history" /> : timeline.error || !timeline.data ? <Failed what="The history" /> : timeline.data.length === 0 ? (
+        <p className="sq-muted">Nothing has been recorded for this client yet.</p>
+      ) : (
+        <ol className="sq-plainlist" aria-label="History">
+          {timeline.data.map((e) => (
+            <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_label ?? e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{e.summary ? ` · ${e.summary}` : ''}</li>
+          ))}
+        </ol>
+      )}
+    </>
   );
 }
+

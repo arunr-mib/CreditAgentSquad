@@ -1,11 +1,11 @@
-// Accessibility check on the real screens, signed in as a credit analyst: axe-core, plus a keyboard
+// Accessibility check on the real screens, each as a role that may see it (analyst, officer, administrator): axe-core, plus a keyboard
 // pass that tabs through every focusable control and fails if one takes focus without a visible
 // focus ring. Needs the seeded stack running (API on port 8000).
 // Usage: node scripts/a11y.mjs [--no-build]
 // Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { open, PAGES, serve, signIn } from './serve.mjs';
+import { eachPage, open, serve } from './serve.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
@@ -16,16 +16,8 @@ const browser = await chromium.launch();
 let failed = false;
 
 try {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
-  const page = await context.newPage();
-
-  let signedIn = false;
-  for (const target of PAGES) {
-    if (!target.signedOut && !signedIn) {
-      await signIn(page);
-      signedIn = true;
-    }
-    target.path = `${target.name} (${await open(page, target)})`;
+  await eachPage(browser, { viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' }, async (page, target, role) => {
+    target.path = `${target.name} as ${role} (${await open(page, target)})`;
 
     // 1. axe-core, WCAG 2.1 A and AA plus best practices.
     await page.evaluate(axeSource);
@@ -82,7 +74,7 @@ try {
     for (const label of missingRing) console.log(`      no ring: ${label}`);
     // Roving-focus groups (table rows, segmented controls, tabs) expose one tab stop each, so reached can be below the total.
     if (missingRing.length > 0) failed = true;
-  }
+  });
 } finally {
   await browser.close();
   stop();

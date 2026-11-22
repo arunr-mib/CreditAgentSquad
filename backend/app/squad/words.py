@@ -129,6 +129,7 @@ _STAGE_STATUS_WORDS = {"pending": "not started", "running": "running", "needs_pe
 _ROLE_WORDS = {"analyst": "credit analyst", "portfolio_manager": "portfolio manager", "credit_officer": "credit officer",
                "credit_admin": "credit administration", "credit_review": "credit review", "admin": "administrator"}
 _UUID = re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.IGNORECASE)
+_NUMBERLIKE = re.compile(r"[-+$(]*[\d,.]+%?\)?[a-z]{0,2}", re.IGNORECASE)
 _MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
@@ -156,7 +157,7 @@ def describe_event(action: str, payload: dict[str, Any] | None, document_title: 
     parts: list[str] = []
     if text("decision"):
         parts.append(decision_words(text("decision")))
-    if text("reason"):
+    if text("reason") and not action.startswith("agent."):  # an agent event's reason is exception or model text: not shown
         parts.append(f"“{text('reason')}”")
     if text("title"):
         parts.append(str(text("title")))
@@ -192,10 +193,13 @@ def describe_event(action: str, payload: dict[str, Any] | None, document_title: 
         parts.append(str(text("file_name")))
     if text("view"):
         parts.append(f"“{text('view')}”")
-    if not parts:
-        for key, value in list(payload.items())[:3]:
-            if value is not None and not isinstance(value, (dict, list)):
-                parts.append(f"{_plain(key)} {_UUID.sub(lambda m: m.group(0)[:8], str(value))}")
+    if not parts and not action.startswith("agent."):
+        # Last resort, and deterministic: words and ids only, in key order. A number, or a string that is one, is a
+        # figure and a figure is shown only from a stored fact, so it is left out here.
+        for key in sorted(payload)[:6]:
+            value = payload[key]
+            if isinstance(value, str) and value and not _NUMBERLIKE.fullmatch(value.strip()):
+                parts.append(f"{_plain(key)} {_plain(_UUID.sub(lambda m: m.group(0)[:8], value))}")
     return " · ".join(parts)
 
 

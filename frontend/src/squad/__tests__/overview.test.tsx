@@ -16,7 +16,7 @@ const lessons = [
 const ok = (data: unknown) => ({ data, isPending: false, error: null });
 vi.mock('@/api/hooks', () => ({
   useBorrowerOverview: () => ok({ exposure: {}, cycle: null }),
-  useSignals: () => ok([]),
+  useSignals: () => ok([{ id: 's1', rule_id: 'reporting_late', severity: 'high', period_end: '2026-10-31', explanation: { text: 'The October package is late.' } }]),
   useActions: () => ok([]), useBorrowerCovenants: () => ok([]), useBorrowerTerms: () => ok(null), useBorrowingBase: () => ok(null),
   useDocuments: () => ok([]), useFactsById: () => ok({}), useSpread: () => ok(null),
 }));
@@ -25,6 +25,7 @@ vi.mock('../api/hooks', async () => ({
   useMeasure: () => ok({ kind: 'rml', label: 'Runway (months)', points: [] }),
   useTrackRecord: () => ok(track), useLessons: () => ok(lessons),
 }));
+vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 vi.mock('@/source/figures', () => ({ FactFigure: () => null, Absent: () => <span>Not measured</span>, SourcedFigure: () => null }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: () => {}, close: () => {}, current: null }) }));
 vi.mock('@/squad/clientfile/RunStage', () => ({ RunStage: () => null }));
@@ -59,5 +60,10 @@ describe('Overview: track record and what Squad remembers', () => {
       expect.stringContaining('Recurring revenue here is ARR.'), expect.stringContaining('Ignore the pro forma column.'),
     ]);
     expect(within(list).getByText(/Priya Raman/)).toBeInTheDocument();
+  });
+
+  it('shows a signal with the explanation the agent wrote, rendered by code', () => {
+    mount();
+    expect(screen.getByText('The October package is late.')).toBeInTheDocument();
   });
 });

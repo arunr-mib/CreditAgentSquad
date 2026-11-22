@@ -1,7 +1,6 @@
 import { useId, useState } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
 import { useWorkItem } from '@/api/hooks';
-import { decisionHint, decisionLabel } from '@/domain/labels';
 import { HeldFigures } from '@/squad/case/HeldFigures';
 import { KeyFigures } from '@/squad/case/KeyFigures';
 import { Evidence as ItemEvidence, Recommendation, RelatedItems } from '@/squad/case/parts';
@@ -55,7 +54,7 @@ function DecideForm({ c }: { c: CaseView }) {
     setError(null);
     try {
       await decide.mutateAsync({ decision: choice, reason: reason.trim() });
-      say(`${decisionLabel(choice)} · recorded`);
+      say(`${picked?.label ?? 'Decision'} · recorded`);
     } catch (e) {
       setError(e);
     }
@@ -67,7 +66,7 @@ function DecideForm({ c }: { c: CaseView }) {
         {c.decisions.filter((d) => d.permitted).map((d) => (
           <label key={d.id} className="sq-option">
             <input type="radio" name={`decision-${c.work_item_id}`} value={d.id} checked={choice === d.id} onChange={() => setChoice(d.id)} />
-            <span>{decisionLabel(d.id)}{decisionHint(d.id) ? <span className="sq-faint sq-block">{decisionHint(d.id)}</span> : null}</span>
+            <span>{d.label}{d.hint ? <span className="sq-faint sq-block">{d.hint}</span> : null}</span>
           </label>
         ))}
       </fieldset>

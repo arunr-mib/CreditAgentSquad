@@ -6,7 +6,7 @@
 import { mkdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
-import { open, PAGES, root, serve, signIn } from './serve.mjs';
+import { eachPage, open, root, serve } from './serve.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
@@ -19,15 +19,7 @@ const only = onlyIndex > -1 ? (process.argv[onlyIndex + 1] ?? '').split(',') : n
 const stop = await serve();
 const browser = await chromium.launch();
 try {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' });
-  const page = await context.newPage();
-  let signedIn = false;
-  for (const target of PAGES) {
-    if (only && !only.includes(target.name)) continue;
-    if (!target.signedOut && !signedIn) {
-      await signIn(page);
-      signedIn = true;
-    }
+  await eachPage(browser, { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, reducedMotion: 'reduce' }, async (page, target) => {
     await open(page, target);
     const file = resolve(outDir, `${target.name}.png`);
     await page.screenshot({ path: file });
@@ -41,7 +33,7 @@ try {
       console.log(`wrote ${full}`);
       await page.setViewportSize({ width: 1440, height: 900 });
     }
-  }
+  }, only);
 } finally {
   await browser.close();
   stop();

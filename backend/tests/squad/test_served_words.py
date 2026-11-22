@@ -51,7 +51,7 @@ def _event(action, payload, document_title=None):
 
 def test_a_ledger_event_reads_in_plain_words():
     assert _event("work_item.decided", {"decision": "reservation_of_rights", "reason": "Certificate overstates EBITDA."}) \
-        == "reservation of rights · “Certificate overstates EBITDA.”"
+        == "reserved rights · “Certificate overstates EBITDA.”"
     assert _event("work_item.decided", {"decision": "not_a_breach"}) == "marked not a breach"
     assert _event("cycle.stage_changed", {"stage": "covenant_testing", "from": "needs_person", "to": "done"}) \
         == "Covenant testing: needs a person to done"
@@ -64,9 +64,17 @@ def test_a_ledger_event_reads_in_plain_words():
         == f"{SIGNAL_LABELS['reporting_late']} (october package)"
 
 
-def test_a_ledger_event_with_nothing_known_shows_a_few_plain_fields_and_short_ids():
-    out = _event("x.y", {"count": 3, "ref": "0a1b2c3d-0a1b-0a1b-0a1b-0a1b2c3d4e5f", "nested": {"a": 1}})
-    assert out == "count 3 · ref 0a1b2c3d"
+def test_a_ledger_event_with_nothing_known_shows_short_ids_in_a_fixed_order_and_never_a_raw_amount():
+    payload = {"zeta": "z-note", "ref": "0a1b2c3d-0a1b-0a1b-0a1b-0a1b2c3d4e5f", "count": 3, "amount": "5000000", "price": 12.5, "nested": {"a": 1}}
+    out = _event("x.y", payload)
+    assert out == "ref 0a1b2c3d · zeta z-note"
+    assert _event("x.y", dict(reversed(list(payload.items())))) == out  # the order is the keys', not the store's
+    assert _event("funding_event.recorded", {"amount": "5000000", "kind": "equity_round"}) == "kind equity round"
+
+
+def test_an_agent_failure_does_not_print_the_exception_text():
+    assert "Traceback" not in _event("agent.run_failed", {"reason": "Traceback: boom", "agent": "review"})
+    assert _event("agent.run_refused", {"reason": "{'stop': 'x'}"}) == ""
 
 
 def test_the_ledger_and_the_timeline_are_served_with_the_words(db, client, world):
@@ -79,6 +87,7 @@ def test_the_ledger_and_the_timeline_are_served_with_the_words(db, client, world
     sign_in(client, "priya.raman")
     timeline = client.get(f"/api/v1/ui/borrowers/{world['borrower'].id}/timeline").json()
     assert any(r["summary"] == "Bank statement" for r in timeline)
+    assert {r["actor_label"] for r in timeline if r["actor_type"] == "system"} == {"System"}  # a name in words, never "system"/"agent" raw
 
 
 def test_anyone_who_may_see_a_client_can_read_its_runs_in_words_without_the_raw_output(db, client, world):

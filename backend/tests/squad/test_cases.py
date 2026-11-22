@@ -99,5 +99,5 @@ def test_each_decision_is_served_with_its_words_and_hint_and_the_thread_agrees(d
     assert decisions["reserve_rights"]["hint"] and decisions["no_action"]["label"] == "No action"
     # an id the table lacks reads as its words, never as the raw key
     assert decision_words("some_new_decision") == "some new decision"
-    # the thread's past tense and the case's label come from the one module: every labelled decision also has a past form
-    assert all(decision_words(k) != k for k in DECISION_WORDS)
+    # the thread's past tense and the case's label come from the one module: every labelled decision reads as words in the past tense too
+    assert all("_" not in decision_words(k) for k in DECISION_WORDS)

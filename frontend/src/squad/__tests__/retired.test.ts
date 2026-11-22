@@ -15,6 +15,13 @@ describe('the cockpit is retired', () => {
     }
   });
 
+  it('no file lives where the cockpit lived, so a relative import of a restored file cannot pass', () => {
+    const RETIRED_PATH = /^\/src\/(shell|drawer|fixtures)\/|^\/src\/screens\/(?!SignIn\.tsx$|parts\.tsx$)/;
+    for (const sample of ['/src/shell/AppShell.tsx', '/src/drawer/context.tsx', '/src/screens/Portfolio.tsx', '/src/screens/borrower/Summary.tsx']) expect(RETIRED_PATH.test(sample), sample).toBe(true);
+    for (const sample of ['/src/screens/SignIn.tsx', '/src/screens/parts.tsx', '/src/squad/shell/SquadShell.tsx']) expect(RETIRED_PATH.test(sample), sample).toBe(false);
+    expect(Object.keys(sources).filter((path) => RETIRED_PATH.test(path))).toEqual([]);
+  });
+
   it('no source file names the cockpit shell, drawer, fixtures or a cockpit screen', () => {
     const offenders = Object.entries(sources).filter(([path, text]) => !path.endsWith('retired.test.ts') && RETIRED.test(text)).map(([path]) => path);
     expect(offenders).toEqual([]);
@@ -22,7 +29,7 @@ describe('the cockpit is retired', () => {
 
   it('the front-end label tables are gone: words come from the server', () => {
     const offenders = Object.entries(sources)
-      .filter(([path, text]) => !path.endsWith('retired.test.ts') && /\b(docTypeLabel|DOC_TYPE_LABEL|signalLabel|SIGNAL_LABEL|describeEvent)\b/.test(text))
+      .filter(([path, text]) => !path.endsWith('retired.test.ts') && /\b(docTypeLabel|DOC_TYPE_LABEL|signalLabel|SIGNAL_LABEL|describeEvent|decisionLabel|decisionHint|itemTypeLabel|actionLabel|permissionLabel|ROLES_WITH)\b/.test(text))
       .map(([path]) => path);
     expect(offenders).toEqual([]);
   });

@@ -1,6 +1,6 @@
 # Credit Agent Squad: design system
 
-The visual identity and component vocabulary of the workspace. Tokens live in `src/design/tokens.css`, components in `src/design/`, live examples at `/design`. The design spec (`docs/specs/2026-11-17-credit-agent-squad-design.md`, section 15) is the contract, amended by the cockpit design (`docs/specs/2026-11-18-cockpit-design.md`); this file records how both are met.
+The visual identity and component vocabulary of the workspace. Tokens live in `src/design/tokens.css`, components in `src/design/`. The design spec (`docs/specs/2026-11-17-credit-agent-squad-design.md`, section 15) is the contract, amended by the cockpit design (`docs/specs/2026-11-18-cockpit-design.md`); this file records how both are met.
 
 **Direction.** A working cockpit on a warm stone base, with a bank's authority: quiet surfaces, ink type, hairline rules, figures that scan in columns, and every colour, tag and bar saying something financial. Agents appear as a colleague's annotations. People decide.
 
@@ -111,7 +111,7 @@ The ledger is the model. A table has a 1 px ink rule under its header and hairli
 | `Stepper` | Monitoring-cycle stages | Done is ink, not green. Amber marks the stage waiting for a person. `collapseLater` folds the stages still to come |
 | `EmptyState` | Says what is absent and the one way forward | Plain words |
 | `Skeleton` | Loading placeholder | Still, never shimmering |
-| `Kbd` | A key hint | Every shortcut is shown with its key beside the control it works: `Ctrl K` search, `Ctrl J` Copilot, `[` the rail, `J` `K` or the arrows in a queue or timeline, `Enter` opens, `Esc` closes the drawer |
+| `Kbd` | A key hint | Every shortcut is shown with its key beside the control it works: `Ctrl K` search, `Ctrl` or `Cmd` + `Enter` sends a question, `Enter` opens, `Esc` closes the drawer |
 
 ## Agents in the interface
 
@@ -164,6 +164,6 @@ node scripts/screenshots.mjs          # the Squad screens, signed in, 1440 x 900
 node scripts/a11y.mjs                 # axe-core on the same screens plus a keyboard focus-ring pass
 ```
 
-The last three need the seeded stack (see `docs/HANDOFF.md`). The officer journey records a real decision, so each `pnpm e2e` run takes one open covenant breach out of the queue; a fresh seed has four.
+The last three need the seeded stack (see `docs/HANDOFF.md`). The Squad hand-off journey records a real decision and the repair journeys record corrections, so run each on a fresh database.
 
 Before a screen ships, check it against: aligned figure columns; consistent row heights; no clipped or overlapping text; every figure has a glyph and a source; no banned pattern; colour only where it means something; a tag only for severity or actionable status; a check mark only for a check that ran; one primary action per card; focus ring on every control; `scrollWidth - clientWidth` is 0 at 360, 390, 820, 1024, 1280 and 1440 px, and one phone screenshot looked at.

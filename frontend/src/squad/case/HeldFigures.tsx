@@ -3,7 +3,7 @@ import { useConfirmFact, useCorrectFact, useCycles, useDocuments, useEnterFact, 
 import type { FactSummary, HeldCell, Recalculation, SpreadContext, SpreadLineApi, WorkItemDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button, formatDate, formatFigure, ProvenanceGlyph, Select, StatusDot } from '@/design';
-import { humanize, roleLabel, ROLES_WITH } from '@/domain/labels';
+import { humanize, roleLabel } from '@/domain/labels';
 import { FigureForm, Refusal } from '@/repair/FigureForm';
 import {
   checkFinding,
@@ -621,7 +621,6 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item
   const canAct = permitted && item.status === 'open';
   const totalsOnFile = Boolean(context && lines.some((line) => line.computed && line.cells[context.period_end]?.usable));
   const waiting = cells.filter((cell) => needsPerson(cell.fact_id, fact(cell.fact_id), currentOf(describeLine(cell.key, lines).base, cell.fact_id))).length;
-  const holders = (ROLES_WITH[item.required_permission] ?? []).map(roleLabel);
   const stillHeld = (index: number) => fact(cells[index]?.fact_id)?.status === 'proposed';
   const livePairs = pairs.filter(([i, j]) => stillHeld(i) && stillHeld(j));
   const side = (index: number): Side => ({ cell: cells[index] as HeldCell, line: describeLine((cells[index] as HeldCell).key, lines) });
@@ -750,7 +749,7 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item
       ) : null}
       {!permitted && item.status === 'open' && user ? (
         <p className="text-caption text-pretty text-ink-700">
-          Keeping, entering and rejecting figures needs {holders.length > 0 ? `a ${holders.join(' or a ').toLowerCase()}` : 'another role'}. Your role, {roleLabel(user.role)}, can read the held figures and open their pages.
+          Keeping, entering and rejecting figures needs a role that holds the permission to confirm a spread; the server decides which. Your role, {roleLabel(user.role)}, can read the held figures and open their pages.
         </p>
       ) : null}
     </section>

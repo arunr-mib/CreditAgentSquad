@@ -583,6 +583,8 @@ export interface LedgerEvent {
   document_title?: string | null;
   /** The payload in plain words, written by the server (`describe_event`). */
   summary?: string;
+  /** Who acted, in words (a person's name, an agent's name, "System"). */
+  actor_label?: string;
 }
 
 export interface LedgerVerification {

@@ -552,14 +552,14 @@ describe('the held-figures panel', () => {
     expect(open).toHaveBeenLastCalledWith({ type: 'document', documentId: 'd-1', page: 3, quote: '1,236', title: 'Interim financial statements, Q3 2026', borrowerCode: 'harrowgate-precision' });
   });
 
-  it('shows no repair control to a role without the permission, and says who has it', async () => {
+  it('shows no repair control to a role without the permission, and says the server decides who has it', async () => {
     mockApi(SWAPPED);
     renderHeld(item({}, [PAYABLE_ROW, ACCRUED_ROW, INTEREST_ROW]), officer);
     await waitFor(() => expect(screen.getByText('3 of 3 still need a person')).toBeInTheDocument());
     // The finding is still said; the action is not offered.
     expect(await screen.findByText('Two readings look swapped.')).toBeInTheDocument();
     expect(document.querySelectorAll('[data-primary], [data-actions], [data-will-do]')).toHaveLength(0);
-    expect(screen.getByText(/needs a credit analyst\. Your role, Credit officer, can read the held figures and open their pages\./)).toBeInTheDocument();
+    expect(screen.getByText(/needs a role that holds the permission to confirm a spread; the server decides which\. Your role, Credit officer, can read the held figures and open their pages\./)).toBeInTheDocument();
   });
 
   it('asks for a value and a reason before a different figure is sent, then says what was recalculated', async () => {

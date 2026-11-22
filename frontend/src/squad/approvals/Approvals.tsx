@@ -22,7 +22,7 @@ export function Approvals() {
   const rows = approvals.data;
   const current = rows.find((r) => r.work_item_id === selected);
   return (
-    <div className="sq-approvals">
+    <div className="sq-approvals" data-ready="">
       <h1 className="sq-h1">Approvals</h1>
       <h2 className="sq-lede">{rows.length ? waits(rows.length) : 'Nothing waits for your decision.'}</h2>
       <div className="sq-split">
