@@ -308,6 +308,19 @@ journey('hand-off: the analyst routes a breach with her view, the officer return
   await o.goto(`${BASE}/approvals?case=${open.id}`);
   await o.getByText('Cash under the floor two months running; recommend reserving rights.').first().waitFor();
   await o.getByLabel(/what is missing/i).fill('Attach the signed term sheet for the new round.');
+  // Task 5c: the officer says what is needed. One need the seeded book holds exactly once (Squad attaches it), one it does not (Squad drafts the request).
+  const docs = await api(o, `/borrowers/${open.borrower_id}/documents`);
+  const once = docs.find((d) => d.doc_type && d.period_end && d.status !== 'rejected' && d.doc_type_source === 'system'
+    && docs.filter((e) => e.doc_type === d.doc_type && e.period_end === d.period_end && e.status !== 'rejected').length === 1);
+  assert(once, 'the seeded client should hold a document that is the only one of its type and month');
+  const words = (await api(o, '/words/document-types')).types;
+  const monthName = (iso) => new Date(`${iso}T00:00:00Z`).toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const needs = [{ doc_type: once.doc_type, period_end: once.period_end }, { doc_type: 'tax_return', period_end: '2019-12-31' }];
+  for (const [i, n] of needs.entries()) {
+    await o.getByRole('button', { name: 'Add something that is needed' }).click();
+    await o.getByLabel(`Document type ${i + 1}`).selectOption(n.doc_type);
+    await o.getByLabel(`Month ${i + 1}`).fill(n.period_end.slice(0, 7));
+  }
   await o.getByRole('button', { name: 'Return to Priya Raman' }).click();
   await o.getByText(/Returned to Priya Raman · recorded/).waitFor();
 
@@ -316,6 +329,12 @@ journey('hand-off: the analyst routes a breach with her view, the officer return
   assert(back && back.state === 'returned to you', 'the returned case does not need the analyst');
   await a.goto(`${BASE}/clients/${borrower.code}?case=${open.id}`);
   await a.getByText('Attach the signed term sheet for the new round.').first().waitFor();
+  const squadSaid = `Attached the ${words[once.doc_type]} for ${monthName(once.period_end)} that Helen Strand asked for.`;
+  await a.getByText(squadSaid).first().waitFor();
+  const asked = `Could you send the ${words.tax_return} for ${monthName('2019-12-31')} when you have a moment?`;
+  await a.getByText(asked).first().waitFor(); // the draft request to the client is in the thread
+  const states = (await api(a, `/cases/${open.id}`)).needs.map((n) => n.state_words);
+  assert(states[0].startsWith('Attached: ') && states[1] === 'Asked the client', `the needs read ${JSON.stringify(states)}`);
   await card.getByText(/on file you can attach$/).click(); // the seeded client has documents on file: none here is a defect
   await card.getByRole('button', { name: /^Attach / }).first().click();
   await a.getByText(/attached · recorded$/).waitFor();
