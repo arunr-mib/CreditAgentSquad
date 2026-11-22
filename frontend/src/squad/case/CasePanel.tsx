@@ -219,7 +219,7 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
       {detail.data?.recommendation ? (
         <Recommendation recommendation={detail.data.recommendation} item={detail.data} headingLevel="h4" code={c.borrower.code} />
       ) : c.status === 'open' && detail.data ? (
-        <p className="sq-muted">No agent recommendation is attached. The evidence above was produced by code; the decision is yours.</p>
+        <p className="sq-muted">No agent recommendation is attached. The evidence above was produced by code.{decides ? ' The decision is yours.' : ''}</p>
       ) : null}
       {detail.data && c.status === 'open' ? (
         <RelatedItems items={(detail.data.related_items ?? []).filter((r) => r.id !== c.work_item_id && r.status === 'open')} headingLevel="h4" onOpen={onOpenCase} />

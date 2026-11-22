@@ -8,7 +8,7 @@ import { Packages } from '../clientfile/Packages';
 
 const say = vi.fn();
 vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say }) }));
-const PKG = { id: 'p1', title: 'Larkspur Environmental Services, Q3 2026', scope: 'borrower', status: 'generated', period_end: '2026-09-30', borrower_id: 'b1', borrower_name: 'Larkspur Environmental Services', released_at: null, released_by: null, files: [{ format: 'xlsx', name: 'larkspur-q3.xlsx', sha256: 'abc', size: 1000, borrower_id: 'b1', facts_used: 42 }], snapshot: { id: 'sn1', sha256: 'def', as_of: '2026-11-21T08:00:00Z', facts: 42, derived: 3 }, draft_commentary: [], can_release: true };
+const PKG = { id: 'p1', title: 'Larkspur Environmental Services, Q3 2026', scope: 'borrower', status: 'generated', period_end: '2026-09-30', borrower_id: 'b1', borrower_name: 'Larkspur Environmental Services', released_at: null, released_by: null, files: [{ format: 'xlsx', name: 'larkspur-q3.xlsx', sha256: 'abc', size: 1000, borrower_id: 'b1', facts_used: 42 }], snapshot: { id: 'sn1', sha256: 'def', as_of: '2026-11-21T08:00:00Z', facts: 42, derived: 3 }, draft_commentary: [] as string[], can_release: true };
 const BORROWER = { id: 'b1', code: 'LES', name: 'Larkspur Environmental Services' } as never;
 
 function api(answers: Record<string, { status: number; body: unknown }>) {
@@ -42,6 +42,21 @@ describe('Packages in the client file', () => {
     expect(await screen.findByRole('link', { name: /larkspur-q3\.xlsx/ })).toHaveAttribute('href', '/api/v1/packages/p1/files/larkspur-q3.xlsx');
     await userEvent.click(screen.getByRole('button', { name: 'Verify the files' }));
     expect(calls).toContain('POST /api/v1/packages/p1/verify');
+  });
+
+  it('reads a package with no draft commentary as releasable, and one with draft sections as held', async () => {
+    api({ 'GET /api/v1/packages': { status: 200, body: [PKG, { ...PKG, id: 'p2', draft_commentary: ['summary'], can_release: false }] } });
+    mount(['view', 'release_package']);
+    await screen.findByText('Generated, not released');
+    expect(screen.getAllByText('Generated, not released')).toHaveLength(1);
+    expect(screen.getAllByText('Not released: commentary is a draft')).toHaveLength(1);
+  });
+
+  it('calls a client package a client package and says client where it means one', async () => {
+    api({ 'GET /api/v1/packages': { status: 200, body: [PKG] } });
+    const { container } = mount(['view']);
+    await screen.findByText(/Client package · Q3 2026/);
+    expect(container.textContent).not.toMatch(/borrower/i);
   });
 
   it('shows the server’s refusal of a release in its own words', async () => {

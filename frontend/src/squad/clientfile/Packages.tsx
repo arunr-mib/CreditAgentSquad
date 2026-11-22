@@ -29,7 +29,7 @@ interface PackageRow {
   released_at: string | null;
   files: PackageFile[];
   snapshot?: { id: string; sha256: string; as_of: string; facts: number; derived: number };
-  draft_commentary?: boolean;
+  draft_commentary?: string[];
   can_release?: boolean;
 }
 
@@ -71,7 +71,7 @@ function PackageCard({ item }: { item: PackageRow }) {
     <Card data-package={item.id}>
       <CardHeader
         as="h3"
-        eyebrow={`${humanize(item.scope)} package · ${quarterLabel(item.period_end)}`}
+        eyebrow={`${item.scope === 'borrower' ? 'Client' : humanize(item.scope)} package · ${quarterLabel(item.period_end)}`}
         title={item.title}
         meta={
           <>
@@ -88,7 +88,7 @@ function PackageCard({ item }: { item: PackageRow }) {
           released ? (
             <StatusDot tone="pass">Released{item.released_at ? ` ${formatDate(item.released_at)}` : ''}</StatusDot>
           ) : (
-            <StatusDot tone="attention">{item.draft_commentary ? 'Not released: commentary is a draft' : 'Generated, not released'}</StatusDot>
+            <StatusDot tone="attention">{item.draft_commentary?.length ? 'Not released: commentary is a draft' : 'Generated, not released'}</StatusDot>
           )
         }
       />
@@ -205,7 +205,7 @@ export function Packages({ borrower }: { borrower: BorrowerRow }) {
           {periods.length > 0 ? (
             <Select label="Period" value={chosen} onValueChange={setPeriod} options={periods.map((value) => ({ value, label: `${quarterLabel(value)} · ${formatDate(value)}` }))} />
           ) : (
-            <p className="text-body text-ink-700">No monitoring cycle exists for this borrower yet.</p>
+            <p className="text-body text-ink-700">No monitoring cycle exists for this client yet.</p>
           )}
           <fieldset>
             <legend className="mb-1 text-caption font-medium text-ink-700">Files</legend>

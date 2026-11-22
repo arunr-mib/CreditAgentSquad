@@ -87,10 +87,10 @@ describe('package schedules on the packages tab', () => {
     const table = await screen.findByRole('table');
     const rows = within(table).getAllByRole('row').slice(1);
     expect(rows.map((row) => within(row).getAllByRole('cell').map((cell) => cell.textContent).join(' | '))).toEqual([
-      'This borrower | Quarterly | 45 days after period end | Word, Excel | 14 Nov 2026',
+      'This client | Quarterly | 45 days after period end | Word, Excel | 14 Nov 2026',
       'The whole portfolio | Monthly | 1 day after period end | PowerPoint | Not set',
     ]);
-    expect(screen.getByText(/more schedule is for other borrowers/)).toBeInTheDocument();
+    expect(screen.getByText(/more schedule is for other clients/)).toBeInTheDocument();
   });
 
   it('offers creating and running only to a role that may release packages', async () => {

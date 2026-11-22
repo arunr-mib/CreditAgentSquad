@@ -42,7 +42,8 @@ export const useSendDraft = () => useWrite<{ draft_id: string }, DraftResult>((i
 export const useCase = (id?: string) =>
   useQuery({ queryKey: ['case', id], queryFn: () => get<CaseView>(`/cases/${id}`), enabled: Boolean(id) });
 export const useApprovals = () => useQuery({ queryKey: ['approvals'], queryFn: () => get<ApprovalRow[]>('/me/approvals') });
-const CASE_KEYS = ['case', 'approvals', 'trail', 'work-item', 'borrowers'];
+// A decision can change a review sheet, the queue and the ledger (what `invalidateAfterDecision` refetches for the cockpit).
+const CASE_KEYS = ['case', 'approvals', 'trail', 'work-item', 'work-items', 'borrowers', 'borrower', 'review-sheet', 'review-sheets', 'ledger', 'cycles', 'portfolio', 'actions', 'signals'];
 export const useDecideCase = (id: string) =>
   useWrite<{ decision: string; reason: string }, unknown>(() => `/work-items/${id}/decide`, (i) => i, CASE_KEYS);
 export const useRouteCase = (id: string) =>

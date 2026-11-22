@@ -354,11 +354,11 @@ journey('review room: a portfolio manager opens a meeting, moves it to during an
   await p.getByRole('button', { name: 'Move to during' }).click();
   await p.getByText(/Meeting moved to: during · recorded/).waitFor();
   assert((await api(p, '/review-meetings')).find((m) => m.id === meeting.id).phase === 'during', 'the phase was not recorded');
-  // Raise an action: Borrower, Action, Owner and Due are the form's fields (read from `Actions` in the review room).
+  // Raise an action: Client, Action, Owner and Due are the form's fields (read from `Actions` in the review room).
   const actionTitle = `Follow up ${title}`;
   const actionForm = p.locator('form').filter({ has: p.getByRole('button', { name: 'Raise the action' }) });
-  await actionForm.getByRole('combobox', { name: 'Borrower' }).click();
-  await p.getByRole('option').nth(1).click(); // option 0 is "Choose a borrower"
+  await actionForm.getByRole('combobox', { name: 'Client' }).click();
+  await p.getByRole('option').nth(1).click(); // option 0 is "Choose a client"
   await actionForm.getByLabel('Action').fill(actionTitle);
   await actionForm.getByLabel('Due').fill('2026-12-15');
   await actionForm.getByRole('button', { name: 'Raise the action' }).click();

@@ -142,7 +142,7 @@ function NewSchedule({ borrowerId, borrowerName }: { borrowerId: string; borrowe
 }
 
 /**
- * Package schedules, where packages are listed: the schedules that cover this borrower (its own
+ * Package schedules, where packages are listed: the schedules that cover this client (its own
  * and the portfolio's), a way to create one, and a way to run whatever has fallen due now.
  */
 export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: string; borrowerName: string }) {
@@ -184,7 +184,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
                   <p className="px-4 py-3 text-body text-pretty text-ink-700">No schedule covers {borrowerName} yet. Packages are prepared only when someone asks for one above.</p>
                 ) : (
                   <table className="stack-narrow w-full border-separate border-spacing-0 text-body">
-                    <caption className="sr-only">Package schedules that cover this borrower</caption>
+                    <caption className="sr-only">Package schedules that cover this client</caption>
                     <thead>
                       <tr>
                         {['Schedule', 'For', 'How often', 'Due', 'Files', 'Next run'].map((head) => (
@@ -200,7 +200,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
                           <th scope="row" className="h-[34px] border-b border-hairline px-4 py-1.5 text-left font-medium text-ink">
                             {row.title}
                           </th>
-                          <td data-label="For" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{row.scope === 'portfolio' ? 'The whole portfolio' : 'This borrower'}</td>
+                          <td data-label="For" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{row.scope === 'portfolio' ? 'The whole portfolio' : 'This client'}</td>
                           <td data-label="How often" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{CADENCE[row.cadence] ?? row.cadence}</td>
                           <td data-label="Due" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">
                             <span className="tnum">{row.days_after_period_end}</span> {row.days_after_period_end === 1 ? 'day' : 'days'} after period end
@@ -216,7 +216,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
                 )}
                 {elsewhere > 0 ? (
                   <p className="border-t border-hairline px-4 py-2 text-caption text-ink-500">
-                    <span className="tnum">{elsewhere}</span> more {elsewhere === 1 ? 'schedule is' : 'schedules are'} for other borrowers and {elsewhere === 1 ? 'is' : 'are'} listed on their Packages tabs.
+                    <span className="tnum">{elsewhere}</span> more {elsewhere === 1 ? 'schedule is' : 'schedules are'} for other clients and {elsewhere === 1 ? 'is' : 'are'} listed in their client files.
                   </p>
                 ) : null}
               </Card>
@@ -239,7 +239,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
         {run.error ? <Refusal error={run.error} outcome="Not run" className="mt-2" /> : null}
         <p className="mt-2 text-caption text-pretty text-ink-500">
           {allowed
-            ? 'Running prepares the package for every schedule that has fallen due on the workspace’s date, for any borrower, once; a schedule that is not due is left alone.'
+            ? 'Running prepares the package for every schedule that has fallen due on the workspace’s date, for any client, once; a schedule that is not due is left alone.'
             : 'Your role can read package schedules but cannot create or run them; the server decides who may.'}
         </p>
       </section>

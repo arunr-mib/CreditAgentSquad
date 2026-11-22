@@ -49,7 +49,10 @@ def list_work_items(
     items = sorted(db.execute(query).scalars(),
                    key=lambda w: (_SEVERITY.get(w.severity, 9), w.due_date or date.max, w.created_at))
     return [{**_item(w, exclude=("evidence", "recommendation", "guardrail_notes")),
-             "borrower_name": names.get(w.borrower_id)} for w in items]
+             "borrower_name": names.get(w.borrower_id),
+             # the sheet a commentary approval is for, so a screen shows each sheet its own question
+             **({"review_sheet_id": w.evidence.get("review_sheet_id")} if w.item_type == "review.commentary_approval" else {})}
+            for w in items]
 
 
 def _item(item: WorkItem, exclude: tuple[str, ...] = ()) -> dict:

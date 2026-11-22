@@ -145,6 +145,8 @@ export interface WorkItemRow {
   requires_second_person: boolean;
   required_permission: string;
   prepared_by_id: string | null;
+  /** Only on a commentary approval: the review sheet it is for. */
+  review_sheet_id?: string | null;
   /** The person the item is routed to, if any. */
   assigned_to?: string | null;
   due_date: string | null;

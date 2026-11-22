@@ -398,3 +398,18 @@ def test_a_file_name_outside_latin_1_or_with_a_quote_cannot_break_the_download_h
     file = client.get(f"/api/v1/documents/{up.json()['id']}/file")
     assert file.status_code == 200 and "filename*=UTF-8''" in file.headers["content-disposition"]
     get_settings.cache_clear()
+
+
+def test_a_commentary_approval_in_the_list_names_its_review_sheet(db, client, world):
+    borrower, cycle = world
+    item = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="review_prep", item_type="review.commentary_approval",
+                      severity="medium", title="Commentary awaiting approval", question="Approve?",
+                      allowed_decisions=["approve", "return_for_rework"], required_permission="approve_commentary",
+                      evidence={"review_sheet_id": "11111111-1111-1111-1111-111111111111"})
+    other = raise_item(db, borrower_id=borrower.id, cycle_id=cycle.id, stage="intake", item_type="intake.unclassified",
+                       severity="low", title="Unfiled", question="?", allowed_decisions=["classified_by_hand"],
+                       required_permission="upload_document")
+    sign_in(client, "priya.raman")
+    rows = {w["id"]: w for w in client.get("/api/v1/work-items").json()}
+    assert rows[str(item.id)]["review_sheet_id"] == "11111111-1111-1111-1111-111111111111"
+    assert "review_sheet_id" not in rows[str(other.id)]

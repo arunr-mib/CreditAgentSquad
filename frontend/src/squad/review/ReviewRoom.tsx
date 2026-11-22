@@ -151,7 +151,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
   }, [sheet]);
   const facts = useFactsById(ids);
   const items = useWorkItems({ status: 'open', borrower_id: sheet.borrower_id });
-  const approval = items.data?.find((item) => item.item_type === 'review.commentary_approval');
+  const approval = items.data?.find((item) => item.item_type === 'review.commentary_approval' && item.review_sheet_id === sheet.id);
   const fact = (id: string | null | undefined) => (id ? facts.data?.[id] : undefined);
   const borrowers = useBorrowers();
   const code = borrowers.data?.find((row) => row.id === sheet.borrower_id)?.code;
@@ -274,6 +274,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
       {approval ? (
         <aside aria-label="Approval of this commentary" data-work-item={approval.id} className="xl:sticky xl:top-[68px] xl:max-h-[calc(100vh-88px)] xl:overflow-y-auto xl:rounded-md">
           <h3 className="sq-h2">{approval.title}</h3>
+          <p className="sq-muted">{approval.question}</p>
           <CasePanel key={approval.id} workItemId={approval.id} onOpenCase={(id) => code && void navigate(threadHref(code, id))} />
         </aside>
       ) : null}
@@ -385,7 +386,7 @@ function Actions({ meetingId }: { meetingId: string | undefined }) {
       ) : null}
       {allowed ? (
         <form onSubmit={submit} className="grid grid-cols-1 items-end gap-3 border-t sm:grid-cols-2 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1.6fr)_minmax(0,1fr)_150px_auto] border-hairline-strong px-4 pt-3 pb-4">
-          <Select label="Borrower" value={borrowerId} onValueChange={setBorrowerId} options={[{ value: 'none', label: 'Choose a borrower' }, ...(borrowers.data ?? []).map((row) => ({ value: row.id, label: row.name }))]} />
+          <Select label="Client" value={borrowerId} onValueChange={setBorrowerId} options={[{ value: 'none', label: 'Choose a client' }, ...(borrowers.data ?? []).map((row) => ({ value: row.id, label: row.name }))]} />
           <Input label="Action" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="What must be done" />
           <Select label="Owner" value={owner} onValueChange={setOwner} options={[{ value: 'none', label: 'No owner yet' }, ...(users.data ?? []).map((user) => ({ value: user.id, label: user.name }))]} />
           <Input label="Due" type="date" value={due} onChange={(event) => setDue(event.target.value)} />

@@ -31,7 +31,8 @@ from app.seed_users import seed_users
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from evals.book import BOOKS as EVAL_BOOKS, load_book
+from evals.book import BOOKS as EVAL_BOOKS
+from evals.book import load_book
 from evals.run import _settle
 from evals.standin import StandInReader
 

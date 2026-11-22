@@ -18,7 +18,10 @@ vi.mock('@/api/hooks', () => ({
   useReviewSheet: (id?: string) => q(id ? SHEET : undefined),
   useCycles: () => q([{ id: 'c1', period_end: '2026-09-30' }]),
   useFactsById: () => q({}),
-  useWorkItems: () => q([{ id: 'w-approve', item_type: 'review.commentary_approval', title: 'Commentary awaiting approval', status: 'open' }]),
+  useWorkItems: () => q([
+    { id: 'w-other', item_type: 'review.commentary_approval', title: 'Commentary for another period', question: 'Another sheet’s question.', status: 'open', review_sheet_id: 's2' },
+    { id: 'w-approve', item_type: 'review.commentary_approval', title: 'Commentary awaiting approval', question: 'Two sections were withheld: outlook, liquidity.', status: 'open', review_sheet_id: 's1' },
+  ]),
   useBorrowers: () => q([{ id: 'b1', code: 'LES', name: 'Larkspur Environmental Services' }]),
   useActions: () => q([]),
   useUsers: () => q([]),
@@ -52,6 +55,10 @@ describe('ReviewRoom in Squad', () => {
     const approval = screen.getByRole('complementary', { name: 'Approval of this commentary' });
     expect(within(approval).getByText('Commentary awaiting approval')).toBeInTheDocument();
     expect(within(approval).getByText('case w-approve')).toBeInTheDocument();
+    // the item's own question, and only this sheet's approval, not the client's first open one
+    expect(within(approval).getByText('Two sections were withheld: outlook, liquidity.')).toBeInTheDocument();
+    expect(screen.queryByText('case w-other')).not.toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'Client' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Open the client file' })).toHaveAttribute('href', '/clients/LES/file');
   });
 

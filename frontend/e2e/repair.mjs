@@ -391,10 +391,31 @@ const journeys = [
       await page.goto(`${BASE}/review-room`);
       await page.waitForSelector('[data-ready]');
       await page.getByRole('button', { name: /Larkspur Environmental Services/ }).first().click();
+      const sheetId = await page.locator('[data-review-sheet]').getAttribute('data-review-sheet');
       const approval = page.getByRole('complementary', { name: 'Approval of this commentary' });
+      await approval.locator('[data-case]').waitFor();
+      const itemId = await approval.getAttribute('data-work-item');
+      // Dana writes the summary herself: as its last editor she is refused, and the case does not offer her Approve.
+      const write = (who, body) => who.request.post(`${BASE}/api/v1/review-sheets/${sheetId}/commentary`, { data: { section: 'summary', body } });
+      assert((await write(page, 'The quarter was steady and nothing changed in the outlook.')).ok(), 'the manager’s summary was not saved');
+      await page.reload();
+      await page.getByRole('button', { name: /Larkspur Environmental Services/ }).first().click();
+      await approval.locator('[data-case]').waitFor();
+      assert((await approval.getByRole('radio', { name: /^Approve/ }).count()) === 0, 'the last editor was offered Approve');
+      const refused = await page.request.post(`${BASE}/api/v1/work-items/${itemId}/decide`, { data: { decision: 'approve', reason: '' } });
+      assert(refused.status() === 409 && /last edited the summary section/.test(await refused.text()), 'the server did not refuse the last editor');
+      // Priya rewrites the summary, so Dana is a second person for it.
+      const other = await page.context().browser().newContext();
+      const priya = await other.newPage();
+      await signIn(priya, ANALYST);
+      assert((await write(priya, 'The quarter was steady; the outlook is unchanged.')).ok(), 'the analyst’s summary was not saved');
+      await other.close();
+      await page.reload();
+      await page.getByRole('button', { name: /Larkspur Environmental Services/ }).first().click();
       await approval.getByRole('radio', { name: /^Approve/ }).check();
       await approval.getByRole('button', { name: 'Record decision' }).click();
-      await approval.locator('[data-case][data-item-status="decided"]').waitFor();
+      // what the person sees: the sheet reads as reviewed without a reload
+      await page.locator('[data-review-sheet]').getByText(/^Reviewed by /).first().waitFor();
       await page.goto(`${BASE}/clients/larkspur-environmental/file/packages`);
       await page.locator('.sq-file [data-ready]').waitFor(); // the packages list itself has loaded, not only the client file around it
       const before = await page.locator('[data-package]').count();
@@ -481,7 +502,7 @@ const journeys = [
       const row = area.locator('table tbody tr').filter({ hasText: title });
       await row.waitFor();
       const cells = (await row.locator('th, td').allTextContents()).map((text) => text.trim());
-      assert(cells.join(' | ') === `${title} | This borrower | Quarterly | 45 days after period end | Word, Excel, PowerPoint | 14 Nov 2026`, `the schedule is listed as created, got: ${cells.join(' | ')}`);
+      assert(cells.join(' | ') === `${title} | This client | Quarterly | 45 days after period end | Word, Excel, PowerPoint | 14 Nov 2026`, `the schedule is listed as created, got: ${cells.join(' | ')}`);
 
       const packagesBefore = await page.locator('[data-package]').count();
       await area.getByRole('button', { name: 'Run schedules that are due' }).click();

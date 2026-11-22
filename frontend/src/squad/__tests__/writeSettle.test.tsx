@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { ApiError } from '@/api/client';
-import { useSendDraft } from '../api/hooks';
+import { useDecideCase, useSendDraft } from '../api/hooks';
 
 vi.mock('@/api/client', async (orig) => {
   const real = await orig<Record<string, unknown>>();
@@ -21,5 +21,15 @@ describe('squad writes', () => {
     const keys = spy.mock.calls.map((c) => JSON.stringify(c[0]?.queryKey));
     expect(keys).toContain('["thread"]');
     expect(keys).toContain('["briefing"]');
+  });
+
+  it('a decision on a case refetches what a decision changes: the sheet, the queue, the ledger and the case', async () => {
+    const qc = new QueryClient();
+    const spy = vi.spyOn(qc, 'invalidateQueries');
+    const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
+    const { result } = renderHook(() => useDecideCase('w1'), { wrapper });
+    await act(async () => { await result.current.mutateAsync({ decision: 'approve', reason: '' }).catch(() => {}); });
+    const keys = spy.mock.calls.map((c) => JSON.stringify(c[0]?.queryKey));
+    for (const key of ['case', 'approvals', 'review-sheet', 'review-sheets', 'work-items', 'ledger']) expect(keys, key).toContain(`["${key}"]`);
   });
 });

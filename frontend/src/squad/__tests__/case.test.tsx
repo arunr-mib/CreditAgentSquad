@@ -125,6 +125,17 @@ describe('CasePanel', () => {
     expect(state.openCase).toHaveBeenCalledWith('w2');
   });
 
+  it('says the decision is theirs only to a person who may take it', () => {
+    state.detail = { id: 'w1', item_type: 'covenant.breach', status: 'open', evidence: {}, recommendation: null, guardrail_notes: [], related_items: [] };
+    const { unmount } = panel();
+    expect(screen.getByText(/No agent recommendation is attached/)).toBeInTheDocument();
+    expect(screen.queryByText(/decision is yours/)).not.toBeInTheDocument();
+    unmount();
+    state.view = { ...base, needs_you: true, may_route: false, decisions: base.decisions.map((d) => ({ ...d, permitted: true })) };
+    panel();
+    expect(screen.getByText(/decision is yours/)).toBeInTheDocument();
+  });
+
   it('shows the agent’s recommendation when there is one, and each decision’s hint', () => {
     state.view = { ...base, needs_you: true, may_route: false, decisions: base.decisions.map((d) => ({ ...d, permitted: true })) };
     state.detail = { id: 'w1', item_type: 'covenant.breach', status: 'open', evidence: {}, recommendation: { headline: 'Recommends escalate' }, guardrail_notes: [], related_items: [] };
