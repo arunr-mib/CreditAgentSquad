@@ -3,11 +3,11 @@ import { useConfirmFact, useCorrectFact, useCycles, useDocuments, useEnterFact, 
 import type { FactSummary, HeldCell, Recalculation, SpreadContext, SpreadLineApi, WorkItemDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button, formatDate, formatFigure, ProvenanceGlyph, Select, StatusDot } from '@/design';
-import { humanize, roleLabel } from '@/domain/labels';
+import { roleLabel } from '@/domain/labels';
 import { FigureForm, Refusal } from '@/repair/FigureForm';
 import {
   checkFinding,
-  COMPARED,
+  compared as comparedFor,
   describeLine,
   footingProblems,
   heldCells,
@@ -16,7 +16,7 @@ import {
   periodPhrase,
   primaryAction,
   spreadContext,
-  STATEMENT_LABEL,
+  statementLabel,
   str,
   swappedPairs,
   whatCodeWillDo,
@@ -555,7 +555,7 @@ function AnyLine({ borrowerId, lines, context, currentOf, suggested, totalsOnFil
         label={`Line of the statement, period ended ${formatDate(context.period_end)}`}
         value={key}
         onValueChange={setKey}
-        options={inputs.map((entry) => ({ value: entry.key, label: `${STATEMENT_LABEL[entry.statement] ?? humanize(entry.statement)} · ${entry.label}` }))}
+        options={inputs.map((entry) => ({ value: entry.key, label: `${statementLabel(entry.statement)} · ${entry.label}` }))}
       />
       {currentOf(key) ? null : <p className="text-caption text-ink-500">Nothing is on file for this line and period.</p>}
       <Repair key={key} borrowerId={borrowerId} line={line} heldId={null} current={currentOf(key)} context={context} canAct totalsOnFile={totalsOnFile} withStatus />
@@ -692,7 +692,7 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3', mayRepai
           <tbody>
             {problems.map((problem, index) => {
               const line = problem.key ? describeLine(problem.key, lines) : null;
-              const compared = COMPARED[problem.code];
+              const compared = comparedFor(problem.code);
               const detail = problem.detail;
               const amounts = compared && detail?.actual && detail.expected ? ([[compared[0], detail.actual], [compared[1], detail.expected], ...(detail.difference ? [['Difference', detail.difference] as [string, string]] : [])] as Array<[string, string]>) : null;
               return (

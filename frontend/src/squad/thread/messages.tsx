@@ -1,5 +1,6 @@
 // frontend/src/squad/thread/messages.tsx
 import { Link, useNavigate } from '@tanstack/react-router';
+import { word } from '@/api/words';
 import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import type { ThreadMessage } from '../api/types';
@@ -12,16 +13,15 @@ import { QaMessage } from './QaMessage';
 import { Time } from './Time';
 import { Trail } from './Trail';
 
-const words = (s: string | null) => (s ?? 'decided').replace(/_/g, ' ');
-
-const SEVERITY: Record<string, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
+/** A decision the server did not word for this message, in the server's table of decision words. */
+const decided = (s: string | null) => (s ? word('decisions', s).toLowerCase() : 'decided');
 
 /** Where a case stands, in words: its decision, whether the server says it is yours (the briefing's own rule), a handoff or return, or who holds it. */
 export function caseState(message: Extract<ThreadMessage, { type: 'case' }>, all: ThreadMessage[]): { text: string; needsYou: boolean } {
   const mine = all.filter((m) => 'work_item_id' in m && m.work_item_id === message.work_item_id);
   const decision = mine.find((m): m is Extract<ThreadMessage, { type: 'decision' }> => m.type === 'decision');
-  if (decision) return { text: `${decision.decision_words ?? words(decision.decision)} by ${decision.by}`, needsYou: false };
-  if (message.status !== 'open') return { text: words(message.status).replace(/^./, (c) => c.toUpperCase()), needsYou: false };
+  if (decision) return { text: `${decision.decision_words ?? decided(decision.decision)} by ${decision.by}`, needsYou: false };
+  if (message.status !== 'open') return { text: word('case_statuses', message.status), needsYou: false };
   const last = [...mine].reverse().find((m) => m.type === 'handoff' || m.type === 'returned');
   if (message.needs_you) return { text: last?.type === 'returned' ? 'Returned to you' : 'Needs your call', needsYou: true };
   if (last?.type === 'returned') return { text: `Returned to ${last.to ?? 'the analyst'}`, needsYou: false };
@@ -44,7 +44,7 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
       const state = caseState(message, thread);
       return (
         <article className="sq-msg sq-card" data-work-item={message.work_item_id} data-focused={focused ? 'true' : undefined} aria-current={focused ? 'true' : undefined}>
-          <header className="sq-msghead"><b>{message.title}</b> <span className="sq-tag">{SEVERITY[message.severity] ?? words(message.severity)}</span> <span className={state.needsYou ? 'sq-tag sq-tag-needs' : 'sq-tag'}>{state.text}</span> <Time ts={message.ts} /></header>
+          <header className="sq-msghead"><b>{message.title}</b> <span className="sq-tag">{word('severities', message.severity)}</span> <span className={state.needsYou ? 'sq-tag sq-tag-needs' : 'sq-tag'}>{state.text}</span> <Time ts={message.ts} /></header>
           <p>{message.question}</p>
           <div className="sq-actions">
             {focused ? null : (
@@ -94,7 +94,7 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
     case 'decision':
       return (
         <article className="sq-msg sq-card" data-work-item={message.work_item_id}>
-          <p><b>{message.by}: {message.decision_words ?? words(message.decision)}</b> <Time ts={message.ts} /></p>
+          <p><b>{message.by}: {message.decision_words ?? decided(message.decision)}</b> <Time ts={message.ts} /></p>
           {message.reason ? <blockquote className="sq-quote">{message.reason}</blockquote> : null}
         </article>
       );

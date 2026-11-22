@@ -4,6 +4,7 @@
  * passed on exactly as the API returned them.
  */
 import type { FactSummary, FootingProblem, HeldCell, SpreadContext, SpreadLineApi } from '@/api/schema';
+import { comparedWords, hasWord, word } from '@/api/words';
 import { humanize, periodLabel } from '@/domain/labels';
 
 /* ── Reading the item's evidence ──────────────────────────────────────── */
@@ -63,7 +64,8 @@ export function spreadContext(evidence: Record<string, unknown>): SpreadContext 
 
 const STATED = 'stated.';
 const COMPARATIVE = '@comparative';
-export const STATEMENT_LABEL: Record<string, string> = { is: 'Income statement', bs: 'Balance sheet', cf: 'Cash flow statement', sup: 'Supplemental' };
+/** A statement ("is", "bs") in the server's words. */
+export const statementLabel = (statement: string) => word('statements', statement);
 
 export interface LineDescription {
   /** The template line's key, without the printed-total prefix or the comparative suffix. */
@@ -87,7 +89,7 @@ export function describeLine(key: string, lines: SpreadLineApi[]): LineDescripti
   return {
     base,
     label: line?.label ?? humanize(rest.join(' ') || base),
-    statement: STATEMENT_LABEL[line?.statement ?? prefix] ?? humanize(prefix),
+    statement: statementLabel(line?.statement ?? prefix),
     qualifier: stated ? 'printed total' : comparative ? 'comparative column' : null,
     input: !stated && !comparative && (line ? !line.computed : true),
     flow: (line?.statement ?? prefix) !== 'bs',
@@ -109,16 +111,8 @@ export function needsPerson(heldId: string | null, held: FactSummary | undefined
 
 /* ── Why a figure was held, in plain words ────────────────────────────── */
 
-const HOLD_REASON: Record<string, string> = {
-  mapping_doubt: 'The check on the line this figure was filed under did not pass.',
-  label_mismatch: 'The row label the reader reported is not on the page.',
-  not_found: 'The figure the reader reported is not on the page it cited.',
-  column_unconfirmed: 'The figure is on the page, but its column could not be confirmed as the one for this period.',
-  ambiguous: 'The figure appears more than once on the page, so its row could not be settled.',
-  unparseable: 'The printed figure could not be read as a number.',
-};
 /** A code check's reason for holding a figure, without the figure's own particulars. */
-export const holdReason = (reason: string) => HOLD_REASON[reason] ?? `${humanize(reason)}.`;
+export const holdReason = (reason: string) => (hasWord('hold_reasons', reason) ? word('hold_reasons', reason) : `${humanize(reason)}.`);
 
 export interface WhyHeld {
   sentence: string;
@@ -149,25 +143,11 @@ export function whyHeld(cell: HeldCell, line: LineDescription, target: LineDescr
 
 /* ── Footing checks ───────────────────────────────────────────────────── */
 
-const CHECK_FINDING: Record<string, string> = {
-  missing_input: 'No figure is on file for this line',
-  total_not_read: 'The printed total was not read',
-  absent_not_verified: 'Not shown to be absent from the statement',
-  does_not_foot: 'The lines do not add to the printed total',
-  does_not_balance: 'Assets do not equal liabilities and equity',
-  does_not_tie: 'The cash flow statement does not tie to the income statement',
-  cash_roll_mismatch: 'The change in cash does not match the balance sheet',
-};
-export const checkFinding = (code: string) => CHECK_FINDING[code] ?? humanize(code);
-export const knownCheck = (code: string) => code in CHECK_FINDING;
+export const checkFinding = (code: string) => word('check_findings', code);
+export const knownCheck = (code: string) => hasWord('check_findings', code);
 
-/** What the two amounts of a failed comparison are. */
-export const COMPARED: Record<string, [string, string]> = {
-  does_not_foot: ['Lines add to', 'Printed total'],
-  does_not_balance: ['Total assets', 'Total liabilities and equity'],
-  does_not_tie: ['Cash flow statement', 'Income statement'],
-  cash_roll_mismatch: ['Net change in cash', 'Change in the cash balance'],
-};
+/** What the two amounts of a failed comparison are, in the server's words. */
+export const compared = (code: string) => comparedWords(code);
 
 /* ── What one click will do ───────────────────────────────────────────── */
 

@@ -38,6 +38,7 @@ from app.squad.words import (
     agent_words,
     describe_event,
     document_type_words,
+    label_tables,
     ledger_family_words,
 )
 
@@ -234,6 +235,13 @@ def document_type_words_table(_: User = Depends(current_user)) -> dict:
     """The plain words for every document type, and the words for an unclassified document; the browser has no list."""
     return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None), "notes": NOTE_WORDS,
             "needable": list(routing.NEEDABLE_TYPES)}
+
+
+@router.get("/words/labels")
+def label_words_table() -> dict:
+    """Every other table of words a screen shows (severities, stages, roles, covenant outcomes, funding kinds, ...). Open
+    before sign-in: the sign-in list names each person's role, and the words are not secret."""
+    return label_tables()
 
 
 @router.get("/words/signals")

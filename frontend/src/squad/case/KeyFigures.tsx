@@ -1,7 +1,7 @@
 import { useBorrowerCovenants, useCalculation, useFactsById } from '@/api/hooks';
 import type { WorkItemDetail } from '@/api/schema';
 import { Meter, Skeleton } from '@/design';
-import { OUTCOME } from '@/domain/labels';
+import { outcomeOf } from '@/domain/labels';
 import { FactFigure, SourcedFigure } from '@/source/figures';
 import type { ReactNode } from 'react';
 
@@ -40,7 +40,7 @@ export function KeyFigures({ item }: { item: WorkItemDetail }) {
 
   if (testId) {
     if (!test || !facts.data) return covenants.isPending || facts.isPending ? <Skeleton className="h-[74px] w-full" /> : null;
-    const outcome = OUTCOME[test.outcome];
+    const outcome = outcomeOf(test.outcome);
     const fact = (id: string | null) => (id ? facts.data?.[id] : undefined);
     const headroom = fact(test.headroom_fact_id);
     const headroomValue = headroom ? Number(headroom.value) : null;

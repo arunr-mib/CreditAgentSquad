@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 import { useBorrowerCovenants } from '@/api/hooks';
 import type { Recalculation } from '@/api/schema';
-import type { CovenantOutcome } from '@/api/types';
 import { StatusDot } from '@/design';
-import { OUTCOME } from '@/domain/labels';
+import { outcomeOf } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { outcomeLabel, recalculationSummary } from './recalculation';
 
 function Outcome({ outcome }: { outcome: string | null }) {
-  const known = outcome ? OUTCOME[outcome as CovenantOutcome] : undefined;
+  const known = outcome ? outcomeOf(outcome) : undefined;
   return (
     <StatusDot tone={known?.tone ?? 'muted'} emphasis={known?.emphasis}>
       {outcomeLabel(outcome)}

@@ -2,17 +2,10 @@ import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
 import type { Unit } from '@/api/types';
 import { Button, formatFigure, Input } from '@/design';
+import { word } from '@/api/words';
 import { cx } from '@/lib/cx';
 import { Textarea } from '@/screens/parts';
 
-const UNIT_LABEL: Record<Unit, string> = {
-  usd: 'whole US dollars',
-  ratio: 'a ratio',
-  pct: 'a fraction: 0.072 is 7.2%',
-  days: 'days',
-  count: 'a count',
-  months: 'months',
-};
 
 /** The number a person typed, without grouping commas or spaces; null when it is not a plain decimal. */
 export function parseFigureInput(text: string): string | null {
@@ -114,7 +107,7 @@ export function FigureForm({ title, withValue = true, unit = 'usd', initialValue
       </p>
       {withValue ? (
         <Input
-          label={`Value, in ${UNIT_LABEL[unit]}`}
+          label={`Value, in ${word('units', unit)}`}
           inputMode="decimal"
           autoComplete="off"
           className="[&_input]:[font-variant-numeric:tabular-nums_lining-nums]"

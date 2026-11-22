@@ -12,6 +12,7 @@ import { Button, formatDate, formatFigure, provenance, ProvenanceGlyph, Quote, S
 import { useDocWords } from '@/squad/DocType';
 import { formatTimestamp, periodLabel, toFact } from '@/domain/labels';
 import { cx } from '@/lib/cx';
+import { hasWord, word } from '@/api/words';
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { ChangeFigure } from './ChangeFigure';
 import { SourceContext, useSource, type SourceRef } from './context';
@@ -19,28 +20,17 @@ import { PdfPage, useFitWidth } from './PdfPage';
 
 const PAGE_WIDTH = 548;
 
-const STATUS: Record<string, { tone: StatusTone; label: string }> = {
-  verified: { tone: 'pass', label: 'Verified by code' },
-  confirmed: { tone: 'pass', label: 'Confirmed by a person' },
-  proposed: { tone: 'attention', label: 'Proposed, not verified' },
-  rejected: { tone: 'muted', label: 'Rejected' },
-  superseded: { tone: 'muted', label: 'Superseded' },
-};
-
-/** "Verified" means different things by kind: only an extracted figure was checked against a page. */
-const VERIFIED_BY_KIND: Record<string, string> = {
-  extracted: 'Verified on the page by code',
-  calculated: 'Calculated by code',
-  system: 'From a system of record',
-  seeded: 'Loaded history, not extracted from a document',
-};
+/** How each fact status is shown; its words are the server's (`word('fact_statuses', …)`). */
+const STATUS_TONE: Record<string, StatusTone> = { verified: 'pass', confirmed: 'pass', proposed: 'attention', rejected: 'muted', superseded: 'muted' };
+const statusLabel = (status: string) => word('fact_statuses', status);
 
 function statusFor(status: string, kind?: string, origin?: 'term' | null): { tone: StatusTone; label: string } {
-  if (status === 'verified' && origin === 'term') return { tone: 'pass', label: 'From approved terms' };
-  if (status === 'verified' && kind && VERIFIED_BY_KIND[kind]) {
-    return { tone: kind === 'seeded' ? 'neutral' : 'pass', label: VERIFIED_BY_KIND[kind] };
+  if (status === 'verified' && origin === 'term') return { tone: 'pass', label: statusLabel('from_terms') };
+  // "Verified" means different things by kind: only an extracted figure was checked against a page.
+  if (status === 'verified' && kind && hasWord('verified_by_kind', kind)) {
+    return { tone: kind === 'seeded' ? 'neutral' : 'pass', label: word('verified_by_kind', kind) };
   }
-  return STATUS[status] ?? { tone: 'neutral', label: status };
+  return { tone: STATUS_TONE[status] ?? 'neutral', label: statusLabel(status) };
 }
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
@@ -483,7 +473,7 @@ function History({ entries, unit }: { entries: FactSource['history']; unit: Unit
               {entry.relation === 'this' ? ' · this version' : ''}
             </span>
             <span className="text-ink-700">
-              {(STATUS[entry.status] ?? { label: entry.status }).label} · {formatTimestamp(entry.created_at)}
+              {statusLabel(entry.status)} · {formatTimestamp(entry.created_at)}
             </span>
             {entry.reason ? (
               <span className="col-span-2 text-ink-700">

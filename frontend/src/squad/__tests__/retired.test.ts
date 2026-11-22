@@ -33,4 +33,35 @@ describe('the cockpit is retired', () => {
       .map(([path]) => path);
     expect(offenders).toEqual([]);
   });
+
+  // Final review I4: a table of words written into the browser, of any name. Two or more `snake_case_key: 'Words'`
+  // entries in a row (a value with a capital or a space: words, not an id) is a label table. Formats and ids are not
+  // words ({ id: 'docx', label: 'Word' } has an id beside its label), so they do not match.
+  // A record's own fields (label, title, hint...) are not keys of a table, and a value of class names is not words.
+  const KEY = String.raw`\b(?!(?:label|phrase|title|subject|detail|group|hint|keywords|text|sentence|name|description|note)\b)[a-z][a-z0-9_]*\s*:\s*`;
+  const WORDS = String.raw`'(?=[^']*(?:[A-Z]|\s))(?![^']*\b[a-z]+-[a-z0-9])[^'{}\n]+'`;
+  const LABEL_TABLE = new RegExp(`${KEY}${WORDS}\\s*,\\s*${KEY}${WORDS}`);
+  const SCANNED = /^\/src\/(squad|repair|source|domain|screens|design)\/(?!.*__tests__\/)(?!.*\.test\.tsx?$)/;
+
+  it('the label-table guard can fail: it catches a table of words by its shape, whatever it is called', () => {
+    for (const sample of [
+      "const SEVERITY: Record<string, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };",
+      "const READ = {\n  indexed: 'read page by page',\n  image_only: 'image only, with no readable text',\n};",
+      "const words = { routed: 'sent this to', returned: 'returned this to', evidence_attached: 'attached a document' } as const;",
+      "const FUNDING_KIND = { equity_round: 'Equity round', extension: 'Extension' };",
+    ]) expect(LABEL_TABLE.test(sample), sample).toBe(true);
+    for (const sample of [
+      "const FORMATS = [{ id: 'docx', label: 'Word' }, { id: 'xlsx', label: 'Excel' }];",
+      "source.open({ type: 'document', documentId: d.id, page: 1, title: d.title });",
+      "return { tone: 'pass', label: 'Verified by code' };",
+      "{ type: 'record', kind: 'manual', title: 'Funding event', value: e.amount }",
+      "{ id: 'home', group: 'Go to', label: 'Squad' }",
+      "primary: 'bg-cobalt text-white border-transparent', secondary: 'bg-surface text-ink'",
+    ]) expect(LABEL_TABLE.test(sample), sample).toBe(false);
+  });
+
+  it('no front-end file holds a table of words: every label is served by the server (backend/app/squad/words.py)', () => {
+    const offenders = Object.entries(sources).filter(([path, text]) => SCANNED.test(path) && LABEL_TABLE.test(text)).map(([path]) => path);
+    expect(offenders).toEqual([]);
+  });
 });

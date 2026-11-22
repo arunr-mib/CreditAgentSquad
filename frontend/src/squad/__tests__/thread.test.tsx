@@ -164,7 +164,7 @@ describe('ClientThread', () => {
     expect(within(await card('Mine')).getByText('Critical')).toBeInTheDocument();
     expect(within(await card('Handed')).getByText('With Helen Strand')).toBeInTheDocument();
     expect(within(await card('Handed')).getByText('High')).toBeInTheDocument();
-    expect(within(await card('Done')).getByText('not a breach by Priya Raman')).toBeInTheDocument();
+    expect(within(await card('Done')).getByText('marked not a breach by Priya Raman')).toBeInTheDocument();
     expect(screen.queryByText('open')).not.toBeInTheDocument();
     expect(screen.queryByText('closed')).not.toBeInTheDocument();
   });

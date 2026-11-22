@@ -6,6 +6,7 @@ import { mul } from '@/api/decimal';
 import type { FactSummary } from '@/api/schema';
 import type { CovenantOutcome, Fact, Provenance, Severity, StageId, StageStatus } from '@/api/types';
 import { formatDate, type StatusTone } from '@/design';
+import { outcomeWords, word } from '@/api/words';
 
 export function humanize(id: string | null | undefined): string {
   if (!id) return '';
@@ -13,106 +14,37 @@ export function humanize(id: string | null | undefined): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-/** Abbreviations of legal forms, written the way they are written in an agreement. */
-const LEGAL_ABBREVIATIONS: Record<string, string> = { llc: 'LLC', lp: 'LP', llp: 'LLP', lllp: 'LLLP', pllc: 'PLLC', pc: 'PC', plc: 'PLC', inc: 'Inc.', corp: 'Corp.', co: 'Co.', ltd: 'Ltd.' };
-
-/** A borrower's legal form as stored ("llc", "s_corporation") in words ("LLC", "S corporation"). */
-export function legalFormLabel(form: string | null | undefined): string {
-  if (!form) return '';
-  const words = form.replace(/[_.-]+/g, ' ').trim().split(/\s+/);
-  return words
-    .map((word, index) => {
-      const known = LEGAL_ABBREVIATIONS[word.toLowerCase()];
-      if (known) return known;
-      if (word.length === 1) return word.toUpperCase();
-      return index === 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase();
-    })
-    .join(' ');
-}
-
 /* ── Severity ─────────────────────────────────────────────────────────── */
 
-export const SEVERITY_LABEL: Record<Severity, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
-export const SEVERITY_RANK: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3 };
-/** One mark per level, the same on every screen: critical red, high amber, medium ink, low an outline. */
+/** One mark per level, the same on every screen: critical red, high amber, medium ink, low an outline. The words are
+ * the server's (`word('severities', …)`). */
 export const SEVERITY_TONE: Record<Severity, StatusTone> = { critical: 'breach', high: 'attention', medium: 'neutral', low: 'muted' };
+export const severityLabel = (severity: string) => word('severities', severity);
 
 /* ── Monitoring cycle ─────────────────────────────────────────────────── */
 
-export const STAGE_ORDER: StageId[] = [
-  'awaiting_package',
-  'intake',
-  'spreading',
-  'covenant_testing',
-  'borrowing_base',
-  'signals',
-  'review_prep',
-  'in_review',
-  'actions_open',
-  'closed',
-];
-
-export const STAGE_LABEL: Record<StageId, string> = {
-  awaiting_package: 'Awaiting package',
-  intake: 'Intake',
-  spreading: 'Spreading',
-  covenant_testing: 'Covenant testing',
-  borrowing_base: 'Borrowing base',
-  signals: 'Signals',
-  review_prep: 'Review preparation',
-  in_review: 'In review',
-  actions_open: 'Actions open',
-  closed: 'Closed',
-};
-
-
-export const STAGE_STATUS_LABEL: Record<StageStatus, string> = {
-  pending: 'Not started',
-  running: 'Running',
-  needs_person: 'Needs a person',
-  done: 'Done',
-  skipped: 'Skipped',
-  failed: 'Failed',
-};
+export const stageLabel = (stage: StageId | string) => word('stages', stage);
+export const stageStatusLabel = (status: StageStatus | string) => word('stage_statuses', status);
 
 /* ── Covenants ────────────────────────────────────────────────────────── */
 
-export const OUTCOME: Record<CovenantOutcome, { tone: StatusTone; label: string; emphasis?: boolean; rank: number; explanation: string }> = {
-  breach_reported_compliant: {
-    tone: 'breach',
-    label: 'Breach, reported compliant',
-    emphasis: true,
-    rank: 0,
-    explanation: 'The calculated value fails the test and the certificate claims compliance.',
-  },
-  breach: { tone: 'breach', label: 'Breach', emphasis: true, rank: 1, explanation: 'The calculated value fails the test.' },
-  cannot_test: { tone: 'attention', label: 'Cannot test', rank: 2, explanation: 'An input is missing or no terms are in force.' },
-  compliant_variance: {
-    tone: 'attention',
-    label: 'Compliant, variance',
-    rank: 3,
-    explanation: 'The calculated value passes but differs from the certificate beyond tolerance. The variance is logged; no decision is needed.',
-  },
-  compliant: { tone: 'pass', label: 'Compliant', rank: 4, explanation: 'The calculated value passes and agrees with the certificate. Nothing is needed from a person.' },
+/** How an outcome is shown (colour, emphasis, order) beside the server's words for it (label, explanation). */
+const OUTCOME_LOOK: Record<CovenantOutcome, { tone: StatusTone; emphasis?: boolean; rank: number }> = {
+  breach_reported_compliant: { tone: 'breach', emphasis: true, rank: 0 },
+  breach: { tone: 'breach', emphasis: true, rank: 1 },
+  cannot_test: { tone: 'attention', rank: 2 },
+  compliant_variance: { tone: 'attention', rank: 3 },
+  compliant: { tone: 'pass', rank: 4 },
 };
 
-/* ── Work items ───────────────────────────────────────────────────────── */
-
+export function outcomeOf(outcome: CovenantOutcome | string): { tone: StatusTone; label: string; emphasis?: boolean; rank: number; explanation: string } {
+  const look = OUTCOME_LOOK[outcome as CovenantOutcome] ?? { tone: 'neutral' as StatusTone, rank: 9 };
+  return { ...look, ...outcomeWords(outcome) };
+}
 
 /* ── People ───────────────────────────────────────────────────────────── */
 
-export const ROLE_LABEL: Record<string, string> = {
-  analyst: 'Credit analyst',
-  portfolio_manager: 'Portfolio manager',
-  credit_officer: 'Credit officer',
-  credit_admin: 'Credit administration',
-  credit_review: 'Credit review',
-  admin: 'Administrator',
-};
-
-export const roleLabel = (role: string | null | undefined) => (role ? (ROLE_LABEL[role] ?? humanize(role)) : '');
-
-
+export const roleLabel = (role: string | null | undefined) => (role ? word('roles', role) : '');
 
 /* ── Periods and time ─────────────────────────────────────────────────── */
 

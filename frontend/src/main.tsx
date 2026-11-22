@@ -3,6 +3,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ApiError } from '@/api/client';
+import { WordsGate } from '@/api/words';
 import { AuthProvider } from '@/auth/AuthProvider';
 import { ToastProvider, TooltipProvider } from '@/design';
 import { router } from './router';
@@ -25,13 +26,15 @@ if (!root) throw new Error('Root element not found');
 createRoot(root).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider delayDuration={300}>
-          <ToastProvider>
-            <RouterProvider router={router} />
-          </ToastProvider>
-        </TooltipProvider>
-      </AuthProvider>
+      <WordsGate>
+        <AuthProvider>
+          <TooltipProvider delayDuration={300}>
+            <ToastProvider>
+              <RouterProvider router={router} />
+            </ToastProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </WordsGate>
     </QueryClientProvider>
   </StrictMode>,
 );

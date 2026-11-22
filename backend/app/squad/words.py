@@ -120,14 +120,88 @@ def signal_words(rule: str) -> str:
     return SIGNAL_LABELS.get(rule) or rule.replace("_", " ").capitalize()
 
 
-_STAGE_WORDS = {"awaiting_package": "Awaiting package", "intake": "Intake", "spreading": "Spreading",
-                "covenant_testing": "Covenant testing", "borrowing_base": "Borrowing base", "signals": "Signals",
-                "review_prep": "Review preparation", "in_review": "In review", "actions_open": "Actions open",
-                "closed": "Closed"}
-_STAGE_STATUS_WORDS = {"pending": "not started", "running": "running", "needs_person": "needs a person",
-                       "done": "done", "skipped": "skipped", "failed": "failed"}
-_ROLE_WORDS = {"analyst": "credit analyst", "portfolio_manager": "portfolio manager", "credit_officer": "credit officer",
-               "credit_admin": "credit administration", "credit_review": "credit review", "admin": "administrator"}
+STAGE_WORDS = {"awaiting_package": "Awaiting package", "intake": "Intake", "spreading": "Spreading",
+               "covenant_testing": "Covenant testing", "borrowing_base": "Borrowing base", "signals": "Signals",
+               "review_prep": "Review preparation", "in_review": "In review", "actions_open": "Actions open",
+               "closed": "Closed"}
+STAGE_STATUS_WORDS = {"pending": "Not started", "running": "Running", "needs_person": "Needs a person",
+                      "done": "Done", "skipped": "Skipped", "failed": "Failed"}
+ROLE_WORDS = {"analyst": "Credit analyst", "portfolio_manager": "Portfolio manager", "credit_officer": "Credit officer",
+              "credit_admin": "Credit administration", "credit_review": "Credit review", "admin": "Administrator"}
+_STAGE_WORDS = STAGE_WORDS
+_STAGE_STATUS_WORDS = {k: v.lower() for k, v in STAGE_STATUS_WORDS.items()}  # inside a sentence
+_ROLE_WORDS = {k: v.lower() for k, v in ROLE_WORDS.items()}
+
+# Final review I4: every table of words a screen shows lives here and is served (`GET /words/labels`); the browser
+# keeps no table of its own. Colour, order and emphasis stay in the browser: they are presentation, not words.
+SEVERITY_WORDS = {"critical": "Critical", "high": "High", "medium": "Medium", "low": "Low"}
+COVENANT_OUTCOME_WORDS = {
+    "breach_reported_compliant": {"label": "Breach, reported compliant",
+                                  "explanation": "The calculated value fails the test and the certificate claims "
+                                                 "compliance."},
+    "breach": {"label": "Breach", "explanation": "The calculated value fails the test."},
+    "cannot_test": {"label": "Cannot test", "explanation": "An input is missing or no terms are in force."},
+    "compliant_variance": {"label": "Compliant, variance",
+                           "explanation": "The calculated value passes but differs from the certificate beyond "
+                                          "tolerance. The variance is logged; no decision is needed."},
+    "compliant": {"label": "Compliant", "explanation": "The calculated value passes and agrees with the certificate. "
+                                                       "Nothing is needed from a person."},
+}
+FUNDING_KIND_WORDS = {"equity_round": "Equity round", "extension": "Extension", "milestone_tranche": "Milestone tranche",
+                      "venture_debt": "Venture debt"}
+RECOMMENDATION_WORDS = {"resolve": "Recommends resolve", "escalate": "Recommends escalate",
+                        "request": "Recommends request", "abstain": "Abstains", "draft": "Drafted for approval"}
+DOCUMENT_READ_WORDS = {"indexed": "read page by page", "image_only": "image only, with no readable text",
+                       "received": "received"}
+CADENCE_WORDS = {"quarterly": "Quarterly", "monthly": "Monthly"}
+STATEMENT_WORDS = {"is": "Income statement", "bs": "Balance sheet", "cf": "Cash flow statement", "sup": "Supplemental"}
+HOLD_REASON_WORDS = {
+    "mapping_doubt": "The check on the line this figure was filed under did not pass.",
+    "label_mismatch": "The row label the reader reported is not on the page.",
+    "not_found": "The figure the reader reported is not on the page it cited.",
+    "column_unconfirmed": "The figure is on the page, but its column could not be confirmed as the one for this "
+                          "period.",
+    "ambiguous": "The figure appears more than once on the page, so its row could not be settled.",
+    "unparseable": "The printed figure could not be read as a number.",
+}
+CHECK_FINDING_WORDS = {
+    "missing_input": "No figure is on file for this line", "total_not_read": "The printed total was not read",
+    "absent_not_verified": "Not shown to be absent from the statement",
+    "does_not_foot": "The lines do not add to the printed total",
+    "does_not_balance": "Assets do not equal liabilities and equity",
+    "does_not_tie": "The cash flow statement does not tie to the income statement",
+    "cash_roll_mismatch": "The change in cash does not match the balance sheet",
+}
+CHECK_COMPARED_WORDS = {
+    "does_not_foot": ["Lines add to", "Printed total"],
+    "does_not_balance": ["Total assets", "Total liabilities and equity"],
+    "does_not_tie": ["Cash flow statement", "Income statement"],
+    "cash_roll_mismatch": ["Net change in cash", "Change in the cash balance"],
+}
+FACT_STATUS_WORDS = {"verified": "Verified by code", "confirmed": "Confirmed by a person",
+                     "proposed": "Proposed, not verified", "rejected": "Rejected", "superseded": "Superseded",
+                     "from_terms": "From approved terms"}
+VERIFIED_BY_KIND_WORDS = {"extracted": "Verified on the page by code", "calculated": "Calculated by code",
+                          "system": "From a system of record", "seeded": "Loaded history, not extracted from a document"}
+UNIT_WORDS = {"usd": "whole US dollars", "ratio": "a ratio", "pct": "a fraction: 0.072 is 7.2%", "days": "days",
+              "count": "a count", "months": "months"}
+CASE_HISTORY_WORDS = {"routed": "sent this to", "returned": "returned this to", "evidence_attached": "attached a document"}
+CASE_STATUS_WORDS = {"open": "Open", "decided": "Decided", "withdrawn": "Withdrawn", "superseded": "Superseded"}
+
+
+def label_tables() -> dict[str, Any]:
+    """Every table of words the browser shows, in one payload (`GET /words/labels`)."""
+    return {
+        "severities": SEVERITY_WORDS, "stages": STAGE_WORDS, "stage_statuses": STAGE_STATUS_WORDS, "roles": ROLE_WORDS,
+        "covenant_outcomes": COVENANT_OUTCOME_WORDS, "funding_kinds": FUNDING_KIND_WORDS,
+        "recommendations": RECOMMENDATION_WORDS, "document_reads": DOCUMENT_READ_WORDS, "cadences": CADENCE_WORDS,
+        "statements": STATEMENT_WORDS, "hold_reasons": HOLD_REASON_WORDS, "check_findings": CHECK_FINDING_WORDS,
+        "check_compared": CHECK_COMPARED_WORDS, "fact_statuses": FACT_STATUS_WORDS,
+        "verified_by_kind": VERIFIED_BY_KIND_WORDS, "units": UNIT_WORDS, "case_history": CASE_HISTORY_WORDS,
+        "case_statuses": CASE_STATUS_WORDS, "decisions": {k: v for k, v in _PAST.items()},
+    }
+
+
 _UUID = re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.IGNORECASE)
 _IDENTIFIER = re.compile(r"[a-z]+(?:_[a-z]+)*")
 _PLAIN_KEYS = frozenset({"kind", "status", "type", "role", "severity", "source", "state", "result"})

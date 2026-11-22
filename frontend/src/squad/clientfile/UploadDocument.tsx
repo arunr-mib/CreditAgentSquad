@@ -3,15 +3,11 @@ import { ArrowUpRight } from 'lucide-react';
 import { useId, useRef, useState, type FormEvent } from 'react';
 import { useUploadDocument } from '@/api/hooks';
 import { Button, Card, CardHeader, fieldLabelClass, formatDate, Input } from '@/design';
+import { word } from '@/api/words';
 import { cx } from '@/lib/cx';
 import { Refusal } from '@/repair/FigureForm';
 import { Notice } from '@/screens/parts';
 
-const READ: Record<string, string> = {
-  indexed: 'read page by page',
-  image_only: 'image only, with no readable text',
-  received: 'received',
-};
 
 /**
  * File a PDF, .xlsx or .csv for the borrower. The route takes the file and an optional title and nothing else:
@@ -106,7 +102,7 @@ export function UploadDocument({ borrowerId, code, onClose }: { borrowerId: stri
                 </Link>
               }
             >
-              <span className="tnum">{filed.page_count}</span> {filed.page_count === 1 ? 'page' : 'pages'}, {READ[filed.status] ?? filed.status}
+              <span className="tnum">{filed.page_count}</span> {filed.page_count === 1 ? 'page' : 'pages'}, {word('document_reads', filed.status).toLowerCase()}
               {filed.received_date ? `, received ${formatDate(filed.received_date)}` : ''}. Unclassified until intake reads it. The receipt is in the ledger.
             </Notice>
           ) : null}

@@ -158,3 +158,27 @@ def test_the_funding_slip_reads_in_the_ledger_without_its_amount(db, world):
         assert check_narrative(summary, {}) == [], (e.action, summary)
         assert "15,000,000" not in summary and "$" not in summary
 
+
+# ---- final review I4: the browser keeps no table of words ----
+
+def test_every_label_table_is_served_and_open_before_sign_in(client):
+    from app.squad.words import label_tables
+
+    served = client.get("/api/v1/words/labels")
+    assert served.status_code == 200 and served.json() == label_tables()
+    for table in ("severities", "stages", "stage_statuses", "roles", "covenant_outcomes", "funding_kinds",
+                  "recommendations", "document_reads", "cadences", "statements", "hold_reasons", "check_findings",
+                  "fact_statuses", "verified_by_kind", "units", "case_history", "decisions"):
+        assert served.json()[table], table
+
+
+def test_the_browser_tests_snapshot_is_what_the_server_serves():
+    """`frontend/src/test/words.json` is what the browser tests are given; it must be the served tables, so a word
+    changed here is changed there (regenerate it from `label_tables()`)."""
+    import json
+    from pathlib import Path
+
+    from app.squad.words import label_tables
+
+    snapshot = Path(__file__).resolve().parents[3] / "frontend" / "src" / "test" / "words.json"
+    assert json.loads(snapshot.read_text()) == json.loads(json.dumps(label_tables()))

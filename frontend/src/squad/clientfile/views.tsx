@@ -6,9 +6,10 @@ import {
   useReviewSheet, useReviewSheets, useSignals, useSpread, useTimeline,
 } from '@/api/hooks';
 import type { BorrowerRow, FactSummary } from '@/api/schema';
+import { word } from '@/api/words';
 import { useAuth } from '@/auth/context';
 import { formatDate } from '@/design';
-import { OUTCOME } from '@/domain/labels';
+import { outcomeOf } from '@/domain/labels';
 import { RunStage } from '@/squad/clientfile/RunStage';
 import { UploadDocument } from '@/squad/clientfile/UploadDocument';
 import { Commentary } from '@/squad/clientfile/review/Commentary';
@@ -159,7 +160,7 @@ export function Covenants({ borrower }: Props) {
                 <td className="sq-num">{t.reported_fact_id && facts[t.reported_fact_id] ? <FactFigure fact={facts[t.reported_fact_id]} align="column" /> : <Absent align="column" reason="Not reported" />}</td>
                 <td className="sq-num">{t.threshold_fact_id && facts[t.threshold_fact_id] ? <FactFigure fact={facts[t.threshold_fact_id]} align="column" /> : <Absent align="column" />}</td>
                 <td className="sq-num">{t.headroom_fact_id && facts[t.headroom_fact_id] ? <FactFigure fact={facts[t.headroom_fact_id]} align="column" /> : <Absent align="column" />}</td>
-                <td>{['breach', 'breach_reported_compliant'].includes(t.outcome) ? <span className="sq-tag sq-tag-breach">{OUTCOME[t.outcome].label}</span> : OUTCOME[t.outcome]?.label ?? t.outcome}</td>
+                <td>{['breach', 'breach_reported_compliant'].includes(t.outcome) ? <span className="sq-tag sq-tag-breach">{outcomeOf(t.outcome).label}</span> : outcomeOf(t.outcome).label}</td>
               </tr>
             );
           })}
@@ -180,7 +181,7 @@ export function Covenants({ borrower }: Props) {
                     <th scope="row">{name}</th>
                     {periods.map((p) => {
                       const t = tests.find((x) => x.covenant_name === name && x.period_end === p);
-                      return <td key={p}>{t ? (OUTCOME[t.outcome]?.label ?? t.outcome) : <span className="sq-faint">Not tested</span>}</td>;
+                      return <td key={p}>{t ? outcomeOf(t.outcome).label : <span className="sq-faint">Not tested</span>}</td>;
                     })}
                   </tr>
                 ))}
@@ -236,7 +237,7 @@ export function Documents({ borrower }: Props) {
   );
 }
 
-const FUNDING_KIND: Record<string, string> = { equity_round: 'Equity round', extension: 'Extension', milestone_tranche: 'Milestone tranche', venture_debt: 'Venture debt' };
+const fundingKind = (kind: string) => word('funding_kinds', kind);
 
 export function Funding({ borrower }: Props) {
   const events = useFundingEvents(borrower.id);
@@ -249,10 +250,10 @@ export function Funding({ borrower }: Props) {
       <tbody>
         {events.data.map((e) => (
           <tr key={e.id}>
-            <th scope="row">{FUNDING_KIND[e.kind] ?? e.kind}</th>
+            <th scope="row">{fundingKind(e.kind)}</th>
             <td className="sq-num">
-              <SourcedFigure value={e.amount} unit="usd" kind="manual" label={`${FUNDING_KIND[e.kind] ?? e.kind} amount`} align="column"
-                source={{ type: 'record', kind: 'manual', title: 'Funding event', value: e.amount, rows: [['Kind', FUNDING_KIND[e.kind] ?? e.kind], ['Expected close', formatDate(e.expected_close)], ['Status', e.status]], note: 'Recorded by a person on the funding event; not read from a document.' }} />
+              <SourcedFigure value={e.amount} unit="usd" kind="manual" label={`${fundingKind(e.kind)} amount`} align="column"
+                source={{ type: 'record', kind: 'manual', title: 'Funding event', value: e.amount, rows: [['Kind', fundingKind(e.kind)], ['Expected close', formatDate(e.expected_close)], ['Status', e.status]], note: 'Recorded by a person on the funding event; not read from a document.' }} />
             </td>
             <td>{formatDate(e.expected_close)}</td>
             <td>{e.status === 'slipped' ? <span className="sq-tag sq-tag-attention">Slipped</span> : e.status}</td>

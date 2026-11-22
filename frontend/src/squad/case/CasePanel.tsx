@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { ApiError, errorMessage } from '@/api/client';
+import { word } from '@/api/words';
 import { useWorkItem } from '@/api/hooks';
 import { HeldFigures } from '@/squad/case/HeldFigures';
 import { KeyFigures } from '@/squad/case/KeyFigures';
@@ -220,11 +221,10 @@ function Attachments({ c }: { c: CaseView }) {
 
 function History({ c }: { c: CaseView }) {
   if (c.history.length === 0) return null;
-  const words = { routed: 'sent this to', returned: 'returned this to', evidence_attached: 'attached a document' } as const;
   return (
     <ol className="sq-plainlist sq-faint" aria-label="What happened to this case">
       {c.history.map((h) => (
-        <li key={h.seq}>{h.by} {words[h.kind]}{h.kind === 'evidence_attached' ? '' : ` ${h.to ?? ''}`} · <Time ts={h.at} /></li>
+        <li key={h.seq}>{h.by} {word('case_history', h.kind).toLowerCase()}{h.kind === 'evidence_attached' ? '' : ` ${h.to ?? ''}`} · <Time ts={h.at} /></li>
       ))}
     </ol>
   );

@@ -3,15 +3,14 @@
  * Nothing here decides anything: it restates the API's `recalculation` summary, sentence by sentence.
  */
 import type { CovenantRetest, Recalculation } from '@/api/schema';
-import type { CovenantOutcome } from '@/api/types';
-import { humanize, OUTCOME, quarterLabel } from '@/domain/labels';
+import { humanize, outcomeOf, quarterLabel } from '@/domain/labels';
 
 const plural = (count: number, one: string, many: string) => (count === 1 ? one : many);
 
 /** A covenant outcome in words; a test that did not exist before is said to be untested, not passed. */
 export function outcomeLabel(outcome: string | null): string {
   if (!outcome) return 'Not tested before';
-  return OUTCOME[outcome as CovenantOutcome]?.label ?? humanize(outcome);
+  return outcomeOf(outcome).label || humanize(outcome);
 }
 
 export interface CovenantChange {

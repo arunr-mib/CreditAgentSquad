@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useId, useState, type FormEvent } from 'react';
 import { get, post } from '@/api/client';
+import { word, wordTables } from '@/api/words';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Input, Select, StatusDot } from '@/design';
 import { quarterLabel } from '@/domain/labels';
@@ -32,7 +33,6 @@ const FORMATS: Array<{ id: string; label: string }> = [
   { id: 'pptx', label: 'PowerPoint' },
 ];
 const FORMAT_LABEL: Record<string, string> = Object.fromEntries(FORMATS.map((format) => [format.id, format.label]));
-const CADENCE: Record<string, string> = { quarterly: 'Quarterly', monthly: 'Monthly' };
 
 /** What one run of the due schedules did, in words. Nothing is claimed that the server did not report. */
 export function runSentences(report: ScheduleRunReport, titles: Record<string, string>): Array<{ tone: 'neutral' | 'attention'; text: string }> {
@@ -99,7 +99,7 @@ function NewSchedule({ borrowerId, borrowerName }: { borrowerId: string; borrowe
           ]}
         />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Select label="How often" value={cadence} onValueChange={setCadence} options={Object.entries(CADENCE).map(([value, label]) => ({ value, label }))} />
+          <Select label="How often" value={cadence} onValueChange={setCadence} options={Object.entries(wordTables()?.cadences ?? { quarterly: word('cadences', 'quarterly') }).map(([value, label]) => ({ value, label }))} />
           <Input label="Days after period end" inputMode="numeric" value={days} onChange={(event) => setDays(event.target.value)} error={problems.days} />
         </div>
         <fieldset aria-describedby={problems.formats ? formatsNote : undefined}>
@@ -201,7 +201,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
                             {row.title}
                           </th>
                           <td data-label="For" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{row.scope === 'portfolio' ? 'The whole portfolio' : 'This client'}</td>
-                          <td data-label="How often" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{CADENCE[row.cadence] ?? row.cadence}</td>
+                          <td data-label="How often" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">{word('cadences', row.cadence)}</td>
                           <td data-label="Due" className="border-b border-hairline px-4 py-1.5 whitespace-nowrap text-ink-700">
                             <span className="tnum">{row.days_after_period_end}</span> {row.days_after_period_end === 1 ? 'day' : 'days'} after period end
                           </td>

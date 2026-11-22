@@ -2,7 +2,7 @@ import { useId, type ReactNode, type TextareaHTMLAttributes } from 'react';
 import { errorMessage } from '@/api/client';
 import type { Severity } from '@/api/types';
 import { Button, Card, EmptyState, fieldLabelClass, SkeletonRows, StatusDot, Tag, type StatusTone } from '@/design';
-import { SEVERITY_LABEL, SEVERITY_TONE } from '@/domain/labels';
+import { severityLabel, SEVERITY_TONE } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 
 /**
@@ -93,14 +93,14 @@ export function EmptyCard({ title, description, action }: { title: string; descr
 export function SeverityDot({ severity }: { severity: Severity }) {
   return (
     <StatusDot tone={SEVERITY_TONE[severity] ?? 'neutral'}>
-      <span className={severity === 'critical' ? 'font-semibold' : undefined}>{SEVERITY_LABEL[severity] ?? severity}</span>
+      <span className={severity === 'critical' ? 'font-semibold' : undefined}>{severityLabel(severity)}</span>
     </StatusDot>
   );
 }
 
 /** Severity as a capsule tag where it calls for action (critical, high, medium), and as plain text where it does not (low). */
 export function SeverityTag({ severity }: { severity: Severity }) {
-  const label = SEVERITY_LABEL[severity] ?? severity;
+  const label = severityLabel(severity);
   if (severity === 'low') return <span className="text-caption text-ink-500">{label}</span>;
   return <Tag tone={severity === 'critical' ? 'breach' : severity === 'high' ? 'attention' : 'neutral'}>{label}</Tag>;
 }

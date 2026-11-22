@@ -104,6 +104,30 @@ describe('open questions that may change the result', () => {
   });
 });
 
+describe('a slipped funding round (final review I3)', () => {
+  it('shows the amount as the funding event’s recorded value, with its source, never in the title', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, status: 200, text: async () => '[]' }) as Response));
+    const root = createRootRoute();
+    const page = createRoute({
+      getParentRoute: () => root,
+      path: '/',
+      component: () => (
+        <Evidence item={item({ item_type: 'funding_slipped', title: 'Expected equity round has slipped', evidence: { funding_event_id: 'f-1', kind: 'equity_round', amount: '15000000.00', expected_close: '2026-11-01' } })} code="DFK" headingLevel="h3" />
+      ),
+    });
+    const router = createRouter({ routeTree: root.addChildren([page]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    render(
+      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+        <RouterProvider router={router as never} />
+      </QueryClientProvider>,
+    );
+    const row = await screen.findByText('Equity round');
+    expect(row.closest('[data-evidence-row]') ?? row.parentElement).toBeTruthy();
+    expect(document.querySelector('[data-evidence="funding"]')).toHaveTextContent('15,000,000');
+    expect(document.querySelector('[data-evidence="funding"]')).toHaveTextContent('expected to close 1 Nov 2026');
+  });
+});
+
 describe('severity', () => {
   it('is a tag where it calls for action and plain text where it does not', () => {
     const { container, rerender } = render(<SeverityTag severity="critical" />);

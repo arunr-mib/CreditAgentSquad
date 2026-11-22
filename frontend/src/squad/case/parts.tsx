@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
 import { useDocuments, useFactsById } from '@/api/hooks';
 import type { ApiRecommendation, RelatedItem, WorkItemDetail } from '@/api/schema';
+import { word } from '@/api/words';
 import type { ProvenanceKind } from '@/api/types';
 import { AgentNote, formatDate, GuardrailNotes, ProvenanceGlyph, Quote, Skeleton, StatusDot } from '@/design';
 import { humanize } from '@/domain/labels';
@@ -21,16 +22,18 @@ function EvidenceRow({
   label,
   detail,
   reference,
+  name,
   children,
 }: {
   kind: ProvenanceKind;
   label: string;
   detail?: string | null;
   reference?: string | null;
+  name?: string;
   children: ReactNode;
 }) {
   return (
-    <li className="flex min-h-8 items-center gap-2 border-b border-hairline py-1 text-body">
+    <li className="flex min-h-8 items-center gap-2 border-b border-hairline py-1 text-body" data-evidence={name}>
       <ProvenanceGlyph kind={kind} />
       <span className="min-w-0 flex-1 text-ink">
         <span className="font-medium">{label}</span>
@@ -151,6 +154,19 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
       </EvidenceRow>,
     );
   }
+  const fundingId = text(evidence.funding_event_id);
+  const fundingAmount = text(evidence.amount);
+  if (fundingId && fundingAmount) {
+    // the amount a person recorded on the funding event: shown here with its source, never typed into the title
+    const kind = word('funding_kinds', text(evidence.kind) ?? 'funding_event');
+    const close = text(evidence.expected_close);
+    rows.push(
+      <EvidenceRow key="funding" name="funding" kind="manual" label={kind} detail={close ? `expected to close ${formatDate(close)}` : null}>
+        <SourcedFigure value={fundingAmount} unit="usd" kind="manual" label={`${kind} amount`}
+          source={{ type: 'record', kind: 'manual', title: 'Funding event', value: fundingAmount, rows: [['Kind', kind], ...(close ? [['Expected close', formatDate(close)] as [string, string]] : [])], note: 'Recorded by a person on the funding event; not read from a document.' }} />
+      </EvidenceRow>,
+    );
+  }
   if (signalId && code) {
     const rule = text(evidence.rule_id);
     rows.push(
@@ -265,13 +281,6 @@ function basisSentence(basis: Record<string, unknown>): string | null {
 
 /* ── Recommendation ───────────────────────────────────────────────────── */
 
-const HEADLINE: Record<string, string> = {
-  resolve: 'Recommends resolve',
-  escalate: 'Recommends escalate',
-  request: 'Recommends request',
-  abstain: 'Abstains',
-  draft: 'Drafted for approval',
-};
 
 export function Recommendation({
   recommendation,
@@ -297,7 +306,7 @@ export function Recommendation({
     <>
       <AgentNote
         agent={agent}
-        headline={text(recommendation.headline) ?? HEADLINE[kind] ?? humanize(kind)}
+        headline={text(recommendation.headline) ?? word('recommendations', kind)}
         state="draft"
         runId={runId ? runId.slice(0, 8) : undefined}
       >

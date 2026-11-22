@@ -19,7 +19,7 @@ import {
 import type { ActionRow, Meeting, ReviewSheetDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, type Step } from '@/design';
-import { humanize, OUTCOME, quarterLabel } from '@/domain/labels';
+import { humanize, outcomeOf, quarterLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { FactFigure } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, Notice, SeverityDot } from '@/screens/parts';
@@ -250,8 +250,8 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
                     </td>
                   ))}
                   <td data-label="Outcome" className="border-b border-hairline px-4">
-                    <StatusDot tone={OUTCOME[covenant.outcome].tone} emphasis={OUTCOME[covenant.outcome].emphasis} className="max-[1279px]:whitespace-normal!">
-                      {OUTCOME[covenant.outcome].label}
+                    <StatusDot tone={outcomeOf(covenant.outcome).tone} emphasis={outcomeOf(covenant.outcome).emphasis} className="max-[1279px]:whitespace-normal!">
+                      {outcomeOf(covenant.outcome).label}
                     </StatusDot>
                   </td>
                 </tr>

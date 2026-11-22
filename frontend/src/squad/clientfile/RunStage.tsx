@@ -4,7 +4,7 @@ import { useAgentsStatus, useRunCycle } from '@/api/hooks';
 import type { BorrowerOverview } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button } from '@/design';
-import { STAGE_LABEL, STAGE_STATUS_LABEL } from '@/domain/labels';
+import { stageLabel, stageStatusLabel } from '@/domain/labels';
 import { Notice } from '@/screens/parts';
 
 type Cycle = NonNullable<BorrowerOverview['cycle']>;
@@ -23,7 +23,7 @@ export function RunStage({ cycle, code }: { cycle: Cycle; code?: string }) {
   const current = cycle.stages.find((stage) => stage.stage === cycle.stage);
   const next = cycle.stages.find((stage) => stage.status === 'pending' || stage.status === 'running');
   const waitingForPerson = current?.status === 'needs_person' || current?.status === 'failed';
-  const label = next ? (STAGE_LABEL[next.stage] ?? next.stage) : null;
+  const label = next ? stageLabel(next.stage) : null;
   const connected = status.data?.model_connected ?? false;
   const result = run.data;
 
@@ -37,7 +37,7 @@ export function RunStage({ cycle, code }: { cycle: Cycle; code?: string }) {
           {run.isPending
             ? 'The agent is reading and code is checking its answer. This can take a minute or two; stay on this page.'
             : waitingForPerson
-              ? `${STAGE_LABEL[cycle.stage] ?? cycle.stage} is waiting for a person. The next stage can run once its open items are decided.`
+              ? `${stageLabel(cycle.stage)} is waiting for a person. The next stage can run once its open items are decided.`
               : !status.data
                 ? 'Checking whether a model is connected.'
                 : !connected
@@ -60,8 +60,8 @@ export function RunStage({ cycle, code }: { cycle: Cycle; code?: string }) {
             <ul className="space-y-0.5">
               {result.ran.map((entry) => (
                 <li key={entry.stage}>
-                  <span className="font-medium text-ink">{STAGE_LABEL[entry.stage] ?? entry.stage}</span>:{' '}
-                  {entry.result ? STAGE_STATUS_LABEL[entry.result] : 'Not run'}
+                  <span className="font-medium text-ink">{stageLabel(entry.stage)}</span>:{' '}
+                  {entry.result ? stageStatusLabel(entry.result) : 'Not run'}
                   {entry.error ? `. ${entry.error}` : ''}
                 </li>
               ))}

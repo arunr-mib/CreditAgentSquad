@@ -90,9 +90,9 @@ describe('decision words', () => {
     expect(caseState(kase, [kase, decision]).text).toBe('approved by Helen Strand');
   });
 
-  it('falls back to the stored words when the server sent none', () => {
+  it('falls back to the server’s table of decision words when the message carries none', () => {
     const decision = { ...base, id: 'decision:1', type: 'decision', work_item_id: 'w1', decision: 'not_a_breach', reason: '', by: 'Helen Strand', by_id: 'u2' } as ThreadMessage;
-    expect(caseState(kase, [kase, decision]).text).toBe('not a breach by Helen Strand');
+    expect(caseState(kase, [kase, decision]).text).toBe('marked not a breach by Helen Strand');
   });
 });
 

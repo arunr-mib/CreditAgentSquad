@@ -1,6 +1,7 @@
 import { Check, Minus, X } from 'lucide-react';
 import { useState } from 'react';
 import type { StageStatus } from '@/api/types';
+import { word } from '@/api/words';
 import { cx } from '@/lib/cx';
 
 export interface Step {
@@ -10,14 +11,8 @@ export interface Step {
   detail?: string;
 }
 
-const statusWord: Record<StageStatus, string> = {
-  pending: 'Not started',
-  running: 'Running',
-  needs_person: 'Needs a person',
-  done: 'Done',
-  skipped: 'Skipped',
-  failed: 'Failed',
-};
+/** A stage status in the server's words (`GET /words/labels`); the design system keeps no table of its own. */
+const statusWord = (status: StageStatus) => word('stage_statuses', status);
 
 function Marker({ status }: { status: StageStatus }) {
   const base = 'relative z-10 flex size-4 shrink-0 items-center justify-center rounded-full';
@@ -110,7 +105,7 @@ export function Stepper({ steps, label, className, collapseLater = false }: Step
               <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:gap-x-2">
                 <div className={cx('mt-2 text-caption font-medium text-pretty max-sm:mt-0', reached ? 'text-ink' : 'text-ink-500')}>{step.label}</div>
                 <div className={cx('text-caption text-pretty', attention ? 'font-medium text-amber' : 'text-ink-500')}>
-                  {step.detail ?? statusWord[step.status]}
+                  {step.detail ?? statusWord(step.status)}
                 </div>
               </div>
             </li>
