@@ -16,8 +16,9 @@ function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boo
     <li>
       <Link {...href} className={item.needs_you ? 'sq-row sq-row-needs' : 'sq-row'}>
         <span className={`sq-dotmark sq-sev-${item.severity}`} aria-hidden />
-        <span className="sq-grow">
-          {showClient ? <><b>{item.borrower_name}</b><span className="sq-muted"> · {item.title}</span></> : <span>{item.title}</span>}
+        <span className="sq-grow sq-rowtext">
+          {/* the server's subject has the client's name taken off the front: the row names the client once */}
+          <span className="sq-rowtitle">{showClient ? <><b>{item.borrower_name}</b><span className="sq-muted"> · {item.subject ?? item.title}</span></> : item.subject ?? item.title}</span>
         </span>
         <span className={item.needs_you ? 'sq-state sq-state-needs' : 'sq-state'}>{item.state}</span>
       </Link>
@@ -69,7 +70,7 @@ export function SquadHome() {
             const rows = watching.filter((i) => i.borrower_id === id);
             return (
               <details key={id} className="sq-group" aria-label={name}>
-                <summary><b>{name}</b> <span className="sq-faint">· {rows.length === 1 ? `${rows[0]?.title} · ${rows[0]?.state}` : `${rows.length} things to watch`}</span></summary>
+                <summary><b>{name}</b> <span className="sq-faint">· {rows.length === 1 ? `${rows[0]?.subject ?? rows[0]?.title} · ${rows[0]?.state}` : `${rows.length} things to watch`}</span></summary>
                 <ul className="sq-list">{rows.map((i) => <Row key={i.key} item={i} showClient={false} />)}</ul>
               </details>
             );

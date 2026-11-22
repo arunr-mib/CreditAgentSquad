@@ -31,9 +31,8 @@ export function Approvals() {
             <li key={r.work_item_id}>
               <Link to="/approvals" search={{ case: r.work_item_id }} className="sq-row" aria-current={r.work_item_id === selected ? 'true' : undefined}>
                 <span className={`sq-dotmark sq-sev-${r.severity}`} aria-hidden />
-                <span className="sq-grow">
-                  <b>{r.borrower_name}</b>
-                  <span className="sq-muted"> · {r.title}</span>
+                <span className="sq-grow sq-rowtext">
+                  <span className="sq-rowtitle"><b>{r.borrower_name}</b><span className="sq-muted"> · {r.subject ?? r.title}</span></span>
                   {r.view ? <span className="sq-faint sq-block">{r.routed_by}: {r.view}</span> : null}
                 </span>
                 {r.returns > 0 ? <span className="sq-faint">returned {r.returns === 1 ? 'once' : `${r.returns} times`}</span> : null}

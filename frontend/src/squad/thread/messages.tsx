@@ -44,7 +44,7 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
       const state = caseState(message, thread);
       return (
         <article className="sq-msg sq-card" data-work-item={message.work_item_id} data-focused={focused ? 'true' : undefined} aria-current={focused ? 'true' : undefined}>
-          <header className="sq-msghead"><b>{message.title}</b> <span className="sq-tag">{word('severities', message.severity)}</span> <span className={state.needsYou ? 'sq-tag sq-tag-needs' : 'sq-tag'}>{state.text}</span> <Time ts={message.ts} /></header>
+          <header className="sq-msghead"><b>{message.subject ?? message.title}</b> <span className="sq-tag">{word('severities', message.severity)}</span> <span className={state.needsYou ? 'sq-tag sq-tag-needs' : 'sq-tag'}>{state.text}</span> <Time ts={message.ts} /></header>
           <p>{message.question}</p>
           <div className="sq-actions">
             {focused ? null : (

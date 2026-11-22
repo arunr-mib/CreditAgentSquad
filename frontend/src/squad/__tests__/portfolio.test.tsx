@@ -46,6 +46,13 @@ describe('Portfolio', () => {
     shown.owns = true;
   });
 
+  it('words "Only my clients" in a neutral colour: green is for a verified pass (final review M4)', async () => {
+    mount();
+    const label = (await screen.findByRole('checkbox', { name: 'Only my clients' })).closest('label');
+    expect(label).not.toHaveClass('sq-check');
+    expect(label).toHaveClass('sq-check-label');
+  });
+
   it('narrows to the analyst\u2019s own clients and back', async () => {
     mount();
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Only my clients' }));

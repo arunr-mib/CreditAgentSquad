@@ -224,6 +224,16 @@ def _plain(key: str) -> str:
     return key.replace("_", " ")
 
 
+def subject_words(title: str, borrower_name: str) -> str:
+    """A case's title as a row shows it beside the client's name: without a leading "<client>: ", first letter
+    capitalised. The stored title is unchanged (final review I5: rows named the client twice)."""
+    prefix = f"{borrower_name}: "
+    if borrower_name and title.startswith(prefix) and len(title) > len(prefix):
+        rest = title[len(prefix):]
+        return rest[0].upper() + rest[1:]
+    return title
+
+
 def figure_free(text: str) -> bool:
     """True when the text states no figure, by the guardrail's own detector (`check_narrative` with no facts in scope):
     dates, periods and section references pass; an amount, a ratio or a count does not."""

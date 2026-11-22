@@ -46,6 +46,15 @@ describe('ClientFile', () => {
     expect(screen.getByRole('link', { name: 'Back to the thread' })).toHaveAttribute('href', '/clients/QFL');
   });
 
+  it('marks exactly one tab current on a view other than the overview (final review I6)', async () => {
+    mount('/clients/QFL/file/documents');
+    const nav = await screen.findByRole('navigation', { name: 'Client file' });
+    const current = nav.querySelectorAll('[aria-current="page"]');
+    expect(current).toHaveLength(1);
+    expect(current[0]).toHaveTextContent('Documents');
+    expect(within(nav).getByRole('link', { name: 'Overview' })).not.toHaveAttribute('aria-current');
+  });
+
   it('says so for an unknown view or client', async () => {
     mount('/clients/QFL/file/nonsense');
     expect(await screen.findByText('There is no such part of the client file.')).toBeInTheDocument();

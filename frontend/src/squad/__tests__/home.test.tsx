@@ -51,6 +51,13 @@ describe('SquadHome', () => {
     expect(await screen.findByRole('group', { name: 'Squad could not answer' })).toHaveTextContent('I cannot ground that');
   });
 
+  it('names the client once on a row whose stored title begins with it (final review I5)', async () => {
+    mount(briefing([item({ key: 'd', borrower_name: 'Dataflake Inc', title: 'Dataflake Inc: runway below watch', subject: 'Runway below watch' })]));
+    const row = await screen.findByRole('link', { name: /Runway below watch/ });
+    expect(row.textContent?.split('Dataflake Inc').length).toBe(2);
+    expect(row.querySelector('.sq-rowtitle')).toHaveTextContent('Dataflake Inc · Runway below watch');
+  });
+
   it('scopes the ember dot to needs-you rows and makes the count a heading', async () => {
     mount(briefing([
       item({ key: 'a', severity: 'high' }),

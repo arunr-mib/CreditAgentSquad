@@ -16,7 +16,7 @@ from app.domain.org import User
 from app.domain.routing import ROUTING_ACTIONS, may_receive
 from app.domain.work_items import offered
 from app.squad import rules
-from app.squad.words import DECISION_WORDS, decision_words
+from app.squad.words import DECISION_WORDS, decision_words, subject_words
 
 CANDIDATES = 10
 SEVERITY_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -115,7 +115,8 @@ def build_approvals(db: Session, user: User) -> list[dict[str, Any]]:
             continue
         b = borrowers[w.borrower_id]
         rows.append({"work_item_id": str(w.id), "borrower_id": str(b.id), "borrower_code": b.code,
-                     "borrower_name": b.name, "title": w.title, "severity": w.severity,
+                     "borrower_name": b.name, "title": w.title, "subject": subject_words(w.title, b.name),
+                     "severity": w.severity,
                      "due_date": w.due_date.isoformat() if w.due_date else None,
                      "view": route["text"] if route else None, "routed_by": route["by"] if route else None,
                      "routed_at": route["at"] if route else None,

@@ -20,7 +20,7 @@ from app.squad.cases import build_approvals
 from app.squad.oversight import OVERSIGHT_ROLES
 from app.squad.portfolio import open_work_item_counts
 from app.squad.threads import REPORT_TEXT_KEYS
-from app.squad.words import agent_words, decision_words, document_type_words, question_choice
+from app.squad.words import agent_words, decision_words, document_type_words, question_choice, subject_words
 
 BREACH_TYPES = frozenset({"covenant.breach", "covenant.reported_breach_unconfirmed", "bb.over_advance"})
 KIND_RANK = {"breach": 0, "overdue_report": 1, "signal": 2, "question": 3, "review": 4, "funding": 5, "decided": 6}
@@ -62,7 +62,8 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         if w.borrower_id not in borrowers:
             continue
         kind = "question" if w.item_type == "question" else "breach" if w.item_type in BREACH_TYPES else "review"
-        base = {**ref(w.borrower_id), "title": w.title, "severity": w.severity, "work_item_id": str(w.id)}
+        base = {**ref(w.borrower_id), "title": w.title, "subject": subject_words(w.title, borrowers[w.borrower_id].name),
+                "severity": w.severity, "work_item_id": str(w.id)}
         if w.status == "open":
             prepared_by_me = rules.prepared_by(user, w)
             second_person_blocked = rules.second_person_blocked(user, w)

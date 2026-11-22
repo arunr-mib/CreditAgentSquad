@@ -44,7 +44,8 @@ export function ClientFile() {
       </header>
       <nav aria-label="Client file" className="sq-tabs">
         {VIEWS.map(([id, label]) => (
-          <Link key={id} to={clientFile(borrower.code, id)} className="sq-tab" aria-current={id === current ? 'page' : undefined}>{label}</Link>
+          // exact: the overview's path is a prefix of every other view's, and an active Link marks itself current
+          <Link key={id} to={clientFile(borrower.code, id)} activeOptions={{ exact: true }} className="sq-tab" aria-current={id === current ? 'page' : undefined}>{label}</Link>
         ))}
       </nav>
       {Body ? <Body borrower={borrower} /> : (

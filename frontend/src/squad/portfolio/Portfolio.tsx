@@ -20,7 +20,7 @@ export function Portfolio() {
   return (
     <div className="sq-portfolio" data-ready="">
       <h1 className="sq-h1">My Portfolio</h1>
-      {owns ? <label className="sq-check"><input type="checkbox" checked={mineOnly} onChange={(e) => setMineOnly(e.target.checked)} /> Only my clients</label> : null}
+      {owns ? <label className="sq-check-label sq-filter"><input type="checkbox" checked={mineOnly} onChange={(e) => setMineOnly(e.target.checked)} /> Only my clients</label> : null}
       {sections.map((s) => {
         const rows = s.rows.filter((r) => !(owns && mineOnly) || r.mine);
         return (

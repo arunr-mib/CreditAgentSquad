@@ -53,6 +53,10 @@
 .sq-initial, .sq-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--sq-squad-soft); color: var(--sq-squad); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .sq-count { margin-left: auto; font-size: 12px; color: var(--sq-ink2); }
 .sq-grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* A list row's text: the title wraps to two lines (never one clipped line), and a routed view below it wraps in full. */
+.sq-rowtext { white-space: normal; overflow: visible; }
+.sq-rowtitle { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.sq-filter { margin: 4px 0 8px; font-size: 13px; }
 .sq-navfoot { margin-top: auto; display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--sq-line); width: 100%; }
 .sq-stage { flex: 1; min-width: 0; }
 .sq-main { min-width: 0; max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }

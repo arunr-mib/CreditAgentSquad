@@ -7,6 +7,8 @@ export interface BriefingItem {
   borrower_code: string;
   borrower_name: string;
   title: string;
+  /** The title without the client's name in front, for a row that already names the client. */
+  subject?: string;
   state: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   needs_you: boolean;
@@ -26,7 +28,7 @@ interface MessageBase { id: string; ts: string }
 export type ThreadMessage = MessageBase &
   (
     | { type: 'report'; agent_name: string; agent_label: string; task: string; text: string; run_id: string }
-    | { type: 'case'; work_item_id: string; item_type: string; title: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
+    | { type: 'case'; work_item_id: string; item_type: string; title: string; subject?: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
     | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null; needs_you: boolean; state_words: string; habits: Habit[] }
     | { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }
     | { type: 'arrivals'; title: string; period_end: string; documents: Array<MessageBase & { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }> }
@@ -120,6 +122,8 @@ export interface ApprovalRow {
   borrower_code: string;
   borrower_name: string;
   title: string;
+  /** The title without the client's name in front, for a row that already names the client. */
+  subject?: string;
   severity: string;
   due_date: string | null;
   view: string | null;

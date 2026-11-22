@@ -101,3 +101,23 @@ def test_each_decision_is_served_with_its_words_and_hint_and_the_thread_agrees(d
     assert decision_words("some_new_decision") == "some new decision"
     # the thread's past tense and the case's label come from the one module: every labelled decision reads as words in the past tense too
     assert all("_" not in decision_words(k) for k in DECISION_WORDS)
+
+
+# ---- final review I5: rows say the client once ----
+
+def test_rows_carry_the_subject_without_the_client_name_the_title_is_kept(db, world):
+    from app.squad.words import subject_words
+
+    name = world["borrower"].name
+    item = raise_item(db, borrower_id=world["borrower"].id, item_type="test.routed_case",
+                      title=f"{name}: runway below watch", severity="high", question="How should the bank respond?",
+                      allowed_decisions=["reserve_rights", "no_action"], required_permission="decide_breach")
+    assert subject_words(item.title, name) == "Runway below watch"
+    assert subject_words("Cash below minimum", name) == "Cash below minimum"
+    home = next(i for i in build_briefing(db, world["officer"])["items"] if i["work_item_id"] == str(item.id))
+    assert home["subject"] == "Runway below watch" and home["title"] == f"{name}: runway below watch"
+    (row,) = build_approvals(db, world["officer"])
+    assert row["subject"] == "Runway below watch"
+    case = next(m for m in build_thread(db, world["borrower"].id, world["officer"])["messages"] if m["type"] == "case")
+    assert case["subject"] == "Runway below watch"
+    assert item.title == f"{name}: runway below watch"  # the stored title is unchanged
