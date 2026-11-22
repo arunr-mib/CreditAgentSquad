@@ -223,3 +223,26 @@ def test_a_bank_statement_note_about_the_agreement_is_not_a_credit_agreement():
     from app.agents.intake import rule_type
     assert rule_type("Collateral account pledged under the venture loan agreement\nOpening balance") != "credit_agreement"
     assert rule_type("Note: see the Credit Agreement dated March 1, 2024 for terms of the loan.") is None
+
+
+def test_a_document_the_agent_classifies_wakes_gathering_for_a_returned_case(db, world):
+    """Task 5c: classification is where code gathers again; an agent's unconfirmed guess is asked about, not attached."""
+    from app.core import ledger
+    from app.domain.work_items import raise_item
+    from app.domain.workflow import RETURNED
+
+    borrower, cycle = world
+    item = raise_item(db, borrower_id=borrower.id, item_type="test.routed_case", title="Cash below minimum",
+                      question="How should the bank respond?", allowed_decisions=["no_action"])
+    ledger.record(db, actor_type="user", actor_id="00000000-0000-0000-0000-000000000001", action=RETURNED,
+                  entity_type="work_item", entity_id=item.id,
+                  payload={"borrower_id": borrower.id, "reason": "Need it.",
+                           "needs": [{"index": 0, "doc_type": "interim_statements", "period_end": "2026-09-30"}]})
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="fs.pdf", received_date=date(2026, 11, 10), data=pdf(
+        "Harrowgate Tool & Die, Inc.", "Balance Sheet", "Nine months ended September 30, 2026", "Unaudited"))
+    llm = answer(dict(doc_type="interim_statements", period_end_text="September 30, 2026", quality="internal",
+                      title_as_printed="Balance Sheet"))
+    classify_documents(db, borrower=borrower, documents=[doc], llm=llm, cycle=cycle, batch_key="t5c")
+    asks = [w for w in db.execute(select(WorkItem)).scalars()
+            if w.item_type == "question" and w.evidence.get("topic") == "evidence_match"]
+    assert len(asks) == 1 and asks[0].evidence["case_id"] == str(item.id)

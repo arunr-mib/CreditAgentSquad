@@ -81,4 +81,8 @@ def answer_question(db: Session, item: WorkItem, user: User, option_id: str, *, 
             lesson = record_lesson(db, borrower_id=item.borrower_id, topic=item.evidence.get("topic", QUESTION),
                                    text=text, written_by=user.id, work_item_id=item.id, tag=option_id)
             item.evidence = {**item.evidence, "lesson_id": str(lesson.id)}
+        if (item.evidence or {}).get("topic") == "evidence_match":  # a match answered: attach it, or ask the client
+            from app.domain.gathering import apply_match_answer
+
+            apply_match_answer(db, item, user, option_id)
     return item

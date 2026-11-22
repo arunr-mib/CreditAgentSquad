@@ -5,6 +5,8 @@ was asked for. Engine rules, beside `decide_work_item`:
 - a return is not a decision: the case stays open and goes back to the person who routed it;
 - the ledger is the only record of routes, returns and attachments."""
 import uuid
+from datetime import date, timedelta
+from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -20,6 +22,44 @@ from app.domain.workflow import ATTACHED, RETURNED, ROUTED, decision_refusal
 ROUTING_ACTIONS = (ROUTED, RETURNED, ATTACHED)
 MAX_TEXT = 4000
 MAX_NOTE = 500
+MAX_NEEDS = 5
+MATCH_TOPIC = "evidence_match"
+
+
+class RouteBlocked(Exception):
+    """A case cannot be sent back yet because Squad is waiting for a person to confirm something (API 409)."""
+
+
+def clean_needs(needs: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """What the officer asked for, checked and numbered: each a known document type and a month end."""
+    from app.squad.words import DOCUMENT_TYPE_WORDS
+
+    needs = list(needs or [])
+    if len(needs) > MAX_NEEDS:
+        raise ValueError(f"A return can ask for at most {MAX_NEEDS} documents.")
+    out: list[dict[str, Any]] = []
+    for need in needs:
+        doc_type, period = need.get("doc_type"), need.get("period_end")
+        if doc_type not in DOCUMENT_TYPE_WORDS:
+            raise ValueError(f"{doc_type!r} is not a document type Squad knows; choose one from the list.")
+        if isinstance(period, str):
+            try:
+                period = date.fromisoformat(period)
+            except ValueError:
+                raise ValueError("A period is a date, the last day of a month.") from None
+        if not isinstance(period, date) or (period + timedelta(days=1)).day != 1:
+            raise ValueError("A period is a month end: the last day of a month.")
+        if any(o["doc_type"] == doc_type and o["period_end"] == period.isoformat() for o in out):
+            raise ValueError("The same document is asked for twice.")
+        out.append({"index": len(out), "doc_type": doc_type, "period_end": period.isoformat()})
+    return out
+
+
+def open_match_questions(db: Session, item: WorkItem) -> list[WorkItem]:
+    """Squad's open questions about which document is what this case asked for."""
+    return [q for q in db.execute(select(WorkItem).where(
+        WorkItem.borrower_id == item.borrower_id, WorkItem.item_type == "question", WorkItem.status == "open")).scalars()
+        if (q.evidence or {}).get("topic") == MATCH_TOPIC and (q.evidence or {}).get("case_id") == str(item.id)]
 
 
 def _require_open(item: WorkItem) -> None:
@@ -56,6 +96,9 @@ def route_work_item(db: Session, item: WorkItem, *, user: User, to_user_id: uuid
         raise ValueError("A case is routed to someone else.")
     if not may_receive(db, to, item):
         raise ValueError(f"{to.name} cannot decide this case; it needs {item.required_permission}.")
+    if open_match_questions(db, item):
+        raise RouteBlocked("Squad found more than one document that could be what was asked for — confirm which "
+                           "before sending the case back.")
     previous = item.assigned_to
     earlier = {"previous_prepared_by_id": item.prepared_by_id,
                "previous_requires_second_person": bool(item.requires_second_person)}
@@ -71,7 +114,8 @@ def route_work_item(db: Session, item: WorkItem, *, user: User, to_user_id: uuid
     return item
 
 
-def return_work_item(db: Session, item: WorkItem, *, user: User, reason: str) -> WorkItem:
+def return_work_item(db: Session, item: WorkItem, *, user: User, reason: str,
+                     needs: list[dict[str, Any]] | None = None) -> WorkItem:
     _require_open(item)
     if item.assigned_to != user.id:
         raise PermissionError("Only the person a case is with can return it.")
@@ -86,11 +130,16 @@ def return_work_item(db: Session, item: WorkItem, *, user: User, reason: str) ->
     router = uuid.UUID(route.actor_id)
     if router == user.id:
         raise ValueError("You routed this case yourself; there is no one to return it to.")
+    wanted = clean_needs(needs)
     item.assigned_to = router
     ledger.record(db, actor_type="user", actor_id=user.id, action=RETURNED, entity_type="work_item",
                   entity_id=item.id, payload={"borrower_id": item.borrower_id, "returned_to": router,
-                                              "reason": reason})
+                                              "reason": reason, "needs": wanted})
     db.flush()
+    if wanted:  # code gathers what was asked: matches attach, gaps are drafted, doubts are asked
+        from app.domain.gathering import gather_requested
+
+        gather_requested(db, item)
     return item
 
 

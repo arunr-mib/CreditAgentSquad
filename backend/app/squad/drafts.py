@@ -64,7 +64,8 @@ def drafts_for(db: Session, borrower_id: uuid.UUID) -> list[dict[str, Any]]:
 
 
 def create_draft(db: Session, *, borrower_id: uuid.UUID, to: str, subject: str, body: str, kind: str = "message",
-                 work_item_id: uuid.UUID | None = None, actor: tuple[str, str] = ("agent", "squad")) -> dict[str, Any]:
+                 work_item_id: uuid.UUID | None = None, actor: tuple[str, str] = ("agent", "squad"),
+                 extra: dict[str, Any] | None = None) -> dict[str, Any]:
     if not to.strip() or not subject.strip():
         raise ValueError("a draft needs a recipient and a subject")
     if work_item_id is not None:
@@ -74,7 +75,8 @@ def create_draft(db: Session, *, borrower_id: uuid.UUID, to: str, subject: str, 
     draft_id = uuid.uuid4()
     ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="draft.created", entity_type="draft",
                   entity_id=draft_id, payload={"borrower_id": borrower_id, "to": to.strip(), "subject": subject.strip(),
-                                               "body": body, "kind": kind, "work_item_id": work_item_id})
+                                               "body": body, "kind": kind, "work_item_id": work_item_id,
+                                               **(extra or {})})
     db.flush()
     return get_draft(db, draft_id)
 

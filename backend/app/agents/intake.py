@@ -277,6 +277,10 @@ def classify_documents(
                 agent_run_id=result.run_id, actor=("agent", "intake"), dedupe_key=f"intake.concern:{doc.id}"))
     outcome.run.guardrail_notes = result.notes
     db.flush()
+    if result.filed:  # code, not the model: returned cases of this client pick up what was just classified
+        from app.domain.gathering import gather_for_borrower
+
+        gather_for_borrower(db, borrower.id)
     return result
 
 

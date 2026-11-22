@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.ledger import LedgerEvent
 from app.core.roles import APPROVER_PERMISSIONS, Permission, can
-from app.domain import workflow
+from app.domain import gathering, workflow
 from app.domain.credit import Borrower
 from app.domain.documents import Document
 from app.domain.monitoring import WorkItem
@@ -33,7 +33,7 @@ def _history(db: Session, item_ids: list[str], names: dict[str, str]) -> dict[st
         to = p.get("assigned_to") or p.get("returned_to")
         out[e.entity_id].append({
             "kind": e.action.split(".", 1)[1], "seq": e.seq, "at": e.ts.isoformat(),
-            "by": names.get(e.actor_id, e.actor_id), "by_id": e.actor_id,
+            "by": "Squad" if e.actor_type != "user" else names.get(e.actor_id, e.actor_id), "by_id": e.actor_id,
             "to": names.get(str(to)) if to else None, "to_id": str(to) if to else None,
             "text": p.get("view") or p.get("reason") or p.get("note") or "", "document_id": p.get("document_id")})
     return out
@@ -85,6 +85,7 @@ def build_case(db: Session, item: WorkItem, viewer: User) -> dict[str, Any]:
         "state_words": rules.state_words(item, names, borrower) if is_open else "",
         "needs_you": bool(is_open and rules.needs(viewer, item, borrower)),
         "view": {"text": route["text"], "by": route["by"], "at": route["at"]} if route else None,
+        "needs": gathering.need_states(db, item) if is_open else [],
         "history": history, "attached": attached, "candidates": candidates,
         "decisions": decisions, "route_to": route_to,
         "may_route": may_route, "may_return": may_return, "may_attach": may_attach,

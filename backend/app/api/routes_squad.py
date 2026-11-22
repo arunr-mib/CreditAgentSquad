@@ -1,5 +1,6 @@
 """Endpoints for the Squad experience. Read models and thin writes; every rule lives in the domain."""
 import uuid
+from datetime import date
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -165,7 +166,7 @@ def _engine(db: Session, fn, *args, **kwargs) -> None:
         fn(db, *args, **kwargs)
     except PermissionError as exc:
         raise HTTPException(403, str(exc)) from exc
-    except SecondPersonRequired as exc:
+    except (SecondPersonRequired, routing.RouteBlocked) as exc:
         raise HTTPException(409, str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
@@ -188,8 +189,14 @@ class RouteIn(BaseModel):
     view: str = Field(max_length=4000)
 
 
+class NeedIn(BaseModel):
+    doc_type: str
+    period_end: date
+
+
 class ReturnIn(BaseModel):
     reason: str = Field(max_length=4000)
+    needs: list[NeedIn] = Field(default_factory=list)  # more than five is refused in words by the engine
 
 
 class AttachIn(BaseModel):
@@ -209,7 +216,8 @@ def route_case(item_id: uuid.UUID, body: RouteIn, db: Session = Depends(get_db),
 def return_case(item_id: uuid.UUID, body: ReturnIn, db: Session = Depends(get_db),
                 user: User = Depends(current_user)) -> dict:
     item = _open_item(db, item_id)
-    _engine(db, routing.return_work_item, item, user=user, reason=body.reason)
+    _engine(db, routing.return_work_item, item, user=user, reason=body.reason,
+            needs=[n.model_dump() for n in body.needs])
     return build_case(db, item, user)
 
 
