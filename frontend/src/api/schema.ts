@@ -77,11 +77,6 @@ export interface Loan {
   profile: { interest_rate?: string; original_amount?: string };
 }
 
-export interface BorrowerDetail extends Omit<BorrowerRow, 'total_commitment' | 'open_work_items' | 'open_signals' | 'latest_cycle' | 'covenant_status' | 'tightest_headroom'> {
-  profile: { city?: string; state?: string; auditor?: string; legal_form?: string; statement_scale?: number; chief_financial_officer?: string };
-  facilities: Loan[];
-}
-
 export interface StageRow {
   id: string;
   stage: StageId;
@@ -111,20 +106,6 @@ export interface BorrowerOverview {
   open_work_items: number;
   open_signals: number;
   documents: number;
-}
-
-export interface PortfolioSummary {
-  as_of: string;
-  borrowers: number;
-  loans: number;
-  period_end: string | null;
-  exposure: { commitment: string; revolver_outstanding: string; term_loan_outstanding: string; outstanding: string };
-  borrower_exposure: Record<string, BorrowerOverview['exposure']>;
-  cycles: { open: number; by_stage: Array<{ stage: StageId; count: number }> };
-  covenants: { tests: number; by_outcome: Array<{ outcome: CovenantOutcome; count: number }> };
-  work_items: { open: number; by_type: Array<{ item_type: string; count: number }>; by_severity: Array<{ severity: Severity; count: number }> };
-  signals: { open: number; by_severity: Array<{ severity: Severity; count: number }> };
-  obligations: { overdue: number; due_within_7_days: number; received_in_last_30_days: number };
 }
 
 /* ── Work items ───────────────────────────────────────────────────────── */
@@ -216,23 +197,6 @@ export interface DocumentDetail extends DocumentRow {
 }
 
 export type Box = [number, number, number, number];
-
-export interface PageFigure {
-  fact: FactSummary;
-  boxes: Box[];
-  quote: string | null;
-  label_text: string | null;
-  method: 'cited' | 'located';
-}
-
-export interface PageFigures {
-  document_id: string;
-  page_number: number;
-  width: number;
-  height: number;
-  has_text: boolean;
-  figures: PageFigure[];
-}
 
 /* ── Source of a fact ─────────────────────────────────────────────────── */
 
@@ -543,27 +507,6 @@ export interface SignalRow {
   rank: number | null;
   status: 'open' | 'acknowledged' | 'closed';
   created_at: string;
-}
-
-export interface Obligation {
-  id: string;
-  borrower_id: string;
-  borrower_name: string | null;
-  facility_id: string;
-  requirement_id: string;
-  document_type: string;
-  period_end: string;
-  due_date: string;
-  /** `untracked`: a past period the book holds no document for; it was never chased here, so it is not shown as overdue. */
-  status: 'due' | 'received' | 'overdue' | 'waived' | 'untracked';
-  received_document_id: string | null;
-  received_date: string | null;
-  days_late: number | null;
-}
-
-export interface CalendarResponse {
-  as_of: string;
-  obligations: Obligation[];
 }
 
 export interface LedgerEvent {

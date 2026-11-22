@@ -41,7 +41,7 @@ def sign_in(client, who):
 
 
 def test_everything_requires_sign_in(client, world):
-    for path in ("/borrowers", "/work-items", "/cycles", "/calendar", "/ledger", "/agent-runs", "/signals"):
+    for path in ("/borrowers", "/work-items", "/cycles", "/ledger", "/agent-runs", "/signals"):
         assert client.get("/api/v1" + path).status_code == 401
 
 
@@ -156,7 +156,6 @@ def test_ledger_clock_and_verify(client, db, world):
     sign_in(client, "admin")
     assert client.post("/api/v1/clock", json={"today": "2026-11-17"}).json()["today"] == "2026-11-17"
     assert clock.today(db) == date(2026, 11, 17)
-    assert client.get("/api/v1/calendar").json()["as_of"] == "2026-11-17"
     # freshness: the newest document received on or before the working date, never one dated after it
     assert client.get("/api/v1/clock").json() == {
         "today": "2026-11-17", "latest_document_received": None, "days_since_latest_document": None}
@@ -413,3 +412,9 @@ def test_a_commentary_approval_in_the_list_names_its_review_sheet(db, client, wo
     rows = {w["id"]: w for w in client.get("/api/v1/work-items").json()}
     assert rows[str(item.id)]["review_sheet_id"] == "11111111-1111-1111-1111-111111111111"
     assert "review_sheet_id" not in rows[str(other.id)]
+
+
+def test_the_calendar_endpoint_is_retired_with_its_screen(client, world):
+    """Final review M5: the owner deleted the calendar; nothing reads GET /calendar, so it is gone."""
+    sign_in(client, "priya.raman")
+    assert client.get("/api/v1/calendar").status_code == 404

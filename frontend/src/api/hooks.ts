@@ -8,16 +8,12 @@ import type { StageId, StageStatus } from './types';
 import type {
   ActionRow,
   AgentRunDetail,
-  AgentRunRow,
-  AgentSpec,
   BorrowerCovenants,
-  BorrowerDetail,
   BorrowerOverview,
   BorrowerRow,
   BorrowingBaseReview,
   Box,
   Calculation,
-  CalendarResponse,
   CycleRow,
   DocumentDetail,
   DocumentRow,
@@ -28,9 +24,7 @@ import type {
   LedgerVerification,
   LoanTerms,
   Meeting,
-  PageFigures,
   PolicyRegister,
-  PortfolioSummary,
   ReviewSheetDetail,
   ReviewSheetRow,
   RolesAndPermissions,
@@ -46,7 +40,6 @@ const enabled = (value: unknown) => Boolean(value);
 
 /* ── Portfolio and borrowers ──────────────────────────────────────────── */
 
-export const usePortfolio = () => useQuery({ queryKey: ['portfolio'], queryFn: () => get<PortfolioSummary>('/ui/portfolio') });
 export const useBorrowers = () => useQuery({ queryKey: ['borrowers'], queryFn: () => get<BorrowerRow[]>('/borrowers') });
 export const useUsers = () => useQuery({ queryKey: ['users'], queryFn: () => get<UserName[]>('/ui/users'), staleTime: 10 * 60_000 });
 
@@ -57,8 +50,6 @@ export function useBorrowerByCode(code: string) {
   return { ...query, borrower, notFound: Boolean(query.data) && !borrower };
 }
 
-export const useBorrower = (id?: string) =>
-  useQuery({ queryKey: ['borrower', id], queryFn: () => get<BorrowerDetail>(`/borrowers/${id}`), enabled: enabled(id) });
 export const useBorrowerOverview = (id?: string) =>
   useQuery({ queryKey: ['borrower', id, 'overview'], queryFn: () => get<BorrowerOverview>(`/ui/borrowers/${id}/overview`), enabled: enabled(id) });
 export const useBorrowerTerms = (id?: string) =>
@@ -105,13 +96,6 @@ export function useUploadDocument(borrowerId: string) {
 }
 export const useDocument = (id?: string | null) =>
   useQuery({ queryKey: ['document', id], queryFn: () => get<DocumentDetail>(`/documents/${id}`), enabled: enabled(id), staleTime: 10 * 60_000 });
-export const usePageFigures = (documentId?: string | null, page?: number | null) =>
-  useQuery({
-    queryKey: ['document', documentId, 'figures', page],
-    queryFn: () => get<PageFigures>(`/ui/documents/${documentId}/pages/${page}/figures`),
-    enabled: enabled(documentId) && enabled(page),
-    staleTime: 10 * 60_000,
-  });
 export const useQuoteLocation = (documentId?: string | null, page?: number | null, quote?: string | null) =>
   useQuery({
     queryKey: ['document', documentId, 'locate', page, quote],
@@ -203,14 +187,6 @@ export function invalidateAfterDecision(client: QueryClient) {
   }
 }
 
-export function useDecide(itemId: string) {
-  const client = useQueryClient();
-  return useMutation({
-    mutationFn: (body: { decision: string; reason: string }) => post<WorkItemDetail>(`/work-items/${itemId}/decide`, body),
-    onSuccess: () => invalidateAfterDecision(client),
-  });
-}
-
 export interface RunCycleResult {
   ran: Array<{ stage: StageId; result: StageStatus | null; error: string | null }>;
   cycle_status: string;
@@ -236,31 +212,19 @@ export const useAgentsStatus = () =>
   });
 
 /** Give an open item an owner: used to route a decision to a person who may take it. */
-export function useAssignItem(itemId: string) {
-  const client = useQueryClient();
-  return useMutation({
-    mutationFn: (body: { assigned_to: string | null; due_date?: string | null }) => post<WorkItemRow>(`/work-items/${itemId}/assign`, body),
-    onSuccess: () => invalidateAfterDecision(client),
-  });
-}
-
 export const useCycles = (query: { period_end?: string; borrower_id?: string } = {}, options: { enabled?: boolean } = {}) =>
   useQuery({
     queryKey: ['cycles', query],
     queryFn: () => get<Array<CycleRow & { borrower_name: string | null }>>('/cycles', query as Query),
     enabled: options.enabled ?? true,
   });
-export const useCalendar = () => useQuery({ queryKey: ['calendar'], queryFn: () => get<CalendarResponse>('/calendar') });
 export const useSignals = (query: { status?: string; borrower_id?: string } = {}) =>
   useQuery({ queryKey: ['signals', query], queryFn: () => get<SignalRow[]>('/signals', query as Query) });
 
 /* ── Agents ───────────────────────────────────────────────────────────── */
 
-export const useAgentRuns = (query: { borrower_id?: string } = {}) =>
-  useQuery({ queryKey: ['agent-runs', query], queryFn: () => get<AgentRunRow[]>('/agent-runs', { ...query, limit: 200 }) });
 export const useAgentRun = (id?: string | null) =>
   useQuery({ queryKey: ['agent-run', id], queryFn: () => get<AgentRunDetail>(`/agent-runs/${id}`), enabled: enabled(id) });
-export const useAgents = () => useQuery({ queryKey: ['agents'], queryFn: () => get<AgentSpec[]>('/agents') });
 
 /* ── Governance ───────────────────────────────────────────────────────── */
 
@@ -271,8 +235,6 @@ export interface LedgerFilter {
   before_seq?: number;
   limit?: number;
 }
-export const useLedger = (filter: LedgerFilter) =>
-  useQuery({ queryKey: ['ledger', filter], queryFn: () => get<LedgerEvent[]>('/ledger', filter as Query), placeholderData: keepPreviousData });
 export const useLedgerVerification = (run: boolean) =>
   useQuery({ queryKey: ['ledger-verify'], queryFn: () => get<LedgerVerification>('/ledger/verify'), enabled: run, staleTime: 0, gcTime: 0 });
 /** The permission table and the policy register change only with a deployment, so they are not read again on every visit. */

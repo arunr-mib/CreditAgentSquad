@@ -1,4 +1,4 @@
-"""Work items and decisions, cycles, the calendar, agent runs, signals, the ledger and the clock."""
+"""Work items and decisions, cycles, agent runs, signals, the ledger and the clock."""
 import uuid
 from datetime import date
 
@@ -20,7 +20,6 @@ from app.domain.credit import Borrower
 from app.domain.documents import Document
 from app.domain.monitoring import Cycle, Signal, WorkItem
 from app.domain.org import User
-from app.domain.terms import ReportingObligation
 from app.domain.terms_service import TermsRefused
 from app.domain.work_items import offered
 
@@ -185,27 +184,6 @@ def agents_status(_: User = Depends(current_user)) -> dict:
     status = model_status()
     return {"model_connected": status["connected"], "mode": status["mode"], "model": status["model"],
             "reason": status["reason"]}
-
-
-@router.get("/calendar")
-def get_calendar(start: date | None = None, end: date | None = None, db: Session = Depends(get_db),
-                 _: User = Depends(current_user)) -> dict:
-    as_of = clock.today(db)
-    query = select(ReportingObligation).order_by(ReportingObligation.due_date)
-    if start:
-        query = query.where(ReportingObligation.due_date >= start)
-    if end:
-        query = query.where(ReportingObligation.due_date <= end)
-    names = _names(db)
-    rows = []
-    for ob in db.execute(query).scalars():
-        late = None
-        if ob.status == "overdue":
-            late = (as_of - ob.due_date).days
-        elif ob.status == "received" and ob.received_date and ob.received_date > ob.due_date:
-            late = (ob.received_date - ob.due_date).days
-        rows.append({**row(ob), "borrower_name": names.get(ob.borrower_id), "days_late": late})
-    return {"as_of": as_of.isoformat(), "obligations": rows}
 
 
 @router.get("/signals")
