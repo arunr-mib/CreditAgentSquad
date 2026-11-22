@@ -4,7 +4,7 @@ import { Dialog as RadixDialog } from 'radix-ui';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { errorMessage } from '@/api/client';
 import { mul } from '@/api/decimal';
-import { useCalculation, useFactsById, useFactSource, useQuoteLocation } from '@/api/hooks';
+import { useCalculation, useDocument, useFactsById, useFactSource, useQuoteLocation } from '@/api/hooks';
 import type { CovenantOperator, FactSource, FactSummary, HeadroomSource, SourcePage, TermSource } from '@/api/schema';
 import type { ProvenanceKind, Unit } from '@/api/types';
 import { useAuth } from '@/auth/context';
@@ -591,23 +591,28 @@ function InlineFact({ id, text, kind, label }: { id: string; text: string; kind:
 }
 
 function DocumentView({ source, onNavigate }: { source: Extract<SourceRef, { type: 'document' }>; onNavigate: () => void }) {
-  const needsLocation = !source.boxes && Boolean(source.quote);
+  const [turned, setTurned] = useState<number | null>(null);
+  const doc = useDocument(source.documentId);
+  const pageCount = doc.data?.page_count ?? null;
+  const page = turned ?? source.page;
+  const onCited = page === source.page; // the quote and its outline belong to the cited page only
+  const needsLocation = onCited && !source.boxes && Boolean(source.quote);
   const located = useQuoteLocation(needsLocation ? source.documentId : null, source.page, source.quote);
-  const boxes = source.boxes ?? located.data?.boxes ?? [];
+  const boxes = onCited ? (source.boxes ?? located.data?.boxes ?? []) : [];
   const title = source.title ?? 'Document';
   return (
     <>
       <Heading
         kind="extracted"
-        eyebrow="Quoted from a document"
+        eyebrow={onCited ? 'Quoted from a document' : 'Document'}
         title={title}
-        context={`Page ${source.page}${source.section ? ` · Section ${source.section}` : ''}`}
+        context={`Page ${page}${pageCount ? ` of ${pageCount}` : ''}${onCited && source.section ? ` · Section ${source.section}` : ''}`}
       />
       <Section
         title="Source page"
         note={needsLocation && located.data && !located.data.found ? 'The quote was not found word for word on this page' : undefined}
       >
-        {source.quote ? (
+        {onCited && source.quote ? (
           <div className="mb-3">
             <Quote text={source.quote} />
           </div>
@@ -617,16 +622,29 @@ function DocumentView({ source, onNavigate }: { source: Extract<SourceRef, { typ
             document_id: source.documentId,
             document_title: title,
             doc_type: null,
-            page: source.page,
-            page_count: null,
+            page,
+            page_count: pageCount,
             boxes,
-            quote: source.quote ?? null,
+            quote: onCited ? (source.quote ?? null) : null,
             method: 'cited',
           }}
           code={source.borrowerCode}
           markLabel="Quoted passage"
           onNavigate={onNavigate}
         />
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <Button size="sm" disabled={page <= 1} onClick={() => setTurned(page - 1)}>
+            Previous page
+          </Button>
+          {!onCited ? (
+            <button type="button" className="link text-body" onClick={() => setTurned(null)}>
+              Back to the cited page ({source.page})
+            </button>
+          ) : null}
+          <Button size="sm" disabled={pageCount !== null && page >= pageCount} onClick={() => setTurned(page + 1)}>
+            Next page
+          </Button>
+        </div>
       </Section>
     </>
   );
@@ -762,7 +780,7 @@ export function SourceProvider({ children }: { children: ReactNode }) {
             <div key={JSON.stringify(current)} className="min-h-0 flex-1 overflow-y-auto pt-3">
               {current?.type === 'fact' ? <FactView id={current.id} onNavigate={close} /> : null}
               {current?.type === 'calculation' ? <CalculationView id={current.id} title={current.title} /> : null}
-              {current?.type === 'document' ? <DocumentView source={current} onNavigate={close} /> : null}
+              {current?.type === 'document' ? <DocumentView key={`${current.documentId}|${current.page}|${current.quote ?? ""}`} source={current} onNavigate={close} /> : null}
               {current?.type === 'record' ? <RecordView source={current} onNavigate={close} /> : null}
             </div>
           </RadixDialog.Content>

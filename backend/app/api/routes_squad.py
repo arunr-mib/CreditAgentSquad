@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import current_user, require
 from app.api.routes_evals import latest_eval
-from app.api.routes_work import _item, list_agent_runs, list_agents
+from app.api.routes_work import _item, get_agent_run, list_agent_runs, list_agents
 from app.api.serialize import row
 from app.core.db import get_db
 from app.core.ledger import LedgerEvent
@@ -239,6 +239,26 @@ def borrower_measure(borrower_id: uuid.UUID, db: Session = Depends(get_db),
     if borrower is None:
         raise HTTPException(404, "Client not found.")
     return measure_series(db, borrower)
+
+
+@router.get("/borrowers/{borrower_id}/runs")
+def borrower_runs(borrower_id: uuid.UUID, limit: int = 50, db: Session = Depends(get_db),
+                  user: User = Depends(require(Permission.VIEW))) -> list[dict]:
+    """What the agents did for this client, newest first, in words. Anyone who may see the client may read it; the
+    model's raw output stays out (Oversight, for the roles that hold it, is where the whole run lives)."""
+    if db.get(Borrower, borrower_id) is None:
+        raise HTTPException(404, "Client not found.")
+    return [run_words({k: v for k, v in r.items() if k not in ("raw_output", "output")})
+            for r in list_agent_runs(borrower_id=borrower_id, limit=max(1, min(limit, 200)), db=db, _=user)]
+
+
+@router.get("/runs/{run_id}")
+def run_detail(run_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(require(Permission.VIEW))) -> dict:
+    """One run with its steps, read only, in words."""
+    run = get_agent_run(run_id=run_id, db=db, _=user)
+    out = {k: v for k, v in run.items() if k not in ("raw_output", "output")}
+    out["steps"] = [{k: v for k, v in step.items() if k != "detail"} for step in run["steps"]]  # a step's detail can hold model text
+    return run_words(out)
 
 
 def _oversight_only(user: User) -> None:

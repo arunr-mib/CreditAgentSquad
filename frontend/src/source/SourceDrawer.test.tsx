@@ -8,6 +8,7 @@ import { useSource } from './context';
 import { SourceProvider } from './SourceDrawer';
 
 window.scrollTo = () => {};
+vi.mock('./PdfPage', () => ({ PAGE_WIDTH: 480, useFitWidth: () => 480, PdfPage: ({ page }: { page: number }) => <div data-testid="page">drawn page {page}</div> }));
 
 const summary = (over: Partial<FactSummary> & Pick<FactSummary, 'id' | 'key' | 'label' | 'value' | 'unit'>): FactSummary => ({
   kind: 'calculated',
@@ -211,5 +212,34 @@ describe('the source of a covenant headroom', () => {
     const drawer = await openSource(HEADROOM.id);
     expect(await within(drawer).findByText('Calculated by code', { selector: '.eyebrow' })).toBeInTheDocument();
     expect(within(drawer).queryByRole('region', { name: 'Headroom' })).toBeNull();
+  });
+});
+
+describe('reading a document page by page', () => {
+  async function openDocument(page: number) {
+    mockApi({ '/api/v1/documents/d-1': { id: 'd-1', title: 'Credit agreement', page_count: 3, doc_type: 'credit_agreement' } });
+    function OpenDoc() {
+      const source = useSource();
+      return <button type="button" onClick={() => source.open({ type: 'document', documentId: 'd-1', page, title: 'Credit agreement', borrowerCode: 'QFL' })}>open doc</button>;
+    }
+    const root = createRootRoute();
+    const home = createRoute({ getParentRoute: () => root, path: '/', component: () => <SourceProvider><OpenDoc /></SourceProvider> });
+    const docs = createRoute({ getParentRoute: () => root, path: '/clients/$code/file/$view', component: () => null });
+    const router = createRouter({ routeTree: root.addChildren([home, docs]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><RouterProvider router={router as never} /></QueryClientProvider>);
+    await userEvent.click(await screen.findByRole('button', { name: 'open doc' }));
+    return screen.findByRole('dialog');
+  }
+
+  it('says which page of how many, and turns pages both ways, stopping at the ends', async () => {
+    const drawer = await openDocument(1);
+    expect(await within(drawer).findByText('Page 1 of 3')).toBeInTheDocument();
+    expect(within(drawer).getByRole('button', { name: 'Previous page' })).toBeDisabled();
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Next page' }));
+    expect(within(drawer).getByTestId('page')).toHaveTextContent('drawn page 2');
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Next page' }));
+    expect(within(drawer).getByRole('button', { name: 'Next page' })).toBeDisabled();
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Previous page' }));
+    expect(within(drawer).getByTestId('page')).toHaveTextContent('drawn page 2');
   });
 });

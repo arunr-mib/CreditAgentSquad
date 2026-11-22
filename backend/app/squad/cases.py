@@ -16,7 +16,7 @@ from app.domain.org import User
 from app.domain.routing import ROUTING_ACTIONS, may_receive
 from app.domain.work_items import offered
 from app.squad import rules
-from app.squad.words import decision_words
+from app.squad.words import DECISION_WORDS, decision_words
 
 CANDIDATES = 10
 SEVERITY_RANK = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -52,6 +52,8 @@ def build_case(db: Session, item: WorkItem, viewer: User) -> dict[str, Any]:
     is_open = item.status == "open"
     acts = is_open and rules.can_act(viewer, item, borrower)
     decisions = [{"id": d, "needs_reason": workflow.needs_reason(item.item_type, d),
+                  "label": DECISION_WORDS.get(d, {}).get("label") or d.replace("_", " ").capitalize(),
+                  "hint": DECISION_WORDS.get(d, {}).get("hint", ""),
                   "permitted": bool(acts and workflow.decision_refusal(
                       db, item, user_id=viewer.id, user_role=viewer.role, decision=d) is None)}
                  for d in offered(item.item_type, item.allowed_decisions)]

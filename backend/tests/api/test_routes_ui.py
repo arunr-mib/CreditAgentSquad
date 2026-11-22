@@ -293,6 +293,7 @@ def test_borrowing_base_reviews_line_by_line(client, db, world):
     assert [line["line"] for line in latest["lines"]][0] == "ar_total", "lines come in certificate order"
     assert latest["work_item"]["item_type"] == "bb.over_advance" and latest["certificate_document"]["id"]
     assert latest["availability_fact"]["key"] == "bb.availability" and latest["customers"]
+    assert latest["outcome_label"] == "Over-advanced"  # the server's words for the outcome; the browser keeps no table
     assert client.get(f"{API}/ui/borrowers/{world[BREACH].id}/borrowing-base").json() == []
 
 

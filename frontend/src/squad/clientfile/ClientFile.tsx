@@ -3,13 +3,14 @@ import { Link, useParams } from '@tanstack/react-router';
 import { useBorrowerByCode } from '@/api/hooks';
 import { clientFile, threadHref, type ClientFileView } from '../links';
 import { Packages } from './Packages';
+import { Runs } from './Runs';
 import { Covenants, Documents, Funding, History, Loans, Overview, Reviews, Spreads } from './views';
 
 const VIEWS: Array<[ClientFileView, string]> = [
   ['overview', 'Overview'], ['spreads', 'Spreads'], ['covenants', 'Covenants'], ['documents', 'Documents'],
-  ['funding', 'Funding'], ['loans', 'Loans and terms'], ['reviews', 'Reviews'], ['packages', 'Packages'], ['history', 'History'],
+  ['funding', 'Funding'], ['loans', 'Loans and terms'], ['reviews', 'Reviews'], ['packages', 'Packages'], ['runs', 'Agent runs'], ['history', 'History'],
 ];
-const BODY = { overview: Overview, spreads: Spreads, covenants: Covenants, documents: Documents, funding: Funding, loans: Loans, reviews: Reviews, packages: Packages, history: History };
+const BODY = { overview: Overview, spreads: Spreads, covenants: Covenants, documents: Documents, funding: Funding, loans: Loans, reviews: Reviews, packages: Packages, runs: Runs, history: History };
 
 /** The client file: the detail behind a thread. Every figure opens its source in the evidence drawer, which pushes the file aside. */
 export function ClientFile() {

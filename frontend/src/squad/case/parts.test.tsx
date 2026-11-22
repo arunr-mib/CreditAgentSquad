@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { WorkItemDetail } from '@/api/schema';
 import { SeverityTag } from '@/screens/parts';
-import { Evidence, RelatedItems } from './parts';
+import { Evidence, Recommendation, RelatedItems } from './parts';
 
 window.scrollTo = () => {};
 
@@ -113,5 +113,21 @@ describe('severity', () => {
     rerender(<SeverityTag severity="low" />);
     expect(container.querySelector('[data-tag]')).toBeNull();
     expect(container).toHaveTextContent('Low');
+  });
+});
+
+describe('the run link', () => {
+  it('opens the client’s read-only run view with the run named, never Oversight', async () => {
+    const root = createRootRoute();
+    const page = createRoute({
+      getParentRoute: () => root,
+      path: '/',
+      component: () => <Recommendation recommendation={{ summary: 'Reserve rights.', run_id: 'run-123' } as never} item={item({ agent_run_id: 'run-123' } as never)} headingLevel="h3" code="KBP" />,
+    });
+    const view = createRoute({ getParentRoute: () => root, path: '/clients/$code/file/$view', component: () => null });
+    const router = createRouter({ routeTree: root.addChildren([page, view]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    render(<RouterProvider router={router as never} />);
+    const link = await screen.findByRole('link', { name: 'See the run, step by step' });
+    expect(link.getAttribute('href')).toBe('/clients/KBP/file/runs?run=run-123');
   });
 });

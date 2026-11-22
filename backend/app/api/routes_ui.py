@@ -27,7 +27,7 @@ from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Sign
 from app.domain.org import User
 from app.domain.reviews import Action, ReviewSheet
 from app.domain.terms import ReportingObligation, TermsVersion
-from app.squad.words import describe_event
+from app.squad.words import BASE_OUTCOME_WORDS, describe_event
 
 router = APIRouter(tags=["ui"])
 
@@ -830,6 +830,7 @@ def borrower_borrowing_base(borrower_id: uuid.UUID, db: Session = Depends(get_db
         out.append({
             **row(review, exclude=("computed", "certificate", "differences")), "lines": lines,
             "loan_name": facility.name if facility else None,
+            "outcome_label": BASE_OUTCOME_WORDS.get(review.outcome, review.outcome.replace("_", " ").capitalize()),
             "certificate_document": {"id": str(doc.id), "title": doc.title, "page_count": doc.page_count} if doc else None,
             "availability_fact": _summary(availability, labels) if availability else None,
             "work_item": row(item, only=("id", "item_type", "status", "severity", "decision", "title")) if item else None,

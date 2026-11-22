@@ -6,8 +6,14 @@ const OLD_VIEWS: Record<string, ClientFileView> = {
 };
 
 /** Where an address from the retired cockpit now lives, or null for an address that is not an old one. */
-export function oldAddress(pathname: string, search: Record<string, unknown>): string | null {
-  const moved: Record<string, string> = { '/agent-activity': '/oversight/activity', '/governance': '/oversight/governance', '/command-centre': '/', '/calendar': '/', '/design': '/' };
+export function oldAddress(pathname: string, search: Record<string, unknown>, who: { oversight?: boolean } = {}): string | null {
+  const oversight = who.oversight ?? true; // a role without Oversight is sent home: no address lands on a refusal
+  if (pathname === '/agent-activity') return oversight ? '/oversight/activity' : '/';
+  if (pathname === '/governance') {
+    const tab = typeof search.tab === 'string' && ['ledger', 'clock'].includes(search.tab) ? search.tab : 'governance';
+    return oversight ? `/oversight/${tab}` : '/';
+  }
+  const moved: Record<string, string> = { '/command-centre': '/', '/calendar': '/', '/design': '/' };
   if (moved[pathname]) return moved[pathname];
   if (pathname === '/borrowers' || pathname === '/borrowers/') return '/portfolio';
   const doc = /^\/borrowers\/([^/]+)\/documents\/([^/]+)\/?$/.exec(pathname);

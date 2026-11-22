@@ -385,26 +385,42 @@ journey('review room: a portfolio manager opens a meeting, moves it to during an
   await an.close();
 });
 
-journey('old addresses: every retired cockpit address lands on the Squad place that replaced it', async ({ page }) => {
-  await signIn(page, ANALYST);
-  const [first] = await api(page, '/borrowers');
-  const docs = await api(page, `/borrowers/${first.id}/documents`);
-  const cases = [
-    [`/borrowers/${first.code}/covenants`, `/clients/${first.code}/file/covenants`],
-    [`/borrowers/${first.code}/packages`, `/clients/${first.code}/file/packages`],
-    [`/borrowers/${first.code}`, `/clients/${first.code}/file`],
-    ['/borrowers', '/portfolio'],
-    ['/command-centre', '/'],
-    ['/calendar', '/'],
-    ['/design', '/'],
-    ['/governance', '/oversight/governance'],
-    ['/agent-activity', '/oversight/activity'],
-  ];
-  if (docs.length) cases.push([`/borrowers/${first.code}/documents/${docs[0].id}?page=1`, `/clients/${first.code}/file/documents`]);
-  for (const [from, to] of cases) {
-    await page.goto(`${BASE}${from}`);
-    await page.waitForURL((url) => url.pathname === to, { timeout: 10000 });
-    assert((await page.getByRole('alert').count()) === 0, `${from} landed on an error`);
+journey('old addresses: every retired cockpit address lands on a Squad place that shows the person something, never a refusal', async ({ browser }) => {
+  const ADMIN = 'admin@bankofstoic.example';
+  for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER], ['administrator', ADMIN]]) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const page = await context.newPage();
+    await signIn(page, email);
+    const oversight = (await api(page, '/me/briefing')).oversight?.offered === true;
+    const [first] = await api(page, '/borrowers');
+    const docs = await api(page, `/borrowers/${first.id}/documents`);
+    const cases = [
+      [`/borrowers/${first.code}/covenants`, `/clients/${first.code}/file/covenants`],
+      [`/borrowers/${first.code}/packages`, `/clients/${first.code}/file/packages`],
+      [`/borrowers/${first.code}`, `/clients/${first.code}/file`],
+      ['/borrowers', '/portfolio'],
+      ['/command-centre', '/'],
+      ['/calendar', '/'],
+      ['/design', '/'],
+      ['/governance', oversight ? '/oversight/governance' : '/'],
+      ['/governance?tab=ledger', oversight ? '/oversight/ledger' : '/'],
+      ['/agent-activity?run=abc', oversight ? '/oversight/activity' : '/'],
+    ];
+    if (docs.length) cases.push([`/borrowers/${first.code}/documents/${docs[0].id}?page=1`, `/clients/${first.code}/file/documents`]);
+    for (const [from, to] of cases) {
+      await page.goto(`${BASE}${from}`);
+      await page.waitForURL((url) => url.pathname === to, { timeout: 10000 });
+      // The page is ready when its own content has loaded: only then can a refusal be ruled out.
+      await page.waitForLoadState('networkidle');
+      await page.locator('[data-ready], .sq-main h1').first().waitFor({ timeout: 15000 });
+      const refusals = await page.getByRole('alert').allTextContents();
+      assert(refusals.length === 0, `${who}: ${from} landed on an alert: ${refusals.join(' | ')}`);
+    }
+    // A path nothing answers says so and offers the way home.
+    await page.goto(`${BASE}/borrowers/${first.code}/spreads/deeper/still`);
+    await page.getByText('There is no such page.').waitFor();
+    await page.getByRole('link', { name: 'Back to Squad' }).waitFor();
+    await context.close();
   }
 });
 

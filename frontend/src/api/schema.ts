@@ -518,6 +518,8 @@ export interface BorrowingBaseReview {
   over_advance: string | null;
   outcome: 'agrees' | 'mismatch' | 'over_advance' | 'cannot_compute';
   loan_name: string | null;
+  /** The outcome in the server's words. */
+  outcome_label?: string;
   lines: BorrowingBaseLine[];
   certificate_document: { id: string; title: string; page_count: number } | null;
   availability_fact: FactSummary | null;

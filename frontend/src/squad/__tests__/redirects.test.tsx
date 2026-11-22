@@ -23,6 +23,19 @@ describe('old addresses', () => {
     expect(oldAddress('/borrowers/QFL/documents/d1', { page: 3 })).toBe('/clients/QFL/file/documents?document=d1&page=3');
   });
 
+  it('sends a role without Oversight home, never to a refusal', () => {
+    for (const path of ['/agent-activity', '/governance']) expect(oldAddress(path, {}, { oversight: false })).toBe('/');
+    expect(oldAddress('/governance', {}, { oversight: true })).toBe('/oversight/governance');
+    expect(oldAddress('/borrowers/QFL/covenants', {}, { oversight: false })).toBe('/clients/QFL/file/covenants');
+  });
+
+  it('keeps the part of Oversight an old query named', () => {
+    expect(oldAddress('/governance', { tab: 'ledger' })).toBe('/oversight/ledger');
+    expect(oldAddress('/governance', { tab: 'clock' })).toBe('/oversight/clock');
+    expect(oldAddress('/governance', { tab: 'nonsense' })).toBe('/oversight/governance');
+    expect(oldAddress('/agent-activity', { run: 'r1' })).toBe('/oversight/activity');
+  });
+
   it('leaves every Squad address alone', () => {
     for (const path of ['/', '/clients/QFL', '/clients/QFL/file/spreads', '/approvals', '/review-room']) expect(oldAddress(path, {})).toBeNull();
   });

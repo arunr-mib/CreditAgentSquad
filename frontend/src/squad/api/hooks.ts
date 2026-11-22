@@ -5,6 +5,14 @@ import type { AgentRunRow, AgentSpec, LedgerEvent } from '@/api/schema';
 import type { GuardrailNote } from '@/api/types';
 import type { ApprovalRow, Briefing, CaseView, FundingEventRow, LessonRow, MeasureSeries, PortfolioSection, Thread, TrackRecordRow, Trail } from './types';
 
+export interface ClientRun {
+  id: string; agent_label: string; task_label: string; status_label: string; created_at: string; error: string | null;
+  guardrail_notes: Array<{ words: string }>;
+}
+export const useClientRuns = (borrowerId?: string) =>
+  useQuery({ queryKey: ['client-runs', borrowerId], queryFn: () => get<ClientRun[]>(`/borrowers/${borrowerId}/runs`), enabled: Boolean(borrowerId) });
+export const useRunDetail = (id: string | null) =>
+  useQuery({ queryKey: ['run-detail', id], queryFn: () => get<{ steps: Array<{ id: string; n: number; kind: string; name: string; input_summary: string; refused: boolean }> }>(`/runs/${id}`), enabled: Boolean(id) });
 export const useBriefing = () => useQuery({ queryKey: ['briefing'], queryFn: () => get<Briefing>('/me/briefing') });
 export const useThread = (borrowerId?: string) =>
   useQuery({ queryKey: ['thread', borrowerId], queryFn: () => get<Thread>(`/threads/${borrowerId}`), enabled: Boolean(borrowerId) });

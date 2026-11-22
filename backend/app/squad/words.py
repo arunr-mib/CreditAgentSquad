@@ -17,7 +17,7 @@ _PAST = {
     "in_dollars": "read as dollars", "input_provided": "input provided", "not_applicable": "marked not applicable",
     "listing_corrected": "listing corrected", "no_action": "no action taken", "paydown_required": "paydown required",
     "temporary_overadvance_approved": "temporary overadvance approved", "escalate_to_committee": "escalated to committee",
-    "escalate": "escalated", "reading_confirmed": "reading confirmed", "key_by_hand": "keyed by hand",
+    "escalate": "escalated", "reservation_of_rights": "reserved rights", "reserve_rights": "reserved the bank's rights", "reading_confirmed": "reading confirmed", "key_by_hand": "keyed by hand",
     "restated_update_prior": "updated the prior period", "keep_prior": "kept the prior period",
     "ask_borrower": "asked the borrower", "wrong_document": "marked the wrong document",
     "reviewed": "reviewed", "spread_in_error": "marked the spread in error",
@@ -197,3 +197,47 @@ def describe_event(action: str, payload: dict[str, Any] | None, document_title: 
             if value is not None and not isinstance(value, (dict, list)):
                 parts.append(f"{_plain(key)} {_UUID.sub(lambda m: m.group(0)[:8], str(value))}")
     return " · ".join(parts)
+
+
+BASE_OUTCOME_WORDS = {"agrees": "Agrees with the certificate", "mismatch": "Certificate differs from the recalculation",
+                      "over_advance": "Over-advanced", "cannot_compute": "Could not be recalculated"}
+
+
+# What each decision is called on a button, and what it means: the one table (a person's decision in the past tense is `decision_words`).
+DECISION_WORDS: dict[str, dict[str, str]] = {
+    "waiver_requested": {"label": "Waiver requested", "hint": "The borrower has asked for a waiver; the breach stands until one is granted."},
+    "reservation_of_rights": {"label": "Reserve rights", "hint": "Send a reservation of rights letter while the breach is worked through."},
+    "escalate_to_committee": {"label": "Escalate to committee", "hint": "Take the breach to credit committee."},
+    "ask_for_new_timeline": {"label": "Ask for a new timeline", "hint": "Ask the client for a new expected close. Squad drafts the email; a person sends it."},
+    "note_and_watch": {"label": "Note and keep watching", "hint": "Noted; Squad keeps watching for the close."},
+    "reserve_rights": {"label": "Reserve the bank’s rights", "hint": "The bank reserves its rights while the round is late."},
+    "escalate": {"label": "Escalate", "hint": "Take it to the credit officer or committee."},
+    "not_a_breach": {"label": "Not a breach", "hint": "The calculation is wrong or the terms differ. Say why."},
+    "paydown_required": {"label": "Require a paydown", "hint": "The borrower must repay down to the borrowing base."},
+    "temporary_overadvance_approved": {"label": "Approve a temporary over-advance", "hint": "Allow the excess for a stated period."},
+    "bank_figures_stand": {"label": "The bank’s figures stand", "hint": "Use the recalculation; the certificate is wrong."},
+    "borrower_to_resubmit": {"label": "Ask the borrower to resubmit", "hint": "Request a corrected certificate."},
+    "certificate_correct": {"label": "The certificate is correct", "hint": "The recalculation is wrong. Say why."},
+    "chaser_sent": {"label": "Chaser sent", "hint": "The reminder has gone to the borrower."},
+    "extension_granted": {"label": "Extension granted", "hint": "The borrower has more time. Say until when."},
+    "received_elsewhere": {"label": "Received elsewhere", "hint": "The document arrived outside the workspace."},
+    "acknowledged": {"label": "Acknowledge", "hint": "Seen; no change to the risk rating."},
+    "rating_review_requested": {"label": "Request a rating review", "hint": "The risk rating should be looked at again."},
+    "add_to_watch_list": {"label": "Add to the watch list", "hint": "Monitor this borrower more closely."},
+    "values_confirmed": {"label": "Values confirmed", "hint": "Every held figure is accepted as read, and the spread is finished from them."},
+    "values_corrected": {"label": "Values corrected", "hint": "The figures have been corrected with a citation."},
+    "accept_as_reported": {"label": "Accept as reported", "hint": "Use the statement as it stands. Say why."},
+    "request_new_document": {"label": "Request a new document", "hint": "Ask the borrower for a complete, readable copy."},
+    "key_by_hand": {"label": "Key by hand", "hint": "A person will enter the figures from the page."},
+    "restated_update_prior": {"label": "Restated: update the prior period", "hint": "The borrower restated; supersede the earlier figures."},
+    "keep_prior": {"label": "Keep the prior figures", "hint": "Leave last year’s confirmed spread as it is."},
+    "ask_borrower": {"label": "Ask the borrower", "hint": "Find out why the comparative column changed."},
+    "terms_update_requested": {"label": "Request a terms update", "hint": "Prepare a new terms version from the amendment for approval."},
+    "amendment_not_applicable": {"label": "Amendment does not apply", "hint": "The amendment does not change the tested terms. Say why."},
+    "terms_approved": {"label": "Approve the terms", "hint": "The proposed terms govern from their effective date."},
+    "not_applicable": {"label": "Not applicable", "hint": "Say why this does not apply."},
+    "approve": {"label": "Approve", "hint": "The commentary is approved as written."},
+    "return_for_rework": {"label": "Return for rework", "hint": "Send it back with what needs to change."},
+    "reject": {"label": "Reject", "hint": "Say why."},
+    "no_action": {"label": "No action", "hint": "Nothing more is needed."},
+}

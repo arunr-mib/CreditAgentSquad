@@ -89,3 +89,15 @@ def test_case_and_approvals_endpoints(db, client, world):
     assert [r["work_item_id"] for r in client.get("/api/v1/me/approvals").json()] == [str(item.id)]
     assert client.get("/api/v1/me/briefing").json()["approvals"]["offered"] is True
     assert client.get("/api/v1/cases/00000000-0000-0000-0000-000000000000").status_code == 404
+
+
+def test_each_decision_is_served_with_its_words_and_hint_and_the_thread_agrees(db, world):
+    from app.squad.words import DECISION_WORDS, decision_words
+    item = _case(db, world["borrower"])
+    decisions = {d["id"]: d for d in build_case(db, item, world["analyst"])["decisions"]}
+    assert decisions["reserve_rights"]["label"] == DECISION_WORDS["reserve_rights"]["label"] == "Reserve the bank’s rights"
+    assert decisions["reserve_rights"]["hint"] and decisions["no_action"]["label"] == "No action"
+    # an id the table lacks reads as its words, never as the raw key
+    assert decision_words("some_new_decision") == "some new decision"
+    # the thread's past tense and the case's label come from the one module: every labelled decision also has a past form
+    assert all(decision_words(k) != k for k in DECISION_WORDS)

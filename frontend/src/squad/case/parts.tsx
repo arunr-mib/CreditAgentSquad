@@ -343,8 +343,8 @@ export function Recommendation({
             </ul>
           </div>
         ) : null}
-        {runId ? (
-          <Link to="/oversight" className="link mt-2 inline-block text-body font-medium">
+        {runId && code ? (
+          <Link to="/clients/$code/file/$view" params={{ code, view: 'runs' }} search={{ run: runId }} className="link mt-2 inline-block text-body font-medium">
             See the run, step by step
           </Link>
         ) : null}

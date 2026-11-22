@@ -79,3 +79,20 @@ def test_the_ledger_and_the_timeline_are_served_with_the_words(db, client, world
     sign_in(client, "priya.raman")
     timeline = client.get(f"/api/v1/ui/borrowers/{world['borrower'].id}/timeline").json()
     assert any(r["summary"] == "Bank statement" for r in timeline)
+
+
+def test_anyone_who_may_see_a_client_can_read_its_runs_in_words_without_the_raw_output(db, client, world):
+    from app.domain.agents import AgentStep
+    run = AgentRun(agent_name="certificate_reader", agent_version="1", model="m", task="read_certificate", borrower_id=world["borrower"].id,
+                   status="completed", output={"narrative": "private"}, raw_output="raw model text")
+    db.add(run)
+    db.flush()
+    db.add(AgentStep(run_id=run.id, n=1, kind="tool", name="read_page", input_summary="page 2", output_summary="ok", detail={}))
+    db.commit()
+    sign_in(client, "priya.raman")
+    listed = client.get(f"/api/v1/borrowers/{world['borrower'].id}/runs").json()
+    assert listed[0]["agent_label"] == "Certificate reader agent" and listed[0]["task_label"] == "Read certificate"
+    assert listed[0]["status_label"] == "Completed" and "raw_output" not in listed[0] and "output" not in listed[0]
+    one = client.get(f"/api/v1/runs/{run.id}").json()
+    assert one["steps"][0]["name"] == "read_page" and "detail" not in one["steps"][0] and "raw_output" not in one and one["agent_label"].endswith("agent")
+    assert client.get("/api/v1/runs/00000000-0000-0000-0000-000000000000").status_code == 404

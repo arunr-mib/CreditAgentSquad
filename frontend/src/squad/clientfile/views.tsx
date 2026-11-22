@@ -2,7 +2,7 @@
 import { Link, useRouterState, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  useActions, useBorrowerCovenants, useBorrowerOverview, useBorrowerTerms, useBorrowingBase, useDocuments, useFactsById,
+  useActions, useBorrowerCovenants, useBorrowerOverview, useBorrowerTerms, useDocuments, useFactsById,
   useReviewSheet, useReviewSheets, useSignals, useSpread, useTimeline,
 } from '@/api/hooks';
 import type { BorrowerRow, FactSummary } from '@/api/schema';
@@ -16,6 +16,7 @@ import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
 import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
 import { DocType, useSignalWords } from '../DocType';
 import { Time } from '../thread/Time';
+import { BorrowingBase } from './BorrowingBase';
 import { MeasureNow, TrendBars } from './Measure';
 
 type Props = { borrower: BorrowerRow };
@@ -63,7 +64,7 @@ export function Overview({ borrower }: Props) {
         {cycle ? (
           <>
             <p>Period ended {formatDate(cycle.period_end)} · {cycle.status === 'closed' ? 'closed' : `at ${cycle.stage.replace(/_/g, ' ')}`}</p>
-            {cycle.status !== 'closed' ? <RunStage cycle={cycle} /> : null}
+            {cycle.status !== 'closed' ? <RunStage cycle={cycle} code={borrower.code} /> : null}
           </>
         ) : <p className="sq-muted">No cycle has been opened for this client yet.</p>}
       </section>
@@ -236,7 +237,6 @@ export function Funding({ borrower }: Props) {
 
 export function Loans({ borrower }: Props) {
   const terms = useBorrowerTerms(borrower.id);
-  const base = useBorrowingBase(borrower.id);
   if (terms.isPending) return <Loading what="the loans" />;
   if (terms.error || !terms.data) return <Failed what="The loans" />;
   return (
@@ -256,13 +256,7 @@ export function Loans({ borrower }: Props) {
           </ul>
         </section>
       ))}
-      {(base.data ?? []).slice(0, 1).map((r) => (
-        <section key={r.id} className="sq-card" aria-label="Borrowing base">
-          <h2 className="sq-h2">Borrowing base · {formatDate(r.period_end)}</h2>
-          <p>Availability {r.availability_fact ? <FactFigure fact={r.availability_fact} /> : <Absent />}</p>
-          <p className="sq-muted">{r.outcome.replace(/_/g, ' ')}</p>
-        </section>
-      ))}
+      <BorrowingBase borrower={borrower} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ type Cycle = NonNullable<BorrowerOverview['cycle']>;
  * its code checks in the request; what it did is then listed under Agent activity. Where no model
  * is connected the button is off and says why, so a stage is never failed by pressing it.
  */
-export function RunStage({ cycle }: { cycle: Cycle }) {
+export function RunStage({ cycle, code }: { cycle: Cycle; code?: string }) {
   const { can } = useAuth();
   const status = useAgentsStatus();
   const run = useRunCycle(cycle.id);
@@ -73,9 +73,11 @@ export function RunStage({ cycle }: { cycle: Cycle }) {
             {result.open_blocking_items > 0
               ? `${result.open_blocking_items} open ${result.open_blocking_items === 1 ? 'item needs' : 'items need'} a person before the cycle moves on. `
               : ''}
-            <Link to="/oversight" className="link font-medium">
-              See what the agents did
-            </Link>
+            {code ? (
+              <Link to="/clients/$code/file/$view" params={{ code, view: 'runs' }} className="link font-medium">
+                See what the agents did
+              </Link>
+            ) : null}
           </p>
         </Notice>
       ) : null}
