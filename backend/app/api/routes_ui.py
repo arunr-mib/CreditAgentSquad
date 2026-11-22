@@ -27,6 +27,7 @@ from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Sign
 from app.domain.org import User
 from app.domain.reviews import Action, ReviewSheet
 from app.domain.terms import ReportingObligation, TermsVersion
+from app.squad.words import describe_event
 
 router = APIRouter(tags=["ui"])
 
@@ -861,5 +862,6 @@ def borrower_timeline(borrower_id: uuid.UUID, limit: int = 300, include_routine:
     users = {str(u.id): u.name for u in db.execute(select(User)).scalars()}
     titles = {str(d.id): d.title for d in db.execute(select(Document).where(Document.borrower_id == borrower.id)).scalars()}
     return [{**row(e, exclude=("prev_hash",)), "actor_name": users.get(e.actor_id),
-             "document_title": titles.get(e.entity_id) if e.entity_type == "document" else None}
+             "document_title": titles.get(e.entity_id) if e.entity_type == "document" else None,
+             "summary": describe_event(e.action, e.payload, titles.get(e.entity_id) if e.entity_type == "document" else None)}
             for e in db.execute(query).scalars()]

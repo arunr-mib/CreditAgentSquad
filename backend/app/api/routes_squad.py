@@ -18,6 +18,7 @@ from app.domain import routing
 from app.domain.credit import Borrower
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
+from app.publishing.content import SIGNAL_LABELS
 from app.squad import drafts
 from app.squad.briefing import build_briefing
 from app.squad.cases import build_approvals, build_case
@@ -33,6 +34,7 @@ from app.squad.words import (
     NOTE_WORDS,
     actor_words,
     agent_words,
+    describe_event,
     document_type_words,
     ledger_family_words,
 )
@@ -224,6 +226,12 @@ def document_type_words_table(_: User = Depends(current_user)) -> dict:
     return {"types": DOCUMENT_TYPE_WORDS, "unclassified": document_type_words(None), "notes": NOTE_WORDS}
 
 
+@router.get("/words/signals")
+def signal_words_table(_: User = Depends(current_user)) -> dict:
+    """The plain words for every signal rule; the browser has no list."""
+    return {"rules": SIGNAL_LABELS}
+
+
 @router.get("/borrowers/{borrower_id}/measure")
 def borrower_measure(borrower_id: uuid.UUID, db: Session = Depends(get_db),
                      _: User = Depends(require(Permission.VIEW))) -> dict:
@@ -275,7 +283,8 @@ def oversight_ledger(action: str | None = None, before_seq: int | None = Query(d
         query = query.where(LedgerEvent.seq < before_seq)
     names = {str(u.id): u.name for u in db.execute(select(User)).scalars()}
     return [{**row(e, exclude=("prev_hash",)), "actor_name": names.get(e.actor_id),
-             "actor_label": actor_words(e.actor_type, e.actor_id, names)} for e in db.execute(query).scalars()]
+             "actor_label": actor_words(e.actor_type, e.actor_id, names),
+             "summary": describe_event(e.action, e.payload)} for e in db.execute(query).scalars()]
 
 
 @router.get("/oversight/evaluation")

@@ -20,7 +20,7 @@ from app.squad.cases import build_approvals
 from app.squad.oversight import OVERSIGHT_ROLES
 from app.squad.portfolio import open_work_item_counts
 from app.squad.threads import REPORT_TEXT_KEYS
-from app.squad.words import decision_words, document_type_words, question_choice
+from app.squad.words import agent_words, decision_words, document_type_words, question_choice
 
 BREACH_TYPES = frozenset({"covenant.breach", "covenant.reported_breach_unconfirmed", "bb.over_advance"})
 KIND_RANK = {"breach": 0, "overdue_report": 1, "signal": 2, "question": 3, "review": 4, "funding": 5, "decided": 6}
@@ -140,7 +140,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         out = run.output or {}
         text = next((out[k] for k in REPORT_TEXT_KEYS if isinstance(out.get(k), str) and out[k].strip()), None)
         if text and run.borrower_id in borrowers:
-            overnight.append({"agent_name": run.agent_name, "text": text, "finished_at": run.finished_at.isoformat(),
+            overnight.append({"agent_name": run.agent_name, "agent_label": agent_words(run.agent_name), "text": text, "finished_at": run.finished_at.isoformat(),
                               **ref(run.borrower_id)})
         if len(overnight) == OVERNIGHT_LIMIT:
             break

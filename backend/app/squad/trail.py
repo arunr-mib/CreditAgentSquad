@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.domain.agents import AgentRun
 from app.domain.facts import CalcRun
 from app.domain.monitoring import CovenantTest, WorkItem
+from app.squad.words import agent_words
 
 ROLE_LINES = {
     "intake": "files incoming documents",
@@ -18,7 +19,7 @@ ROLE_LINES = {
 
 
 def _who(agent_name: str) -> str:
-    return f"{agent_name.capitalize()} agent"
+    return agent_words(agent_name)
 
 
 def case_trail(db: Session, item: WorkItem) -> dict[str, Any]:

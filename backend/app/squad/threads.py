@@ -17,7 +17,7 @@ from app.domain.org import User
 from app.domain.work_items import offered
 from app.squad import rules
 from app.squad.portfolio import lessons_for
-from app.squad.words import decision_words, document_type_words, question_choice
+from app.squad.words import agent_words, decision_words, document_type_words, question_choice
 
 RANK = {"arrivals": 0, "document": 0, "held": 0, "report": 1, "case": 2, "ask": 2, "draft": 3, "qa": 4,
         "handoff": 5, "returned": 5, "attached": 5, "decision": 6}
@@ -175,7 +175,8 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
         text = next((out[k] for k in REPORT_TEXT_KEYS if isinstance(out.get(k), str) and out[k].strip()), None)
         if text:
             messages.append({"id": f"run:{run.id}", "type": "report", "ts": _iso(run.finished_at or run.created_at),
-                             "agent_name": run.agent_name, "task": run.task, "text": text, "run_id": str(run.id)})
+                             "agent_name": run.agent_name, "agent_label": agent_words(run.agent_name), "task": run.task,
+                             "text": text, "run_id": str(run.id)})
 
     for e in _events(db, "copilot.asked", borrower_id=bid):
         p = e.payload or {}
