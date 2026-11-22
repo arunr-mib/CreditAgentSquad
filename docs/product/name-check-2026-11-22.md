@@ -33,3 +33,37 @@ Scope: all 16 innovation-book clients, the 4 kept legacy borrowers, the lender, 
 | Marcus Oyelaran | demo user / RM | clear | No notable banker of this name | https://businessday.ng/?p=1193400 | |
 
 Counts: clear 17, similar 6, collision 2 (25 names rated).
+
+## Renames
+
+Owner decision: rename 8 clients (Stripple Tech included because it sounds like a well-known payments company). Each replacement keeps the sector feel and word shape, is invented (not a parody or sound-alike), differs from every other name in `synthetic/books/innovation/roster.py`, and was web-searched (standard mode, name plus a sector word). First candidate rated clear was picked. Codes are lowercase-hyphen like the existing ones.
+
+| Old name | Old code | New name | New code |
+|---|---|---|---|
+| Dataflake Inc | dataflake | Datamarrow Inc | datamarrow |
+| Quillon AI | quillon-ai | Tarnavi AI | tarnavi-ai |
+| Lumora Health | lumora-health | Calvere Health | calvere-health |
+| Halcyon Grid | halcyon-grid | Tavernel Grid | tavernel-grid |
+| Tessaract Labs | tessaract-labs | Vantrell Labs | vantrell-labs |
+| Corvane Analytics | corvane-analytics | Meridew Analytics | meridew-analytics |
+| Tidewell Medical | tidewell-medical | Brackmere Medical | brackmere-medical |
+| Stripple Tech | stripple-tech | Cindrel Tech | cindrel-tech |
+
+Candidates tried (this supersedes the earlier suggested-rename column; Haldane, Tessellane etc. there were not searched and Haldane is a notable surname):
+
+| Replaces | Candidate | Rating | Evidence |
+|---|---|---|---|
+| Dataflake Inc | Dataquarry Inc | similar (Data Quarry Inc, wireless-test software, exists) | https://village.ai/company/dataquarry |
+| Dataflake Inc | Datakiln Inc | collision (DataKiln consulting firm, datakilninc.com) | https://www.zoominfo.com/c/datakiln/557383779 |
+| Dataflake Inc | Dataferrow Inc | clear (nearest: DataForge); not picked, shares "ferro" with Ferrogate Cloud | https://www.cbinsights.com/company/dataforge |
+| Dataflake Inc | Datamarrow Inc | clear (nearest: Datamam, dataArrows) - picked | https://www.zoominfo.com/c/dataarrows/468412086 |
+| Quillon AI | Tarnavi AI | clear - picked | https://braincompany.ai |
+| Lumora Health | Calvere Health | clear (nearest: CalvertHealth nonprofit, Solvere Health) - picked | https://www.crunchbase.com/organization/calverthealth |
+| Lumora Health | Marrowind Health | clear but unused (reads as bone-marrow related) | https://www.biopharminternational.com/view/marrow-therapeutics-173-million-series-a-b-bone-marrow-genetic-medicines |
+| Halcyon Grid | Tavernel Grid | clear - picked | https://discovercleantech.com/directory/tms-grid/ |
+| Tessaract Labs | Vantrell Labs | clear (nearest: Vantrel exam-prep startup, Vantage Labs) - picked | https://www.startuphub.ai/startups/vantrel |
+| Corvane Analytics | Meridew Analytics | clear (nearest: Merilytics) - picked | https://app.dealroom.co/companies/merilytics |
+| Tidewell Medical | Brackmere Medical | clear (nearest: Brackenboro Medical, UK) - picked | https://pay.company-information.service.gov.uk/company/04263650/officers |
+| Stripple Tech | Cindrel Tech | clear (nearest: Cindicator, crypto) - picked | https://seedtable.com/startups/Cindicator-639P68V |
+
+Only the first candidate was searched where it came back clear; second and third candidates were not tried for Quillon, Halcyon, Tessaract, Corvane, Tidewell and Stripple. Registry or trademark checks were not done.
