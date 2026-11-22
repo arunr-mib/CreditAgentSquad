@@ -84,6 +84,14 @@ describe('ClientThread', () => {
     expect(screen.getByText('Statement reader agent')).toBeInTheDocument();
   });
 
+  it('says in Squad\u2019s own sentence what Squad attached, and still opens the document', async () => {
+    state.thread = thread([...messages, { ...base, id: 'attached:1', type: 'attached', work_item_id: 'w1', document_id: 'd9', title: 'Account statement September 2026', note: 'Attached the Bank statement for September 2026 that Helen Strand asked for.', by: 'Squad' }]);
+    mount();
+    expect(await screen.findByText(/^Attached the Bank statement for September 2026 that Helen Strand asked for\./)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Open Account statement September 2026' }));
+    expect(state.open).toHaveBeenCalledWith(expect.objectContaining({ documentId: 'd9' }));
+  });
+
   it('opens a document in the evidence drawer from the thread', async () => {
     mount();
     await userEvent.click(await screen.findByRole('button', { name: /open october compliance certificate/i }));

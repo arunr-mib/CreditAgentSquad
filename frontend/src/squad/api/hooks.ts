@@ -3,7 +3,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { get, post, type Query } from '@/api/client';
 import type { AgentRunRow, AgentSpec, LedgerEvent } from '@/api/schema';
 import type { GuardrailNote } from '@/api/types';
-import type { ApprovalRow, Briefing, CaseView, FundingEventRow, LessonRow, MeasureSeries, PortfolioSection, Thread, TrackRecordRow, Trail } from './types';
+import type { ApprovalRow, Briefing, CaseView, FundingEventRow, LessonRow, MeasureSeries, NeedInput, PortfolioSection, Thread, TrackRecordRow, Trail } from './types';
 
 export interface ClientRun {
   id: string; agent_label: string; task_label: string; status_label: string; created_at: string; error_words: string | null;
@@ -64,7 +64,7 @@ export const useDecideCase = (id: string) =>
 export const useRouteCase = (id: string) =>
   useWrite<{ to: string; view: string }, CaseView>(() => `/work-items/${id}/route`, (i) => i, CASE_KEYS);
 export const useReturnCase = (id: string) =>
-  useWrite<{ reason: string }, CaseView>(() => `/work-items/${id}/return`, (i) => i, CASE_KEYS);
+  useWrite<{ reason: string; needs?: NeedInput[] }, CaseView>(() => `/work-items/${id}/return`, (i) => i, CASE_KEYS);
 export const useAttachEvidence = (id: string) =>
   useWrite<{ document_id: string; note?: string }, CaseView>(() => `/work-items/${id}/attach`, (i) => i, CASE_KEYS);
 

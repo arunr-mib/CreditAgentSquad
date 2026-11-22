@@ -5,8 +5,8 @@ import { HeldFigures } from '@/squad/case/HeldFigures';
 import { KeyFigures } from '@/squad/case/KeyFigures';
 import { Evidence as ItemEvidence, Recommendation, RelatedItems } from '@/squad/case/parts';
 import { useSource } from '@/source/context';
-import { useAttachEvidence, useCase, useDecideCase, useReturnCase, useRouteCase, type CopilotReply } from '../api/hooks';
-import type { CaseView } from '../api/types';
+import { useAttachEvidence, useCase, useDecideCase, useDocumentTypeWords, useReturnCase, useRouteCase, type CopilotReply } from '../api/hooks';
+import type { CaseNeed, CaseView, NeedInput } from '../api/types';
 import { usePresence } from '../presence/Presence';
 import { AskReply } from '../thread/AskReply';
 import { Composer } from '../thread/Composer';
@@ -40,6 +40,24 @@ function Field({ label, value, onChange }: { label: string; value: string; onCha
       <label htmlFor={id}>{label}</label>
       <textarea id={id} rows={3} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
+  );
+}
+
+const MAX_NEEDS = 5;
+/** "2026-09" (a month picker's value) to the last day of that month, the period a need names. */
+const monthEnd = (month: string): string => {
+  const [y, m] = month.split('-').map(Number);
+  return new Date(Date.UTC(y!, m!, 0)).toISOString().slice(0, 10);
+};
+const needLine = (n: CaseNeed) => (n.state === 'attached' ? n.state_words : `${n.words}: ${n.state_words}`);
+
+function NeedsList({ needs, label, only }: { needs: CaseNeed[]; label: string; only?: (n: CaseNeed) => boolean }) {
+  const shown = only ? needs.filter(only) : needs;
+  if (shown.length === 0) return null;
+  return (
+    <ul className="sq-plainlist" aria-label={label}>
+      {shown.map((n) => <li key={n.index}>{needLine(n)}</li>)}
+    </ul>
   );
 }
 
@@ -109,6 +127,7 @@ function RouteForm({ c }: { c: CaseView }) {
           </select>
         </label>
       ) : null}
+      <NeedsList needs={c.needs} label="Still asked of the client" only={(n) => n.state !== 'attached'} />
       <Field label="Your view (required): what you found and what you recommend" value={view} onChange={setView} />
       <Refused error={error} />
       <button type="submit" className="sq-btn" disabled={!view.trim() || !person || route.isPending}>{person ? `Send to ${person.name}` : 'Choose who decides'}</button>
@@ -119,13 +138,20 @@ function RouteForm({ c }: { c: CaseView }) {
 function ReturnForm({ c }: { c: CaseView }) {
   const ret = useReturnCase(c.work_item_id);
   const { say } = usePresence();
+  const types = useDocumentTypeWords().data?.types ?? {};
   const [reason, setReason] = useState('');
+  const [rows, setRows] = useState<Array<{ doc_type: string; month: string }>>([]);
   const [error, setError] = useState<unknown>(null);
   const who = c.view?.by ?? 'the person who sent it';
+  // two keys may share words ("bank_statement", "bank_statements"): one choice per words, as the server spells them
+  const choices = Object.entries(types).filter(([, words], i, all) => all.findIndex(([, w]) => w === words) === i);
+  const change = (i: number, part: Partial<{ doc_type: string; month: string }>) => setRows((r) => r.map((row, j) => (j === i ? { ...row, ...part } : row)));
+  const complete = rows.every((r) => r.doc_type && /^\d{4}-\d{2}$/.test(r.month));
   async function submit() {
     setError(null);
     try {
-      await ret.mutateAsync({ reason: reason.trim() });
+      const needs: NeedInput[] = rows.map((r) => ({ doc_type: r.doc_type, period_end: monthEnd(r.month) }));
+      await ret.mutateAsync(needs.length > 0 ? { reason: reason.trim(), needs } : { reason: reason.trim() });
       say(`Returned to ${who} · recorded`);
     } catch (e) {
       setError(e);
@@ -134,8 +160,22 @@ function ReturnForm({ c }: { c: CaseView }) {
   return (
     <form className="sq-caseform" aria-label="Return the case" onSubmit={(e) => { e.preventDefault(); void submit(); }}>
       <Field label="What is missing, or what you want done (required)" value={reason} onChange={setReason} />
+      <fieldset className="sq-needs">
+        <legend>What is needed (optional): Squad gathers these and asks you only if it is not sure</legend>
+        {rows.map((r, i) => (
+          <div key={i} className="sq-need-row">
+            <select className="sq-input" aria-label={`Document type ${i + 1}`} value={r.doc_type} onChange={(e) => change(i, { doc_type: e.target.value })}>
+              <option value="" disabled>Document type</option>
+              {choices.map(([key, words]) => <option key={key} value={key}>{words}</option>)}
+            </select>
+            <input className="sq-input" type="month" aria-label={`Month ${i + 1}`} value={r.month} onChange={(e) => change(i, { month: e.target.value })} />
+            <button type="button" className="sq-btn" aria-label={`Remove need ${i + 1}`} onClick={() => setRows((all) => all.filter((_, j) => j !== i))}>Remove</button>
+          </div>
+        ))}
+        <button type="button" className="sq-btn" disabled={rows.length >= MAX_NEEDS} onClick={() => setRows((all) => [...all, { doc_type: '', month: '' }])}>Add something that is needed</button>
+      </fieldset>
       <Refused error={error} />
-      <button type="submit" className="sq-btn" disabled={!reason.trim() || ret.isPending}>Return to {who}</button>
+      <button type="submit" className="sq-btn" disabled={!reason.trim() || !complete || ret.isPending}>Return to {who}</button>
     </form>
   );
 }
@@ -215,6 +255,7 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
         </figure>
       ) : null}
       <History c={c} />
+      <NeedsList needs={c.needs} label="What was asked for" />
       {detail.data ? <KeyFigures item={detail.data} /> : null}
       {detail.data ? <ItemEvidence item={detail.data} code={c.borrower.code} headingLevel="h4" /> : null}
       {detail.data && HELD.has(c.item_type) ? <HeldFigures item={detail.data} code={c.borrower.code} headingLevel="h4" /> : null}

@@ -13,6 +13,7 @@ vi.mock('../api/hooks', () => ({
   useRouteCase: () => write(state.route),
   useReturnCase: () => write(state.ret),
   useAttachEvidence: () => write(state.attach),
+  useDocumentTypeWords: () => ({ data: { types: { bank_statement: 'Bank statement', bank_statements: 'Bank statement', mrr_report: 'MRR report' }, unclassified: 'Not yet classified', notes: {} } }),
 }));
 vi.mock('@/api/hooks', () => ({ useWorkItem: () => ({ data: state.detail }) }));
 vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say: state.say }) }));
@@ -35,7 +36,7 @@ const base: CaseView = {
   work_item_id: 'w1', borrower: { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.' }, item_type: 'covenant.breach',
   title: 'Cash below minimum', question: 'How should the bank respond?', severity: 'high', status: 'open', due_date: null,
   decision: null, decision_words: null, decision_reason: '', decided_by: null, requires_second_person: false, with: null,
-  state_words: 'With the credit officer', needs_you: false, view: null, history: [], attached: [], candidates: [],
+  state_words: 'With the credit officer', needs_you: false, view: null, needs: [], history: [], attached: [], candidates: [],
   decisions: [{ id: 'reservation_of_rights', label: 'Reserve rights', hint: 'Send a reservation of rights letter.', needs_reason: true, permitted: false }, { id: 'not_a_breach', label: 'Not a breach', hint: '', needs_reason: true, permitted: false }],
   route_to: [{ id: 'u2', name: 'Helen Strand', title: 'Senior Credit Officer' }], may_route: true, may_return: false, may_attach: true,
 };
@@ -174,5 +175,59 @@ describe('CasePanel', () => {
   it('names each refusal by what it means', () => {
     expect(refusal(new ApiError(403, 'no')).title).toBe('Not recorded: your role cannot do this');
     expect(refusal(new ApiError(422, 'needs a reason')).text).toBe('needs a reason');
+  });
+
+  const officer = () => {
+    state.view = { ...base, needs_you: true, may_route: false, may_return: true, view: { text: 'Recommend reserving rights.', by: 'Priya Raman', at: '2026-11-21T09:00:00Z' } };
+  };
+
+  it('lets the officer say what is needed when returning: a document type and a month per row, up to five', async () => {
+    officer();
+    panel();
+    const form = screen.getByRole('form', { name: 'Return the case' });
+    expect(within(form).queryByRole('combobox')).toBeNull();
+    await userEvent.click(within(form).getByRole('button', { name: 'Add something that is needed' }));
+    expect(within(form).getAllByRole('option', { name: 'Bank statement' })).toHaveLength(1); // an alias is not offered twice
+    await userEvent.selectOptions(within(form).getByRole('combobox', { name: 'Document type 1' }), 'bank_statement');
+    await userEvent.type(within(form).getByLabelText('Month 1'), '2026-09');
+    await userEvent.type(within(form).getByLabelText(/What is missing/), 'Need the September statement.');
+    await userEvent.click(within(form).getByRole('button', { name: 'Add something that is needed' }));
+    await userEvent.click(within(form).getByRole('button', { name: 'Remove need 2' }));
+    await userEvent.click(within(form).getByRole('button', { name: 'Return to Priya Raman' }));
+    expect(state.ret).toHaveBeenCalledWith({ reason: 'Need the September statement.', needs: [{ doc_type: 'bank_statement', period_end: '2026-09-30' }] });
+  });
+
+  it('stops at five needs, and will not return with a half-filled row', async () => {
+    officer();
+    panel();
+    const form = screen.getByRole('form', { name: 'Return the case' });
+    for (let i = 0; i < 5; i += 1) await userEvent.click(within(form).getByRole('button', { name: 'Add something that is needed' }));
+    expect(within(form).getByRole('button', { name: 'Add something that is needed' })).toBeDisabled();
+    await userEvent.type(within(form).getByLabelText(/What is missing/), 'Need things.');
+    expect(within(form).getByRole('button', { name: 'Return to Priya Raman' })).toBeDisabled();
+  });
+
+  it('shows each need with its state in words on the case', () => {
+    state.view = { ...base, needs: [
+      { index: 0, doc_type: 'bank_statement', period_end: '2026-09-30', words: 'Bank statement, September 2026', state: 'attached', state_words: 'Attached: Bank statement, September 2026', document_id: 'd1', question_id: null, draft_id: null },
+      { index: 1, doc_type: 'mrr_report', period_end: '2026-09-30', words: 'MRR report, September 2026', state: 'requested_from_client', state_words: 'Asked the client', document_id: null, question_id: null, draft_id: 'x' },
+      { index: 2, doc_type: 'mrr_report', period_end: '2026-08-31', words: 'MRR report, August 2026', state: 'waiting_for_you', state_words: 'Waiting for you to confirm', document_id: null, question_id: 'q', draft_id: null },
+    ] };
+    panel();
+    const list = screen.getByRole('list', { name: 'What was asked for' });
+    expect(within(list).getAllByRole('listitem').map((li) => li.textContent)).toEqual([
+      'Attached: Bank statement, September 2026', 'MRR report, September 2026: Asked the client', 'MRR report, August 2026: Waiting for you to confirm']);
+  });
+
+  it('lists the needs still open above the view box on the route form', () => {
+    state.view = { ...base, needs: [
+      { index: 0, doc_type: 'bank_statement', period_end: '2026-09-30', words: 'Bank statement, September 2026', state: 'attached', state_words: 'Attached: Bank statement, September 2026', document_id: 'd1', question_id: null, draft_id: null },
+      { index: 1, doc_type: 'mrr_report', period_end: '2026-09-30', words: 'MRR report, September 2026', state: 'requested_from_client', state_words: 'Asked the client', document_id: null, question_id: null, draft_id: 'x' },
+    ] };
+    panel();
+    const form = screen.getByRole('form', { name: 'Send for a decision' });
+    const open = within(form).getByRole('list', { name: 'Still asked of the client' });
+    expect(open.textContent).toBe('MRR report, September 2026: Asked the client');
+    expect(open.compareDocumentPosition(within(form).getByLabelText(/Your view/)) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

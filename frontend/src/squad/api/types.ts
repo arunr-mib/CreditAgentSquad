@@ -70,6 +70,18 @@ export interface TrackRecordRow {
 }
 export interface CaseHistoryEntry { kind: 'routed' | 'returned' | 'evidence_attached'; seq: number; at: string; by: string; by_id: string; to: string | null; to_id: string | null; text: string; document_id: string | null }
 export interface CaseDecisionOption { id: string; label: string; hint: string; needs_reason: boolean; permitted: boolean }
+export interface CaseNeed {
+  index: number;
+  doc_type: string;
+  period_end: string;
+  words: string;
+  state: 'attached' | 'requested_from_client' | 'waiting_for_you' | 'not_gathered';
+  state_words: string;
+  document_id: string | null;
+  question_id: string | null;
+  draft_id: string | null;
+}
+export interface NeedInput { doc_type: string; period_end: string }
 export interface CaseView {
   work_item_id: string;
   borrower: { id: string; code: string; name: string };
@@ -88,6 +100,7 @@ export interface CaseView {
   state_words: string;
   needs_you: boolean;
   view: { text: string; by: string; at: string } | null;
+  needs: CaseNeed[];
   history: CaseHistoryEntry[];
   attached: Array<{ document_id: string; title: string; by: string; note: string }>;
   candidates: Array<{ document_id: string; title: string; doc_type: string | null; pages: number }>;
