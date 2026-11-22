@@ -385,6 +385,12 @@ def assign_work_item(item_id: uuid.UUID, body: AssignIn, db: Session = Depends(g
     if workflow.latest_hand_off(db, item) is not None:
         raise HTTPException(409, "This case has been sent for a decision or returned; use Route or Return in its "
                                  "thread instead of assigning it.")
+    # the engine's ownership rule, read before the change: an analyst cannot take (or give away) another analyst's
+    # client's case by assigning it (final re-review O1). The client's own analyst may still move a case of her client
+    # she assigned to someone else.
+    owned = workflow.owner_refusal(db, item, user_id=user.id, user_role=user.role)
+    if owned is not None and not workflow.analyst_owns_client(user.id, user.role, db.get(Borrower, item.borrower_id)):
+        raise HTTPException(403, str(owned))
     if body.assigned_to is not None:
         assignee = db.get(User, body.assigned_to)
         if assignee is None or not assignee.is_active:

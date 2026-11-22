@@ -221,3 +221,42 @@ def test_the_fact_repair_routes_refuse_another_analyst_with_403_naming_the_clien
         assert r.status_code == 403 and "Priya Raman" in r.json()["detail"], (path, r.status_code, r.text)
     sign_in(client, "priya.raman")
     assert client.post(f"/api/v1/facts/{fact.id}/confirm").status_code == 200
+
+
+# ---- final re-review O1: assigning goes through the same engine rule ----
+
+def test_another_analyst_cannot_assign_a_clients_case_to_himself_and_so_cannot_decide_or_repair(db, client, owned):
+    item = _case(db, owned["borrower"])
+    fact = _held_fact(db, owned["borrower"])
+    db.commit()
+    sign_in(client, "tomas.keller")
+    r = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["tomas"].id)})
+    assert r.status_code == 403 and "Priya Raman" in r.json()["detail"]
+    db.refresh(item)
+    assert item.assigned_to is None
+    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 403
+    assert client.post(f"/api/v1/facts/{fact.id}/confirm").status_code == 403
+
+
+def test_the_clients_analyst_and_an_officer_may_still_assign(db, client, owned):
+    item = _case(db, owned["borrower"])
+    db.commit()
+    sign_in(client, "priya.raman")
+    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["tomas"].id)}).status_code == 200
+    sign_in(client, "tomas.keller")  # handed over by the client's analyst: now his
+    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 200
+    other = _case(db, owned["borrower"], title="Revenue fell")
+    db.commit()
+    sign_in(client, "helen.strand")
+    assert client.post(f"/api/v1/work-items/{other.id}/assign", json={"assigned_to": str(owned["officer"].id)}).status_code == 200
+
+
+def test_an_analyst_cannot_move_a_case_on_another_analysts_client_that_is_with_someone_else(db, client, owned):
+    item = _case(db, owned["borrower"])
+    item.assigned_to = owned["officer"].id
+    db.commit()
+    sign_in(client, "tomas.keller")
+    r = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["tomas"].id)})
+    assert r.status_code == 403
+    sign_in(client, "priya.raman")  # her client: she may move it back
+    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["analyst"].id)}).status_code == 200
