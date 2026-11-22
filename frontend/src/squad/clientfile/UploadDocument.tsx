@@ -5,7 +5,7 @@ import { useUploadDocument } from '@/api/hooks';
 import { Button, Card, CardHeader, fieldLabelClass, formatDate, Input } from '@/design';
 import { cx } from '@/lib/cx';
 import { Refusal } from '@/repair/FigureForm';
-import { Notice } from '../parts';
+import { Notice } from '@/screens/parts';
 
 const READ: Record<string, string> = {
   indexed: 'read page by page',
@@ -101,7 +101,7 @@ export function UploadDocument({ borrowerId, code, onClose }: { borrowerId: stri
               tone="neutral"
               title={`Filed: ${filed.title}`}
               action={
-                <Link to="/borrowers/$code/documents/$documentId" params={{ code, documentId: filed.id }} className="link inline-flex items-center gap-0.5 text-body font-medium">
+                <Link to="/clients/$code/file/$view" params={{ code, view: 'documents' }} search={{ document: filed.id, page: 1 }} className="link inline-flex items-center gap-0.5 text-body font-medium">
                   Open it <ArrowUpRight size={12} aria-hidden />
                 </Link>
               }

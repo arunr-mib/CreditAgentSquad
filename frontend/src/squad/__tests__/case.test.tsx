@@ -16,17 +16,17 @@ vi.mock('../api/hooks', () => ({
 }));
 vi.mock('@/api/hooks', () => ({ useWorkItem: () => ({ data: state.detail }) }));
 vi.mock('../presence/Presence', () => ({ usePresence: () => ({ say: state.say }) }));
-// The real evidence rows, recommendation and related items are tested where they live (decision.test.tsx now,
-// src/squad/case/parts.test.tsx after Task 5); here only that the case panel shows them, in order.
-vi.mock('@/screens/work/WorkItemPanel', () => ({
+// The real evidence rows, recommendation and related items are tested where they live (src/squad/case/parts.test.tsx);
+// here only that the case panel shows them, in order.
+vi.mock('@/squad/case/parts', () => ({
   Evidence: () => <p>evidence rows</p>,
   Recommendation: () => <p>agent recommendation</p>,
   RelatedItems: ({ items, onOpen }: { items: Array<{ id: string; title: string }>; onOpen: (id: string) => void }) =>
     items.length ? <button type="button" onClick={() => onOpen(items[0]!.id)}>{items[0]!.title}</button> : null,
 }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: state.open, close: () => {}, current: null }) }));
-vi.mock('@/screens/work/KeyFigures', () => ({ KeyFigures: () => null }));
-vi.mock('@/screens/work/HeldFigures', () => ({ HeldFigures: () => <p>held figures</p> }));
+vi.mock('@/squad/case/KeyFigures', () => ({ KeyFigures: () => null }));
+vi.mock('@/squad/case/HeldFigures', () => ({ HeldFigures: () => <p>held figures</p> }));
 
 const base: CaseView = {
   work_item_id: 'w1', borrower: { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.' }, item_type: 'covenant.breach',
@@ -47,6 +47,14 @@ beforeEach(() => {
 const panel = () => render(<CasePanel workItemId="w1" onOpenCase={state.openCase} />);
 
 describe('CasePanel', () => {
+  it('shows a case that is with someone else as theirs, with no way to send or decide it', () => {
+    state.view = { ...base, may_route: false, with: 'Helen Strand', state_words: 'With Helen Strand', route_to: [] };
+    panel();
+    expect(screen.getByText(/With Helen Strand\. This case is not yours to decide/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Send/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Record decision' })).not.toBeInTheDocument();
+  });
+
   it('lets the analyst route with her view, and only once the view is written', async () => {
     panel();
     const send = screen.getByRole('button', { name: 'Send to Helen Strand' });

@@ -13,7 +13,6 @@ import { Time } from './Time';
 import { Trail } from './Trail';
 
 const words = (s: string | null) => (s ?? 'decided').replace(/_/g, ' ');
-const agent = (name: string) => `${name.charAt(0).toUpperCase()}${name.slice(1)} agent`;
 
 const SEVERITY: Record<string, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
 
@@ -37,7 +36,7 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
     case 'report':
       return (
         <article className="sq-msg sq-card sq-squad">
-          <header className="sq-msghead"><SquadMark size={22} /> <b>Squad</b> <span className="sq-faint">{agent(message.agent_name)}</span> <Time ts={message.ts} /></header>
+          <header className="sq-msghead"><SquadMark size={22} /> <b>Squad</b> <span className="sq-faint">{message.agent_label}</span> <Time ts={message.ts} /></header>
           <AgentBody text={message.text} />
         </article>
       );

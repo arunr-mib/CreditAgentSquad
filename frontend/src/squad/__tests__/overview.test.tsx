@@ -27,9 +27,8 @@ vi.mock('../api/hooks', async () => ({
 }));
 vi.mock('@/source/figures', () => ({ FactFigure: () => null, Absent: () => <span>Not measured</span>, SourcedFigure: () => null }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: () => {}, close: () => {}, current: null }) }));
-vi.mock('@/screens/borrower/RunStage', () => ({ RunStage: () => null }));
-vi.mock('@/screens/borrower/UploadDocument', () => ({ UploadDocument: () => null }));
-vi.mock('@/screens/Governance', () => ({ describeEvent: () => '' }));
+vi.mock('@/squad/clientfile/RunStage', () => ({ RunStage: () => null }));
+vi.mock('@/squad/clientfile/UploadDocument', () => ({ UploadDocument: () => null }));
 vi.mock('@/squad/clientfile/review/Commentary', () => ({ Commentary: () => null }));
 
 const borrower = { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', template_id: 'vc-1' } as never;

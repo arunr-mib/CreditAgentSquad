@@ -579,6 +579,8 @@ export interface LedgerEvent {
   note: string | null;
   actor_name?: string | null;
   document_title?: string | null;
+  /** The payload in plain words, written by the server (`describe_event`). */
+  summary?: string;
 }
 
 export interface LedgerVerification {

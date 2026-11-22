@@ -4,9 +4,8 @@ import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, errorMessage, onUnauthorized, request, withQuery } from '@/api/client';
-import type { Calculation, FactSummary, LedgerEvent } from '@/api/schema';
+import type { Calculation, FactSummary } from '@/api/schema';
 import { decisionLabel, decisionNeedsReason, formatTimestamp, humanize, itemGroup, periodLabel, quarterLabel, toFact } from '@/domain/labels';
-import { describeEvent } from '@/squad/oversight/describeEvent';
 import { AgentBody, referencedFactIds } from '@/source/AgentBody';
 import { CalculationBreakdown } from '@/source/CalculationBreakdown';
 import { SourceContext, type SourceRef } from '@/source/context';
@@ -108,16 +107,6 @@ describe('labels and the fact adapter', () => {
     expect(decisionNeedsReason('acknowledged')).toBe(false);
     expect(itemGroup('bb.over_advance')).toBe('borrowing_base');
     expect(humanize('covenant.reported_mismatch')).toBe('Covenant reported mismatch');
-  });
-
-  it('describes a ledger event from its payload', () => {
-    const event = (action: string, payload: Record<string, unknown>): LedgerEvent => ({ seq: 1, id: 'e', ts: '2026-11-17T14:37:00+00:00', actor_type: 'user', actor_id: 'u', action, entity_type: 'work_item', entity_id: 'w', payload, hash: 'h', note: null });
-    expect(describeEvent(event('work_item.decided', { decision: 'reservation_of_rights', reason: 'Certificate overstates EBITDA.' }))).toBe('Reserve rights · “Certificate overstates EBITDA.”');
-    expect(describeEvent(event('cycle.stage_changed', { stage: 'covenant_testing', from: 'needs_person', to: 'done' }))).toBe('Covenant testing: needs a person to done');
-    expect(describeEvent(event('clock.set', { to: '2026-11-17', from: null }))).toBe('to 17 Nov 2026');
-    expect(describeEvent(event('covenant.tested', { covenant: 'total_leverage', outcome: 'breach_reported_compliant', period_end: '2026-09-30' }))).toBe(
-      'Total leverage · breach reported compliant · period ended 30 Sep 2026',
-    );
   });
 });
 

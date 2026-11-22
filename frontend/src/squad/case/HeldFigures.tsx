@@ -27,6 +27,7 @@ import {
 import { RecalculationNote } from '@/repair/RecalculationNote';
 import { useSource } from '@/source/context';
 import { FactFigure, SourcedFigure } from '@/source/figures';
+import { clientFile } from '../links';
 
 /** One thing code did after a click, as the API reported it. An action that makes two changes has two. */
 interface Step {
@@ -718,7 +719,7 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item
                                   value: formatFigure(value, 'usd').text,
                                   rows: amounts.map(([name, amount]) => [name, formatFigure(amount, 'usd').text]),
                                   note: 'Worked out by the statement checks from the figures on file for the period. Each line of the statement opens its own source on the Spreads tab.',
-                                  link: code ? { to: `/borrowers/${code}/spreads`, label: 'Open the spread' } : undefined,
+                                  link: code ? { to: clientFile(code, 'spreads'), label: 'Open the spread' } : undefined,
                                 }}
                               />
                             </dd>

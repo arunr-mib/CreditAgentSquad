@@ -7,15 +7,14 @@ import {
 } from '@/api/hooks';
 import type { BorrowerRow, FactSummary } from '@/api/schema';
 import { formatDate } from '@/design';
-import { OUTCOME, signalLabel } from '@/domain/labels';
-import { RunStage } from '@/screens/borrower/RunStage';
-import { UploadDocument } from '@/screens/borrower/UploadDocument';
-import { describeEvent } from '@/squad/oversight/describeEvent';
+import { OUTCOME } from '@/domain/labels';
+import { RunStage } from '@/squad/clientfile/RunStage';
+import { UploadDocument } from '@/squad/clientfile/UploadDocument';
 import { Commentary } from '@/squad/clientfile/review/Commentary';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
 import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
-import { DocType, useDocWords } from '../DocType';
+import { DocType, useSignalWords } from '../DocType';
 import { Time } from '../thread/Time';
 import { MeasureNow, TrendBars } from './Measure';
 
@@ -32,6 +31,7 @@ export function Overview({ borrower }: Props) {
   const overview = useBorrowerOverview(borrower.id);
   const measure = useMeasure(borrower.id);
   const signals = useSignals({ borrower_id: borrower.id });
+  const signalWords = useSignalWords();
   const track = useTrackRecord(borrower.id);
   const lessons = useLessons(borrower.id);
   if (overview.isPending) return <Loading what="the overview" />;
@@ -71,7 +71,7 @@ export function Overview({ borrower }: Props) {
         <h2 className="sq-h2">Signals</h2>
         {(signals.data ?? []).length === 0 ? <p className="sq-muted">No open signal.</p> : (
           <ul className="sq-plainlist">
-            {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalLabel(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span></li>)}
+            {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalWords(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span></li>)}
           </ul>
         )}
       </section>
@@ -294,14 +294,13 @@ export function Reviews({ borrower }: Props) {
 
 export function History({ borrower }: Props) {
   const timeline = useTimeline(borrower.id);
-  const words = useDocWords();
   if (timeline.isPending) return <Loading what="the history" />;
   if (timeline.error || !timeline.data) return <Failed what="The history" />;
   if (timeline.data.length === 0) return <p className="sq-muted">Nothing has been recorded for this client yet.</p>;
   return (
     <ol className="sq-plainlist" aria-label="History">
       {timeline.data.map((e) => (
-        <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{describeEvent(e, words) ? ` · ${describeEvent(e, words)}` : ''}</li>
+        <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{e.summary ? ` · ${e.summary}` : ''}</li>
       ))}
     </ol>
   );

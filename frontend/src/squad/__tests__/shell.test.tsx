@@ -1,13 +1,8 @@
 // frontend/src/squad/__tests__/shell.test.tsx
 import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthContext } from '@/auth/context';
-import { ToastProvider, TooltipProvider } from '@/design';
-import { WorkspaceDrawerProvider, useWorkspaceDrawer } from '@/drawer/context';
-import { SquadShell } from '../shell/SquadShell';
 import { buildCommands } from '../shell/commands';
 import { clientFile, threadHref } from '../links';
 import { SquadNav } from '../shell/SquadNav';
@@ -143,43 +138,5 @@ describe('collapsed nav', () => {
   it('shows the product name when expanded', async () => {
     mountNav();
     expect(await screen.findByText('Credit Squad')).toBeInTheDocument();
-  });
-});
-
-describe('SquadShell and the legacy drawer', () => {
-  function OpenButtons() {
-    const drawer = useWorkspaceDrawer();
-    return <button onClick={() => drawer.openCopilot({ kind: 'portfolio' })}>Ask the copilot</button>;
-  }
-
-  it('lets a legacy screen open the drawer, and Ctrl J toggles the Copilot', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 404, text: async () => '{"detail":"Not found"}' }) as Response));
-    const root = createRootRoute({ component: SquadShell });
-    const routes = [
-      createRoute({ getParentRoute: () => root, path: '/', component: () => null }),
-      createRoute({ getParentRoute: () => root, path: '/command-centre', component: OpenButtons }),
-    ];
-    const router = createRouter({ routeTree: root.addChildren(routes), history: createMemoryHistory({ initialEntries: ['/command-centre'] }) });
-    const user = { id: 'u1', email: 'p@x', name: 'Priya Raman', title: 't', role: 'analyst', permissions: ['view'] };
-    const auth = { user, status: 'signed-in', can: () => true, signIn: vi.fn(), signOut: vi.fn(), retry: () => {} };
-    render(
-      <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-        <AuthContext.Provider value={auth as never}>
-          <WorkspaceDrawerProvider>
-            <TooltipProvider>
-              <ToastProvider>
-                <RouterProvider router={router as never} />
-              </ToastProvider>
-            </TooltipProvider>
-          </WorkspaceDrawerProvider>
-        </AuthContext.Provider>
-      </QueryClientProvider>,
-    );
-    await userEvent.click(await screen.findByRole('button', { name: /ask the copilot/i }));
-    expect(await screen.findByRole('tab', { name: /copilot/i })).toBeInTheDocument();
-    await userEvent.keyboard('{Control>}j{/Control}');
-    await waitFor(() => expect(screen.queryByRole('tab', { name: /copilot/i })).not.toBeInTheDocument());
-    await userEvent.keyboard('{Control>}j{/Control}');
-    expect(await screen.findByRole('tab', { name: /copilot/i })).toBeInTheDocument();
   });
 });

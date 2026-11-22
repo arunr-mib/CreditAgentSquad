@@ -15,6 +15,8 @@ describe('old addresses', () => {
     ['/agent-activity', '/oversight/activity'],
     ['/governance', '/oversight/governance'],
     ['/command-centre', '/'],
+    ['/calendar', '/'],
+    ['/design', '/'],
   ])('%s goes to %s', (from, to) => expect(oldAddress(from, {})).toBe(to));
 
   it('keeps the document and page of a document link', () => {
@@ -22,7 +24,7 @@ describe('old addresses', () => {
   });
 
   it('leaves every Squad address alone', () => {
-    for (const path of ['/', '/clients/QFL', '/clients/QFL/file/spreads', '/approvals']) expect(oldAddress(path, {})).toBeNull();
+    for (const path of ['/', '/clients/QFL', '/clients/QFL/file/spreads', '/approvals', '/review-room']) expect(oldAddress(path, {})).toBeNull();
   });
 
   it('builds client file addresses in one place', () => {

@@ -3,10 +3,8 @@ import { createMemoryHistory, createRootRoute, createRoute, createRouter, Router
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { LedgerEvent } from '@/api/schema';
 import { ApiError } from '@/api/client';
 import { AuthContext } from '@/auth/context';
-import { describeEvent } from '../oversight/describeEvent';
 import { oldAddress } from '../redirects';
 import { Oversight } from '../oversight/Oversight';
 
@@ -17,7 +15,7 @@ const h = vi.hoisted(() => ({
 }));
 const RUN = { id: 'r1', agent_name: 'covenant', task: 'investigate', agent_label: 'Covenant agent', task_label: 'Investigate', status_label: 'Abstained', borrower_name: 'Quillfeather Labs, Inc.', borrower_code: 'QFL', status: 'abstained', created_at: '2026-11-21T08:00:00Z', duration_ms: 1200, steps_count: 2, tool_calls: 5, input_tokens: 1234567, output_tokens: 20, error: null, guardrail_notes: [{ layer: 'narrative', check: 'figure_untraceable', action: 'dropped', detail: 'a typed figure', words: 'figure untraceable · dropped' }] };
 const STEPS = [{ id: 's1', n: 1, kind: 'tool', name: 'read_page', input_summary: 'page 4', output_summary: 'read', detail: {}, refused: false, duration_ms: 10 }];
-const EVENT = { seq: 7, id: 'e7', ts: '2026-11-21T08:00:00Z', actor_type: 'user', actor_id: 'u1', actor_name: 'Priya Raman', actor_label: 'Priya Raman', action: 'work_item.routed', entity_type: 'work_item', entity_id: 'w1', payload: { view: 'Recommend reserving rights.' }, hash: 'h', note: null };
+const EVENT = { seq: 7, id: 'e7', ts: '2026-11-21T08:00:00Z', actor_type: 'user', actor_id: 'u1', actor_name: 'Priya Raman', actor_label: 'Priya Raman', action: 'work_item.routed', entity_type: 'work_item', entity_id: 'w1', payload: {}, summary: '“Recommend reserving rights.”', hash: 'h', note: null };
 const page = (n: number) => Array.from({ length: n }, (_, i) => ({ ...EVENT, seq: 7 + (n - 1 - i), id: `e${i}` }));
 const EVAL = { source: 'file', id: null, suite: 'book', commit: 'c94f23b', borrowers: 20, mode: 'standin', standin: true, notice: 'Stand-in run: not model performance.', gate_passed: true, created_at: '2026-11-21T07:00:00Z', rows: [{ key: 'covenant_outcome_accuracy', label: 'Covenant outcome accuracy', value: '94.92', unit: 'pct' }, { key: 'exception_recall', label: 'Exception recall', value: null, unit: 'pct' }] };
 
@@ -207,14 +205,6 @@ describe('Oversight', () => {
     expect(oldAddress('/agent-activity', {})).toBe('/oversight/activity');
     expect(oldAddress('/governance', {})).toBe('/oversight/governance');
     expect(oldAddress('/command-centre', {})).toBe('/');
-  });
-});
-
-describe('describeEvent', () => {
-  const event = (action: string, payload: Record<string, unknown>) => ({ seq: 1, id: 'e', ts: '2026-11-21T08:00:00Z', actor_type: 'user', actor_id: 'u', action, entity_type: 'work_item', entity_id: 'w', payload }) as unknown as LedgerEvent;
-  it('reads a routed view and names a document type in the served words', () => {
-    expect(describeEvent(event('work_item.routed', { view: 'Recommend reserving rights.' }))).toBe('“Recommend reserving rights.”');
-    expect(describeEvent(event('document.classified', { document_type: 'mrr_report' }), (t) => (t === 'mrr_report' ? 'MRR report' : ''))).toBe('MRR report');
   });
 });
 

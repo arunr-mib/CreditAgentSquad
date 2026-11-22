@@ -5,7 +5,7 @@ import type { BorrowerOverview } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button } from '@/design';
 import { STAGE_LABEL, STAGE_STATUS_LABEL } from '@/domain/labels';
-import { Notice } from '../parts';
+import { Notice } from '@/screens/parts';
 
 type Cycle = NonNullable<BorrowerOverview['cycle']>;
 
@@ -73,7 +73,7 @@ export function RunStage({ cycle }: { cycle: Cycle }) {
             {result.open_blocking_items > 0
               ? `${result.open_blocking_items} open ${result.open_blocking_items === 1 ? 'item needs' : 'items need'} a person before the cycle moves on. `
               : ''}
-            <Link to="/agent-activity" className="link font-medium">
+            <Link to="/oversight" className="link font-medium">
               See what the agents did
             </Link>
           </p>

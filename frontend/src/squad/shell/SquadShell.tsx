@@ -1,10 +1,8 @@
 // frontend/src/squad/shell/SquadShell.tsx
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CommandPalette, useCommandPaletteShortcut } from '@/design';
 import { useAuth } from '@/auth/context';
-import { defaultCopilotScope, useWorkspaceDrawer } from '@/drawer/context';
-import { WorkspaceDrawer } from '@/drawer/WorkspaceDrawer';
 import { useBorrowers } from '@/api/hooks';
 import { useSource } from '@/source/context';
 import { useBriefing } from '../api/hooks';
@@ -29,18 +27,6 @@ function Frame() {
   const { collapsed: navCollapsed, toggle } = useNavCollapse(evidence !== null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   useCommandPaletteShortcut(useCallback(() => setPaletteOpen((o) => !o), []));
-  const { open: drawerOpen, tab: drawerTab, itemId: drawerItem, borrowerCode: drawerBorrower, openCopilot, close: closeDrawer } = useWorkspaceDrawer();
-  // Ctrl or Cmd + J: the Copilot, as in the legacy shell, so the legacy screens' drawer keeps working.
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'j') return;
-      event.preventDefault();
-      if (drawerOpen && drawerTab === 'copilot') closeDrawer();
-      else openCopilot(defaultCopilotScope({ open: drawerOpen, itemId: drawerItem, borrowerCode: drawerBorrower }, pathname));
-    }
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [drawerOpen, drawerTab, drawerItem, drawerBorrower, openCopilot, closeDrawer, pathname]);
   const showApprovals = briefing.data?.approvals.offered ?? false;
   const oversight = briefing.data?.oversight?.offered ?? false;
   const commands = buildCommands({
@@ -60,12 +46,11 @@ function Frame() {
           pathname={pathname} userName={user?.name ?? ''} oversight={oversight} onSignOut={() => void signOut()} />
         <div className="sq-stage">
           <main id="main" tabIndex={-1} className="sq-main" data-surface={surface}>
-            {surface !== 'cockpit' ? <PresenceLine /> : null}
+            <PresenceLine />
             <Outlet />
           </main>
         </div>
         <EvidenceResizer navWidth={navCollapsed ? 64 : 248} />
-        <WorkspaceDrawer />
         <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} commands={commands} placeholder="Search clients and commands" />
       </div>
     </PresenceProvider>

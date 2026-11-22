@@ -1,53 +1,16 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowUpRight, ShieldCheck, Users } from 'lucide-react';
-import { useId, useState, type FormEvent, type ReactNode } from 'react';
-import { ApiError, errorMessage } from '@/api/client';
-import { useAssignItem, useBorrowers, useDecide, useDocuments, useFactsById, useUsers, useWorkItem } from '@/api/hooks';
+import { ArrowUpRight } from 'lucide-react';
+import { useId, type ReactNode } from 'react';
+import { useDocuments, useFactsById } from '@/api/hooks';
 import type { ApiRecommendation, RelatedItem, WorkItemDetail } from '@/api/schema';
 import type { ProvenanceKind } from '@/api/types';
-import { useAuth } from '@/auth/context';
-import {
-  AgentMark,
-  AgentNote,
-  Button,
-  Card,
-  ChoiceCards,
-  formatDate,
-  formatDue,
-  GuardrailNotes,
-  ProvenanceGlyph,
-  Quote,
-  Select,
-  Skeleton,
-  StatusDot,
-  Tag,
-  useToast,
-} from '@/design';
-import {
-  decisionHint,
-  decisionLabel,
-  decisionNeedsReason,
-  docTypeLabel,
-  formatTimestamp,
-  humanize,
-  isBreachItem,
-  itemTypeLabel,
-  permissionLabel,
-  quarterLabel,
-  roleLabel,
-  ROLES_WITH,
-  signalLabel,
-  stageLabel,
-} from '@/domain/labels';
-import { useWorkspaceDrawer } from '@/drawer/context';
-import { cx } from '@/lib/cx';
-import { useAsOf } from '@/shell/AsOf';
+import { AgentNote, formatDate, GuardrailNotes, ProvenanceGlyph, Quote, Skeleton, StatusDot } from '@/design';
+import { humanize } from '@/domain/labels';
 import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import { FactFigure, SourcedFigure } from '@/source/figures';
-import { ErrorNotice, Notice, SeverityTag, Textarea } from '../parts';
-import { KeyFigures } from './KeyFigures';
-import { HeldFigures } from './HeldFigures';
+import { useDocWords, useSignalWords } from '../DocType';
+import { clientFile } from '../links';
 
 const text = (value: unknown): string | null => (typeof value === 'string' && value ? value : null);
 
@@ -83,6 +46,8 @@ const openClass = 'link inline-flex items-center gap-0.5 font-medium';
 
 export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItemDetail; code: string | undefined; headingLevel: 'h3' | 'h4' }) {
   const source = useSource();
+  const words = useDocWords();
+  const signals = useSignalWords();
   const evidence = item.evidence;
   const valueId = text(evidence.value_fact_id);
   const reportedId = text(evidence.reported_fact_id);
@@ -130,7 +95,7 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
   if (testId && code) {
     rows.push(
       <EvidenceRow key="test" kind="calculated" label="Covenant test" detail="breakdown, certificate comparison and trend">
-        <Link to="/borrowers/$code/covenants" params={{ code }} search={{ test: testId }} className={openClass}>
+        <Link to={clientFile(code, 'covenants')} className={openClass}>
           Open <ArrowUpRight size={12} aria-hidden />
         </Link>
       </EvidenceRow>,
@@ -139,7 +104,7 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
   if (reviewId && code) {
     rows.push(
       <EvidenceRow key="review" kind="calculated" label="Borrowing base review" detail="each line beside the certificate">
-        <Link to="/borrowers/$code/borrowing-base" params={{ code }} search={{ review: reviewId }} className={openClass}>
+        <Link to={clientFile(code, 'loans')} className={openClass}>
           Open <ArrowUpRight size={12} aria-hidden />
         </Link>
       </EvidenceRow>,
@@ -152,7 +117,7 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
         key="document"
         kind="extracted"
         label={filed ? filed.title : 'Document on file'}
-        detail={effective ? `effective ${formatDate(effective)}` : filed ? docTypeLabel(filed.doc_type).toLowerCase() : null}
+        detail={effective ? `effective ${formatDate(effective)}` : filed ? words(filed.doc_type).toLowerCase() : null}
       >
         {filed ? (
           <button
@@ -175,20 +140,22 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
       <EvidenceRow
         key={`missing-${index}`}
         kind="system"
-        label={docTypeLabel(entry.document_type)}
+        label={words(entry.document_type)}
         detail={entry.due_date ? `was due ${formatDate(entry.due_date)}` : 'not received'}
       >
-        <Link to="/calendar" className={openClass}>
-          Calendar <ArrowUpRight size={12} aria-hidden />
-        </Link>
+        {code ? (
+          <Link to={clientFile(code, 'documents')} className={openClass}>
+            Documents <ArrowUpRight size={12} aria-hidden />
+          </Link>
+        ) : null}
       </EvidenceRow>,
     );
   }
   if (signalId && code) {
     const rule = text(evidence.rule_id);
     rows.push(
-      <EvidenceRow key="signal" kind="calculated" label={rule ? signalLabel(rule) : 'Signal'} detail={basis ? basisSentence(basis) : null}>
-        <Link to="/borrowers/$code/signals" params={{ code }} className={openClass}>
+      <EvidenceRow key="signal" kind="calculated" label={rule ? signals(rule) : 'Signal'} detail={basis ? basisSentence(basis) : null}>
+        <Link to={clientFile(code)} className={openClass}>
           Signals <ArrowUpRight size={12} aria-hidden />
         </Link>
       </EvidenceRow>,
@@ -377,7 +344,7 @@ export function Recommendation({
           </div>
         ) : null}
         {runId ? (
-          <Link to="/agent-activity" search={{ run: runId }} className="link mt-2 inline-block text-body font-medium">
+          <Link to="/oversight" className="link mt-2 inline-block text-body font-medium">
             See the run, step by step
           </Link>
         ) : null}
@@ -393,9 +360,8 @@ export function Recommendation({
  * Open questions on the same borrower that may change this item's result: an amendment not yet
  * approved into terms, held figures, a correction. Shown before the decision; it does not block it.
  */
-export function RelatedItems({ items, headingLevel: Heading, onOpen }: { items: RelatedItem[]; headingLevel: 'h3' | 'h4'; onOpen?: (id: string) => void }) {
-  const drawer = useWorkspaceDrawer();
-  const open = onOpen ?? drawer.openItem;
+export function RelatedItems({ items, headingLevel: Heading, onOpen }: { items: RelatedItem[]; headingLevel: 'h3' | 'h4'; onOpen: (id: string) => void }) {
+  const open = onOpen;
   const headingId = useId();
   if (items.length === 0) return null;
   return (
@@ -424,325 +390,5 @@ export function RelatedItems({ items, headingLevel: Heading, onOpen }: { items: 
         ))}
       </ul>
     </section>
-  );
-}
-
-/* ── Decision ─────────────────────────────────────────────────────────── */
-
-/** The server's refusal, named by what it means and shown in its own words. */
-function refusalTitle(error: unknown): string {
-  if (error instanceof ApiError) {
-    if (error.status === 403) return 'Not recorded: your role cannot decide this item';
-    if (error.status === 409) return 'Not recorded: a second person is required';
-    if (error.status === 422) return 'Not recorded: this decision is not allowed';
-    if (error.status === 404) return 'Not recorded: the item no longer exists';
-  }
-  return 'Not recorded';
-}
-
-/**
- * Shown in place of a silent refusal: who may decide, and one press to send the item to them.
- * Routing assigns the item to a person who holds the permission; it is recorded in the ledger.
- */
-function AuthorityGate({ item }: { item: WorkItemDetail }) {
-  const { user, can } = useAuth();
-  const users = useUsers();
-  const assign = useAssignItem(item.id);
-  const toast = useToast();
-  const roles = ROLES_WITH[item.required_permission] ?? [];
-  const holders = (users.data ?? []).filter((person) => roles.includes(person.role) && person.id !== user?.id);
-  const [chosen, setChosen] = useState('');
-  const target = holders.find((person) => person.id === chosen) ?? holders[0];
-  const assignee = users.data?.find((person) => person.id === item.assigned_to);
-  const routed = assignee && roles.includes(assignee.role);
-  const roleNames = roles.map(roleLabel).join(' or ');
-
-  return (
-    <div data-authority-gate role="note" className="mt-3 rounded-md border border-ink bg-canvas px-3 py-2.5">
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-body font-semibold text-ink">
-        <Tag tone="gate" icon={<ShieldCheck size={12} strokeWidth={2} />}>
-          {roleNames} sign-off
-        </Tag>
-        This decision is outside your authority
-      </p>
-      <p className="mt-1 text-body text-pretty text-ink-700">
-        It needs permission to {permissionLabel(item.required_permission)}. Your role{user ? `, ${roleLabel(user.role)},` : ''} does not have it, so the
-        decision cannot be recorded from here.
-      </p>
-      {routed ? (
-        <p data-routed className="mt-2 text-body text-ink">
-          <StatusDot tone="neutral">
-            Routed to {assignee.name}, {assignee.title}
-          </StatusDot>
-        </p>
-      ) : !can('manage_actions') ? (
-        <p className="mt-2 text-caption text-ink-700">Your role cannot route items either. Ask a {roleNames.toLowerCase()} to open it.</p>
-      ) : holders.length === 0 ? (
-        <p className="mt-2 text-caption text-ink-700">
-          {users.isPending ? 'Finding who may decide.' : `No ${roleNames.toLowerCase()} is on file to route this to.`}
-        </p>
-      ) : (
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {holders.length > 1 ? (
-            <Select
-              label="Route to"
-              hideLabel
-              className="w-full sm:w-72"
-              value={target?.id ?? ''}
-              onValueChange={setChosen}
-              options={holders.map((person) => ({ value: person.id, label: `${person.name}, ${person.title}` }))}
-            />
-          ) : null}
-          <Button
-            variant="primary"
-            disabled={assign.isPending || !target}
-            onClick={() =>
-              target &&
-              assign.mutate(
-                { assigned_to: target.id },
-                {
-                  onSuccess: () =>
-                    toast({
-                      tone: 'pass',
-                      title: `Routed to ${target.name}`,
-                      description: 'The item now shows in their queue as assigned to them. The routing is in the ledger.',
-                    }),
-                },
-              )
-            }
-          >
-            {assign.isPending ? 'Routing' : `Route to ${holders.length > 1 ? roleNames.toLowerCase() : (target?.name ?? roleNames)} for sign-off`}
-          </Button>
-        </div>
-      )}
-      {assign.error ? (
-        <Notice tone="attention" title="Not routed" className="mt-2">
-          The server said: “{errorMessage(assign.error)}”
-        </Notice>
-      ) : null}
-    </div>
-  );
-}
-
-export function DecisionForm({ item }: { item: WorkItemDetail }) {
-  const decide = useDecide(item.id);
-  const { can } = useAuth();
-  const toast = useToast();
-  const { reasonDraft } = useWorkspaceDrawer();
-  const [decision, setDecision] = useState<string>('');
-  const [reason, setReason] = useState('');
-  const [takenStamp, setTakenStamp] = useState<number | null>(null);
-  const [problem, setProblem] = useState<string | null>(null);
-  const permitted = can(item.required_permission);
-
-  // Text a person chose to carry over from a Copilot answer: appended once, with the run it came from.
-  if (reasonDraft && reasonDraft.itemId === item.id && reasonDraft.stamp !== takenStamp) {
-    setTakenStamp(reasonDraft.stamp);
-    setReason((current) => (current.trim() ? `${current.trim()}\n\n${reasonDraft.text}` : reasonDraft.text));
-  }
-
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!permitted) return;
-    if (!decision) {
-      setProblem('Choose a decision first.');
-      return;
-    }
-    if (decisionNeedsReason(decision) && !reason.trim()) {
-      setProblem('This decision needs a reason. It is recorded in the ledger with your name.');
-      return;
-    }
-    setProblem(null);
-    decide.mutate(
-      { decision, reason: reason.trim() },
-      {
-        onSuccess: () =>
-          toast({
-            tone: 'pass',
-            title: `Recorded: ${decisionLabel(decision)}`,
-            description: `${item.borrower_name ?? 'The item'} leaves the queue. The decision is in the ledger.`,
-          }),
-      },
-    );
-  }
-
-  return (
-    <form onSubmit={submit} noValidate aria-label="Record a decision" className="rounded-b-md border-t border-hairline-strong bg-surface px-4 pt-3 pb-4">
-      <p className="eyebrow mb-1.5">{permitted ? 'Your decision' : 'The decision'}</p>
-      <ChoiceCards
-        label="Decision"
-        value={decision}
-        disabled={!permitted}
-        onValueChange={(value) => {
-          setDecision(value);
-          setProblem(null);
-          decide.reset();
-        }}
-        choices={item.allowed_decisions.map((option) => ({ value: option, label: decisionLabel(option), hint: decisionHint(option) || undefined }))}
-      />
-      {permitted ? (
-        <Textarea
-          className="mt-3"
-          label={decision && decisionNeedsReason(decision) ? 'Reason (required)' : 'Reason'}
-          hint="Recorded in the ledger with your name and the time."
-          value={reason}
-          onChange={(event) => setReason(event.target.value)}
-          rows={3}
-        />
-      ) : (
-        <AuthorityGate item={item} />
-      )}
-      {problem ? (
-        <p role="alert" className="mt-2 text-body font-medium text-amber">
-          {problem}
-        </p>
-      ) : null}
-      {decide.error ? (
-        <Notice tone="attention" title={refusalTitle(decide.error)} className="mt-3">
-          The server said: “{errorMessage(decide.error)}”
-        </Notice>
-      ) : null}
-      <Button type="submit" variant="primary" className="mt-3 w-full" disabled={decide.isPending || !permitted}>
-        {decide.isPending ? 'Recording' : 'Record decision'}
-      </Button>
-      {item.requires_second_person ? (
-        <p className="mt-2 flex items-center gap-1.5 text-caption text-ink-700">
-          <Users size={12} aria-hidden className="shrink-0 text-ink-500" />
-          Needs a second person: whoever prepared this cannot approve it.
-        </p>
-      ) : null}
-    </form>
-  );
-}
-
-function RecordedDecision({ item }: { item: WorkItemDetail }) {
-  const users = useUsers();
-  const who = users.data?.find((user) => user.id === item.decided_by);
-  return (
-    <div className="rounded-b-md border-t border-hairline-strong px-4 pt-3 pb-3.5">
-      <p className="eyebrow mb-1">Decision on record</p>
-      <p className="text-title font-semibold text-ink">
-        <StatusDot tone="pass">{decisionLabel(item.decision) || humanize(item.status)}</StatusDot>
-      </p>
-      <p className="mt-0.5 text-body text-ink-700">
-        {who ? `${who.name}, ${who.title}` : 'A person'} · {formatTimestamp(item.decided_at)}
-      </p>
-      {item.decision_reason ? (
-        <blockquote className="mt-2 rounded-sm border border-hairline bg-canvas px-3 py-2 text-body text-ink-700">{item.decision_reason}</blockquote>
-      ) : null}
-      <Link to="/governance" search={{ tab: 'ledger', entity: item.id }} className="link mt-2 inline-flex items-center gap-0.5 text-body font-medium">
-        See it in the ledger <ArrowUpRight size={12} aria-hidden />
-      </Link>
-    </div>
-  );
-}
-
-/* ── Panel ────────────────────────────────────────────────────────────── */
-
-export interface WorkItemPanelProps {
-  itemId: string;
-  headingLevel?: 'h2' | 'h3';
-  className?: string;
-  /** In the workspace drawer the panel has no frame of its own. */
-  variant?: 'card' | 'drawer';
-}
-
-/**
- * One question for a person: what is asked, the evidence (each row opens its source), what the
- * agent recommends if it said anything, and the decision. The panel decides nothing itself.
- */
-export function WorkItemPanel({ itemId, headingLevel: Heading = 'h2', className, variant = 'card' }: WorkItemPanelProps) {
-  const query = useWorkItem(itemId);
-  const borrowers = useBorrowers();
-  const { asOf } = useAsOf();
-  const drawer = useWorkspaceDrawer();
-  const SubHeading = Heading === 'h2' ? 'h3' : 'h4';
-
-  if (query.error) return <ErrorNotice error={query.error} what="This item" onRetry={() => void query.refetch()} />;
-  if (!query.data) {
-    return (
-      <Card role="status" aria-label="Loading the item" className={cx('space-y-3 px-4 py-4', className)}>
-        <Skeleton className="h-3 w-32" />
-        <Skeleton className="h-5 w-full" />
-        <Skeleton className="h-5 w-3/4" />
-        <Skeleton className="h-24 w-full" />
-      </Card>
-    );
-  }
-
-  const item = query.data;
-  const borrower = borrowers.data?.find((row) => row.id === item.borrower_id);
-  const due = item.due_date && asOf ? formatDue(item.due_date, asOf) : null;
-  const period = borrower?.latest_cycle && borrower.latest_cycle.id === item.cycle_id ? quarterLabel(borrower.latest_cycle.period_end) : null;
-  const breach = isBreachItem(item.item_type);
-
-  return (
-    <Card data-work-item={item.id} data-item-status={item.status} className={cx('flex flex-col', variant === 'drawer' && 'rounded-none border-0', className)}>
-      <div className="px-4 pt-3.5">
-        <div className="flex items-center justify-between gap-3 text-caption">
-          <SeverityTag severity={item.severity} />
-          <span className={cx('tnum', due?.overdue ? 'font-medium text-amber' : 'text-ink-500')}>
-            {due ? due.sentence : item.status === 'open' ? 'No due date set' : 'Decided'}
-          </span>
-        </div>
-        <div className="mt-2 text-caption text-ink-500">
-          {borrower ? (
-            <Link
-              to="/borrowers/$code"
-              params={{ code: borrower.code }}
-              className="font-medium text-ink-700 underline decoration-hairline-strong underline-offset-2 hover:text-cobalt-strong"
-            >
-              {item.borrower_name}
-            </Link>
-          ) : (
-            <span className="font-medium text-ink-700">{item.borrower_name}</span>
-          )}
-          {period ? <> · {period}</> : null} · {stageLabel(item.stage)}
-        </div>
-        <Heading className="mt-1 text-title font-semibold text-pretty text-ink">{item.question}</Heading>
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 text-caption text-ink-500">
-          {breach ? (
-            <StatusDot tone="breach" emphasis>
-              {itemTypeLabel(item.item_type)}
-            </StatusDot>
-          ) : (
-            <span>{itemTypeLabel(item.item_type)}</span>
-          )}
-          <span className="ident">{item.id.slice(0, 8)}</span>
-        </div>
-        {variant === 'drawer' ? (
-          <button
-            type="button"
-            data-ask-copilot
-            onClick={() => drawer.openCopilot({ kind: 'item', itemId: item.id })}
-            className="mt-2 inline-flex items-center gap-1.5 text-left text-caption font-medium text-iris hover:underline"
-          >
-            <AgentMark size={8} />
-            Ask Copilot about {item.borrower_name ? `${item.borrower_name}’s ` : 'this '}
-            {itemTypeLabel(item.item_type).toLowerCase()}
-          </button>
-        ) : null}
-      </div>
-
-      <div className="mt-3.5 space-y-4 px-4 pb-4">
-        <KeyFigures item={item} />
-        <Evidence item={item} code={borrower?.code} headingLevel={SubHeading} />
-        {item.item_type === 'spread.value_unverified' || item.item_type === 'spread.does_not_foot' ? (
-          <HeldFigures item={item} code={borrower?.code} headingLevel={SubHeading} />
-        ) : null}
-        {item.recommendation ? (
-          <Recommendation recommendation={item.recommendation} item={item} headingLevel={SubHeading} code={borrower?.code} />
-        ) : item.status === 'open' ? (
-          <p className="rounded-md border border-hairline bg-canvas px-3 py-2 text-body text-pretty text-ink-700">
-            No agent recommendation is attached. The evidence above was produced by code; the decision is yours.
-          </p>
-        ) : null}
-        {item.status === 'open' ? (
-          <RelatedItems items={(item.related_items ?? []).filter((related) => related.id !== item.id && related.status === 'open')} headingLevel={SubHeading} />
-        ) : null}
-      </div>
-
-      {item.status === 'open' ? <DecisionForm key={item.id} item={item} /> : <RecordedDecision item={item} />}
-    </Card>
   );
 }

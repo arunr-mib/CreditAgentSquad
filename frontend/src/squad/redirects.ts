@@ -7,7 +7,7 @@ const OLD_VIEWS: Record<string, ClientFileView> = {
 
 /** Where an address from the retired cockpit now lives, or null for an address that is not an old one. */
 export function oldAddress(pathname: string, search: Record<string, unknown>): string | null {
-  const moved: Record<string, string> = { '/agent-activity': '/oversight/activity', '/governance': '/oversight/governance', '/command-centre': '/' };
+  const moved: Record<string, string> = { '/agent-activity': '/oversight/activity', '/governance': '/oversight/governance', '/command-centre': '/', '/calendar': '/', '/design': '/' };
   if (moved[pathname]) return moved[pathname];
   if (pathname === '/borrowers' || pathname === '/borrowers/') return '/portfolio';
   const doc = /^\/borrowers\/([^/]+)\/documents\/([^/]+)\/?$/.exec(pathname);

@@ -39,7 +39,7 @@ export function SquadHome() {
   const watching = items.filter((i) => !i.needs_you && i.kind !== 'decided');
   const clients = [...new Map(watching.map((i) => [i.borrower_id, i.borrower_name])).entries()];
   return (
-    <div className="sq-home">
+    <div className="sq-home" data-ready="">
       <h1 className="sq-h1">Hello, {user?.name.split(' ')[0] ?? 'there'}.</h1>
       <h2 className="sq-lede">{needs.length ? word(needs.length) : 'Nothing needs you.'}</h2>
       {needs.length > 0 ? (
@@ -73,7 +73,7 @@ export function SquadHome() {
           <ul className="sq-list" aria-label="Overnight">
             {overnight.map((o) => (
               <li key={`${o.agent_name}|${o.finished_at}|${o.borrower_id}`} className="sq-card sq-squad">
-                <p className="sq-faint"><b>{o.agent_name.charAt(0).toUpperCase() + o.agent_name.slice(1)} agent</b> · {o.borrower_name}</p>
+                <p className="sq-faint"><b>{o.agent_label}</b> · {o.borrower_name}</p>
                 <AgentBody text={o.text} />
               </li>
             ))}

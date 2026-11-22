@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ApiUser, FactSummary, HeldCell, Recalculation, Spread, WorkItemDetail } from '@/api/schema';
 import { AuthContext } from '@/auth/context';
-import { HeldFigures } from '@/screens/work/HeldFigures';
+import { HeldFigures } from '@/squad/case/HeldFigures';
 import { SourceContext, type SourceRef } from '@/source/context';
 import { parseFigureInput, readBack } from './FigureForm';
 import { describeLine, footingProblems, heldCells, needsPerson, primaryAction, spreadContext, swappedPairs, whatCodeWillDo, whyHeld } from './held';

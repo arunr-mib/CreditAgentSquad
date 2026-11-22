@@ -4,7 +4,18 @@ import { useAuth } from '@/auth/context';
 import { DEMO_PASSWORD, DEMO_USERS, SHOW_DEMO_USERS } from '@/auth/demoUsers';
 import { Button, Input } from '@/design';
 import { roleLabel } from '@/domain/labels';
-import { Mark } from '@/shell/Wordmark';
+
+/** The mark: three units in formation on an ink ground. */
+function Mark({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden className="shrink-0">
+      <rect width="20" height="20" rx="4" className="fill-ink" />
+      <rect x="4.5" y="10.5" width="4" height="4" className="fill-canvas" />
+      <rect x="8" y="5.5" width="4" height="4" className="fill-canvas" />
+      <rect x="11.5" y="10.5" width="4" height="4" className="fill-canvas" />
+    </svg>
+  );
+}
 
 export function SignIn() {
   const { signIn, status, retry } = useAuth();

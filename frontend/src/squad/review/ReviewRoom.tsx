@@ -19,12 +19,13 @@ import {
 import type { ActionRow, Meeting, ReviewSheetDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, type Step } from '@/design';
-import { humanize, OUTCOME, quarterLabel, signalLabel } from '@/domain/labels';
+import { humanize, OUTCOME, quarterLabel } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { FactFigure } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, Notice, SeverityDot } from '@/screens/parts';
 import { Commentary } from '@/squad/clientfile/review/Commentary';
 import { CasePanel } from '../case/CasePanel';
+import { useSignalWords } from '../DocType';
 import { clientFile, threadHref } from '../links';
 import { usePresence } from '../presence/Presence';
 
@@ -142,6 +143,7 @@ function NewMeeting({ periods }: { periods: string[] }) {
 
 function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
   const navigate = useNavigate();
+  const signalWords = useSignalWords();
   const ids = useMemo(() => {
     const out: Array<string | null> = [];
     for (const metric of sheet.content.metrics ?? []) out.push(metric.current, metric.year_earlier);
@@ -264,7 +266,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
               {(sheet.content.signals ?? []).map((signal) => (
                 <li key={signal.signal_id} className="flex min-h-[34px] items-center gap-4 border-b border-hairline py-1.5 text-body last:border-b-0">
                   <SeverityDot severity={signal.severity} />
-                  <span className="font-medium text-ink">{signalLabel(signal.rule)}</span>
+                  <span className="font-medium text-ink">{signalWords(signal.rule)}</span>
                 </li>
               ))}
             </ul>

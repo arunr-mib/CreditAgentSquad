@@ -237,44 +237,6 @@ export const ROLES_WITH: Record<string, string[]> = {
   advance_clock: ['admin'],
 };
 
-/* ── Documents ────────────────────────────────────────────────────────── */
-
-const DOC_TYPE_LABEL: Record<string, string> = {
-  credit_agreement: 'Credit agreement',
-  amendment: 'Amendment',
-  waiver: 'Waiver',
-  annual_statements: 'Annual statements',
-  interim_statements: 'Interim statements',
-  compliance_certificate: 'Compliance certificate',
-  borrowing_base_certificate: 'Borrowing base certificate',
-  receivables_aging: 'Receivables aging',
-  tax_return: 'Tax return',
-  other: 'Other',
-};
-
-export const docTypeLabel = (type: string | null | undefined) => (type ? (DOC_TYPE_LABEL[type] ?? humanize(type)) : 'Unclassified');
-
-/* ── Signals ──────────────────────────────────────────────────────────── */
-
-const SIGNAL_LABEL: Record<string, string> = {
-  covenant_headroom_low: 'Covenant headroom below 10%',
-  covenant_headroom_falling: 'Covenant headroom falling two periods running',
-  revenue_ttm_decline: 'Revenue down more than 10% year on year',
-  ebitda_margin_decline: 'EBITDA margin down more than 3 points',
-  dso_increase: 'Receivable days up more than 10',
-  dpo_increase: 'Payable days up more than 15',
-  leverage_increase: 'Leverage up more than 0.5x',
-  net_loss: 'Net loss, trailing twelve months',
-  cash_decline: 'Cash down more than 30%',
-  line_usage_high: 'Line usage above 90%',
-  availability_low: 'Availability below 10% of commitment',
-  reporting_late: 'Reporting more than 15 days late',
-  payment_past_due: 'Payment past due more than 10 days',
-  auditor_opinion: 'Auditor opinion qualified or going concern',
-};
-
-export const signalLabel = (rule: string) => SIGNAL_LABEL[rule] ?? humanize(rule);
-
 /* ── Periods and time ─────────────────────────────────────────────────── */
 
 const QUARTER_BY_MONTH: Record<number, string> = { 3: 'Q1', 6: 'Q2', 9: 'Q3', 12: 'Q4' };

@@ -121,9 +121,9 @@ describe('SquadHome', () => {
   });
 
   it('lists what agents did overnight with the client named', async () => {
-    mount(briefing([], [{ agent_name: 'spreading', text: 'Read the October package.', borrower_id: 'b1', borrower_code: 'QFL', borrower_name: 'Quillfeather Labs, Inc.', finished_at: '2026-11-20T02:00:00Z' }]));
+    mount(briefing([], [{ agent_name: 'spreading', agent_label: 'Statement reader agent', text: 'Read the October package.', borrower_id: 'b1', borrower_code: 'QFL', borrower_name: 'Quillfeather Labs, Inc.', finished_at: '2026-11-20T02:00:00Z' }]));
     await userEvent.click(await screen.findByText(/what squad did overnight/i));
     expect(await screen.findByText('Read the October package.')).toBeInTheDocument();
-    expect(screen.getByText(/spreading agent/i)).toBeInTheDocument();
+    expect(screen.getByText(/statement reader agent/i)).toBeInTheDocument();
   });
 });

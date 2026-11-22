@@ -56,8 +56,6 @@
 .sq-navfoot { margin-top: auto; display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--sq-line); width: 100%; }
 .sq-stage { flex: 1; min-width: 0; }
 .sq-main { min-width: 0; max-width: 860px; margin: 0 auto; padding: 0 24px 48px; outline: none; }
-/* A legacy cockpit screen keeps the width the old shell gave it (tables, spreads, covenant grids need it). */
-.sq-main[data-surface='cockpit'] { max-width: 1480px; padding-top: 24px; }
 /* Legacy fills are written `bg-cobalt text-white`; the look supplies the readable text colour (white on Night's pale cobalt is 1.7:1). */
 .sq-root .bg-cobalt, .sq-root .bg-amber-mark { color: var(--sq-on-ink); }
 .sq-product { margin: 4px 8px 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--sq-ink); }

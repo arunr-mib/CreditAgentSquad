@@ -9,7 +9,8 @@ import type { CovenantOperator, FactSource, FactSummary, HeadroomSource, SourceP
 import type { ProvenanceKind, Unit } from '@/api/types';
 import { useAuth } from '@/auth/context';
 import { Button, formatDate, formatFigure, provenance, ProvenanceGlyph, Quote, Skeleton, StatusDot, type StatusTone } from '@/design';
-import { docTypeLabel, formatTimestamp, periodLabel, toFact } from '@/domain/labels';
+import { useDocWords } from '@/squad/DocType';
+import { formatTimestamp, periodLabel, toFact } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { ChangeFigure } from './ChangeFigure';
@@ -191,6 +192,7 @@ function factFormat(unit: Unit) {
 }
 
 function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
+  const words = useDocWords();
   const { data, isPending, error } = useFactSource(id);
   const source = useSource();
   const { can } = useAuth();
@@ -231,7 +233,7 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
           {located ? (
             <p className="mt-2 text-caption text-pretty text-ink-500">
               This fact was loaded from the synthetic book, not read from the page by an agent. Code searched the period’s{' '}
-              {docTypeLabel(page.doc_type).toLowerCase()} for the stored value and outlined the row whose label matches. An extracted fact carries its own page
+              {words(page.doc_type).toLowerCase()} for the stored value and outlined the row whose label matches. An extracted fact carries its own page
               and quote.
             </p>
           ) : null}

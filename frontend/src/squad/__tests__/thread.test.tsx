@@ -42,7 +42,7 @@ const messages: ThreadMessage[] = [
   { ...base, id: 'case:2', type: 'case', work_item_id: 'w2', item_type: 'funding_slipped', title: 'Funding slipped', question: 'Review the outlook?', severity: 'high', status: 'open', allowed_decisions: [], needs_you: false, state_words: 'Open' },
   { ...base, id: 'decision:1', type: 'decision', work_item_id: 'w2', decision: 'reviewed', reason: 'Close is signed.', by: 'Priya Raman', by_id: 'u1' },
   { ...base, id: 'handoff:1', type: 'handoff', work_item_id: 'w1', assigned_to: 'Helen Strand', assigned_to_id: 'u2', by: 'Priya Raman' },
-  { ...base, id: 'run:1', type: 'report', agent_name: 'spreading', task: 'read_statements', text: 'Read the October package.', run_id: 'r1' },
+  { ...base, id: 'run:1', type: 'report', agent_name: 'spreading', agent_label: 'Statement reader agent', task: 'read_statements', text: 'Read the October package.', run_id: 'r1' },
 ];
 const thread = (m: ThreadMessage[]): Thread => ({ borrower: { id: 'b1', code: 'QFL', name: 'Quillfeather Labs, Inc.', template_id: 'vc-1' }, head_seq: 9, opening_id: null, messages: m });
 
@@ -81,6 +81,7 @@ describe('ClientThread', () => {
     expect(screen.getByText(/Priya Raman: reviewed/)).toBeInTheDocument();
     expect(screen.getByText('Close is signed.')).toBeInTheDocument();
     expect(screen.getByText('Read the October package.')).toBeInTheDocument();
+    expect(screen.getByText('Statement reader agent')).toBeInTheDocument();
   });
 
   it('opens a document in the evidence drawer from the thread', async () => {
@@ -236,7 +237,7 @@ describe('ClientThread', () => {
       { ...base, id: 'doc:2', type: 'document', document_id: 'd2', title: 'Account statement, October 2026', doc_type: 'bank_statement', doc_type_words: 'Bank statement', pages: 1, period_end: '2026-10-31' },
     ] };
     const older: ThreadMessage = { ...base, id: 'doc:0', type: 'document', document_id: 'd0', title: 'MRR report, September 2026', doc_type: 'mrr_report', doc_type_words: 'MRR report', pages: 1, period_end: '2026-09-30' };
-    const later: ThreadMessage = { ...base, id: 'run:9', type: 'report', agent_name: 'spreading', task: 't', text: 'Read it.', run_id: 'r9' };
+    const later: ThreadMessage = { ...base, id: 'run:9', type: 'report', agent_name: 'spreading', agent_label: 'Spreading agent', task: 't', text: 'Read it.', run_id: 'r9' };
     const newCase: ThreadMessage = { ...base, id: 'case:9', type: 'case', work_item_id: 'w9', item_type: 'x', title: 'New line', question: 'q', severity: 'medium', status: 'open', allowed_decisions: [], needs_you: true, state_words: '' };
     const record = () => {
       const scrolled: string[] = [];

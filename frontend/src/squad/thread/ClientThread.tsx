@@ -53,7 +53,7 @@ export function ClientThread() {
   if (thread.error || !thread.data) return <p role="alert">The thread could not be loaded. Try again in a moment.</p>;
   const messages = thread.data.messages;
   return (
-    <section className="sq-thread" aria-label={`${borrower.name} thread`}>
+    <section className="sq-thread" aria-label={`${borrower.name} thread`} data-ready="">
       <header className="sq-threadhead">
         <h1 className="sq-h1">{borrower.name}</h1>
         <Link to={clientFile(borrower.code)} className="sq-link">Open in client file</Link>

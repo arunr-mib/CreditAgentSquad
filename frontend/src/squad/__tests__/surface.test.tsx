@@ -1,11 +1,10 @@
-// The legacy cockpit screens keep their own width and stay readable inside Squad's shell.
+// Squad's two surfaces, and the legacy colour names the kept parts still read.
 import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { AuthContext } from '@/auth/context';
 import { ToastProvider, TooltipProvider } from '@/design';
-import { WorkspaceDrawerProvider } from '@/drawer/context';
 import css from '../squad.css?raw';
 import { contrast, legacyTokens, LOOKS, LOOK_IDS } from '../looks';
 import { SquadShell } from '../shell/SquadShell';
@@ -13,30 +12,24 @@ import { surfaceOf } from '../shell/surface';
 
 describe('surfaceOf', () => {
   it.each(['/', '/clients/QFL'])('%s is Squad\'s own conversation', (path) => expect(surfaceOf(path)).toBe('conversation'));
-  it.each(['/approvals', '/portfolio', '/oversight', '/oversight/ledger', '/clients/QFL/file', '/clients/QFL/file/covenants', '/clients/QFL/file/packages', '/review-room'])('%s is a Squad screen', (path) => expect(surfaceOf(path)).toBe('squad'));
-  it.each(['/borrowers', '/borrowers/QFL', '/borrowers/QFL/covenants', '/borrowers/QFL/spreads', '/borrowers/QFL/packages', '/command-centre', '/calendar', '/governance', '/agent-activity', '/design'])(
-    '%s is a cockpit screen',
-    (path) => expect(surfaceOf(path)).toBe('cockpit'),
-  );
+  it.each(['/approvals', '/portfolio', '/oversight', '/oversight/ledger', '/clients/QFL/file', '/clients/QFL/file/covenants', '/clients/QFL/file/packages', '/review-room', '/anything-else'])('%s is a Squad screen', (path) => expect(surfaceOf(path)).toBe('squad'));
 });
 
 function mountAt(path: string) {
   vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 404, text: async () => '{"detail":"Not found"}' }) as Response));
   const root = createRootRoute({ component: SquadShell });
-  const routes = ['/', '/calendar', '/portfolio'].map((p) => createRoute({ getParentRoute: () => root, path: p, component: () => <p>screen {p}</p> }));
+  const routes = ['/', '/portfolio'].map((p) => createRoute({ getParentRoute: () => root, path: p, component: () => <p>screen {p}</p> }));
   const router = createRouter({ routeTree: root.addChildren(routes), history: createMemoryHistory({ initialEntries: [path] }) });
   const user = { id: 'u1', email: 'p@x', name: 'Priya Raman', title: 't', role: 'analyst', permissions: ['view'] };
   const auth = { user, status: 'signed-in', can: () => true, signIn: vi.fn(), signOut: vi.fn(), retry: () => {} };
   return render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
       <AuthContext.Provider value={auth as never}>
-        <WorkspaceDrawerProvider>
-          <TooltipProvider>
-            <ToastProvider>
-              <RouterProvider router={router as never} />
-            </ToastProvider>
-          </TooltipProvider>
-        </WorkspaceDrawerProvider>
+        <TooltipProvider>
+          <ToastProvider>
+            <RouterProvider router={router as never} />
+          </ToastProvider>
+        </TooltipProvider>
       </AuthContext.Provider>
     </QueryClientProvider>,
   );
@@ -50,13 +43,6 @@ describe('the shell by surface', () => {
     expect(container.querySelector('.sq-presence')).not.toBeNull();
   });
 
-  it('gives a legacy cockpit route the full width and no presence line', async () => {
-    const { container } = mountAt('/calendar');
-    await screen.findByText('screen /calendar');
-    expect(container.querySelector('.sq-main')).toHaveAttribute('data-surface', 'cockpit');
-    expect(container.querySelector('.sq-presence')).toBeNull();
-  });
-
   it('mounts My Portfolio as a Squad screen with the presence line', async () => {
     const { container } = mountAt('/portfolio');
     await screen.findByText('screen /portfolio');
@@ -64,9 +50,10 @@ describe('the shell by surface', () => {
     expect(container.querySelector('.sq-presence')).not.toBeNull();
   });
 
-  it('caps the conversation at 860 px and a cockpit screen at the old shell\'s 1480 px', () => {
+  it('caps the conversation at 860 px and a Squad screen at 1280 px', () => {
     expect(css).toMatch(/\.sq-main\s*\{[^}]*max-width:\s*860px/);
-    expect(css).toMatch(/\.sq-main\[data-surface='cockpit'\]\s*\{[^}]*max-width:\s*1480px/);
+    expect(css).toMatch(/\.sq-main\[data-surface='squad'\]\s*\{[^}]*max-width:\s*1280px/);
+    expect(css).not.toMatch(/data-surface='cockpit'/);
   });
 });
 

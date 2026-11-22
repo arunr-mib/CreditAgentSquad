@@ -6,10 +6,8 @@ import { useAgentRun, useClock, useLedgerVerification, usePolicyRegister, useRol
 import { useAuth } from '@/auth/context';
 import { formatDate, formatFigure } from '@/design';
 import { RUNS_PAGE, useBriefing, useEvaluation, useLedgerActions, useOversightAgents, useOversightLedger, useOversightRuns } from '../api/hooks';
-import { useDocWords } from '../DocType';
 import { threadHref } from '../links';
 import { Time } from '../thread/Time';
-import { describeEvent } from './describeEvent';
 
 type Tab = 'activity' | 'ledger' | 'governance' | 'evaluations' | 'clock';
 const TABS: Array<[Tab, string]> = [['activity', 'Agent activity'], ['ledger', 'Ledger'], ['governance', 'Governance'], ['evaluations', 'Evaluations'], ['clock', 'Clock']];
@@ -71,7 +69,6 @@ function Activity() {
 }
 
 function Ledger() {
-  const words = useDocWords();
   const families = useLedgerActions();
   const [verify, setVerify] = useState(false);
   const [action, setAction] = useState('all');
@@ -102,7 +99,7 @@ function Ledger() {
       ) : (
         <ol className="sq-plainlist" aria-label="Ledger">
           {rows.map((e) => (
-            <li key={e.seq}><span className="sq-mono">#{e.seq}</span> · <Time ts={e.ts} /> · <b>{e.actor_label}</b> · {e.action.replace(/[._]/g, ' ')}{describeEvent(e, words) ? ` · ${describeEvent(e, words)}` : ''}</li>
+            <li key={e.seq}><span className="sq-mono">#{e.seq}</span> · <Time ts={e.ts} /> · <b>{e.actor_label}</b> · {e.action.replace(/[._]/g, ' ')}{e.summary ? ` · ${e.summary}` : ''}</li>
           ))}
         </ol>
       )}
