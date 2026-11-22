@@ -99,7 +99,7 @@ function Ledger() {
       ) : (
         <ol className="sq-plainlist" aria-label="Ledger">
           {rows.map((e) => (
-            <li key={e.seq}><span className="sq-mono">#{e.seq}</span> · <Time ts={e.ts} /> · <b>{e.actor_label}</b> · {e.action.replace(/[._]/g, ' ')}{e.summary ? ` · ${e.summary}` : ''}</li>
+            <li key={e.seq}><span className="sq-mono">#{e.seq}</span> · <Time ts={e.ts} /> · <b>{e.actor_label}</b> · {e.action_label ?? e.action}{e.summary ? ` · ${e.summary}` : ''}</li>
           ))}
         </ol>
       )}

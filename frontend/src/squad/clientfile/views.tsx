@@ -65,7 +65,7 @@ export function Overview({ borrower }: Props) {
         <h2 className="sq-h2">This cycle</h2>
         {cycle ? (
           <>
-            <p>Period ended {formatDate(cycle.period_end)} · {cycle.status === 'closed' ? 'closed' : `at ${cycle.stage.replace(/_/g, ' ')}`}</p>
+            <p>Period ended {formatDate(cycle.period_end)} · {cycle.status === 'closed' ? 'closed' : `at ${(cycle.stage_label ?? cycle.stage).toLowerCase()}`}</p>
             {cycle.status !== 'closed' ? <RunStage cycle={cycle} code={borrower.code} /> : null}
           </>
         ) : <p className="sq-muted">No cycle has been opened for this client yet.</p>}
@@ -325,7 +325,7 @@ export function History({ borrower }: Props) {
       ) : (
         <ol className="sq-plainlist" aria-label="History">
           {timeline.data.map((e) => (
-            <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_label ?? e.actor_name ?? e.actor_type}</b> · {e.action.replace(/[._]/g, ' ')}{e.summary ? ` · ${e.summary}` : ''}</li>
+            <li key={e.seq}><Time ts={e.ts} /> · <b>{e.actor_label ?? e.actor_name ?? e.actor_type}</b> · {e.action_label ?? e.action}{e.summary ? ` · ${e.summary}` : ''}</li>
           ))}
         </ol>
       )}

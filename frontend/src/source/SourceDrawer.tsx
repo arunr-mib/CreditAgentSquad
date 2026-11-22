@@ -641,7 +641,7 @@ function DocumentView({ source, onNavigate }: { source: Extract<SourceRef, { typ
               Back to the cited page ({source.page})
             </button>
           ) : null}
-          <Button size="sm" disabled={pageCount !== null && page >= pageCount} onClick={() => setTurned(page + 1)}>
+          <Button size="sm" disabled={pageCount === null || page >= pageCount} onClick={() => setTurned(page + 1)}>
             Next page
           </Button>
         </div>

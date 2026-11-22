@@ -5,9 +5,10 @@ import { HeldFigures } from '@/squad/case/HeldFigures';
 import { KeyFigures } from '@/squad/case/KeyFigures';
 import { Evidence as ItemEvidence, Recommendation, RelatedItems } from '@/squad/case/parts';
 import { useSource } from '@/source/context';
-import { useAttachEvidence, useCase, useDecideCase, useReturnCase, useRouteCase } from '../api/hooks';
+import { useAttachEvidence, useCase, useDecideCase, useReturnCase, useRouteCase, type CopilotReply } from '../api/hooks';
 import type { CaseView } from '../api/types';
 import { usePresence } from '../presence/Presence';
+import { AskReply } from '../thread/AskReply';
 import { Composer } from '../thread/Composer';
 import { Time } from '../thread/Time';
 
@@ -194,6 +195,7 @@ function History({ c }: { c: CaseView }) {
 export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOpenCase: (id: string) => void }) {
   const q = useCase(workItemId);
   const detail = useWorkItem(workItemId);
+  const [answer, setAnswer] = useState<CopilotReply | null>(null);
   if (q.isPending) return <p role="status" className="sq-muted">Opening the case.</p>;
   if (q.error || !q.data)
     return (
@@ -235,7 +237,8 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
           {!decides && !c.may_route && !c.may_return ? <p className="sq-muted">{c.state_words}. This case is not yours to decide.</p> : null}
           <details className="sq-group">
             <summary>Ask Squad about this case</summary>
-            <Composer borrowerId={c.borrower.id} workItemId={c.work_item_id} label="Ask Squad about this case" />
+            <Composer borrowerId={c.borrower.id} workItemId={c.work_item_id} label="Ask Squad about this case" onReply={setAnswer} />
+            {answer ? <AskReply reply={answer} /> : null}
           </details>
         </>
       )}

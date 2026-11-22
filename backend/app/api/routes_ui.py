@@ -27,7 +27,7 @@ from app.domain.monitoring import BorrowingBaseReview, CovenantTest, Cycle, Sign
 from app.domain.org import User
 from app.domain.reviews import Action, ReviewSheet
 from app.domain.terms import ReportingObligation, TermsVersion
-from app.squad.words import BASE_OUTCOME_WORDS, actor_words, describe_event
+from app.squad.words import BASE_OUTCOME_WORDS, action_words, actor_words, describe_event, stage_words
 
 router = APIRouter(tags=["ui"])
 
@@ -664,7 +664,8 @@ def borrower_overview(borrower_id: uuid.UUID, db: Session = Depends(get_db), _: 
 
         open_by_stage = dict(db.execute(select(WorkItem.stage, func.count()).where(
             WorkItem.cycle_id == cycle.id, WorkItem.status == "open").group_by(WorkItem.stage)).all())
-        cycle_out = {**row(cycle), "stages": [{**row(s), "open_work_items": open_by_stage.get(s.stage, 0)}
+        cycle_out = {**row(cycle), "stage_label": stage_words(cycle.stage),
+                     "stages": [{**row(s), "stage_label": stage_words(s.stage), "open_work_items": open_by_stage.get(s.stage, 0)}
                                               for s in workflow.stages(db, cycle)]}
     metrics = {}
     if cycle is not None:
@@ -863,7 +864,7 @@ def borrower_timeline(borrower_id: uuid.UUID, limit: int = 300, include_routine:
     users = {str(u.id): u.name for u in db.execute(select(User)).scalars()}
     titles = {str(d.id): d.title for d in db.execute(select(Document).where(Document.borrower_id == borrower.id)).scalars()}
     return [{**row(e, exclude=("prev_hash",)), "actor_name": users.get(e.actor_id),
-             "actor_label": actor_words(e.actor_type, e.actor_id, users),
+             "actor_label": actor_words(e.actor_type, e.actor_id, users), "action_label": action_words(e.action),
              "document_title": titles.get(e.entity_id) if e.entity_type == "document" else None,
              "summary": describe_event(e.action, e.payload, titles.get(e.entity_id) if e.entity_type == "document" else None)}
             for e in db.execute(query).scalars()]

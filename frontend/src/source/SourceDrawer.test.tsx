@@ -231,6 +231,14 @@ describe('reading a document page by page', () => {
     return screen.findByRole('dialog');
   }
 
+  it('does not offer Next while the page count is still unknown', async () => {
+    const drawerPromise = openDocument(1); // installs the mock fetch synchronously
+    const real = globalThis.fetch;
+    vi.stubGlobal('fetch', (url: string, init?: RequestInit) => (String(url).startsWith('/api/v1/documents/') ? new Promise(() => {}) : real(url, init)));
+    const drawer = await drawerPromise;
+    expect(within(drawer).getByRole('button', { name: 'Next page' })).toBeDisabled();
+  });
+
   it('says which page of how many, and turns pages both ways, stopping at the ends', async () => {
     const drawer = await openDocument(1);
     expect(await within(drawer).findByText('Page 1 of 3')).toBeInTheDocument();

@@ -24,7 +24,9 @@ vi.mock('@/squad/case/parts', () => ({
   RelatedItems: ({ items, onOpen }: { items: Array<{ id: string; title: string }>; onOpen: (id: string) => void }) =>
     items.length ? <button type="button" onClick={() => onOpen(items[0]!.id)}>{items[0]!.title}</button> : null,
 }));
-vi.mock('../thread/Composer', () => ({ Composer: (p: { borrowerId: string; workItemId?: string }) => <p>case composer {p.borrowerId} {p.workItemId}</p> }));
+const reply = vi.hoisted(() => ({ next: { status: 'answered', answer: 'Because X.', answer_with_references: 'Because X.', fact_ids: [], citations: [] } as Record<string, unknown> }));
+vi.mock('../thread/Composer', () => ({ Composer: (p: { borrowerId: string; workItemId?: string; onReply?: (r: never) => void }) => <button type="button" onClick={() => p.onReply?.(reply.next as never)}>case composer {p.borrowerId} {p.workItemId}</button> }));
+vi.mock('@/source/AgentBody', () => ({ AgentBody: ({ text }: { text: string }) => <p>{text}</p> }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: state.open, close: () => {}, current: null }) }));
 vi.mock('@/squad/case/KeyFigures', () => ({ KeyFigures: () => null }));
 vi.mock('@/squad/case/HeldFigures', () => ({ HeldFigures: () => <p>held figures</p> }));
@@ -51,6 +53,15 @@ describe('CasePanel', () => {
   it('lets anyone ask Squad about this open case: the client and the case travel together', () => {
     panel();
     expect(screen.getByText('case composer b1 w1')).toBeInTheDocument();
+  });
+
+  it('shows the answer to a question about the case right there, and a refusal as a refusal', async () => {
+    panel();
+    await userEvent.click(screen.getByRole('button', { name: 'case composer b1 w1' }));
+    expect(screen.getByText('Because X.')).toBeInTheDocument();
+    reply.next = { status: 'refused', answer: 'I cannot ground that.', answer_with_references: '', fact_ids: [], citations: [] };
+    await userEvent.click(screen.getByRole('button', { name: 'case composer b1 w1' }));
+    expect(screen.getByRole('group', { name: 'Squad could not answer' })).toHaveTextContent('I cannot ground that.');
   });
 
   it('shows a case that is with someone else as theirs, with no way to send or decide it', () => {
@@ -114,7 +125,8 @@ describe('CasePanel', () => {
   it('offers an administrator nothing to do', () => {
     state.view = { ...base, may_route: false, may_return: false, may_attach: false, candidates: [] };
     panel();
-    expect(screen.queryAllByRole('button')).toHaveLength(0);
+    // asking Squad is a question, not a credit action: every viewer may; no send, return, attach or decide control
+    expect(screen.queryAllByRole('button').filter((b) => !/case composer/.test(b.textContent ?? ''))).toHaveLength(0);
     expect(screen.getByText(/With the credit officer/)).toBeInTheDocument();
   });
 

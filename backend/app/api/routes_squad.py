@@ -32,6 +32,7 @@ from app.squad.trail import case_trail
 from app.squad.words import (
     DOCUMENT_TYPE_WORDS,
     NOTE_WORDS,
+    action_words,
     actor_words,
     agent_words,
     describe_event,
@@ -241,24 +242,38 @@ def borrower_measure(borrower_id: uuid.UUID, db: Session = Depends(get_db),
     return measure_series(db, borrower)
 
 
+_ERROR_WORDS = "The run stopped on an error; administrators can see the detail in Oversight."
+_STEP_KIND_WORDS = {"model": "Model", "tool": "Tool", "guardrail": "Guardrail", "note": "Note"}
+
+
+def _plain_run(run: dict) -> dict:
+    """A run for people who may see the client, not the whole record: words for who, what and how it ended. The model's
+    output, its raw text, a step's inputs and outputs (they carry figures) and an exception's text stay in Oversight."""
+    keep = ("id", "agent_name", "task", "status", "created_at", "finished_at", "borrower_id", "borrower_code", "borrower_name",
+            "guardrail_notes", "duration_ms")
+    out = run_words({k: v for k, v in run.items() if k in keep})
+    out["guardrail_notes"] = [{"words": n["words"]} for n in out["guardrail_notes"]]  # the check and what it did; its detail can quote a figure
+    out["error_words"] = _ERROR_WORDS if run.get("error") else None
+    return out
+
+
 @router.get("/borrowers/{borrower_id}/runs")
 def borrower_runs(borrower_id: uuid.UUID, limit: int = 50, db: Session = Depends(get_db),
                   user: User = Depends(require(Permission.VIEW))) -> list[dict]:
-    """What the agents did for this client, newest first, in words. Anyone who may see the client may read it; the
-    model's raw output stays out (Oversight, for the roles that hold it, is where the whole run lives)."""
+    """What the agents did for this client, newest first, in words. Anyone who may see the client may read it."""
     if db.get(Borrower, borrower_id) is None:
         raise HTTPException(404, "Client not found.")
-    return [run_words({k: v for k, v in r.items() if k not in ("raw_output", "output")})
-            for r in list_agent_runs(borrower_id=borrower_id, limit=max(1, min(limit, 200)), db=db, _=user)]
+    return [_plain_run(r) for r in list_agent_runs(borrower_id=borrower_id, limit=max(1, min(limit, 200)), db=db, _=user)]
 
 
 @router.get("/runs/{run_id}")
 def run_detail(run_id: uuid.UUID, db: Session = Depends(get_db), user: User = Depends(require(Permission.VIEW))) -> dict:
-    """One run with its steps, read only, in words."""
+    """One run with its steps in words (what kind of step, which tool or check, whether it was refused)."""
     run = get_agent_run(run_id=run_id, db=db, _=user)
-    out = {k: v for k, v in run.items() if k not in ("raw_output", "output")}
-    out["steps"] = [{k: v for k, v in step.items() if k != "detail"} for step in run["steps"]]  # a step's detail can hold model text
-    return run_words(out)
+    out = _plain_run(run)
+    out["steps"] = [{"id": s["id"], "n": s["n"], "words": f"{_STEP_KIND_WORDS.get(s['kind'], s['kind'].capitalize())}: "
+                     f"{str(s['name']).replace('_', ' ')}{', refused' if s.get('refused') else ''}"} for s in run["steps"]]
+    return out
 
 
 def _oversight_only(user: User) -> None:
@@ -304,7 +319,7 @@ def oversight_ledger(action: str | None = None, before_seq: int | None = Query(d
     names = {str(u.id): u.name for u in db.execute(select(User)).scalars()}
     return [{**row(e, exclude=("prev_hash",)), "actor_name": names.get(e.actor_id),
              "actor_label": actor_words(e.actor_type, e.actor_id, names),
-             "summary": describe_event(e.action, e.payload)} for e in db.execute(query).scalars()]
+             "summary": describe_event(e.action, e.payload), "action_label": action_words(e.action)} for e in db.execute(query).scalars()]
 
 
 @router.get("/oversight/evaluation")

@@ -64,12 +64,15 @@ def test_a_ledger_event_reads_in_plain_words():
         == f"{SIGNAL_LABELS['reporting_late']} (october package)"
 
 
-def test_a_ledger_event_with_nothing_known_shows_short_ids_in_a_fixed_order_and_never_a_raw_amount():
-    payload = {"zeta": "z-note", "ref": "0a1b2c3d-0a1b-0a1b-0a1b-0a1b2c3d4e5f", "count": 3, "amount": "5000000", "price": 12.5, "nested": {"a": 1}}
+def test_a_ledger_event_with_nothing_known_shows_only_listed_words_never_a_figure_in_any_form():
+    payload = {"zeta": "z-note", "ref": "0a1b2c3d-0a1b-0a1b-0a1b-0a1b2c3d4e5f", "kind": "equity_round", "status": "open"}
     out = _event("x.y", payload)
-    assert out == "ref 0a1b2c3d · zeta z-note"
-    assert _event("x.y", dict(reversed(list(payload.items())))) == out  # the order is the keys', not the store's
-    assert _event("funding_event.recorded", {"amount": "5000000", "kind": "equity_round"}) == "kind equity round"
+    assert out == "kind equity round · status open"  # listed keys only, in key order; free values and ids are not shown
+    assert _event("x.y", dict(reversed(list(payload.items())))) == out
+    for amount in ("$5,000,000 USD", "USD 5,000,000", "5000000.00 USD", "raised 5000000 dollars", "Pays down $12.4 million", "5000000", "about two million"):
+        for key in ("amount", "note", "headline", "kind", "x"):
+            shown = _event("funding_event.recorded", {key: amount})
+            assert not any(ch.isdigit() for ch in shown) and "million" not in shown, (key, amount, shown)
 
 
 def test_an_agent_failure_does_not_print_the_exception_text():
@@ -90,18 +93,36 @@ def test_the_ledger_and_the_timeline_are_served_with_the_words(db, client, world
     assert {r["actor_label"] for r in timeline if r["actor_type"] == "system"} == {"System"}  # a name in words, never "system"/"agent" raw
 
 
-def test_anyone_who_may_see_a_client_can_read_its_runs_in_words_without_the_raw_output(db, client, world):
+def test_anyone_who_may_see_a_client_can_read_its_runs_in_plain_words_and_no_figure_reaches_them(db, client, world):
+    import json
+
     from app.domain.agents import AgentStep
     run = AgentRun(agent_name="certificate_reader", agent_version="1", model="m", task="read_certificate", borrower_id=world["borrower"].id,
-                   status="completed", output={"narrative": "private"}, raw_output="raw model text")
+                   status="failed", error="ValueError: loan 5000000 exceeds 4400000", guardrail_notes=[{"layer": "q", "check": "quote_on_page", "action": "dropped", "detail": "figure 8800000 not found"}], output={"narrative": "private"}, raw_output="raw model text")
     db.add(run)
     db.flush()
-    db.add(AgentStep(run_id=run.id, n=1, kind="tool", name="read_page", input_summary="page 2", output_summary="ok", detail={}))
+    db.add(AgentStep(run_id=run.id, n=1, kind="tool", name="read_page", input_summary="{'amount': 5000000}", output_summary="out 7300000",
+                     detail={"x": "secret"}, refused=False))
+    db.add(AgentStep(run_id=run.id, n=2, kind="guardrail", name="quote_on_page", input_summary="'$9,100,000'", output_summary="", refused=True))
     db.commit()
     sign_in(client, "priya.raman")
     listed = client.get(f"/api/v1/borrowers/{world['borrower'].id}/runs").json()
     assert listed[0]["agent_label"] == "Certificate reader agent" and listed[0]["task_label"] == "Read certificate"
-    assert listed[0]["status_label"] == "Completed" and "raw_output" not in listed[0] and "output" not in listed[0]
+    assert listed[0]["guardrail_notes"] == [{"words": "quote on page · dropped"}]
+    assert listed[0]["status_label"] == "Failed" and "raw_output" not in listed[0] and "output" not in listed[0]
     one = client.get(f"/api/v1/runs/{run.id}").json()
-    assert one["steps"][0]["name"] == "read_page" and "detail" not in one["steps"][0] and "raw_output" not in one and one["agent_label"].endswith("agent")
+    assert [s["words"] for s in one["steps"]] == ["Tool: read page", "Guardrail: quote on page, refused"]
+    assert one["error_words"] == "The run stopped on an error; administrators can see the detail in Oversight."
+    for body in (json.dumps(listed), json.dumps(one)):
+        for leaked in ("5000000", "7300000", "9,100,000", "4400000", "ValueError", "8800000", "secret", "raw model text", "private"):
+            assert leaked not in body, leaked
+    assert "error" not in one and "scope" not in one and "input_summary" not in json.dumps(one)
     assert client.get("/api/v1/runs/00000000-0000-0000-0000-000000000000").status_code == 404
+
+
+def test_a_ledger_action_reads_in_words():
+    from app.squad.words import action_words
+    assert action_words("work_item.decided") == "Cases: decided"
+    assert action_words("cycle.stage_changed") == "Cycles: stage changed"
+    assert action_words("odd_family.thing") == "Odd family: thing"
+    assert action_words("bare") == "Bare"

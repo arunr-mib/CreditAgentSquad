@@ -276,6 +276,8 @@ def test_terms_versions_and_overview(client, db, world):
     assert governing["reporting_requirements"] and governing["reporting_requirements"][0]["citation"]["page"]
     overview = client.get(f"{API}/ui/borrowers/{borrower.id}/overview").json()
     assert overview["cycle"]["period_end"] == "2026-09-30" and len(overview["cycle"]["stages"]) == 10
+    assert overview["cycle"]["stage_label"] and "_" not in overview["cycle"]["stage_label"]  # stage words are served
+    assert all(s["stage_label"] and "_" not in s["stage_label"] for s in overview["cycle"]["stages"])
     waiting = [s for s in overview["cycle"]["stages"] if s["status"] == "needs_person"]
     assert [s["stage"] for s in waiting] == ["covenant_testing"] and waiting[0]["open_work_items"] == 1
     assert overview["exposure"]["revolver_outstanding"]["kind"] == "system" and overview["open_work_items"] == 1

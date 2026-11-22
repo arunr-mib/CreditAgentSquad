@@ -129,7 +129,8 @@ _STAGE_STATUS_WORDS = {"pending": "not started", "running": "running", "needs_pe
 _ROLE_WORDS = {"analyst": "credit analyst", "portfolio_manager": "portfolio manager", "credit_officer": "credit officer",
                "credit_admin": "credit administration", "credit_review": "credit review", "admin": "administrator"}
 _UUID = re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.IGNORECASE)
-_NUMBERLIKE = re.compile(r"[-+$(]*[\d,.]+%?\)?[a-z]{0,2}", re.IGNORECASE)
+_IDENTIFIER = re.compile(r"[a-z]+(?:_[a-z]+)*")
+_PLAIN_KEYS = frozenset({"kind", "status", "type", "role", "severity", "source", "state", "result"})
 _MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
@@ -139,6 +140,10 @@ def _date_words(iso: str) -> str:
     except ValueError:
         return iso
     return f"{d.day} {_MONTHS[d.month - 1]} {d.year}"
+
+
+def stage_words(stage: str) -> str:
+    return _STAGE_WORDS.get(stage, stage.replace("_", " ").capitalize())
 
 
 def _plain(key: str) -> str:
@@ -194,12 +199,13 @@ def describe_event(action: str, payload: dict[str, Any] | None, document_title: 
     if text("view"):
         parts.append(f"“{text('view')}”")
     if not parts and not action.startswith("agent."):
-        # Last resort, and deterministic: words and ids only, in key order. A number, or a string that is one, is a
-        # figure and a figure is shown only from a stored fact, so it is left out here.
-        for key in sorted(payload)[:6]:
+        # Last resort, deterministic: a short list of keys that hold a kind or a state, in key order, and only a value
+        # that is a stored identifier (letters and underscores). Anything else in a payload (amounts, notes, ids, free text) is not shown here: a figure
+        # is shown only from a stored fact, and prose only where a branch above knows what it is.
+        for key in sorted(_PLAIN_KEYS & payload.keys()):
             value = payload[key]
-            if isinstance(value, str) and value and not _NUMBERLIKE.fullmatch(value.strip()):
-                parts.append(f"{_plain(key)} {_plain(_UUID.sub(lambda m: m.group(0)[:8], value))}")
+            if isinstance(value, str) and _IDENTIFIER.fullmatch(value):  # a stored key such as equity_round, never prose or a figure
+                parts.append(f"{_plain(key)} {_plain(value)}")
     return " · ".join(parts)
 
 
@@ -245,3 +251,9 @@ DECISION_WORDS: dict[str, dict[str, str]] = {
     "reject": {"label": "Reject", "hint": "Say why."},
     "no_action": {"label": "No action", "hint": "Nothing more is needed."},
 }
+
+
+def action_words(action: str) -> str:
+    """A ledger action in words: "Cases: decided". The family is the part before the first dot."""
+    family, _, rest = action.partition(".")
+    return f"{ledger_family_words(family)}: {rest.replace('_', ' ')}" if rest else ledger_family_words(family)

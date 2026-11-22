@@ -94,7 +94,7 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
   }
   if (testId && code) {
     rows.push(
-      <EvidenceRow key="test" kind="calculated" label="Covenant test" detail="breakdown, certificate comparison and trend">
+      <EvidenceRow key="test" kind="calculated" label="Covenant test" detail="the figures behind the test, what the certificate reported and earlier periods">
         <Link to={clientFile(code, 'covenants')} className={openClass}>
           Open <ArrowUpRight size={12} aria-hidden />
         </Link>

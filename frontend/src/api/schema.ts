@@ -106,7 +106,7 @@ export interface CycleRow {
 export interface BorrowerOverview {
   /** `availability` is there only for a borrower with a borrowing base review. */
   exposure: Partial<Record<'revolver_outstanding' | 'commitment' | 'term_loan_outstanding' | 'past_due_days' | 'availability', FactSummary>>;
-  cycle: (CycleRow & { stages: StageRow[] }) | null;
+  cycle: (CycleRow & { stage_label?: string; stages: StageRow[] }) | null;
   metrics: Record<string, FactSummary>;
   open_work_items: number;
   open_signals: number;
@@ -583,6 +583,8 @@ export interface LedgerEvent {
   document_title?: string | null;
   /** The payload in plain words, written by the server (`describe_event`). */
   summary?: string;
+  /** The action in words ("Cases: decided"). */
+  action_label?: string;
   /** Who acted, in words (a person's name, an agent's name, "System"). */
   actor_label?: string;
 }
