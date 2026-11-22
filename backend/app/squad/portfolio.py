@@ -53,6 +53,11 @@ def build_portfolio(db: Session, user: User) -> dict[str, Any]:
         if rows.get(template_id):
             sections.append({"template_id": template_id, "title": title, "measure_label": label,
                              "rows": sorted(rows[template_id], key=lambda r: (*_latest_value(r), r["name"]))})
+    known = {t for t, _, _ in SECTIONS}
+    others = [r for t, rs in rows.items() if t not in known for r in rs]
+    if others:  # a template with no section of its own is listed, never dropped
+        sections.append({"template_id": "other", "title": "Other clients", "measure_label": "Measure",
+                         "rows": sorted(others, key=lambda r: (*_latest_value(r), r["name"]))})
     owns = any(r["mine"] for rs in rows.values() for r in rs)
     return {"as_of": clock.today(db).isoformat(), "owns_clients": owns, "sections": sections}
 

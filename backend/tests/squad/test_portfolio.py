@@ -174,3 +174,16 @@ def test_an_ask_shows_only_habits_taught_before_it_was_asked(db, world):
             if m["type"] == "ask"}
     assert asks[str(first.id)]["habits"] == []
     assert [h["text"] for h in asks[str(second.id)]["habits"]] == ["Taught after the first ask."]
+
+
+def test_a_client_on_a_template_with_no_section_is_listed_under_other_clients(db, world, monkeypatch):
+    """Final review M15: a template the portfolio has no section for (here ci-1, with the section taken away) is
+    listed under "Other clients", never dropped."""
+    from app.squad import portfolio
+
+    monkeypatch.setattr(portfolio, "SECTIONS", (("vc-1", "Innovation clients", "Runway (months)"),))
+    world["other"].template_id = "ci-1"
+    db.flush()
+    out = build_portfolio(db, world["analyst"])
+    other = next(s for s in out["sections"] if s["template_id"] == "other")
+    assert other["title"] == "Other clients" and [r["name"] for r in other["rows"]] == [world["other"].name]

@@ -11,7 +11,7 @@ import { Oversight } from '../oversight/Oversight';
 const h = vi.hoisted(() => ({
   ledgerCalls: [] as unknown[], runCalls: [] as unknown[], offered: true, verifyRefetch: vi.fn(), verifyError: null as Error | null,
   verifyData: undefined as unknown, runs: null as unknown[] | null, agents: null as unknown[] | null, steps: null as unknown[] | null,
-  ledger: null as unknown[] | null, evaluation: null as unknown,
+  ledger: null as unknown[] | null, evaluation: null as unknown, briefingError: null as Error | null, briefingRefetch: vi.fn(), runsAt: null as ((offset: number) => unknown[]) | null,
 }));
 const RUN = { id: 'r1', agent_name: 'covenant', task: 'investigate', agent_label: 'Covenant agent', task_label: 'Investigate', status_label: 'Abstained', borrower_name: 'Quillfeather Labs, Inc.', borrower_code: 'QFL', status: 'abstained', created_at: '2026-11-21T08:00:00Z', duration_ms: 1200, steps_count: 2, tool_calls: 5, input_tokens: 1234567, output_tokens: 20, error: null, guardrail_notes: [{ layer: 'narrative', check: 'figure_untraceable', action: 'dropped', detail: 'a typed figure', words: 'figure untraceable · dropped' }] };
 const STEPS = [{ id: 's1', n: 1, kind: 'tool', name: 'read_page', input_summary: 'page 4', output_summary: 'read', detail: {}, refused: false, duration_ms: 10 }];
@@ -29,8 +29,8 @@ vi.mock('@/api/hooks', () => ({
 }));
 vi.mock('../api/hooks', () => ({
   RUNS_PAGE: 100,
-  useBriefing: () => ({ data: { oversight: { offered: h.offered } }, isPending: false }),
-  useOversightRuns: (offset: number) => { h.runCalls.push(offset); return { data: h.runs ?? [RUN], isPending: false, error: null }; },
+  useBriefing: () => (h.briefingError ? { data: undefined, error: h.briefingError, isPending: false, refetch: h.briefingRefetch } : { data: { oversight: { offered: h.offered } }, isPending: false, error: null, refetch: h.briefingRefetch }),
+  useOversightRuns: (offset: number) => { h.runCalls.push(offset); return { data: h.runsAt?.(offset) ?? h.runs ?? [RUN], isPending: false, error: null }; },
   useOversightAgents: () => ({ data: h.agents ?? [{ id: 'a1', label: 'Covenant agent', name: 'covenant', version: '2', model: 'm', effort: 'high', max_steps: 12, tools: ['read_page'], prompt_sha256: 'abc', spec_sha256: 'def', purpose: 'Investigates a covenant result', active: true, runs: 4 }], isPending: false, error: null }),
   useOversightLedger: (filter: unknown) => { h.ledgerCalls.push(filter); return { data: h.ledger ?? [EVENT], isPending: false, error: null }; },
   useLedgerActions: () => ({ data: [{ key: 'work_item', words: 'Cases' }, { key: 'borrowing_base', words: 'Borrowing base' }, { key: 'auth', words: 'Sign-ins' }] }),
@@ -55,7 +55,7 @@ function mount(path: string, role = 'credit_review', permissions: string[] = ['v
 }
 
 beforeEach(() => {
-  Object.assign(h, { ledgerCalls: [], runCalls: [], offered: true, verifyError: null, verifyData: undefined, runs: null, agents: null, steps: null, ledger: null, evaluation: null });
+  Object.assign(h, { ledgerCalls: [], runCalls: [], offered: true, verifyError: null, verifyData: undefined, runs: null, agents: null, steps: null, ledger: null, evaluation: null, briefingError: null, runsAt: null });
   h.verifyRefetch.mockReset();
 });
 afterEach(() => cleanup());
@@ -213,5 +213,25 @@ describe('no credit decision in Oversight', () => {
     mount(`/oversight/${tab}`, 'admin', ['view', 'change_policy', 'manage_users', 'advance_clock']);
     await screen.findByRole('navigation', { name: 'Oversight' });
     expect(screen.queryByRole('button', { name: /decide|route|return|attach|send to|record decision/i })).not.toBeInTheDocument();
+  });
+
+  describe('final review M8: no dead ends', () => {
+    it('an empty older page says so and still offers the way back to newer runs', async () => {
+      h.runsAt = (offset) => (offset === 0 ? Array.from({ length: 100 }, (_, i) => ({ ...RUN, id: `r${i}` })) : []);
+      mount('/oversight');
+      await userEvent.click(await screen.findByRole('button', { name: 'Older runs' }));
+      expect(await screen.findByText('No older runs.')).toBeInTheDocument();
+      await userEvent.click(screen.getByRole('button', { name: 'Newer runs' }));
+      expect(await screen.findByRole('table', { name: 'Agent activity' })).toBeInTheDocument();
+    });
+
+    it('a briefing that fails to load says Oversight could not be loaded, with a retry, never that it is not yours', async () => {
+      h.briefingError = new Error('offline');
+      mount('/oversight');
+      expect(await screen.findByText('Oversight could not be loaded.')).toBeInTheDocument();
+      expect(screen.queryByText(/Oversight is for administrators/)).not.toBeInTheDocument();
+      await userEvent.click(screen.getByRole('button', { name: 'Try again' }));
+      expect(h.briefingRefetch).toHaveBeenCalled();
+    });
   });
 });

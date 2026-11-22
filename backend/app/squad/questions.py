@@ -51,7 +51,7 @@ def _refuse_typed_figures(options: list[dict[str, str]]) -> None:
 def raise_question(db: Session, *, borrower_id: uuid.UUID, title: str, question: str, options: list[dict[str, Any]],
                    evidence: dict[str, Any] | None = None, topic: str = "question", cycle_id: uuid.UUID | None = None,
                    severity: str = "medium", actor: tuple[str, str] = ("agent", "squad"),
-                   written_by_code: bool = False) -> WorkItem:
+                   written_by_code: bool = False, assigned_to: uuid.UUID | None = None) -> WorkItem:
     """`written_by_code` says the options were built by code from stored fields (the caller's word, never a model's);
     any other question has its options held to the figure rule."""
     clean = _check_options(options)
@@ -62,7 +62,7 @@ def raise_question(db: Session, *, borrower_id: uuid.UUID, title: str, question:
     return raise_item(
         db, borrower_id=borrower_id, item_type=QUESTION, title=title, question=question,
         allowed_decisions=[o["id"] for o in clean], severity=severity, cycle_id=cycle_id, blocks_stage=False,
-        evidence={**(evidence or {}), "options": clean, "topic": topic}, actor=actor)
+        evidence={**(evidence or {}), "options": clean, "topic": topic}, actor=actor, assigned_to=assigned_to)
 
 
 def answer_question(db: Session, item: WorkItem, user: User, option_id: str, *, remember: bool = False,

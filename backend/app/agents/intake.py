@@ -196,7 +196,9 @@ def classify_documents(
         answer = answers.get(n)
         by_rule = rule_type(head)
         problem = None
-        if answer is None:
+        if answer is None and outcome.status == "failed":  # infrastructure, not the agent's answer
+            problem = "the Intake Agent's run failed; classify by hand"
+        elif answer is None:
             problem = "the Intake Agent gave no answer for this document"
         elif answer.doc_type == "other":
             problem = "the Intake Agent could not tell what this document is"

@@ -5,10 +5,11 @@ import { describe, expect, it, vi } from 'vitest';
 import type { BorrowerRow } from '@/api/schema';
 import { Runs } from '../clientfile/Runs';
 
-const h = vi.hoisted(() => ({ runs: [] as unknown[] }));
+const h = vi.hoisted(() => ({ runs: [] as unknown[], detailError: false }));
 vi.mock('../api/hooks', () => ({
   useClientRuns: () => ({ data: h.runs, isPending: false, error: null }),
-  useRunDetail: (id: string | null) => ({ data: id ? { steps: [{ id: 's1', n: 1, words: 'Tool: read page' }] } : undefined }),
+  useRunDetail: (id: string | null) => (h.detailError ? { data: undefined, error: new Error('gone'), isPending: false }
+    : { data: id ? { id, agent_label: id === 'r9' ? 'Review agent' : 'Certificate reader agent', task_label: 'Prepare review', status_label: 'Completed', created_at: '2026-01-01T08:00:00Z', error_words: null, guardrail_notes: [], steps: [{ id: 's1', n: 1, words: 'Tool: read page' }] } : undefined, error: null, isPending: !id }),
 }));
 vi.mock('../thread/Time', () => ({ Time: () => <span>when</span> }));
 
@@ -46,5 +47,22 @@ describe('Runs: what the agents did for this client, read only, for anyone who m
     h.runs = [];
     mount();
     expect(await screen.findByText('No agent has run for this client yet.')).toBeInTheDocument();
+  });
+
+  it('opens a named run that is older than the newest page above the table (final review M9)', async () => {
+    h.runs = [RUN];
+    mount('/?run=r9');
+    const older = await screen.findByRole('region', { name: 'The run the link names' });
+    expect(older).toHaveTextContent('Review agent');
+    expect(older).toHaveTextContent('Tool: read page');
+  });
+
+  it('says so when a run’s steps cannot be loaded, instead of reading for ever', async () => {
+    h.runs = [RUN];
+    h.detailError = true;
+    mount();
+    await userEvent.click(await screen.findByRole('button', { name: /Steps of Certificate reader agent/ }));
+    expect(await screen.findByText('The steps could not be loaded. Try again in a moment.')).toBeInTheDocument();
+    h.detailError = false;
   });
 });

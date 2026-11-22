@@ -6,6 +6,7 @@ import { Time } from '../thread/Time';
 
 function Steps({ id, errorWords }: { id: string; errorWords: string | null }) {
   const run = useRunDetail(id);
+  if (run.error) return <p role="alert">The steps could not be loaded. Try again in a moment.</p>;
   if (!run.data) return <p role="status" className="sq-muted">Reading the steps.</p>;
   return (
     <div>
@@ -28,7 +29,10 @@ export function Runs({ borrower }: { borrower: BorrowerRow }) {
   if (runs.error || !runs.data) return <p role="alert">What the agents did could not be loaded. Try again in a moment.</p>;
   if (runs.data.length === 0) return <p className="sq-muted">No agent has run for this client yet.</p>;
   const shown = open ?? named;
+  const older = named && !runs.data.some((r) => r.id === named) ? named : null;
   return (
+    <>
+      {older ? <NamedRun id={older} /> : null}
     <div className="sq-tablewrap">
       <table className="sq-table" aria-label="Agent runs">
         <thead><tr><th scope="col">When</th><th scope="col">Agent</th><th scope="col">Outcome</th><th scope="col">Checks</th></tr></thead>
@@ -48,5 +52,22 @@ export function Runs({ borrower }: { borrower: BorrowerRow }) {
         </tbody>
       </table>
     </div>
+    </>
+  );
+}
+
+/** A run a link names that is older than the newest page of runs: read on its own and shown above the table, so a
+ * link from a thread to an old run never opens nothing. */
+function NamedRun({ id }: { id: string }) {
+  const run = useRunDetail(id);
+  if (run.error) return <p role="alert">The run this link names could not be loaded.</p>;
+  if (!run.data) return <p role="status" className="sq-muted">Reading the run this link names.</p>;
+  const r = run.data;
+  return (
+    <section className="sq-card" aria-label="The run the link names">
+      <p><b>{r.agent_label}</b> · <span className="sq-faint">{r.task_label}</span> · {r.status_label} · <Time ts={r.created_at} /></p>
+      {r.guardrail_notes.map((n, i) => <span key={i} className="sq-block sq-faint">{n.words}</span>)}
+      <Steps id={r.id} errorWords={r.error_words} />
+    </section>
   );
 }

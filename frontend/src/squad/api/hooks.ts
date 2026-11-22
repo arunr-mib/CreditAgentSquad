@@ -12,7 +12,7 @@ export interface ClientRun {
 export const useClientRuns = (borrowerId?: string) =>
   useQuery({ queryKey: ['client-runs', borrowerId], queryFn: () => get<ClientRun[]>(`/borrowers/${borrowerId}/runs`), enabled: Boolean(borrowerId) });
 export const useRunDetail = (id: string | null) =>
-  useQuery({ queryKey: ['run-detail', id], queryFn: () => get<{ steps: Array<{ id: string; n: number; words: string }> }>(`/runs/${id}`), enabled: Boolean(id) });
+  useQuery({ queryKey: ['run-detail', id], queryFn: () => get<ClientRun & { steps: Array<{ id: string; n: number; words: string }> }>(`/runs/${id}`), enabled: Boolean(id) });
 export const useBriefing = () => useQuery({ queryKey: ['briefing'], queryFn: () => get<Briefing>('/me/briefing') });
 export const useThread = (borrowerId?: string) =>
   useQuery({ queryKey: ['thread', borrowerId], queryFn: () => get<Thread>(`/threads/${borrowerId}`), enabled: Boolean(borrowerId) });
@@ -33,8 +33,10 @@ function useWrite<TIn, TOut>(path: (input: TIn) => string, body: (input: TIn) =>
 }
 
 export interface AnswerInput { option_id: string; remember: boolean; note?: string }
+/** An answer can attach a document to a case and unblock its route: the case and Approvals are refreshed at once. */
+export const ANSWER_KEYS = ['trail', 'case', 'approvals'];
 export const useAnswer = (workItemId: string) =>
-  useWrite<AnswerInput, { lesson_id: string | null }>(() => `/work-items/${workItemId}/answer`, (i) => i, ['trail']);
+  useWrite<AnswerInput, { lesson_id: string | null }>(() => `/work-items/${workItemId}/answer`, (i) => i, ANSWER_KEYS);
 
 export interface CopilotReply {
   status: string;
@@ -48,8 +50,6 @@ export const useAskCopilot = () =>
 
 // A sent draft is recorded, never emailed: the server says so with delivered: false.
 interface DraftResult { draft_id: string; status: 'draft' | 'sent'; delivered?: false }
-export const useCreateDraft = (borrowerId: string) =>
-  useWrite<{ to: string; subject: string; body: string; kind?: string; work_item_id?: string }, DraftResult>(() => `/borrowers/${borrowerId}/drafts`, (i) => i);
 export const useEditDraft = () =>
   useWrite<{ draft_id: string; subject?: string; body?: string }, DraftResult>((i) => `/drafts/${i.draft_id}/edit`, ({ subject, body }) => ({ subject, body }));
 export const useSendDraft = () => useWrite<{ draft_id: string }, DraftResult>((i) => `/drafts/${i.draft_id}/send`, () => ({}));
@@ -58,7 +58,8 @@ export const useCase = (id?: string) =>
   useQuery({ queryKey: ['case', id], queryFn: () => get<CaseView>(`/cases/${id}`), enabled: Boolean(id) });
 export const useApprovals = () => useQuery({ queryKey: ['approvals'], queryFn: () => get<ApprovalRow[]>('/me/approvals') });
 // A decision can change a review sheet, the queue and the ledger (what `invalidateAfterDecision` refetches for the cockpit).
-const CASE_KEYS = ['case', 'approvals', 'trail', 'work-item', 'work-items', 'borrowers', 'borrower', 'review-sheet', 'review-sheets', 'ledger', 'cycles', 'portfolio', 'actions', 'signals'];
+/** What a decision, route, return or attachment can change; each is a query key in use (the portfolio's is 'my-portfolio'). */
+export const CASE_KEYS = ['case', 'approvals', 'trail', 'work-item', 'work-items', 'borrowers', 'borrower', 'review-sheet', 'review-sheets', 'ledger', 'cycles', 'my-portfolio', 'actions', 'signals'];
 export const useDecideCase = (id: string) =>
   useWrite<{ decision: string; reason: string }, unknown>(() => `/work-items/${id}/decide`, (i) => i, CASE_KEYS);
 export const useRouteCase = (id: string) =>

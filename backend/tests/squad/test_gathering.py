@@ -459,3 +459,18 @@ def test_r5_an_option_naming_another_clients_document_attaches_nothing(db, world
     with pytest.raises(ValueError, match="not on this client"):
         answer_question(db, q, world["analyst"], option)
     assert _events(db, item, "work_item.evidence_attached") == [] and theirs.doc_type_source == "system"
+
+
+# ---- final review M11 ----
+
+def test_the_ledger_says_whose_match_question_it_is_when_it_is_raised(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    (raised,) = _events(db, q, "work_item.raised")
+    assert raised.payload["assigned_to"] == str(world["analyst"].id) and q.assigned_to == world["analyst"].id
+
+
+def test_an_unknown_asker_is_named_in_lower_case_mid_sentence(db):
+    assert gathering._holder_name(db, None) == "the credit officer"

@@ -16,6 +16,8 @@ from app.squad.words import NOTE_WORDS
 RUNWAY_COVENANT = "min_runway_months"
 NOT_MEASURED = "Not measured"
 NOT_MEANINGFUL = NOTE_WORDS["not_meaningful_cash_flow_positive"]
+# a runway value is stored but not yet usable (proposed, waiting for a person): no figure is shown until it is checked
+AWAITING_CHECK = "Awaiting a person’s check"
 
 
 def _periods(db: Session, borrower: Borrower, limit: int) -> list[date]:
@@ -23,14 +25,17 @@ def _periods(db: Session, borrower: Borrower, limit: int) -> list[date]:
     return ends[-limit:]
 
 
-def _runway_for(tests: list[CovenantTest], facts: dict[Any, Fact]) -> tuple[Fact | None, str | None]:
+def _runway_for(tests: list[CovenantTest], facts: dict[Any, Fact], unchecked: set[Any] = frozenset()) \
+        -> tuple[Fact | None, str | None]:
     """The stored runway covenant value for one period (the tightest if several loans test it), else the stored
-    reason there is none (the test's own note), else nothing."""
+    reason there is none (the test's own note), else that a stored value waits for a person's check, else nothing."""
     values = [facts[t.value_fact_id] for t in tests if t.value_fact_id in facts]
     if values:
         return min(values, key=lambda f: f.value), None
     if any(t.note == "not_meaningful_cash_flow_positive" for t in tests):
         return None, NOT_MEANINGFUL
+    if any(t.value_fact_id in unchecked for t in tests):
+        return None, AWAITING_CHECK
     return None, None
 
 
@@ -51,8 +56,13 @@ def measure_series(db: Session, borrower: Borrower, limit: int = 6, labels: Fact
     for t in tests:
         if t.value_fact_id:
             wanted[t.value_fact_id] = None
-    facts: dict[Any, Fact] = {f.id: f for f in db.execute(select(Fact).where(
-        Fact.id.in_(list(wanted) or [None]), Fact.status.in_(USABLE_STATUSES))).scalars()}
+    facts: dict[Any, Fact] = {}
+    unchecked: set[Any] = set()
+    for f in db.execute(select(Fact).where(Fact.id.in_(list(wanted) or [None]))).scalars():
+        if f.status in USABLE_STATUSES:
+            facts[f.id] = f
+        elif f.status == "proposed":
+            unchecked.add(f.id)
     headroom: dict[tuple[str, date], Fact] = {}
     if not venture and periods:
         for fact in db.execute(select(Fact).where(Fact.borrower_id == borrower.id, Fact.key.like("cov.%.headroom_pct"),
@@ -66,7 +76,7 @@ def measure_series(db: Session, borrower: Borrower, limit: int = 6, labels: Fact
             mine = [t for t in mine if t.covenant_id == RUNWAY_COVENANT]
         fact: Fact | None
         if venture:
-            fact, note = _runway_for(mine, facts)
+            fact, note = _runway_for(mine, facts, unchecked)
         else:
             keys = {f"cov.{t.covenant_id}.headroom_pct" for t in mine}
             found = [headroom[(k, end)] for k in keys if (k, end) in headroom]

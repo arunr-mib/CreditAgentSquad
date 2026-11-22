@@ -35,9 +35,10 @@ function Activity() {
   const [open, setOpen] = useState<string | null>(null);
   if (runs.isPending) return <p role="status" className="sq-muted">Reading agent activity.</p>;
   if (runs.error || !runs.data) return <p role="alert">Agent activity could not be loaded.</p>;
-  if (runs.data.length === 0) return <p className="sq-muted">{offset === 0 ? 'No agent has run in this database yet.' : 'No older runs.'}</p>;
+  if (runs.data.length === 0 && offset === 0) return <p className="sq-muted">No agent has run in this database yet.</p>;
   return (
     <div>
+      {runs.data.length === 0 ? <p className="sq-muted">No older runs.</p> : (
       <div className="sq-tablewrap">
         <table className="sq-table" aria-label="Agent activity">
           <thead><tr><th scope="col">When</th><th scope="col">Agent</th><th scope="col">Client</th><th scope="col">Outcome</th><th scope="col">Checks</th><th scope="col" className="sq-num">Tool calls</th><th scope="col" className="sq-num">Tokens in / out</th></tr></thead>
@@ -60,6 +61,7 @@ function Activity() {
           </tbody>
         </table>
       </div>
+      )}
       <div className="sq-actions">
         {offset > 0 ? <button type="button" className="sq-btn" onClick={() => { setOffset(Math.max(0, offset - RUNS_PAGE)); setOpen(null); }}>Newer runs</button> : null}
         {runs.data.length >= RUNS_PAGE ? <button type="button" className="sq-btn" onClick={() => { setOffset(offset + RUNS_PAGE); setOpen(null); }}>Older runs</button> : null}
@@ -215,7 +217,14 @@ export function Oversight() {
   const { can } = useAuth();
   const briefing = useBriefing();
   if (briefing.isPending) return <p role="status" className="sq-muted">Reading Oversight.</p>;
-  if (!briefing.data?.oversight?.offered) return <p role="alert">{NOT_YOURS}</p>;
+  if (briefing.error || !briefing.data)  // a failed read is not a refusal: say so, and offer to try again
+    return (
+      <div role="alert">
+        <p>Oversight could not be loaded.</p>
+        <button type="button" className="sq-btn" onClick={() => void briefing.refetch()}>Try again</button>
+      </div>
+    );
+  if (!briefing.data.oversight?.offered) return <p role="alert">{NOT_YOURS}</p>;
   const tabs = TABS.filter(([id]) => id !== 'clock' || can('advance_clock'));
   const current = tabs.find(([id]) => id === tab)?.[0];
   const body = { activity: <Activity />, ledger: <Ledger />, governance: <Governance />, evaluations: <Evaluations />, clock: <Clock /> };

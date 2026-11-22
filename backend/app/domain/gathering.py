@@ -160,7 +160,7 @@ def _earlier_none(db: Session, item: WorkItem, need: dict[str, Any]) -> list[Wor
 
 def _holder_name(db: Session, user_id: Any) -> str:
     user = db.get(User, uuid.UUID(str(user_id))) if user_id else None
-    return user.name if user else "The credit officer"
+    return user.name if user else "the credit officer"  # read mid-sentence: "…that the credit officer asked for"
 
 
 def _attach(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], doc: Document,
@@ -215,6 +215,7 @@ def _ask(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], do
     q = raise_question(
         db, borrower_id=item.borrower_id, title=f"Which {words}?",
         question=f"Which document is the {words} that {officer} asked for?", options=options, topic=MATCH_TOPIC,
+        assigned_to=item.assigned_to,  # in the raise itself, so the ledger says whose question it is
         actor=("system", "squad"), written_by_code=True,  # labels are built here from stored fields, never by a model
         evidence={"case_id": str(item.id), "need_key": _key(item, ret, need), "need_index": need["index"],
                   "doc_type": need["doc_type"], "period_end": need["period_end"],
@@ -222,7 +223,6 @@ def _ask(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any], do
     # each option also names its document, so a refused ("None of these") ask is remembered
     q.evidence = {**q.evidence, "options": [{**o, "document_id": str(d.id)} if d is not None else o
                                             for o, d in zip(q.evidence["options"], [*shown, None], strict=True)]}
-    q.assigned_to = item.assigned_to
     db.flush()
 
 

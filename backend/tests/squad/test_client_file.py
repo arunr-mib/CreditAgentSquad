@@ -110,3 +110,33 @@ def test_measure_endpoint(db, client, world):
     sign_in(client, "priya.raman")
     assert client.get(f"/api/v1/borrowers/{world['other'].id}/measure").json()["points"] == []
     assert client.get("/api/v1/borrowers/00000000-0000-0000-0000-000000000000/measure").status_code == 404
+
+
+# ---- final review M10 (parked T2 N1, N2) ----
+
+def test_a_runway_whose_value_is_still_proposed_awaits_a_persons_check_and_shows_no_figure(db, world):
+    b = world["borrower"]
+    _periods(db, b)
+    fac = _facility(db, b)
+    held = add_fact(db, borrower_id=b.id, key="cov.min_runway_months.value", period_end=ENDS[2], months=0,
+                    value=Decimal("7.0"), kind="seeded", unit="months", status="proposed")
+    _test(db, b, fac, "min_runway_months", ENDS[2], value_fact=held)
+    point = measure_series(db, b)["points"][2]
+    assert point["fact"] is None and point["note"] == "Awaiting a person’s check"
+
+
+def test_two_live_runway_tests_one_with_a_value_and_one_with_a_note_read_the_value(db, world):
+    b = world["borrower"]
+    _periods(db, b)
+    fac, second = _facility(db, b), None
+    from app.domain.credit import Facility
+    second = Facility(borrower_id=b.id, code=f"{b.code}-VD", name="Venture debt", facility_type="term_loan",
+                      commitment=Decimal("500000"))
+    db.add(second)
+    db.flush()
+    value = add_fact(db, borrower_id=b.id, key="cov.min_runway_months.value", period_end=ENDS[2], months=0,
+                     value=Decimal("11.0"), kind="seeded", unit="months", status="verified")
+    _test(db, b, fac, "min_runway_months", ENDS[2], value_fact=value)
+    _test(db, b, second, "min_runway_months", ENDS[2], note="not_meaningful_cash_flow_positive")
+    point = measure_series(db, b)["points"][2]
+    assert point["fact"]["id"] == str(value.id) and point["note"] is None

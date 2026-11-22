@@ -280,3 +280,21 @@ def test_a_type_the_filing_rules_agree_with_is_code_confirmed_and_a_lone_agent_g
     classify_documents(db, borrower=borrower, documents=[ruled, guessed], llm=llm, cycle=cycle, batch_key="t5c-src")
     assert ruled.doc_type_source == "system"
     assert guessed.doc_type_source == "agent"
+
+
+def test_a_failed_intake_run_is_said_as_a_failed_run_not_as_the_agents_answer(db, world):
+    """Final review M12: a run that fails (any model client error, a missing recording included) is not the agent
+    giving no answer: the item says the run failed and asks a person to classify by hand."""
+    from app.agents.llm import RecordingMissing
+
+    class Broken(ScriptedClient):
+        def create(self, request):
+            raise RecordingMissing("no recording for intake/x/01")
+
+    borrower, cycle = world
+    doc = ingest_pdf(db, borrower_id=borrower.id, file_name="cert.pdf", data=pdf(
+        "COMPLIANCE CERTIFICATE", "For the fiscal quarter ended September 30, 2026"))
+    classify_documents(db, borrower=borrower, documents=[doc], llm=Broken([]), cycle=cycle, batch_key="t-fail")
+    item = db.execute(select(WorkItem)).scalar_one()
+    assert item.item_type == "intake.unclassified"
+    assert item.evidence["reason"] == "the Intake Agent's run failed; classify by hand"

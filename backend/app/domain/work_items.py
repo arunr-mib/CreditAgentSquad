@@ -54,7 +54,7 @@ def raise_item(
     blocks_stage: bool = True, requires_second_person: bool = False,
     required_permission: str = "decide_work_item", prepared_by_id: str | None = None,
     agent_run_id: uuid.UUID | None = None, dedupe_key: str | None = None,
-    actor: tuple[str, str] = ("system", "workflow"),
+    actor: tuple[str, str] = ("system", "workflow"), assigned_to: uuid.UUID | None = None,
 ) -> WorkItem:
     """Create a work item. With `dedupe_key`, an open item with the same key is returned instead."""
     if severity not in SEVERITIES:
@@ -78,11 +78,11 @@ def raise_item(
         evidence=evidence, recommendation=recommendation, guardrail_notes=guardrail_notes or [],
         blocks_stage=blocks_stage, requires_second_person=requires_second_person,
         required_permission=required_permission, prepared_by_id=prepared_by_id, agent_run_id=agent_run_id,
-        due_date=due_date_for(severity, clock.today(db)))
+        assigned_to=assigned_to, due_date=due_date_for(severity, clock.today(db)))
     db.add(item)
     db.flush()
     ledger.record(db, actor_type=actor[0], actor_id=actor[1], action="work_item.raised",
                   entity_type="work_item", entity_id=item.id,
                   payload={"type": item_type, "severity": severity, "title": title, "cycle_id": cycle_id,
-                           "due_date": item.due_date})
+                           "due_date": item.due_date, **({"assigned_to": assigned_to} if assigned_to else {})})
     return item
