@@ -131,3 +131,8 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 
 ## Phase 5 (22 Nov)
 - **Hosted v2 model mode:** owner agreed — no model key on hosted v2 (agents off / recorded); live only later with owner go-ahead and an estimate.
+- **squad2 reload:** yes — export the ledger, then drop and reload squad2 after the smoke test and between sessions (v1's `squad` never touched).
+- **Vercel project name:** `credit-squad` (credit-squad-v2 if taken).
+- **Vercel plan:** free Hobby plan for now; revisit before wider use.
+- **Names check:** run a web search on the invented client and people names and show the owner a table; owner decides renames.
+- **Session recording:** default notes only (not yet asked).
