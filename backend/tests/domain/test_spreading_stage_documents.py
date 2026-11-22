@@ -76,9 +76,14 @@ def test_a_held_pack_does_not_stop_the_reports_and_a_repaired_pack_ends_with_the
                                              WorkItem.stage == "spreading")).scalars().all()
     assert held and cycle.stage == "spreading", "the pack should be held for a person"
     assert {"saas.mrr", "bank.cash_unrestricted"} <= keys()  # read although the pack is held
-    analyst = User(email="an@x.example", name="Analyst", role="analyst", password_hash="x")
-    db.add(analyst)
-    db.flush()
+    # the client's own analyst confirms: the engine lets an analyst decide only her own clients' cases (owner question 9)
+    from app.domain.credit import Borrower
+
+    analyst = db.get(User, db.get(Borrower, cycle.borrower_id).analyst_id)
+    if analyst is None:  # a client with no analyst is any analyst's
+        analyst = User(email="an@x.example", name="Analyst", role="analyst", password_hash="x")
+        db.add(analyst)
+        db.flush()
     for item in held:
         workflow.decide_work_item(db, item, user_id=analyst.id, user_role=analyst.role, decision="values_confirmed")
     _settle(db, cycle)
