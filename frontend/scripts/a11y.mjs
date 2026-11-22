@@ -1,7 +1,7 @@
 // Accessibility check on the real screens, each as a role that may see it (analyst, officer, administrator): axe-core, plus a keyboard
 // pass that tabs through every focusable control and fails if one takes focus without a visible
 // focus ring. Needs the seeded stack running (API on port 8000).
-// Usage: node scripts/a11y.mjs [--no-build]
+// Usage: node scripts/a11y.mjs [--no-build] [--only name,name]
 // Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -10,6 +10,9 @@ import { eachPage, open, serve } from './serve.mjs';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
+
+const onlyIndex = process.argv.indexOf('--only');
+const only = onlyIndex > -1 ? (process.argv[onlyIndex + 1] ?? '').split(',') : null;
 
 const stop = await serve();
 const browser = await chromium.launch();
@@ -31,7 +34,7 @@ try {
     );
     for (const violation of result.violations) {
       console.log(`  [${violation.impact}] ${violation.id}: ${violation.help} (${violation.nodes.length})`);
-      for (const node of violation.nodes.slice(0, 3)) console.log(`      ${node.target.join(' ')}`);
+      for (const node of violation.nodes.slice(0, 3)) console.log(`      ${node.target.join(' ')}  ${node.html.slice(0, 160)}`);
     }
     if (counts.critical + counts.serious > 0) failed = true;
 
@@ -74,7 +77,7 @@ try {
     for (const label of missingRing) console.log(`      no ring: ${label}`);
     // Roving-focus groups (table rows, segmented controls, tabs) expose one tab stop each, so reached can be below the total.
     if (missingRing.length > 0) failed = true;
-  });
+  }, only);
 } finally {
   await browser.close();
   stop();

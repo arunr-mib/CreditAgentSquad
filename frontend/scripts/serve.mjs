@@ -34,7 +34,7 @@ export const PAGES = [
     as: 'analyst',
     // The client file is ready at once; the lists inside it load after: wait for them before scanning.
     prepare: async (page) => {
-      await page.locator('.sq-file').locator('table, .sq-card, .sq-muted, [data-ready], [role="alert"]').first().waitFor({ timeout: 30000 });
+      await page.locator('.sq-file').locator('table, ol, .sq-card, .sq-muted, [data-ready], [role="alert"]').first().waitFor({ timeout: 30000 });
       await page.waitForLoadState('networkidle');
     },
   })),

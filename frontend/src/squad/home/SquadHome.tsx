@@ -14,7 +14,7 @@ function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boo
   const href = threadHref(item.borrower_code, item.work_item_id ?? undefined);
   return (
     <li>
-      <Link {...href} className={item.needs_you ? 'sq-row sq-row-needs' : 'sq-row'} aria-label={`${item.borrower_name}: ${item.title}. ${item.state}`}>
+      <Link {...href} className={item.needs_you ? 'sq-row sq-row-needs' : 'sq-row'}>
         <span className={`sq-dotmark sq-sev-${item.severity}`} aria-hidden />
         <span className="sq-grow">
           {showClient ? <><b>{item.borrower_name}</b><span className="sq-muted"> · {item.title}</span></> : <span>{item.title}</span>}

@@ -60,7 +60,7 @@ journey('home: the count equals the items listed, and each item opens its own cl
   assert(needs.length > 0, 'the seeded book should leave the analyst something to do (run app.squad_demo)');
   for (const item of needs) {
     await page.goto(`${BASE}/`);
-    await page.getByRole('link', { name: new RegExp(`${item.borrower_name}: ${item.title}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click();
+    await page.getByRole('link', { name: new RegExp(`${item.borrower_name} · ${item.title}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click();
     await page.waitForURL(new RegExp(`/clients/${item.borrower_code}`));
     await page.getByRole('heading', { level: 1, name: item.borrower_name }).waitFor();
     if (item.work_item_id) {

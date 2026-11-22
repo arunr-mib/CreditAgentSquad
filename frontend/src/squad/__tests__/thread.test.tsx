@@ -69,7 +69,7 @@ describe('ClientThread', () => {
   it('names the client and offers the client file', async () => {
     mount();
     expect(await screen.findByRole('heading', { name: 'Quillfeather Labs, Inc.' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /open in client file/i })).toHaveAttribute('href', '/clients/QFL/file');
+    expect(screen.getByRole('link', { name: 'Open in client file' })).toHaveAttribute('href', '/clients/QFL/file');
   });
 
   it('renders each message type in words a person can act on', async () => {
@@ -159,7 +159,7 @@ describe('ClientThread', () => {
     state.thread = thread([{ ...base, id: 'case:1', type: 'case', work_item_id: 'w1', item_type: 'x', title: 'Mine', question: 'q', severity: 'critical', status: 'open', allowed_decisions: ['breach'], needs_you: true, state_words: '' }]);
     mount();
     const mine = (await screen.findByText('Mine')).closest('[data-work-item]') as HTMLElement;
-    expect(within(mine).getByRole('link', { name: 'Open the case Mine' })).toHaveAttribute('href', '/clients/QFL?case=w1');
+    expect(within(mine).getByRole('link', { name: 'Open the case: Mine' })).toHaveAttribute('href', '/clients/QFL?case=w1');
     mount('?case=w1');
     expect(await screen.findByText('case panel w1')).toBeInTheDocument();
   });
@@ -188,9 +188,9 @@ describe('ClientThread', () => {
 
   it('gives each case its own client-file link with a distinct name', async () => {
     mount();
-    const link = await screen.findByRole('link', { name: 'Open Cash below minimum in the client file' });
+    const link = await screen.findByRole('link', { name: 'Open in client file: Cash below minimum' });
     expect(link).toHaveAttribute('href', '/clients/QFL/file');
-    expect(screen.getByRole('link', { name: 'Open Funding slipped in the client file' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open in client file: Funding slipped' })).toBeInTheDocument();
   });
 
   it('scrolls to the focused case once, not on every update', async () => {

@@ -48,11 +48,11 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
           <p>{message.question}</p>
           <div className="sq-actions">
             {focused ? null : (
-              <Link {...threadHref(borrowerCode, message.work_item_id)} className={state.needsYou ? 'sq-btn sq-btn-primary' : 'sq-btn'} aria-label={`Open the case ${message.title}`}>
+              <Link {...threadHref(borrowerCode, message.work_item_id)} className={state.needsYou ? 'sq-btn sq-btn-primary' : 'sq-btn'} aria-label={`${state.needsYou ? 'Open the case' : 'See the case'}: ${message.title}`}>
                 {state.needsYou ? 'Open the case' : 'See the case'}
               </Link>
             )}
-            <Link to={clientFile(borrowerCode)} className="sq-link" aria-label={`Open ${message.title} in the client file`}>Open in client file</Link>
+            <Link to={clientFile(borrowerCode)} className="sq-link" aria-label={`Open in client file: ${message.title}`}>Open in client file</Link>
           </div>
           {focused ? <CasePanel workItemId={message.work_item_id} onOpenCase={(id) => void navigate(threadHref(borrowerCode, id))} /> : null}
           <Trail workItemId={message.work_item_id} />
