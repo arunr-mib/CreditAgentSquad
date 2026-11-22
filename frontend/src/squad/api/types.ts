@@ -109,6 +109,10 @@ export interface CaseView {
   may_route: boolean;
   may_return: boolean;
   may_attach: boolean;
+  /** The engine's answer for this viewer: the case is theirs to hold, so they may keep, enter or reject a held figure. */
+  may_repair: boolean;
+  /** Why Route is not offered yet (Squad waits for a person to confirm a document), or null. */
+  route_blocked_words: string | null;
 }
 export interface ApprovalRow {
   work_item_id: string;

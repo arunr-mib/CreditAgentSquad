@@ -1,6 +1,8 @@
 """Routing a case to a person who may decide it, with the router's view; returning it with a reason; attaching what
 was asked for. Engine rules, beside `decide_work_item`:
 - who may receive a case is who may decide it (`workflow.decision_refusal`);
+- who may route a case or attach to it follows the engine's ownership rule (`workflow.owner_refusal`): an analyst
+  acts only on her own clients' cases or a case with her;
 - a person who routes a case is refused as its decider by the engine (`workflow.routed_by`), whoever prepared it;
 - a return is not a decision: the case stays open and goes back to the person who routed it;
 - the ledger is the only record of routes, returns and attachments."""
@@ -17,7 +19,7 @@ from app.core.roles import Permission, can
 from app.domain.documents import DOCUMENT_TYPES, Document
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
-from app.domain.workflow import ATTACHED, RETURNED, ROUTED, decision_refusal
+from app.domain.workflow import ATTACHED, RETURNED, ROUTED, decision_refusal, owner_refusal
 
 ROUTING_ACTIONS = (ROUTED, RETURNED, ATTACHED)
 MAX_TEXT = 4000
@@ -84,6 +86,9 @@ def route_work_item(db: Session, item: WorkItem, *, user: User, to_user_id: uuid
         raise PermissionError("Your role cannot route cases (manage_actions).")
     if item.assigned_to is not None and item.assigned_to != user.id:
         raise ValueError("This case is with someone else; only they can send it on.")
+    owned = owner_refusal(db, item, user_id=user.id, user_role=user.role)
+    if owned is not None:
+        raise owned
     view = (view or "").strip()
     if not view:
         raise ValueError("Routing a case needs your view: what you found and what you recommend.")
@@ -155,6 +160,9 @@ def attach_evidence(db: Session, item: WorkItem, *, user: User, document_id: uui
     unowned = item.assigned_to is None and can(user.role, Permission.MANAGE_ACTIONS)
     if not (with_them or unowned):
         raise PermissionError("Only the person a case is with can add evidence to it.")
+    owned = owner_refusal(db, item, user_id=user.id, user_role=user.role)
+    if owned is not None:
+        raise owned
     doc = db.get(Document, document_id)
     if doc is None or doc.borrower_id != item.borrower_id:
         raise ValueError("That document is not on this client's file.")

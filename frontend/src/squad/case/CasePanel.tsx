@@ -14,11 +14,12 @@ import { Time } from '../thread/Time';
 
 const HELD = new Set(['spread.value_unverified', 'spread.does_not_foot']);
 
-/** The server's refusal in its own words, titled by what it means. A second-person refusal is shown, never pre-empted. */
+/** The server's refusal in its own words, titled by what it means. A second-person refusal is shown, never pre-empted.
+ * A 409 is a second-person rule, a case that cannot be sent yet or an assignment, so it is titled neutrally and the
+ * server's words say which; a 403 is the engine saying this person may not (their role, or a client that is not theirs). */
 export function refusal(error: unknown): { title: string; text: string } {
   const text = errorMessage(error);
-  if (error instanceof ApiError && error.status === 409) return { title: 'Not recorded: a second person must decide this', text };
-  if (error instanceof ApiError && error.status === 403) return { title: 'Not recorded: your role cannot do this', text };
+  if (error instanceof ApiError && error.status === 403) return { title: 'Not recorded: this is not yours to do', text };
   return { title: 'Not recorded', text };
 }
 
@@ -258,7 +259,7 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
       <NeedsList needs={c.needs} label="What was asked for" />
       {detail.data ? <KeyFigures item={detail.data} /> : null}
       {detail.data ? <ItemEvidence item={detail.data} code={c.borrower.code} headingLevel="h4" /> : null}
-      {detail.data && HELD.has(c.item_type) ? <HeldFigures item={detail.data} code={c.borrower.code} headingLevel="h4" /> : null}
+      {detail.data && HELD.has(c.item_type) ? <HeldFigures item={detail.data} code={c.borrower.code} headingLevel="h4" mayRepair={c.may_repair} /> : null}
       {detail.data?.recommendation ? (
         <Recommendation recommendation={detail.data.recommendation} item={detail.data} headingLevel="h4" code={c.borrower.code} />
       ) : c.status === 'open' && detail.data ? (
@@ -275,6 +276,7 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
           {decides ? <DecideForm c={c} /> : null}
           {c.may_return ? <ReturnForm c={c} /> : null}
           {c.may_route ? <RouteForm c={c} /> : null}
+          {!c.may_route && c.route_blocked_words ? <p className="sq-muted">{c.route_blocked_words} before the case is sent.</p> : null}
           {!decides && !c.may_route && !c.may_return ? <p className="sq-muted">{c.state_words}. This case is not yours to decide.</p> : null}
           <details className="sq-group">
             <summary>Ask Squad about this case</summary>

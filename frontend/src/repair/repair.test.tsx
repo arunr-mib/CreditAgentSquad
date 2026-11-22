@@ -235,7 +235,7 @@ const posts = (calls: Array<{ method: string; url: string; body: unknown }>) => 
 const analyst: ApiUser = { id: 'u-1', email: 'analyst@bankofstoic.example', name: 'Priya Raman', title: 'Credit analyst', role: 'analyst', permissions: ['view', 'confirm_spread'] };
 const officer: ApiUser = { ...analyst, id: 'u-2', name: 'Helen Strand', role: 'credit_officer', permissions: ['view', 'decide_breach'] };
 
-function renderHeld(work: WorkItemDetail, user: ApiUser = analyst, open: (ref: SourceRef) => void = () => {}) {
+function renderHeld(work: WorkItemDetail, user: ApiUser = analyst, open: (ref: SourceRef) => void = () => {}, mayRepair = user.permissions.includes('confirm_spread')) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const auth = { user, status: 'signed-in' as const, can: (permission: string) => user.permissions.includes(permission), signIn: async () => user, signOut: async () => {}, retry: () => {} };
   const wrap = (children: ReactNode) => (
@@ -245,7 +245,7 @@ function renderHeld(work: WorkItemDetail, user: ApiUser = analyst, open: (ref: S
       </AuthContext.Provider>
     </QueryClientProvider>
   );
-  return render(wrap(<HeldFigures item={work} code="harrowgate-precision" />));
+  return render(wrap(<HeldFigures item={work} code="harrowgate-precision" mayRepair={mayRepair} />));
 }
 
 const rowOf = (key: string) => document.querySelector(`[data-held-row="${key}"]`) as HTMLElement;
@@ -550,6 +550,14 @@ describe('the held-figures panel', () => {
     expect(open).toHaveBeenLastCalledWith({ type: 'fact', id: 'f-ap' });
     await userEvent.click(screen.getByRole('button', { name: '1,236, Interest expense as printed on page 3. Read from a document. Show source.' }));
     expect(open).toHaveBeenLastCalledWith({ type: 'document', documentId: 'd-1', page: 3, quote: '1,236', title: 'Interim financial statements, Q3 2026', borrowerCode: 'harrowgate-precision' });
+  });
+
+  it('shows no repair control when the case is not this person’s, even in a role that holds the permission (final review M3)', async () => {
+    mockApi(SWAPPED);
+    renderHeld(item({}, [PAYABLE_ROW, ACCRUED_ROW, INTEREST_ROW]), analyst, () => {}, false);
+    await waitFor(() => expect(screen.getByText('3 of 3 still need a person')).toBeInTheDocument());
+    expect(document.querySelectorAll('[data-primary], [data-actions], [data-will-do]')).toHaveLength(0);
+    expect(screen.getByText(/This case is not yours to repair/)).toBeInTheDocument();
   });
 
   it('shows no repair control to a role without the permission, and says the server decides who has it', async () => {

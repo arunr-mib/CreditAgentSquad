@@ -272,7 +272,10 @@ def approval_refusal(db: Session, item: WorkItem, user_id, decision: str) -> Exc
     if decision != "approve":
         return None
     reference = item.evidence.get("review_sheet_id")
-    sheet_row = db.get(ReviewSheet, uuid.UUID(reference)) if reference else None
+    try:
+        sheet_row = db.get(ReviewSheet, uuid.UUID(str(reference))) if reference else None
+    except ValueError:  # evidence is written by code; a malformed id is read as no sheet, never a 500
+        sheet_row = None
     if sheet_row is None:
         return None
     for c in current_commentary(db, sheet_row):
@@ -290,7 +293,10 @@ _LAST_EDITOR = "You last edited the {section} section, so a different person mus
 def on_decision(db: Session, item: WorkItem, user: User, decision: str, reason: str) -> None:
     """Approval marks the current commentary approved and the sheet reviewed."""
     reference = item.evidence.get("review_sheet_id")
-    sheet_row = db.get(ReviewSheet, uuid.UUID(reference)) if reference else None
+    try:
+        sheet_row = db.get(ReviewSheet, uuid.UUID(str(reference))) if reference else None
+    except ValueError:  # evidence is written by code; a malformed id is read as no sheet, never a 500
+        sheet_row = None
     if sheet_row is None:
         raise ValueError("the review sheet no longer exists")
     if decision != "approve":

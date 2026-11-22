@@ -576,7 +576,9 @@ const headClass = 'eyebrow border-b border-ink py-1 text-left font-semibold';
  * other's lines are named as a pair, with one action for both. What the click did is then shown
  * from the API's own summary. The decision that finishes the spread stays below, with the person.
  */
-export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item: WorkItemDetail; code?: string; headingLevel?: 'h3' | 'h4' }) {
+/** `mayRepair` is the server's answer for this viewer (the case's `may_repair`, from the engine's predicate): the browser
+ * never decides from the role alone who may keep, enter or reject a figure. */
+export function HeldFigures({ item, code, headingLevel: Heading = 'h3', mayRepair }: { item: WorkItemDetail; code?: string; headingLevel?: 'h3' | 'h4'; mayRepair: boolean }) {
   const cells = useMemo(() => heldCells(item.evidence), [item.evidence]);
   const problems = useMemo(() => footingProblems(item.evidence), [item.evidence]);
   const doesNotFoot = item.item_type === 'spread.does_not_foot';
@@ -617,7 +619,8 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item
 
   const documentId = context?.document_id ?? str(item.evidence.document_id);
   const documentTitle = documents.data?.find((row) => row.id === documentId)?.title ?? 'Statement on file';
-  const permitted = can(item.required_permission);
+  const roleHolds = can(item.required_permission);
+  const permitted = mayRepair;
   const canAct = permitted && item.status === 'open';
   const totalsOnFile = Boolean(context && lines.some((line) => line.computed && line.cells[context.period_end]?.usable));
   const waiting = cells.filter((cell) => needsPerson(cell.fact_id, fact(cell.fact_id), currentOf(describeLine(cell.key, lines).base, cell.fact_id))).length;
@@ -747,7 +750,10 @@ export function HeldFigures({ item, code, headingLevel: Heading = 'h3' }: { item
       {doesNotFoot && canAct && context ? (
         <AnyLine borrowerId={item.borrower_id} lines={lines} context={context} currentOf={(base) => currentOf(base)} suggested={problems.flatMap((problem) => (problem.key ? [problem.key] : []))} totalsOnFile={totalsOnFile} />
       ) : null}
-      {!permitted && item.status === 'open' && user ? (
+      {!permitted && roleHolds && item.status === 'open' ? (
+        <p className="text-caption text-pretty text-ink-700">This case is not yours to repair: it is with someone else, or on another analyst’s client. You can read the held figures and open their pages.</p>
+      ) : null}
+      {!permitted && !roleHolds && item.status === 'open' && user ? (
         <p className="text-caption text-pretty text-ink-700">
           Keeping, entering and rejecting figures needs a role that holds the permission to confirm a spread; the server decides which. Your role, {roleLabel(user.role)}, can read the held figures and open their pages.
         </p>

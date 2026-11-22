@@ -165,3 +165,31 @@ def test_the_engine_and_the_case_view_agree_the_writer_may_not_approve(db, world
     permitted = lambda who: {d["id"]: d["permitted"] for d in build_case(db, item, who)["decisions"]}  # noqa: E731
     assert permitted(dana)["approve"] is False
     assert permitted(marcus)["approve"] is True
+
+
+# ---- final review M1, M14 ----
+
+def test_the_last_editor_precheck_is_registered_for_commentary_approval():
+    assert workflow.DECISION_PRECHECKS.get("review.commentary_approval") is review_service.approval_refusal
+
+
+def test_the_last_editor_is_not_told_the_approval_is_theirs(db, world):
+    from app.squad import rules
+    from app.squad.cases import build_approvals
+
+    sheet, item, _ = world
+    dana, marcus = person(db, "portfolio_manager", "dana"), person(db, "portfolio_manager", "marcus")
+    review_service.write_section(db, sheet, section="summary", user=dana, body="Stable quarter.")
+    borrower = db.get(Borrower, item.borrower_id)
+    assert rules.yours(dana, item, borrower) is False
+    assert str(item.id) not in {r["work_item_id"] for r in build_approvals(db, dana)}
+    assert rules.yours(marcus, item, borrower) is True
+    assert str(item.id) in {r["work_item_id"] for r in build_approvals(db, marcus)}
+
+
+def test_a_malformed_review_sheet_id_is_read_as_no_sheet(db, world):
+    _, item, _ = world
+    marcus = person(db, "portfolio_manager", "marcus")
+    item.evidence = {**item.evidence, "review_sheet_id": "not-a-uuid"}
+    db.flush()
+    assert review_service.approval_refusal(db, item, marcus.id, "approve") is None

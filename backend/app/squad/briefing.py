@@ -66,7 +66,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
         if w.status == "open":
             prepared_by_me = rules.prepared_by(user, w)
             second_person_blocked = rules.second_person_blocked(user, w)
-            if rules.can_act(user, w, borrowers[w.borrower_id]):
+            if rules.yours(user, w, borrowers[w.borrower_id]):
                 state = "Squad asks" if kind == "question" else "waiting for you"
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": state, "needs_you": True,
                               "_due": w.due_date})
@@ -74,7 +74,7 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": "returned to you",
                               "needs_you": True, "_due": w.due_date})
             elif (rules.holds_permission(user, w) and not second_person_blocked and w.assigned_to is None
-                  and user.role == "analyst"):  # an analyst's colleague's client: listed, not counted
+                  and borrowers[w.borrower_id].analyst_id is not None):  # the client's analyst's: listed, not counted
                 owner = names.get(borrowers[w.borrower_id].analyst_id, "a colleague")
                 items.append({**base, "key": f"item:{w.id}", "kind": kind, "state": f"with {owner}",
                               "needs_you": False, "_due": w.due_date})

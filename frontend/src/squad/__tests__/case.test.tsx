@@ -38,7 +38,7 @@ const base: CaseView = {
   decision: null, decision_words: null, decision_reason: '', decided_by: null, requires_second_person: false, with: null,
   state_words: 'With the credit officer', needs_you: false, view: null, needs: [], history: [], attached: [], candidates: [],
   decisions: [{ id: 'reservation_of_rights', label: 'Reserve rights', hint: 'Send a reservation of rights letter.', needs_reason: true, permitted: false }, { id: 'not_a_breach', label: 'Not a breach', hint: '', needs_reason: true, permitted: false }],
-  route_to: [{ id: 'u2', name: 'Helen Strand', title: 'Senior Credit Officer' }], may_route: true, may_return: false, may_attach: true,
+  route_to: [{ id: 'u2', name: 'Helen Strand', title: 'Senior Credit Officer' }], may_route: true, may_return: false, may_attach: true, may_repair: true, route_blocked_words: null,
 };
 
 beforeEach(() => {
@@ -119,8 +119,26 @@ describe('CasePanel', () => {
     await userEvent.click(screen.getByRole('radio', { name: /not a breach/i }));
     await userEvent.click(screen.getByRole('button', { name: 'Record decision' }));
     const alert = await screen.findByRole('alert');
-    expect(within(alert).getByText('Not recorded: a second person must decide this')).toBeInTheDocument();
+    expect(within(alert).getByText('Not recorded')).toBeInTheDocument(); // a 409 is not always a second-person rule
+
     expect(within(alert).getByText(/different person than the preparer/)).toBeInTheDocument();
+  });
+
+  it('offers no Route and no Attach where the engine refuses them: another analyst’s client', () => {
+    state.view = { ...base, item_type: 'funding_slipped', may_route: false, may_return: false, may_attach: false, state_words: 'With Priya Raman',
+      candidates: [{ document_id: 'd9', title: 'Board plan', doc_type: 'other', pages: 2 }] };
+    panel();
+    expect(screen.queryByRole('form', { name: 'Send for a decision' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/on file you can attach/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Attach/ })).not.toBeInTheDocument();
+    expect(screen.getByText(/With Priya Raman\. This case is not yours to decide/)).toBeInTheDocument();
+  });
+
+  it('says why Route is not offered while Squad waits for a document to be confirmed', () => {
+    state.view = { ...base, may_route: false, route_blocked_words: 'Confirm which document first', decisions: base.decisions.map((d) => ({ ...d, permitted: true })) };
+    panel();
+    expect(screen.queryByRole('form', { name: 'Send for a decision' })).not.toBeInTheDocument();
+    expect(screen.getByText(/Confirm which document first/)).toBeInTheDocument();
   });
 
   it('offers an administrator nothing to do', () => {
@@ -173,7 +191,8 @@ describe('CasePanel', () => {
   });
 
   it('names each refusal by what it means', () => {
-    expect(refusal(new ApiError(403, 'no')).title).toBe('Not recorded: your role cannot do this');
+    expect(refusal(new ApiError(403, 'no')).title).toBe('Not recorded: this is not yours to do');
+    expect(refusal(new ApiError(409, 'Confirm which document first.')).title).toBe('Not recorded');
     expect(refusal(new ApiError(422, 'needs a reason')).text).toBe('needs a reason');
   });
 

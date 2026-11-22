@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.ledger import LedgerEvent
 from app.core.roles import APPROVER_PERMISSIONS, Permission, can
-from app.domain import gathering, workflow
+from app.domain import gathering, routing, workflow
 from app.domain.credit import Borrower
 from app.domain.documents import Document
 from app.domain.monitoring import WorkItem
@@ -60,10 +60,14 @@ def build_case(db: Session, item: WorkItem, viewer: User) -> dict[str, Any]:
     manages = can(viewer.role, Permission.MANAGE_ACTIONS)
     route_to = [{"id": str(u.id), "name": u.name, "title": u.title} for u in people
                 if u.id != viewer.id and may_receive(db, u, item)] if is_open else []
-    may_route = bool(is_open and manages and item.assigned_to in (None, viewer.id) and route_to)
+    owns = workflow.owner_refusal(db, item, user_id=viewer.id, user_role=viewer.role) is None
+    holds = bool(is_open and owns and item.assigned_to in (None, viewer.id))
+    waiting_for_match = bool(holds and routing.open_match_questions(db, item))
+    may_route = bool(holds and manages and route_to and not waiting_for_match)
     may_return = bool(is_open and route and item.assigned_to == viewer.id
                       and route["to_id"] == str(viewer.id) and route["by_id"] != str(viewer.id))
-    may_attach = bool(is_open and (item.assigned_to == viewer.id or (item.assigned_to is None and manages)))
+    may_attach = bool(holds and (item.assigned_to == viewer.id or manages))
+    may_repair = bool(holds and rules.holds_permission(viewer, item))
     docs = list(db.execute(select(Document).where(Document.borrower_id == item.borrower_id)
                            .order_by(Document.created_at.desc())).scalars())
     titles = {str(d.id): d.title for d in docs}
@@ -82,13 +86,15 @@ def build_case(db: Session, item: WorkItem, viewer: User) -> dict[str, Any]:
         "decided_by": names.get(str(item.decided_by)) if item.decided_by else None,
         "requires_second_person": bool(item.requires_second_person),
         "with": names.get(str(item.assigned_to)) if item.assigned_to else None,
-        "state_words": rules.state_words(item, names, borrower) if is_open else "",
+        "state_words": ("Confirm which document first" if waiting_for_match
+                        else rules.state_words(item, names, borrower) if is_open else ""),
         "needs_you": bool(is_open and rules.needs(viewer, item, borrower)),
         "view": {"text": route["text"], "by": route["by"], "at": route["at"]} if route else None,
         "needs": gathering.need_states(db, item) if is_open else [],
         "history": history, "attached": attached, "candidates": candidates,
         "decisions": decisions, "route_to": route_to,
-        "may_route": may_route, "may_return": may_return, "may_attach": may_attach,
+        "may_route": may_route, "may_return": may_return, "may_attach": may_attach, "may_repair": may_repair,
+        "route_blocked_words": "Confirm which document first" if waiting_for_match else None,
     }
 
 
@@ -98,7 +104,7 @@ def build_approvals(db: Session, user: User) -> list[dict[str, Any]]:
     borrowers = {b.id: b for b in db.execute(select(Borrower)).scalars()}
     names = {str(u.id): u.name for u in db.execute(select(User)).scalars()}
     items = [w for w in db.execute(select(WorkItem).where(WorkItem.status == "open")).scalars()
-             if w.borrower_id in borrowers and rules.can_act(user, w, borrowers[w.borrower_id])]
+             if w.borrower_id in borrowers and rules.yours(user, w, borrowers[w.borrower_id])]
     history = _history(db, [str(w.id) for w in items], names)
     rows = []
     for w in items:

@@ -219,7 +219,8 @@ def test_an_unassigned_item_counts_only_for_the_clients_analyst(db, world):
     assert priya["needs_you"] == 1 and priya["items"][0]["state"] == "waiting for you"
     mine = [i for i in other["items"] if i["work_item_id"] == str(item.id)]
     assert other["needs_you"] == 0 and mine and mine[0]["needs_you"] is False and mine[0]["state"] == "with Priya Raman"
-    assert officer["needs_you"] == 1  # an officer is not an analyst; the assignment rule is the analysts'
+    # final review I2: an analyst's judgement on her own client is listed for the officer, not counted for her
+    assert officer["needs_you"] == 0 and [i["state"] for i in officer["items"]] == ["with Priya Raman"]
 
 
 def test_a_client_with_no_analyst_counts_for_every_analyst(db, world):
