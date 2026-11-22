@@ -136,3 +136,4 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 - **Vercel plan:** free Hobby plan for now; revisit before wider use.
 - **Names check:** run a web search on the invented client and people names and show the owner a table; owner decides renames.
 - **Session recording:** default notes only (not yet asked).
+- **Names (owner, 22 Nov):** rename the 2 collisions, the 5 close names and Stripple Tech before outside participants see v2: Dataflake Inc, Quillon AI, Lumora Health, Halcyon Grid, Tessaract Labs, Corvane Analytics, Tidewell Medical, Stripple Tech. New names are web-checked first. Their recorded replays need a re-record later (billable, with the owner's go-ahead).
