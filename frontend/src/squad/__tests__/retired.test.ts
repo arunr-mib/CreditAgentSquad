@@ -38,10 +38,13 @@ describe('the cockpit is retired', () => {
   // entries in a row (a value with a capital or a space: words, not an id) is a label table. Formats and ids are not
   // words ({ id: 'docx', label: 'Word' } has an id beside its label), so they do not match.
   // A record's own fields (label, title, hint...) are not keys of a table, and a value of class names is not words.
-  const KEY = String.raw`\b(?!(?:label|phrase|title|subject|detail|group|hint|keywords|text|sentence|name|description|note)\b)[a-z][a-z0-9_]*\s*:\s*`;
-  const WORDS = String.raw`'(?=[^']*(?:[A-Z]|\s))(?![^']*\b[a-z]+-[a-z0-9])[^'{}\n]+'`;
+  const FIELDS = '(?:label|phrase|title|subject|detail|group|hint|keywords|text|sentence|name|description|note)';
+  // a key, bare or in either quote; a value in either quote with a capital or a space (words), and no class names
+  const KEY = String.raw`(?:\b|['"])(?!${FIELDS}\b)[a-z][a-z0-9_]*['"]?\s*:\s*`;
+  const WORDS = String.raw`(?:'(?=[^']*(?:[A-Z]|\s))(?![^']*\b[a-z]+-[a-z0-9])[^'{}\n]+'|"(?=[^"]*(?:[A-Z]|\s))(?![^"]*\b[a-z]+-[a-z0-9])[^"{}\n]+")`;
   const LABEL_TABLE = new RegExp(`${KEY}${WORDS}\\s*,\\s*${KEY}${WORDS}`);
-  const SCANNED = /^\/src\/(squad|repair|source|domain|screens|design)\/(?!.*__tests__\/)(?!.*\.test\.tsx?$)/;
+  // every source file of the browser; tests and their fixtures are not the product
+  const SCANNED = /^\/src\/(?!test\/)(?!.*__tests__\/)(?!.*\.test\.tsx?$)/;
 
   it('the label-table guard can fail: it catches a table of words by its shape, whatever it is called', () => {
     for (const sample of [
@@ -49,6 +52,11 @@ describe('the cockpit is retired', () => {
       "const READ = {\n  indexed: 'read page by page',\n  image_only: 'image only, with no readable text',\n};",
       "const words = { routed: 'sent this to', returned: 'returned this to', evidence_attached: 'attached a document' } as const;",
       "const FUNDING_KIND = { equity_round: 'Equity round', extension: 'Extension' };",
+      // final re-review O3: quoted keys and double-quoted values are the same table
+      "const STATUS = { 'needs_person': 'Needs a person', 'done': 'Done' };",
+      'const SEV = { critical: "Critical", high: "High" };',
+      'const STAGE = { "covenant_testing": "Covenant testing", "borrowing_base": "Borrowing base" };',
+      "const MIX = { \"in_review\": 'In review', closed: \"Closed\" };",
     ]) expect(LABEL_TABLE.test(sample), sample).toBe(true);
     for (const sample of [
       "const FORMATS = [{ id: 'docx', label: 'Word' }, { id: 'xlsx', label: 'Excel' }];",
