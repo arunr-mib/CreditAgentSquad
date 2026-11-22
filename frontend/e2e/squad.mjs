@@ -17,7 +17,7 @@ const ANALYST = 'priya.raman@bankofstoic.example';
 const OFFICER = 'helen.strand@bankofstoic.example';
 const MANAGER = 'dana.whitfield@bankofstoic.example';
 const LOOKS = ['Night', 'Warm paper', 'Cool slate', 'Lavender mist', 'Sage'];
-const WIDTHS = [1000, 1280, 1440, 1920];
+const WIDTHS = [1000, 1100, 1280, 1440, 1600, 1920];
 const failuresDir = resolve(dirname(fileURLToPath(import.meta.url)), 'failures');
 
 const assert = (ok, message) => {
@@ -455,10 +455,169 @@ journey('held reading: Stripple’s held spreadsheet question opens focused in i
   // Held figures with their repair actions need a spread that holds figures: frontend/e2e/repair.mjs journey 1 covers them.
 });
 
+const VIEWS = ['', '/spreads', '/covenants', '/documents', '/funding', '/loans', '/reviews', '/packages', '/runs', '/history'];
+
+async function noScroll(page, where) {
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `horizontal page scroll on ${where}`);
+}
+
+/** For a measure whose latest point the API says is unmeasured, the cell must show the API's note (or "Not measured"),
+ * no digit, and the bars must draw that point as an outline. Compared with the API, never with the page itself. */
+async function checkUnmeasured(cell, bars, series, where) {
+  const last = series.points.at(-1);
+  if (!last || last.fact) return;
+  const text = (await cell.innerText()).trim();
+  assert(text === (last.note ?? 'Not measured'), `${where}: shows "${text}" for an unmeasured point (the API says "${last.note}")`);
+  assert(!/\d/.test(text), `${where}: a digit is shown for an unmeasured point`);
+  const kinds = await bars.locator('.sq-bar').evaluateAll((els) => els.map((b) => b.getAttribute('data-point')));
+  assert(kinds.at(-1) === 'none', `${where}: the unmeasured point is drawn as ${kinds.at(-1)}, not as an outline`);
+}
+
+journey('self-check: the unmeasured check fails on a page that shows a zero for an unmeasured point', async ({ page }) => {
+  await page.setContent('<table><tr><td id="cell">0</td><td id="bars"><span class="sq-bar" data-point="low"></span></td></tr></table>');
+  const series = { points: [{ period_end: '2026-10-31', fact: null, note: 'Not measured' }] };
+  let caught = false;
+  try {
+    await checkUnmeasured(page.locator('#cell'), page.locator('#bars'), series, 'fixture');
+  } catch {
+    caught = true;
+  }
+  assert(caught, 'checkUnmeasured passed a page that shows 0 for an unmeasured point: the check cannot fail');
+});
+
+for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER]]) {
+  journey(`every client, ${who}: thread, case focus, client file views and portfolio row all land on the same client`, async ({ page }) => {
+    await signIn(page, email);
+    const borrowers = await api(page, '/borrowers');
+    assert(borrowers.length >= 20, `expected the whole seeded book, found ${borrowers.length} clients`);
+    for (const b of borrowers) {
+      await page.goto(`${BASE}/clients/${b.code}`);
+      await page.getByRole('heading', { level: 1, name: b.name }).waitFor();
+      assert((await page.getByRole('alert').count()) === 0, `${b.name}: the thread shows an error`);
+      const thread = await api(page, `/threads/${b.id}`);
+      const text = await page.locator('.sq-messages').innerText(); // the heading is up, so the list must be there
+      for (const other of borrowers) {
+        if (other.id !== b.id && other.name.length > 12 && text.includes(other.name)) throw new Error(`${b.name}'s thread names ${other.name}`);
+      }
+      const open = thread.messages.filter((m) => (m.type === 'case' || m.type === 'ask') && m.status === 'open');
+      for (const m of open.slice(0, 2)) {
+        await page.goto(`${BASE}/clients/${b.code}?case=${m.work_item_id}`);
+        const card = page.locator(`[data-work-item="${m.work_item_id}"][data-focused="true"]`);
+        await card.waitFor();
+        if (m.type === 'case') {
+          // a case opens CasePanel: its decision form is there exactly when the server permits a decision
+          const view = await api(page, `/cases/${m.work_item_id}`);
+          const decide = await card.getByRole('button', { name: 'Record decision' }).count();
+          assert((decide > 0) === view.decisions.some((d) => d.permitted), `${b.name}: the decision form disagrees with the server for ${m.title}`);
+        } else {
+          // an ask renders its options: enabled exactly when the server says it needs this viewer
+          const enabled = await card.locator('fieldset.sq-options:not([disabled])').count();
+          assert((enabled > 0) === m.needs_you, `${b.name}: the ask's options disagree with the server for ${m.title}`);
+        }
+      }
+      for (const v of VIEWS) {
+        await page.goto(`${BASE}/clients/${b.code}/file${v}`);
+        await page.getByRole('heading', { level: 1, name: b.name }).waitFor();
+        assert((await page.getByRole('alert').count()) === 0, `${b.name}: client file${v || ' overview'} shows an error`);
+      }
+      await page.goto(`${BASE}/clients/${b.code}/file`);
+      const measure = page.locator('[data-measure]');
+      await measure.waitFor();
+      await checkUnmeasured(measure.locator('[data-measure-now]'), measure, await api(page, `/borrowers/${b.id}/measure`), `${b.code} overview`);
+    }
+    await page.goto(`${BASE}/portfolio`);
+    await page.locator('[data-ready]').waitFor(); // the table is drawn only once the portfolio has loaded
+    const portfolio = await api(page, '/me/portfolio');
+    for (const row of portfolio.sections.flatMap((s) => s.rows)) {
+      const tr = page.locator(`tr[data-borrower="${row.code}"]`);
+      assert((await tr.count()) === 1, `${row.name} is not on My Portfolio exactly once`);
+      await checkUnmeasured(tr.locator('[data-measure-cell]'), tr, row.measure, `portfolio ${row.code}`);
+    }
+  });
+}
+
+for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER]]) {
+  journey(`the ${who}'s briefing lists each thing once and prints no raw amount in a title`, async ({ page }) => {
+    await signIn(page, email);
+    const { b } = await record(page);
+    const keys = b.items.map((i) => i.key);
+    assert(new Set(keys).size === keys.length, 'a briefing row is listed twice');
+    const raw = b.items.filter((i) => /\d{1,3}(,\d{3})+\.\d{2}\b/.test(i.title));
+    assert(raw.length === 0, `raw amounts in titles: ${raw.map((i) => i.title).join('; ')}`);
+  });
+}
+
+/** Every Squad screen a person of this kind can reach; the contrast and width journeys walk all of them. */
+async function screensFor(page, kind) {
+  const [b] = await api(page, '/borrowers');
+  const shared = ['/', `/clients/${b.code}`, `/clients/${b.code}/file`, `/clients/${b.code}/file/spreads`, `/clients/${b.code}/file/covenants`, `/clients/${b.code}/file/documents`, `/clients/${b.code}/file/packages`, `/clients/${b.code}/file/runs`, `/clients/${b.code}/file/loans`, '/portfolio', '/review-room'];
+  if (kind === 'officer') return [...shared, '/approvals'];
+  if (kind === 'admin') return ['/', '/oversight', '/oversight/activity', '/oversight/ledger', '/oversight/governance', '/oversight/evaluations', '/oversight/clock'];
+  return shared;
+}
+
+const PEOPLE = [['analyst', ANALYST], ['officer', OFFICER], ['admin', 'admin@bankofstoic.example']];
+
+journey('every look, every Squad screen, every role: contrast and names hold', async ({ browser }) => {
+  for (const [kind, email] of PEOPLE) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const page = await context.newPage();
+    await signIn(page, email);
+    const screens = await screensFor(page, kind);
+    for (const look of LOOKS) {
+      await page.goto(`${BASE}/`);
+      await page.getByRole('button', { name: /^look:/i }).click();
+      await page.getByRole('menuitemradio', { name: look }).click();
+      for (const path of screens) {
+        await page.goto(`${BASE}${path}`);
+        await page.locator('.sq-main').waitFor();
+        await page.addScriptTag({ content: axeSource });
+        const result = await page.evaluate(() => window.axe.run(document.body, { runOnly: ['color-contrast', 'label', 'button-name', 'link-name'] }));
+        const bad = result.violations.map((v) => `${v.id}: ${v.nodes.length}`);
+        assert(bad.length === 0, `${kind} ${look} ${path}: ${bad.join(', ')}`);
+      }
+    }
+    await context.close();
+  }
+});
+
+journey('every width from 1000 to 1920 on every Squad screen and role: no horizontal scroll', async ({ browser }) => {
+  for (const [kind, email] of PEOPLE) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const page = await context.newPage();
+    await signIn(page, email);
+    const screens = await screensFor(page, kind);
+    for (const width of WIDTHS) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const path of screens) {
+        await page.goto(`${BASE}${path}`);
+        await page.locator('.sq-main').waitFor();
+        await noScroll(page, `${kind} ${path} at ${width}px`);
+      }
+    }
+    await context.close();
+  }
+});
+
+
+journey('the administrator sees Oversight and no credit decision anywhere', async ({ page }) => {
+  await signIn(page, 'admin@bankofstoic.example');
+  await page.goto(`${BASE}/oversight`);
+  await page.getByRole('navigation', { name: 'Oversight' }).waitFor();
+  const items = (await api(page, '/work-items')).slice(0, 3);
+  for (const w of items) {
+    const b = await api(page, `/borrowers/${w.borrower_id}`);
+    await page.goto(`${BASE}/clients/${b.code}?case=${w.id}`);
+    await page.locator(`[data-work-item="${w.id}"][data-focused="true"]`).waitFor();
+    assert((await page.getByRole('button', { name: /record decision|^send to|^return to|^attach/i }).count()) === 0, 'an administrator was offered a credit action');
+  }
+});
+
 mkdirSync(failuresDir, { recursive: true });
 const browser = await chromium.launch({ headless: !process.env.HEADED });
 let failed = 0;
-for (const { name, fn } of journeys) {
+const only = process.env.ONLY ? new RegExp(process.env.ONLY) : null; // ONLY='every client' reruns just those journeys
+for (const { name, fn } of journeys.filter((j) => !only || only.test(j.name))) {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await context.newPage();
   try {
