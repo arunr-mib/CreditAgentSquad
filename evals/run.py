@@ -131,12 +131,17 @@ def ensure_schema(engine: Engine) -> None:
 # ---- one borrower -----------------------------------------------------------------------------
 
 
-def _decider(db: Session, permission: str, cache: dict[str, Any]):
-    """A user whose role grants the permission, created on first use."""
+def _decider(db: Session, permission: str, cache: dict[str, Any], analyst_id: Any = None):
+    """A user whose role grants the permission, created on first use. An analyst's decision is taken by the client's
+    own analyst when it has one: the engine lets an analyst decide only her own clients' cases (owner question 9)."""
     from app.core.roles import Permission, can
     from app.domain.org import User
 
     role = next((r for r in ROLE_ORDER if can(r, Permission(permission))), "admin")
+    if role == "analyst" and analyst_id is not None:
+        owner = db.get(User, analyst_id)
+        if owner is not None:
+            return owner
     if role not in cache:
         user = User(email=f"eval.{role}@bankofstoic.example", name=f"Evaluation {role.replace('_', ' ')}",
                     role=role, password_hash="not-a-login")
@@ -280,7 +285,7 @@ class LoadedBorrower:
                     continue
                 if item.item_type == "intake.unclassified" and not _is_sheet_item(db, item):
                     continue  # the scripted answer is true of a spreadsheet export only; any other document is left
-                user = _decider(db, item.required_permission, deciders)
+                user = _decider(db, item.required_permission, deciders, row.analyst_id)
                 entry = {"type": item.item_type, "decision": scripted[0], "by_role": user.role, "error": None}
                 try:
                     workflow.decide_work_item(db, item, user_id=user.id, user_role=user.role, decision=scripted[0],
