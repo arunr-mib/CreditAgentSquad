@@ -86,6 +86,13 @@ class RunRefused(Exception):
 # ---- plain data ---------------------------------------------------------------------------
 
 
+def filed_by_intake(doc: Any) -> bool:
+    """A document the live cycle filed itself, as against one seeded before it. Intake writes `title_as_printed` to
+    the document's meta whatever the source of its type: a type the filing rules confirm is "system" yet was still
+    filed by Intake, and is graded for filing like any other."""
+    return doc.doc_type_source != "system" or "title_as_printed" in (doc.meta or {})
+
+
 def plain(value: Any) -> Any:
     if isinstance(value, Decimal):
         return format(value, "f")
@@ -301,7 +308,7 @@ class LoadedBorrower:
             {"file_name": d.file_name, "external_id": d.meta.get("external_id"), "doc_type": d.doc_type,
              "doc_type_source": d.doc_type_source, "period_end": plain(d.period_end), "status": d.status,
              "quality": d.meta.get("quality"), "image_only_pages": d.meta.get("image_only_pages", [])}
-            for d in documents.values() if d.doc_type_source != "system"]
+            for d in documents.values() if filed_by_intake(d)]
         covenant_of = {str(t.id): t.covenant_id for t in db.execute(
             select(CovenantTest).where(CovenantTest.cycle_id == cycle.id)).scalars()}
         recording["work_items"] = [

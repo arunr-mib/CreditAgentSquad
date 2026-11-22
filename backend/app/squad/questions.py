@@ -69,6 +69,10 @@ def answer_question(db: Session, item: WorkItem, user: User, option_id: str, *, 
                     note: str = "") -> WorkItem:
     if item.item_type != QUESTION:
         raise ValueError("this item is not a question from Squad")
+    if (item.evidence or {}).get("topic") == "evidence_match":
+        from app.domain.gathering import refuse_unless_holder
+
+        refuse_unless_holder(db, item, user)
     text = ""
     if remember:  # checked before the decision, so a refused request records nothing at all
         label = next((o["label"] for o in item.evidence.get("options", []) if o["id"] == option_id), option_id)

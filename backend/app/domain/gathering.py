@@ -103,6 +103,14 @@ def _requests(db: Session, item: WorkItem, key: str) -> list[LedgerEvent]:
         LedgerEvent.payload["need_key"].astext == key)).scalars())
 
 
+def _live_requests(db: Session, item: WorkItem, key: str) -> list[LedgerEvent]:
+    """Requests that still stand: a withdrawn one is history, not a request."""
+    from app.squad import drafts
+
+    return [e for e in _requests(db, item, key)
+            if drafts.get_draft(db, uuid.UUID(e.entity_id))["status"] != "withdrawn"]
+
+
 def _state(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any],
            attachments: list[LedgerEvent]) -> NeedState:
     base = {"index": need["index"], "doc_type": need["doc_type"], "period_end": need["period_end"],
@@ -110,7 +118,7 @@ def _state(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any],
     met = _met_by(db, need, ret, attachments)
     key = _key(item, ret, need)
     questions = _questions(db, item, key)
-    drafts_ = _requests(db, item, key)
+    drafts_ = _live_requests(db, item, key)
     if met:
         return {**base, "state": "attached", "state_words": f"Attached: {base['words']}", "document_id": met}
     open_q = next((q for q in questions if q.status == "open"), None)
@@ -177,7 +185,7 @@ def _withdraw_requests(db: Session, item: WorkItem, ret: LedgerEvent, need: dict
 
 def _ensure_request(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, Any]) -> None:
     key = _key(item, ret, need)
-    if _requests(db, item, key):
+    if _live_requests(db, item, key):
         return
     from app.domain.credit import Borrower
     from app.squad import drafts
@@ -236,7 +244,10 @@ def _gather_need(db: Session, item: WorkItem, ret: LedgerEvent, need: dict[str, 
 
 def gather_requested(db: Session, item: WorkItem) -> list[NeedState]:
     """Gather what the latest return asked for, then say where each need stands. Safe to run again."""
-    db.execute(select(WorkItem.id).where(WorkItem.id == item.id).with_for_update())  # one gatherer per case at a time
+    # the ledger's lock first, as every writer takes it, then the case row: one gatherer per case at a time and no
+    # lock-order inversion with a path that has already written to the ledger
+    ledger.lock(db)
+    db.execute(select(WorkItem.id).where(WorkItem.id == item.id).with_for_update())
     ret = latest_return(db, item)
     if item.status == "open" and ret is not None:
         officer = _holder_name(db, ret.actor_id)
@@ -271,6 +282,15 @@ def gather_for_borrower(db: Session, borrower_id: uuid.UUID) -> int:
     return n
 
 
+def refuse_unless_holder(db: Session, question: WorkItem, user: User) -> None:
+    """Only the person the case is with may say which document it is: the question is theirs to answer."""
+    item = db.get(WorkItem, uuid.UUID((question.evidence or {})["case_id"]))
+    if item is not None and item.status == "open" and item.assigned_to != user.id:
+        holder = db.get(User, item.assigned_to) if item.assigned_to else None
+        raise PermissionError(f"Only {holder.name if holder else 'the person the case is with'} can answer this: "
+                              "the case is with them.")
+
+
 def apply_match_answer(db: Session, question: WorkItem, user: User, option_id: str) -> None:
     """A person answered Squad's "which document" question: attach their choice, or, for "None of these", look again
     and ask the client only if nothing else is on file. The person is the actor of the attachment, and their choice
@@ -287,7 +307,9 @@ def apply_match_answer(db: Session, question: WorkItem, user: User, option_id: s
         _gather_need(db, item, ret, need, _holder_name(db, ret.actor_id))
         return
     doc = db.get(Document, uuid.UUID(ev["option_documents"][option_id]))
-    if doc is None or doc.status == "rejected":
+    if doc is None or doc.borrower_id != item.borrower_id:
+        raise ValueError("That document is not on this client's file.")
+    if doc.status == "rejected":
         raise ValueError("That document has been set aside; choose another, or None of these.")
     if str(doc.id) not in attached_ids(db, item):
         _attach(db, item, ret, need, doc, ("user", str(user.id)), f"Confirmed as the {_asked(need)}.")

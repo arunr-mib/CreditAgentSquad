@@ -389,3 +389,73 @@ def test_n2_the_thread_says_by_kind_who_attached(db, world):
     kinds = [m["by_kind"] for m in build_thread(db, world["borrower"].id, world["analyst"])["messages"]
              if m["type"] == "attached"]
     assert kinds == ["squad", "user"]
+
+
+# ---- fix round 2 ----
+def test_r1_a_withdrawn_request_is_replaced_when_the_attachment_is_rejected(db, world):
+    item = _returned(db, world, [NEED])
+    (first,) = _requests(db, world["borrower"])
+    doc = _doc(db, world["borrower"])
+    gathering.gather_for_borrower(db, world["borrower"].id)
+    assert drafts.get_draft(db, first["draft_id"])["status"] == "withdrawn"
+    doc.status = "rejected"
+    states = gathering.gather_requested(db, item)
+    live = [d for d in _requests(db, world["borrower"]) if d["status"] == "draft"]
+    assert len(live) == 1 and live[0]["draft_id"] != first["draft_id"]
+    assert states[0]["state"] == "requested_from_client" and states[0]["draft_id"] == live[0]["draft_id"]
+    gathering.gather_requested(db, item)
+    assert len([d for d in _requests(db, world["borrower"]) if d["status"] == "draft"]) == 1
+
+
+def test_r1_a_need_whose_only_draft_was_withdrawn_does_not_read_asked_the_client(db, world):
+    item = _returned(db, world, [NEED])
+    (draft,) = _requests(db, world["borrower"])
+    drafts.withdraw_draft(db, draft["draft_id"])
+    assert gathering.need_states(db, item)[0]["state"] == "not_gathered"
+
+
+def test_r4_only_the_person_the_case_is_with_answers_a_match_question(db, world):
+    from app.domain.org import User
+
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    option = next(iter(q.evidence["option_documents"]))
+    by_name = {u.name: u for u in db.execute(select(User)).scalars()}
+    for who in (world["officer"], _user_named(db, "tomas.keller"), _user_named(db, "dana.whitfield")):
+        with pytest.raises(PermissionError, match="Only .* can answer"):
+            answer_question(db, q, who, option)
+    assert q.status == "open" and by_name
+    answer_question(db, q, world["analyst"], option)
+    assert len(_events(db, item, "work_item.evidence_attached")) == 1
+
+
+def _user_named(db, start):
+    from .conftest import _user
+
+    return _user(db, start)
+
+
+def test_r4_the_answer_route_refuses_someone_else_with_403(db, client, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    db.commit()
+    sign_in(client, "helen.strand")
+    r = client.post(f"/api/v1/work-items/{q.id}/answer", json={"option_id": "none"})
+    assert r.status_code == 403 and "can answer" in r.json()["detail"]
+
+
+def test_r5_an_option_naming_another_clients_document_attaches_nothing(db, world):
+    _doc(db, world["borrower"], title="Statement A")
+    _doc(db, world["borrower"], title="Statement B")
+    item = _returned(db, world, [NEED])
+    (q,) = _questions(db, item)
+    theirs = _doc(db, world["other"])
+    option = next(iter(q.evidence["option_documents"]))
+    q.evidence = {**q.evidence, "option_documents": {**q.evidence["option_documents"], option: str(theirs.id)}}
+    with pytest.raises(ValueError, match="not on this client"):
+        answer_question(db, q, world["analyst"], option)
+    assert _events(db, item, "work_item.evidence_attached") == [] and theirs.doc_type_source == "system"
