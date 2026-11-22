@@ -33,7 +33,7 @@ def seed_squad_demo(db: Session) -> dict:
                                                  WorkItem.evidence["dedupe_key"].astext == DEMO_KEY)).scalars().first()
     item = existing or raise_question(
         db, borrower_id=asked.id, title="How should I map this line?",
-        question="Is 'Recurring revenue' on page 3 ARR or MRR?", options=OPTIONS, topic="line_mapping",
+        question="Is the 'Recurring revenue' line ARR or MRR?", options=OPTIONS, topic="line_mapping",
         evidence={"dedupe_key": DEMO_KEY})
     found = [d for d in drafts.drafts_for(db, reminded.id) if d["kind"] == "demo_reminder"]
     draft = found[0] if found else drafts.create_draft(

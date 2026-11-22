@@ -10,7 +10,6 @@ from app.core.db import Base, CreatedMixin, IdMixin
 from app.domain import work_items
 from app.domain.common import Date, Decimal, Mapped, Numeric, String, fk, json_col, mapped_column
 from app.domain.documents import Document
-from app.domain.money_text import dollars
 
 KINDS = ("equity_round", "extension", "milestone_tranche", "venture_debt")
 STATUSES = ("expected", "signed", "closed", "slipped")
@@ -114,13 +113,16 @@ def check_funding_events(db: Session, as_of: date, *, actor: tuple[str, str] = (
                                "expected_close": event.expected_close, "was": previous, "as_of": as_of})
         work_items.raise_item(
             db, borrower_id=event.borrower_id, item_type="funding_slipped", severity="high",
-            title=f"Expected {event.kind.replace('_', ' ')} of {dollars(event.amount)} has slipped",
+            # no figure in a title: it is shown unsourced (home, Approvals, the thread, the ledger). The amount is in
+            # the evidence as the funding event's recorded value, which the case shows with its source.
+            title=f"Expected {event.kind.replace('_', ' ')} has slipped",
             question=f"The {event.kind.replace('_', ' ')} expected to close on {event.expected_close.isoformat()} "
                      "has not closed. What should we do: ask the client for a new timeline (Squad drafts the "
                      "email for you to send), note it and keep watching, reserve the bank's rights, or "
                      "escalate to the credit officer?",
             allowed_decisions=list(SLIPPED_DECISIONS), blocks_stage=False,
-            evidence={"funding_event_id": str(event.id), "expected_close": event.expected_close.isoformat()},
+            evidence={"funding_event_id": str(event.id), "expected_close": event.expected_close.isoformat(),
+                      "kind": event.kind, "amount": str(event.amount)},
             dedupe_key=f"funding_slipped:{event.id}", actor=actor)
     db.flush()
     return list(events)

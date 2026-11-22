@@ -311,7 +311,8 @@ def chase_missing(db: Session, *, borrower: Borrower, cycle: Cycle, today: date)
     return raise_item(
         db, borrower_id=borrower.id, cycle_id=cycle.id, stage="awaiting_package",
         item_type="intake.missing_document", severity="high" if (today - oldest_due).days > 15 else "medium",
-        title=f"{borrower.name}: reporting is {(today - oldest_due).days} days past due",
+        # no figure in a title (final review I3): the days past due are counted in the evidence, the due date is shown
+        title=f"{borrower.name}: reporting is past due",
         question="Reporting for this period is past due. Send the chaser, or record why it is not needed?",
         allowed_decisions=["chaser_sent", "extension_granted", "received_elsewhere"],
         required_permission="upload_document",

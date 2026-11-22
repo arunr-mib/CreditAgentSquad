@@ -81,6 +81,18 @@ SEEDED_ITEMS = {
 SEEDED_WHERE = {"intake.unclassified": ("intake", "upload_document")}
 
 
+
+# A stand-in item's title is the answer key's summary, unless the summary states a figure (a year, a count): a title
+# is shown unsourced on home, Approvals and the thread, so it then reads in words (final review I3).
+_SEEDED_TITLE_WORDS = {"intake.unclassified": "a file names no company or month: which client and month?"}
+
+
+def _seeded_title(expected: dict) -> str:
+    from app.squad.words import figure_free
+
+    summary = str(expected["summary"])
+    return summary if figure_free(summary) else _SEEDED_TITLE_WORDS.get(expected["type"], "needs a person")
+
 def halted(truth: dict[str, Any]) -> bool:
     return any(x["type"] in HALTING for x in truth["expected"]["exceptions"])
 
@@ -369,7 +381,7 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
                     raise_item(
                         db, borrower_id=borrower.id, cycle_id=cycle.id, stage=stage,
                         item_type=expected["type"], severity="high" if blocks else "medium",
-                        title=f"{borrower.name}: {expected['summary']}", question=question,
+                        title=f"{borrower.name}: {_seeded_title(expected)}", question=question,
                         allowed_decisions=decisions, required_permission=permission, blocks_stage=blocks,
                         evidence={"seeded": True, "note": "Stand-in for the item the Spreading Agent raises on a live run.",
                                   "subject": expected.get("subject")},

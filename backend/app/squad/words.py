@@ -150,6 +150,14 @@ def _plain(key: str) -> str:
     return key.replace("_", " ")
 
 
+def figure_free(text: str) -> bool:
+    """True when the text states no figure, by the guardrail's own detector (`check_narrative` with no facts in scope):
+    dates, periods and section references pass; an amount, a ratio or a count does not."""
+    from app.guardrails.narrative import check_narrative
+
+    return not check_narrative(text, {})
+
+
 def describe_event(action: str, payload: dict[str, Any] | None, document_title: str | None = None) -> str:
     """A ledger event's payload in a few plain words: the decision and its reason first, then whatever else is there.
     The one source for Oversight's ledger and the client file's history; the browser keeps no table of its own."""
@@ -164,7 +172,7 @@ def describe_event(action: str, payload: dict[str, Any] | None, document_title: 
         parts.append(decision_words(text("decision")))
     if text("reason") and not action.startswith("agent."):  # an agent event's reason is exception or model text: not shown
         parts.append(f"“{text('reason')}”")
-    if text("title"):
+    if text("title") and figure_free(str(text("title"))):  # a title is shown unsourced: one with a figure is dropped
         parts.append(str(text("title")))
     if text("key"):
         parts.append(str(text("key")))

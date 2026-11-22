@@ -225,3 +225,23 @@ def test_ferrogate_terms_are_v1_superseded_then_v2_approved(seeded):
     assert [(r.version, r.status) for r in rows] == [(1, "superseded"), (2, "approved")]
     assert rows[0].effective_to == _day("2026-05-30") and rows[1].effective_from == _day("2026-05-31")
 
+
+
+def test_no_ledger_summary_work_item_title_or_question_carries_an_unsourced_figure(seeded):
+    """Final review I3: every event of the seeded book reads without a figure (the guardrail's own detector), and so
+    does every work item's title and question, which home, Approvals and the thread show without a source."""
+    from app.guardrails.narrative import check_narrative
+    from app.squad.words import describe_event
+
+    db, _, _ = seeded
+    bad = []
+    for e in db.execute(select(LedgerEvent).order_by(LedgerEvent.seq)).scalars():
+        # a file's own name ("afs-2024.pdf") is an identifier, not a figure
+        summary = describe_event(e.action, {k: v for k, v in (e.payload or {}).items() if k != "file_name"})
+        if check_narrative(summary, {}):
+            bad.append((e.action, summary))
+    for w in db.execute(select(WorkItem)).scalars():
+        for text in (w.title, w.question):
+            if check_narrative(text or "", {}):
+                bad.append((w.item_type, text))
+    assert bad == []

@@ -258,7 +258,10 @@ def test_a_closed_event_cannot_be_edited(client, lifecycle):
     assert r.status_code == 422 and "final" in r.text
 
 
-def test_the_slipped_title_prints_the_amount_as_dollars_not_a_raw_decimal(db):
+def test_the_slipped_title_carries_no_figure_and_the_amount_stays_a_recorded_value(db):
+    """Final review I3: a title is shown unsourced (home rows, Approvals, the thread, the ledger), so it names no
+    figure. The amount is kept in the evidence as the funding event's stored value, shown with its source."""
     item = _slipped_item(db)
-    assert item.title == "Expected equity round of $8,000,000 has slipped"
-    assert ".00" not in item.title
+    assert item.title == "Expected equity round has slipped"
+    assert not any(ch.isdigit() for ch in item.title + item.question.split("expected to close on")[0])
+    assert item.evidence["amount"] == "8000000.00" and item.evidence["kind"] == "equity_round"

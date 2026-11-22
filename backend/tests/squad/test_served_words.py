@@ -126,3 +126,35 @@ def test_a_ledger_action_reads_in_words():
     assert action_words("cycle.stage_changed") == "Cycles: stage changed"
     assert action_words("odd_family.thing") == "Odd family: thing"
     assert action_words("bare") == "Bare"
+
+
+# ---- final review I3: no figure in a ledger summary unless it was rendered from a stored fact ----
+
+def test_a_title_that_carries_a_figure_is_dropped_from_the_summary():
+    assert _event("work_item.raised", {"title": "Expected equity round of $15,000,000 has slipped"}) == ""
+    assert _event("work_item.raised", {"title": "Cash below 1.5x"}) == ""
+    assert _event("work_item.raised", {"title": "Bank statement for September 2026 is overdue"}) \
+        == "Bank statement for September 2026 is overdue"
+
+
+def test_the_funding_slip_reads_in_the_ledger_without_its_amount(db, world):
+    from datetime import date
+    from decimal import Decimal as D
+
+    from app.core.ledger import LedgerEvent
+    from app.domain.funding import FundingEvent, check_funding_events
+    from app.guardrails.narrative import check_narrative
+    from sqlalchemy import select
+
+    db.add(FundingEvent(borrower_id=world["borrower"].id, kind="equity_round", amount=D("15000000"),
+                        expected_close=date(2026, 11, 1), status="expected"))
+    db.flush()
+    check_funding_events(db, date(2026, 11, 20))
+    events = list(db.execute(select(LedgerEvent).where(LedgerEvent.action.in_(
+        ("work_item.raised", "funding_event.slipped")))).scalars())
+    assert events
+    for e in events:
+        summary = describe_event(e.action, e.payload)
+        assert check_narrative(summary, {}) == [], (e.action, summary)
+        assert "15,000,000" not in summary and "$" not in summary
+
