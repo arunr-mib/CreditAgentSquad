@@ -76,8 +76,10 @@ uv run pytest                                # everything, about 13 minutes
 uv run pytest -m "not slow"                  # skips the full-book and tampering suites
 uv run python -m evals.run --mode standin    # all 21 borrowers through the live cycle; writes evals/results/latest.md
 PYTHONPATH=backend uv run python -m app.cli verify-ledger   # prints the head; add --expect-head <seq>:<hash> to compare
-(cd frontend && pnpm typecheck && pnpm lint && pnpm test && pnpm build)
+(cd frontend && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm e2e:squad)
 ```
+
+The Squad journeys need the seeded stack and `uv run python -m app.squad_demo`; they record a hand-off and a decision, so run them on a fresh seed.
 
 The stand-in evaluation answers each agent request from the synthetic book's ground truth. It proves the pipeline, the workflow and the grader; it says nothing about how a model reads these documents. A live run needs `ANTHROPIC_API_KEY` in `.env`, is billable, and should wait until the oracle (`synthetic/oracle.csv`) is signed.
 
@@ -96,4 +98,4 @@ The stand-in evaluation answers each agent request from the synthetic book's gro
 | Publishing | `backend/app/publishing/` |
 | Synthetic bank | `synthetic/` |
 | Evaluation harness | `evals/` |
-| Workspace | `frontend/` (design rules in `frontend/DESIGN.md`) |
+| Workspace | Credit Squad: `frontend/src/squad/` (design rules in `frontend/DESIGN.md`; spec `docs/specs/2026-11-20-squad-experience-design.md`) |

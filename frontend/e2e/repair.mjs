@@ -5,8 +5,7 @@
 // and assert what a first correction does, so they need a fresh load each time; 3, 4 and 5 can be repeated.
 // Journey 1 is the held-figures panel: what is on file, what was read, why it was held, and one clear action.
 //
-// The queue selectors were scoped to the command centre's exception queue for the workspace drawer (cockpit
-// redesign, 18 Nov 2026); these journeys have not been re-run since, because they need a repair-seeded database.
+// Journeys enter a held item through its client thread (`/clients/<code>?case=<id>`), the way Squad does.
 //
 // Usage: node e2e/repair.mjs [--only 1,3]     (BASE_URL=http://localhost:5173 by default; HEADED=1 to watch)
 // Uses the globally installed Playwright and the axe-core dev dependency; nothing is downloaded.
@@ -21,12 +20,12 @@ const { chromium } = require('playwright');
 const BASE = process.env.BASE_URL ?? 'http://localhost:5173';
 const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 const ANALYST = 'priya.raman@bankofstoic.example';
+// Squad gives a client's open work to that client's analyst: Harrowgate's is Jules Hartmann.
+const HARROWGATE_ANALYST = 'jules.hartmann@bankofstoic.example';
 const MANAGER = 'dana.whitfield@bankofstoic.example';
 const here = dirname(fileURLToPath(import.meta.url));
 const shotsDir = resolve(here, '..', 'screenshots');
 const failuresDir = resolve(here, 'failures');
-// The command centre's queue. The workspace drawer beside it can hold tables of its own.
-const QUEUE_ROWS = 'section[aria-label="Exception queue"] table tbody tr[data-row]';
 mkdirSync(shotsDir, { recursive: true });
 
 function assert(condition, message) {
@@ -39,6 +38,19 @@ async function signIn(page, email) {
   await page.getByLabel('Password').fill(PASSWORD);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   await page.waitForURL(`${BASE}/`);
+  await page.locator('.sq-main').waitFor();
+}
+
+/** Opens a client's open item of one type in its thread, focused, with its held figures showing. */
+async function openHeld(page, code, itemType = 'spread.value_unverified') {
+  const borrowers = await (await page.request.get(`${BASE}/api/v1/borrowers`)).json();
+  const borrower = borrowers.find((b) => b.code === code);
+  const items = await (await page.request.get(`${BASE}/api/v1/work-items?item_type=${itemType}&borrower_id=${borrower.id}`)).json();
+  assert(items.length > 0, `an open ${itemType} for ${code} (load a fresh database with e2e/seed_repair.py)`);
+  await page.goto(`${BASE}/clients/${code}?case=${items[0].id}`);
+  const panel = page.locator(`[data-work-item="${items[0].id}"][data-focused="true"]`);
+  await panel.locator('[data-held-figures]').waitFor();
+  return { panel, itemId: items[0].id, borrower };
 }
 
 async function shot(page, name) {
@@ -103,18 +115,12 @@ const journeys = [
   {
     name: 'an analyst opens a held spread, reads what is on file, what was read and why each figure was held, files two swapped readings with one action, enters two figures, sees what was recalculated and finishes the spread',
     async run(page) {
-      await signIn(page, ANALYST);
-      const rows = page.locator(QUEUE_ROWS);
-      const held = rows.filter({ hasText: 'could not be verified on the page' });
-      assert((await held.count()) > 0, 'an open held spread is in the queue (load a fresh database with e2e/seed_repair.py)');
-      const before = await rows.count();
-      await held.first().click();
-      const panel = page.locator('[data-work-item]');
+      await signIn(page, HARROWGATE_ANALYST);
+      const { panel, itemId, borrower } = await openHeld(page, 'harrowgate-precision');
       const section = panel.locator('[data-held-figures]');
       const pair = section.locator('[data-swapped-pair]');
       const swap = pair.getByRole('button', { name: 'File both under the lines their labels name' });
       await swap.waitFor();
-      const itemId = await panel.getAttribute('data-work-item');
 
       const row = (key) => section.locator(`[data-held-row="${key}"]`);
       const printed = async (key) => ((await row(key).locator('[data-read] .tnum').first().textContent()) ?? '').trim();
@@ -184,7 +190,7 @@ const journeys = [
       await panel.getByRole('radio', { name: /Values confirmed/ }).check();
       await panel.getByRole('button', { name: 'Record decision' }).click();
       await panel.getByText(/The server said: “these figures were not found on the page and have no value to confirm; enter them first/).waitFor();
-      assert((await panel.getAttribute('data-item-status')) === 'open', 'the item is still open after the refusal');
+      assert((await panel.locator('[data-case]').getAttribute('data-item-status')) === 'open', 'the item is still open after the refusal');
 
       // Another choice: a different figure. The form checks the value and the reason before anything is sent.
       await row('bs.accrued_liabilities').getByRole('button', { name: 'Enter a different figure for Accrued liabilities' }).click();
@@ -250,26 +256,27 @@ const journeys = [
       await panel.getByRole('radio', { name: /Values corrected/ }).check();
       await panel.getByRole('form', { name: 'Record a decision' }).getByLabel(/Reason/).fill('Two rows were filed under each other’s lines and two figures were entered from the page.');
       await panel.getByRole('button', { name: 'Record decision' }).click();
-      await page.getByText('Recorded: Values corrected').first().waitFor();
-      await page.waitForFunction((id) => !document.querySelector(`[data-work-item="${id}"][data-item-status="open"]`), itemId);
-      // One item fewer: the held spread left the queue and no new question was raised, so the corrected statements foot.
-      await page.waitForFunction(([selector, expected]) => document.querySelectorAll(selector).length === expected, [QUEUE_ROWS, before - 1]);
-      assert((await rows.filter({ hasText: 'could not be verified on the page' }).count()) === 0, 'the held spread left the queue');
+      await page.waitForFunction((id) => document.querySelector(`[data-case="${id}"]`)?.getAttribute('data-item-status') === 'decided', itemId);
+      // The held spread is decided and no new question was raised, so the corrected statements foot.
+      const open = await (await page.request.get(`${BASE}/api/v1/work-items?item_type=spread.does_not_foot&borrower_id=${borrower.id}`)).json();
+      assert(open.length === 0, 'no new does-not-foot question was raised for the borrower');
+      const stillHeld = await (await page.request.get(`${BASE}/api/v1/work-items?item_type=spread.value_unverified&borrower_id=${borrower.id}`)).json();
+      assert(stillHeld.length === 0, 'the held spread is no longer open');
       await shot(page, 'repair-06-decision-recorded');
 
       // The corrected figure is what the spread grid now shows, entered by a person.
-      await page.goto(`${BASE}/borrowers/harrowgate-precision/spreads`);
-      await page.waitForSelector('[data-ready]');
+      await page.goto(`${BASE}/clients/harrowgate-precision/file/spreads`);
+      await page.locator('.sq-file[data-ready]').waitFor();
       const line = page.locator('table tbody tr').filter({ hasText: 'Accrued liabilities' }).first();
-      await line.getByRole('button', { name: new RegExp(`^${accruedPrinted}, Accrued liabilities, .*Entered by a person`) }).waitFor();
+      await line.getByRole('button', { name: new RegExp(`^\\$${accruedPrinted},000, Accrued liabilities, .*Entered by a person`) }).waitFor(); // the client file shows whole dollars
     },
   },
   {
     name: 'an analyst corrects a figure from the source drawer, sees a covenant outcome change, and the screen beneath shows the new figure; a calculated figure offers no correction',
     async run(page) {
       await signIn(page, ANALYST);
-      await page.goto(`${BASE}/borrowers/halvorsen-plastics/spreads`);
-      await page.waitForSelector('[data-ready]');
+      await page.goto(`${BASE}/clients/halvorsen-plastics/file/spreads`);
+      await page.locator('.sq-file[data-ready]').waitFor();
       const line = page.locator('table tbody tr').filter({ hasText: 'Cash paid for income taxes' }).first();
       const cell = line.getByRole('button').last();
       const before = ((await cell.getAttribute('aria-label')) ?? '').split(', Cash paid')[0];
@@ -306,14 +313,14 @@ const journeys = [
       // The grid beneath the drawer was read again: it shows the new figure, entered by a person.
       await drawer.getByRole('button', { name: 'Close the source' }).click();
       await drawer.waitFor({ state: 'detached' });
-      const after = Number(corrected) / 1000;
-      await line.getByRole('button', { name: new RegExp(`^${after.toLocaleString('en-US')}, Cash paid for income taxes, .*Entered by a person`) }).waitFor();
-      assert(before !== after.toLocaleString('en-US'), 'the figure in the grid changed');
+      const after = `$${Number(corrected).toLocaleString('en-US')}`; // the client file shows whole dollars
+      await line.getByRole('button', { name: new RegExp(`^\\${after}, Cash paid for income taxes, .*Entered by a person`) }).waitFor();
+      assert(before !== after, 'the figure in the grid changed');
 
       // A calculated figure cannot be corrected; the drawer says where the correction belongs.
-      await page.goto(`${BASE}/borrowers/halvorsen-plastics/covenants`);
-      await page.waitForSelector('[data-ready]');
-      const test = page.locator('table tbody tr[data-row]').filter({ hasText: 'Fixed Charge Coverage Ratio' }).first();
+      await page.goto(`${BASE}/clients/halvorsen-plastics/file/covenants`);
+      await page.locator('.sq-file[data-ready]').waitFor();
+      const test = page.locator('table[aria-label="Covenants"] tbody tr').filter({ hasText: 'Fixed Charge Coverage Ratio' }).first();
       await test.getByText(/Breach/).first().waitFor();
       await test.getByRole('button', { name: /Fixed Charge Coverage Ratio, .*Calculated by code/ }).first().click();
       await drawer.getByText('Calculated by code; correct the figure it was calculated from.', { exact: false }).waitFor();
@@ -343,9 +350,14 @@ const journeys = [
       const find = page.getByRole('combobox', { name: 'Find a figure on this sheet' });
       await find.waitFor();
       assert(await find.evaluate((element) => element === document.activeElement), 'the picker’s search field takes focus');
-      await find.pressSequentially('total debt ebitda 2026');
-      const options = page.getByRole('option');
-      assert((await options.count()) === 1, `one figure matches, got ${await options.count()}`);
+      // The sheet's labels carry the period ("Total debt to EBITDA, Sep 30, 2026", beside the same ratio a year earlier
+      // and the leverage covenant's own rows), so the search names the whole label and the option is found by it.
+      const LABEL = 'Total debt to EBITDA, Sep 30, 2026';
+      await find.pressSequentially(LABEL);
+      // The figures listbox only: the review room's route form has <option> elements of its own.
+      const options = page.getByRole('listbox', { name: 'Figures on this review sheet' }).getByRole('option');
+      assert((await options.count()) === 1, `one figure matches ${LABEL}, got ${await options.count()}: ${(await options.allTextContents()).join(' | ')}`);
+      assert(((await options.first().locator('span').first().textContent()) ?? '').trim() === LABEL, 'the one match is the label asked for');
       const picked = ((await options.first().locator('.tnum').textContent()) ?? '').trim();
       await shot(page, 'repair-09-commentary-insert-figure');
       await expectAccessible(page, '[data-commentary-editor]', 'the commentary editor');
@@ -432,28 +444,29 @@ const journeys = [
     },
   },
   {
-    name: 'an analyst files a PDF on the borrower’s documents tab; a file that is not a PDF is refused in the server’s words',
+    name: 'an analyst files a PDF in the client file’s documents view; a file that is not a PDF is refused in the server’s words',
     async run(page) {
       await signIn(page, ANALYST);
-      await page.goto(`${BASE}/borrowers/larkspur-environmental/documents`);
-      await page.waitForSelector('[data-ready]');
-      const rows = page.locator('table tbody tr[data-row]');
+      await page.goto(`${BASE}/clients/larkspur-environmental/file/documents`);
+      await page.locator('.sq-file[data-ready]').waitFor();
+      await page.getByRole('table', { name: 'Documents' }).waitFor();
+      const rows = page.locator('table[aria-label="Documents"] tbody tr');
       const before = await rows.count();
       await page.getByRole('button', { name: 'File a document' }).click();
       const form = page.getByRole('form', { name: 'File a document' });
-      const file = form.getByLabel('PDF file');
+      const file = form.getByLabel('Document file');
       await expectKeyboardReachable(page, form);
       await expectFocusRing(page, file, 'the file field');
 
       // Nothing is sent without a file, and the field says why.
       await form.getByRole('button', { name: 'File the document' }).click();
-      await form.getByText('Choose a PDF file first.').waitFor();
+      await form.getByText('Choose a document file first.').waitFor();
       assert((await file.getAttribute('aria-invalid')) === 'true', 'the empty file field is marked invalid');
 
       // The server is the judge of what a PDF is.
       await file.setInputFiles({ name: 'meeting-notes.pdf', mimeType: 'application/pdf', buffer: Buffer.from('These are notes typed into a text file, not a PDF.') });
       await form.getByRole('button', { name: 'File the document' }).click();
-      await form.getByRole('alert').getByText('The server said: “Only PDF files are accepted.”').waitFor();
+      await form.getByRole('alert').getByText('The server said: “Only PDF, Excel (.xlsx) and CSV files are accepted.”').waitFor();
       assert((await rows.count()) === before, 'nothing was filed');
 
       const title = `Compliance certificate, resent ${new Date().toISOString().slice(0, 19)}`;
@@ -467,13 +480,13 @@ const journeys = [
       // The list was read again: the document is on file, unclassified.
       const row = rows.filter({ hasText: title });
       await row.waitFor();
-      await row.getByText('Unclassified').waitFor();
-      await page.waitForFunction((expected) => document.querySelectorAll('table tbody tr[data-row]').length === expected, before + 1);
+      await row.getByText('Not yet classified').waitFor();
+      await page.waitForFunction((expected) => document.querySelectorAll('table[aria-label="Documents"] tbody tr').length === expected, before + 1);
       await shot(page, 'repair-11-document-upload');
       await expectAccessible(page, '[data-upload-document]', 'the upload form with its result');
       await result.getByRole('link', { name: /Open it/ }).click();
-      await page.waitForURL(/\/documents\/[0-9a-f-]+/);
-      await page.locator('main [data-pdf-page="ready"]').waitFor({ timeout: 30000 });
+      await page.waitForURL(/\/clients\/larkspur-environmental\/file\/documents\?document=[0-9a-f-]+/);
+      await page.locator('[data-source-drawer] [data-pdf-page="ready"]').first().waitFor({ timeout: 30000 });
     },
   },
   {

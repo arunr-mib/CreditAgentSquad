@@ -50,6 +50,8 @@ Text tokens meet 4.5:1 on canvas, surface, sunken and hover; marks and control b
 
 **One mark per severity, the same on every screen.** Critical is red, high is amber, medium is ink, low is hollow. Critical and high used to share amber so that red meant only a covenant breach; the owner's review (18 November 2026) found that two levels with one colour cannot be told apart, so red now means a covenant breach or a critical item. A covenant breach is still named in red where it occurs (the question, the outcome).
 
+`src/squad/looks.ts` bridges these names to each look, because `src/design/` components and the case and repair parts still read them.
+
 ## Type
 
 | Token | Size / line | Weight | Use |
@@ -118,11 +120,11 @@ The ledger is the model. A table has a 1 px ink rule under its header and hairli
 - The agent never types a number. Its text carries `{{fact:<id>}}`; `AgentText` renders the stored fact with its glyph and source.
 - Every forced change by a guardrail is listed under the note.
 
-## Shell
+## Shell (Credit Squad)
 
-Left navigation (Command centre, Portfolio, Borrowers, Calendar, Review room, Agent activity, Governance), top bar with the command-palette trigger, the Copilot, the simulated "as of" date read from the server's clock, and the user menu with the person's name, role and sign-out. The current navigation item is an ink label on a sunken ground; there is no coloured indicator. A skip link leads to the content. Signed out, only the sign-in screen is shown; a session that ends anywhere returns the person to it.
+Collapsible left navigation: Squad with its needs-you count, My Portfolio, Approvals where the server offers it, Review room, Open cases by name when expanded and as one button when collapsed, Oversight for administrators and reviewers, the person, the look and sign-out. The presence line under the mark carries every confirmation. The evidence drawer pushes content. Ctrl K opens the palette; there is no Ctrl J (the Copilot is the composer in each thread). A skip link leads to the content. Signed out, only the sign-in screen is shown; a session that ends anywhere returns the person to it. The old cockpit (v1) is at git 2292b38; its addresses redirect to the Squad screen that replaced them (`src/squad/redirects.ts`).
 
-## The product on real data (`src/api`, `src/source`, `src/screens`)
+## The product on real data (`src/api`, `src/source`, `src/squad`)
 
 | Piece | What it is for | Rule |
 |---|---|---|
@@ -132,17 +134,21 @@ Left navigation (Command centre, Portfolio, Borrowers, Calendar, Review room, Ag
 | `FactFigure`, `SourcedFigure`, `StaticFigure` | A stored fact; a figure that is a field of a record, a line of a calculation or a total; a line shown inside its own source | All three carry a glyph. The first two open the drawer |
 | `CalculationBreakdown` | A calculation as code ran it | Lines built from several periods list those periods beneath them; named results carry a rule above; the result a double rule below |
 | `AgentBody` | Agent text on real data | `{{fact:<id>}}` becomes a figure that opens the drawer; an unresolved reference is shown as unresolved |
-| `WorkItemPanel` | One question for a person | Evidence rows open their sources; the decision is a choice, a reason and one primary button; a refusal from the server is named and quoted |
+| `squad/case/parts` | The evidence rows, the agent's recommendation with its guardrail notes, and the open questions that may change a result, shown inside `CasePanel` | Evidence rows open their sources; labels are the server's words |
+| `squad/case/CasePanel` | One case: the router's view, the evidence, and only the actions the server allows | A refusal is named and quoted; a second-person refusal is never pre-empted |
 | `Load`, `Notice`, `EmptyCard` | Loading, error and empty states | Every screen goes through `Load`; a notice has a hairline on all four sides and a dot plus a word |
-| `work/HeldFigures` | Repair of a held spread, on the work item | Each held figure in three labelled rows: On file (the line and the stored value, or "Nothing on file"), Read from the document (the label and figure as printed; it opens its page), Why it was held. One primary action whose label says what it does (File under the named line, Keep as read, Enter the figure, Reject this reading), the other choices as quiet links, a sentence before the click on what code will then do, and the API's recalculation summary after it. Two readings that look swapped get one action that files both. The decision that finishes the spread stays with the person, below |
+| `squad/case/HeldFigures` | Repair of a held spread, on the work item | Each held figure in three labelled rows: On file (the line and the stored value, or "Nothing on file"), Read from the document (the label and figure as printed; it opens its page), Why it was held. One primary action whose label says what it does (File under the named line, Keep as read, Enter the figure, Reject this reading), the other choices as quiet links, a sentence before the click on what code will then do, and the API's recalculation summary after it. Two readings that look swapped get one action that files both. The decision that finishes the spread stays with the person, below |
 | `repair/FigureForm`, `Refusal` | The value and the reason for changing a figure; a refusal beside the control that caused it | The value is entered as it is stored (whole dollars) and read back before it is sent. A reason is always required. A refusal is announced and quotes the server |
 | `repair/RecalculationNote` | What code did after a figure changed, in words | Results retired, totals recalculated or the statements no longer foot, metrics, and each covenant whose outcome changed, before and after. Announced (`aria-live`). It restates the API's summary and claims nothing else |
 | `source/ChangeFigure` | Correct or reject the figure in the source drawer | Only for a role that may confirm a spread. A calculated figure offers neither and says where the correction belongs |
-| `review/Commentary`, `CommentaryEditor` | Write or edit a section of commentary in place | Figures are picked from the review sheet and stored as `{{fact:<id>}}`, never typed as references; the text is shown as it will read. The server's warnings are shown as given. Saving never approves |
-| `borrower/UploadDocument` | File a PDF for the borrower | Only the fields the route takes (file, title). The answer is shown as the server gives it |
-| `borrower/PackageSchedules` | Schedules where packages are listed: list, create, run what is due | "Prepared, not released": a run never releases. Creating and running need a role that may release |
-| `screens/AgentActivity` | Agent runs as a timeline, newest first, by day (UTC) | The agent's name with the iris mark, the task in plain words, the borrower as a link. A tag only for a run that failed or was refused. One mark per guardrail check the run's own record names, with the result recorded there (passed is green with a check; changed or blocked is amber): a run that names no check gets no mark and says so. Duration (from the server), tokens and model in mono. The selected run's steps sit beside the timeline, or under its row below 1400 px. With no runs it says how one starts, that each is billable, and the server's reason where no model is connected |
-| `screens/Governance` | Roles and permissions, policy rules, ledger, agent inventory, clock | The matrix is the six roles against every permission as `/governance/roles` returns them: a dot is a grant, a ringed dot a grant that never covers one's own work; below 1024 px each permission lists the roles that hold it. The policy rules are tables from `/governance/policy`: every setting is read by the server from the code that enforces it, and each row names that module. Nothing on either tab is typed into the page |
+| `squad/clientfile/review/Commentary`, `CommentaryEditor` | Write or edit a section of commentary in place | Figures are picked from the review sheet and stored as `{{fact:<id>}}`, never typed as references; the text is shown as it will read. The server's warnings are shown as given. Saving never approves |
+| `squad/clientfile/UploadDocument` | File a PDF for the borrower | Only the fields the route takes (file, title). The answer is shown as the server gives it |
+| `squad/clientfile/PackageSchedules` | Schedules where packages are listed: list, create, run what is due | "Prepared, not released": a run never releases. Creating and running need a role that may release |
+| `squad/clientfile/Packages` | Prepare, download, verify against the snapshot, release | The server refuses a draft-commentary or unverified package, or a role without `release_package`, and the card quotes it |
+| `squad/review/ReviewRoom` | Meetings with their phases before, during, after and closed | Review sheets from stored facts; commentary edited in place and approved through the case; actions |
+| `squad/clientfile` | The client file | Every figure is a stored fact or a record field with its glyph; unmeasured is "Not measured" or the stored note, never zero |
+| `squad/clientfile/Measure` | Trend bars | Plot positions only; an unmeasured period is an outline |
+| `squad/oversight` | Oversight | Runs with their steps and named checks; the ledger with an action filter, hidden sign-ins, paging and verification; roles and permissions, the policy register, the agent inventory, the signal rules; the evaluation with shares as the server's percentages; the clock for the role that may move it. Event summaries are written by the server |
 
 After a figure is confirmed, corrected, rejected or keyed, every query is read again, so each screen shows the figures on file.
 
@@ -152,10 +158,10 @@ A fact loaded from the synthetic book carries no page of its own. The source dra
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm test && pnpm build
-pnpm e2e                              # five journeys against the running seeded stack (API on 8000, workspace on 5173)
-node scripts/screenshots.mjs          # the real screens, signed in, 1440 x 900 at scale 2, into screenshots/ (--full adds full-page captures)
+pnpm e2e:squad                        # Squad journeys against the seeded stack plus `uv run python -m app.squad_demo`; run on a fresh seed
+pnpm e2e:repair                       # repair journeys, with axe-core and focus checks; on a database loaded by e2e/seed_repair.py
+node scripts/screenshots.mjs          # the Squad screens, signed in, 1440 x 900 at scale 2, into screenshots/
 node scripts/a11y.mjs                 # axe-core on the same screens plus a keyboard focus-ring pass
-pnpm e2e:repair                       # five repair journeys, with axe-core and focus checks; needs a database loaded by e2e/seed_repair.py
 ```
 
 The last three need the seeded stack (see `docs/HANDOFF.md`). The officer journey records a real decision, so each `pnpm e2e` run takes one open covenant breach out of the queue; a fresh seed has four.

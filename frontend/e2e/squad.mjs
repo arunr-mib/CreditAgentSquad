@@ -385,6 +385,41 @@ journey('review room: a portfolio manager opens a meeting, moves it to during an
   await an.close();
 });
 
+journey('old addresses: every retired cockpit address lands on the Squad place that replaced it', async ({ page }) => {
+  await signIn(page, ANALYST);
+  const [first] = await api(page, '/borrowers');
+  const docs = await api(page, `/borrowers/${first.id}/documents`);
+  const cases = [
+    [`/borrowers/${first.code}/covenants`, `/clients/${first.code}/file/covenants`],
+    [`/borrowers/${first.code}/packages`, `/clients/${first.code}/file/packages`],
+    [`/borrowers/${first.code}`, `/clients/${first.code}/file`],
+    ['/borrowers', '/portfolio'],
+    ['/command-centre', '/'],
+    ['/calendar', '/'],
+    ['/design', '/'],
+    ['/governance', '/oversight/governance'],
+    ['/agent-activity', '/oversight/activity'],
+  ];
+  if (docs.length) cases.push([`/borrowers/${first.code}/documents/${docs[0].id}?page=1`, `/clients/${first.code}/file/documents`]);
+  for (const [from, to] of cases) {
+    await page.goto(`${BASE}${from}`);
+    await page.waitForURL((url) => url.pathname === to, { timeout: 10000 });
+    assert((await page.getByRole('alert').count()) === 0, `${from} landed on an error`);
+  }
+});
+
+journey('held reading: Stripple’s held spreadsheet question opens focused in its client thread with its case showing', async ({ page }) => {
+  await signIn(page, ANALYST);
+  const held = [...(await api(page, '/work-items?item_type=spread.value_unverified')), ...(await api(page, '/work-items?item_type=spread.does_not_foot'))];
+  assert(held.length > 0, 'the seeded innovation book should hold one spread for a person (Stripple)');
+  const borrower = await api(page, `/borrowers/${held[0].borrower_id}`);
+  await page.goto(`${BASE}/clients/${borrower.code}?case=${held[0].id}`);
+  const card = page.locator(`[data-work-item="${held[0].id}"][data-focused="true"]`);
+  await card.locator('[data-case]').waitFor();
+  assert((await card.locator('[data-case]').getAttribute('data-item-status')) === 'open', 'the held case is open');
+  // Held figures with their repair actions need a spread that holds figures: frontend/e2e/repair.mjs journey 1 covers them.
+});
+
 mkdirSync(failuresDir, { recursive: true });
 const browser = await chromium.launch({ headless: !process.env.HEADED });
 let failed = 0;

@@ -12,19 +12,8 @@ export const BASE = `http://127.0.0.1:${PORT}`;
 export const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 export const ANALYST = 'priya.raman@bankofstoic.example';
 
-const BREACH = 'kestrel-bay-packaging';
-
-/** Opens the source drawer on a figure and waits for the page to be drawn with its highlight. */
-async function openSource(page, row, pick) {
-  const line = page.locator('main table tbody tr').filter({ hasText: row }).first();
-  await pick(line).click();
-  await page.locator('[data-source-drawer]').waitFor();
-}
-
-async function waitForPage(page, scope = '[data-source-drawer]') {
-  await page.locator(`${scope} [data-pdf-page="ready"]`).first().waitFor({ timeout: 30000 });
-  await page.locator(`${scope} [data-mark][data-active]`).first().waitFor();
-}
+// The client the shots and the checks open: the legacy book's breach, or the innovation book's first client.
+const BREACH = process.env.SHOT_CLIENT ?? 'corvane-analytics';
 
 /**
  * The screens to capture and check. `path` may be a function of the page (to look up an id through
@@ -32,63 +21,16 @@ async function waitForPage(page, scope = '[data-source-drawer]') {
  */
 export const PAGES = [
   { name: 'sign-in', path: '/sign-in', signedOut: true },
-  { name: 'command-centre', path: '/command-centre' },
+  { name: 'home', path: '/' },
+  { name: 'thread', path: `/clients/${BREACH}` },
+  { name: 'client-file', path: `/clients/${BREACH}/file` },
+  { name: 'spreads', path: `/clients/${BREACH}/file/spreads` },
+  { name: 'covenants', path: `/clients/${BREACH}/file/covenants` },
+  { name: 'documents', path: `/clients/${BREACH}/file/documents` },
+  { name: 'funding', path: `/clients/${BREACH}/file/funding` },
+  { name: 'history', path: `/clients/${BREACH}/file/history` },
   { name: 'portfolio', path: '/portfolio' },
-  { name: 'borrower-summary', path: `/borrowers/${BREACH}` },
-  { name: 'loans', path: '/borrowers/vantry-freight/loans' },
-  { name: 'documents', path: `/borrowers/${BREACH}/documents` },
-  {
-    name: 'document-viewer',
-    path: async (page) => {
-      const id = await page.evaluate(async (code) => {
-        const borrowers = await (await fetch('/api/v1/borrowers')).json();
-        const borrower = borrowers.find((row) => row.code === code);
-        const documents = await (await fetch(`/api/v1/borrowers/${borrower.id}/documents`)).json();
-        return documents.find((doc) => doc.doc_type === 'interim_statements').id;
-      }, BREACH);
-      return `/borrowers/${BREACH}/documents/${id}?page=3`;
-    },
-    prepare: async (page) => {
-      await page.locator('main [data-pdf-page="ready"]').waitFor({ timeout: 30000 });
-      await page.locator('main [data-mark]').first().waitFor();
-    },
-  },
-  { name: 'spreads', path: `/borrowers/${BREACH}/spreads` },
-  {
-    name: 'spread-source',
-    path: `/borrowers/${BREACH}/spreads`,
-    prepare: async (page) => {
-      await openSource(page, 'Net revenue', (line) => line.getByRole('button').last());
-      await waitForPage(page);
-    },
-  },
-  { name: 'covenants', path: `/borrowers/${BREACH}/covenants` },
-  {
-    name: 'covenant-source',
-    path: `/borrowers/${BREACH}/covenants`,
-    prepare: async (page) => {
-      await openSource(page, 'Total Leverage Ratio', (line) => line.getByRole('button', { name: /Calculated by code/ }).first());
-      await page.locator('[data-source-drawer]').getByText('Total debt ÷ EBITDA').waitFor();
-    },
-  },
-  { name: 'borrowing-base', path: '/borrowers/briarstone-beverage/borrowing-base' },
-  { name: 'signals', path: '/borrowers/thornbury-metal/signals' },
-  { name: 'packages', path: '/borrowers/sablewood-dental/packages' },
-  { name: 'timeline', path: `/borrowers/${BREACH}/timeline` },
-  { name: 'calendar', path: '/calendar' },
-  { name: 'review-room', path: '/review-room' },
-  {
-    // The panel is opened but nothing is asked: a question starts an agent run, and a live model is billable.
-    name: 'copilot',
-    path: `/borrowers/${BREACH}/covenants`,
-    prepare: async (page) => {
-      await page.getByRole('button', { name: 'Copilot' }).click();
-      await page.locator('[data-copilot]').waitFor();
-    },
-  },
-  { name: 'agent-activity', path: '/agent-activity' },
-  { name: 'governance', path: '/governance' },
-  { name: 'design', path: '/design' },
+  { name: 'oversight', path: '/oversight' },
 ];
 
 export async function signIn(page, email = ANALYST) {
@@ -96,8 +38,8 @@ export async function signIn(page, email = ANALYST) {
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password').fill(PASSWORD);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  await page.waitForURL('**/command-centre**');
-  await page.waitForSelector('[data-ready]');
+  await page.waitForURL(`${BASE}/`);
+  await page.locator('.sq-main').waitFor();
 }
 
 /** Goes to a target and waits until it is worth looking at. */
