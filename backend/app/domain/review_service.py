@@ -11,7 +11,7 @@ from app.agents.llm import LLMClient
 from app.agents.review import draft_commentary
 from app.calc.periods import same_period_prior_year
 from app.core import ledger
-from app.core.roles import require_second_person
+from app.core.roles import SecondPersonRequired, require_second_person
 from app.domain.credit import Borrower, Facility
 from app.domain.facts import USABLE_STATUSES, Fact
 from app.domain.metrics_service import store_metrics
@@ -267,6 +267,26 @@ def rendered(db: Session, commentary: Commentary) -> str:
     return render(commentary.body, facts_for(db, commentary.fact_ids))
 
 
+def approval_refusal(db: Session, item: WorkItem, user_id, decision: str) -> Exception | None:
+    """The four-eyes rule of `on_decision`, asked without recording anything: whoever last edited a section cannot approve."""
+    if decision != "approve":
+        return None
+    reference = item.evidence.get("review_sheet_id")
+    sheet_row = db.get(ReviewSheet, uuid.UUID(reference)) if reference else None
+    if sheet_row is None:
+        return None
+    for c in current_commentary(db, sheet_row):
+        if c.author_type == "user":
+            try:
+                require_second_person(c.author_id, user_id, _LAST_EDITOR.format(section=c.section))
+            except SecondPersonRequired as exc:
+                return exc
+    return None
+
+
+_LAST_EDITOR = "You last edited the {section} section, so a different person must approve this review."
+
+
 def on_decision(db: Session, item: WorkItem, user: User, decision: str, reason: str) -> None:
     """Approval marks the current commentary approved and the sheet reviewed."""
     reference = item.evidence.get("review_sheet_id")
@@ -283,9 +303,7 @@ def on_decision(db: Session, item: WorkItem, user: User, decision: str, reason: 
     written = [c for c in sections if c.author_type == "user"]
     for c in written:
         # four eyes: whoever last edited a section prepared it, and cannot be the one who approves it
-        require_second_person(c.author_id, user.id,
-                              f"You last edited the {c.section} section, so a different person must approve "
-                              "this review.")
+        require_second_person(c.author_id, user.id, _LAST_EDITOR.format(section=c.section))
     problems = []
     for c in written:
         broken, _, unmatched = commentary_findings(db, sheet_row.borrower_id, c.body)

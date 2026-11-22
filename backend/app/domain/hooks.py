@@ -263,6 +263,7 @@ def on_reading_review(db, item, user, decision: str, reason: str) -> None:
 workflow.DECISION_HOOKS["reading.review"] = on_reading_review
 workflow.DECISION_HOOKS["terms.approval_needed"] = terms_service.on_decision
 workflow.DECISION_HOOKS["review.commentary_approval"] = review_service.on_decision
+workflow.DECISION_PRECHECKS["review.commentary_approval"] = review_service.approval_refusal
 workflow.DECISION_HOOKS["terms.unapproved_amendment"] = on_unapproved_amendment
 workflow.DECISION_HOOKS["covenant.cannot_test"] = on_cannot_test_decision
 workflow.DECISION_HOOKS["bb.certificate_mismatch"] = on_borrowing_base_decision

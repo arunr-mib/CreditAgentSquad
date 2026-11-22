@@ -149,3 +149,19 @@ def test_a_finding_that_names_its_text_apart_from_the_explanation_is_reported_wi
     assert review_service._say(newer) == "$51.3 million: typed, not referenced"
     assert review_service._say(Note("narrative", "figure_untraceable", "retry", "the figure was typed")) == \
         "the figure was typed"
+
+
+def test_the_engine_and_the_case_view_agree_the_writer_may_not_approve(db, world):
+    from app.squad.cases import build_case
+
+    sheet, item, facts = world
+    dana, marcus = person(db, "portfolio_manager", "dana"), person(db, "portfolio_manager", "marcus")
+    review_service.write_section(db, sheet, section="summary", user=dana, body="Stable quarter.")
+    refusal = workflow.decision_refusal(db, item, user_id=dana.id, user_role=dana.role, decision="approve")
+    assert isinstance(refusal, SecondPersonRequired) and "last edited the summary section" in str(refusal)
+    assert workflow.decision_refusal(db, item, user_id=marcus.id, user_role=marcus.role, decision="approve") is None
+    # a decision that does not approve is not held back by who wrote the text
+    assert workflow.decision_refusal(db, item, user_id=dana.id, user_role=dana.role, decision="return_for_rework") is None
+    permitted = lambda who: {d["id"]: d["permitted"] for d in build_case(db, item, who)["decisions"]}  # noqa: E731
+    assert permitted(dana)["approve"] is False
+    assert permitted(marcus)["approve"] is True

@@ -20,6 +20,9 @@ JOB_HANDLERS: dict[str, Callable[[Session, Job], None]] = {}
 # raises, the decision is refused and nothing is recorded.
 DECISION_HOOKS: dict[str, Callable[..., None]] = {}
 STAGE_FAILED = "cycle.stage_failed"
+# A rule about who may take one decision on one kind of item that the decision hook enforces too (for example, whoever last
+# edited commentary cannot approve it). `decision_refusal` asks it so a screen is never offered what the hook would refuse.
+DECISION_PRECHECKS: dict[str, Callable[..., Exception | None]] = {}
 
 
 def stage_handler(stage: str):
@@ -362,6 +365,11 @@ def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, de
         return PermissionError(f"your role cannot take the decision {decision!r} on this item ({extra})")
     if decision is not None and reason is not None and needs_reason(item.item_type, decision) and not reason.strip():
         return ValueError("this decision needs a reason")
+    precheck = DECISION_PRECHECKS.get(item.item_type)
+    if precheck is not None and decision is not None:
+        refused = precheck(db, item, user_id, decision)
+        if refused is not None:
+            return refused
     if item.requires_second_person:
         try:
             require_second_person(item.prepared_by_id, user_id)

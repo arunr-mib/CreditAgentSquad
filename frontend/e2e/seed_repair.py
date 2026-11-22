@@ -11,6 +11,7 @@ model, and then loads the rest of the book as the normal seed does:
 - larkspur-environmental: a clean borrower run to review preparation, so a review sheet with
   drafted commentary is waiting for approval.
 
+It needs the legacy book generated (`uv run python -m synthetic.generate`, into `synthetic/out`).
 Run it on an empty, migrated database, from the repository root:
 
     cd backend && uv run alembic upgrade head && cd ..
@@ -25,15 +26,16 @@ from app.core.db import get_engine
 from app.domain import hooks, stages  # noqa: F401  (registers stage handlers and decision hooks)
 from app.domain.credit import Borrower
 from app.domain.monitoring import Cycle, WorkItem
-from app.seed_book import seed_book
+from app.seed_book import BOOKS, seed_book
 from app.seed_users import seed_users
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from evals.book import load_book
+from evals.book import BOOKS as EVAL_BOOKS, load_book
 from evals.run import _settle
 from evals.standin import StandInReader
 
+ROOT = BOOKS["legacy"]  # the journeys name legacy clients (harrowgate, ashgrove, larkspur)
 HELD = "harrowgate-precision"
 LIVE = [HELD, "ashgrove-fleet", "larkspur-environmental"]
 
@@ -60,7 +62,7 @@ def tamper(agent, answer, context):
 
 
 def main() -> None:
-    reader = StandInReader(load_book(), tamper=tamper)
+    reader = StandInReader(load_book(EVAL_BOOKS["legacy"]), tamper=tamper)
     stages.LLM_FACTORY = lambda: reader
     with Session(get_engine()) as db:
         if db.execute(select(Borrower.id).limit(1)).first():
@@ -68,7 +70,7 @@ def main() -> None:
         seed_users(db)
         db.commit()
         for code in LIVE:
-            seed_book(db, current="live", only=[code])
+            seed_book(db, root=ROOT, current="live", only=[code])
             db.commit()
             borrower = db.execute(select(Borrower).where(Borrower.code == code)).scalar_one()
             cycle = db.execute(select(Cycle).where(Cycle.borrower_id == borrower.id, Cycle.status == "open")
@@ -78,7 +80,7 @@ def main() -> None:
             waiting = sorted(w.item_type for w in db.execute(select(WorkItem).where(
                 WorkItem.borrower_id == borrower.id, WorkItem.status == "open")).scalars())
             print(f"{code}: rests at {cycle.stage} on {', '.join(waiting) or 'nothing'}", file=sys.stderr)
-        report = seed_book(db, current="seeded")
+        report = seed_book(db, root=ROOT, current="seeded")
         db.commit()
     print(json.dumps(report.__dict__, indent=1, default=str))
 
