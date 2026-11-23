@@ -124,7 +124,7 @@ def test_the_cli_prints_only_sql_and_hands_each_value_to_vercel_on_stdin(tmp_pat
     calls = log.read_text().splitlines()
     assert [c.split()[2] for c in calls] == ["MIGRATION_DATABASE_URL", "DATABASE_URL", "SESSION_SECRET"]
     for call in calls:
-        assert "--environment production --sensitive --token proxy-injected" in call and "--force" not in call
+        assert "--environment production --sensitive --token proxyinjected" in call and "--force" not in call
         assert int(call.rsplit("len=", 1)[1].split()[0]) > 30  # a value arrived on standard input
     assert "postgresql" not in result.stdout and "postgresql" not in result.stderr
     assert result.stdout.count("SCRAM-SHA-256$") == 2 and "CREATE ROLE squad2_runtime" in result.stdout

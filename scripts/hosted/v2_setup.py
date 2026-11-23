@@ -141,14 +141,14 @@ def check(base, expect_model):
 
 
 def _run_vercel(args, cwd, env, value):
-    done = subprocess.run([*VERCEL, *args, "--token", "proxy-injected"], cwd=cwd, env=env, text=True,
+    done = subprocess.run([*VERCEL, *args, "--token", "proxyinjected"], cwd=cwd, env=env, text=True,
                           input=None if value is None else value + "\n", capture_output=True)
     output = (done.stderr or done.stdout)
     return done.returncode, (output.replace(value, "<value>") if value else output)[-300:]
 
 
 REMOVE_BY_HAND = ("(cd .vercel-build-v2 && npx --yes vercel@66.0.0 env rm DEMO_SETUP_TOKEN --environment production "
-                  "--confirm-name DEMO_SETUP_TOKEN --token proxy-injected) && ./scripts/hosted/deploy-v2.sh --no-build")
+                  "--confirm-name DEMO_SETUP_TOKEN --token proxyinjected) && ./scripts/hosted/deploy-v2.sh --no-build")
 
 
 def run(base, project_dir, *, build_dir=None, frozen=None, expected_id=None, vercel=None, deploy=None,

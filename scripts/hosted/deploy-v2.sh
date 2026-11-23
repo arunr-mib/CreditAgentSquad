@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 PROJECT="${V2_PROJECT:-credit-squad}"
 VC=(npx --yes vercel@66.0.0)
-TOKEN=(--token proxy-injected)
+TOKEN=(--token proxyinjected)
 export VERCEL_TELEMETRY_DISABLED=1
 [ "${1:-}" = "--no-build" ] || ./scripts/build-vercel.sh --target v2
 [ -f .vercel-build-v2/api/target.json ] || { echo "no v2 build in .vercel-build-v2" >&2; exit 1; }

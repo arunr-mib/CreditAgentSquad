@@ -78,7 +78,7 @@ def connection_url(role: str, ref: str, password: str, host: str) -> str:
 
 def put(vercel: list[str], project_dir: str, name: str, value: str, force: bool, env: dict) -> None:
     args = [*vercel, "env", "add", name, "--environment", "production", "--sensitive",
-            "--token", "proxy-injected", *(["--force"] if force else [])]
+            "--token", "proxyinjected", *(["--force"] if force else [])]
     done = subprocess.run(args, input=value + "\n", text=True, capture_output=True, cwd=project_dir,
                           env=env)
     if done.returncode != 0:
