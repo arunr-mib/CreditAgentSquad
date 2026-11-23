@@ -534,6 +534,8 @@ for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER]]) {
         if (m.type === 'case') {
           // a case opens CasePanel: its decision form is there exactly when the server permits a decision
           const view = await api(page, `/cases/${m.work_item_id}`);
+          // count only once the panel has loaded: while it says "Opening the case." no form is shown yet
+          await card.locator(`[data-case="${m.work_item_id}"]`).waitFor();
           const decide = await card.getByRole('button', { name: 'Record decision' }).count();
           assert((decide > 0) === view.decisions.some((d) => d.permitted), `${b.name}: the decision form disagrees with the server for ${m.title}`);
         } else {
