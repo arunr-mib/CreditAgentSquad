@@ -137,3 +137,8 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 - **Names check:** run a web search on the invented client and people names and show the owner a table; owner decides renames.
 - **Session recording:** default notes only (not yet asked).
 - **Names (owner, 22 Nov):** rename the 2 collisions, the 5 close names and Stripple Tech before outside participants see v2: Dataflake Inc, Quillon AI, Lumora Health, Halcyon Grid, Tessaract Labs, Corvane Analytics, Tidewell Medical, Stripple Tech. New names are web-checked first. Their recorded replays need a re-record later (billable, with the owner's go-ahead).
+
+## Waiting on the owner (asked again in the morning; work continues meanwhile)
+- **Standing instruction, 23 Nov:** work through the night; collect anything needing the owner here; orchestrate with Fable 5.2, sub-agents on Opus 5.5.
+1. Supabase **session pooler host** for the "Credit Agent Squad" project (dashboard → Connect → Session pooler; host only, never the password). Needed before the v2 site can reach its database.
+2. Confirm or change the 8 new client names (`docs/product/name-check-2026-11-22.md`). Default: proceed with them.
