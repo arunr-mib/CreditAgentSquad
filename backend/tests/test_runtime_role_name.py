@@ -38,3 +38,20 @@ def test_a_runtime_role_setting_that_is_not_a_plain_name_is_refused(settings_env
     settings_env("squad2_runtime; DROP TABLE ledger_events")
     with pytest.raises(ValueError):
         ledger.runtime_role_name()
+
+
+def test_downgrade_of_0003_refuses_a_schema_that_is_not_a_plain_name_before_touching_the_database(settings_env, monkeypatch):
+    import importlib.util
+    from pathlib import Path
+
+    path = Path(__file__).resolve().parents[1] / "migrations" / "versions" / "0003_runtime_role_for_the_ledger.py"
+    spec = importlib.util.spec_from_file_location("m0003", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    touched = []
+    monkeypatch.setattr(module, "op", type("Op", (), {"get_bind": staticmethod(lambda: touched.append("bind")),
+                                                      "execute": staticmethod(lambda sql: touched.append(sql))}))
+    settings_env("squad2_runtime", schema="squad2; DROP TABLE ledger_events")
+    with pytest.raises(ValueError):
+        module.downgrade()
+    assert touched == []

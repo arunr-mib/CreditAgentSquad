@@ -14,6 +14,7 @@ database) the role is not created and a warning says so; create it as a superuse
 Revision ID: 0003
 Revises: 0002
 """
+import re
 import warnings
 
 from alembic import op
@@ -48,6 +49,8 @@ def upgrade() -> None:
 def downgrade() -> None:
     role = runtime_role_name()
     schema = get_settings().db_schema.strip() or "public"
+    if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", schema):  # the same rule runtime_role_sql applies
+        raise ValueError(f"not a plain schema name: {schema!r}")
     bind = op.get_bind()
     if not bind.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": role}).first():
         return
