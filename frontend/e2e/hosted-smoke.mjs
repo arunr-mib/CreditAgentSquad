@@ -52,21 +52,17 @@ async function signIn(browser, email) {
   await page.getByLabel('Password').fill(PASSWORD);
   await page.getByRole('button', { name: /sign in/i }).click();
   await page.waitForURL(`${BASE}/`, { timeout: 60_000 });
-  // counted from here: before sign-in the page rightly asks /auth/me and is told 401. Every API request a screen
-  // makes must finish before the next screen opens (`open` waits for it), so one cut off by navigation is a failure;
-  // only the heartbeat, which polls for ever, may be abandoned.
+  // counted from here: before sign-in the page rightly asks /auth/me and is told 401. `open` lets each screen go
+  // quiet before the next opens, so an API request the browser abandons on navigation (net::ERR_ABORTED) was still
+  // running then: on a cold start exactly the slow call to catch. Only the heartbeat, which polls for ever, may be
+  // abandoned.
   const bad = [];
-  const inflight = new Set();
-  const counted = (r) => r.url().startsWith(`${BASE}/api/v1/`) && !r.url().includes(HEARTBEAT);
-  page.on('request', (r) => { if (counted(r)) inflight.add(r); });
-  page.on('requestfinished', (r) => inflight.delete(r));
   page.on('requestfailed', (r) => {
-    inflight.delete(r);
-    const aborted = r.failure()?.errorText === 'net::ERR_ABORTED';
-    if (r.url().startsWith(BASE) && (!aborted || counted(r))) bad.push(`${r.method()} ${r.url()} ${r.failure()?.errorText}`);
+    if (!r.url().startsWith(BASE)) return;
+    const abandoned = r.failure()?.errorText === 'net::ERR_ABORTED';
+    if (!abandoned || (r.url().includes('/api/v1/') && !r.url().includes(HEARTBEAT))) bad.push(`${r.method()} ${r.url()} ${r.failure()?.errorText}`);
   });
   page.on('response', (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) bad.push(`${r.status()} ${r.request().method()} ${r.url()}`); });
-  page.smoke = { inflight, bad };
   return { context, page, bad };
 }
 const api = async (page, path, init) => {
@@ -76,11 +72,7 @@ const api = async (page, path, init) => {
 async function open(page, path) {
   await page.goto(`${BASE}${path}`);
   await page.locator('.sq-main').first().waitFor({ timeout: 60_000 });
-  await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {}); // a heartbeat may keep it busy
-  // then every API request this screen started must have finished (a cold start is exactly the slow case to catch)
-  const until = Date.now() + 60_000;
-  while (page.smoke?.inflight.size && Date.now() < until) await page.waitForTimeout(200);
-  if (page.smoke?.inflight.size) page.smoke.bad.push(`${path}: ${[...page.smoke.inflight].map((r) => r.url()).join(', ')} still open after 60 s`);
+  await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {}); // the heartbeat may keep it busy
 }
 
 /** Every composer (home, a client thread, a case) says the server's reason and offers no Ask, before anyone types. */
