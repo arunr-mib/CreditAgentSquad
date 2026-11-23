@@ -16,6 +16,7 @@ vi.mock('../api/hooks', () => ({
   useAskCopilot: () => ({ mutateAsync: calls.ask, isPending: false }),
   useAnswer: () => ({ mutateAsync: calls.answer, isPending: false }),
 }));
+vi.mock('@/api/hooks', () => ({ useAgentsStatus: () => ({ data: undefined }) }));
 vi.mock('@/source/context', () => ({ useSource: () => ({ open: calls.open, close: () => {}, current: null }) }));
 vi.mock('../thread/Trail', () => ({ Trail: () => null }));
 vi.mock('@tanstack/react-router', () => ({ Link: ({ to, children, ...rest }: { to: string; children: React.ReactNode }) => <a href={to} {...rest}>{children}</a> }));

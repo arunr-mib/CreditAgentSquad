@@ -1,5 +1,6 @@
 import { useId, useState, type FormEvent } from 'react';
 import { errorMessage } from '@/api/client';
+import { useAgentsStatus } from '@/api/hooks';
 import { useAskCopilot, type CopilotReply } from '../api/hooks';
 import { usePresence } from '../presence/Presence';
 
@@ -18,6 +19,9 @@ export function Composer({ borrowerId, borrowerName, workItemId, label, onReply 
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const ask = useAskCopilot();
+  // A deployment with no model says so before anyone types, in the server's own words.
+  const model = useAgentsStatus().data;
+  const off = model?.model_connected === false; // unknown while loading: do not block
   const { beginWork, pulse } = usePresence();
 
   async function submit(event: FormEvent) {
@@ -40,9 +44,9 @@ export function Composer({ borrowerId, borrowerName, workItemId, label, onReply 
   return (
     <form onSubmit={(e) => void submit(e)} className="sq-composer">
       <label htmlFor={id} className="sq-sr">{name}</label>
-      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={name} />
-      <small id={`${id}-hint`} className="sq-faint">Ctrl or Cmd + Enter to send</small>
-      <button type="submit" className="sq-btn sq-btn-primary" disabled={!text.trim() || ask.isPending}>Ask</button>
+      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={name} disabled={off} />
+      <small id={`${id}-hint`} className="sq-faint">{off ? model?.reason : 'Ctrl or Cmd + Enter to send'}</small>
+      <button type="submit" className="sq-btn sq-btn-primary" disabled={off || !text.trim() || ask.isPending}>Ask</button>
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
     </form>
   );
