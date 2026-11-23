@@ -45,5 +45,8 @@ if [ "$TARGET" = v1 ]; then
   [ -d .vercel ] && cp -r .vercel "$OUT/.vercel" || true
 else
   printf '{"target": "v2", "schema": "squad2", "runtime_role": "squad2_runtime"}\n' > "$OUT/api/target.json"
+  # Oversight's Evaluations tab reads the repository's latest scorecard when the database holds no run
+  # (app/api/routes_evals.py RESULTS_FILE); without it the tab shows an error.
+  mkdir -p "$OUT/evals/results" && cp evals/results/latest.json "$OUT/evals/results/latest.json"
 fi
 echo "Built $OUT ($TARGET): $(du -sh "$OUT" | cut -f1) ($(find "$OUT" -type f | wc -l) files)"
