@@ -22,6 +22,8 @@ const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 const ANALYST = 'priya.raman@bankofstoic.example';
 // Squad gives a client's open work to that client's analyst: Harrowgate's is Jules Hartmann.
 const HARROWGATE_ANALYST = 'jules.hartmann@bankofstoic.example';
+// An analyst acts only on her own clients (owner answer 9): Halvorsen Plastics is Naomi Castellano's.
+const HALVORSEN_ANALYST = 'naomi.castellano@bankofstoic.example';
 const MANAGER = 'dana.whitfield@bankofstoic.example';
 const here = dirname(fileURLToPath(import.meta.url));
 const shotsDir = resolve(here, '..', 'screenshots');
@@ -274,7 +276,7 @@ const journeys = [
   {
     name: 'an analyst corrects a figure from the source drawer, sees a covenant outcome change, and the screen beneath shows the new figure; a calculated figure offers no correction',
     async run(page) {
-      await signIn(page, ANALYST);
+      await signIn(page, HALVORSEN_ANALYST);
       await page.goto(`${BASE}/clients/halvorsen-plastics/file/spreads`);
       await page.locator('.sq-file[data-ready]').waitFor();
       const line = page.locator('table tbody tr').filter({ hasText: 'Cash paid for income taxes' }).first();
