@@ -5,15 +5,19 @@
 // Usage: BASE_URL=https://<host> [EXPECT_MODEL=off|on] [HANDOFF=1] pnpm e2e:smoke
 // For the controller and the owner's own walk-through. No tracing, no video: nothing about the session
 // is kept except failure screenshots (frontend/e2e/failures/, git-ignored).
+// Not strictly read-only: every sign-in adds a session and a ledger event, and a wrong SQUAD_DEMO_PASSWORD
+// records 9 failed sign-ins (which can lock the accounts for a while). A frozen site's host is refused.
 import { createRequire } from 'node:module';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { refuseFrozenHost } from './frozen-hosts.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const BASE = process.env.BASE_URL?.replace(/\/$/, '');
 if (!BASE) { console.error('set BASE_URL'); process.exit(2); }
+refuseFrozenHost(BASE);
 const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 const EXPECT_MODEL = (process.env.EXPECT_MODEL ?? 'off') === 'on';
 const OUT = process.env.SMOKE_OUT ?? '/tmp/claude-0/hosted-smoke';
@@ -29,6 +33,7 @@ const ROLES = [
 ];
 // one innovation client (it carries Squad's demo question) and one kept C&I client, so both templates' screens load
 const CLIENTS = ['cindrel-tech', 'kestrel-bay-packaging'];
+const HEARTBEAT = '/api/v1/ledger/head';
 let failed = 0;
 const check = (ok, name, detail = '') => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : `  ${detail}`}`); if (!ok) failed += 1; };
 
@@ -47,13 +52,21 @@ async function signIn(browser, email) {
   await page.getByLabel('Password').fill(PASSWORD);
   await page.getByRole('button', { name: /sign in/i }).click();
   await page.waitForURL(`${BASE}/`, { timeout: 60_000 });
-  // counted from here: before sign-in the page rightly asks /auth/me and is told 401. A request the browser
-  // abandons because the next screen was opened (net::ERR_ABORTED, the heartbeat) is not a failure.
+  // counted from here: before sign-in the page rightly asks /auth/me and is told 401. Every API request a screen
+  // makes must finish before the next screen opens (`open` waits for it), so one cut off by navigation is a failure;
+  // only the heartbeat, which polls for ever, may be abandoned.
   const bad = [];
+  const inflight = new Set();
+  const counted = (r) => r.url().startsWith(`${BASE}/api/v1/`) && !r.url().includes(HEARTBEAT);
+  page.on('request', (r) => { if (counted(r)) inflight.add(r); });
+  page.on('requestfinished', (r) => inflight.delete(r));
   page.on('requestfailed', (r) => {
-    if (r.url().startsWith(BASE) && r.failure()?.errorText !== 'net::ERR_ABORTED') bad.push(`${r.method()} ${r.url()} ${r.failure()?.errorText}`);
+    inflight.delete(r);
+    const aborted = r.failure()?.errorText === 'net::ERR_ABORTED';
+    if (r.url().startsWith(BASE) && (!aborted || counted(r))) bad.push(`${r.method()} ${r.url()} ${r.failure()?.errorText}`);
   });
   page.on('response', (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) bad.push(`${r.status()} ${r.request().method()} ${r.url()}`); });
+  page.smoke = { inflight, bad };
   return { context, page, bad };
 }
 const api = async (page, path, init) => {
@@ -64,6 +77,10 @@ async function open(page, path) {
   await page.goto(`${BASE}${path}`);
   await page.locator('.sq-main').first().waitFor({ timeout: 60_000 });
   await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {}); // a heartbeat may keep it busy
+  // then every API request this screen started must have finished (a cold start is exactly the slow case to catch)
+  const until = Date.now() + 60_000;
+  while (page.smoke?.inflight.size && Date.now() < until) await page.waitForTimeout(200);
+  if (page.smoke?.inflight.size) page.smoke.bad.push(`${path}: ${[...page.smoke.inflight].map((r) => r.url()).join(', ')} still open after 60 s`);
 }
 
 /** Every composer (home, a client thread, a case) says the server's reason and offers no Ask, before anyone types. */
@@ -83,7 +100,8 @@ async function composersSayOff(page, reason, borrowers) {
 async function checkComposer(page, where, box, reason) {
   await box.waitFor({ timeout: 30_000 });
   const form = box.locator('xpath=ancestor::form[1]');
-  const disabled = await box.isDisabled();
+  // off: the box stays in the tab order (read-only, aria-disabled) so its reason is announced; Ask is disabled
+  const disabled = (await box.getAttribute('aria-disabled')) === 'true' && (await box.getAttribute('readonly')) !== null;
   const askOff = await form.getByRole('button', { name: 'Ask' }).isDisabled();
   const says = (await form.innerText()).includes(reason);
   check(EXPECT_MODEL ? !disabled : disabled && askOff && says, `${where} composer ${EXPECT_MODEL ? 'is open' : 'says agents are off before anyone types'}`,

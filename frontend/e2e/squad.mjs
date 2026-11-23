@@ -6,12 +6,14 @@ import { createRequire } from 'node:module';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { refuseFrozenHost } from './frozen-hosts.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:5173';
+refuseFrozenHost(BASE); // a sign-in on a frozen site would append to its ledger
 const PASSWORD = process.env.SQUAD_DEMO_PASSWORD ?? 'squad-demo';
 const ANALYST = 'priya.raman@bankofstoic.example';
 const OFFICER = 'helen.strand@bankofstoic.example';
