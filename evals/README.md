@@ -167,13 +167,14 @@ failures raised by name.
 
 | Document | Read by the stand-in | Notes |
 |---|---|---|
-| Financial packs (annual, interim, monthly) | every cell as printed | the three Stripple lines the key expects held are graded as held, not as missing |
+| Financial packs (annual, interim, monthly) | every cell as printed | the three Cindrel lines the key expects held are graded as held, not as missing |
 | MRR report, bank statement | the as-of figure, with the document's stated date checked | a page dated another month is refused |
 | Compliance certificate | all forms, percentages stored as fractions | |
 | Borrowing base certificate | as before | |
-| Spreadsheets (.xlsx, .csv) | not read; held with one question | Stripple's export is set aside by a scripted `not_needed` decision |
+| Spreadsheets (.xlsx, .csv) | not read; held with one question | Cindrel's export is set aside by a scripted `not_needed` decision |
 
 - `--book legacy|innovation|both`: `both` runs the legacy book, then the innovation book, and writes `latest-legacy.*` and `latest.*`.
-- Covenant accuracy counts every expected test. A test the cycle never reached (Stripple rests on its held figures) stays in the denominator and counts as not correct, so innovation reads 94.9 percent; the scorecard's "Covenant tests not reached" section names each one. It is not a failure.
+- Covenant accuracy counts every expected test. A test the cycle never reached (Cindrel rests on its held figures) stays in the denominator and counts as not correct, so innovation reads 94.9 percent; the scorecard's "Covenant tests not reached" section names each one. It is not a failure.
 - `--accept-stale` replays recordings whose agent stamp is stale, and the scorecard names them.
+- Renamed clients (22 Nov): the eight clients renamed that day have no recording under their new codes. `--mode recorded` skips them by name ("no recording: renamed 22 Nov, re-record needs owner go-ahead"; `NOT_RECORDED` in `evals/run.py`), lists them as NOT REPLAYED in the scorecard and summary, and replays and gates the other twelve innovation clients. Their old recordings are kept, not replayed, in `evals/recordings-archive/renamed-2026-11-22/`. Re-recording them is billable; when it is done, remove them from `NOT_RECORDED` (a test fails while a listed client has a recording).
 - Gate: no `invented-number`, no `false-compliant`, no run error, no unlisted difference; `known_findings.json` is empty.

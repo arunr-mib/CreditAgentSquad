@@ -36,3 +36,7 @@ Each row is one thing the engine must produce for that client, with the value an
 ## How to reply
 
 Reply "approve all", or name the rows you reject (client and item); rejected rows are re-examined, not edited to fit. Nothing is signed until your written reply: the sign-off step only marks the row ids written in a file (`uv run python -m evals.signoff apply --rows <file>`), it has no sign-everything switch, and `uv run python -m evals.signoff keys` lists every unsigned row id (add `--low-signals` for the low block) to build that file from. The live pass refuses to start while any row is unsigned. It also needs your separate go on the cost estimate; nothing live runs before that.
+
+## Later note (23 November 2026)
+
+Eight clients were renamed on 22 November; this page keeps the names it was signed under. The signatures were carried to the renamed rows because no figure changed: see `docs/owner-signoff-rename-2026-11-23.md` for the mapping and the before/after proof.
