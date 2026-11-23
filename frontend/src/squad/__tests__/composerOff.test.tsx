@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type { ApiUser } from '@/api/schema';
 import { AuthContext } from '@/auth/context';
@@ -25,7 +26,27 @@ describe('Composer when the deployment has no model', () => {
     status.data = OFF;
     render(<Composer {...props} />);
     expect(screen.getByText('No model key is set for this deployment.')).toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name })).toBeDisabled();
+    const box = screen.getByRole('textbox', { name });
+    expect(box).toHaveAttribute('aria-disabled', 'true');
+    expect(box).toHaveAttribute('readonly');
+    expect(screen.getByRole('button', { name: 'Ask' })).toBeDisabled();
+  });
+
+  it('keeps the box in the tab order so a keyboard user hears the reason, and types nothing into it', async () => {
+    status.data = OFF;
+    render(<Composer borrowerId="b1" borrowerName="Cindrel Tech" />);
+    await userEvent.tab();
+    const box = screen.getByRole('textbox', { name: /Ask Squad about Cindrel Tech/ });
+    expect(box).toHaveFocus();
+    expect(box).toHaveAccessibleDescription('No model key is set for this deployment.');
+    await userEvent.keyboard('Which covenants fail?');
+    expect(box).toHaveValue('');
+  });
+
+  it('falls back to the usual hint when the server gives no reason', () => {
+    status.data = { model_connected: false, reason: '' };
+    render(<Composer borrowerId={null} />);
+    expect(screen.getByText('Ctrl or Cmd + Enter to send')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Ask' })).toBeDisabled();
   });
 
@@ -42,7 +63,7 @@ describe('Composer when the deployment has no model', () => {
         </AuthContext.Provider>
       </QueryClientProvider>,
     );
-    expect(await screen.findByRole('textbox', { name: 'Ask Squad about the whole portfolio' })).toBeDisabled();
+    expect(await screen.findByRole('textbox', { name: 'Ask Squad about the whole portfolio' })).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByText('No model key is set for this deployment.')).toBeInTheDocument();
   });
 

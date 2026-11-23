@@ -27,7 +27,7 @@ export function Composer({ borrowerId, borrowerName, workItemId, label, onReply 
   async function submit(event: FormEvent) {
     event.preventDefault();
     const question = text.trim();
-    if (!question) return;
+    if (!question || off) return;
     setError(null);
     const done = beginWork();
     try {
@@ -44,8 +44,8 @@ export function Composer({ borrowerId, borrowerName, workItemId, label, onReply 
   return (
     <form onSubmit={(e) => void submit(e)} className="sq-composer">
       <label htmlFor={id} className="sq-sr">{name}</label>
-      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={name} disabled={off} />
-      <small id={`${id}-hint`} className="sq-faint">{off ? model?.reason : 'Ctrl or Cmd + Enter to send'}</small>
+      <textarea id={id} value={text} onChange={(e) => setText(e.target.value)} aria-describedby={`${id}-hint`} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.currentTarget.form?.requestSubmit(); } }} rows={2} placeholder={name} readOnly={off} aria-disabled={off || undefined} />
+      <small id={`${id}-hint`} className="sq-faint">{(off && model?.reason) || 'Ctrl or Cmd + Enter to send'}</small>
       <button type="submit" className="sq-btn sq-btn-primary" disabled={off || !text.trim() || ask.isPending}>Ask</button>
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
     </form>
