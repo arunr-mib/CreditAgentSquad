@@ -418,6 +418,24 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
     return borrower
 
 
+def require_documents(root: Path, truths: list[dict[str, Any]] | None = None) -> None:
+    """Stop before anything is written if a file the truth lists is not under the book's root.
+
+    The documents are generated and git-ignored, so a fresh checkout has the truth files without them.
+    Loading such a book gives borrowers with no documents on file, which reads as a product fault."""
+    if truths is None:
+        truths = [json.loads(path.read_text()) for path in sorted((root / "truth").glob("*.json"))]
+    listed = [p for truth in truths for d in truth["documents"]
+              for p in (d["path"], *([d["workbook"]["path"]] if d.get("workbook") else []))]
+    missing = [p for p in listed if not (root / p).exists()]
+    if missing:
+        shown = ", ".join(missing[:5]) + (f" and {len(missing) - 5} more" if len(missing) > 5 else "")
+        raise FileNotFoundError(
+            f"{len(missing)} of {len(listed)} documents the book lists are not under {root}: {shown}. Nothing was "
+            "loaded. Generate the book first: python -m synthetic.books.innovation.generate "
+            "(or python -m synthetic.generate for the legacy book)")
+
+
 def seed_book(db: Session, *, root: Path = SYNTHETIC_ROOT, current: str = "seeded", only: list[str] | None = None,
               password: str = "squad-demo") -> SeedReport:
     from app.domain.monitoring import WorkItem
@@ -428,11 +446,11 @@ def seed_book(db: Session, *, root: Path = SYNTHETIC_ROOT, current: str = "seede
     if not files:
         raise FileNotFoundError(f"no truth files under {root}/truth; run: python -m synthetic.books.innovation.generate "
                                 "(or python -m synthetic.generate for the legacy book)")
+    truths = [truth for truth in (json.loads(path.read_text()) for path in files)
+              if not only or truth["borrower"]["id"] in only]
+    require_documents(root, truths)
     as_ofs: list[date] = []
-    for path in files:
-        truth = json.loads(path.read_text())
-        if only and truth["borrower"]["id"] not in only:
-            continue
+    for truth in truths:
         if db.execute(select(Borrower.id).where(Borrower.code == truth["borrower"]["id"])).first():
             continue
         as_ofs.append(_day(truth["as_of"]))
