@@ -6,6 +6,8 @@ Modes:
   standin   (default) a perfect reader built from the book's ground truth stands in for the
             model. Proves the pipeline, the workflow and the grader. NOT model performance.
   recorded  replays saved model responses from the recordings directory. No model is called.
+            The eight clients renamed on 22 Nov have no recording under their new codes and are
+            skipped, by name, with the reason (NOT_RECORDED); the rest of the book is replayed and gated.
   live      calls the model (billable). Refuses to start unless every oracle row for the
             borrowers in scope is signed by the owner, or --allow-unsigned is given.
   record    as live, and saves each response for later replay.
@@ -32,6 +34,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from evals.book import BOOKS, DEFAULT_BOOK, REPO, Book, Borrower, load_book, oracle_for, unsigned_oracle_rows
+from synthetic.books.innovation.renames import SEED_CODE
 
 # The evaluation measures the automatic path: what the product does with a reading when no
 # person looks at it. A deployment defaults to "assisted", where a person confirms every reading.
@@ -41,6 +44,10 @@ RESULTS_DIR = REPO / "evals" / "results"
 RECORDINGS_DIR = REPO / "evals" / "recordings"
 MODES = ("standin", "recorded", "live", "record")
 BILLABLE = ("live", "record")
+# Clients renamed on 22 Nov: their documents print the new names, so no recording matches them. Their recordings are
+# archived under the old codes (evals/recordings-archive/renamed-2026-11-22); recorded mode skips them, out loud.
+NOT_RECORDED = frozenset(SEED_CODE)
+NO_RECORDING = "no recording: renamed 22 Nov, re-record needs owner go-ahead"
 SUITE = "monitoring-cycle"
 STANDIN_LABEL = ("STAND-IN: a perfect reader built from the book's ground truth answered in place of the model. "
                  "This proves the pipeline, the workflow and the grader. It is not model performance.")
@@ -490,6 +497,8 @@ def check_may_start(mode: str, codes: list[str], *, oracle: Path, allow_unsigned
     if mode == "recorded" and not any(Path(recordings).rglob("*.json")):
         raise RunRefused(f"no recorded model responses under {recordings}; record a live run first "
                          "(--mode record, billable) or use --mode standin")
+    if mode == "recorded" and codes and not replayable(codes)[0]:
+        raise RunRefused(f"nothing to replay: {', '.join(codes)}: {NO_RECORDING}")
     if mode in BILLABLE:
         print(COST_WARNING, file=out)
         unsigned = unsigned_oracle_rows(codes, oracle)
@@ -504,6 +513,11 @@ def check_may_start(mode: str, codes: list[str], *, oracle: Path, allow_unsigned
                   "results are graded against unsigned expectations.", file=out)
         if not confirm_billable:
             raise RunRefused(f"a {mode} run is billable; pass --confirm-billable once the owner has agreed")
+
+
+def replayable(codes: list[str]) -> tuple[list[str], list[str]]:
+    """Split borrower codes into those recorded mode replays and those it skips (NOT_RECORDED)."""
+    return [c for c in codes if c not in NOT_RECORDED], [c for c in codes if c in NOT_RECORDED]
 
 
 @contextmanager
@@ -573,6 +587,14 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
     oracle = oracle_for(book_root)
     check_may_start(mode, codes, allow_unsigned=allow_unsigned, confirm_billable=confirm_billable,
                     recordings=recordings, oracle=oracle)
+    skipped: list[str] = []
+    if mode == "recorded":
+        codes, skipped = replayable(codes)
+        if skipped:
+            book = load_book(book_root, codes)
+            for code in skipped:
+                if progress:
+                    progress(f"{code:28s} SKIPPED: {NO_RECORDING}")
     own_engine = engine is None
     engine = engine or create_engine(database_url or default_database_url())
     started = time.monotonic()
@@ -592,7 +614,9 @@ def run_suite(*, mode: str = "standin", book_root: Path | str = DEFAULT_BOOK, on
     results = build_results(book, all_passes, mode=mode, decide=decide,
                             seconds=round(time.monotonic() - started, 1),
                             standin_disagreements=getattr(client, "disagreements", []),
-                            unsigned_oracle_rows=len(unsigned_oracle_rows(codes, oracle)), scope=only)
+                            unsigned_oracle_rows=len(unsigned_oracle_rows(codes, oracle)),
+                            scope=only if not skipped or only else f"whole book except {len(skipped)} not replayed")
+    results["meta"]["not_replayed"] = [{"borrower": code, "reason": NO_RECORDING} for code in skipped]
     results["meta"]["accepted_stale"] = sorted(accept_stale)
     results["meta"]["record_agents"] = sorted(record_agents)
     results["meta"]["prompt_only_verified"] = getattr(client, "prompt_only_verified", 0)

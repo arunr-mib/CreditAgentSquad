@@ -61,10 +61,63 @@ def test_signed_rows_let_a_billable_run_start_only_with_the_owners_go_ahead(tmp_
 
 def test_recorded_mode_refuses_when_there_are_no_recordings(tmp_path):
     with pytest.raises(RunRefused, match="no recorded model responses"):
-        check_may_start("recorded", ["datamarrow"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
+        check_may_start("recorded", ["kelvra-bio"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
     (tmp_path / "intake").mkdir()
     (tmp_path / "intake" / "x.json").write_text("{}")
-    check_may_start("recorded", ["datamarrow"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
+    check_may_start("recorded", ["kelvra-bio"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
+
+
+RENAMED = {"datamarrow", "tarnavi-ai", "calvere-health", "tavernel-grid", "vantrell-labs", "meridew-analytics",
+           "brackmere-medical", "cindrel-tech"}
+
+
+def test_the_clients_renamed_on_22_nov_are_the_ones_recorded_mode_skips_and_none_has_a_recording():
+    assert run.NOT_RECORDED == RENAMED
+    assert run.NO_RECORDING == "no recording: renamed 22 Nov, re-record needs owner go-ahead"
+    # a renamed client that is re-recorded (owner go-ahead) must leave NOT_RECORDED, or its replay is never run
+    recorded = {p.name for agent in run.RECORDINGS_DIR.iterdir() if agent.is_dir() for p in agent.iterdir()}
+    assert recorded and not recorded & RENAMED
+    # the old recordings are kept, not replayed
+    archive = run.REPO / "evals" / "recordings-archive" / "renamed-2026-11-22"
+    assert len(list(archive.rglob("*.json"))) == 65
+    assert run.replayable(["kelvra-bio", "datamarrow", "pellham-grain"]) == (["kelvra-bio", "pellham-grain"], ["datamarrow"])
+
+
+def test_recorded_mode_refuses_a_scope_of_renamed_clients_only(tmp_path):
+    (tmp_path / "intake").mkdir()
+    (tmp_path / "intake" / "x.json").write_text("{}")
+    with pytest.raises(RunRefused, match="nothing to replay: datamarrow, cindrel-tech: no recording: renamed 22 Nov"):
+        check_may_start("recorded", ["datamarrow", "cindrel-tech"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
+    for mode in ("standin", "live", "record"):  # only replay is affected; a record run may re-record them (billable)
+        check_may_start(mode, ["datamarrow"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK),
+                        confirm_billable=True, out=io.StringIO())
+
+
+@pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
+@pytest.mark.parametrize("only", [None, ["kelvra-bio", "datamarrow"]])
+def test_a_recorded_run_skips_the_renamed_clients_out_loud_and_runs_the_rest(monkeypatch, only):
+    import evals.grade
+    from evals.scorecard import _not_replayed
+
+    ran = []
+    monkeypatch.setattr(run, "ensure_schema", lambda engine: None)
+    monkeypatch.setattr(run, "make_client", lambda *a, **k: object())
+    monkeypatch.setattr(run, "run_pass", lambda engine, book, client, **k: ran.append([b.code for b in book]) or {})
+    monkeypatch.setattr(evals.grade, "build_results", lambda book, passes, **k: {"meta": {"scope": k["scope"]}})
+    lines = []
+    results = run.run_suite(mode="recorded", only=only, engine=object(), progress=lines.append)
+    whole = [b.code for b in load_book(DEFAULT_BOOK)]
+    expected = [c for c in (only or whole) if c not in RENAMED]
+    assert ran == [expected]
+    skipped = [c for c in (only or whole) if c in RENAMED]
+    assert results["meta"]["not_replayed"] == [{"borrower": c, "reason": run.NO_RECORDING} for c in skipped]
+    assert [ln for ln in lines if "SKIPPED" in ln] == [f"{c:28s} SKIPPED: {run.NO_RECORDING}" for c in skipped]
+    if only is None:
+        assert len(expected) == 12 and len(skipped) == 8
+        assert results["meta"]["scope"] == "whole book except 8 not replayed"
+    [line] = _not_replayed({**results["meta"], "borrowers": len(expected)})
+    assert line.startswith(f"NOT REPLAYED ({len(skipped)}; the gate covers only the {len(expected)} that ran): ")
+    assert line.endswith(f" - {run.NO_RECORDING}.") and all(c in line for c in skipped)
 
 
 def test_stand_in_needs_no_signature_and_no_flag():

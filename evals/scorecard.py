@@ -31,7 +31,18 @@ def render_summary(results: dict[str, Any]) -> str:
         f"Named failures: {failures}. Other disagreements with the truth: {metrics['disagreements']}.",
         f"Gate: {'PASSED' if gate['passed'] else 'FAILED'}" + ("" if gate["passed"] else " - " + "; ".join(gate["reasons"])),
     ]
+    lines += _not_replayed(meta)
     return "\n".join(lines)
+
+
+def _not_replayed(meta: dict[str, Any]) -> list[str]:
+    """Borrowers a recorded run skipped, by name and reason; the gate covers only the borrowers that ran."""
+    skipped = meta.get("not_replayed") or []
+    if not skipped:
+        return []
+    reasons = sorted({s["reason"] for s in skipped})
+    return [f"NOT REPLAYED ({len(skipped)}; the gate covers only the {meta['borrowers']} that ran): "
+            f"{', '.join(s['borrower'] for s in skipped)} - {'; '.join(reasons)}."]
 
 
 def render_markdown(results: dict[str, Any]) -> str:
@@ -53,6 +64,7 @@ def render_markdown(results: dict[str, Any]) -> str:
     out.append(f"- Oracle rows in scope not signed by the owner: {_num(meta['unsigned_oracle_rows'])}.")
     if meta.get("accepted_stale"):
         out.append(f"- Stale recordings replayed by choice: {', '.join(meta['accepted_stale'])}.")
+    out.extend(f"- **{line}**" for line in _not_replayed(meta))
     if meta.get("prompt_only_verified"):
         out.append(f"- {meta['prompt_only_verified']} recording(s) verified on prompt only (stamped from git history; "
                    "tools, output schema and settings were not checked).")
