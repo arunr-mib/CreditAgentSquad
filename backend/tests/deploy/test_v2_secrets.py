@@ -2,6 +2,7 @@
 and as connection strings on standard input (to Vercel)."""
 import base64
 import importlib.util
+import json
 import os
 import stat
 import subprocess
@@ -64,20 +65,56 @@ def test_a_pooler_host_that_is_not_a_plain_host_name_is_refused_before_anything_
             v2.connection_url("squad2_web", "ref123", "Abc123", bad)
 
 
+FROZEN = ["prj_v1_frozen", "prj_csquad_frozen"]
+
+
+def linked(folder, project_name="credit-squad", project_id="prj_new"):
+    """A v2 build folder linked as `vercel link` leaves it."""
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / "api").mkdir(exist_ok=True)
+    (folder / "api" / "target.json").write_text(json.dumps({"target": "v2", "schema": "squad2",
+                                                            "runtime_role": "squad2_runtime"}))
+    (folder / ".vercel").mkdir(exist_ok=True)
+    (folder / ".vercel" / "project.json").write_text(json.dumps(
+        {"projectId": project_id, "orgId": "team_x", "projectName": project_name}))
+    return folder
+
+
 def fake_vercel(tmp_path, fail_on=None):
-    """A fake vercel that records its arguments and the length of its input, never the input itself."""
+    """A fake vercel that records its arguments, the project it would act on and the length of its input,
+    never the input itself."""
     fake = tmp_path / "vercel"
     log = tmp_path / "calls.txt"
     fail = f'case "$*" in *{fail_on}*) echo "boom $IN" >&2; exit 1;; esac\n' if fail_on else ""
-    fake.write_text(f"#!/bin/sh\nIN=$(cat)\necho \"$* len=${{#IN}}\" >> {log}\n{fail}")
+    fake.write_text(f"#!/bin/sh\nIN=$(cat)\necho \"$* len=${{#IN}} project=$VERCEL_PROJECT_ID org=$VERCEL_ORG_ID\" >> {log}\n{fail}")
     fake.chmod(fake.stat().st_mode | stat.S_IEXEC)
     return fake, log
 
 
-def run_cli(tmp_path, fake, *extra):
-    return subprocess.run([sys.executable, "-I", str(SCRIPT), "--project-dir", str(tmp_path), "--ref", "ref123",
-                           "--pooler-host", "aws-0-us-east-1.pooler.supabase.com", "--vercel", str(fake), *extra],
-                          capture_output=True, text=True)
+def run_cli(tmp_path, fake, *extra, build=None, env=None):
+    build = build or linked(tmp_path / "build")
+    return subprocess.run([sys.executable, "-I", str(SCRIPT), "--project-dir", str(build), "--ref", "ref123",
+                           "--pooler-host", "aws-0-us-east-1.pooler.supabase.com", "--vercel", str(fake),
+                           "--frozen-ids", *FROZEN, "--expected-id", "prj_new", *extra],
+                          capture_output=True, text=True, env=env)
+
+
+def test_a_folder_linked_to_v1_gets_nothing_by_name_or_by_id(tmp_path):
+    fake, log = fake_vercel(tmp_path)
+    for build in (linked(tmp_path / "a", "credit-agent-squad", "prj_other"),
+                  linked(tmp_path / "b", "credit-squad", "prj_v1_frozen"),
+                  linked(tmp_path / "c", "credit-squad", "prj_not_the_v2_id")):
+        result = run_cli(tmp_path, fake, "--alter", build=build)
+        assert result.returncode != 0 and "REFUSED" in result.stderr
+    assert not log.exists() and "SCRAM" not in result.stdout
+
+
+def test_v1_ids_in_the_shell_do_not_reach_the_cli(tmp_path):
+    fake, log = fake_vercel(tmp_path)
+    env = {**os.environ, "VERCEL_PROJECT_ID": "prj_v1_frozen", "VERCEL_ORG_ID": "team_v1"}
+    assert run_cli(tmp_path, fake, env=env).returncode == 0
+    calls = log.read_text().splitlines()
+    assert len(calls) == 3 and all("project=prj_new org=team_x" in c for c in calls)
 
 
 def test_the_cli_prints_only_sql_and_hands_each_value_to_vercel_on_stdin(tmp_path):
@@ -88,7 +125,7 @@ def test_the_cli_prints_only_sql_and_hands_each_value_to_vercel_on_stdin(tmp_pat
     assert [c.split()[2] for c in calls] == ["MIGRATION_DATABASE_URL", "DATABASE_URL", "SESSION_SECRET"]
     for call in calls:
         assert "--environment production --sensitive --token proxy-injected" in call and "--force" not in call
-        assert int(call.rsplit("len=", 1)[1]) > 30  # a value arrived on standard input
+        assert int(call.rsplit("len=", 1)[1].split()[0]) > 30  # a value arrived on standard input
     assert "postgresql" not in result.stdout and "postgresql" not in result.stderr
     assert result.stdout.count("SCRAM-SHA-256$") == 2 and "CREATE ROLE squad2_runtime" in result.stdout
 

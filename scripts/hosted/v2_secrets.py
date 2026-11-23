@@ -14,17 +14,28 @@ aws-1-us-east-1.pooler.supabase.com). If the first host is wrong, run again with
 statements instead of CREATE. `--overwrite` alone overwrites the variables after a run that stopped
 part-way (no role was created then: the SQL is printed only after all three variables are set).
 
+Before the first `vercel` call the project folder must pass `check_link.pinned_env` (a v2 build linked to the v2
+project, `V2_PROJECT`, default credit-squad, by name and by the API's id, and to no frozen project); every `vercel`
+call then runs with VERCEL_ORG_ID/VERCEL_PROJECT_ID from that checked link, whatever the shell exports.
+
 No value is printed or written to a file."""
 import argparse
 import base64
 import hashlib
 import hmac
+import importlib.util
+import os
 import re
 import secrets
 import shlex
 import string
 import subprocess
 import sys
+from pathlib import Path
+
+_spec = importlib.util.spec_from_file_location("check_link", Path(__file__).with_name("check_link.py"))
+check_link = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(check_link)
 
 ALPHABET = string.ascii_letters + string.digits  # placed in a URL: letters and digits only
 HOST = re.compile(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+")
@@ -65,10 +76,11 @@ def connection_url(role: str, ref: str, password: str, host: str) -> str:
     return f"postgresql+psycopg://{role}.{ref}:{password}@{host}:5432/postgres?sslmode=require"
 
 
-def put(vercel: list[str], project_dir: str, name: str, value: str, force: bool) -> None:
+def put(vercel: list[str], project_dir: str, name: str, value: str, force: bool, env: dict) -> None:
     args = [*vercel, "env", "add", name, "--environment", "production", "--sensitive",
             "--token", "proxy-injected", *(["--force"] if force else [])]
-    done = subprocess.run(args, input=value + "\n", text=True, capture_output=True, cwd=project_dir)
+    done = subprocess.run(args, input=value + "\n", text=True, capture_output=True, cwd=project_dir,
+                          env=env)
     if done.returncode != 0:
         reason = (done.stderr or done.stdout).replace(value, "<value>")[-400:]
         sys.exit(f"vercel env add {name} failed ({done.returncode}); no role SQL was printed. "
@@ -83,7 +95,13 @@ def main() -> int:
     parser.add_argument("--vercel", default="npx --yes vercel@66.0.0")
     parser.add_argument("--alter", action="store_true", help="retry: new passwords, ALTER ROLE, overwrite")
     parser.add_argument("--overwrite", action="store_true", help="overwrite variables a stopped run left")
+    parser.add_argument("--frozen-ids", nargs="*", help=argparse.SUPPRESS)  # tests: the API's answers
+    parser.add_argument("--expected-id", help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if (args.frozen_ids is None) != (args.expected_id is None):
+        parser.error("--frozen-ids and --expected-id go together")
+    env = check_link.pinned_env(Path(args.project_dir), os.environ.get("V2_PROJECT") or "credit-squad",
+                                frozen=args.frozen_ids, expected_id=args.expected_id)
     if not re.fullmatch(r"[a-z0-9]{1,40}", args.ref):
         sys.exit("the project ref is letters and digits only")
     vercel = shlex.split(args.vercel)
@@ -92,7 +110,7 @@ def main() -> int:
     urls = [("MIGRATION_DATABASE_URL", connection_url("squad2_app", args.ref, owner, args.pooler_host)),
             ("DATABASE_URL", connection_url("squad2_web", args.ref, web, args.pooler_host))]
     for name, value in [*urls, ("SESSION_SECRET", secrets.token_urlsafe(48))]:
-        put(vercel, args.project_dir, name, value, force)
+        put(vercel, args.project_dir, name, value, force, env)
     print(role_sql(scram_verifier(owner), scram_verifier(web), alter=args.alter))
     return 0
 

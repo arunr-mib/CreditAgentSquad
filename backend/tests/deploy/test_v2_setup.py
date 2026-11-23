@@ -152,3 +152,106 @@ def test_check_finds_a_routed_breach_through_the_real_routes(fake_api):
 def test_check_says_so_when_sign_in_fails(fake_api, monkeypatch):
     monkeypatch.setattr(v2, "PASSWORD", "wrong")
     assert "sign-in" in v2.check(fake_api, expect_model=False)[0]
+
+
+# --- the project and host it may touch -------------------------------------------------------------------
+
+FROZEN_IDS = ["prj_v1_frozen", "prj_csquad_frozen"]
+
+
+def linked(folder, project_name="credit-squad", project_id="prj_new"):
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / "api").mkdir(exist_ok=True)
+    (folder / "api" / "target.json").write_text(json.dumps({"target": "v2", "schema": "squad2",
+                                                            "runtime_role": "squad2_runtime"}))
+    (folder / ".vercel").mkdir(exist_ok=True)
+    (folder / ".vercel" / "project.json").write_text(json.dumps(
+        {"projectId": project_id, "orgId": "team_x", "projectName": project_name}))
+    return folder
+
+
+class FakeVercel:
+    """Records each vercel call with the project id it would act on; fails `env rm` when asked to."""
+
+    def __init__(self, fail_rm=False):
+        self.calls, self.fail_rm = [], fail_rm
+
+    def __call__(self, args, cwd, env, value):
+        self.calls.append((args[0], args[1], env.get("VERCEL_PROJECT_ID"), env.get("VERCEL_ORG_ID")))
+        if self.fail_rm and args[:2] == ["env", "rm"]:
+            return 1, "Error: something went wrong"
+        return 0, ""
+
+
+def run_with(tmp_path, build, *, vercel=None, answers_after=404, monkeypatch=None):
+    vercel = vercel or FakeVercel()
+    deploys, seen = [], {}
+
+    def final_call(base, method, path, token=None, **_):
+        seen["token"] = token
+        return answers_after, {}, {}
+
+    v2.run("https://credit-squad.vercel.app", str(build), build_dir=build, frozen=FROZEN_IDS, expected_id="prj_new",
+           vercel=vercel, deploy=lambda env: deploys.append(env.get("VERCEL_PROJECT_ID")),
+           load_fn=lambda base, token: seen.setdefault("loaded_with", token), call=final_call)
+    return vercel, deploys, seen
+
+
+def test_run_refuses_a_folder_linked_to_v1_before_any_vercel_call(tmp_path):
+    for build in (linked(tmp_path / "a", "credit-agent-squad", "prj_x"), linked(tmp_path / "b", "credit-squad", "prj_v1_frozen")):
+        vercel = FakeVercel()
+        with pytest.raises(SystemExit, match="REFUSED"):
+            run_with(tmp_path, build, vercel=vercel)
+        assert vercel.calls == []
+
+
+def test_run_refuses_any_folder_but_the_v2_build_folder(tmp_path):
+    build, other = linked(tmp_path / "v2"), linked(tmp_path / "copy")
+    vercel = FakeVercel()
+    with pytest.raises(SystemExit, match="only"):
+        v2.run("https://credit-squad.vercel.app", str(other), build_dir=build, frozen=FROZEN_IDS, expected_id="prj_new",
+               vercel=vercel, deploy=lambda env: None, load_fn=lambda b, t: None, call=lambda *a, **k: (404, {}, {}))
+    assert vercel.calls == []
+
+
+def test_run_pins_every_vercel_call_to_the_checked_link_whatever_the_shell_exports(tmp_path, monkeypatch):
+    monkeypatch.setenv("VERCEL_PROJECT_ID", "prj_v1_frozen")
+    monkeypatch.setenv("VERCEL_ORG_ID", "team_v1")
+    vercel, deploys, seen = run_with(tmp_path, linked(tmp_path / "v2"))
+    assert [c[:2] for c in vercel.calls] == [("env", "add"), ("env", "rm")]
+    assert all(c[2:] == ("prj_new", "team_x") for c in vercel.calls) and deploys == ["prj_new", "prj_new"]
+
+
+def test_run_checks_the_routes_are_off_with_the_real_token_and_fails_if_they_answer(tmp_path):
+    _, _, seen = run_with(tmp_path, linked(tmp_path / "v2"))
+    assert seen["token"] == seen["loaded_with"] and seen["token"] != "anything"
+    with pytest.raises(SystemExit, match="still answer"):
+        run_with(tmp_path, linked(tmp_path / "v3"), answers_after=200)
+
+
+def test_a_failed_token_removal_still_redeploys_and_says_exactly_what_to_run(tmp_path, capsys):
+    vercel = FakeVercel(fail_rm=True)
+    with pytest.raises(SystemExit) as stop:
+        _, deploys, seen = run_with(tmp_path, linked(tmp_path / "v2"), vercel=vercel)
+    message = str(stop.value)
+    assert "DEMO_SETUP_TOKEN is still set" in message
+    assert "env rm DEMO_SETUP_TOKEN --environment production --confirm-name DEMO_SETUP_TOKEN" in message
+    assert len([c for c in vercel.calls if c[:2] == ("env", "rm")]) == 1
+
+
+@pytest.mark.parametrize("base", ["https://credit-agent-squad.vercel.app", "https://c-squad.vercel.app/",
+                                  "https://csquad-kappa.vercel.app", "https://credit-agent-squad-abc123-team.vercel.app",
+                                  "https://csquad-git-main-team.vercel.app"])
+def test_every_command_refuses_a_frozen_host_before_calling_it(base, monkeypatch):
+    calls = []
+    monkeypatch.setattr(v2, "_call", lambda *a, **k: calls.append(a) or (200, {}, {}))
+    for command in (lambda: v2.check(base, expect_model=False), lambda: v2.load(base, "t"),
+                    lambda: v2.run(base, "x", frozen=FROZEN_IDS, expected_id="prj_new")):
+        with pytest.raises(SystemExit, match="frozen"):
+            command()
+    assert calls == []
+
+
+def test_the_v2_host_and_a_local_rehearsal_are_allowed():
+    for base in ("https://credit-squad.vercel.app", "http://localhost:8010", "https://credit-squad-abc-team.vercel.app"):
+        v2.frozen_hosts.refuse_frozen(base)

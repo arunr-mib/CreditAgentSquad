@@ -9,8 +9,13 @@ and redeploys again, so the setup routes answer 404 whenever nobody is loading. 
 
 `check` signs in as the analyst who owns the demo clients (Priya Raman) and refuses a book whose demo
 question (Cindrel Tech) is answered, whose demo draft (Calvere Health) is sent, or that has no open
-covenant breach she may route to the credit officer (the hand-off task); it also checks agents are on or off as expected and the ledger is append-only."""
+covenant breach she may route to the credit officer (the hand-off task); it also checks agents are on or off as expected and the ledger is append-only.
+
+Every command refuses a frozen site's host (frozen_hosts.py). `check` is not strictly read-only: its sign-in adds a
+session and a ledger event, and a wrong SQUAD_DEMO_PASSWORD records a failed sign-in. `run` acts only on
+.vercel-build-v2 once check_link.pinned_env has passed, with every vercel call pinned to that link."""
 import argparse
+import importlib.util
 import json
 import os
 import secrets
@@ -22,6 +27,17 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+BUILD = ROOT / ".vercel-build-v2"
+
+
+def _sibling(name):
+    spec = importlib.util.spec_from_file_location(name, Path(__file__).with_name(f"{name}.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+check_link, frozen_hosts = _sibling("check_link"), _sibling("frozen_hosts")
 VERCEL = ["npx", "--yes", "vercel@66.0.0"]
 ANALYST, PASSWORD = "priya.raman@bankofstoic.example", os.environ.get("SQUAD_DEMO_PASSWORD", "squad-demo")
 QUESTION_CLIENT, DRAFT_CLIENT = "cindrel-tech", "calvere-health"  # app.squad_demo on the innovation book
@@ -42,6 +58,7 @@ def _call(base, method, path, token=None, body=None, cookie=None, timeout=310):
 
 
 def load(base, token, post=None, get=None):
+    frozen_hosts.refuse_frozen(base)
     post = post or (lambda path, t: _call(base, "POST", path, t)[:2])
     get = get or (lambda path, t: _call(base, "GET", path, t)[:2])
     code, status = get("/api/_setup/status", token)
@@ -98,6 +115,7 @@ def _session_cookie(headers) -> str | None:
 
 
 def check(base, expect_model):
+    frozen_hosts.refuse_frozen(base)
     code, _, headers = _call(base, "POST", "/api/v1/auth/login", body={"email": ANALYST, "password": PASSWORD})
     cookie = _session_cookie(headers) if code == 200 else None
     if not cookie:
@@ -122,36 +140,61 @@ def check(base, expect_model):
                        model=get("/agents/status"), ledger=get("/ledger/verify"), expect_model=expect_model)
 
 
-def _vercel(project_dir, *args, value=None):
-    done = subprocess.run([*VERCEL, *args, "--token", "proxy-injected"], cwd=project_dir, text=True,
+def _run_vercel(args, cwd, env, value):
+    done = subprocess.run([*VERCEL, *args, "--token", "proxy-injected"], cwd=cwd, env=env, text=True,
                           input=None if value is None else value + "\n", capture_output=True)
-    if done.returncode:
-        reason = (done.stderr or done.stdout)
-        sys.exit(f"vercel {args[0]} {args[1]} failed: {(reason.replace(value, '<value>') if value else reason)[-300:]}")
+    output = (done.stderr or done.stdout)
+    return done.returncode, (output.replace(value, "<value>") if value else output)[-300:]
 
 
-def run(base, project_dir):
+REMOVE_BY_HAND = ("(cd .vercel-build-v2 && npx --yes vercel@66.0.0 env rm DEMO_SETUP_TOKEN --environment production "
+                  "--confirm-name DEMO_SETUP_TOKEN --token proxy-injected) && ./scripts/hosted/deploy-v2.sh --no-build")
+
+
+def run(base, project_dir, *, build_dir=None, frozen=None, expected_id=None, vercel=None, deploy=None,
+        load_fn=None, call=None):
+    """Token on, redeploy, load, token off, redeploy, then prove with the real token that the routes are gone.
+    Only `.vercel-build-v2`, only when it is linked to the v2 project; every vercel call is pinned to that link."""
+    frozen_hosts.refuse_frozen(base)
+    build_dir = Path(build_dir or BUILD)
+    if Path(project_dir).resolve() != build_dir.resolve():
+        sys.exit(f"refused: run works only on {build_dir} (what deploy-v2.sh deploys), not {project_dir}")
+    project = os.environ.get("V2_PROJECT") or "credit-squad"
+    env = check_link.pinned_env(build_dir, project, frozen=frozen, expected_id=expected_id)
+    vercel = vercel or _run_vercel
+    deploy = deploy or (lambda e: subprocess.run([str(ROOT / "scripts" / "hosted" / "deploy-v2.sh"), "--no-build"],
+                                                 check=True, env=e))
+    load_fn, call = load_fn or load, call or _call
     token = secrets.token_urlsafe(32)
-    deploy = [str(ROOT / "scripts" / "hosted" / "deploy-v2.sh"), "--no-build"]
-    _vercel(project_dir, "env", "add", "DEMO_SETUP_TOKEN", "--environment", "production", "--sensitive", value=token)
+    code, said = vercel(["env", "add", "DEMO_SETUP_TOKEN", "--environment", "production", "--sensitive"],
+                        build_dir, env, token)
+    if code:
+        sys.exit(f"vercel env add DEMO_SETUP_TOKEN failed: {said}")
+    still_set = None
     try:
-        subprocess.run(deploy, check=True)
-        load(base, token)
+        deploy(env)
+        load_fn(base, token)
     finally:
-        _vercel(project_dir, "env", "rm", "DEMO_SETUP_TOKEN", "--environment", "production",
-                "--confirm-name", "DEMO_SETUP_TOKEN")
-        subprocess.run(deploy, check=True)
-    code, _, _ = _call(base, "GET", "/api/_setup/status", "anything")
+        code, said = vercel(["env", "rm", "DEMO_SETUP_TOKEN", "--environment", "production",
+                             "--confirm-name", "DEMO_SETUP_TOKEN"], build_dir, env, None)
+        if code:
+            still_set = (f"DEMO_SETUP_TOKEN is still set on {project}: the setup routes stay open until it is "
+                         f"removed. Run now: {REMOVE_BY_HAND}  (vercel said: {said.strip()})")
+            print(still_set, file=sys.stderr)
+        deploy(env)  # redeploy either way: without the variable, or so the next attempt starts from a known state
+    if still_set:
+        sys.exit(still_set)
+    code, _, _ = call(base, "GET", "/api/_setup/status", token)  # the real token: 404 only if it is really gone
     if code != 404:
-        sys.exit(f"the setup routes still answer ({code}) after the token was removed")
-    print("setup routes are off again (404)")
+        sys.exit(f"the setup routes still answer ({code}) to the token that was just removed")
+    print("setup routes are off again (404 to the removed token)")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("run", "load", "check"))
     parser.add_argument("--base", required=True)
-    parser.add_argument("--project-dir", default=str(ROOT / ".vercel-build-v2"))
+    parser.add_argument("--project-dir", default=str(BUILD))
     parser.add_argument("--expect-model", action="store_true")
     args = parser.parse_args()
     base = args.base.rstrip("/")
