@@ -44,7 +44,9 @@ BOOK = ROOT / "synthetic" / "out"
 
 def _allowed(token: str | None) -> None:
     expected = os.environ.get("DEMO_SETUP_TOKEN", "")
-    if not expected or not token or not hmac.compare_digest(token, expected):
+    # bytes: compare_digest refuses a str with a character over 127, which would answer 500 and show the route exists
+    if not expected or not token or not hmac.compare_digest(token.encode("utf-8", "surrogateescape"),
+                                                            expected.encode("utf-8", "surrogateescape")):
         raise HTTPException(404, "Not found.")
 
 
@@ -115,7 +117,6 @@ def setup_seed(code: str, x_setup_token: str | None = Header(default=None)) -> d
     return {"code": code, "loaded": "now", "documents": report.documents}
 
 
-@app.post("/api/_setup/squad-demo")
 def setup_squad_demo(x_setup_token: str | None = Header(default=None)) -> dict:
     """Squad's demonstration question and draft (`app.squad_demo`), after every borrower is loaded. Idempotent."""
     _allowed(x_setup_token)
@@ -123,6 +124,10 @@ def setup_squad_demo(x_setup_token: str | None = Header(default=None)) -> dict:
 
     with _session() as db:
         return seed_squad_demo(db)
+
+
+if TARGET["target"] != "v1":  # a v1 build serves exactly the routes it always had
+    app.post("/api/_setup/squad-demo")(setup_squad_demo)
 
 
 @app.post("/api/_setup/backfill-due-dates")

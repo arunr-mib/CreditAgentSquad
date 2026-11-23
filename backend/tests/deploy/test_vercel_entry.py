@@ -77,3 +77,17 @@ def test_with_the_token_the_status_names_the_target_and_schema_even_before_migra
     client = TestClient(module.app)
     body = client.get("/api/_setup/status", headers={"X-Setup-Token": "t0ken-for-the-test"}).json()
     assert body["target"] == "v2" and body["schema"] == "squad2" and body["migrated"] is False
+
+
+def test_a_v1_build_has_no_squad_demo_route_even_with_the_token(load):
+    module = load(DEMO_SETUP_TOKEN="t0ken-for-the-test")
+    client = TestClient(module.app)
+    assert client.post("/api/_setup/squad-demo", headers={"X-Setup-Token": "t0ken-for-the-test"}).status_code in (404, 405)
+    assert not any(getattr(r, "path", "") == "/api/_setup/squad-demo" for r in module.app.routes)
+
+
+def test_a_token_with_a_byte_over_127_is_answered_404_not_500(load):
+    module = load(V2, DEMO_SETUP_TOKEN="t0ken-for-the-test")
+    client = TestClient(module.app, raise_server_exceptions=False)
+    answer = client.get("/api/_setup/status", headers={"X-Setup-Token": "t\xe9ken".encode("latin-1")})
+    assert answer.status_code == 404
