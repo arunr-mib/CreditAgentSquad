@@ -26,7 +26,7 @@ from app.core.db import get_engine
 from app.domain import hooks, stages  # noqa: F401  (registers stage handlers and decision hooks)
 from app.domain.credit import Borrower
 from app.domain.monitoring import Cycle, WorkItem
-from app.seed_book import BOOKS, seed_book
+from app.seed_book import BOOKS, require_documents, seed_book
 from app.seed_users import seed_users
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -63,6 +63,7 @@ def tamper(agent, answer, context):
 
 
 def main() -> None:
+    require_documents(ROOT)  # before the users are written: without the PDFs the journeys have nothing to open
     reader = StandInReader(load_book(EVAL_BOOKS["legacy"]), tamper=tamper)
     stages.LLM_FACTORY = lambda: reader
     with Session(get_engine()) as db:
