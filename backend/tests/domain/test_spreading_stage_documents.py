@@ -46,7 +46,7 @@ def live_cycle_for(db, book, tmp_path, monkeypatch):
 
 
 def test_the_stage_spreads_the_pack_then_each_mrr_report_and_bank_statement(live_cycle_for):
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)  # intake files the documents, then spreading reads them (the stand-in answers)
     keys = {f.key for f in db.execute(select(Fact).where(Fact.borrower_id == cycle.borrower_id, Fact.status != "rejected",
                                                          Fact.period_end == cycle.period_end)).scalars()}
@@ -64,7 +64,7 @@ def _swap_two_expense_lines(agent, answer, context):
 
 
 def test_a_held_pack_does_not_stop_the_reports_and_a_repaired_pack_ends_with_them_read(live_cycle_for):
-    db, cycle = live_cycle_for("tidewell-medical", tamper=_swap_two_expense_lines)
+    db, cycle = live_cycle_for("brackmere-medical", tamper=_swap_two_expense_lines)
     _settle(db, cycle)
 
     def keys():
@@ -99,7 +99,7 @@ def test_under_assisted_autonomy_each_extra_gets_its_own_reading_review(live_cyc
     monkeypatch.setenv("EXTRACTION_AUTONOMY", "assisted")
     get_settings.cache_clear()
     try:
-        db, cycle = live_cycle_for("tidewell-medical")
+        db, cycle = live_cycle_for("brackmere-medical")
         _settle(db, cycle)
         reviewed = {w.evidence["what"] for w in db.execute(select(WorkItem).where(
             WorkItem.cycle_id == cycle.id, WorkItem.item_type == "reading.review")).scalars()}
@@ -109,7 +109,7 @@ def test_under_assisted_autonomy_each_extra_gets_its_own_reading_review(live_cyc
 
 
 def test_running_the_stage_again_does_not_read_a_read_document_again(live_cycle_for):
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)
     st = next(s for s in workflow.stages(db, cycle) if s.stage == "spreading")
 
@@ -139,7 +139,7 @@ def _stage(db, cycle):
 
 
 def test_a_units_answer_for_the_mrr_report_does_not_rescale_the_pack(live_cycle_for, monkeypatch):
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)
     st = _stage(db, cycle)
     mrr = stages._documents(db, cycle, "mrr_report")[0]
@@ -154,7 +154,7 @@ def test_a_units_answer_for_the_mrr_report_does_not_rescale_the_pack(live_cycle_
 
 
 def test_a_units_answer_for_the_pack_does_not_rescale_the_mrr_report(live_cycle_for, monkeypatch):
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)
     st = _stage(db, cycle)
     pack = stages._documents(db, cycle, stages.statements_wanted(cycle, db.get(Borrower, cycle.borrower_id)))[-1]
@@ -169,7 +169,7 @@ def test_the_units_decision_keys_the_answer_by_document(live_cycle_for):
     """The hook files the answer under the item's own document, not the stage as a whole."""
     from app.domain.documents import Document
     from app.domain.hooks import on_spread_decision
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)
     mrr = db.execute(select(Document).where(Document.borrower_id == cycle.borrower_id,
                                             Document.doc_type == "mrr_report")).scalars().first()
@@ -185,7 +185,7 @@ def test_the_units_decision_keys_the_answer_by_document(live_cycle_for):
 
 def test_an_extra_that_stored_only_proposed_figures_or_none_is_not_read_and_billed_again(live_cycle_for, monkeypatch):
     from sqlalchemy import update
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)
     st = _stage(db, cycle)
     mrr = stages._documents(db, cycle, "mrr_report")[0]
@@ -207,7 +207,7 @@ def test_an_extra_that_stored_only_proposed_figures_or_none_is_not_read_and_bill
 
 def test_a_units_answer_on_an_item_with_no_document_is_refused_not_dropped(live_cycle_for):
     from app.domain.hooks import on_spread_decision
-    db, cycle = live_cycle_for("tidewell-medical")
+    db, cycle = live_cycle_for("brackmere-medical")
     _settle(db, cycle)
     user = db.execute(select(User)).scalars().first()
     item = WorkItem(borrower_id=cycle.borrower_id, cycle_id=cycle.id, stage="spreading", item_type="spread.scale_conflict",

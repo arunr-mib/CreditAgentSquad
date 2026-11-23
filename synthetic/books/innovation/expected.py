@@ -96,7 +96,7 @@ class Series:
 
 def build_plan(spec: ClientSpec, series: Series) -> dict[date, int]:
     """Approved plan figures (monthly revenue, May 2025 to October 2026). Clean clients beat plan by about 5 percent;
-    Corvane's plan runs away from its revenue after June 2026."""
+    Meridew's plan runs away from its revenue after June 2026."""
     plan: dict[date, int] = {}
     for i in range(PLAN_FIRST, N):
         if spec.scenario == "plan_miss" and i >= JUNE_2026:
@@ -113,7 +113,7 @@ def plan_ratio(series: Series, plan: dict[date, int], i: int) -> Decimal:
 
 
 def cert_months(spec: ClientSpec) -> set[int]:
-    """Months with a certificate on file: the last three, except Lumora's October (not yet delivered)."""
+    """Months with a certificate on file: the last three, except Calvere's October (not yet delivered)."""
     months = {LAST - 2, LAST - 1, LAST}
     if spec.scenario == "late_package":
         months.discard(LAST)
@@ -121,7 +121,7 @@ def cert_months(spec: ClientSpec) -> set[int]:
 
 
 def cert_cash(spec: ClientSpec, series: Series, i: int) -> int:
-    """The cash the borrower's certificate shows. Dataflake counts its pledged account; Tidewell counts its new escrow
+    """The cash the borrower's certificate shows. Datamarrow counts its pledged account; Brackmere counts its new escrow
     account. Both are wrong in October only."""
     cash = series.cash(i)
     if i == LAST and spec.scenario == "pledged_cash":

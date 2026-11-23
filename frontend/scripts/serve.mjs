@@ -15,7 +15,7 @@ export const ANALYST = 'priya.raman@bankofstoic.example';
 export const ROLE_EMAIL = { analyst: ANALYST, officer: 'helen.strand@bankofstoic.example', admin: 'admin@bankofstoic.example' };
 
 // The client the shots and the checks open: the legacy book's breach, or the innovation book's first client.
-const BREACH = process.env.SHOT_CLIENT ?? 'corvane-analytics';
+const BREACH = process.env.SHOT_CLIENT ?? 'meridew-analytics';
 
 /**
  * The screens to capture and check. `path` may be a function of the page (to look up an id through

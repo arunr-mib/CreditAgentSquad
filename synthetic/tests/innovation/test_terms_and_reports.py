@@ -19,7 +19,7 @@ def terms_for(sim):
 
 
 def test_agreement_cites_every_number_in_the_terms_on_the_page_it_prints(sims, tmp_path):
-    sim = sims["dataflake"]
+    sim = sims["datamarrow"]
     terms = terms_for(sim)
     result = render_legal(tmp_path / "ca.pdf", terms.agreement, sim.spec.name)
     pages = common.page_texts(tmp_path / "ca.pdf")
@@ -84,7 +84,7 @@ def test_every_client_has_the_three_covenants_and_five_reporting_requirements(si
 
 def test_watch_levels_are_not_in_the_terms_they_are_signal_parameters(sims):
     """Owner default: the 12-month watch level is a signal parameter, the covenant floor is 6.0 months."""
-    terms = terms_for(sims["dataflake"])
+    terms = terms_for(sims["datamarrow"])
     assert (
         "watch" not in str(terms.version["terms"])
         and terms.version["terms"]["covenants"][1]["test"]["threshold"] == "6.0"
@@ -98,16 +98,16 @@ def test_certificates_are_honest_except_the_two_designed_distortions(sims):
         assert sorted(model.MONTHS.index(c["period_end"]) for c in certificates) == sorted(
             cert_months(sim.spec)
         )
-    dataflake = reports.build_certificates(
-        sims["dataflake"].spec, sims["dataflake"].series, {m: 1 for m in model.MONTHS}
+    datamarrow = reports.build_certificates(
+        sims["datamarrow"].spec, sims["datamarrow"].series, {m: 1 for m in model.MONTHS}
     )
-    october = dataflake[-1]["reported"]["min_unrestricted_cash"]
+    october = datamarrow[-1]["reported"]["min_unrestricted_cash"]
     assert october["value"] == D(6_100_000) and october["in_compliance"] is True
     assert {"Cash held in the pledged collateral account": 1_500_000}.items() <= {
         line["label"]: line["amount"] for line in october["calculation"]
     }.items()
-    september = dataflake[-2]["reported"]["min_unrestricted_cash"]
-    assert september["value"] == D(sims["dataflake"].series.cash(LAST - 1))
+    september = datamarrow[-2]["reported"]["min_unrestricted_cash"]
+    assert september["value"] == D(sims["datamarrow"].series.cash(LAST - 1))
     ferrogate = reports.build_certificates(
         sims["ferrogate-cloud"].spec, sims["ferrogate-cloud"].series, {m: 1 for m in model.MONTHS}
     )[-1]["reported"]["min_runway_months"]
@@ -115,7 +115,7 @@ def test_certificates_are_honest_except_the_two_designed_distortions(sims):
     assert not [
         c
         for c in reports.build_certificates(
-            sims["lumora-health"].spec, sims["lumora-health"].series, {m: 1 for m in model.MONTHS}
+            sims["calvere-health"].spec, sims["calvere-health"].series, {m: 1 for m in model.MONTHS}
         )
         if c["period_end"] == date(2026, 10, 31)
     ]
@@ -141,8 +141,8 @@ def test_bank_accounts_tie_to_the_balance_sheet_and_roll_from_month_to_month(sim
             if a["tail"] in before
         }
         assert before == after, sim.spec.id
-    tidewell = reports.bank_accounts(sims["tidewell-medical"].spec, sims["tidewell-medical"].months, LAST)
-    assert [(a["tail"], a["closing"]) for a in tidewell if a["restricted"]] == [
+    brackmere = reports.bank_accounts(sims["brackmere-medical"].spec, sims["brackmere-medical"].months, LAST)
+    assert [(a["tail"], a["closing"]) for a in brackmere if a["restricted"]] == [
         ("9001", 100_000),
         ("9002", 1_000_000),
     ]
@@ -169,7 +169,7 @@ def test_the_mrr_bridge_adds_up_and_the_software_roll_ties(sims):
                 sim.spec.id,
                 i,
             )
-    assert len(reports.mrr_bridge(sims["dataflake"].months, LAST)["trend"]) == 6
+    assert len(reports.mrr_bridge(sims["datamarrow"].months, LAST)["trend"]) == 6
 
 
 def test_printed_certificate_figures():
@@ -236,7 +236,7 @@ def test_ferrogate_certificates_report_the_dscr_line_with_the_true_ttm_figure(si
         assert line["value"] == q(sim.series.dscr(i), 2) and line["threshold"] == D("1.25")
         assert line["unit"] == "ratio" and line["in_compliance"] is True
     assert reports.format_required("ratio", D("1.25")) == "Not less than 1.25 to 1.00"
-    for other in ("dataflake", "tidewell-medical"):
+    for other in ("datamarrow", "brackmere-medical"):
         spec, series = sims[other].spec, sims[other].series
         assert all(
             "dscr" not in c["reported"]

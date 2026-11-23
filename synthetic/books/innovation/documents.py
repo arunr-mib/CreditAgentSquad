@@ -15,7 +15,7 @@ from synthetic.books.innovation.terms import SLUG, ClientTerms
 
 D = Decimal
 PACKAGE_MONTHS = (LAST - 2, LAST - 1, LAST)  # the three months with documents on file
-STRIPPLE_LABELS = {
+CINDREL_LABELS = {
     "bs.deferred_revenue_current": "Contract liabilities",
     "bs.capitalised_software": "Capitalised software development costs",
     "cf.capitalised_software_spend": "Software development costs",
@@ -57,7 +57,7 @@ def plan_documents(spec: ClientSpec, opening: Month, months: list[Month], period
         end, month = MONTHS[i], months[i]
         if spec.scenario == "late_package" and i == LAST:
             continue  # the October package has not arrived
-        labels = STRIPPLE_LABELS if spec.scenario == "stripple_package" and i == LAST else {}
+        labels = CINDREL_LABELS if spec.scenario == "cindrel_package" and i == LAST else {}
         add(f"bank-{end.isoformat()}", "bank_statement", f"Account statement, {month_name(end)}", end,
             _received(rng, end, 2, 6),
             {"end": end, "accounts": reports.bank_accounts(spec, months, i), "notes": reports.bank_notes(spec, i)})
@@ -95,8 +95,8 @@ def notice_documents(spec: ClientSpec, series: Series, months: list[Month], rng:
     oct_month = months[LAST]
     for event in spec.funding:
         close = event.expected_close
-        if spec.id in ("dataflake", "nimbusfield-security"):
-            signed = spec.id == "dataflake"
+        if spec.id in ("datamarrow", "nimbusfield-security"):
+            signed = spec.id == "datamarrow"
             doc_date = date(2026, 11, 10) if signed else date(2026, 9, 24)
             round_name = "Series B extension" if signed else "Series A-2 preferred stock financing"
             payload = {
@@ -142,7 +142,7 @@ def notice_documents(spec: ClientSpec, series: Series, months: list[Month], rng:
     return docs
 
 
-def stripple_export(spec: ClientSpec, months: list[Month]) -> tuple[DocPlan, list[tuple[str, int, int]]]:
+def cindrel_export(spec: ClientSpec, months: list[Month]) -> tuple[DocPlan, list[tuple[str, int, int]]]:
     """The stray MRR export: ten months of 2025 (the wrong year), no company name anywhere."""
     rows = [(MONTHS[i].strftime("%Y-%m"), months[i].balances["saas.mrr"], months[i].balances["saas.customers"])
             for i in range(10)]  # fmt: skip

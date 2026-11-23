@@ -36,7 +36,7 @@ def test_ferrogate_runway_is_not_stored_and_the_copilot_says_why(innovation_cycl
 
 
 def test_a_burning_client_still_gets_its_runway_figure(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("dataflake", through="covenant_testing")
+    db, borrower, cycle = innovation_cycle("datamarrow", through="covenant_testing")
     fact = metrics_service.store_metric(db, borrower, "rml", cycle.period_end)
     assert fact is not None and fact.value > 0
 

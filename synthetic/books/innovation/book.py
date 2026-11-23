@@ -22,6 +22,7 @@ from synthetic.books.innovation.expected import (
     q,
 )  # fmt: skip
 from synthetic.books.innovation.model import LAST, MONTHS, Month, N, Period
+from synthetic.books.innovation.renames import seed_code
 from synthetic.books.innovation.roster import (
     AS_OF,
     CLIENTS,
@@ -154,7 +155,7 @@ def _expected(spec: ClientSpec, series: Series, plan: dict, terms: ClientTerms, 
                             f"{it['document_type']} for {CURRENT_PERIOD.isoformat()} was due "
                             f"{it['due_date'].isoformat()} and has not been received.")
     chasing = any(e["type"] == "intake.missing_document" for e in exceptions)
-    if spec.scenario == "stripple_package":
+    if spec.scenario == "cindrel_package":
         raise_exception("intake.unclassified", f"document:{spec.id}.mrr-export",
                         "mrr_export.xlsx names no company and shows 2025, not October 2026: which client and month?")
         raise_exception("spread.value_unverified", f"document:{spec.id}.mf-{CURRENT_PERIOD.isoformat()}",
@@ -209,7 +210,7 @@ def _details(spec: ClientSpec, series: Series, plan: dict, docs: list[DocPlan], 
                 "statement_unrestricted_cash": series.cash(LAST)}  # fmt: skip
     if spec.scenario == "cash_flow_positive":
         return {"avg_net_burn": q(series.avg_burn(LAST), 2)}
-    if spec.scenario == "stripple_package":
+    if spec.scenario == "cindrel_package":
         return {
             "new_line": {"printed_label": "Contract liabilities", "belongs_to": "bs.deferred_revenue_current",
                          "document_id": f"{spec.id}.mf-{CURRENT_PERIOD.isoformat()}"},
@@ -234,11 +235,11 @@ def build_client(spec: ClientSpec, seed: int = DEFAULT_SEED) -> ClientBook:
     plan = build_plan(spec, series)
     terms = build_terms(spec, plan)
     certificates = reports.build_certificates(spec, series, plan)
-    rng = random.Random(f"{seed}:{spec.id}:documents")
+    rng = random.Random(f"{seed}:{seed_code(spec.id)}:documents")
     docs = documents.plan_documents(spec, opening, months, periods, comparative, series, certificates, terms, rng)
     docs += documents.notice_documents(spec, series, months, rng)
-    if spec.scenario == "stripple_package":
-        docs.append(documents.stripple_export(spec, months)[0])
+    if spec.scenario == "cindrel_package":
+        docs.append(documents.cindrel_export(spec, months)[0])
     events = _funding_events(spec, docs)
     details = _details(spec, series, plan, docs, events)
     result = _expected(spec, series, plan, terms, docs, events, details, certificates)
@@ -279,7 +280,7 @@ def verify(book: ClientBook) -> None:
     need(book.months[LAST].balances["saas.mrr"] == spec.mrr, "MRR at 31 October is not the sized MRR")
     need(book.months[LAST].balances["saas.customers"] == spec.customers, "customers at 31 October")
     need(book.months[LAST].balances["bs.cash_restricted"] == spec.pledged, "pledged cash at 31 October")
-    # no test sits on its threshold; every earlier test passes (Corvane's September is the designed exception)
+    # no test sits on its threshold; every earlier test passes (Meridew's September is the designed exception)
     for r in rows:
         if r["value"] is not None:
             need(abs(r["value"] - r["threshold"]) >= MARGIN[r["unit"]], f"{r['covenant_id']} sits on its threshold")
@@ -318,7 +319,7 @@ def verify(book: ClientBook) -> None:
         "clean": [], "funding_expected": [], "runway_falling": [], "cash_flow_positive": [],
         "pledged_cash": ["covenant.reported_mismatch", "signal.high"],
         "late_package": ["intake.missing_document", "intake.missing_document"],
-        "stripple_package": ["intake.unclassified", "spread.value_unverified"],
+        "cindrel_package": ["intake.unclassified", "spread.value_unverified"],
         "plan_miss": ["covenant.breach"],
         "funding_slipped": ["funding_slipped", "signal.high"],
         "restricted_account": [PENDING],
@@ -371,7 +372,7 @@ def verify(book: ClientBook) -> None:
         run = current["min_runway_months"]
         need(run["value"] is None and run["pass"] and run["note"] == "not_meaningful_cash_flow_positive",
              "runway should be not meaningful and compliant")
-    if spec.scenario == "stripple_package":
+    if spec.scenario == "cindrel_package":
         roll = reports.software_roll(book.months, LAST)
         need(roll["opening"] + roll["additions"] - roll["amortisation"] == roll["closing"], "software roll does not tie")
         need(roll["closing"] > 10 * roll["additions"], "balance should dwarf the month's spending")

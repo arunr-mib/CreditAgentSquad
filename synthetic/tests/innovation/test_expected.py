@@ -26,7 +26,7 @@ def rows_for(sim):
 
 
 def test_fifteen_tested_months_three_covenants_each_from_august_2025(sims):
-    plan, rows = rows_for(sims["dataflake"])
+    plan, rows = rows_for(sims["datamarrow"])
     assert len(rows) == 15 * 3 == 3 * (model.N - FIRST_TEST)
     assert rows[0]["period_end"] == date(2025, 8, 31) and rows[-1]["period_end"] == CURRENT
     assert [r["covenant_id"] for r in rows[:3]] == [
@@ -40,7 +40,7 @@ def test_fifteen_tested_months_three_covenants_each_from_august_2025(sims):
 
 
 def test_clean_clients_beat_plan_by_about_five_percent(sims):
-    for client_id in ("mosswell-robotics", "quillon-ai", "pellucid-sensors"):
+    for client_id in ("mosswell-robotics", "tarnavi-ai", "pellucid-sensors"):
         sim = sims[client_id]
         plan = build_plan(sim.spec, sim.series)
         assert all(
@@ -48,8 +48,8 @@ def test_clean_clients_beat_plan_by_about_five_percent(sims):
         )
 
 
-def test_corvane_falls_under_the_floor_in_september_and_october_only(sims):
-    sim = sims["corvane-analytics"]
+def test_meridew_falls_under_the_floor_in_september_and_october_only(sims):
+    sim = sims["meridew-analytics"]
     plan = build_plan(sim.spec, sim.series)
     ratio = {i: plan_ratio(sim.series, plan, i) for i in (LAST - 3, LAST - 2, LAST - 1, LAST)}
     assert ratio[LAST - 3] > D("0.95") and ratio[LAST - 2] >= D("0.84")
@@ -82,8 +82,8 @@ def test_outcome_table():
     )  # n/m, certificate says no
 
 
-def test_dataflakes_certificate_counts_pledged_cash_and_the_covenant_breaches(sims):
-    _, rows = rows_for(sims["dataflake"])
+def test_datamarrows_certificate_counts_pledged_cash_and_the_covenant_breaches(sims):
+    _, rows = rows_for(sims["datamarrow"])
     cash = next(r for r in rows if r["covenant_id"] == "min_unrestricted_cash" and r["period_end"] == CURRENT)
     assert (cash["value"], cash["reported_value"], cash["outcome"]) == (
         D(4_600_000),
@@ -105,18 +105,18 @@ def test_signals_follow_spec_7(sims):
         plan, rows = rows_for(sim)
         return {(s["rule"], s["severity"]) for s in compute_signals(sim.series, plan, rows, LAST, [])}
 
-    assert ("runway_below_watch", "high") in current("dataflake")  # 7.1 months is under 9
-    assert ("runway_below_watch", "medium") in current("lumora-health")  # 9.5 is under 12 and not under 9
+    assert ("runway_below_watch", "high") in current("datamarrow")  # 7.1 months is under 9
+    assert ("runway_below_watch", "medium") in current("calvere-health")  # 9.5 is under 12 and not under 9
     assert ("runway_falling", "medium") in current("brightvane-energy")
     assert not any(
         rule.startswith("runway") or rule == "burn_rising" for rule, _ in current("mosswell-robotics")
     )
-    assert ("revenue_below_plan", "medium") in current("corvane-analytics")
+    assert ("revenue_below_plan", "medium") in current("meridew-analytics")
     assert q(sims["nimbusfield-security"].series.rml(LAST), 2) < 9
 
 
 def test_reporting_lateness_over_fifteen_days_is_a_high_signal(sims):
-    sim = sims["lumora-health"]
+    sim = sims["calvere-health"]
     plan, rows = rows_for(sim)
     quiet = compute_signals(sim.series, plan, rows, LAST, [("bank_statements", 12)])
     loud = compute_signals(sim.series, plan, rows, LAST, [("bank_statements", 16)])

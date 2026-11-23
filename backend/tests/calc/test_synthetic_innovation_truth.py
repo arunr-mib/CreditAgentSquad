@@ -33,8 +33,8 @@ TOLERANCE = {"ratio": D("0.005"), "usd": D("1"), "pct": D("0.0005"), "days": D("
 # Raised by the live cycle (the cash reconciliation and the Intake and Spreading Agents), never by the covenant
 # calculation these tests check. Both are now raised and graded end to end by the stand-in suite; this pins the
 # answer key's rows so the calculation checks fail if the key moves.
-RAISED_BY_THE_CYCLE = {"tidewell-medical": ["cash.statement_mismatch"],
-                       "stripple-tech": ["intake.unclassified", "spread.value_unverified"]}  # fmt: skip
+RAISED_BY_THE_CYCLE = {"brackmere-medical": ["cash.statement_mismatch"],
+                       "cindrel-tech": ["intake.unclassified", "spread.value_unverified"]}  # fmt: skip
 VC_LINES = {line.key: line for line in template_lines("vc-1")}
 VC_KEYS = set(VC_LINES)
 OPTIONAL_KEYS = {key for key, line in VC_LINES.items() if line.optional}  # unmeasured when not printed, never zero

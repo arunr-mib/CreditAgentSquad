@@ -26,7 +26,7 @@ def _points(basis):
     return found
 
 
-@pytest.mark.parametrize("code", ["brightvane-energy", "nimbusfield-security", "corvane-analytics", "dataflake"])
+@pytest.mark.parametrize("code", ["brightvane-energy", "nimbusfield-security", "meridew-analytics", "datamarrow"])
 def test_every_venture_signal_basis_links_each_figure_to_a_stored_fact(innovation_cycle, code):
     db, borrower, cycle = innovation_cycle(code, through="signals")
     signals = db.execute(select(Signal).where(Signal.borrower_id == borrower.id)).scalars().all()
@@ -85,7 +85,7 @@ def test_a_small_burn_is_linked_too():
 def test_revenue_below_plan_links_its_ratio_to_a_fact_that_records_the_plan(innovation_cycle):
     from app.domain.facts import CalcRun
 
-    db, borrower, _ = innovation_cycle("corvane-analytics", through="signals")
+    db, borrower, _ = innovation_cycle("meridew-analytics", through="signals")
     row = _fired(db, borrower, "revenue_below_plan")
     point = row.basis["current"]
     fact = db.get(Fact, point["fact_id"])
@@ -103,7 +103,7 @@ def test_an_amended_plan_recomputes_the_ratio_and_the_same_terms_reuse_it(innova
     from app.domain.signals_service import approved_plan_with_terms
     from app.domain.terms import TermsVersion
 
-    db, borrower, _ = innovation_cycle("corvane-analytics", through="signals")
+    db, borrower, _ = innovation_cycle("meridew-analytics", through="signals")
     row = _fired(db, borrower, "revenue_below_plan")
     end = row.period_end
     plan, version_id = approved_plan_with_terms(db, borrower, end)

@@ -107,8 +107,8 @@ def test_unmeasured_metrics_are_null_never_zero(suite):
     assert suite["metrics"]["input_tokens"] is None and suite["metrics"]["output_tokens"] is None
     assert all(g["tokens"] is None for g in suite["borrowers"].values())
     # the late package has no document to extract from
-    # (legacy book: eastmere-building; innovation book: lumora-health)
-    code = next(c for c in ("eastmere-building", "lumora-health") if c in suite["borrowers"])
+    # (legacy book: eastmere-building; innovation book: calvere-health)
+    code = next(c for c in ("eastmere-building", "calvere-health") if c in suite["borrowers"])
     late = suite["borrowers"][code]["extraction"]
     assert late["expected"] == 0 and late["accuracy"] is None
 
@@ -153,9 +153,9 @@ def test_the_scenarios_raise_exactly_what_the_book_expects(suite, book_name):
     if book_name != "innovation":
         pytest.skip("the legacy scenarios are covered by test_each_scenario_raises_its_expected_exceptions_and_clean_borrowers_raise_none")
     raised = {c: set(g["raised_exceptions"]) for c, g in suite["borrowers"].items()}
-    assert "cash.statement_mismatch" in raised["tidewell-medical"]
+    assert "cash.statement_mismatch" in raised["brackmere-medical"]
     assert "funding_slipped" in raised["nimbusfield-security"]
-    assert "intake.unclassified" in raised["stripple-tech"] and "spread.value_unverified" in raised["stripple-tech"]
+    assert "intake.unclassified" in raised["cindrel-tech"] and "spread.value_unverified" in raised["cindrel-tech"]
     assert raised["ferrogate-cloud"] == set()  # compliant, runway "not meaningful", nothing raised
 
 

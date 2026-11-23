@@ -31,7 +31,7 @@ SCENARIOS: dict[str, str] = {
     ),
     "runway_falling": "Runway falling: burn is rising and runway has lost more than a month in each of three months running, still above 12 months.",
     "funding_expected": "Clean book with an expected funding event the bank is tracking.",
-    "stripple_package": (
+    "cindrel_package": (
         "Awkward October package: a new balance-sheet line (contract liabilities), capitalised software that can be "
         "misread as spending, and an MRR export with no company name and the wrong year."
     ),
@@ -103,8 +103,8 @@ def _c(**kw) -> ClientSpec:
 
 CLIENTS: tuple[ClientSpec, ...] = (
     _c(
-        id="dataflake",
-        name="Dataflake Inc",
+        id="datamarrow",
+        name="Datamarrow Inc",
         sector="Data infrastructure",
         stage="Series A",
         city="Austin",
@@ -139,8 +139,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         extra={"pledged_note": "pledged to secure a hosting lease letter of credit"},
     ),
     _c(
-        id="lumora-health",
-        name="Lumora Health",
+        id="calvere-health",
+        name="Calvere Health",
         sector="Digital health",
         stage="Series B",
         city="Boston",
@@ -217,8 +217,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         risk_rating=4,
     ),
     _c(
-        id="halcyon-grid",
-        name="Halcyon Grid",
+        id="tavernel-grid",
+        name="Tavernel Grid",
         sector="Energy software",
         stage="Seed+",
         city="Portland",
@@ -252,8 +252,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         ),
     ),
     _c(
-        id="quillon-ai",
-        name="Quillon AI",
+        id="tarnavi-ai",
+        name="Tarnavi AI",
         sector="Applied AI",
         stage="Series B",
         city="San Francisco",
@@ -341,8 +341,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         risk_rating=4,
     ),
     _c(
-        id="stripple-tech",
-        name="Stripple Tech",
+        id="cindrel-tech",
+        name="Cindrel Tech",
         sector="Fintech infrastructure",
         stage="Series B",
         city="Chicago",
@@ -357,7 +357,7 @@ CLIENTS: tuple[ClientSpec, ...] = (
         pledged=500_000,
         venture_debt=4_000_000,
         min_cash=3_500_000,
-        scenario="stripple_package",
+        scenario="cindrel_package",
         shape="dip",
         rm=RMS[0],
         analyst=PRIYA,
@@ -396,8 +396,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         history=(("2026-04", "debt", 5_000_000),),
     ),
     _c(
-        id="tessaract-labs",
-        name="Tessaract Labs",
+        id="vantrell-labs",
+        name="Vantrell Labs",
         sector="Developer tools",
         stage="Series B",
         city="Seattle",
@@ -449,8 +449,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         risk_rating=4,
     ),
     _c(
-        id="corvane-analytics",
-        name="Corvane Analytics",
+        id="meridew-analytics",
+        name="Meridew Analytics",
         sector="B2B SaaS",
         stage="Series B",
         city="Raleigh",
@@ -511,8 +511,8 @@ CLIENTS: tuple[ClientSpec, ...] = (
         ),
     ),
     _c(
-        id="tidewell-medical",
-        name="Tidewell Medical",
+        id="brackmere-medical",
+        name="Brackmere Medical",
         sector="Medical devices",
         stage="Series B",
         city="Nashville",

@@ -11,6 +11,7 @@ from decimal import Decimal
 
 from synthetic.books.innovation.expected import DUE_DAYS
 from synthetic.books.innovation.model import MONTHS
+from synthetic.books.innovation.renames import seed_code
 from synthetic.books.innovation.roster import LENDER, ClientSpec
 from synthetic.scenarios import CREDIT_OFFICERS
 from synthetic.terms import Article, LegalDoc, Para, Section, long_date, money
@@ -267,7 +268,7 @@ def build_agreement(spec: ClientSpec) -> LegalDoc:
             )
         )
     doc.signature_blocks = [(spec.name, spec.cfo, "Chief Financial Officer"),
-                            (LENDER, CREDIT_OFFICERS[len(spec.id) % 2], "Credit Officer")]  # fmt: skip
+                            (LENDER, CREDIT_OFFICERS[len(seed_code(spec.id)) % 2], "Credit Officer")]  # fmt: skip
     return doc
 
 
@@ -339,7 +340,7 @@ def build_terms(spec: ClientSpec, plan: dict[date, int]) -> ClientTerms:
     version = {
         "id": f"tv-{spec.id}-1", "facility_id": facility_id, "version": 1, "status": "approved",
         "effective_from": spec.closing_date.isoformat(), "effective_to": None, "prepared_by": spec.analyst,
-        "approved_by": CREDIT_OFFICERS[len(spec.id) % 2],
+        "approved_by": CREDIT_OFFICERS[len(seed_code(spec.id)) % 2],
         "approved_at": (spec.closing_date + timedelta(days=6)).isoformat(), "warnings": [],
         "source_documents": [f"{spec.id}.{SLUG}"], "terms": terms,
     }  # fmt: skip

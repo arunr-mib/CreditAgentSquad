@@ -4,51 +4,51 @@
  "as_of": "2026-11-19",
  "current_period": "2026-10-31",
  "borrower": {
-  "id": "dataflake",
-  "name": "Dataflake Inc",
+  "id": "brackmere-medical",
+  "name": "Brackmere Medical",
   "legal_form": "corporation",
-  "industry": "Data infrastructure",
-  "stage": "Series A",
-  "city": "Austin",
-  "state": "TX",
+  "industry": "Medical devices",
+  "stage": "Series B",
+  "city": "Nashville",
+  "state": "TN",
   "fiscal_year_end_month": 12,
   "lender": "Bank of Stoic",
-  "relationship_manager": "Dana Whitcombe",
+  "relationship_manager": "Priya Venkataraman",
   "analyst": "Priya Raman",
-  "risk_rating": 6,
+  "risk_rating": 5,
   "statement_scale": 1,
-  "chief_financial_officer": "Imogen Farrow",
-  "auditor": "Wexley Arnault LLP",
+  "chief_financial_officer": "Barnaby Ekwueme",
+  "auditor": "Morrow Castellan LLP",
   "template_id": "vc-1"
  },
  "facilities": [
   {
-   "id": "dataflake-vl",
-   "borrower_id": "dataflake",
+   "id": "brackmere-medical-vl",
+   "borrower_id": "brackmere-medical",
    "type": "term_loan",
    "name": "Venture Term Loan",
-   "commitment": "2000000",
-   "original_amount": "2000000",
-   "closing_date": "2024-09-12",
-   "maturity_date": "2028-09-11",
+   "commitment": "2500000",
+   "original_amount": "2500000",
+   "closing_date": "2024-04-18",
+   "maturity_date": "2028-04-17",
    "interest_rate": "Prime + 3.50%",
    "borrowing_base": false
   }
  ],
  "terms_versions": [
   {
-   "id": "tv-dataflake-1",
-   "facility_id": "dataflake-vl",
+   "id": "tv-brackmere-medical-1",
+   "facility_id": "brackmere-medical-vl",
    "version": 1,
    "status": "approved",
-   "effective_from": "2024-09-12",
+   "effective_from": "2024-04-18",
    "effective_to": null,
    "prepared_by": "Priya Raman",
-   "approved_by": "Graham Sedgwick",
-   "approved_at": "2024-09-18",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2024-04-24",
    "warnings": [],
    "source_documents": [
-    "dataflake.credit-agreement"
+    "brackmere-medical.credit-agreement"
    ],
    "terms": {
     "definitions": {},
@@ -60,7 +60,7 @@
       "params": {},
       "test": {
        "operator": ">=",
-       "threshold": "5000000",
+       "threshold": "3000000",
        "steps": [],
        "unit": "usd"
       },
@@ -75,14 +75,14 @@
       "citations": [
        {
         "field": "test.threshold",
-        "document_id": "dataflake.credit-agreement",
+        "document_id": "brackmere-medical.credit-agreement",
         "section": "6.1",
         "page": 4,
-        "quote": "Unrestricted Cash shall not be less than $5,000,000 at any month end."
+        "quote": "Unrestricted Cash shall not be less than $3,000,000 at any month end."
        },
        {
         "field": "definition",
-        "document_id": "dataflake.credit-agreement",
+        "document_id": "brackmere-medical.credit-agreement",
         "section": "1.1",
         "page": 3,
         "quote": "\"Unrestricted Cash\" means cash held in deposit accounts of the Borrower with the Lender, excluding any cash that is pledged, escrowed or otherwise restricted."
@@ -111,21 +111,21 @@
       "citations": [
        {
         "field": "test.threshold",
-        "document_id": "dataflake.credit-agreement",
+        "document_id": "brackmere-medical.credit-agreement",
         "section": "6.2",
         "page": 4,
         "quote": "Runway shall not be less than 6.0 months at any month end."
        },
        {
         "field": "definition",
-        "document_id": "dataflake.credit-agreement",
+        "document_id": "brackmere-medical.credit-agreement",
         "section": "1.1",
         "page": 3,
         "quote": "\"Runway\" means Unrestricted Cash divided by the average monthly Net Burn for the three months then ended; if that average is zero or negative, Runway is not meaningful and the covenant is satisfied."
        },
        {
         "field": "definition",
-        "document_id": "dataflake.credit-agreement",
+        "document_id": "brackmere-medical.credit-agreement",
         "section": "1.1",
         "page": 3,
         "quote": "\"Net Burn\" means, for any month, capital expenditures plus capitalized software development spend, less net cash from operating activities, and excludes the proceeds of equity and debt financing."
@@ -141,75 +141,75 @@
        "plan": [
         {
          "period_end": "2025-05-31",
-         "amount": "390000"
+         "amount": "376000"
         },
         {
          "period_end": "2025-06-30",
-         "amount": "402000"
+         "amount": "384000"
         },
         {
          "period_end": "2025-07-31",
-         "amount": "414000"
+         "amount": "392000"
         },
         {
          "period_end": "2025-08-31",
-         "amount": "426000"
+         "amount": "401000"
         },
         {
          "period_end": "2025-09-30",
-         "amount": "439000"
+         "amount": "410000"
         },
         {
          "period_end": "2025-10-31",
-         "amount": "452000"
+         "amount": "419000"
         },
         {
          "period_end": "2025-11-30",
-         "amount": "466000"
+         "amount": "428000"
         },
         {
          "period_end": "2025-12-31",
-         "amount": "480000"
+         "amount": "437000"
         },
         {
          "period_end": "2026-01-31",
-         "amount": "494000"
+         "amount": "447000"
         },
         {
          "period_end": "2026-02-28",
-         "amount": "509000"
+         "amount": "457000"
         },
         {
          "period_end": "2026-03-31",
-         "amount": "524000"
+         "amount": "467000"
         },
         {
          "period_end": "2026-04-30",
-         "amount": "540000"
+         "amount": "477000"
         },
         {
          "period_end": "2026-05-31",
-         "amount": "556000"
+         "amount": "488000"
         },
         {
          "period_end": "2026-06-30",
-         "amount": "573000"
+         "amount": "498000"
         },
         {
          "period_end": "2026-07-31",
-         "amount": "590000"
+         "amount": "509000"
         },
         {
          "period_end": "2026-08-31",
-         "amount": "607000"
+         "amount": "521000"
         },
         {
          "period_end": "2026-09-30",
-         "amount": "626000"
+         "amount": "532000"
         },
         {
          "period_end": "2026-10-31",
-         "amount": "644000"
+         "amount": "544000"
         }
        ]
       },
@@ -230,7 +230,7 @@
       "citations": [
        {
         "field": "test.threshold",
-        "document_id": "dataflake.credit-agreement",
+        "document_id": "brackmere-medical.credit-agreement",
         "section": "6.3",
         "page": 4,
         "quote": "Revenue for any three-month period shall not be less than 80% of the Approved Plan for the same three months."
@@ -247,7 +247,7 @@
       "quality": "internal",
       "citation": {
        "field": "reporting_requirements.monthly_financials",
-       "document_id": "dataflake.credit-agreement",
+       "document_id": "brackmere-medical.credit-agreement",
        "section": "5.1(b)",
        "page": 3,
        "quote": "Within 30 days after the end of each month, the Borrower shall deliver management financial statements for that month and the year to date."
@@ -261,7 +261,7 @@
       "quality": null,
       "citation": {
        "field": "reporting_requirements.compliance_certificate",
-       "document_id": "dataflake.credit-agreement",
+       "document_id": "brackmere-medical.credit-agreement",
        "section": "5.1(c)",
        "page": 3,
        "quote": "Within 30 days after the end of each month, the Borrower shall deliver a compliance certificate signed by its chief financial officer."
@@ -275,7 +275,7 @@
       "quality": null,
       "citation": {
        "field": "reporting_requirements.mrr_report",
-       "document_id": "dataflake.credit-agreement",
+       "document_id": "brackmere-medical.credit-agreement",
        "section": "5.1(d)",
        "page": 3,
        "quote": "Within 15 days after the end of each month, the Borrower shall deliver a monthly recurring revenue report."
@@ -289,7 +289,7 @@
       "quality": null,
       "citation": {
        "field": "reporting_requirements.bank_statements",
-       "document_id": "dataflake.credit-agreement",
+       "document_id": "brackmere-medical.credit-agreement",
        "section": "5.1(e)",
        "page": 3,
        "quote": "Within 7 days after the end of each month, the Borrower shall deliver its bank account statements for that month."
@@ -303,7 +303,7 @@
       "quality": "audited",
       "citation": {
        "field": "reporting_requirements.annual_statements",
-       "document_id": "dataflake.credit-agreement",
+       "document_id": "brackmere-medical.credit-agreement",
        "section": "5.1(a)",
        "page": 3,
        "quote": "Within 180 days after the end of each fiscal year, the Borrower shall deliver audited financial statements with an unqualified opinion."
@@ -315,10 +315,10 @@
    "clause_index": [
     {
      "field": "facilities.venture_term_loan.commitment",
-     "document_id": "dataflake.credit-agreement",
+     "document_id": "brackmere-medical.credit-agreement",
      "section": "2.1",
      "page": 3,
-     "quote": "The Lender has made a venture term loan to the Borrower in the aggregate principal amount of $2,000,000, bearing interest at the rate of Prime plus 3.50 percent. The venture term loan is interest-only through December 31, 2027; no principal is scheduled before then, and principal is repayable in equal monthly installments after that date."
+     "quote": "The Lender has made a venture term loan to the Borrower in the aggregate principal amount of $2,500,000, bearing interest at the rate of Prime plus 3.50 percent. The venture term loan is interest-only through December 31, 2027; no principal is scheduled before then, and principal is repayable in equal monthly installments after that date."
     }
    ]
   }
@@ -331,60 +331,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 1826511,
-    "is.services_revenue": 109591,
-    "is.cost_of_revenue": 580831,
-    "is.rnd": 1672014,
-    "is.sales_marketing": 1904238,
-    "is.gna": 1068231,
-    "is.vc_depreciation_amortization": 65488,
-    "is.vc_interest": 87500,
-    "is.vc_other_income": 256499,
-    "is.total_revenue": 1936102,
-    "is.vc_gross_profit": 1355271,
-    "is.vc_operating_loss": -3354700,
-    "is.vc_net_loss": -3185701,
-    "bs.cash_unrestricted": 15644800,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 1786497,
+    "is.services_revenue": 107190,
+    "is.cost_of_revenue": 681728,
+    "is.rnd": 1049381,
+    "is.sales_marketing": 1195127,
+    "is.gna": 670437,
+    "is.vc_depreciation_amortization": 65445,
+    "is.vc_interest": 109375,
+    "is.vc_other_income": 180042,
+    "is.total_revenue": 1893687,
+    "is.vc_gross_profit": 1211959,
+    "is.vc_operating_loss": -1768431,
+    "is.vc_net_loss": -1697764,
+    "bs.cash_unrestricted": 11290600,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 519896,
-    "bs.other_current_assets": 123133,
-    "bs.capitalised_software": 386751,
+    "bs.accounts_receivable": 500837,
+    "bs.other_current_assets": 118619,
+    "bs.capitalised_software": 384298,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 187921,
-    "bs.accounts_payable": 55410,
-    "bs.accrued_liabilities": 143655,
-    "bs.deferred_revenue_current": 619538,
-    "bs.deferred_revenue_noncurrent": 96803,
+    "bs.other_noncurrent_assets": 187476,
+    "bs.accounts_payable": 64054,
+    "bs.accrued_liabilities": 138389,
+    "bs.deferred_revenue_current": 596827,
+    "bs.deferred_revenue_noncurrent": 93254,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -14512905,
-    "bs.vc_total_cash": 17144800,
-    "bs.vc_total_assets": 18482501,
-    "bs.vc_total_liabilities": 2995406,
-    "bs.vc_total_equity": 15487095,
-    "bs.vc_total_liabilities_and_equity": 18482501,
-    "cf.vc_operating_cash_flow": -3082790,
-    "cf.vc_capex": 23233,
-    "cf.capitalised_software_spend": 135527,
+    "bs.common_equity": -20770694,
+    "bs.vc_total_cash": 11390600,
+    "bs.vc_total_assets": 12701830,
+    "bs.vc_total_liabilities": 3472524,
+    "bs.vc_total_equity": 9229306,
+    "bs.vc_total_liabilities_and_equity": 12701830,
+    "cf.vc_operating_cash_flow": -1604167,
+    "cf.vc_capex": 22725,
+    "cf.capitalised_software_spend": 132558,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -3241550,
-    "sup.cash_interest_paid": 87500,
+    "cf.vc_net_change_in_cash": -1759450,
+    "sup.cash_interest_paid": 109375,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 387211,
-    "saas.arr": 4646532,
-    "saas.customers": 103
+    "saas.mrr": 373017,
+    "saas.arr": 4476204,
+    "saas.customers": 70
    },
    "memo": {
-    "saas.net_new_arr": 135336,
-    "saas.nrr_percent": 117,
-    "software.amortisation": 10229
+    "saas.net_new_arr": 96360,
+    "saas.nrr_percent": 109,
+    "software.amortisation": 10189
    }
   },
   {
@@ -394,60 +394,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 2225338,
-    "is.services_revenue": 133521,
-    "is.cost_of_revenue": 707658,
-    "is.rnd": 2021328,
-    "is.sales_marketing": 2302068,
-    "is.gna": 1291403,
-    "is.vc_depreciation_amortization": 80146,
-    "is.vc_interest": 105000,
-    "is.vc_other_income": 302130,
-    "is.total_revenue": 2358859,
-    "is.vc_gross_profit": 1651201,
-    "is.vc_operating_loss": -4043744,
-    "is.vc_net_loss": -3846614,
-    "bs.cash_unrestricted": 14972050,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 2167720,
+    "is.services_revenue": 130063,
+    "is.cost_of_revenue": 827203,
+    "is.rnd": 1265345,
+    "is.sales_marketing": 1441086,
+    "is.gna": 808414,
+    "is.vc_depreciation_amortization": 80026,
+    "is.vc_interest": 131250,
+    "is.vc_other_income": 212973,
+    "is.total_revenue": 2297783,
+    "is.vc_gross_profit": 1470580,
+    "is.vc_operating_loss": -2124291,
+    "is.vc_net_loss": -2042568,
+    "bs.cash_unrestricted": 10933250,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 535492,
-    "bs.other_current_assets": 126827,
-    "bs.capitalised_software": 405601,
+    "bs.accounts_receivable": 511855,
+    "bs.other_current_assets": 121229,
+    "bs.capitalised_software": 401910,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 189079,
-    "bs.accounts_payable": 57072,
-    "bs.accrued_liabilities": 147965,
-    "bs.deferred_revenue_current": 638123,
-    "bs.deferred_revenue_noncurrent": 99707,
+    "bs.other_noncurrent_assets": 188419,
+    "bs.accounts_payable": 65464,
+    "bs.accrued_liabilities": 141434,
+    "bs.deferred_revenue_current": 609957,
+    "bs.deferred_revenue_noncurrent": 95306,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -15173818,
-    "bs.vc_total_cash": 16472050,
-    "bs.vc_total_assets": 17849049,
-    "bs.vc_total_liabilities": 3022867,
-    "bs.vc_total_equity": 14826182,
-    "bs.vc_total_liabilities_and_equity": 17849049,
-    "cf.vc_operating_cash_flow": -3720874,
-    "cf.vc_capex": 28306,
-    "cf.capitalised_software_spend": 165120,
+    "bs.common_equity": -21115498,
+    "bs.vc_total_cash": 11033250,
+    "bs.vc_total_assets": 12376663,
+    "bs.vc_total_liabilities": 3492161,
+    "bs.vc_total_equity": 8884502,
+    "bs.vc_total_liabilities_and_equity": 12376663,
+    "cf.vc_operating_cash_flow": -1928381,
+    "cf.vc_capex": 27574,
+    "cf.capitalised_software_spend": 160845,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -3914300,
-    "sup.cash_interest_paid": 105000,
+    "cf.vc_net_change_in_cash": -2116800,
+    "sup.cash_interest_paid": 131250,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 398827,
-    "saas.arr": 4785924,
-    "saas.customers": 105
+    "saas.mrr": 381223,
+    "saas.arr": 4574676,
+    "saas.customers": 71
    },
    "memo": {
-    "saas.net_new_arr": 139392,
-    "saas.nrr_percent": 114,
-    "software.amortisation": 10743
+    "saas.net_new_arr": 98472,
+    "saas.nrr_percent": 111,
+    "software.amortisation": 10675
    }
   },
   {
@@ -457,60 +457,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 2636130,
-    "is.services_revenue": 158169,
-    "is.cost_of_revenue": 838290,
-    "is.rnd": 2363017,
-    "is.sales_marketing": 2691214,
-    "is.gna": 1509704,
-    "is.vc_depreciation_amortization": 95352,
-    "is.vc_interest": 122500,
-    "is.vc_other_income": 345798,
-    "is.total_revenue": 2794299,
-    "is.vc_gross_profit": 1956009,
-    "is.vc_operating_loss": -4703278,
-    "is.vc_net_loss": -4479980,
-    "bs.cash_unrestricted": 14326600,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 2557330,
+    "is.services_revenue": 153440,
+    "is.cost_of_revenue": 975878,
+    "is.rnd": 1478861,
+    "is.sales_marketing": 1684257,
+    "is.gna": 944826,
+    "is.vc_depreciation_amortization": 95115,
+    "is.vc_interest": 153125,
+    "is.vc_other_income": 244862,
+    "is.total_revenue": 2710770,
+    "is.vc_gross_profit": 1734892,
+    "is.vc_operating_loss": -2468167,
+    "is.vc_net_loss": -2376430,
+    "bs.cash_unrestricted": 10586750,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 551557,
-    "bs.other_current_assets": 130632,
-    "bs.capitalised_software": 424815,
+    "bs.accounts_receivable": 523117,
+    "bs.other_current_assets": 123896,
+    "bs.capitalised_software": 419655,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 190365,
-    "bs.accounts_payable": 58784,
-    "bs.accrued_liabilities": 152404,
-    "bs.deferred_revenue_current": 657267,
-    "bs.deferred_revenue_noncurrent": 102698,
+    "bs.other_noncurrent_assets": 189450,
+    "bs.accounts_payable": 66904,
+    "bs.accrued_liabilities": 144545,
+    "bs.deferred_revenue_current": 623376,
+    "bs.deferred_revenue_noncurrent": 97403,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -15807184,
-    "bs.vc_total_cash": 15826600,
-    "bs.vc_total_assets": 17243969,
-    "bs.vc_total_liabilities": 3051153,
-    "bs.vc_total_equity": 14192816,
-    "bs.vc_total_liabilities_and_equity": 17243969,
-    "cf.vc_operating_cash_flow": -4330618,
-    "cf.vc_capex": 33531,
-    "cf.capitalised_software_spend": 195601,
+    "bs.common_equity": -21449360,
+    "bs.vc_total_cash": 10686750,
+    "bs.vc_total_assets": 12062868,
+    "bs.vc_total_liabilities": 3512228,
+    "bs.vc_total_equity": 8550640,
+    "bs.vc_total_liabilities_and_equity": 12062868,
+    "cf.vc_operating_cash_flow": -2241016,
+    "cf.vc_capex": 32530,
+    "cf.capitalised_software_spend": 189754,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -4559750,
-    "sup.cash_interest_paid": 122500,
+    "cf.vc_net_change_in_cash": -2463300,
+    "sup.cash_interest_paid": 153125,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 410792,
-    "saas.arr": 4929504,
-    "saas.customers": 107
+    "saas.mrr": 389610,
+    "saas.arr": 4675320,
+    "saas.customers": 72
    },
    "memo": {
-    "saas.net_new_arr": 143580,
-    "saas.nrr_percent": 109,
-    "software.amortisation": 11267
+    "saas.net_new_arr": 100644,
+    "saas.nrr_percent": 112,
+    "software.amortisation": 11164
    }
   },
   {
@@ -520,60 +520,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 3059245,
-    "is.services_revenue": 183556,
-    "is.cost_of_revenue": 972841,
-    "is.rnd": 2706791,
-    "is.sales_marketing": 3082735,
-    "is.gna": 1729338,
-    "is.vc_depreciation_amortization": 111118,
-    "is.vc_interest": 140000,
-    "is.vc_other_income": 387584,
-    "is.total_revenue": 3242801,
-    "is.vc_gross_profit": 2269960,
-    "is.vc_operating_loss": -5360022,
-    "is.vc_net_loss": -5112438,
-    "bs.cash_unrestricted": 13681800,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 2955512,
+    "is.services_revenue": 177331,
+    "is.cost_of_revenue": 1127824,
+    "is.rnd": 1692628,
+    "is.sales_marketing": 1927713,
+    "is.gna": 1081399,
+    "is.vc_depreciation_amortization": 110719,
+    "is.vc_interest": 175000,
+    "is.vc_other_income": 275740,
+    "is.total_revenue": 3132843,
+    "is.vc_gross_profit": 2005019,
+    "is.vc_operating_loss": -2807440,
+    "is.vc_net_loss": -2706700,
+    "bs.cash_unrestricted": 10243750,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 568103,
-    "bs.other_current_assets": 134551,
-    "bs.capitalised_software": 444410,
+    "bs.accounts_receivable": 534626,
+    "bs.other_current_assets": 126622,
+    "bs.capitalised_software": 437543,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 191781,
-    "bs.accounts_payable": 60548,
-    "bs.accrued_liabilities": 156976,
-    "bs.deferred_revenue_current": 676984,
-    "bs.deferred_revenue_noncurrent": 105779,
+    "bs.other_noncurrent_assets": 190568,
+    "bs.accounts_payable": 68376,
+    "bs.accrued_liabilities": 147726,
+    "bs.deferred_revenue_current": 637091,
+    "bs.deferred_revenue_noncurrent": 99546,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -16439642,
-    "bs.vc_total_cash": 15181800,
-    "bs.vc_total_assets": 16640645,
-    "bs.vc_total_liabilities": 3080287,
-    "bs.vc_total_equity": 13560358,
-    "bs.vc_total_liabilities_and_equity": 16640645,
-    "cf.vc_operating_cash_flow": -4938641,
-    "cf.vc_capex": 38913,
-    "cf.capitalised_software_spend": 226996,
+    "bs.common_equity": -21779630,
+    "bs.vc_total_cash": 10343750,
+    "bs.vc_total_assets": 11753109,
+    "bs.vc_total_liabilities": 3532739,
+    "bs.vc_total_equity": 8220370,
+    "bs.vc_total_liabilities_and_equity": 11753109,
+    "cf.vc_operating_cash_flow": -2549406,
+    "cf.vc_capex": 37595,
+    "cf.capitalised_software_spend": 219299,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -5204550,
-    "sup.cash_interest_paid": 140000,
+    "cf.vc_net_change_in_cash": -2806300,
+    "sup.cash_interest_paid": 175000,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 423115,
-    "saas.arr": 5077380,
-    "saas.customers": 109
+    "saas.mrr": 398182,
+    "saas.arr": 4778184,
+    "saas.customers": 73
    },
    "memo": {
-    "saas.net_new_arr": 147876,
-    "saas.nrr_percent": 112,
-    "software.amortisation": 11800
+    "saas.net_new_arr": 102864,
+    "saas.nrr_percent": 115,
+    "software.amortisation": 11657
    }
   },
   {
@@ -583,60 +583,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 3495054,
-    "is.services_revenue": 209705,
-    "is.cost_of_revenue": 1111428,
-    "is.rnd": 3050402,
-    "is.sales_marketing": 3474069,
-    "is.gna": 1948867,
-    "is.vc_depreciation_amortization": 127458,
-    "is.vc_interest": 157500,
-    "is.vc_other_income": 427489,
-    "is.total_revenue": 3704759,
-    "is.vc_gross_profit": 2593331,
-    "is.vc_operating_loss": -6007465,
-    "is.vc_net_loss": -5737476,
-    "bs.cash_unrestricted": 13044150,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 3362454,
+    "is.services_revenue": 201748,
+    "is.cost_of_revenue": 1283113,
+    "is.rnd": 1910847,
+    "is.sales_marketing": 2176240,
+    "is.gna": 1220817,
+    "is.vc_depreciation_amortization": 126843,
+    "is.vc_interest": 196875,
+    "is.vc_other_income": 305618,
+    "is.total_revenue": 3564202,
+    "is.vc_gross_profit": 2281089,
+    "is.vc_operating_loss": -3153658,
+    "is.vc_net_loss": -3044915,
+    "bs.cash_unrestricted": 9892700,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 585147,
-    "bs.other_current_assets": 138587,
-    "bs.capitalised_software": 464402,
+    "bs.accounts_receivable": 546388,
+    "bs.other_current_assets": 129408,
+    "bs.capitalised_software": 455584,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 193329,
-    "bs.accounts_payable": 62364,
-    "bs.accrued_liabilities": 161685,
-    "bs.deferred_revenue_current": 697294,
-    "bs.deferred_revenue_noncurrent": 108952,
+    "bs.other_noncurrent_assets": 191774,
+    "bs.accounts_payable": 69880,
+    "bs.accrued_liabilities": 150976,
+    "bs.deferred_revenue_current": 651107,
+    "bs.deferred_revenue_noncurrent": 101736,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -17064680,
-    "bs.vc_total_cash": 14544150,
-    "bs.vc_total_assets": 16045615,
-    "bs.vc_total_liabilities": 3110295,
-    "bs.vc_total_equity": 12935320,
-    "bs.vc_total_liabilities_and_equity": 16045615,
-    "cf.vc_operating_cash_flow": -5538411,
-    "cf.vc_capex": 44456,
-    "cf.capitalised_software_spend": 259333,
+    "bs.common_equity": -22117845,
+    "bs.vc_total_cash": 9992700,
+    "bs.vc_total_assets": 11435854,
+    "bs.vc_total_liabilities": 3553699,
+    "bs.vc_total_equity": 7882155,
+    "bs.vc_total_liabilities_and_equity": 11435854,
+    "cf.vc_operating_cash_flow": -2865085,
+    "cf.vc_capex": 42771,
+    "cf.capitalised_software_spend": 249494,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -5842200,
-    "sup.cash_interest_paid": 157500,
+    "cf.vc_net_change_in_cash": -3157350,
+    "sup.cash_interest_paid": 196875,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 435809,
-    "saas.arr": 5229708,
-    "saas.customers": 111
+    "saas.mrr": 406942,
+    "saas.arr": 4883304,
+    "saas.customers": 74
    },
    "memo": {
-    "saas.net_new_arr": 152328,
-    "saas.nrr_percent": 118,
-    "software.amortisation": 12345
+    "saas.net_new_arr": 105120,
+    "saas.nrr_percent": 112,
+    "software.amortisation": 12154
    }
   },
   {
@@ -646,60 +646,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 3943937,
-    "is.services_revenue": 236638,
-    "is.cost_of_revenue": 1254173,
-    "is.rnd": 3399097,
-    "is.sales_marketing": 3871194,
-    "is.gna": 2171645,
-    "is.vc_depreciation_amortization": 144386,
-    "is.vc_interest": 175000,
-    "is.vc_other_income": 465534,
-    "is.total_revenue": 4180575,
-    "is.vc_gross_profit": 2926402,
-    "is.vc_operating_loss": -6659920,
-    "is.vc_net_loss": -6369386,
-    "bs.cash_unrestricted": 12399350,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 3778348,
+    "is.services_revenue": 226702,
+    "is.cost_of_revenue": 1441818,
+    "is.rnd": 2128009,
+    "is.sales_marketing": 2423563,
+    "is.gna": 1359559,
+    "is.vc_depreciation_amortization": 143493,
+    "is.vc_interest": 218750,
+    "is.vc_other_income": 334472,
+    "is.total_revenue": 4005050,
+    "is.vc_gross_profit": 2563232,
+    "is.vc_operating_loss": -3491392,
+    "is.vc_net_loss": -3375670,
+    "bs.cash_unrestricted": 9549000,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 602700,
-    "bs.other_current_assets": 142745,
-    "bs.capitalised_software": 484809,
+    "bs.accounts_receivable": 558407,
+    "bs.other_current_assets": 132254,
+    "bs.capitalised_software": 473788,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 195011,
-    "bs.accounts_payable": 64235,
-    "bs.accrued_liabilities": 166536,
-    "bs.deferred_revenue_current": 718213,
-    "bs.deferred_revenue_noncurrent": 112221,
+    "bs.other_noncurrent_assets": 193069,
+    "bs.accounts_payable": 71417,
+    "bs.accrued_liabilities": 154297,
+    "bs.deferred_revenue_current": 665430,
+    "bs.deferred_revenue_noncurrent": 103974,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -17696590,
-    "bs.vc_total_cash": 13899350,
-    "bs.vc_total_assets": 15444615,
-    "bs.vc_total_liabilities": 3141205,
-    "bs.vc_total_equity": 12303410,
-    "bs.vc_total_liabilities_and_equity": 15444615,
-    "cf.vc_operating_cash_flow": -6144194,
-    "cf.vc_capex": 50166,
-    "cf.capitalised_software_spend": 292640,
+    "bs.common_equity": -22448600,
+    "bs.vc_total_cash": 9649000,
+    "bs.vc_total_assets": 11126518,
+    "bs.vc_total_liabilities": 3575118,
+    "bs.vc_total_equity": 7551400,
+    "bs.vc_total_liabilities_and_equity": 11126518,
+    "cf.vc_operating_cash_flow": -3172636,
+    "cf.vc_capex": 48061,
+    "cf.capitalised_software_spend": 280353,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -6487000,
-    "sup.cash_interest_paid": 175000,
+    "cf.vc_net_change_in_cash": -3501050,
+    "sup.cash_interest_paid": 218750,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 448883,
-    "saas.arr": 5386596,
-    "saas.customers": 113
+    "saas.mrr": 415894,
+    "saas.arr": 4990728,
+    "saas.customers": 75
    },
    "memo": {
-    "saas.net_new_arr": 156888,
-    "saas.nrr_percent": 107,
-    "software.amortisation": 12900
+    "saas.net_new_arr": 107424,
+    "saas.nrr_percent": 110,
+    "software.amortisation": 12655
    }
   },
   {
@@ -709,60 +709,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 4406287,
-    "is.services_revenue": 264379,
-    "is.cost_of_revenue": 1401200,
-    "is.rnd": 3759048,
-    "is.sales_marketing": 4281139,
-    "is.gna": 2401614,
-    "is.vc_depreciation_amortization": 161916,
-    "is.vc_interest": 192500,
-    "is.vc_other_income": 501699,
-    "is.total_revenue": 4670666,
-    "is.vc_gross_profit": 3269466,
-    "is.vc_operating_loss": -7334251,
-    "is.vc_net_loss": -7025052,
-    "bs.cash_unrestricted": 11730500,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 4203392,
+    "is.services_revenue": 252205,
+    "is.cost_of_revenue": 1604015,
+    "is.rnd": 2353613,
+    "is.sales_marketing": 2680501,
+    "is.gna": 1503695,
+    "is.vc_depreciation_amortization": 160676,
+    "is.vc_interest": 240625,
+    "is.vc_other_income": 362323,
+    "is.total_revenue": 4455597,
+    "is.vc_gross_profit": 2851582,
+    "is.vc_operating_loss": -3846903,
+    "is.vc_net_loss": -3725205,
+    "bs.cash_unrestricted": 9186400,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 620782,
-    "bs.other_current_assets": 147027,
-    "bs.capitalised_software": 505648,
+    "bs.accounts_receivable": 570693,
+    "bs.other_current_assets": 135164,
+    "bs.capitalised_software": 492165,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 196829,
-    "bs.accounts_payable": 66162,
-    "bs.accrued_liabilities": 171532,
-    "bs.deferred_revenue_current": 739760,
-    "bs.deferred_revenue_noncurrent": 115588,
+    "bs.other_noncurrent_assets": 194454,
+    "bs.accounts_payable": 72989,
+    "bs.accrued_liabilities": 157691,
+    "bs.deferred_revenue_current": 680070,
+    "bs.deferred_revenue_noncurrent": 106261,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -18352256,
-    "bs.vc_total_cash": 13230500,
-    "bs.vc_total_assets": 14820786,
-    "bs.vc_total_liabilities": 3173042,
-    "bs.vc_total_equity": 11647744,
-    "bs.vc_total_liabilities_and_equity": 14820786,
-    "cf.vc_operating_cash_flow": -6772857,
-    "cf.vc_capex": 56047,
-    "cf.capitalised_software_spend": 326946,
+    "bs.common_equity": -22798135,
+    "bs.vc_total_cash": 9286400,
+    "bs.vc_total_assets": 10798876,
+    "bs.vc_total_liabilities": 3597011,
+    "bs.vc_total_equity": 7201865,
+    "bs.vc_total_liabilities_and_equity": 10798876,
+    "cf.vc_operating_cash_flow": -3498291,
+    "cf.vc_capex": 53468,
+    "cf.capitalised_software_spend": 311891,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -7155850,
-    "sup.cash_interest_paid": 192500,
+    "cf.vc_net_change_in_cash": -3863650,
+    "sup.cash_interest_paid": 240625,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 462350,
-    "saas.arr": 5548200,
-    "saas.customers": 115
+    "saas.mrr": 425044,
+    "saas.arr": 5100528,
+    "saas.customers": 76
    },
    "memo": {
-    "saas.net_new_arr": 161604,
-    "saas.nrr_percent": 104,
-    "software.amortisation": 13467
+    "saas.net_new_arr": 109800,
+    "saas.nrr_percent": 109,
+    "software.amortisation": 13161
    }
   },
   {
@@ -772,60 +772,60 @@
    "quality": "audited",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 4882507,
-    "is.services_revenue": 292952,
-    "is.cost_of_revenue": 1552638,
-    "is.rnd": 4107630,
-    "is.sales_marketing": 4678135,
-    "is.gna": 2624318,
-    "is.vc_depreciation_amortization": 180063,
-    "is.vc_interest": 210000,
-    "is.vc_other_income": 535913,
-    "is.total_revenue": 5175459,
-    "is.vc_gross_profit": 3622821,
-    "is.vc_operating_loss": -7967325,
-    "is.vc_net_loss": -7641412,
-    "bs.cash_unrestricted": 11100650,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 4637787,
+    "is.services_revenue": 278269,
+    "is.cost_of_revenue": 1769780,
+    "is.rnd": 2575841,
+    "is.sales_marketing": 2933594,
+    "is.gna": 1645675,
+    "is.vc_depreciation_amortization": 178398,
+    "is.vc_interest": 262500,
+    "is.vc_other_income": 389117,
+    "is.total_revenue": 4916056,
+    "is.vc_gross_profit": 3146276,
+    "is.vc_operating_loss": -4187232,
+    "is.vc_net_loss": -4060615,
+    "bs.cash_unrestricted": 8837800,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 639404,
-    "bs.other_current_assets": 151438,
-    "bs.capitalised_software": 526938,
+    "bs.accounts_receivable": 583248,
+    "bs.other_current_assets": 138138,
+    "bs.capitalised_software": 510726,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 198786,
-    "bs.accounts_payable": 68147,
-    "bs.accrued_liabilities": 176678,
-    "bs.deferred_revenue_current": 761952,
-    "bs.deferred_revenue_noncurrent": 119055,
+    "bs.other_noncurrent_assets": 195929,
+    "bs.accounts_payable": 74594,
+    "bs.accrued_liabilities": 161161,
+    "bs.deferred_revenue_current": 695032,
+    "bs.deferred_revenue_noncurrent": 108599,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -18968616,
-    "bs.vc_total_cash": 12600650,
-    "bs.vc_total_assets": 14237216,
-    "bs.vc_total_liabilities": 3205832,
-    "bs.vc_total_equity": 11031384,
-    "bs.vc_total_liabilities_and_equity": 14237216,
-    "cf.vc_operating_cash_flow": -7361313,
-    "cf.vc_capex": 62105,
-    "cf.capitalised_software_spend": 362282,
+    "bs.common_equity": -23133545,
+    "bs.vc_total_cash": 8937800,
+    "bs.vc_total_assets": 10485841,
+    "bs.vc_total_liabilities": 3619386,
+    "bs.vc_total_equity": 6866455,
+    "bs.vc_total_liabilities_and_equity": 10485841,
+    "cf.vc_operating_cash_flow": -3809133,
+    "cf.vc_capex": 58994,
+    "cf.capitalised_software_spend": 344123,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -7785700,
-    "sup.cash_interest_paid": 210000,
+    "cf.vc_net_change_in_cash": -4212250,
+    "sup.cash_interest_paid": 262500,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 476220,
-    "saas.arr": 5714640,
-    "saas.customers": 117
+    "saas.mrr": 434395,
+    "saas.arr": 5212740,
+    "saas.customers": 77
    },
    "memo": {
-    "saas.net_new_arr": 166440,
-    "saas.nrr_percent": 110,
-    "software.amortisation": 14046
+    "saas.net_new_arr": 112212,
+    "saas.nrr_percent": 114,
+    "software.amortisation": 13671
    }
   },
   {
@@ -835,60 +835,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 490507,
-    "is.services_revenue": 29430,
-    "is.cost_of_revenue": 155981,
-    "is.rnd": 365669,
-    "is.sales_marketing": 416456,
-    "is.gna": 233622,
-    "is.vc_depreciation_amortization": 18778,
-    "is.vc_interest": 17500,
-    "is.vc_other_income": 32377,
-    "is.total_revenue": 519937,
-    "is.vc_gross_profit": 363956,
-    "is.vc_operating_loss": -670569,
-    "is.vc_net_loss": -655692,
-    "bs.cash_unrestricted": 10431150,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 443952,
+    "is.services_revenue": 26637,
+    "is.cost_of_revenue": 169412,
+    "is.rnd": 220045,
+    "is.sales_marketing": 250607,
+    "is.gna": 140585,
+    "is.vc_depreciation_amortization": 18269,
+    "is.vc_interest": 21875,
+    "is.vc_other_income": 25777,
+    "is.total_revenue": 470589,
+    "is.vc_gross_profit": 301177,
+    "is.vc_operating_loss": -328329,
+    "is.vc_net_loss": -324427,
+    "bs.cash_unrestricted": 8500050,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 658587,
-    "bs.other_current_assets": 155981,
-    "bs.capitalised_software": 548697,
+    "bs.accounts_receivable": 596079,
+    "bs.other_current_assets": 141177,
+    "bs.capitalised_software": 529480,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 200884,
-    "bs.accounts_payable": 70191,
-    "bs.accrued_liabilities": 181978,
-    "bs.deferred_revenue_current": 784811,
-    "bs.deferred_revenue_noncurrent": 122627,
+    "bs.other_noncurrent_assets": 197494,
+    "bs.accounts_payable": 76235,
+    "bs.accrued_liabilities": 164706,
+    "bs.deferred_revenue_current": 710323,
+    "bs.deferred_revenue_noncurrent": 110988,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -19624308,
-    "bs.vc_total_cash": 11931150,
-    "bs.vc_total_assets": 13615299,
-    "bs.vc_total_liabilities": 3239607,
-    "bs.vc_total_equity": 10375692,
-    "bs.vc_total_liabilities_and_equity": 13615299,
-    "cf.vc_operating_cash_flow": -626865,
-    "cf.vc_capex": 6239,
-    "cf.capitalised_software_spend": 36396,
+    "bs.common_equity": -23457972,
+    "bs.vc_total_cash": 8600050,
+    "bs.vc_total_assets": 10184280,
+    "bs.vc_total_liabilities": 3642252,
+    "bs.vc_total_equity": 6542028,
+    "bs.vc_total_liabilities_and_equity": 10184280,
+    "cf.vc_operating_cash_flow": -299162,
+    "cf.vc_capex": 5647,
+    "cf.capitalised_software_spend": 32941,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -669500,
-    "sup.cash_interest_paid": 17500,
+    "cf.vc_net_change_in_cash": -337750,
+    "sup.cash_interest_paid": 21875,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 490507,
-    "saas.arr": 5886084,
-    "saas.customers": 119
+    "saas.mrr": 443952,
+    "saas.arr": 5327424,
+    "saas.customers": 78
    },
    "memo": {
-    "saas.net_new_arr": 171444,
-    "saas.nrr_percent": 109,
-    "software.amortisation": 14637
+    "saas.net_new_arr": 114684,
+    "saas.nrr_percent": 118,
+    "software.amortisation": 14187
    }
   },
   {
@@ -898,60 +898,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 995729,
-    "is.services_revenue": 59743,
-    "is.cost_of_revenue": 316642,
-    "is.rnd": 718302,
-    "is.sales_marketing": 818066,
-    "is.gna": 458915,
-    "is.vc_depreciation_amortization": 38205,
-    "is.vc_interest": 35000,
-    "is.vc_other_income": 62801,
-    "is.total_revenue": 1055472,
-    "is.vc_gross_profit": 738830,
-    "is.vc_operating_loss": -1294658,
-    "is.vc_net_loss": -1266857,
-    "bs.cash_unrestricted": 9805850,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 897671,
+    "is.services_revenue": 53860,
+    "is.cost_of_revenue": 342551,
+    "is.rnd": 446785,
+    "is.sales_marketing": 508839,
+    "is.gna": 285447,
+    "is.vc_depreciation_amortization": 37091,
+    "is.vc_interest": 43750,
+    "is.vc_other_income": 50569,
+    "is.total_revenue": 951531,
+    "is.vc_gross_profit": 608980,
+    "is.vc_operating_loss": -669182,
+    "is.vc_net_loss": -662363,
+    "bs.cash_unrestricted": 8148650,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 678344,
-    "bs.other_current_assets": 160661,
-    "bs.capitalised_software": 570942,
+    "bs.accounts_receivable": 609193,
+    "bs.other_current_assets": 144283,
+    "bs.capitalised_software": 548438,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 203125,
-    "bs.accounts_payable": 72297,
-    "bs.accrued_liabilities": 187437,
-    "bs.deferred_revenue_current": 808355,
-    "bs.deferred_revenue_noncurrent": 126306,
+    "bs.other_noncurrent_assets": 199151,
+    "bs.accounts_payable": 77913,
+    "bs.accrued_liabilities": 168330,
+    "bs.deferred_revenue_current": 725950,
+    "bs.deferred_revenue_noncurrent": 113430,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -20235473,
-    "bs.vc_total_cash": 11305850,
-    "bs.vc_total_assets": 13038922,
-    "bs.vc_total_liabilities": 3274395,
-    "bs.vc_total_equity": 9764527,
-    "bs.vc_total_liabilities_and_equity": 13038922,
-    "cf.vc_operating_cash_flow": -1208252,
-    "cf.vc_capex": 12665,
-    "cf.capitalised_software_spend": 73883,
+    "bs.common_equity": -23795908,
+    "bs.vc_total_cash": 8248650,
+    "bs.vc_total_assets": 9869715,
+    "bs.vc_total_liabilities": 3665623,
+    "bs.vc_total_equity": 6204092,
+    "bs.vc_total_liabilities_and_equity": 9869715,
+    "cf.vc_operating_cash_flow": -611125,
+    "cf.vc_capex": 11418,
+    "cf.capitalised_software_spend": 66607,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -1294800,
-    "sup.cash_interest_paid": 35000,
+    "cf.vc_net_change_in_cash": -689150,
+    "sup.cash_interest_paid": 43750,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 505222,
-    "saas.arr": 6062664,
-    "saas.customers": 121
+    "saas.mrr": 453719,
+    "saas.arr": 5444628,
+    "saas.customers": 79
    },
    "memo": {
-    "saas.net_new_arr": 176580,
-    "saas.nrr_percent": 117,
-    "software.amortisation": 15242
+    "saas.net_new_arr": 117204,
+    "saas.nrr_percent": 116,
+    "software.amortisation": 14708
    }
   },
   {
@@ -961,60 +961,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 1516108,
-    "is.services_revenue": 90966,
-    "is.cost_of_revenue": 482123,
-    "is.rnd": 1083792,
-    "is.sales_marketing": 1234319,
-    "is.gna": 692423,
-    "is.vc_depreciation_amortization": 58297,
-    "is.vc_interest": 52500,
-    "is.vc_other_income": 91401,
-    "is.total_revenue": 1607074,
-    "is.vc_gross_profit": 1124951,
-    "is.vc_operating_loss": -1943880,
-    "is.vc_net_loss": -1904979,
-    "bs.cash_unrestricted": 9153250,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 1361371,
+    "is.services_revenue": 81682,
+    "is.cost_of_revenue": 519499,
+    "is.rnd": 678739,
+    "is.sales_marketing": 773009,
+    "is.gna": 433640,
+    "is.vc_depreciation_amortization": 56474,
+    "is.vc_interest": 65625,
+    "is.vc_other_income": 74336,
+    "is.total_revenue": 1443053,
+    "is.vc_gross_profit": 923554,
+    "is.vc_operating_loss": -1018308,
+    "is.vc_net_loss": -1009597,
+    "bs.cash_unrestricted": 7787800,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 698696,
-    "bs.other_current_assets": 165481,
-    "bs.capitalised_software": 593694,
+    "bs.accounts_receivable": 622595,
+    "bs.other_current_assets": 147457,
+    "bs.capitalised_software": 567611,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 205512,
-    "bs.accounts_payable": 74466,
-    "bs.accrued_liabilities": 193061,
-    "bs.deferred_revenue_current": 832606,
-    "bs.deferred_revenue_noncurrent": 130095,
+    "bs.other_noncurrent_assets": 200900,
+    "bs.accounts_payable": 79627,
+    "bs.accrued_liabilities": 172033,
+    "bs.deferred_revenue_current": 741920,
+    "bs.deferred_revenue_noncurrent": 115925,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -20873595,
-    "bs.vc_total_cash": 10653250,
-    "bs.vc_total_assets": 12436633,
-    "bs.vc_total_liabilities": 3310228,
-    "bs.vc_total_equity": 9126405,
-    "bs.vc_total_liabilities_and_equity": 12436633,
-    "cf.vc_operating_cash_flow": -1815621,
-    "cf.vc_capex": 19284,
-    "cf.capitalised_software_spend": 112495,
+    "bs.common_equity": -24143142,
+    "bs.vc_total_cash": 7887800,
+    "bs.vc_total_assets": 9546363,
+    "bs.vc_total_liabilities": 3689505,
+    "bs.vc_total_equity": 5856858,
+    "bs.vc_total_liabilities_and_equity": 9546363,
+    "cf.vc_operating_cash_flow": -931670,
+    "cf.vc_capex": 17316,
+    "cf.capitalised_software_spend": 101014,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -1947400,
-    "sup.cash_interest_paid": 52500,
+    "cf.vc_net_change_in_cash": -1050000,
+    "sup.cash_interest_paid": 65625,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 520379,
-    "saas.arr": 6244548,
-    "saas.customers": 124
+    "saas.mrr": 463700,
+    "saas.arr": 5564400,
+    "saas.customers": 80
    },
    "memo": {
-    "saas.net_new_arr": 181884,
-    "saas.nrr_percent": 118,
-    "software.amortisation": 15860
+    "saas.net_new_arr": 119772,
+    "saas.nrr_percent": 114,
+    "software.amortisation": 15234
    }
   },
   {
@@ -1024,60 +1024,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 2052098,
-    "is.services_revenue": 123125,
-    "is.cost_of_revenue": 652568,
-    "is.rnd": 1457777,
-    "is.sales_marketing": 1660246,
-    "is.gna": 931357,
-    "is.vc_depreciation_amortization": 79071,
-    "is.vc_interest": 70000,
-    "is.vc_other_income": 118098,
-    "is.total_revenue": 2175223,
-    "is.vc_gross_profit": 1522655,
-    "is.vc_operating_loss": -2605796,
-    "is.vc_net_loss": -2557698,
-    "bs.cash_unrestricted": 8485700,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 1835273,
+    "is.services_revenue": 110116,
+    "is.cost_of_revenue": 700340,
+    "is.rnd": 911789,
+    "is.sales_marketing": 1038427,
+    "is.gna": 582533,
+    "is.vc_depreciation_amortization": 76426,
+    "is.vc_interest": 87500,
+    "is.vc_other_income": 97050,
+    "is.total_revenue": 1945389,
+    "is.vc_gross_profit": 1245049,
+    "is.vc_operating_loss": -1364126,
+    "is.vc_net_loss": -1354576,
+    "bs.cash_unrestricted": 7429050,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 719655,
-    "bs.other_current_assets": 170445,
-    "bs.capitalised_software": 616972,
+    "bs.accounts_receivable": 636292,
+    "bs.other_current_assets": 150701,
+    "bs.capitalised_software": 587008,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 208048,
-    "bs.accounts_payable": 76700,
-    "bs.accrued_liabilities": 198852,
-    "bs.deferred_revenue_current": 857584,
-    "bs.deferred_revenue_noncurrent": 133998,
+    "bs.other_noncurrent_assets": 202743,
+    "bs.accounts_payable": 81378,
+    "bs.accrued_liabilities": 175818,
+    "bs.deferred_revenue_current": 758243,
+    "bs.deferred_revenue_noncurrent": 118476,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -21526314,
-    "bs.vc_total_cash": 9985700,
-    "bs.vc_total_assets": 11820820,
-    "bs.vc_total_liabilities": 3347134,
-    "bs.vc_total_equity": 8473686,
-    "bs.vc_total_liabilities_and_equity": 11820820,
-    "cf.vc_operating_cash_flow": -2436583,
-    "cf.vc_capex": 26102,
-    "cf.capitalised_software_spend": 152265,
+    "bs.common_equity": -24488121,
+    "bs.vc_total_cash": 7529050,
+    "bs.vc_total_assets": 9225794,
+    "bs.vc_total_liabilities": 3713915,
+    "bs.vc_total_equity": 5511879,
+    "bs.vc_total_liabilities_and_equity": 9225794,
+    "cf.vc_operating_cash_flow": -1249228,
+    "cf.vc_capex": 23344,
+    "cf.capitalised_software_spend": 136178,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -2614950,
-    "sup.cash_interest_paid": 70000,
+    "cf.vc_net_change_in_cash": -1408750,
+    "sup.cash_interest_paid": 87500,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 535990,
-    "saas.arr": 6431880,
-    "saas.customers": 126
+    "saas.mrr": 473902,
+    "saas.arr": 5686824,
+    "saas.customers": 81
    },
    "memo": {
-    "saas.net_new_arr": 187332,
-    "saas.nrr_percent": 118,
-    "software.amortisation": 16492
+    "saas.net_new_arr": 122424,
+    "saas.nrr_percent": 108,
+    "software.amortisation": 15767
    }
   },
   {
@@ -1087,60 +1087,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 2604168,
-    "is.services_revenue": 156249,
-    "is.cost_of_revenue": 828126,
-    "is.rnd": 1836609,
-    "is.sales_marketing": 2091694,
-    "is.gna": 1173388,
-    "is.vc_depreciation_amortization": 100543,
-    "is.vc_interest": 87500,
-    "is.vc_other_income": 142848,
-    "is.total_revenue": 2760417,
-    "is.vc_gross_profit": 1932291,
-    "is.vc_operating_loss": -3269943,
-    "is.vc_net_loss": -3214595,
-    "bs.cash_unrestricted": 7813600,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 2319601,
+    "is.services_revenue": 139176,
+    "is.cost_of_revenue": 885160,
+    "is.rnd": 1147624,
+    "is.sales_marketing": 1307016,
+    "is.gna": 733205,
+    "is.vc_depreciation_amortization": 96956,
+    "is.vc_interest": 109375,
+    "is.vc_other_income": 118718,
+    "is.total_revenue": 2458777,
+    "is.vc_gross_profit": 1573617,
+    "is.vc_operating_loss": -1711184,
+    "is.vc_net_loss": -1701841,
+    "bs.cash_unrestricted": 7067850,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 741246,
-    "bs.other_current_assets": 175558,
-    "bs.capitalised_software": 640798,
+    "bs.accounts_receivable": 650291,
+    "bs.other_current_assets": 154016,
+    "bs.capitalised_software": 606639,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 210736,
-    "bs.accounts_payable": 79001,
-    "bs.accrued_liabilities": 204818,
-    "bs.deferred_revenue_current": 883312,
-    "bs.deferred_revenue_noncurrent": 138018,
+    "bs.other_noncurrent_assets": 204680,
+    "bs.accounts_payable": 83169,
+    "bs.accrued_liabilities": 179686,
+    "bs.deferred_revenue_current": 774925,
+    "bs.deferred_revenue_noncurrent": 121082,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -22183211,
-    "bs.vc_total_cash": 9313600,
-    "bs.vc_total_assets": 11201938,
-    "bs.vc_total_liabilities": 3385149,
-    "bs.vc_total_equity": 7816789,
-    "bs.vc_total_liabilities_and_equity": 11201938,
-    "cf.vc_operating_cash_flow": -3060697,
-    "cf.vc_capex": 33124,
-    "cf.capitalised_software_spend": 193229,
+    "bs.common_equity": -24835386,
+    "bs.vc_total_cash": 7167850,
+    "bs.vc_total_assets": 8903476,
+    "bs.vc_total_liabilities": 3738862,
+    "bs.vc_total_equity": 5164614,
+    "bs.vc_total_liabilities_and_equity": 8903476,
+    "cf.vc_operating_cash_flow": -1568330,
+    "cf.vc_capex": 29505,
+    "cf.capitalised_software_spend": 172115,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -3287050,
-    "sup.cash_interest_paid": 87500,
+    "cf.vc_net_change_in_cash": -1769950,
+    "sup.cash_interest_paid": 109375,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 552070,
-    "saas.arr": 6624840,
-    "saas.customers": 128
+    "saas.mrr": 484328,
+    "saas.arr": 5811936,
+    "saas.customers": 82
    },
    "memo": {
-    "saas.net_new_arr": 192960,
-    "saas.nrr_percent": 111,
-    "software.amortisation": 17138
+    "saas.net_new_arr": 125112,
+    "saas.nrr_percent": 117,
+    "software.amortisation": 16306
    }
   },
   {
@@ -1150,60 +1150,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 3172800,
-    "is.services_revenue": 190367,
-    "is.cost_of_revenue": 1008951,
-    "is.rnd": 2203553,
-    "is.sales_marketing": 2509602,
-    "is.gna": 1407825,
-    "is.vc_depreciation_amortization": 122733,
-    "is.vc_interest": 105000,
-    "is.vc_other_income": 165638,
-    "is.total_revenue": 3363167,
-    "is.vc_gross_profit": 2354216,
-    "is.vc_operating_loss": -3889497,
-    "is.vc_net_loss": -3828859,
-    "bs.cash_unrestricted": 7183750,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 2814584,
+    "is.services_revenue": 168875,
+    "is.cost_of_revenue": 1074046,
+    "is.rnd": 1382762,
+    "is.sales_marketing": 1574812,
+    "is.gna": 883433,
+    "is.vc_depreciation_amortization": 118071,
+    "is.vc_interest": 131250,
+    "is.vc_other_income": 139333,
+    "is.total_revenue": 2983459,
+    "is.vc_gross_profit": 1909413,
+    "is.vc_operating_loss": -2049665,
+    "is.vc_net_loss": -2041582,
+    "bs.cash_unrestricted": 6714000,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 763483,
-    "bs.other_current_assets": 180825,
-    "bs.capitalised_software": 665191,
+    "bs.accounts_receivable": 664597,
+    "bs.other_current_assets": 157405,
+    "bs.capitalised_software": 626516,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 213579,
-    "bs.accounts_payable": 81371,
-    "bs.accrued_liabilities": 210963,
-    "bs.deferred_revenue_current": 909811,
-    "bs.deferred_revenue_noncurrent": 142158,
+    "bs.other_noncurrent_assets": 206712,
+    "bs.accounts_payable": 84999,
+    "bs.accrued_liabilities": 183639,
+    "bs.deferred_revenue_current": 791973,
+    "bs.deferred_revenue_noncurrent": 123746,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -22797475,
-    "bs.vc_total_cash": 8683750,
-    "bs.vc_total_assets": 10626828,
-    "bs.vc_total_liabilities": 3424303,
-    "bs.vc_total_equity": 7202525,
-    "bs.vc_total_liabilities_and_equity": 10626828,
-    "cf.vc_operating_cash_flow": -3641121,
-    "cf.vc_capex": 40357,
-    "cf.capitalised_software_spend": 235422,
+    "bs.common_equity": -25175127,
+    "bs.vc_total_cash": 6814000,
+    "bs.vc_total_assets": 8589230,
+    "bs.vc_total_liabilities": 3764357,
+    "bs.vc_total_equity": 4824873,
+    "bs.vc_total_liabilities_and_equity": 8589230,
+    "cf.vc_operating_cash_flow": -1879156,
+    "cf.vc_capex": 35801,
+    "cf.capitalised_software_spend": 208843,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -3916900,
-    "sup.cash_interest_paid": 105000,
+    "cf.vc_net_change_in_cash": -2123800,
+    "sup.cash_interest_paid": 131250,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 568632,
-    "saas.arr": 6823584,
-    "saas.customers": 130
+    "saas.mrr": 494983,
+    "saas.arr": 5939796,
+    "saas.customers": 84
    },
    "memo": {
-    "saas.net_new_arr": 198744,
-    "saas.nrr_percent": 107,
-    "software.amortisation": 17800
+    "saas.net_new_arr": 127860,
+    "saas.nrr_percent": 109,
+    "software.amortisation": 16851
    }
   },
   {
@@ -1213,60 +1213,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 3758491,
-    "is.services_revenue": 225508,
-    "is.cost_of_revenue": 1195201,
-    "is.rnd": 2575389,
-    "is.sales_marketing": 2933082,
-    "is.gna": 1645387,
-    "is.vc_depreciation_amortization": 145661,
-    "is.vc_interest": 122500,
-    "is.vc_other_income": 186591,
-    "is.total_revenue": 3983999,
-    "is.vc_gross_profit": 2788798,
-    "is.vc_operating_loss": -4510721,
-    "is.vc_net_loss": -4446630,
-    "bs.cash_unrestricted": 6550000,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 3320457,
+    "is.services_revenue": 199227,
+    "is.cost_of_revenue": 1267087,
+    "is.rnd": 1623563,
+    "is.sales_marketing": 1849058,
+    "is.gna": 1037278,
+    "is.vc_depreciation_amortization": 139781,
+    "is.vc_interest": 153125,
+    "is.vc_other_income": 158916,
+    "is.total_revenue": 3519684,
+    "is.vc_gross_profit": 2252597,
+    "is.vc_operating_loss": -2397083,
+    "is.vc_net_loss": -2391292,
+    "bs.cash_unrestricted": 6350000,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 786387,
-    "bs.other_current_assets": 186250,
-    "bs.capitalised_software": 690171,
+    "bs.accounts_receivable": 679218,
+    "bs.other_current_assets": 160868,
+    "bs.capitalised_software": 646649,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 216579,
-    "bs.accounts_payable": 83813,
-    "bs.accrued_liabilities": 217291,
-    "bs.deferred_revenue_current": 937106,
-    "bs.deferred_revenue_noncurrent": 146423,
+    "bs.other_noncurrent_assets": 208840,
+    "bs.accounts_payable": 86868,
+    "bs.accrued_liabilities": 187679,
+    "bs.deferred_revenue_current": 809397,
+    "bs.deferred_revenue_noncurrent": 126468,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -23415246,
-    "bs.vc_total_cash": 8050000,
-    "bs.vc_total_assets": 10049387,
-    "bs.vc_total_liabilities": 3464633,
-    "bs.vc_total_equity": 6584754,
-    "bs.vc_total_liabilities_and_equity": 10049387,
-    "cf.vc_operating_cash_flow": -4223963,
-    "cf.vc_capex": 47807,
-    "cf.capitalised_software_spend": 278880,
+    "bs.common_equity": -25524837,
+    "bs.vc_total_cash": 6450000,
+    "bs.vc_total_assets": 8265575,
+    "bs.vc_total_liabilities": 3790412,
+    "bs.vc_total_equity": 4475163,
+    "bs.vc_total_liabilities_and_equity": 8265575,
+    "cf.vc_operating_cash_flow": -2199185,
+    "cf.vc_capex": 42236,
+    "cf.capitalised_software_spend": 246379,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -4550650,
-    "sup.cash_interest_paid": 122500,
+    "cf.vc_net_change_in_cash": -2487800,
+    "sup.cash_interest_paid": 153125,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 585691,
-    "saas.arr": 7028292,
-    "saas.customers": 133
+    "saas.mrr": 505873,
+    "saas.arr": 6070476,
+    "saas.customers": 85
    },
    "memo": {
-    "saas.net_new_arr": 204708,
-    "saas.nrr_percent": 105,
-    "software.amortisation": 18478
+    "saas.net_new_arr": 130680,
+    "saas.nrr_percent": 117,
+    "software.amortisation": 17403
    }
   },
   {
@@ -1276,60 +1276,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 4361752,
-    "is.services_revenue": 261704,
-    "is.cost_of_revenue": 1387038,
-    "is.rnd": 2954342,
-    "is.sales_marketing": 3364667,
-    "is.gna": 1887496,
-    "is.vc_depreciation_amortization": 169344,
-    "is.vc_interest": 140000,
-    "is.vc_other_income": 205695,
-    "is.total_revenue": 4623456,
-    "is.vc_gross_profit": 3236418,
-    "is.vc_operating_loss": -5139431,
-    "is.vc_net_loss": -5073736,
-    "bs.cash_unrestricted": 5906500,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 3837459,
+    "is.services_revenue": 230247,
+    "is.cost_of_revenue": 1464375,
+    "is.rnd": 1863643,
+    "is.sales_marketing": 2122483,
+    "is.gna": 1190663,
+    "is.vc_depreciation_amortization": 162094,
+    "is.vc_interest": 175000,
+    "is.vc_other_income": 177437,
+    "is.total_revenue": 4067706,
+    "is.vc_gross_profit": 2603331,
+    "is.vc_operating_loss": -2735552,
+    "is.vc_net_loss": -2733115,
+    "bs.cash_unrestricted": 5993700,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 809979,
-    "bs.other_current_assets": 191837,
-    "bs.capitalised_software": 715762,
+    "bs.accounts_receivable": 694161,
+    "bs.other_current_assets": 164407,
+    "bs.capitalised_software": 667049,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 219740,
-    "bs.accounts_payable": 86327,
-    "bs.accrued_liabilities": 223810,
-    "bs.deferred_revenue_current": 965218,
-    "bs.deferred_revenue_noncurrent": 150815,
+    "bs.other_noncurrent_assets": 211065,
+    "bs.accounts_payable": 88780,
+    "bs.accrued_liabilities": 191808,
+    "bs.deferred_revenue_current": 827203,
+    "bs.deferred_revenue_noncurrent": 129251,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -24042352,
-    "bs.vc_total_cash": 7406500,
-    "bs.vc_total_assets": 9463818,
-    "bs.vc_total_liabilities": 3506170,
-    "bs.vc_total_equity": 5957648,
-    "bs.vc_total_liabilities_and_equity": 9463818,
-    "cf.vc_operating_cash_flow": -4815028,
-    "cf.vc_capex": 55480,
-    "cf.capitalised_software_spend": 323642,
+    "bs.common_equity": -25866660,
+    "bs.vc_total_cash": 6093700,
+    "bs.vc_total_assets": 7950382,
+    "bs.vc_total_liabilities": 3817042,
+    "bs.vc_total_equity": 4133340,
+    "bs.vc_total_liabilities_and_equity": 7950382,
+    "cf.vc_operating_cash_flow": -2510547,
+    "cf.vc_capex": 48812,
+    "cf.capitalised_software_spend": 284741,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -5194150,
-    "sup.cash_interest_paid": 140000,
+    "cf.vc_net_change_in_cash": -2844100,
+    "sup.cash_interest_paid": 175000,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 603261,
-    "saas.arr": 7239132,
-    "saas.customers": 135
+    "saas.mrr": 517002,
+    "saas.arr": 6204024,
+    "saas.customers": 86
    },
    "memo": {
-    "saas.net_new_arr": 210840,
-    "saas.nrr_percent": 105,
-    "software.amortisation": 19171
+    "saas.net_new_arr": 133548,
+    "saas.nrr_percent": 113,
+    "software.amortisation": 17962
    }
   },
   {
@@ -1339,60 +1339,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 4983111,
-    "is.services_revenue": 298986,
-    "is.cost_of_revenue": 1584630,
-    "is.rnd": 3344041,
-    "is.sales_marketing": 3808490,
-    "is.gna": 2136470,
-    "is.vc_depreciation_amortization": 193804,
-    "is.vc_interest": 157500,
-    "is.vc_other_income": 222922,
-    "is.total_revenue": 5282097,
-    "is.vc_gross_profit": 3697467,
-    "is.vc_operating_loss": -5785338,
-    "is.vc_net_loss": -5719916,
-    "bs.cash_unrestricted": 5243500,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 4365835,
+    "is.services_revenue": 261950,
+    "is.cost_of_revenue": 1666003,
+    "is.rnd": 2107852,
+    "is.sales_marketing": 2400609,
+    "is.gna": 1346685,
+    "is.vc_depreciation_amortization": 185020,
+    "is.vc_interest": 196875,
+    "is.vc_other_income": 194919,
+    "is.total_revenue": 4627785,
+    "is.vc_gross_profit": 2961782,
+    "is.vc_operating_loss": -3078384,
+    "is.vc_net_loss": -3080340,
+    "bs.cash_unrestricted": 5631800,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 834279,
-    "bs.other_current_assets": 197592,
-    "bs.capitalised_software": 741985,
+    "bs.accounts_receivable": 709433,
+    "bs.other_current_assets": 168024,
+    "bs.capitalised_software": 687726,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 223066,
-    "bs.accounts_payable": 88916,
-    "bs.accrued_liabilities": 230524,
-    "bs.deferred_revenue_current": 994174,
-    "bs.deferred_revenue_noncurrent": 155340,
+    "bs.other_noncurrent_assets": 213389,
+    "bs.accounts_payable": 90733,
+    "bs.accrued_liabilities": 196028,
+    "bs.deferred_revenue_current": 845402,
+    "bs.deferred_revenue_noncurrent": 132094,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -24688532,
-    "bs.vc_total_cash": 6743500,
-    "bs.vc_total_assets": 8860422,
-    "bs.vc_total_liabilities": 3548954,
-    "bs.vc_total_equity": 5311468,
-    "bs.vc_total_liabilities_and_equity": 8860422,
-    "cf.vc_operating_cash_flow": -5424019,
-    "cf.vc_capex": 63384,
-    "cf.capitalised_software_spend": 369747,
+    "bs.common_equity": -26213885,
+    "bs.vc_total_cash": 5731800,
+    "bs.vc_total_assets": 7630372,
+    "bs.vc_total_liabilities": 3844257,
+    "bs.vc_total_equity": 3786115,
+    "bs.vc_total_liabilities_and_equity": 7630372,
+    "cf.vc_operating_cash_flow": -2826520,
+    "cf.vc_capex": 55533,
+    "cf.capitalised_software_spend": 323947,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -5857150,
-    "sup.cash_interest_paid": 157500,
+    "cf.vc_net_change_in_cash": -3206000,
+    "sup.cash_interest_paid": 196875,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 621359,
-    "saas.arr": 7456308,
-    "saas.customers": 138
+    "saas.mrr": 528376,
+    "saas.arr": 6340512,
+    "saas.customers": 87
    },
    "memo": {
-    "saas.net_new_arr": 217176,
-    "saas.nrr_percent": 114,
-    "software.amortisation": 19882
+    "saas.net_new_arr": 136488,
+    "saas.nrr_percent": 105,
+    "software.amortisation": 18529
    }
   },
   {
@@ -1402,60 +1402,60 @@
    "quality": "internal",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 5623111,
-    "is.services_revenue": 337386,
-    "is.cost_of_revenue": 1788150,
-    "is.rnd": 3730558,
-    "is.sales_marketing": 4248690,
-    "is.gna": 2383412,
-    "is.vc_depreciation_amortization": 219062,
-    "is.vc_interest": 175000,
-    "is.vc_other_income": 238216,
-    "is.total_revenue": 5960497,
-    "is.vc_gross_profit": 4172347,
-    "is.vc_operating_loss": -6409375,
-    "is.vc_net_loss": -6346159,
-    "bs.cash_unrestricted": 4600000,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 4905835,
+    "is.services_revenue": 294350,
+    "is.cost_of_revenue": 1872067,
+    "is.rnd": 2343385,
+    "is.sales_marketing": 2668855,
+    "is.gna": 1497165,
+    "is.vc_depreciation_amortization": 208570,
+    "is.vc_interest": 218750,
+    "is.vc_other_income": 211345,
+    "is.total_revenue": 5200185,
+    "is.vc_gross_profit": 3328118,
+    "is.vc_operating_loss": -3389857,
+    "is.vc_net_loss": -3397262,
+    "bs.cash_unrestricted": 4300000,
+    "bs.cash_restricted": 1100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 859307,
-    "bs.other_current_assets": 203520,
-    "bs.capitalised_software": 768862,
+    "bs.accounts_receivable": 725040,
+    "bs.other_current_assets": 171720,
+    "bs.capitalised_software": 708690,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 226560,
-    "bs.accounts_payable": 91584,
-    "bs.accrued_liabilities": 237440,
-    "bs.deferred_revenue_current": 1024000,
-    "bs.deferred_revenue_noncurrent": 160000,
+    "bs.other_noncurrent_assets": 215812,
+    "bs.accounts_payable": 92729,
+    "bs.accrued_liabilities": 200340,
+    "bs.deferred_revenue_current": 864000,
+    "bs.deferred_revenue_noncurrent": 135000,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -25314775,
-    "bs.vc_total_cash": 6100000,
-    "bs.vc_total_assets": 8278249,
-    "bs.vc_total_liabilities": 3593024,
-    "bs.vc_total_equity": 4685225,
-    "bs.vc_total_liabilities_and_equity": 8278249,
-    "cf.vc_operating_cash_flow": -6011890,
-    "cf.vc_capex": 71525,
-    "cf.capitalised_software_spend": 417235,
+    "bs.common_equity": -26530807,
+    "bs.vc_total_cash": 5400000,
+    "bs.vc_total_assets": 7341262,
+    "bs.vc_total_liabilities": 3872069,
+    "bs.vc_total_equity": 3469193,
+    "bs.vc_total_liabilities_and_equity": 7341262,
+    "cf.vc_operating_cash_flow": -3111383,
+    "cf.vc_capex": 62402,
+    "cf.capitalised_software_spend": 364015,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -6500650,
-    "sup.cash_interest_paid": 175000,
+    "cf.vc_net_change_in_cash": -3537800,
+    "sup.cash_interest_paid": 218750,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 640000,
-    "saas.arr": 7680000,
-    "saas.customers": 140
+    "saas.mrr": 540000,
+    "saas.arr": 6480000,
+    "saas.customers": 88
    },
    "memo": {
-    "saas.net_new_arr": 223692,
-    "saas.nrr_percent": 104,
-    "software.amortisation": 20611
+    "saas.net_new_arr": 139488,
+    "saas.nrr_percent": 107,
+    "software.amortisation": 19104
    }
   }
  ],
@@ -1467,55 +1467,55 @@
    "quality": "audited",
    "scale": 1,
    "values": {
-    "is.subscription_revenue": 3027154,
-    "is.services_revenue": 181630,
-    "is.cost_of_revenue": 962636,
-    "is.rnd": 2546731,
-    "is.sales_marketing": 2900444,
-    "is.gna": 1627077,
-    "is.vc_depreciation_amortization": 111639,
-    "is.vc_interest": 130200,
-    "is.vc_other_income": 332266,
-    "is.total_revenue": 3208784,
-    "is.vc_gross_profit": 2246148,
-    "is.vc_operating_loss": -4939743,
-    "is.vc_net_loss": -4737677,
-    "bs.cash_unrestricted": 18886350,
-    "bs.cash_restricted": 1500000,
+    "is.subscription_revenue": 2875428,
+    "is.services_revenue": 172527,
+    "is.cost_of_revenue": 1097264,
+    "is.rnd": 1597021,
+    "is.sales_marketing": 1818828,
+    "is.gna": 1020319,
+    "is.vc_depreciation_amortization": 110607,
+    "is.vc_interest": 162750,
+    "is.vc_other_income": 241253,
+    "is.total_revenue": 3047955,
+    "is.vc_gross_profit": 1950691,
+    "is.vc_operating_loss": -2596084,
+    "is.vc_net_loss": -2517581,
+    "bs.cash_unrestricted": 13050050,
+    "bs.cash_restricted": 100000,
     "bs.short_term_investments": 0,
-    "bs.accounts_receivable": 448466,
-    "bs.other_current_assets": 106216,
-    "bs.capitalised_software": 297408,
+    "bs.accounts_receivable": 449203,
+    "bs.other_current_assets": 106390,
+    "bs.capitalised_software": 297888,
     "bs.vc_other_intangibles": 120000,
-    "bs.other_noncurrent_assets": 183992,
-    "bs.accounts_payable": 47797,
-    "bs.accrued_liabilities": 123918,
-    "bs.deferred_revenue_current": 534418,
-    "bs.deferred_revenue_noncurrent": 83503,
+    "bs.other_noncurrent_assets": 184048,
+    "bs.accounts_payable": 57451,
+    "bs.accrued_liabilities": 124122,
+    "bs.deferred_revenue_current": 535296,
+    "bs.deferred_revenue_noncurrent": 83640,
     "bs.venture_debt_current": 0,
-    "bs.venture_debt_noncurrent": 2000000,
+    "bs.venture_debt_noncurrent": 2500000,
     "bs.convertible_notes": 0,
     "bs.safes": 0,
     "bs.vc_other_liabilities": 80000,
     "bs.preferred_equity": 30000000,
-    "bs.common_equity": -11327204,
-    "bs.vc_total_cash": 20386350,
-    "bs.vc_total_assets": 21542432,
-    "bs.vc_total_liabilities": 2869636,
-    "bs.vc_total_equity": 18672796,
-    "bs.vc_total_liabilities_and_equity": 21542432,
-    "cf.vc_operating_cash_flow": -4564014,
-    "cf.vc_capex": 38505,
-    "cf.capitalised_software_spend": 224615,
+    "bs.common_equity": -19072930,
+    "bs.vc_total_cash": 13150050,
+    "bs.vc_total_assets": 14307579,
+    "bs.vc_total_liabilities": 3380509,
+    "bs.vc_total_equity": 10927070,
+    "bs.vc_total_liabilities_and_equity": 14307579,
+    "cf.vc_operating_cash_flow": -2361662,
+    "cf.vc_capex": 36576,
+    "cf.capitalised_software_spend": 213356,
     "cf.equity_raised": 0,
     "cf.debt_raised": 0,
     "cf.vc_other_financing": 0,
-    "cf.vc_net_change_in_cash": -4827134,
-    "sup.cash_interest_paid": 130200,
+    "cf.vc_net_change_in_cash": -2611594,
+    "sup.cash_interest_paid": 162750,
     "sup.scheduled_principal": 0,
-    "saas.mrr": 334011,
-    "saas.arr": 4008132,
-    "saas.customers": 95
+    "saas.mrr": 334560,
+    "saas.arr": 4014720,
+    "saas.customers": 66
    },
    "memo": {
     "derived": "fiscal 2024 flows are fiscal 2025 flows scaled by 0.62"
@@ -1526,163 +1526,41 @@
   {
    "period_end": "2026-08-31",
    "scale": 1,
-   "signed_by": "Imogen Farrow",
+   "signed_by": "Barnaby Ekwueme",
    "reported": {
     "min_unrestricted_cash": {
-     "value": "5906500",
-     "threshold": "5000000",
+     "value": "5993700",
+     "threshold": "3000000",
      "in_compliance": true,
      "unit": "usd",
      "calculation": [
       {
        "label": "Cash in operating accounts",
-       "amount": 5906500
+       "amount": 5993700
       },
       {
        "label": "Unrestricted Cash",
-       "amount": 5906500
+       "amount": 5993700
       }
      ]
     },
     "min_runway_months": {
-     "value": "9.3",
+     "value": "16.7",
      "threshold": "6.0",
      "in_compliance": true,
      "unit": "months",
      "calculation": [
       {
        "label": "Unrestricted Cash (as above)",
-       "amount": 5906500
+       "amount": 5993700
       },
       {
        "label": "Net Burn for the three months ended",
-       "amount": 1907100
+       "amount": 1074150
       },
       {
        "label": "Average monthly Net Burn",
-       "amount": "635700"
-      }
-     ]
-    },
-    "revenue_vs_plan": {
-     "value": "1.0526",
-     "threshold": "0.80",
-     "in_compliance": true,
-     "unit": "pct",
-     "calculation": [
-      {
-       "label": "Revenue for the three months ended",
-       "amount": 1863039
-      },
-      {
-       "label": "Approved Plan for the same three months",
-       "amount": 1770000
-      }
-     ]
-    }
-   }
-  },
-  {
-   "period_end": "2026-09-30",
-   "scale": 1,
-   "signed_by": "Imogen Farrow",
-   "reported": {
-    "min_unrestricted_cash": {
-     "value": "5243500",
-     "threshold": "5000000",
-     "in_compliance": true,
-     "unit": "usd",
-     "calculation": [
-      {
-       "label": "Cash in operating accounts",
-       "amount": 5243500
-      },
-      {
-       "label": "Unrestricted Cash",
-       "amount": 5243500
-      }
-     ]
-    },
-    "min_runway_months": {
-     "value": "8.1",
-     "threshold": "6.0",
-     "in_compliance": true,
-     "unit": "months",
-     "calculation": [
-      {
-       "label": "Unrestricted Cash (as above)",
-       "amount": 5243500
-      },
-      {
-       "label": "Net Burn for the three months ended",
-       "amount": 1940250
-      },
-      {
-       "label": "Average monthly Net Burn",
-       "amount": "646750"
-      }
-     ]
-    },
-    "revenue_vs_plan": {
-     "value": "1.0526",
-     "threshold": "0.80",
-     "in_compliance": true,
-     "unit": "pct",
-     "calculation": [
-      {
-       "label": "Revenue for the three months ended",
-       "amount": 1918930
-      },
-      {
-       "label": "Approved Plan for the same three months",
-       "amount": 1823000
-      }
-     ]
-    }
-   }
-  },
-  {
-   "period_end": "2026-10-31",
-   "scale": 1,
-   "signed_by": "Imogen Farrow",
-   "reported": {
-    "min_unrestricted_cash": {
-     "value": "6100000",
-     "threshold": "5000000",
-     "in_compliance": true,
-     "unit": "usd",
-     "calculation": [
-      {
-       "label": "Cash in operating accounts",
-       "amount": 4600000
-      },
-      {
-       "label": "Cash held in the pledged collateral account",
-       "amount": 1500000
-      },
-      {
-       "label": "Unrestricted Cash",
-       "amount": 6100000
-      }
-     ]
-    },
-    "min_runway_months": {
-     "value": "9.4",
-     "threshold": "6.0",
-     "in_compliance": true,
-     "unit": "months",
-     "calculation": [
-      {
-       "label": "Unrestricted Cash (as above)",
-       "amount": 6100000
-      },
-      {
-       "label": "Net Burn for the three months ended",
-       "amount": 1950000
-      },
-      {
-       "label": "Average monthly Net Burn",
-       "amount": "650000"
+       "amount": "358050"
       }
      ]
     },
@@ -1694,11 +1572,133 @@
      "calculation": [
       {
        "label": "Revenue for the three months ended",
-       "amount": 1976498
+       "amount": 1608929
       },
       {
        "label": "Approved Plan for the same three months",
-       "amount": 1877000
+       "amount": 1528000
+      }
+     ]
+    }
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Barnaby Ekwueme",
+   "reported": {
+    "min_unrestricted_cash": {
+     "value": "5631800",
+     "threshold": "3000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash in operating accounts",
+       "amount": 5631800
+      },
+      {
+       "label": "Unrestricted Cash",
+       "amount": 5631800
+      }
+     ]
+    },
+    "min_runway_months": {
+     "value": "15.6",
+     "threshold": "6.0",
+     "in_compliance": true,
+     "unit": "months",
+     "calculation": [
+      {
+       "label": "Unrestricted Cash (as above)",
+       "amount": 5631800
+      },
+      {
+       "label": "Net Burn for the three months ended",
+       "amount": 1082200
+      },
+      {
+       "label": "Average monthly Net Burn",
+       "amount": "360733"
+      }
+     ]
+    },
+    "revenue_vs_plan": {
+     "value": "1.0527",
+     "threshold": "0.80",
+     "in_compliance": true,
+     "unit": "pct",
+     "calculation": [
+      {
+       "label": "Revenue for the three months ended",
+       "amount": 1644326
+      },
+      {
+       "label": "Approved Plan for the same three months",
+       "amount": 1562000
+      }
+     ]
+    }
+   }
+  },
+  {
+   "period_end": "2026-10-31",
+   "scale": 1,
+   "signed_by": "Barnaby Ekwueme",
+   "reported": {
+    "min_unrestricted_cash": {
+     "value": "5300000",
+     "threshold": "3000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash in operating accounts",
+       "amount": 4300000
+      },
+      {
+       "label": "Cash in the escrow collateral account opened October 14, 2026",
+       "amount": 1000000
+      },
+      {
+       "label": "Unrestricted Cash",
+       "amount": 5300000
+      }
+     ]
+    },
+    "min_runway_months": {
+     "value": "15.1",
+     "threshold": "6.0",
+     "in_compliance": true,
+     "unit": "months",
+     "calculation": [
+      {
+       "label": "Unrestricted Cash (as above)",
+       "amount": 5300000
+      },
+      {
+       "label": "Net Burn for the three months ended",
+       "amount": 1050000
+      },
+      {
+       "label": "Average monthly Net Burn",
+       "amount": "350000"
+      }
+     ]
+    },
+    "revenue_vs_plan": {
+     "value": "1.0523",
+     "threshold": "0.80",
+     "in_compliance": true,
+     "unit": "pct",
+     "calculation": [
+      {
+       "label": "Revenue for the three months ended",
+       "amount": 1680501
+      },
+      {
+       "label": "Approved Plan for the same three months",
+       "amount": 1597000
       }
      ]
     }
@@ -1707,38 +1707,27 @@
  ],
  "borrowing_base": [],
  "system_of_record": [],
- "funding_events": [
-  {
-   "kind": "extension",
-   "amount": 8000000,
-   "expected_close": "2026-12-12",
-   "status": "signed",
-   "note": "Series B extension, term sheet signed, closing 12 December",
-   "evidence_document_ids": [
-    "dataflake.term-sheet-2026-11-10"
-   ]
-  }
- ],
+ "funding_events": [],
  "documents": [
   {
-   "id": "dataflake.credit-agreement",
+   "id": "brackmere-medical.credit-agreement",
    "type": "credit_agreement",
    "period_end": null,
-   "path": "documents/dataflake/credit-agreement.pdf",
+   "path": "documents/brackmere-medical/credit-agreement.pdf",
    "pages": 5,
-   "title": "Venture Loan and Security Agreement between Dataflake Inc and Bank of Stoic",
-   "received_date": "2024-09-12",
-   "document_date": "2024-09-12"
+   "title": "Venture Loan and Security Agreement between Brackmere Medical and Bank of Stoic",
+   "received_date": "2024-04-18",
+   "document_date": "2024-04-18"
   },
   {
-   "id": "dataflake.afs-2025",
+   "id": "brackmere-medical.afs-2025",
    "type": "annual_financial_statements",
    "period_end": "2025-12-31",
-   "path": "documents/dataflake/afs-2025.pdf",
+   "path": "documents/brackmere-medical/afs-2025.pdf",
    "pages": 6,
    "title": "Audited financial statements, fiscal 2025",
-   "received_date": "2026-04-08",
-   "document_date": "2026-04-08",
+   "received_date": "2026-04-16",
+   "document_date": "2026-04-16",
    "scale": 1,
    "quality": "audited",
    "page_map": {
@@ -1751,17 +1740,17 @@
     "bs.cash_unrestricted": {
      "page": 3,
      "label": "Cash in operating accounts",
-     "printed": "11,100,650"
+     "printed": "8,837,800"
     },
     "bs.cash_restricted": {
      "page": 3,
      "label": "Cash pledged or restricted",
-     "printed": "1,500,000"
+     "printed": "100,000"
     },
     "bs.vc_total_cash": {
      "page": 3,
      "label": "Total cash",
-     "printed": "12,600,650"
+     "printed": "8,937,800"
     },
     "bs.short_term_investments": {
      "page": 3,
@@ -1771,17 +1760,17 @@
     "bs.accounts_receivable": {
      "page": 3,
      "label": "Accounts receivable, net",
-     "printed": "639,404"
+     "printed": "583,248"
     },
     "bs.other_current_assets": {
      "page": 3,
      "label": "Other current assets",
-     "printed": "151,438"
+     "printed": "138,138"
     },
     "bs.capitalised_software": {
      "page": 3,
      "label": "Capitalised software, net",
-     "printed": "526,938"
+     "printed": "510,726"
     },
     "bs.vc_other_intangibles": {
      "page": 3,
@@ -1791,32 +1780,32 @@
     "bs.other_noncurrent_assets": {
      "page": 3,
      "label": "Other assets",
-     "printed": "198,786"
+     "printed": "195,929"
     },
     "bs.vc_total_assets": {
      "page": 3,
      "label": "Total assets",
-     "printed": "14,237,216"
+     "printed": "10,485,841"
     },
     "bs.accounts_payable": {
      "page": 3,
      "label": "Accounts payable",
-     "printed": "68,147"
+     "printed": "74,594"
     },
     "bs.accrued_liabilities": {
      "page": 3,
      "label": "Accrued liabilities",
-     "printed": "176,678"
+     "printed": "161,161"
     },
     "bs.deferred_revenue_current": {
      "page": 3,
      "label": "Deferred revenue, current",
-     "printed": "761,952"
+     "printed": "695,032"
     },
     "bs.deferred_revenue_noncurrent": {
      "page": 3,
      "label": "Deferred revenue, non-current",
-     "printed": "119,055"
+     "printed": "108,599"
     },
     "bs.venture_debt_current": {
      "page": 3,
@@ -1826,7 +1815,7 @@
     "bs.venture_debt_noncurrent": {
      "page": 3,
      "label": "Venture debt, net of current portion",
-     "printed": "2,000,000"
+     "printed": "2,500,000"
     },
     "bs.convertible_notes": {
      "page": 3,
@@ -1846,7 +1835,7 @@
     "bs.vc_total_liabilities": {
      "page": 3,
      "label": "Total liabilities",
-     "printed": "3,205,832"
+     "printed": "3,619,386"
     },
     "bs.preferred_equity": {
      "page": 3,
@@ -1856,97 +1845,97 @@
     "bs.common_equity": {
      "page": 3,
      "label": "Common stock and accumulated deficit",
-     "printed": "(18,968,616)"
+     "printed": "(23,133,545)"
     },
     "bs.vc_total_equity": {
      "page": 3,
      "label": "Total stockholders' equity",
-     "printed": "11,031,384"
+     "printed": "6,866,455"
     },
     "bs.vc_total_liabilities_and_equity": {
      "page": 3,
      "label": "Total liabilities and stockholders' equity",
-     "printed": "14,237,216"
+     "printed": "10,485,841"
     },
     "is.subscription_revenue": {
      "page": 4,
      "label": "Subscription revenue",
-     "printed": "4,882,507"
+     "printed": "4,637,787"
     },
     "is.services_revenue": {
      "page": 4,
      "label": "Services revenue",
-     "printed": "292,952"
+     "printed": "278,269"
     },
     "is.total_revenue": {
      "page": 4,
      "label": "Total revenue",
-     "printed": "5,175,459"
+     "printed": "4,916,056"
     },
     "is.cost_of_revenue": {
      "page": 4,
      "label": "Cost of revenue",
-     "printed": "1,552,638"
+     "printed": "1,769,780"
     },
     "is.vc_gross_profit": {
      "page": 4,
      "label": "Gross profit",
-     "printed": "3,622,821"
+     "printed": "3,146,276"
     },
     "is.rnd": {
      "page": 4,
      "label": "Research and development",
-     "printed": "4,107,630"
+     "printed": "2,575,841"
     },
     "is.sales_marketing": {
      "page": 4,
      "label": "Sales and marketing",
-     "printed": "4,678,135"
+     "printed": "2,933,594"
     },
     "is.gna": {
      "page": 4,
      "label": "General and administrative",
-     "printed": "2,624,318"
+     "printed": "1,645,675"
     },
     "is.vc_depreciation_amortization": {
      "page": 4,
      "label": "Depreciation and amortization",
-     "printed": "180,063"
+     "printed": "178,398"
     },
     "is.vc_operating_loss": {
      "page": 4,
      "label": "Operating income (loss)",
-     "printed": "(7,967,325)"
+     "printed": "(4,187,232)"
     },
     "is.vc_interest": {
      "page": 4,
      "label": "Interest expense",
-     "printed": "210,000"
+     "printed": "262,500"
     },
     "is.vc_other_income": {
      "page": 4,
      "label": "Other income (expense), net",
-     "printed": "535,913"
+     "printed": "389,117"
     },
     "is.vc_net_loss": {
      "page": 4,
      "label": "Net income (loss)",
-     "printed": "(7,641,412)"
+     "printed": "(4,060,615)"
     },
     "cf.vc_operating_cash_flow": {
      "page": 5,
      "label": "Net cash used in operating activities",
-     "printed": "(7,361,313)"
+     "printed": "(3,809,133)"
     },
     "cf.vc_capex": {
      "page": 5,
      "label": "Purchases of property and equipment",
-     "printed": "(62,105)"
+     "printed": "(58,994)"
     },
     "cf.capitalised_software_spend": {
      "page": 5,
      "label": "Capitalised software development",
-     "printed": "(362,282)"
+     "printed": "(344,123)"
     },
     "cf.equity_raised": {
      "page": 5,
@@ -1966,12 +1955,12 @@
     "cf.vc_net_change_in_cash": {
      "page": 5,
      "label": "Net change in cash",
-     "printed": "(7,785,700)"
+     "printed": "(4,212,250)"
     },
     "sup.cash_interest_paid": {
      "page": 6,
      "label": "Cash paid for interest",
-     "printed": "210,000"
+     "printed": "262,500"
     },
     "sup.scheduled_principal": {
      "page": 6,
@@ -1982,14 +1971,14 @@
    "comparative_period_end": "2024-12-31"
   },
   {
-   "id": "dataflake.bank-2026-08-31",
+   "id": "brackmere-medical.bank-2026-08-31",
    "type": "bank_statement",
    "period_end": "2026-08-31",
-   "path": "documents/dataflake/bank-2026-08-31.pdf",
+   "path": "documents/brackmere-medical/bank-2026-08-31.pdf",
    "pages": 1,
    "title": "Account statement, August 2026",
-   "received_date": "2026-09-02",
-   "document_date": "2026-09-02",
+   "received_date": "2026-09-04",
+   "document_date": "2026-09-04",
    "page_map": {
     "summary": 1,
     "totals": 1
@@ -1998,20 +1987,20 @@
     "bs.cash_unrestricted": {
      "page": 1,
      "label": "Total operating accounts (unrestricted)",
-     "printed": "$5,906,500"
+     "printed": "$5,993,700"
     },
     "bs.cash_restricted": {
      "page": 1,
      "label": "Total pledged and restricted accounts",
-     "printed": "$1,500,000"
+     "printed": "$100,000"
     }
    }
   },
   {
-   "id": "dataflake.mrr-2026-08-31",
+   "id": "brackmere-medical.mrr-2026-08-31",
    "type": "mrr_report",
    "period_end": "2026-08-31",
-   "path": "documents/dataflake/mrr-2026-08-31.pdf",
+   "path": "documents/brackmere-medical/mrr-2026-08-31.pdf",
    "pages": 1,
    "title": "MRR report, August 2026",
    "received_date": "2026-09-04",
@@ -2025,39 +2014,39 @@
     "saas.mrr": {
      "page": 1,
      "label": "Monthly recurring revenue (MRR)",
-     "printed": "$603,261"
+     "printed": "$517,002"
     },
     "saas.arr": {
      "page": 1,
      "label": "Annual recurring revenue (ARR)",
-     "printed": "$7,239,132"
+     "printed": "$6,204,024"
     },
     "saas.customers": {
      "page": 1,
      "label": "Customers",
-     "printed": "135"
+     "printed": "86"
     },
     "saas.net_new_arr": {
      "page": 1,
      "label": "Net new ARR in the month",
-     "printed": "$210,840"
+     "printed": "$133,548"
     },
     "saas.net_revenue_retention": {
      "page": 1,
      "label": "Net revenue retention, trailing 12 months",
-     "printed": "105%"
+     "printed": "113%"
     }
    }
   },
   {
-   "id": "dataflake.mf-2026-08-31",
+   "id": "brackmere-medical.mf-2026-08-31",
    "type": "monthly_financials",
    "period_end": "2026-08-31",
-   "path": "documents/dataflake/mf-2026-08-31.pdf",
+   "path": "documents/brackmere-medical/mf-2026-08-31.pdf",
    "pages": 5,
    "title": "Management financial statements, August 2026",
-   "received_date": "2026-09-10",
-   "document_date": "2026-09-10",
+   "received_date": "2026-09-16",
+   "document_date": "2026-09-16",
    "scale": 1,
    "page_map": {
     "balance_sheet": 1,
@@ -2069,17 +2058,17 @@
     "bs.cash_unrestricted": {
      "page": 1,
      "label": "Cash in operating accounts",
-     "printed": "5,906,500"
+     "printed": "5,993,700"
     },
     "bs.cash_restricted": {
      "page": 1,
      "label": "Cash pledged or restricted",
-     "printed": "1,500,000"
+     "printed": "100,000"
     },
     "bs.vc_total_cash": {
      "page": 1,
      "label": "Total cash",
-     "printed": "7,406,500"
+     "printed": "6,093,700"
     },
     "bs.short_term_investments": {
      "page": 1,
@@ -2089,17 +2078,17 @@
     "bs.accounts_receivable": {
      "page": 1,
      "label": "Accounts receivable, net",
-     "printed": "809,979"
+     "printed": "694,161"
     },
     "bs.other_current_assets": {
      "page": 1,
      "label": "Other current assets",
-     "printed": "191,837"
+     "printed": "164,407"
     },
     "bs.capitalised_software": {
      "page": 1,
      "label": "Capitalised software, net",
-     "printed": "715,762"
+     "printed": "667,049"
     },
     "bs.vc_other_intangibles": {
      "page": 1,
@@ -2109,32 +2098,32 @@
     "bs.other_noncurrent_assets": {
      "page": 1,
      "label": "Other assets",
-     "printed": "219,740"
+     "printed": "211,065"
     },
     "bs.vc_total_assets": {
      "page": 1,
      "label": "Total assets",
-     "printed": "9,463,818"
+     "printed": "7,950,382"
     },
     "bs.accounts_payable": {
      "page": 1,
      "label": "Accounts payable",
-     "printed": "86,327"
+     "printed": "88,780"
     },
     "bs.accrued_liabilities": {
      "page": 1,
      "label": "Accrued liabilities",
-     "printed": "223,810"
+     "printed": "191,808"
     },
     "bs.deferred_revenue_current": {
      "page": 1,
      "label": "Deferred revenue, current",
-     "printed": "965,218"
+     "printed": "827,203"
     },
     "bs.deferred_revenue_noncurrent": {
      "page": 1,
      "label": "Deferred revenue, non-current",
-     "printed": "150,815"
+     "printed": "129,251"
     },
     "bs.venture_debt_current": {
      "page": 1,
@@ -2144,7 +2133,7 @@
     "bs.venture_debt_noncurrent": {
      "page": 1,
      "label": "Venture debt, net of current portion",
-     "printed": "2,000,000"
+     "printed": "2,500,000"
     },
     "bs.convertible_notes": {
      "page": 1,
@@ -2164,7 +2153,7 @@
     "bs.vc_total_liabilities": {
      "page": 1,
      "label": "Total liabilities",
-     "printed": "3,506,170"
+     "printed": "3,817,042"
     },
     "bs.preferred_equity": {
      "page": 1,
@@ -2174,97 +2163,97 @@
     "bs.common_equity": {
      "page": 1,
      "label": "Common stock and accumulated deficit",
-     "printed": "(24,042,352)"
+     "printed": "(25,866,660)"
     },
     "bs.vc_total_equity": {
      "page": 1,
      "label": "Total stockholders' equity",
-     "printed": "5,957,648"
+     "printed": "4,133,340"
     },
     "bs.vc_total_liabilities_and_equity": {
      "page": 1,
      "label": "Total liabilities and stockholders' equity",
-     "printed": "9,463,818"
+     "printed": "7,950,382"
     },
     "is.subscription_revenue": {
      "page": 2,
      "label": "Subscription revenue",
-     "printed": "4,361,752"
+     "printed": "3,837,459"
     },
     "is.services_revenue": {
      "page": 2,
      "label": "Services revenue",
-     "printed": "261,704"
+     "printed": "230,247"
     },
     "is.total_revenue": {
      "page": 2,
      "label": "Total revenue",
-     "printed": "4,623,456"
+     "printed": "4,067,706"
     },
     "is.cost_of_revenue": {
      "page": 2,
      "label": "Cost of revenue",
-     "printed": "1,387,038"
+     "printed": "1,464,375"
     },
     "is.vc_gross_profit": {
      "page": 2,
      "label": "Gross profit",
-     "printed": "3,236,418"
+     "printed": "2,603,331"
     },
     "is.rnd": {
      "page": 2,
      "label": "Research and development",
-     "printed": "2,954,342"
+     "printed": "1,863,643"
     },
     "is.sales_marketing": {
      "page": 2,
      "label": "Sales and marketing",
-     "printed": "3,364,667"
+     "printed": "2,122,483"
     },
     "is.gna": {
      "page": 2,
      "label": "General and administrative",
-     "printed": "1,887,496"
+     "printed": "1,190,663"
     },
     "is.vc_depreciation_amortization": {
      "page": 2,
      "label": "Depreciation and amortization",
-     "printed": "169,344"
+     "printed": "162,094"
     },
     "is.vc_operating_loss": {
      "page": 2,
      "label": "Operating income (loss)",
-     "printed": "(5,139,431)"
+     "printed": "(2,735,552)"
     },
     "is.vc_interest": {
      "page": 2,
      "label": "Interest expense",
-     "printed": "140,000"
+     "printed": "175,000"
     },
     "is.vc_other_income": {
      "page": 2,
      "label": "Other income (expense), net",
-     "printed": "205,695"
+     "printed": "177,437"
     },
     "is.vc_net_loss": {
      "page": 2,
      "label": "Net income (loss)",
-     "printed": "(5,073,736)"
+     "printed": "(2,733,115)"
     },
     "cf.vc_operating_cash_flow": {
      "page": 3,
      "label": "Net cash used in operating activities",
-     "printed": "(4,815,028)"
+     "printed": "(2,510,547)"
     },
     "cf.vc_capex": {
      "page": 3,
      "label": "Purchases of property and equipment",
-     "printed": "(55,480)"
+     "printed": "(48,812)"
     },
     "cf.capitalised_software_spend": {
      "page": 3,
      "label": "Capitalised software development",
-     "printed": "(323,642)"
+     "printed": "(284,741)"
     },
     "cf.equity_raised": {
      "page": 3,
@@ -2284,12 +2273,12 @@
     "cf.vc_net_change_in_cash": {
      "page": 3,
      "label": "Net change in cash",
-     "printed": "(5,194,150)"
+     "printed": "(2,844,100)"
     },
     "sup.cash_interest_paid": {
      "page": 4,
      "label": "Cash paid for interest",
-     "printed": "140,000"
+     "printed": "175,000"
     },
     "sup.scheduled_principal": {
      "page": 4,
@@ -2301,10 +2290,10 @@
    "period_basis": "fiscal_year_to_date"
   },
   {
-   "id": "dataflake.mcc-2026-08-31",
+   "id": "brackmere-medical.mcc-2026-08-31",
    "type": "compliance_certificate",
    "period_end": "2026-08-31",
-   "path": "documents/dataflake/mcc-2026-08-31.pdf",
+   "path": "documents/brackmere-medical/mcc-2026-08-31.pdf",
    "pages": 2,
    "title": "Monthly compliance certificate, August 2026",
    "received_date": "2026-09-11",
@@ -2316,14 +2305,14 @@
    }
   },
   {
-   "id": "dataflake.bank-2026-09-30",
+   "id": "brackmere-medical.bank-2026-09-30",
    "type": "bank_statement",
    "period_end": "2026-09-30",
-   "path": "documents/dataflake/bank-2026-09-30.pdf",
+   "path": "documents/brackmere-medical/bank-2026-09-30.pdf",
    "pages": 1,
    "title": "Account statement, September 2026",
-   "received_date": "2026-10-03",
-   "document_date": "2026-10-03",
+   "received_date": "2026-10-06",
+   "document_date": "2026-10-06",
    "page_map": {
     "summary": 1,
     "totals": 1
@@ -2332,24 +2321,24 @@
     "bs.cash_unrestricted": {
      "page": 1,
      "label": "Total operating accounts (unrestricted)",
-     "printed": "$5,243,500"
+     "printed": "$5,631,800"
     },
     "bs.cash_restricted": {
      "page": 1,
      "label": "Total pledged and restricted accounts",
-     "printed": "$1,500,000"
+     "printed": "$100,000"
     }
    }
   },
   {
-   "id": "dataflake.mrr-2026-09-30",
+   "id": "brackmere-medical.mrr-2026-09-30",
    "type": "mrr_report",
    "period_end": "2026-09-30",
-   "path": "documents/dataflake/mrr-2026-09-30.pdf",
+   "path": "documents/brackmere-medical/mrr-2026-09-30.pdf",
    "pages": 1,
    "title": "MRR report, September 2026",
-   "received_date": "2026-10-07",
-   "document_date": "2026-10-07",
+   "received_date": "2026-10-05",
+   "document_date": "2026-10-05",
    "page_map": {
     "summary": 1,
     "bridge": 1,
@@ -2359,39 +2348,39 @@
     "saas.mrr": {
      "page": 1,
      "label": "Monthly recurring revenue (MRR)",
-     "printed": "$621,359"
+     "printed": "$528,376"
     },
     "saas.arr": {
      "page": 1,
      "label": "Annual recurring revenue (ARR)",
-     "printed": "$7,456,308"
+     "printed": "$6,340,512"
     },
     "saas.customers": {
      "page": 1,
      "label": "Customers",
-     "printed": "138"
+     "printed": "87"
     },
     "saas.net_new_arr": {
      "page": 1,
      "label": "Net new ARR in the month",
-     "printed": "$217,176"
+     "printed": "$136,488"
     },
     "saas.net_revenue_retention": {
      "page": 1,
      "label": "Net revenue retention, trailing 12 months",
-     "printed": "114%"
+     "printed": "105%"
     }
    }
   },
   {
-   "id": "dataflake.mf-2026-09-30",
+   "id": "brackmere-medical.mf-2026-09-30",
    "type": "monthly_financials",
    "period_end": "2026-09-30",
-   "path": "documents/dataflake/mf-2026-09-30.pdf",
+   "path": "documents/brackmere-medical/mf-2026-09-30.pdf",
    "pages": 5,
    "title": "Management financial statements, September 2026",
-   "received_date": "2026-10-17",
-   "document_date": "2026-10-17",
+   "received_date": "2026-10-11",
+   "document_date": "2026-10-11",
    "scale": 1,
    "page_map": {
     "balance_sheet": 1,
@@ -2403,17 +2392,17 @@
     "bs.cash_unrestricted": {
      "page": 1,
      "label": "Cash in operating accounts",
-     "printed": "5,243,500"
+     "printed": "5,631,800"
     },
     "bs.cash_restricted": {
      "page": 1,
      "label": "Cash pledged or restricted",
-     "printed": "1,500,000"
+     "printed": "100,000"
     },
     "bs.vc_total_cash": {
      "page": 1,
      "label": "Total cash",
-     "printed": "6,743,500"
+     "printed": "5,731,800"
     },
     "bs.short_term_investments": {
      "page": 1,
@@ -2423,17 +2412,17 @@
     "bs.accounts_receivable": {
      "page": 1,
      "label": "Accounts receivable, net",
-     "printed": "834,279"
+     "printed": "709,433"
     },
     "bs.other_current_assets": {
      "page": 1,
      "label": "Other current assets",
-     "printed": "197,592"
+     "printed": "168,024"
     },
     "bs.capitalised_software": {
      "page": 1,
      "label": "Capitalised software, net",
-     "printed": "741,985"
+     "printed": "687,726"
     },
     "bs.vc_other_intangibles": {
      "page": 1,
@@ -2443,32 +2432,32 @@
     "bs.other_noncurrent_assets": {
      "page": 1,
      "label": "Other assets",
-     "printed": "223,066"
+     "printed": "213,389"
     },
     "bs.vc_total_assets": {
      "page": 1,
      "label": "Total assets",
-     "printed": "8,860,422"
+     "printed": "7,630,372"
     },
     "bs.accounts_payable": {
      "page": 1,
      "label": "Accounts payable",
-     "printed": "88,916"
+     "printed": "90,733"
     },
     "bs.accrued_liabilities": {
      "page": 1,
      "label": "Accrued liabilities",
-     "printed": "230,524"
+     "printed": "196,028"
     },
     "bs.deferred_revenue_current": {
      "page": 1,
      "label": "Deferred revenue, current",
-     "printed": "994,174"
+     "printed": "845,402"
     },
     "bs.deferred_revenue_noncurrent": {
      "page": 1,
      "label": "Deferred revenue, non-current",
-     "printed": "155,340"
+     "printed": "132,094"
     },
     "bs.venture_debt_current": {
      "page": 1,
@@ -2478,7 +2467,7 @@
     "bs.venture_debt_noncurrent": {
      "page": 1,
      "label": "Venture debt, net of current portion",
-     "printed": "2,000,000"
+     "printed": "2,500,000"
     },
     "bs.convertible_notes": {
      "page": 1,
@@ -2498,7 +2487,7 @@
     "bs.vc_total_liabilities": {
      "page": 1,
      "label": "Total liabilities",
-     "printed": "3,548,954"
+     "printed": "3,844,257"
     },
     "bs.preferred_equity": {
      "page": 1,
@@ -2508,97 +2497,97 @@
     "bs.common_equity": {
      "page": 1,
      "label": "Common stock and accumulated deficit",
-     "printed": "(24,688,532)"
+     "printed": "(26,213,885)"
     },
     "bs.vc_total_equity": {
      "page": 1,
      "label": "Total stockholders' equity",
-     "printed": "5,311,468"
+     "printed": "3,786,115"
     },
     "bs.vc_total_liabilities_and_equity": {
      "page": 1,
      "label": "Total liabilities and stockholders' equity",
-     "printed": "8,860,422"
+     "printed": "7,630,372"
     },
     "is.subscription_revenue": {
      "page": 2,
      "label": "Subscription revenue",
-     "printed": "4,983,111"
+     "printed": "4,365,835"
     },
     "is.services_revenue": {
      "page": 2,
      "label": "Services revenue",
-     "printed": "298,986"
+     "printed": "261,950"
     },
     "is.total_revenue": {
      "page": 2,
      "label": "Total revenue",
-     "printed": "5,282,097"
+     "printed": "4,627,785"
     },
     "is.cost_of_revenue": {
      "page": 2,
      "label": "Cost of revenue",
-     "printed": "1,584,630"
+     "printed": "1,666,003"
     },
     "is.vc_gross_profit": {
      "page": 2,
      "label": "Gross profit",
-     "printed": "3,697,467"
+     "printed": "2,961,782"
     },
     "is.rnd": {
      "page": 2,
      "label": "Research and development",
-     "printed": "3,344,041"
+     "printed": "2,107,852"
     },
     "is.sales_marketing": {
      "page": 2,
      "label": "Sales and marketing",
-     "printed": "3,808,490"
+     "printed": "2,400,609"
     },
     "is.gna": {
      "page": 2,
      "label": "General and administrative",
-     "printed": "2,136,470"
+     "printed": "1,346,685"
     },
     "is.vc_depreciation_amortization": {
      "page": 2,
      "label": "Depreciation and amortization",
-     "printed": "193,804"
+     "printed": "185,020"
     },
     "is.vc_operating_loss": {
      "page": 2,
      "label": "Operating income (loss)",
-     "printed": "(5,785,338)"
+     "printed": "(3,078,384)"
     },
     "is.vc_interest": {
      "page": 2,
      "label": "Interest expense",
-     "printed": "157,500"
+     "printed": "196,875"
     },
     "is.vc_other_income": {
      "page": 2,
      "label": "Other income (expense), net",
-     "printed": "222,922"
+     "printed": "194,919"
     },
     "is.vc_net_loss": {
      "page": 2,
      "label": "Net income (loss)",
-     "printed": "(5,719,916)"
+     "printed": "(3,080,340)"
     },
     "cf.vc_operating_cash_flow": {
      "page": 3,
      "label": "Net cash used in operating activities",
-     "printed": "(5,424,019)"
+     "printed": "(2,826,520)"
     },
     "cf.vc_capex": {
      "page": 3,
      "label": "Purchases of property and equipment",
-     "printed": "(63,384)"
+     "printed": "(55,533)"
     },
     "cf.capitalised_software_spend": {
      "page": 3,
      "label": "Capitalised software development",
-     "printed": "(369,747)"
+     "printed": "(323,947)"
     },
     "cf.equity_raised": {
      "page": 3,
@@ -2618,12 +2607,12 @@
     "cf.vc_net_change_in_cash": {
      "page": 3,
      "label": "Net change in cash",
-     "printed": "(5,857,150)"
+     "printed": "(3,206,000)"
     },
     "sup.cash_interest_paid": {
      "page": 4,
      "label": "Cash paid for interest",
-     "printed": "157,500"
+     "printed": "196,875"
     },
     "sup.scheduled_principal": {
      "page": 4,
@@ -2635,14 +2624,14 @@
    "period_basis": "fiscal_year_to_date"
   },
   {
-   "id": "dataflake.mcc-2026-09-30",
+   "id": "brackmere-medical.mcc-2026-09-30",
    "type": "compliance_certificate",
    "period_end": "2026-09-30",
-   "path": "documents/dataflake/mcc-2026-09-30.pdf",
+   "path": "documents/brackmere-medical/mcc-2026-09-30.pdf",
    "pages": 2,
    "title": "Monthly compliance certificate, September 2026",
-   "received_date": "2026-10-18",
-   "document_date": "2026-10-18",
+   "received_date": "2026-10-13",
+   "document_date": "2026-10-13",
    "scale": 1,
    "page_map": {
     "summary": 1,
@@ -2650,14 +2639,14 @@
    }
   },
   {
-   "id": "dataflake.bank-2026-10-31",
+   "id": "brackmere-medical.bank-2026-10-31",
    "type": "bank_statement",
    "period_end": "2026-10-31",
-   "path": "documents/dataflake/bank-2026-10-31.pdf",
+   "path": "documents/brackmere-medical/bank-2026-10-31.pdf",
    "pages": 1,
    "title": "Account statement, October 2026",
-   "received_date": "2026-11-04",
-   "document_date": "2026-11-04",
+   "received_date": "2026-11-06",
+   "document_date": "2026-11-06",
    "page_map": {
     "summary": 1,
     "totals": 1
@@ -2666,24 +2655,24 @@
     "bs.cash_unrestricted": {
      "page": 1,
      "label": "Total operating accounts (unrestricted)",
-     "printed": "$4,600,000"
+     "printed": "$4,300,000"
     },
     "bs.cash_restricted": {
      "page": 1,
      "label": "Total pledged and restricted accounts",
-     "printed": "$1,500,000"
+     "printed": "$1,100,000"
     }
    }
   },
   {
-   "id": "dataflake.mrr-2026-10-31",
+   "id": "brackmere-medical.mrr-2026-10-31",
    "type": "mrr_report",
    "period_end": "2026-10-31",
-   "path": "documents/dataflake/mrr-2026-10-31.pdf",
+   "path": "documents/brackmere-medical/mrr-2026-10-31.pdf",
    "pages": 1,
    "title": "MRR report, October 2026",
-   "received_date": "2026-11-09",
-   "document_date": "2026-11-09",
+   "received_date": "2026-11-08",
+   "document_date": "2026-11-08",
    "page_map": {
     "summary": 1,
     "bridge": 1,
@@ -2693,39 +2682,39 @@
     "saas.mrr": {
      "page": 1,
      "label": "Monthly recurring revenue (MRR)",
-     "printed": "$640,000"
+     "printed": "$540,000"
     },
     "saas.arr": {
      "page": 1,
      "label": "Annual recurring revenue (ARR)",
-     "printed": "$7,680,000"
+     "printed": "$6,480,000"
     },
     "saas.customers": {
      "page": 1,
      "label": "Customers",
-     "printed": "140"
+     "printed": "88"
     },
     "saas.net_new_arr": {
      "page": 1,
      "label": "Net new ARR in the month",
-     "printed": "$223,692"
+     "printed": "$139,488"
     },
     "saas.net_revenue_retention": {
      "page": 1,
      "label": "Net revenue retention, trailing 12 months",
-     "printed": "104%"
+     "printed": "107%"
     }
    }
   },
   {
-   "id": "dataflake.mf-2026-10-31",
+   "id": "brackmere-medical.mf-2026-10-31",
    "type": "monthly_financials",
    "period_end": "2026-10-31",
-   "path": "documents/dataflake/mf-2026-10-31.pdf",
+   "path": "documents/brackmere-medical/mf-2026-10-31.pdf",
    "pages": 5,
    "title": "Management financial statements, October 2026",
-   "received_date": "2026-11-17",
-   "document_date": "2026-11-17",
+   "received_date": "2026-11-14",
+   "document_date": "2026-11-14",
    "scale": 1,
    "page_map": {
     "balance_sheet": 1,
@@ -2737,17 +2726,17 @@
     "bs.cash_unrestricted": {
      "page": 1,
      "label": "Cash in operating accounts",
-     "printed": "4,600,000"
+     "printed": "4,300,000"
     },
     "bs.cash_restricted": {
      "page": 1,
      "label": "Cash pledged or restricted",
-     "printed": "1,500,000"
+     "printed": "1,100,000"
     },
     "bs.vc_total_cash": {
      "page": 1,
      "label": "Total cash",
-     "printed": "6,100,000"
+     "printed": "5,400,000"
     },
     "bs.short_term_investments": {
      "page": 1,
@@ -2757,17 +2746,17 @@
     "bs.accounts_receivable": {
      "page": 1,
      "label": "Accounts receivable, net",
-     "printed": "859,307"
+     "printed": "725,040"
     },
     "bs.other_current_assets": {
      "page": 1,
      "label": "Other current assets",
-     "printed": "203,520"
+     "printed": "171,720"
     },
     "bs.capitalised_software": {
      "page": 1,
      "label": "Capitalised software, net",
-     "printed": "768,862"
+     "printed": "708,690"
     },
     "bs.vc_other_intangibles": {
      "page": 1,
@@ -2777,32 +2766,32 @@
     "bs.other_noncurrent_assets": {
      "page": 1,
      "label": "Other assets",
-     "printed": "226,560"
+     "printed": "215,812"
     },
     "bs.vc_total_assets": {
      "page": 1,
      "label": "Total assets",
-     "printed": "8,278,249"
+     "printed": "7,341,262"
     },
     "bs.accounts_payable": {
      "page": 1,
      "label": "Accounts payable",
-     "printed": "91,584"
+     "printed": "92,729"
     },
     "bs.accrued_liabilities": {
      "page": 1,
      "label": "Accrued liabilities",
-     "printed": "237,440"
+     "printed": "200,340"
     },
     "bs.deferred_revenue_current": {
      "page": 1,
      "label": "Deferred revenue, current",
-     "printed": "1,024,000"
+     "printed": "864,000"
     },
     "bs.deferred_revenue_noncurrent": {
      "page": 1,
      "label": "Deferred revenue, non-current",
-     "printed": "160,000"
+     "printed": "135,000"
     },
     "bs.venture_debt_current": {
      "page": 1,
@@ -2812,7 +2801,7 @@
     "bs.venture_debt_noncurrent": {
      "page": 1,
      "label": "Venture debt, net of current portion",
-     "printed": "2,000,000"
+     "printed": "2,500,000"
     },
     "bs.convertible_notes": {
      "page": 1,
@@ -2832,7 +2821,7 @@
     "bs.vc_total_liabilities": {
      "page": 1,
      "label": "Total liabilities",
-     "printed": "3,593,024"
+     "printed": "3,872,069"
     },
     "bs.preferred_equity": {
      "page": 1,
@@ -2842,97 +2831,97 @@
     "bs.common_equity": {
      "page": 1,
      "label": "Common stock and accumulated deficit",
-     "printed": "(25,314,775)"
+     "printed": "(26,530,807)"
     },
     "bs.vc_total_equity": {
      "page": 1,
      "label": "Total stockholders' equity",
-     "printed": "4,685,225"
+     "printed": "3,469,193"
     },
     "bs.vc_total_liabilities_and_equity": {
      "page": 1,
      "label": "Total liabilities and stockholders' equity",
-     "printed": "8,278,249"
+     "printed": "7,341,262"
     },
     "is.subscription_revenue": {
      "page": 2,
      "label": "Subscription revenue",
-     "printed": "5,623,111"
+     "printed": "4,905,835"
     },
     "is.services_revenue": {
      "page": 2,
      "label": "Services revenue",
-     "printed": "337,386"
+     "printed": "294,350"
     },
     "is.total_revenue": {
      "page": 2,
      "label": "Total revenue",
-     "printed": "5,960,497"
+     "printed": "5,200,185"
     },
     "is.cost_of_revenue": {
      "page": 2,
      "label": "Cost of revenue",
-     "printed": "1,788,150"
+     "printed": "1,872,067"
     },
     "is.vc_gross_profit": {
      "page": 2,
      "label": "Gross profit",
-     "printed": "4,172,347"
+     "printed": "3,328,118"
     },
     "is.rnd": {
      "page": 2,
      "label": "Research and development",
-     "printed": "3,730,558"
+     "printed": "2,343,385"
     },
     "is.sales_marketing": {
      "page": 2,
      "label": "Sales and marketing",
-     "printed": "4,248,690"
+     "printed": "2,668,855"
     },
     "is.gna": {
      "page": 2,
      "label": "General and administrative",
-     "printed": "2,383,412"
+     "printed": "1,497,165"
     },
     "is.vc_depreciation_amortization": {
      "page": 2,
      "label": "Depreciation and amortization",
-     "printed": "219,062"
+     "printed": "208,570"
     },
     "is.vc_operating_loss": {
      "page": 2,
      "label": "Operating income (loss)",
-     "printed": "(6,409,375)"
+     "printed": "(3,389,857)"
     },
     "is.vc_interest": {
      "page": 2,
      "label": "Interest expense",
-     "printed": "175,000"
+     "printed": "218,750"
     },
     "is.vc_other_income": {
      "page": 2,
      "label": "Other income (expense), net",
-     "printed": "238,216"
+     "printed": "211,345"
     },
     "is.vc_net_loss": {
      "page": 2,
      "label": "Net income (loss)",
-     "printed": "(6,346,159)"
+     "printed": "(3,397,262)"
     },
     "cf.vc_operating_cash_flow": {
      "page": 3,
      "label": "Net cash used in operating activities",
-     "printed": "(6,011,890)"
+     "printed": "(3,111,383)"
     },
     "cf.vc_capex": {
      "page": 3,
      "label": "Purchases of property and equipment",
-     "printed": "(71,525)"
+     "printed": "(62,402)"
     },
     "cf.capitalised_software_spend": {
      "page": 3,
      "label": "Capitalised software development",
-     "printed": "(417,235)"
+     "printed": "(364,015)"
     },
     "cf.equity_raised": {
      "page": 3,
@@ -2952,12 +2941,12 @@
     "cf.vc_net_change_in_cash": {
      "page": 3,
      "label": "Net change in cash",
-     "printed": "(6,500,650)"
+     "printed": "(3,537,800)"
     },
     "sup.cash_interest_paid": {
      "page": 4,
      "label": "Cash paid for interest",
-     "printed": "175,000"
+     "printed": "218,750"
     },
     "sup.scheduled_principal": {
      "page": 4,
@@ -2969,90 +2958,56 @@
    "period_basis": "fiscal_year_to_date"
   },
   {
-   "id": "dataflake.mcc-2026-10-31",
+   "id": "brackmere-medical.mcc-2026-10-31",
    "type": "compliance_certificate",
    "period_end": "2026-10-31",
-   "path": "documents/dataflake/mcc-2026-10-31.pdf",
+   "path": "documents/brackmere-medical/mcc-2026-10-31.pdf",
    "pages": 2,
    "title": "Monthly compliance certificate, October 2026",
-   "received_date": "2026-11-18",
-   "document_date": "2026-11-18",
+   "received_date": "2026-11-16",
+   "document_date": "2026-11-16",
    "scale": 1,
    "page_map": {
     "summary": 1,
     "calculations": 2
    }
-  },
-  {
-   "id": "dataflake.term-sheet-2026-11-10",
-   "type": "term_sheet",
-   "period_end": null,
-   "path": "documents/dataflake/term-sheet-2026-11-10.pdf",
-   "pages": 1,
-   "title": "Term sheet, Series B extension",
-   "received_date": "2026-11-12",
-   "document_date": "2026-11-10",
-   "page_map": {
-    "start": 1
-   }
-  },
-  {
-   "id": "dataflake.investor-update-2026-10-31",
-   "type": "investor_update",
-   "period_end": "2026-10-31",
-   "path": "documents/dataflake/investor-update-2026-10-31.pdf",
-   "pages": 1,
-   "title": "Investor update, October 2026",
-   "received_date": "2026-11-12",
-   "document_date": "2026-11-12",
-   "page_map": {
-    "start": 1
-   }
   }
  ],
  "scenario": {
-  "code": "pledged_cash",
-  "description": "Pledged cash counted: the certificate adds cash pledged to a lease letter of credit to unrestricted cash and claims compliance; true unrestricted cash is below the minimum.",
+  "code": "restricted_account",
+  "description": "Restricted account: a new escrow collateral account was opened in October; the certificate counts it as unrestricted cash while the bank statements show it restricted.",
   "details": {
-   "covenant_id": "min_unrestricted_cash",
-   "true_unrestricted_cash": 4600000,
-   "pledged_cash_counted": 1500000,
-   "certificate_cash": 6100000,
-   "threshold": 5000000,
-   "definition_clause": {
-    "document_id": "dataflake.credit-agreement",
-    "section": "1.1",
-    "page": 3,
-    "quote": "\"Unrestricted Cash\" means cash held in deposit accounts of the Borrower with the Lender, excluding any cash that is pledged, escrowed or otherwise restricted."
-   },
+   "newly_restricted": 1000000,
+   "certificate_cash": 5300000,
+   "statement_unrestricted_cash": 4300000,
    "reporting": [
     {
      "requirement": "bank_statements",
      "document_type": "bank_statement",
      "due_date": "2026-11-07",
-     "received_date": "2026-11-04",
-     "days_late": -3
+     "received_date": "2026-11-06",
+     "days_late": -1
     },
     {
      "requirement": "mrr_report",
      "document_type": "mrr_report",
      "due_date": "2026-11-15",
-     "received_date": "2026-11-09",
-     "days_late": -6
+     "received_date": "2026-11-08",
+     "days_late": -7
     },
     {
      "requirement": "monthly_financials",
      "document_type": "monthly_financials",
      "due_date": "2026-11-30",
-     "received_date": "2026-11-17",
-     "days_late": -13
+     "received_date": "2026-11-14",
+     "days_late": -16
     },
     {
      "requirement": "compliance_certificate",
      "document_type": "compliance_certificate",
      "due_date": "2026-11-30",
-     "received_date": "2026-11-18",
-     "days_late": -12
+     "received_date": "2026-11-16",
+     "days_late": -14
     }
    ]
   }
@@ -3064,15 +3019,15 @@
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "13681800",
+    "threshold": "3000000",
+    "value": "10243750",
     "pass": true,
-    "headroom": "1.7364",
+    "headroom": "2.4146",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3084,15 +3039,15 @@
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "20.9",
+    "value": "29.4",
     "pass": true,
-    "headroom": "2.4833",
+    "headroom": "3.9000",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3104,15 +3059,15 @@
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
     "threshold": "0.80",
-    "value": "1.0521",
+    "value": "1.0528",
     "pass": true,
-    "headroom": "0.3151",
+    "headroom": "0.3160",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3124,15 +3079,15 @@
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "13044150",
+    "threshold": "3000000",
+    "value": "9892700",
     "pass": true,
-    "headroom": "1.6088",
+    "headroom": "2.2976",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3144,15 +3099,15 @@
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "20.3",
+    "value": "28.5",
     "pass": true,
-    "headroom": "2.3833",
+    "headroom": "3.7500",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3164,8 +3119,68 @@
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0527",
+    "pass": true,
+    "headroom": "0.3159",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-10-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "9549000",
+    "pass": true,
+    "headroom": "2.1830",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-10-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "27.6",
+    "pass": true,
+    "headroom": "3.6000",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-10-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
@@ -3180,79 +3195,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2025-10-31",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "12399350",
-    "pass": true,
-    "headroom": "1.4799",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2025-10-31",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "19.3",
-    "pass": true,
-    "headroom": "2.2167",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2025-10-31",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0526",
-    "pass": true,
-    "headroom": "0.3158",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
     "period_end": "2025-11-30",
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "11730500",
+    "threshold": "3000000",
+    "value": "9186400",
     "pass": true,
-    "headroom": "1.3461",
+    "headroom": "2.0621",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3264,15 +3219,15 @@
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "18.0",
+    "value": "26.1",
     "pass": true,
-    "headroom": "2.0000",
+    "headroom": "3.3500",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3284,308 +3239,8 @@
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0522",
-    "pass": true,
-    "headroom": "0.3153",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2025-12-31",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "11100650",
-    "pass": true,
-    "headroom": "1.2201",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2025-12-31",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "17.1",
-    "pass": true,
-    "headroom": "1.8500",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2025-12-31",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0520",
-    "pass": true,
-    "headroom": "0.3150",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-01-31",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "10431150",
-    "pass": true,
-    "headroom": "1.0862",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-01-31",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "15.9",
-    "pass": true,
-    "headroom": "1.6500",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-01-31",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0520",
-    "pass": true,
-    "headroom": "0.3150",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-02-28",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "9805850",
-    "pass": true,
-    "headroom": "0.9612",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-02-28",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "15.3",
-    "pass": true,
-    "headroom": "1.5500",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-02-28",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0521",
-    "pass": true,
-    "headroom": "0.3151",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-03-31",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "9153250",
-    "pass": true,
-    "headroom": "0.8307",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-03-31",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "14.1",
-    "pass": true,
-    "headroom": "1.3500",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-03-31",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0524",
-    "pass": true,
-    "headroom": "0.3155",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-04-30",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "8485700",
-    "pass": true,
-    "headroom": "0.6971",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-04-30",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "13.1",
-    "pass": true,
-    "headroom": "1.1833",
-    "note": null,
-    "reported_value": null,
-    "reported_threshold": null,
-    "reported_in_compliance": null,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-04-30",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
@@ -3600,19 +3255,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-05-31",
+    "period_end": "2025-12-31",
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "7813600",
+    "threshold": "3000000",
+    "value": "8837800",
     "pass": true,
-    "headroom": "0.5627",
+    "headroom": "1.9459",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3620,19 +3275,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-05-31",
+    "period_end": "2025-12-31",
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "11.8",
+    "value": "25.1",
     "pass": true,
-    "headroom": "0.9667",
+    "headroom": "3.1833",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3640,19 +3295,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-05-31",
+    "period_end": "2025-12-31",
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
     "threshold": "0.80",
-    "value": "1.0524",
+    "value": "1.0528",
     "pass": true,
-    "headroom": "0.3155",
+    "headroom": "0.3160",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3660,19 +3315,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-06-30",
+    "period_end": "2026-01-31",
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "7183750",
+    "threshold": "3000000",
+    "value": "8500050",
     "pass": true,
-    "headroom": "0.4368",
+    "headroom": "1.8334",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3680,19 +3335,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-06-30",
+    "period_end": "2026-01-31",
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "10.9",
+    "value": "24.3",
     "pass": true,
-    "headroom": "0.8167",
+    "headroom": "3.0500",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3700,19 +3355,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-06-30",
+    "period_end": "2026-01-31",
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
     "threshold": "0.80",
-    "value": "1.0522",
+    "value": "1.0530",
     "pass": true,
-    "headroom": "0.3153",
+    "headroom": "0.3163",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3720,19 +3375,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-07-31",
+    "period_end": "2026-02-28",
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "6550000",
+    "threshold": "3000000",
+    "value": "8148650",
     "pass": true,
-    "headroom": "0.3100",
+    "headroom": "1.7162",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3740,19 +3395,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-07-31",
+    "period_end": "2026-02-28",
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "10.2",
+    "value": "23.6",
     "pass": true,
-    "headroom": "0.7000",
+    "headroom": "2.9333",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3760,19 +3415,19 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-07-31",
+    "period_end": "2026-02-28",
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
     "threshold": "0.80",
-    "value": "1.0522",
+    "value": "1.0529",
     "pass": true,
-    "headroom": "0.3153",
+    "headroom": "0.3161",
     "note": null,
     "reported_value": null,
     "reported_threshold": null,
@@ -3780,112 +3435,52 @@
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-08-31",
+    "period_end": "2026-03-31",
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "5906500",
+    "threshold": "3000000",
+    "value": "7787800",
     "pass": true,
-    "headroom": "0.1813",
+    "headroom": "1.5959",
     "note": null,
-    "reported_value": "5906500",
-    "reported_threshold": "5000000",
-    "reported_in_compliance": true,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-08-31",
+    "period_end": "2026-03-31",
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "9.3",
+    "value": "22.3",
     "pass": true,
-    "headroom": "0.5500",
+    "headroom": "2.7167",
     "note": null,
-    "reported_value": "9.3",
-    "reported_threshold": "6.0",
-    "reported_in_compliance": true,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-08-31",
+    "period_end": "2026-03-31",
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "pct",
-    "operator": ">=",
-    "threshold": "0.80",
-    "value": "1.0526",
-    "pass": true,
-    "headroom": "0.3158",
-    "note": null,
-    "reported_value": "1.0526",
-    "reported_threshold": "0.80",
-    "reported_in_compliance": true,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-09-30",
-    "covenant_id": "min_unrestricted_cash",
-    "covenant_name": "Minimum Unrestricted Cash",
-    "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "usd",
-    "operator": ">=",
-    "threshold": "5000000",
-    "value": "5243500",
-    "pass": true,
-    "headroom": "0.0487",
-    "note": null,
-    "reported_value": "5243500",
-    "reported_threshold": "5000000",
-    "reported_in_compliance": true,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-09-30",
-    "covenant_id": "min_runway_months",
-    "covenant_name": "Minimum Runway",
-    "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
-    "terms_version": 1,
-    "unit": "months",
-    "operator": ">=",
-    "threshold": "6.0",
-    "value": "8.1",
-    "pass": true,
-    "headroom": "0.3500",
-    "note": null,
-    "reported_value": "8.1",
-    "reported_threshold": "6.0",
-    "reported_in_compliance": true,
-    "outcome": "compliant"
-   },
-   {
-    "period_end": "2026-09-30",
-    "covenant_id": "revenue_vs_plan",
-    "covenant_name": "Revenue to Plan",
-    "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
@@ -3894,58 +3489,298 @@
     "pass": true,
     "headroom": "0.3158",
     "note": null,
-    "reported_value": "1.0526",
-    "reported_threshold": "0.80",
-    "reported_in_compliance": true,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
     "outcome": "compliant"
    },
    {
-    "period_end": "2026-10-31",
+    "period_end": "2026-04-30",
     "covenant_id": "min_unrestricted_cash",
     "covenant_name": "Minimum Unrestricted Cash",
     "archetype": "min_unrestricted_cash",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "usd",
     "operator": ">=",
-    "threshold": "5000000",
-    "value": "4600000",
-    "pass": false,
-    "headroom": "-0.0800",
+    "threshold": "3000000",
+    "value": "7429050",
+    "pass": true,
+    "headroom": "1.4764",
     "note": null,
-    "reported_value": "6100000",
-    "reported_threshold": "5000000",
-    "reported_in_compliance": true,
-    "outcome": "breach_reported_compliant"
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
    },
    {
-    "period_end": "2026-10-31",
+    "period_end": "2026-04-30",
     "covenant_id": "min_runway_months",
     "covenant_name": "Minimum Runway",
     "archetype": "min_runway_months",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "months",
     "operator": ">=",
     "threshold": "6.0",
-    "value": "7.1",
+    "value": "20.8",
     "pass": true,
-    "headroom": "0.1833",
+    "headroom": "2.4667",
     "note": null,
-    "reported_value": "9.4",
-    "reported_threshold": "6.0",
-    "reported_in_compliance": true,
-    "outcome": "compliant_variance"
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
    },
    {
-    "period_end": "2026-10-31",
+    "period_end": "2026-04-30",
     "covenant_id": "revenue_vs_plan",
     "covenant_name": "Revenue to Plan",
     "archetype": "revenue_vs_plan",
-    "facility_id": "dataflake-vl",
-    "terms_version_id": "tv-dataflake-1",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0527",
+    "pass": true,
+    "headroom": "0.3159",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-05-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "7067850",
+    "pass": true,
+    "headroom": "1.3560",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-05-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "19.6",
+    "pass": true,
+    "headroom": "2.2667",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-05-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0525",
+    "pass": true,
+    "headroom": "0.3156",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "6714000",
+    "pass": true,
+    "headroom": "1.2380",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "18.8",
+    "pass": true,
+    "headroom": "2.1333",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0529",
+    "pass": true,
+    "headroom": "0.3161",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-07-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "6350000",
+    "pass": true,
+    "headroom": "1.1167",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-07-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "17.7",
+    "pass": true,
+    "headroom": "1.9500",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-07-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0530",
+    "pass": true,
+    "headroom": "0.3163",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-08-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "5993700",
+    "pass": true,
+    "headroom": "0.9979",
+    "note": null,
+    "reported_value": "5993700",
+    "reported_threshold": "3000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-08-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "16.7",
+    "pass": true,
+    "headroom": "1.7833",
+    "note": null,
+    "reported_value": "16.7",
+    "reported_threshold": "6.0",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-08-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
     "terms_version": 1,
     "unit": "pct",
     "operator": ">=",
@@ -3958,6 +3793,126 @@
     "reported_threshold": "0.80",
     "reported_in_compliance": true,
     "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "5631800",
+    "pass": true,
+    "headroom": "0.8773",
+    "note": null,
+    "reported_value": "5631800",
+    "reported_threshold": "3000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "15.6",
+    "pass": true,
+    "headroom": "1.6000",
+    "note": null,
+    "reported_value": "15.6",
+    "reported_threshold": "6.0",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0527",
+    "pass": true,
+    "headroom": "0.3159",
+    "note": null,
+    "reported_value": "1.0527",
+    "reported_threshold": "0.80",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-10-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "4300000",
+    "pass": true,
+    "headroom": "0.4333",
+    "note": null,
+    "reported_value": "5300000",
+    "reported_threshold": "3000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant_variance"
+   },
+   {
+    "period_end": "2026-10-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "12.3",
+    "pass": true,
+    "headroom": "1.0500",
+    "note": null,
+    "reported_value": "15.1",
+    "reported_threshold": "6.0",
+    "reported_in_compliance": true,
+    "outcome": "compliant_variance"
+   },
+   {
+    "period_end": "2026-10-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "brackmere-medical-vl",
+    "terms_version_id": "tv-brackmere-medical-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0523",
+    "pass": true,
+    "headroom": "0.3154",
+    "note": null,
+    "reported_value": "1.0523",
+    "reported_threshold": "0.80",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
    }
   ],
   "borrowing_base": [],
@@ -3966,7 +3921,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2025-11-30",
     "severity": "low",
-    "value": "2.0000",
+    "value": "3.3500",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -3976,7 +3931,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2025-11-30",
     "severity": "low",
-    "value": "1.3461",
+    "value": "2.0621",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
@@ -3986,7 +3941,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2025-12-31",
     "severity": "low",
-    "value": "1.8500",
+    "value": "3.1833",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -3996,7 +3951,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2025-12-31",
     "severity": "low",
-    "value": "1.2201",
+    "value": "1.9459",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
@@ -4004,9 +3959,69 @@
    },
    {
     "rule": "covenant_headroom_falling",
-    "period_end": "2025-12-31",
+    "period_end": "2026-01-31",
     "severity": "low",
-    "value": "0.3150",
+    "value": "3.0500",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-01-31",
+    "severity": "low",
+    "value": "1.8334",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-02-28",
+    "severity": "low",
+    "value": "2.9333",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-02-28",
+    "severity": "low",
+    "value": "1.7162",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "2.7167",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "1.5959",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.3158",
     "trigger": null,
     "detail": {
      "covenant_id": "revenue_vs_plan"
@@ -4014,69 +4029,9 @@
    },
    {
     "rule": "covenant_headroom_falling",
-    "period_end": "2026-01-31",
-    "severity": "low",
-    "value": "1.6500",
-    "trigger": null,
-    "detail": {
-     "covenant_id": "min_runway_months"
-    }
-   },
-   {
-    "rule": "covenant_headroom_falling",
-    "period_end": "2026-01-31",
-    "severity": "low",
-    "value": "1.0862",
-    "trigger": null,
-    "detail": {
-     "covenant_id": "min_unrestricted_cash"
-    }
-   },
-   {
-    "rule": "covenant_headroom_falling",
-    "period_end": "2026-02-28",
-    "severity": "low",
-    "value": "1.5500",
-    "trigger": null,
-    "detail": {
-     "covenant_id": "min_runway_months"
-    }
-   },
-   {
-    "rule": "covenant_headroom_falling",
-    "period_end": "2026-02-28",
-    "severity": "low",
-    "value": "0.9612",
-    "trigger": null,
-    "detail": {
-     "covenant_id": "min_unrestricted_cash"
-    }
-   },
-   {
-    "rule": "covenant_headroom_falling",
-    "period_end": "2026-03-31",
-    "severity": "low",
-    "value": "1.3500",
-    "trigger": null,
-    "detail": {
-     "covenant_id": "min_runway_months"
-    }
-   },
-   {
-    "rule": "covenant_headroom_falling",
-    "period_end": "2026-03-31",
-    "severity": "low",
-    "value": "0.8307",
-    "trigger": null,
-    "detail": {
-     "covenant_id": "min_unrestricted_cash"
-    }
-   },
-   {
-    "rule": "covenant_headroom_falling",
     "period_end": "2026-04-30",
     "severity": "low",
-    "value": "1.1833",
+    "value": "2.4667",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -4086,7 +4041,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-04-30",
     "severity": "low",
-    "value": "0.6971",
+    "value": "1.4764",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
@@ -4096,7 +4051,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-05-31",
     "severity": "low",
-    "value": "0.9667",
+    "value": "2.2667",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -4106,25 +4061,17 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-05-31",
     "severity": "low",
-    "value": "0.5627",
+    "value": "1.3560",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
     }
-   },
-   {
-    "rule": "runway_below_watch",
-    "period_end": "2026-05-31",
-    "severity": "medium",
-    "value": "11.77",
-    "trigger": "12",
-    "detail": {}
    },
    {
     "rule": "runway_falling",
     "period_end": "2026-05-31",
     "severity": "medium",
-    "value": "11.77",
+    "value": "19.62",
     "trigger": null,
     "detail": {}
    },
@@ -4132,7 +4079,7 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-06-30",
     "severity": "low",
-    "value": "0.8167",
+    "value": "2.1333",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -4142,25 +4089,17 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-06-30",
     "severity": "low",
-    "value": "0.4368",
+    "value": "1.2380",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
     }
    },
    {
-    "rule": "runway_below_watch",
-    "period_end": "2026-06-30",
-    "severity": "medium",
-    "value": "10.94",
-    "trigger": "12",
-    "detail": {}
-   },
-   {
     "rule": "covenant_headroom_falling",
     "period_end": "2026-07-31",
     "severity": "low",
-    "value": "0.7000",
+    "value": "1.9500",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -4170,25 +4109,17 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-07-31",
     "severity": "low",
-    "value": "0.3100",
+    "value": "1.1167",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
     }
    },
    {
-    "rule": "runway_below_watch",
-    "period_end": "2026-07-31",
-    "severity": "medium",
-    "value": "10.15",
-    "trigger": "12",
-    "detail": {}
-   },
-   {
     "rule": "covenant_headroom_falling",
     "period_end": "2026-08-31",
     "severity": "low",
-    "value": "0.5500",
+    "value": "1.7833",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
@@ -4198,74 +4129,48 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-08-31",
     "severity": "low",
-    "value": "0.1813",
+    "value": "0.9979",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
     }
    },
    {
-    "rule": "runway_below_watch",
-    "period_end": "2026-08-31",
-    "severity": "medium",
-    "value": "9.29",
-    "trigger": "12",
-    "detail": {}
-   },
-   {
     "rule": "covenant_headroom_falling",
     "period_end": "2026-09-30",
     "severity": "low",
-    "value": "0.3500",
+    "value": "1.6000",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
     }
    },
    {
-    "rule": "covenant_headroom_low",
-    "period_end": "2026-09-30",
-    "severity": "medium",
-    "value": "0.0487",
-    "trigger": "0.10",
-    "detail": {
-     "covenant_id": "min_unrestricted_cash"
-    }
-   },
-   {
     "rule": "covenant_headroom_falling",
     "period_end": "2026-09-30",
     "severity": "low",
-    "value": "0.0487",
+    "value": "0.8773",
     "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
     }
    },
    {
-    "rule": "runway_below_watch",
-    "period_end": "2026-09-30",
-    "severity": "high",
-    "value": "8.11",
-    "trigger": "12",
-    "detail": {}
-   },
-   {
     "rule": "covenant_headroom_falling",
     "period_end": "2026-10-31",
     "severity": "low",
-    "value": "0.1833",
+    "value": "1.0500",
     "trigger": null,
     "detail": {
      "covenant_id": "min_runway_months"
     }
    },
    {
-    "rule": "covenant_headroom_low",
+    "rule": "covenant_headroom_falling",
     "period_end": "2026-10-31",
-    "severity": "medium",
-    "value": "-0.0800",
-    "trigger": "0.10",
+    "severity": "low",
+    "value": "0.4333",
+    "trigger": null,
     "detail": {
      "covenant_id": "min_unrestricted_cash"
     }
@@ -4274,35 +4179,20 @@
     "rule": "covenant_headroom_falling",
     "period_end": "2026-10-31",
     "severity": "low",
-    "value": "-0.0800",
+    "value": "0.3154",
     "trigger": null,
     "detail": {
-     "covenant_id": "min_unrestricted_cash"
+     "covenant_id": "revenue_vs_plan"
     }
-   },
-   {
-    "rule": "runway_below_watch",
-    "period_end": "2026-10-31",
-    "severity": "high",
-    "value": "7.08",
-    "trigger": "12",
-    "detail": {}
    }
   ],
   "exceptions": [
    {
-    "type": "covenant.reported_mismatch",
-    "severity": "critical",
-    "period_end": "2026-10-31",
-    "subject": "covenant:min_unrestricted_cash",
-    "summary": "Minimum Unrestricted Cash fails its threshold while the certificate claims compliance."
-   },
-   {
-    "type": "signal.high",
+    "type": "cash.statement_mismatch",
     "severity": "high",
     "period_end": "2026-10-31",
-    "subject": "signal:runway_below_watch",
-    "summary": "High-severity signal runway_below_watch."
+    "subject": "cash:2026-10-31",
+    "summary": "Bank statements show the escrow collateral account as restricted; the certificate counts it as unrestricted cash."
    }
   ]
  }

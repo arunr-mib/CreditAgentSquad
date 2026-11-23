@@ -35,32 +35,32 @@ def test_every_client_has_a_known_scenario_and_every_scenario_a_client(clients):
 def test_the_generator_verifies_itself_and_fails_loudly(clients):
     for book in clients.values():
         verify(book)
-    broken = clients["dataflake"]
+    broken = clients["datamarrow"]
     original = broken.spec.min_cash
     object.__setattr__(broken.spec, "min_cash", 4_000_000)  # cash would then pass: the scenario is gone
     try:
-        with pytest.raises(AssertionError, match="dataflake"):
+        with pytest.raises(AssertionError, match="datamarrow"):
             verify(broken)
     finally:
         object.__setattr__(broken.spec, "min_cash", original)
 
 
 def test_the_owners_figures_hold_in_the_assembled_book(clients):
-    assert clients["dataflake"].series.cash(LAST) == 4_600_000 and clients["lumora-health"].series.cash(LAST) == 4_000_000
-    assert q(clients["tessaract-labs"].series.rml(LAST), 1) == D("27.5")
+    assert clients["datamarrow"].series.cash(LAST) == 4_600_000 and clients["calvere-health"].series.cash(LAST) == 4_000_000
+    assert q(clients["vantrell-labs"].series.rml(LAST), 1) == D("27.5")
 
 
 def test_clean_clients_raise_nothing_and_carry_no_loud_signal(clients):
-    for client_id in ("mosswell-robotics", "quillon-ai", "orbitline-systems", "veridia-payments", "tessaract-labs",
-                      "pellucid-sensors", "halcyon-grid", "kelvra-bio", "brightvane-energy", "ferrogate-cloud"):
+    for client_id in ("mosswell-robotics", "tarnavi-ai", "orbitline-systems", "veridia-payments", "vantrell-labs",
+                      "pellucid-sensors", "tavernel-grid", "kelvra-bio", "brightvane-energy", "ferrogate-cloud"):
         book = clients[client_id]
         assert exceptions(book) == [], client_id
         loud = [s["rule"] for s in current_signals(book) if s["severity"] != "low" and s["rule"] != "runway_falling"]
         assert loud == [], client_id
 
 
-def test_dataflake_certificate_counts_pledged_cash_and_claims_compliance(clients):
-    book = clients["dataflake"]
+def test_datamarrow_certificate_counts_pledged_cash_and_claims_compliance(clients):
+    book = clients["datamarrow"]
     row = current(book)["min_unrestricted_cash"]
     assert row["value"] == D(4_600_000) < row["threshold"] == D(5_000_000)
     assert row["reported_value"] == D(6_100_000) and row["reported_in_compliance"] is True
@@ -69,22 +69,22 @@ def test_dataflake_certificate_counts_pledged_cash_and_claims_compliance(clients
     assert book.scenario_details["definition_clause"] == {"_anchor": ("credit-agreement", "def_unrestricted_cash")}
 
 
-def test_dataflakes_extension_is_a_signed_term_sheet_closing_on_12_december(clients):
-    events = clients["dataflake"].funding_events
+def test_datamarrows_extension_is_a_signed_term_sheet_closing_on_12_december(clients):
+    events = clients["datamarrow"].funding_events
     assert [(e["kind"], e["amount"], e["expected_close"], e["status"]) for e in events] == [
         ("extension", 8_000_000, date(2026, 12, 12), "signed")]
-    assert events[0]["evidence_document_ids"] == ["dataflake.term-sheet-2026-11-10"]
+    assert events[0]["evidence_document_ids"] == ["datamarrow.term-sheet-2026-11-10"]
 
 
-def test_lumora_october_package_is_12_days_late(clients):
-    book = clients["lumora-health"]
+def test_calvere_october_package_is_12_days_late(clients):
+    book = clients["calvere-health"]
     assert max(i["days_late"] for i in book.scenario_details["reporting"]) == 12
     assert (AS_OF - date(2026, 11, 7)).days == 12  # bank statements are due 7 days after month end
     assert exceptions(book) == ["intake.missing_document"] * 2
     assert not [d for d in book.documents if d.period_end == CURRENT_PERIOD]
     assert all(r["outcome"] == "cannot_test" and r["after_repair"]["pass"] for r in current(book).values())
     assert not current_signals(book)
-    assert [d.id for d in book.documents if d.period_end == date(2026, 9, 30)][:1] == ["lumora-health.bank-2026-09-30"]
+    assert [d.id for d in book.documents if d.period_end == date(2026, 9, 30)][:1] == ["calvere-health.bank-2026-09-30"]
 
 
 def test_brightvane_runway_falls_three_months_running_and_stays_above_the_watch_level(clients):
@@ -95,8 +95,8 @@ def test_brightvane_runway_falls_three_months_running_and_stays_above_the_watch_
     assert "runway_falling" in rules and "burn_rising" not in rules and "runway_below_watch" not in rules
 
 
-def test_corvane_misses_plan_two_months_running_against_figures_in_the_terms(clients):
-    book = clients["corvane-analytics"]
+def test_meridew_misses_plan_two_months_running_against_figures_in_the_terms(clients):
+    book = clients["meridew-analytics"]
     rows = {(r["period_end"], r["covenant_id"]): r for r in book.expected["covenant_tests"]}
     sep, oct_ = rows[(date(2026, 9, 30), "revenue_vs_plan")], rows[(CURRENT_PERIOD, "revenue_vs_plan")]
     aug = rows[(date(2026, 8, 31), "revenue_vs_plan")]
@@ -114,8 +114,8 @@ def test_nimbusfield_funding_slipped_and_runway_is_under_nine_months(clients):
     assert exceptions(book) == ["funding_slipped", "signal.high"]
 
 
-def test_tidewell_certificate_counts_a_restricted_account(clients):
-    book = clients["tidewell-medical"]
+def test_brackmere_certificate_counts_a_restricted_account(clients):
+    book = clients["brackmere-medical"]
     assert book.series.cash(LAST) == 4_300_000
     cash = current(book)["min_unrestricted_cash"]
     assert cash["outcome"] == "compliant_variance" and cash["reported_value"] - cash["value"] == 1_000_000
@@ -132,8 +132,8 @@ def test_ferrogate_is_cash_flow_positive_and_runway_is_not_meaningful(clients):
     assert not [s for s in current_signals(book) if s["rule"].startswith("runway")]
 
 
-def test_stripple_roll_ties_and_misreading_it_changes_runway_a_lot(clients):
-    book = clients["stripple-tech"]
+def test_cindrel_roll_ties_and_misreading_it_changes_runway_a_lot(clients):
+    book = clients["cindrel-tech"]
     details = book.scenario_details["capitalised_software"]
     roll = reports.software_roll(book.months, LAST)
     assert roll["opening"] + roll["additions"] - roll["amortisation"] == roll["closing"]
@@ -142,14 +142,14 @@ def test_stripple_roll_ties_and_misreading_it_changes_runway_a_lot(clients):
     assert q(reports.misread_runway(book.series, LAST), 2) == details["misread_runway"]
     assert exceptions(book) == ["intake.unclassified", "spread.value_unverified"]
     assert book.scenario_details["new_line"]["belongs_to"] == "bs.deferred_revenue_current"
-    export = next(d for d in book.documents if d.id == "stripple-tech.mrr-export")
+    export = next(d for d in book.documents if d.id == "cindrel-tech.mrr-export")
     assert export.extra["held"] is True and export.period_end is None and len(export.payload["rows"]) == 10
 
 
-def test_funding_events_cover_dataflake_halcyon_kelvra_and_nimbusfield(clients):
+def test_funding_events_cover_datamarrow_tavernel_kelvra_and_nimbusfield(clients):
     events = {cid: b.funding_events for cid, b in clients.items() if b.funding_events}
-    assert sorted(events) == ["dataflake", "halcyon-grid", "kelvra-bio", "nimbusfield-security"]
-    assert (events["halcyon-grid"][0]["kind"], events["halcyon-grid"][0]["expected_close"]) == (
+    assert sorted(events) == ["datamarrow", "kelvra-bio", "nimbusfield-security", "tavernel-grid"]
+    assert (events["tavernel-grid"][0]["kind"], events["tavernel-grid"][0]["expected_close"]) == (
         "equity_round", date(2027, 3, 31))
     assert (events["kelvra-bio"][0]["kind"], events["kelvra-bio"][0]["expected_close"]) == (
         "milestone_tranche", date(2027, 2, 26))

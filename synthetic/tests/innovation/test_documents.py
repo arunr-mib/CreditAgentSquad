@@ -44,7 +44,7 @@ def test_every_page_of_every_document_carries_the_marker_and_no_real_bank_appear
 def test_every_document_but_the_stray_export_names_its_client_in_the_first_pages(generated):
     names = {t["borrower"]["id"]: t["borrower"]["name"] for t in generated.truths.values()}
     for doc in innovation_docs(generated):
-        if doc["id"] == "stripple-tech.mrr-export":
+        if doc["id"] == "cindrel-tech.mrr-export":
             continue
         head = "\n".join(common.page_texts(generated.out / doc["path"])[:2])
         assert names[doc["borrower_id"]] in head, doc["id"]
@@ -117,7 +117,7 @@ def test_each_client_has_the_documents_the_agreement_requires(generated):
             by_type.setdefault(d["type"], []).append(d)
         assert len(by_type["credit_agreement"]) == 1 and len(by_type["annual_financial_statements"]) == 1
         counts = {t: len(by_type.get(t, [])) for t in MONTHLY}
-        assert counts == dict.fromkeys(MONTHLY, 2 if cid == "lumora-health" else 3), cid  # three months on file
+        assert counts == dict.fromkeys(MONTHLY, 2 if cid == "calvere-health" else 3), cid  # three months on file
         for d in by_type["monthly_financials"]:
             assert d["received_date"] <= truth["as_of"]
 

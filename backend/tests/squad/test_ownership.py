@@ -34,7 +34,7 @@ def _doc(db, borrower):
 
 @pytest.fixture()
 def owned(db, world):
-    """Priya's client (as Dataflake is in the seeded book) and Tomas, another analyst."""
+    """Priya's client (as Datamarrow is in the seeded book) and Tomas, another analyst."""
     world["borrower"].analyst_id = world["analyst"].id
     db.flush()
     return {**world, "tomas": _user(db, "tomas.keller")}

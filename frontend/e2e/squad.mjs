@@ -470,10 +470,10 @@ journey('old addresses: every retired cockpit address lands on a Squad place tha
   }
 });
 
-journey('held reading: Stripple’s held spreadsheet question opens focused in its client thread with its case showing', async ({ page }) => {
+journey('held reading: Cindrel’s held spreadsheet question opens focused in its client thread with its case showing', async ({ page }) => {
   await signIn(page, ANALYST);
   const held = [...(await api(page, '/work-items?item_type=spread.value_unverified')), ...(await api(page, '/work-items?item_type=spread.does_not_foot'))];
-  assert(held.length > 0, 'the seeded innovation book should hold one spread for a person (Stripple)');
+  assert(held.length > 0, 'the seeded innovation book should hold one spread for a person (Cindrel)');
   const borrower = await api(page, `/borrowers/${held[0].borrower_id}`);
   await page.goto(`${BASE}/clients/${borrower.code}?case=${held[0].id}`);
   const card = page.locator(`[data-work-item="${held[0].id}"][data-focused="true"]`);

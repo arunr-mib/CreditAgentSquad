@@ -14,7 +14,7 @@ from evals.book import generate_book
 @pytest.fixture(scope="module")
 def export(tmp_path_factory) -> bytes:
     root = generate_book(tmp_path_factory.mktemp("sheet-book") / "out", "innovation")
-    return (root / "documents/stripple-tech/mrr_export.xlsx").read_bytes()
+    return (root / "documents/cindrel-tech/mrr_export.xlsx").read_bytes()
 
 
 @pytest.fixture()
@@ -56,7 +56,7 @@ def test_the_export_is_held_with_one_question_and_never_filed(innovation_cycle):
     from app.domain.documents import Document
     from app.domain.monitoring import WorkItem
 
-    db, row, _cycle = innovation_cycle("stripple-tech", through="spreading")
+    db, row, _cycle = innovation_cycle("cindrel-tech", through="spreading")
     sheet = db.execute(select(Document).where(Document.borrower_id == row.id,
                                               Document.file_name == "mrr_export.xlsx")).scalar_one()
     assert sheet.doc_type is None and sheet.meta["format"] == "xlsx"

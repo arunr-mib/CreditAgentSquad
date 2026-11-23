@@ -210,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
         "Not counted: the Terms Agent (not called in these cycles), re-runs after a product fix, the one-borrower trial, and any "
         "retry the real model causes beyond the recorded exchange counts.",
     ]
-    scope = f"Scope: {len(scope_codes)} borrowers (the 16 innovation clients and Pellham Grain); lumora-health makes no model call in the stand-in cycle."
+    scope = f"Scope: {len(scope_codes)} borrowers (the 16 innovation clients and Pellham Grain); calvere-health makes no model call in the stand-in cycle."
     text = render(scenarios, notes, rerecord, cal, scope)
     Path(args.out).write_text(text)
     print(text)

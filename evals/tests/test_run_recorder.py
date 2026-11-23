@@ -79,9 +79,9 @@ def test_a_wrong_note_is_a_covenant_outcome_disagreement(ferrogate):
 
 
 def test_a_wrong_certificate_figure_stored_for_a_held_figure_borrower_is_an_invented_number(engine, file_store):
-    """Stripple rests at spreading, so no certificate fact is expected; one stored anyway is still graded."""
-    book = load_book(BOOKS["innovation"], ["stripple-tech"])
-    borrower = book.get("stripple-tech")
+    """Cindrel rests at spreading, so no certificate fact is expected; one stored anyway is still graded."""
+    book = load_book(BOOKS["innovation"], ["cindrel-tech"])
+    borrower = book.get("cindrel-tech")
     with LoadedBorrower(engine, book, borrower) as loaded:
         recording = loaded.run(lambda: StandInReader(book), decide=True)
     clean = grade_borrower(borrower, recording)

@@ -16,8 +16,8 @@ def items(db, borrower, kind):
                                                   WorkItem.item_type == kind)).scalars())
 
 
-def test_tidewell_gets_one_mismatch_for_the_certificate_that_counts_the_escrow_account(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("tidewell-medical", through="covenant_testing")
+def test_brackmere_gets_one_mismatch_for_the_certificate_that_counts_the_escrow_account(innovation_cycle):
+    db, borrower, cycle = innovation_cycle("brackmere-medical", through="covenant_testing")
     assert len(items(db, borrower, "cash.statement_mismatch")) == 1  # the covenant stage raised it itself
     first = reconcile_cash(db, borrower=borrower, cycle=cycle)
     again = reconcile_cash(db, borrower=borrower, cycle=cycle)
@@ -29,8 +29,8 @@ def test_tidewell_gets_one_mismatch_for_the_certificate_that_counts_the_escrow_a
     assert len(items(db, borrower, "cash.statement_mismatch")) == 1
 
 
-def test_dataflake_already_asks_the_question_so_it_gets_no_second_item(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("dataflake", through="covenant_testing")
+def test_datamarrow_already_asks_the_question_so_it_gets_no_second_item(innovation_cycle):
+    db, borrower, cycle = innovation_cycle("datamarrow", through="covenant_testing")
     assert items(db, borrower, "covenant.reported_mismatch")
     assert reconcile_cash(db, borrower=borrower, cycle=cycle) is None
     assert items(db, borrower, "cash.statement_mismatch") == []
@@ -43,14 +43,14 @@ def test_a_client_whose_certificate_agrees_with_the_bank_gets_nothing(innovation
 
 
 def test_no_bank_statement_means_no_reconciliation_and_no_zero(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("lumora-health", through="covenant_testing")  # the bank statement is late
+    db, borrower, cycle = innovation_cycle("calvere-health", through="covenant_testing")  # the bank statement is late
     assert current_fact(db, borrower.id, "bank.cash_unrestricted", cycle.period_end, 0) is None
     assert reconcile_cash(db, borrower=borrower, cycle=cycle) is None
     assert items(db, borrower, "cash.statement_mismatch") == []
 
 
 def _fresh(db, borrower, cycle):
-    """Tidewell as the stage left it, with the cash item taken away so the reconciliation runs afresh."""
+    """Brackmere as the stage left it, with the cash item taken away so the reconciliation runs afresh."""
     for item in items(db, borrower, "cash.statement_mismatch"):
         db.delete(item)
     db.flush()
@@ -60,7 +60,7 @@ def _fresh(db, borrower, cycle):
 
 
 def test_a_difference_within_the_engines_dollar_tolerance_raises_nothing(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("tidewell-medical", through="covenant_testing")
+    db, borrower, cycle = innovation_cycle("brackmere-medical", through="covenant_testing")
     test = _fresh(db, borrower, cycle)
     bank = current_fact(db, borrower.id, "bank.cash_unrestricted", cycle.period_end, 0)
     test.reported_value = bank.value + Decimal("0.40")
@@ -72,7 +72,7 @@ def test_a_difference_within_the_engines_dollar_tolerance_raises_nothing(innovat
 
 
 def test_a_covenant_breach_does_not_suppress_the_cash_item_but_a_reported_mismatch_does(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("tidewell-medical", through="covenant_testing")
+    db, borrower, cycle = innovation_cycle("brackmere-medical", through="covenant_testing")
     test = _fresh(db, borrower, cycle)
     common = dict(borrower_id=borrower.id, cycle_id=cycle.id, stage="covenant_testing", title="t",
                   question="What now?", allowed_decisions=["escalate_to_committee"],
@@ -88,7 +88,7 @@ def test_a_covenant_breach_does_not_suppress_the_cash_item_but_a_reported_mismat
 
 
 def test_once_per_period_even_after_the_item_is_decided_and_the_wording_is_neutral(innovation_cycle):
-    db, borrower, cycle = innovation_cycle("tidewell-medical", through="covenant_testing")
+    db, borrower, cycle = innovation_cycle("brackmere-medical", through="covenant_testing")
     first = items(db, borrower, "cash.statement_mismatch")[0]
     first.status, first.decision = "decided", "reviewed"
     db.flush()
@@ -106,7 +106,7 @@ def test_the_stage_says_why_reconciliation_waited_only_when_it_did(innovation_cy
     from app.domain import workflow
     from app.domain.cash_reconciliation import waiting_reason
 
-    db, borrower, cycle = innovation_cycle("tidewell-medical", through="covenant_testing")
+    db, borrower, cycle = innovation_cycle("brackmere-medical", through="covenant_testing")
     stage = next(s for s in workflow.stages(db, cycle) if s.stage == "covenant_testing")
     assert "cash_reconciliation_waiting" not in stage.detail and waiting_reason(db, borrower, cycle) is None
     # a period with no bank statement on file (the certificate's figure is still there to compare)

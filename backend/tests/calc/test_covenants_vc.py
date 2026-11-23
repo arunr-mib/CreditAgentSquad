@@ -24,7 +24,7 @@ def _cov(archetype, params, threshold, unit, operator=">=", basis="point"):
     })
 
 
-def _dataflake():
+def _datamarrow():
     # unrestricted 4.6M; operating cash flow -1.95M over Aug-Oct (YTD Oct -6.5M, YTD Jul -4.55M); no capex
     return provider_from_facts({
         ("bs.cash_unrestricted", OCT, 10): D("4600000"),
@@ -38,17 +38,17 @@ def _dataflake():
 
 
 def test_min_unrestricted_cash_excludes_pledged_cash():
-    result = test_covenant(_cov("min_unrestricted_cash", {}, 5000000, "usd"), OCT, _dataflake())
+    result = test_covenant(_cov("min_unrestricted_cash", {}, 5000000, "usd"), OCT, _datamarrow())
     assert result.value == D("4600000") and result.passed is False
 
 
 def test_rml_is_cash_over_average_three_month_burn():
-    rml = compute_rml(OCT, _dataflake())
+    rml = compute_rml(OCT, _datamarrow())
     assert rml.burn == D("650000") and rml.value.quantize(D("0.1")) == D("7.1") and not rml.not_meaningful
 
 
 def test_rml_covenant_breach_below_threshold():
-    result = test_covenant(_cov("min_runway_months", {}, 9, "months", basis="t3m"), OCT, _dataflake())
+    result = test_covenant(_cov("min_runway_months", {}, 9, "months", basis="t3m"), OCT, _datamarrow())
     assert result.value == D("7.1") and result.passed is False and result.note is None
 
 

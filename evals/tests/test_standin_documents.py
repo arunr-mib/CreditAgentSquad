@@ -88,13 +88,13 @@ def test_ferrogate_runway_is_reported_as_the_text_the_certificate_prints():
 
 
 def test_filed_only_documents_and_the_held_export_get_a_type_and_no_figures():
-    book = load_book(BOOKS["innovation"], ["stripple-tech"])
-    stripple = book.get("stripple-tech")
+    book = load_book(BOOKS["innovation"], ["cindrel-tech"])
+    cindrel = book.get("cindrel-tech")
     reader = StandInReader(book)
-    meta = stripple.document_by_file("mrr_export.pdf")
+    meta = cindrel.document_by_file("mrr_export.pdf")
     head = "\n".join(_lines(pymupdf.open(book.root / meta["path"])[0]))
     text = f'<document number="1" file="mrr_export.pdf" pages="1">\n{head}\n</document>'
     request = LLMRequest(model="m", system="", messages=[{"role": "user", "content": text}],
-                         record_key="intake/stripple-tech/2026-10-31")
+                         record_key="intake/cindrel-tech/2026-10-31")
     doc = _answer(reader, request)["documents"][0]
     assert doc["doc_type"] == "other" and doc["period_end_text"] == ""

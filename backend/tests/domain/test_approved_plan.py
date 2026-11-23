@@ -19,7 +19,7 @@ def covenant(amounts: dict[str, str], metric: str = "revenue") -> dict:
 
 def setup(db, code, versions):
     """versions: [(status, covenant dict)] in version order, all effective from 2025-01-01."""
-    b = Borrower(code=code, name="Corvane Analytics", template_id="vc-1")
+    b = Borrower(code=code, name="Meridew Analytics", template_id="vc-1")
     db.add(b)
     user = User(email=f"{code}@x.example", name="A", role="credit_officer", password_hash="x")
     db.add(user)

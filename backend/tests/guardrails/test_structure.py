@@ -7,7 +7,10 @@ from app.guardrails.narrative import DocumentStructure, References, check_narrat
 
 ST = DocumentStructure(page_count=5, note_numbers=frozenset({1}), endings=frozenset({"9001", "9002"}),
                        years=frozenset({2025, 2026}))
-ROOT = pathlib.Path(__file__).resolve().parents[3] / "evals" / "recordings" / "spreading"
+EVALS = pathlib.Path(__file__).resolve().parents[3] / "evals"
+ROOT = EVALS / "recordings" / "spreading"
+# recordings of the clients renamed on 22 Nov are archived, not replayed; their wording is still real model text
+ARCHIVE = EVALS / "recordings-archive" / "renamed-2026-11-22"
 
 
 def ok(text, st=ST, echo=""):
@@ -64,7 +67,7 @@ def test_structure_from_pages():
 
 
 def _recorded_notes():
-    for p in sorted(ROOT.rglob("*.json")):
+    for p in sorted([*ROOT.rglob("*.json"), *(ARCHIVE / "spreading").rglob("*.json")]):
         d = json.loads(p.read_text())
         for block in d.get("content", []):
             inp = block.get("input") if block.get("type") == "tool_use" else None
@@ -128,7 +131,9 @@ def test_a_four_quarter_basis_names_a_window():
 
 
 def _recorded_covenant_answer(path):
-    d = json.loads((ROOT.parent / "covenant" / path).read_text())
+    found = [*(ROOT.parent / "covenant").glob(path), *(ARCHIVE / "covenant").glob(path)]
+    assert len(found) == 1, found
+    d = json.loads(found[0].read_text())
     return json.loads(d["content"][-1]["text"])
 
 
@@ -148,8 +153,9 @@ def _problems(answer, refs):
 def test_recorded_covenant_answers_pass_with_the_references_the_run_builds():
     # the re-recorded (claude-opus-5-5, v2) answers name their sections and versions properly: with the references
     # built from the run they pass; without them they are refused outright
-    corvane = _recorded_covenant_answer("corvane-analytics/2026-10-31/revenue_vs_plan/06.json")
-    assert _problems(corvane, References(frozenset({1}), frozenset({"6.3"}))) == []
+    # the plan-miss client's answer, recorded before its rename (archived under the code it was recorded with)
+    plan_miss = _recorded_covenant_answer("*/2026-10-31/revenue_vs_plan/06.json")
+    assert _problems(plan_miss, References(frozenset({1}), frozenset({"6.3"}))) == []
     pellham = _recorded_covenant_answer("pellham-grain/2026-09-30/fccr/06.json")
     # Pellham's re-recorded wording cites a year and a version the run's references do not hold (those are
     # attacks the product still refuses), so only the refusal without references is pinned here

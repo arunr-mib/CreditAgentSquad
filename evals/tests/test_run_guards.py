@@ -31,51 +31,51 @@ def test_live_and_record_refuse_unsigned_oracle_rows_and_print_the_cost_warning(
     for mode in ("live", "record"):
         out = io.StringIO()
         with pytest.raises(RunRefused, match="not signed by the owner"):
-            check_may_start(mode, ["dataflake"], out=out, oracle=unsigned_oracle)
+            check_may_start(mode, ["datamarrow"], out=out, oracle=unsigned_oracle)
         assert COST_WARNING in out.getvalue()
 
 
 def test_allow_unsigned_is_a_stated_exception_and_still_needs_the_owners_go_ahead(unsigned_oracle):
     out = io.StringIO()
     with pytest.raises(RunRefused, match="billable"):
-        check_may_start("live", ["dataflake"], allow_unsigned=True, out=out, oracle=unsigned_oracle)
+        check_may_start("live", ["datamarrow"], allow_unsigned=True, out=out, oracle=unsigned_oracle)
     assert "--allow-unsigned" in out.getvalue() and COST_WARNING in out.getvalue()
     # with both flags the run may start; nothing is called here
-    check_may_start("live", ["dataflake"], allow_unsigned=True, confirm_billable=True, out=io.StringIO(),
+    check_may_start("live", ["datamarrow"], allow_unsigned=True, confirm_billable=True, out=io.StringIO(),
                     oracle=unsigned_oracle)
 
 
 def test_unsigned_rows_are_listed_and_a_borrower_without_rows_counts_as_unsigned(unsigned_oracle):
-    rows = unsigned_oracle_rows(["dataflake"], unsigned_oracle)
+    rows = unsigned_oracle_rows(["datamarrow"], unsigned_oracle)
     assert len(rows) >= 5 and {r["owner_signed_off"] for r in rows} == {"no"}
     assert unsigned_oracle_rows(["not-a-borrower"], unsigned_oracle)[0]["item"] == "no oracle row"
 
 
 def test_signed_rows_let_a_billable_run_start_only_with_the_owners_go_ahead(tmp_path):
     signed = _oracle(tmp_path, "yes")
-    assert unsigned_oracle_rows(["dataflake"], signed) == []
+    assert unsigned_oracle_rows(["datamarrow"], signed) == []
     with pytest.raises(RunRefused, match="billable"):
-        check_may_start("live", ["dataflake"], out=io.StringIO(), oracle=signed)
-    check_may_start("live", ["dataflake"], confirm_billable=True, out=io.StringIO(), oracle=signed)
+        check_may_start("live", ["datamarrow"], out=io.StringIO(), oracle=signed)
+    check_may_start("live", ["datamarrow"], confirm_billable=True, out=io.StringIO(), oracle=signed)
 
 
 def test_recorded_mode_refuses_when_there_are_no_recordings(tmp_path):
     with pytest.raises(RunRefused, match="no recorded model responses"):
-        check_may_start("recorded", ["dataflake"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
+        check_may_start("recorded", ["datamarrow"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
     (tmp_path / "intake").mkdir()
     (tmp_path / "intake" / "x.json").write_text("{}")
-    check_may_start("recorded", ["dataflake"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
+    check_may_start("recorded", ["datamarrow"], recordings=tmp_path, oracle=oracle_for(DEFAULT_BOOK))
 
 
 def test_stand_in_needs_no_signature_and_no_flag():
-    check_may_start("standin", ["dataflake"], out=io.StringIO(), oracle=oracle_for(DEFAULT_BOOK))
+    check_may_start("standin", ["datamarrow"], out=io.StringIO(), oracle=oracle_for(DEFAULT_BOOK))
     with pytest.raises(RunRefused, match="unknown mode"):
         check_may_start("cheap", [], oracle=oracle_for(DEFAULT_BOOK))
 
 
 @pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
 def test_the_other_modes_go_through_client_for_with_one_setting_changed(tmp_path, monkeypatch):
-    book = load_book(only=["dataflake"])
+    book = load_book(only=["datamarrow"])
     assert make_client("standin", book).mode == "standin"
     recorded = make_client("recorded", book, recordings=tmp_path, accept_stale=frozenset({"intake"}))
     assert isinstance(recorded, RecordedClient) and recorded.root == tmp_path
@@ -89,7 +89,7 @@ def test_the_other_modes_go_through_client_for_with_one_setting_changed(tmp_path
 @pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
 def test_the_command_line_refuses_a_live_run_without_calling_anything(capsys, monkeypatch):
     monkeypatch.setattr(run, "make_client", lambda *a, **k: pytest.fail("a client was built for a refused run"))
-    code = run.main(["--mode", "live", "--only", "dataflake", "--database-url", "postgresql+psycopg://unused/none"])
+    code = run.main(["--mode", "live", "--only", "datamarrow", "--database-url", "postgresql+psycopg://unused/none"])
     captured = capsys.readouterr()
     assert code == 2 and "Not started" in captured.err and COST_WARNING in captured.err
 
@@ -107,9 +107,9 @@ def test_text_that_is_not_one_figure_is_not_read_as_one(text):
 
 def test_the_oracle_is_required_there_is_no_default_to_borrow():
     with pytest.raises(TypeError):
-        check_may_start("live", ["dataflake"], confirm_billable=True, out=io.StringIO())
+        check_may_start("live", ["datamarrow"], confirm_billable=True, out=io.StringIO())
     with pytest.raises(TypeError):
-        unsigned_oracle_rows(["dataflake"])
+        unsigned_oracle_rows(["datamarrow"])
 
 
 def _nothing_is_built(monkeypatch):
@@ -137,7 +137,7 @@ def test_a_book_path_with_an_unsigned_oracle_is_refused_by_its_own_oracle(tmp_pa
 @pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
 def test_a_missing_borrower_in_any_book_refuses_the_whole_run(monkeypatch, capsys):
     _nothing_is_built(monkeypatch)
-    assert run.main(["--mode", "standin", "--book", "both", "--only", "dataflake"]) == 2
+    assert run.main(["--mode", "standin", "--book", "both", "--only", "datamarrow"]) == 2
     assert "not in the book" in capsys.readouterr().err
 
 

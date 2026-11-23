@@ -28,7 +28,7 @@ pytestmark = pytest.mark.slow
 KEPT = ("kestrel-bay-packaging", "harrowgate-precision", "briarstone-beverage", "pellham-grain")
 # Raised by the live cycle's cash reconciliation (Task 6, app/domain/cash_reconciliation.py), which seeding
 # does not run: the seeder stores the certificate's figures without reading bank statements. The live path is
-# pinned by the stand-in suite (evals/tests/test_standin_suite.py), which asserts Tidewell raises it.
+# pinned by the stand-in suite (evals/tests/test_standin_suite.py), which asserts Brackmere raises it.
 SEED_DOES_NOT_RAISE = {"cash.statement_mismatch"}
 
 
@@ -123,8 +123,8 @@ def test_current_period_signals_match_the_generator(seeded):
 
 def test_the_plan_for_revenue_below_plan_comes_from_the_approved_terms(seeded):
     db, _, _ = seeded
-    corvane = borrower(db, "corvane-analytics")
-    fired = db.execute(select(Signal).where(Signal.borrower_id == corvane.id, Signal.rule_id == "revenue_below_plan",
+    meridew = borrower(db, "meridew-analytics")
+    fired = db.execute(select(Signal).where(Signal.borrower_id == meridew.id, Signal.rule_id == "revenue_below_plan",
                                             Signal.period_end == _day("2026-10-31"))).scalars().all()
     assert len(fired) == 1 and fired[0].severity == "medium"
     clean = borrower(db, "mosswell-robotics")
@@ -143,8 +143,8 @@ def test_each_scenario_raises_exactly_its_exceptions_and_clean_clients_raise_non
             problems.append(f"{code} ({truth['scenario']['code']}): ours {ours}; book {expected}")
     assert problems == []
     assert sorted(c for c, t in truths.items() if t["scenario"]["code"] == "clean") == [
-        "harrowgate-precision", "mosswell-robotics", "orbitline-systems", "pellucid-sensors", "quillon-ai",
-        "tessaract-labs", "veridia-payments"]  # harrowgate is the kept clean C&I borrower
+        "harrowgate-precision", "mosswell-robotics", "orbitline-systems", "pellucid-sensors", "tarnavi-ai",
+        "vantrell-labs", "veridia-payments"]  # harrowgate is the kept clean C&I borrower
 
 
 def test_funding_events_are_seeded_and_only_nimbusfields_has_slipped(seeded):
@@ -152,11 +152,11 @@ def test_funding_events_are_seeded_and_only_nimbusfields_has_slipped(seeded):
     rows = {}
     for event in db.execute(select(FundingEvent)).scalars():
         rows.setdefault(db.get(Borrower, event.borrower_id).code, []).append(event)
-    assert sorted(rows) == ["dataflake", "halcyon-grid", "kelvra-bio", "nimbusfield-security"] and report.funding_events == 4
+    assert sorted(rows) == ["datamarrow", "tavernel-grid", "kelvra-bio", "nimbusfield-security"] and report.funding_events == 4
     assert {c: [e.status for e in es] for c, es in rows.items()} == {
-        "dataflake": ["signed"], "halcyon-grid": ["expected"], "kelvra-bio": ["expected"],
+        "datamarrow": ["signed"], "tavernel-grid": ["expected"], "kelvra-bio": ["expected"],
         "nimbusfield-security": ["slipped"]}
-    assert rows["dataflake"][0].amount == D("8000000") and rows["dataflake"][0].expected_close == _day("2026-12-12")
+    assert rows["datamarrow"][0].amount == D("8000000") and rows["datamarrow"][0].expected_close == _day("2026-12-12")
     assert all(e.evidence_document_ids for es in rows.values() for e in es)
     nimbus = borrower(db, "nimbusfield-security")
     assert len(db.execute(select(WorkItem).where(WorkItem.borrower_id == nimbus.id,
@@ -165,9 +165,9 @@ def test_funding_events_are_seeded_and_only_nimbusfields_has_slipped(seeded):
 
 def test_the_stray_mrr_export_is_held_unclassified_and_the_workbook_is_what_arrives(seeded):
     db, _, report = seeded
-    stripple = borrower(db, "stripple-tech")
-    docs = list(db.execute(select(Document).where(Document.borrower_id == stripple.id)).scalars())
-    held = [d for d in docs if d.meta.get("external_id") == "stripple-tech.mrr-export"]
+    cindrel = borrower(db, "cindrel-tech")
+    docs = list(db.execute(select(Document).where(Document.borrower_id == cindrel.id)).scalars())
+    held = [d for d in docs if d.meta.get("external_id") == "cindrel-tech.mrr-export"]
     assert len(held) == 1 and held[0].doc_type is None and held[0].period_end is None
     assert held[0].file_name == "mrr_export.xlsx" and held[0].meta["format"] == "xlsx"
     assert not [d for d in docs if d.file_name.endswith(".pdf") and d.file_name.startswith("mrr_export")]
@@ -179,8 +179,8 @@ def test_venture_clients_run_monthly_cycles_and_the_kept_four_stay_quarterly(see
     for code in truths:
         types = {c.cycle_type for c in db.execute(select(Cycle).where(Cycle.borrower_id == borrower(db, code).id)).scalars()}
         assert types == ({"quarterly"} if code in KEPT else {"monthly"}), code
-    dataflake = borrower(db, "dataflake")
-    ends = sorted(c.period_end for c in db.execute(select(Cycle).where(Cycle.borrower_id == dataflake.id)).scalars())
+    datamarrow = borrower(db, "datamarrow")
+    ends = sorted(c.period_end for c in db.execute(select(Cycle).where(Cycle.borrower_id == datamarrow.id)).scalars())
     assert (ends[0], ends[-1], len(ends)) == (_day("2025-08-31"), _day("2026-10-31"), 15)
 
 
@@ -192,9 +192,9 @@ def test_the_ledger_chain_verifies_after_seeding_the_whole_book(seeded):
 
 def test_stand_in_items_are_marked_as_seeded_and_never_block(seeded):
     db, _, _ = seeded
-    stripple = borrower(db, "stripple-tech")
+    cindrel = borrower(db, "cindrel-tech")
     items = list(db.execute(select(WorkItem).where(
-        WorkItem.borrower_id == stripple.id,
+        WorkItem.borrower_id == cindrel.id,
         WorkItem.item_type.in_(("intake.unclassified", "spread.value_unverified")))).scalars())
     assert sorted(i.item_type for i in items) == ["intake.unclassified", "spread.value_unverified"]
     for item in items:

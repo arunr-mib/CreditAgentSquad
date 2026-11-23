@@ -13,12 +13,12 @@ from synthetic.books.innovation.roster import BY_ID
 
 # spec 2.1, as the owner wrote it: unrestricted cash, average monthly net burn over the last three months, RML
 OWNER = {
-    "dataflake": (4_600_000, 650_000, "7.1"), "lumora-health": (4_000_000, 420_000, "9.5"),
+    "datamarrow": (4_600_000, 650_000, "7.1"), "calvere-health": (4_000_000, 420_000, "9.5"),
     "brightvane-energy": (5_500_000, 450_000, "12.2"), "mosswell-robotics": (7_800_000, 600_000, "13.0"),
-    "halcyon-grid": (2_600_000, 200_000, "13.0"), "quillon-ai": (12_000_000, 800_000, "15.0"),
+    "tavernel-grid": (2_600_000, 200_000, "13.0"), "tarnavi-ai": (12_000_000, 800_000, "15.0"),
     "kelvra-bio": (9_200_000, 500_000, "18.4"), "orbitline-systems": (3_900_000, 210_000, "18.6"),
-    "stripple-tech": (6_600_000, 300_000, "22.0"), "veridia-payments": (14_000_000, 550_000, "25.5"),
-    "tessaract-labs": (11_000_000, 400_000, "27.5"), "pellucid-sensors": (6_300_000, 220_000, "28.6"),
+    "cindrel-tech": (6_600_000, 300_000, "22.0"), "veridia-payments": (14_000_000, 550_000, "25.5"),
+    "vantrell-labs": (11_000_000, 400_000, "27.5"), "pellucid-sensors": (6_300_000, 220_000, "28.6"),
 }  # fmt: skip
 
 
@@ -37,7 +37,7 @@ def test_every_statement_balances_foots_and_ties(sims):
 
 
 def test_eighteen_months_are_published_from_may_2025(sims):
-    book = sims["dataflake"]
+    book = sims["datamarrow"]
     published = book.periods[model.PUBLISHED_FROM :]
     assert published[0].period_end == date(2025, 5, 31) and published[-1].period_end == date(2026, 10, 31)
     assert len(published) == 18 and len(book.periods) == 22
@@ -46,7 +46,7 @@ def test_eighteen_months_are_published_from_may_2025(sims):
 def test_the_vc1_lines_are_the_template_lines(sims):
     assert "saas.mrr" in model.ALL_KEYS and "cf.capitalised_software_spend" in model.ALL_KEYS
     assert len(model.ALL_KEYS) == len(set(model.ALL_KEYS))
-    p = sims["quillon-ai"].periods[-1]
+    p = sims["tarnavi-ai"].periods[-1]
     assert set(p.values) == set(model.ALL_KEYS)
     assert p.values["saas.arr"] == 12 * p.values["saas.mrr"]
 
@@ -70,7 +70,7 @@ def test_financing_inflows_are_not_burn(sims):
 
 
 def test_net_burn_is_capex_plus_capitalised_software_less_operating_cash_flow(sims):
-    month = sims["stripple-tech"].months[model.LAST]
+    month = sims["cindrel-tech"].months[model.LAST]
     f = month.flows
     burn = f["cf.vc_capex"] + f["cf.capitalised_software_spend"] - f["cf.vc_operating_cash_flow"]
     assert f["cf.vc_net_change_in_cash"] == -burn  # no financing that month
@@ -101,24 +101,24 @@ def test_only_brightvane_trips_runway_falling(sims):
 
     for client_id in (
         "mosswell-robotics",
-        "quillon-ai",
+        "tarnavi-ai",
         "orbitline-systems",
         "veridia-payments",
-        "tessaract-labs",
+        "vantrell-labs",
         "pellucid-sensors",
-        "halcyon-grid",
+        "tavernel-grid",
         "kelvra-bio",
-        "stripple-tech",
-        "corvane-analytics",
+        "cindrel-tech",
+        "meridew-analytics",
     ):
         assert not falling(sims[client_id].series), client_id
-    for client_id in ("dataflake", "lumora-health", "nimbusfield-security", "tidewell-medical", "ferrogate-cloud"):
+    for client_id in ("datamarrow", "calvere-health", "nimbusfield-security", "brackmere-medical", "ferrogate-cloud"):
         assert not falling(sims[client_id].series), client_id
     assert falling(sims["brightvane-energy"].series)
 
 
 def test_same_seed_same_truth_and_a_new_seed_keeps_the_owners_figures():
-    spec = BY_ID["dataflake"]
+    spec = BY_ID["datamarrow"]
     a, b = model.simulate(spec, 1), model.simulate(spec, 1)
     assert [m.flows for m in a[1]] == [m.flows for m in b[1]]
     other = model.simulate(spec, 2)

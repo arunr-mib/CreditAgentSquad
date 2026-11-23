@@ -84,7 +84,7 @@ def _client_truth(book: ClientBook, rendered: dict[str, dict], texts: dict[str, 
         versions.append(version)
     scenario = scenario_record(book)
     scenario["details"] = legacy._resolve_citations(scenario["details"], lookup)
-    if spec.scenario == "stripple_package":  # pages are known only after rendering
+    if spec.scenario == "cindrel_package":  # pages are known only after rendering
         figures = rendered[f"{spec.id}.mf-{CURRENT_PERIOD.isoformat()}"]["extra"]["figures"]
         scenario["details"]["new_line"]["page"] = figures["bs.deferred_revenue_current"]["page"]
         scenario["details"]["capitalised_software"]["page"] = figures["bs.capitalised_software"]["page"]

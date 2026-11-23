@@ -32,6 +32,6 @@ def _unsigned_copy(src, dest):
 
 def test_the_legacy_oracle_is_not_consulted_for_an_innovation_borrower(tmp_path):
     new = _unsigned_copy(oracle_for(BOOKS["innovation"]), tmp_path / "oracle.csv")
-    unsigned = unsigned_oracle_rows(["dataflake"], new)
-    assert unsigned and all(r["borrower_id"] == "dataflake" for r in unsigned)
-    assert unsigned_oracle_rows(["dataflake"], oracle_for(BOOKS["legacy"]))[0]["item"] == "no oracle row"
+    unsigned = unsigned_oracle_rows(["datamarrow"], new)
+    assert unsigned and all(r["borrower_id"] == "datamarrow" for r in unsigned)
+    assert unsigned_oracle_rows(["datamarrow"], oracle_for(BOOKS["legacy"]))[0]["item"] == "no oracle row"

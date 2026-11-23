@@ -10,7 +10,7 @@ from synthetic.render import common
 from synthetic.render import innovation as render
 
 END = date(2026, 10, 31)
-SPEC = type("Spec", (), {"name": "Dataflake Inc", "auditor": "Wexley Arnault LLP", "city": "Austin", "state": "TX",
+SPEC = type("Spec", (), {"name": "Datamarrow Inc", "auditor": "Wexley Arnault LLP", "city": "Austin", "state": "TX",
                          "legal_form": "corporation"})  # fmt: skip
 
 
@@ -21,7 +21,7 @@ def text(path) -> str:
 
 
 def test_management_financials_print_the_figures_and_the_period_phrases(sims, tmp_path):
-    sim = sims["stripple-tech"]
+    sim = sims["cindrel-tech"]
     month, i = sim.months[LAST], LAST
     payload = {"end": END, "months": 10, "prior_end": date(2025, 12, 31), "balances": month.balances,
                "prior": sim.months[11].balances, "ytd": sim.periods[i].values, "month": {**month.flows, **month.balances},
@@ -76,7 +76,7 @@ def test_the_export_has_no_company_name_and_carries_the_marker(tmp_path):
     printed = render.render_export_print(tmp_path / "mrr_export.pdf", rows)
     assert "month,mrr_usd,customers" in cells and "SYNTHETIC - FOR DEMONSTRATION" in cells
     assert printed["extra"]["intake_form"] == "pdf_print_of_xlsx"
-    assert "Stripple" not in text(tmp_path / "mrr_export.pdf") and "2025-01" in text(tmp_path / "mrr_export.pdf")
+    assert "Cindrel" not in text(tmp_path / "mrr_export.pdf") and "2025-01" in text(tmp_path / "mrr_export.pdf")
 
 
 def test_certificate_prints_a_ratio_line_and_mrr_figures_use_engine_keys(tmp_path):

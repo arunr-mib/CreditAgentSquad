@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from datetime import date
 from decimal import ROUND_HALF_UP, Decimal
 
+from synthetic.books.innovation.renames import seed_code
 from synthetic.books.innovation.roster import DEFAULT_SEED, ClientSpec
 
 D = Decimal
@@ -169,7 +170,7 @@ def burn_path(spec: ClientSpec, rng: random.Random) -> list[int]:
 
 def simulate(spec: ClientSpec, seed: int = DEFAULT_SEED) -> tuple[Month, list[Month]]:
     """The opening month (December 2024) and the 22 simulated months."""
-    rng = random.Random(f"{seed}:{spec.id}:innovation")
+    rng = random.Random(f"{seed}:{seed_code(spec.id)}:innovation")
     growth, margin = D(spec.growth), D(spec.gross_margin)
     net_burn = burn_path(spec, rng)
     equity, debt = [0] * N, [0] * N
@@ -222,9 +223,9 @@ def simulate(spec: ClientSpec, seed: int = DEFAULT_SEED) -> tuple[Month, list[Mo
         depreciation[i] = rnd(D(other_assets[i - 1]) / 48)
         software[i] = software[i - 1] + capsw[i] - amortisation[i]
         other_assets[i] = other_assets[i - 1] + capex[i] - depreciation[i]
-    intangibles = 0 if spec.id == "stripple-tech" else 120_000
+    intangibles = 0 if spec.id == "cindrel-tech" else 120_000
     convertible = 1_000_000 if spec.id == "nimbusfield-security" else 0
-    safes = 1_500_000 if spec.id == "halcyon-grid" else 0
+    safes = 1_500_000 if spec.id == "tavernel-grid" else 0
     preferred = {-1: 30_000_000}
     for i in range(N):
         preferred[i] = preferred[i - 1] + equity[i]

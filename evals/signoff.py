@@ -21,7 +21,7 @@ EXPECTS = {
     "runway_falling": "losing more than a month of runway per month for three months; one medium signal, tests compliant",
     "clean": "nothing wrong: all three covenant tests compliant, no exception; only a low headroom note",
     "funding_expected": "tests compliant; a funding event is expected and on track (recorded, not an exception)",
-    "stripple_package": "tests compliant on paper but figures are held for a person (MRR export unclassified, "
+    "cindrel_package": "tests compliant on paper but figures are held for a person (MRR export unclassified, "
                         "one statement value unverified); Squad does not reach the 3 tests",
     "plan_miss": "revenue under 80 percent of plan: covenant breach exception, with medium plan and headroom signals",
     "funding_slipped": "tests compliant; the equity round slipped past its date: funding exception, plus a high runway-below-watch signal",

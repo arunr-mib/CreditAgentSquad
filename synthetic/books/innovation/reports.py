@@ -147,7 +147,7 @@ def software_roll(months: list[Month], i: int) -> dict:
 
 
 def misread_runway(series: Series, i: int) -> Decimal | None:
-    """Runway if the capitalised software balance were read as the month's spend (the Stripple trap)."""
+    """Runway if the capitalised software balance were read as the month's spend (the Cindrel trap)."""
     wrong = (series.flow3("cf.vc_capex", i) + series.months[i].balances["bs.capitalised_software"]
              - series.flow3("cf.vc_operating_cash_flow", i))  # fmt: skip
     burn = D(wrong) / 3
