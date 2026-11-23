@@ -8,8 +8,8 @@
 and redeploys again, so the setup routes answer 404 whenever nobody is loading. Nothing secret is printed.
 
 `check` signs in as the analyst who owns the demo clients (Priya Raman) and refuses a book whose demo
-question (Cindrel Tech) is answered, whose demo draft (Calvere Health) is sent, or that has no covenant
-case waiting for her; it also checks agents are on or off as expected and the ledger is append-only."""
+question (Cindrel Tech) is answered, whose demo draft (Calvere Health) is sent, or that has no open
+covenant breach she may route to the credit officer (the hand-off task); it also checks agents are on or off as expected and the ledger is append-only."""
 import argparse
 import json
 import os
@@ -74,14 +74,14 @@ def load(base, token, post=None, get=None):
     return status
 
 
-def check_state(*, briefing, question_open, draft_sent, model, ledger, expect_model):
+def check_state(*, routable_breaches, question_open, draft_sent, model, ledger, expect_model):
     problems = []
     if not question_open:
         problems.append(f"Squad's demo question ({QUESTION_CLIENT}) is not open: the book has been used")
     if draft_sent:
         problems.append(f"the demo draft ({DRAFT_CLIENT}) has been sent: the book has been used")
-    if not any(i.get("kind") == "breach" and i.get("needs_you") for i in briefing.get("items", [])):
-        problems.append("no covenant case is waiting for the analyst")
+    if not routable_breaches:
+        problems.append("no open covenant breach is waiting for the analyst to route: the book has been used")
     if bool(model.get("model_connected")) != expect_model:
         problems.append(f"agents are {'on' if model.get('model_connected') else 'off'}; "
                         f"expected {'on' if expect_model else 'off'}")
@@ -109,14 +109,16 @@ def check(base, expect_model):
             raise SystemExit(f"GET {path} answered {status}: {body}")
         return body
 
-    briefing = get("/me/briefing")
+    # the hand-off task: a breach on one of her clients that she may still send to the credit officer
+    breaches = [w for w in get("/work-items?item_type=covenant.breach") if w.get("status") == "open"]
+    routable = [w for w in breaches if get(f"/cases/{w['id']}").get("may_route")]
     borrowers = {b["code"]: b["id"] for b in get("/borrowers")}
     question = get(f"/threads/{borrowers[QUESTION_CLIENT]}")
     drafts = get(f"/threads/{borrowers[DRAFT_CLIENT]}")
     question_open = any(m.get("type") == "ask" and m.get("status") == "open" for m in question["messages"])
     draft_sent = any(m.get("type") == "draft" and (m.get("sent_at") or m.get("status") == "sent")
                      for m in drafts["messages"])
-    return check_state(briefing=briefing, question_open=question_open, draft_sent=draft_sent,
+    return check_state(routable_breaches=len(routable), question_open=question_open, draft_sent=draft_sent,
                        model=get("/agents/status"), ledger=get("/ledger/verify"), expect_model=expect_model)
 
 

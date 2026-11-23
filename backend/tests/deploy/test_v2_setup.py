@@ -64,15 +64,14 @@ def test_load_refuses_a_host_that_is_not_v2_on_squad2():
     assert host.calls == []  # nothing was posted
 
 
-FRESH = dict(briefing={"items": [{"kind": "breach", "needs_you": True, "borrower_code": "brackmere-medical"}]},
-             question_open=True, draft_sent=False, model={"model_connected": False}, expect_model=False)
+FRESH = dict(routable_breaches=1, question_open=True, draft_sent=False, model={"model_connected": False}, expect_model=False)
 
 
 def test_check_names_each_thing_a_used_book_has_lost():
-    problems = v2.check_state(**{**FRESH, "question_open": False, "draft_sent": True, "briefing": {"items": []}},
+    problems = v2.check_state(**{**FRESH, "question_open": False, "draft_sent": True, "routable_breaches": 0},
                               ledger={"ok": True, "append_only_for_this_role": True})
     assert any("question" in p for p in problems) and any("draft" in p for p in problems)
-    assert any("covenant" in p for p in problems)
+    assert any("covenant breach" in p for p in problems)
 
 
 def test_check_passes_a_fresh_book_and_refuses_a_ledger_the_app_could_rewrite_or_agents_on():
@@ -85,6 +84,7 @@ def test_check_passes_a_fresh_book_and_refuses_a_ledger_the_app_could_rewrite_or
 class Api(BaseHTTPRequestHandler):
     """The read routes `check` calls, answering in the shapes the real API returns."""
     sent = False
+    routable = True
 
     def log_message(self, *args):
         pass
@@ -111,7 +111,9 @@ class Api(BaseHTTPRequestHandler):
         if "squad_session=abc" not in (self.headers.get("Cookie") or ""):
             return self._send(401, {"detail": "Not signed in."})
         routes = {
-            "/api/v1/me/briefing": {"items": [{"kind": "breach", "needs_you": True, "borrower_code": "brackmere-medical"}]},
+            "/api/v1/work-items?item_type=covenant.breach": [{"id": "w1", "status": "open"}, {"id": "w2", "status": "open"}],
+            "/api/v1/cases/w1": {"status": "open", "may_route": Api.routable},  # Priya's client
+            "/api/v1/cases/w2": {"status": "open", "may_route": False},  # a client of an analyst with no login
             "/api/v1/borrowers": [{"code": "cindrel-tech", "id": "c1"}, {"code": "calvere-health", "id": "c2"}],
             "/api/v1/threads/c1": {"messages": [{"type": "ask", "status": "open"}]},
             "/api/v1/threads/c2": {"messages": [{"type": "draft", "status": "sent" if Api.sent else "draft",
@@ -130,7 +132,7 @@ def fake_api():
     yield f"http://127.0.0.1:{server.server_address[1]}"
     server.shutdown()
     server.server_close()
-    Api.sent = False
+    Api.sent, Api.routable = False, True
 
 
 def test_check_reads_the_real_routes_and_passes_an_unused_book(fake_api):
@@ -140,6 +142,11 @@ def test_check_reads_the_real_routes_and_passes_an_unused_book(fake_api):
 def test_check_finds_a_sent_draft_through_the_real_routes(fake_api):
     Api.sent = True
     assert any("draft" in p for p in v2.check(fake_api, expect_model=False))
+
+
+def test_check_finds_a_routed_breach_through_the_real_routes(fake_api):
+    Api.routable = False
+    assert any("covenant breach" in p for p in v2.check(fake_api, expect_model=False))
 
 
 def test_check_says_so_when_sign_in_fails(fake_api, monkeypatch):
