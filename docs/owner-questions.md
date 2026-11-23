@@ -140,5 +140,5 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 
 ## Waiting on the owner (asked again in the morning; work continues meanwhile)
 - **Standing instruction, 23 Nov:** work through the night; collect anything needing the owner here; orchestrate with Fable 5.2, sub-agents on Opus 5.5.
-1. Supabase **session pooler host** for the "Credit Agent Squad" project (dashboard → Connect → Session pooler; host only, never the password). Needed before the v2 site can reach its database.
+1. ~~Supabase session pooler host~~ — owner (23 Nov): find it yourself. No Supabase login for the CLI here and no database port from this container; two candidates (`aws-0-us-east-1.pooler.supabase.com`, `aws-1-us-east-1.pooler.supabase.com`), settled from the v2 site at deploy time (the wrong one answers "Tenant or user not found").
 2. Confirm or change the 8 new client names (`docs/product/name-check-2026-11-22.md`). Default: proceed with them.
