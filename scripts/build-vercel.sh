@@ -48,5 +48,8 @@ else
   # Oversight's Evaluations tab reads the repository's latest scorecard when the database holds no run
   # (app/api/routes_evals.py RESULTS_FILE); without it the tab shows an error.
   mkdir -p "$OUT/evals/results" && cp evals/results/latest.json "$OUT/evals/results/latest.json"
+  # locally generated files (FILE_STORE_DIR=./var/files run from backend/); the function writes to /tmp and reads
+  # documents from synthetic/out, so nothing at runtime needs them
+  rm -rf "$OUT/backend/var"
 fi
 echo "Built $OUT ($TARGET): $(du -sh "$OUT" | cut -f1) ($(find "$OUT" -type f | wc -l) files)"
