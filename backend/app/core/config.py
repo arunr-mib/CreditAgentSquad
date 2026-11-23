@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     # connection per request instead of keeping a pool (serverless functions do not live long).
     db_schema: str = ""
     db_pool: str = ""  # "" = the default pool; "null" = no pool
+    # The role the serving login is a member of (`app.core.ledger`). v1 uses the default; a second
+    # deployment on the same server (v2: `squad2_runtime`) needs its own, or each could write the other's tables.
+    db_runtime_role: str = "squad_runtime"
 
     # Leave unset to follow `squad_env`; set to override it.
     session_cookie_secure: bool | None = None

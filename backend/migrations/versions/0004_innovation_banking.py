@@ -11,7 +11,7 @@ Revises: 0003
 import sqlalchemy as sa
 from alembic import op
 from app.core.config import get_settings
-from app.core.ledger import RUNTIME_ROLE, runtime_role_sql
+from app.core.ledger import runtime_role_name, runtime_role_sql
 from sqlalchemy.dialects import postgresql
 
 revision = '0004'
@@ -44,8 +44,8 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_funding_events_borrower_id"), "funding_events", ["borrower_id"], unique=False)
     bind = op.get_bind()
-    if bind.execute(sa.text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": RUNTIME_ROLE}).first():
-        op.execute(runtime_role_sql(schema=get_settings().db_schema.strip() or "public"))
+    if bind.execute(sa.text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": runtime_role_name()}).first():
+        op.execute(runtime_role_sql(runtime_role_name(), schema=get_settings().db_schema.strip() or "public"))
 
 
 def downgrade() -> None:

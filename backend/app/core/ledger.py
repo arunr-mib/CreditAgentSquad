@@ -166,6 +166,16 @@ def install_guards(connection) -> None:
 RUNTIME_ROLE = "squad_runtime"
 
 
+def runtime_role_name() -> str:
+    """The runtime role of this deployment: `DB_RUNTIME_ROLE`, `squad_runtime` when unset."""
+    from app.core.config import get_settings
+
+    name = get_settings().db_runtime_role.strip() or RUNTIME_ROLE
+    if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", name):
+        raise ValueError(f"not a plain role name: {name!r}")
+    return name
+
+
 def runtime_role_sql(role: str = RUNTIME_ROLE, schema: str = "public") -> str:
     """Grants for the role the application runs as, in the schema that holds the tables. Run by
     the owner (migration `0003`, or `app.cli grant-runtime-role`); safe to run again."""

@@ -6,7 +6,7 @@
                       --expect-head to detect a chain that was rewritten and rehashed. Exits
                       non-zero if the chain is broken or the stored head is no longer there.
   inventory           list registered agent versions with model and prompt hash
-  grant-runtime-role  (owner) give the `squad_runtime` role its rights again: everything the
+  grant-runtime-role  (owner) give the runtime role (`DB_RUNTIME_ROLE`, default `squad_runtime`) its rights again: everything the
                       application needs, and only SELECT and INSERT on the ledger
   backfill-due-dates  give every open work item that has no due date the one the policy in
                       app.domain.work_items sets, counted from the day it was raised, and record
@@ -62,19 +62,21 @@ def inventory(db: Session) -> int:
 
 
 def grant_runtime_role(db: Session) -> int:
-    if not db.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": ledger.RUNTIME_ROLE}).first():
-        print(f"role {ledger.RUNTIME_ROLE} does not exist; a superuser must create it first: "
-              f"CREATE ROLE {ledger.RUNTIME_ROLE} NOLOGIN")
+    role = ledger.runtime_role_name()
+    if not db.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": role}).first():
+        print(f"role {role} does not exist; a superuser must create it first: "
+              f"CREATE ROLE {role} NOLOGIN")
         return 1
-    db.execute(text(ledger.runtime_role_sql(schema=get_settings().db_schema.strip() or "public")))
+    db.execute(text(ledger.runtime_role_sql(role, schema=get_settings().db_schema.strip() or "public")))
     db.commit()
-    print(f"{ledger.RUNTIME_ROLE}: granted the working tables, and SELECT and INSERT only on ledger_events")
+    print(f"{role}: granted the working tables, and SELECT and INSERT only on ledger_events")
     return 0
 
 
 def runtime_login(db: Session, name: str) -> int:
+    role = ledger.runtime_role_name()
     password = os.environ.get("RUNTIME_DATABASE_PASSWORD", "")
-    if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", name) or name == ledger.RUNTIME_ROLE:
+    if not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", name) or name == role:
         print("the login needs a plain lower-case name of its own")
         return 2
     if len(password) < 12:
@@ -84,9 +86,9 @@ def runtime_login(db: Session, name: str) -> int:
     quoted = db.execute(text("SELECT quote_literal(:p)"), {"p": password}).scalar()
     options = f"LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD {quoted}"
     db.execute(text(f"ALTER ROLE {name} {options}" if exists else f"CREATE ROLE {name} {options}"))
-    db.execute(text(f"GRANT {ledger.RUNTIME_ROLE} TO {name}"))
+    db.execute(text(f"GRANT {role} TO {name}"))
     db.commit()
-    print(f"{name}: may sign in, as a member of {ledger.RUNTIME_ROLE}")
+    print(f"{name}: may sign in, as a member of {role}")
     return 0
 
 

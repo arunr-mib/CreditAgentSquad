@@ -18,7 +18,7 @@ import warnings
 
 from alembic import op
 from app.core.config import get_settings
-from app.core.ledger import RUNTIME_ROLE, runtime_role_sql
+from app.core.ledger import runtime_role_name, runtime_role_sql
 from sqlalchemy import text
 
 revision = '0003'
@@ -28,29 +28,32 @@ depends_on = None
 
 
 def upgrade() -> None:
+    role = runtime_role_name()
     bind = op.get_bind()
-    exists = bind.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": RUNTIME_ROLE}).first()
+    exists = bind.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": role}).first()
     if not exists:
         may_create = bind.execute(text(
             "SELECT rolsuper OR rolcreaterole FROM pg_roles WHERE rolname = current_user")).scalar()
         if not may_create:
             warnings.warn(
-                f"role {RUNTIME_ROLE} was not created: this database user may not create roles. The "
+                f"role {role} was not created: this database user may not create roles. The "
                 "application can still rewrite its own ledger while it connects as the table owner. Create "
-                f"the role as a superuser (CREATE ROLE {RUNTIME_ROLE} NOLOGIN) and run "
+                f"the role as a superuser (CREATE ROLE {role} NOLOGIN) and run "
                 "`python -m app.cli grant-runtime-role` as the owner.", stacklevel=1)
             return
-        op.execute(f"CREATE ROLE {RUNTIME_ROLE} NOLOGIN")
-    op.execute(runtime_role_sql(schema=get_settings().db_schema.strip() or "public"))
+        op.execute(f"CREATE ROLE {role} NOLOGIN")
+    op.execute(runtime_role_sql(role, schema=get_settings().db_schema.strip() or "public"))
 
 
 def downgrade() -> None:
+    role = runtime_role_name()
+    schema = get_settings().db_schema.strip() or "public"
     bind = op.get_bind()
-    if not bind.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": RUNTIME_ROLE}).first():
+    if not bind.execute(text("SELECT 1 FROM pg_roles WHERE rolname = :r"), {"r": role}).first():
         return
-    op.execute(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM {RUNTIME_ROLE}")
-    op.execute(f"ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM {RUNTIME_ROLE}")
-    op.execute(f"REVOKE ALL ON ALL TABLES IN SCHEMA public FROM {RUNTIME_ROLE}")
-    op.execute(f"REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM {RUNTIME_ROLE}")
-    op.execute(f"REVOKE USAGE ON SCHEMA public FROM {RUNTIME_ROLE}")
+    op.execute(f"ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} REVOKE ALL ON TABLES FROM {role}")
+    op.execute(f"ALTER DEFAULT PRIVILEGES IN SCHEMA {schema} REVOKE ALL ON SEQUENCES FROM {role}")
+    op.execute(f"REVOKE ALL ON ALL TABLES IN SCHEMA {schema} FROM {role}")
+    op.execute(f"REVOKE ALL ON ALL SEQUENCES IN SCHEMA {schema} FROM {role}")
+    op.execute(f"REVOKE USAGE ON SCHEMA {schema} FROM {role}")
     # the role itself is left in place: it is shared by every database in the server
