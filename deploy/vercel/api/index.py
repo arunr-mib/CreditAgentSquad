@@ -8,8 +8,13 @@ The product itself is unchanged. What differs on this host:
 
 Setup is done once, by calling the routes under /api/_setup with the X-Setup-Token header set to
 the DEMO_SETUP_TOKEN variable. Without that variable the routes do not exist.
+
+Which deployment this is comes from the build: `scripts/build-vercel.sh --target v2` writes
+api/target.json (schema squad2, role squad2_runtime) and the function refuses to start on any
+other schema or role. A v1 build has no such file and behaves exactly as before.
 """
 import hmac
+import json
 import os
 import sys
 from pathlib import Path
@@ -18,8 +23,17 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "backend"), str(ROOT)]
 os.environ.setdefault("FILE_STORE_DIR", "/tmp/files")
 os.environ.setdefault("FILE_FALLBACK_DIR", str(ROOT / "synthetic" / "out" / "documents"))
+_TARGET_FILE = Path(__file__).with_name("target.json")
+TARGET = (json.loads(_TARGET_FILE.read_text()) if _TARGET_FILE.exists()
+          else {"target": "v1", "schema": "squad", "runtime_role": "squad_runtime"})
 os.environ.setdefault("DB_POOL", "null")
-os.environ.setdefault("DB_SCHEMA", "squad")
+os.environ.setdefault("DB_SCHEMA", TARGET["schema"])
+os.environ.setdefault("DB_RUNTIME_ROLE", TARGET["runtime_role"])
+if TARGET["target"] != "v1" and (os.environ["DB_SCHEMA"], os.environ["DB_RUNTIME_ROLE"]) != (
+        TARGET["schema"], TARGET["runtime_role"]):
+    raise RuntimeError(f"this build was built for {TARGET['target']} (schema {TARGET['schema']}, role "
+                       f"{TARGET['runtime_role']}); the deployment sets DB_SCHEMA={os.environ['DB_SCHEMA']} "
+                       f"and DB_RUNTIME_ROLE={os.environ['DB_RUNTIME_ROLE']}")
 
 from app.main import create_app  # noqa: E402
 from fastapi import Header, HTTPException  # noqa: E402
@@ -44,8 +58,6 @@ def _session():
 @app.get("/api/_setup/status")
 def setup_status(x_setup_token: str | None = Header(default=None)) -> dict:
     _allowed(x_setup_token)
-    import json
-
     from sqlalchemy import text
 
     codes = sorted(p.stem for p in (BOOK / "truth").glob("*.json"))
@@ -56,10 +68,12 @@ def setup_status(x_setup_token: str | None = Header(default=None)) -> dict:
     except Exception as exc:  # noqa: BLE001 - before migration there are no tables to count
         # the first line of a driver error names the host and the reason, never the password
         reason = (str(getattr(exc, "orig", exc)).splitlines() or [""])[0][:200]
-        return {"migrated": False, "detail": type(exc).__name__, "reason": reason, "book": codes}
+        return {"migrated": False, "detail": type(exc).__name__, "reason": reason, "book": codes,
+                "target": TARGET["target"], "schema": os.environ["DB_SCHEMA"]}
     manifest = json.loads((BOOK / "manifest.json").read_text()) if (BOOK / "manifest.json").exists() else {}
     return {"migrated": True, "users": users, "loaded": loaded, "to_load": [c for c in codes if c not in loaded],
-            "book_borrowers": len(codes), "book_seed": manifest.get("seed")}
+            "book_borrowers": len(codes), "book_seed": manifest.get("seed"),
+            "target": TARGET["target"], "schema": os.environ["DB_SCHEMA"]}
 
 
 @app.post("/api/_setup/migrate")
@@ -99,6 +113,16 @@ def setup_seed(code: str, x_setup_token: str | None = Header(default=None)) -> d
         report = seed_book(db, root=BOOK, only=[code])
         db.commit()
     return {"code": code, "loaded": "now", "documents": report.documents}
+
+
+@app.post("/api/_setup/squad-demo")
+def setup_squad_demo(x_setup_token: str | None = Header(default=None)) -> dict:
+    """Squad's demonstration question and draft (`app.squad_demo`), after every borrower is loaded. Idempotent."""
+    _allowed(x_setup_token)
+    from app.squad_demo import seed_squad_demo
+
+    with _session() as db:
+        return seed_squad_demo(db)
 
 
 @app.post("/api/_setup/backfill-due-dates")
