@@ -152,7 +152,7 @@ def test_funding_events_are_seeded_and_only_nimbusfields_has_slipped(seeded):
     rows = {}
     for event in db.execute(select(FundingEvent)).scalars():
         rows.setdefault(db.get(Borrower, event.borrower_id).code, []).append(event)
-    assert sorted(rows) == ["datamarrow", "tavernel-grid", "kelvra-bio", "nimbusfield-security"] and report.funding_events == 4
+    assert sorted(rows) == ["datamarrow", "kelvra-bio", "nimbusfield-security", "tavernel-grid"] and report.funding_events == 4
     assert {c: [e.status for e in es] for c, es in rows.items()} == {
         "datamarrow": ["signed"], "tavernel-grid": ["expected"], "kelvra-bio": ["expected"],
         "nimbusfield-security": ["slipped"]}
