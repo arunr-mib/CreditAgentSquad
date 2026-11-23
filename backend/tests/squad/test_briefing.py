@@ -160,10 +160,13 @@ def test_upcoming_funding_within_fourteen_days_is_listed_and_does_not_count(db, 
     assert [i["kind"] for i in b["items"]] == ["funding"] and b["needs_you"] == 0
 
 
-def test_a_slipped_funding_item_counts_for_analyst_and_officer(db, world):
+def test_a_slipped_funding_item_counts_for_the_clients_analyst_and_on_an_unowned_client_for_the_officer(db, world):
     raise_item(db, borrower_id=world["borrower"].id, item_type="funding_slipped", title="Round slipped",
                question="Ask for a new timeline?", allowed_decisions=["ask_for_new_timeline", "note_and_watch"])
     assert build_briefing(db, world["analyst"])["needs_you"] == 1
+    assert build_briefing(db, world["officer"])["needs_you"] == 0  # Priya's judgement: listed for the officer
+    raise_item(db, borrower_id=_unowned(db).id, item_type="funding_slipped", title="Round slipped",
+               question="Ask for a new timeline?", allowed_decisions=["ask_for_new_timeline", "note_and_watch"])
     assert build_briefing(db, world["officer"])["needs_you"] == 1
 
 
@@ -223,19 +226,28 @@ def test_an_unassigned_item_counts_only_for_the_clients_analyst(db, world):
     assert officer["needs_you"] == 0 and [i["state"] for i in officer["items"]] == ["with Priya Raman"]
 
 
-def test_a_client_with_no_analyst_counts_for_every_analyst(db, world):
-    _review(db, world["borrower"])
-    assert build_briefing(db, world["analyst"])["needs_you"] == 1
-    assert build_briefing(db, _tomas(db))["needs_you"] == 1
-
-
-def test_an_item_assigned_to_me_counts_whoever_the_clients_analyst_is(db, world):
-    tomas = _tomas(db)
-    world["borrower"].analyst_id = world["analyst"].id
-    item = _review(db, world["borrower"])
-    item.assigned_to = tomas.id
+def _unowned(db):
+    from app.domain.credit import Borrower
+    b = Borrower(code="NOA", name="Nobody's Analytics, Inc.")
+    db.add(b)
     db.flush()
-    assert build_briefing(db, tomas)["needs_you"] == 1
+    return b
+
+
+def test_a_client_with_no_analyst_counts_for_no_analyst_and_for_the_officer(db, world):
+    """Owner answer 9: a client with no analyst is no analyst's until one is named."""
+    _review(db, _unowned(db))
+    assert build_briefing(db, world["analyst"])["needs_you"] == 0
+    assert build_briefing(db, _tomas(db))["needs_you"] == 0
+    assert build_briefing(db, world["officer"])["needs_you"] == 1
+
+
+def test_an_item_assigned_to_another_analyst_counts_for_no_one_but_does_not_widen_her_portfolio(db, world):
+    tomas = _tomas(db)
+    item = _review(db, world["borrower"])
+    item.assigned_to = tomas.id  # however it came to be his: assignment does not widen it (owner answer 9)
+    db.flush()
+    assert build_briefing(db, tomas)["needs_you"] == 0
 
 
 def test_overdue_reports_count_for_the_clients_analyst_and_signals_never_count(db, world):

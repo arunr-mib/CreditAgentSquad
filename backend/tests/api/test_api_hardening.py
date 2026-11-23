@@ -9,6 +9,7 @@ from app.domain import workflow
 from app.domain.credit import Borrower, Facility
 from app.domain.facts_service import add_fact
 from app.domain.monitoring import WorkItem
+from app.domain.org import User
 from app.domain.terms import TermsVersion
 from app.seed_users import seed_users
 from fastapi import HTTPException
@@ -23,7 +24,9 @@ def world(db, client, tmp_path, monkeypatch):
     monkeypatch.setenv("FILE_STORE_DIR", str(tmp_path))
     get_settings.cache_clear()
     seed_users(db, password="pw")
-    borrower = Borrower(code="HTD", name="Harrowgate Tool & Die, Inc.", risk_rating=5)
+    # Priya's client: an analyst acts only on her own clients (owner answer 9)
+    priya = db.execute(select(User).where(User.email == "priya.raman@bankofstoic.example")).scalar_one()
+    borrower = Borrower(code="HTD", name="Harrowgate Tool & Die, Inc.", risk_rating=5, analyst_id=priya.id)
     db.add(borrower)
     db.flush()
     facility = Facility(borrower_id=borrower.id, code="HTD-TL", name="Term loan", facility_type="term_loan",

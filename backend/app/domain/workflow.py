@@ -343,52 +343,50 @@ ANALYST = "analyst"
 
 
 def analyst_owns_client(user_id, user_role: str, borrower) -> bool:
-    """An analyst's clients are those whose analyst she is, and clients with no analyst yet. Owner question 9 records
-    this as a default the owner may change (whether any analyst may cover any client)."""
-    return user_role == ANALYST and borrower is not None and \
-        (borrower.analyst_id is None or str(borrower.analyst_id) == str(user_id))
-
-
-def owner_refusal(db: Session, item: WorkItem, *, user_id, user_role: str) -> PermissionError | None:
-    """The engine's ownership rule: an analyst may act on a case (decide, route, attach) only when it is assigned or
-    routed to her, or, when it is assigned to no one, when its client is hers (`analyst_owns_client`). Officers,
-    portfolio managers and credit administration are not split by client. None means no refusal."""
-    if user_role != ANALYST:
-        return None
-    from app.domain.org import User
-
-    if item.assigned_to is not None:
-        if str(item.assigned_to) == str(user_id):
-            return None
-        holder = db.get(User, item.assigned_to)
-        return PermissionError(f"This case is with {holder.name if holder else 'a colleague'}; only they can act on it.")
-    return _not_her_client(db, item.borrower_id, user_id=user_id, user_role=user_role)
+    """An analyst's clients are a fixed portfolio: those whose analyst she is. A client with no analyst is no analyst's
+    until one is named (owner answer 9, 22 Nov)."""
+    return user_role == ANALYST and borrower is not None and borrower.analyst_id is not None and \
+        str(borrower.analyst_id) == str(user_id)
 
 
 def _not_her_client(db: Session, borrower_id, *, user_id, user_role: str) -> PermissionError | None:
-    """The one wording of the ownership refusal: the client is another analyst's."""
+    """The one wording of the ownership refusal: the client is another analyst's, or has no analyst yet."""
     from app.domain.credit import Borrower
     from app.domain.org import User
 
+    if user_role != ANALYST:
+        return None
     borrower = db.get(Borrower, borrower_id) if borrower_id else None
     if borrower is None or analyst_owns_client(user_id, user_role, borrower):
         return None
+    if borrower.analyst_id is None:
+        return PermissionError(f"{borrower.name} has no analyst yet; an analyst can act on its cases once one is "
+                               "named. A credit officer, portfolio manager or credit administration can act now.")
     owner = db.get(User, borrower.analyst_id)
-    return PermissionError(f"{borrower.name} is {owner.name if owner else 'another analyst'}'s client; only they, or "
-                           "a person the case is sent to, can act on it.")
+    return PermissionError(f"{borrower.name} is {owner.name if owner else 'another analyst'}'s client; only that "
+                           "analyst, or a credit officer, portfolio manager or credit administration, can act on it.")
+
+
+def owner_refusal(db: Session, item: WorkItem, *, user_id, user_role: str) -> PermissionError | None:
+    """The engine's ownership rule (owner answer 9): an analyst may act on a case (decide, route, attach, assign, answer)
+    only when its client is hers, and then only when it is not with someone else. Assignment or routing never widens
+    it. Officers, portfolio managers and credit administration are not split by client. None means no refusal."""
+    if user_role != ANALYST:
+        return None
+    refused = _not_her_client(db, item.borrower_id, user_id=user_id, user_role=user_role)
+    if refused is not None:
+        return refused
+    if item.assigned_to is not None and str(item.assigned_to) != str(user_id):
+        from app.domain.org import User
+
+        holder = db.get(User, item.assigned_to)
+        return PermissionError(f"This case is with {holder.name if holder else 'a colleague'}; only they can act on it.")
+    return None
 
 
 def client_refusal(db: Session, borrower_id, *, user_id, user_role: str) -> PermissionError | None:
     """The ownership rule for work on a client's figures that is not tied to one case (confirming, correcting,
-    rejecting or keying a figure): an analyst may do it on her own client (`analyst_owns_client`) or on a client one
-    of whose open cases is assigned or routed to her. Other roles are not split by client. None means no refusal."""
-    if user_role != ANALYST:
-        return None
-    holds_a_case = db.execute(select(WorkItem.id).where(
-        WorkItem.borrower_id == borrower_id, WorkItem.status == "open",
-        WorkItem.assigned_to == uuid.UUID(str(user_id)))).first()
-    if holds_a_case is not None:
-        return None
+    rejecting or keying a figure): an analyst may do it only on her own client. Other roles are not split by client."""
     return _not_her_client(db, borrower_id, user_id=user_id, user_role=user_role)
 
 
@@ -400,8 +398,8 @@ def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, de
     decision's own rules, and `reason` (even "") to include the reason rule. Once an item has been routed it also
     refuses a case sitting returned (it can be decided after it is routed again) and anyone but the person it is
     with (`receiving=True` skips these two: it asks whether a person could be sent the case). Last comes the ownership
-    rule (`owner_refusal`, also skipped when receiving): an analyst decides only her own clients' cases or a case
-    assigned or routed to her. An unknown required permission is a rule refusal (ValueError, 422), as it was before this predicate."""
+    rule (`owner_refusal`; when receiving, only its client part): an analyst decides only her own clients' cases,
+    and no case can be sent to an analyst who does not own the client. An unknown required permission is a rule refusal (ValueError, 422), as it was before this predicate."""
     from app.core.roles import Permission, SecondPersonRequired, can, require_second_person
 
     if item.status != "open":
@@ -443,9 +441,9 @@ def decision_refusal(db: Session, item: WorkItem, *, user_id, user_role: str, de
                               "decided once it is sent again.")
         if item.assigned_to is not None and str(item.assigned_to) != str(user_id):
             return ValueError(f"This case was sent to {holder.name if holder else 'someone else'}; only they can decide it.")
-    if not receiving:  # a person being sent the case may be any who could decide it; once sent, it is theirs
-        return owner_refusal(db, item, user_id=user_id, user_role=user_role)
-    return None
+    if receiving:  # who may be sent the case: never an analyst who does not own the client
+        return _not_her_client(db, item.borrower_id, user_id=user_id, user_role=user_role)
+    return owner_refusal(db, item, user_id=user_id, user_role=user_role)
 
 
 def decide_work_item(

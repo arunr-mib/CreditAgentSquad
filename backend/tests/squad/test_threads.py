@@ -123,6 +123,8 @@ def test_a_case_the_viewer_prepared_that_needs_a_second_person_is_not_theirs(db,
 
 
 def test_a_case_with_no_one_special_reads_open(db, world):
+    world["borrower"].analyst_id = None  # a client with no analyst yet
+    db.flush()
     _item(db, world["borrower"])
     assert _case(db, world["admin"], world["borrower"].id)["state_words"] == "Open"
 

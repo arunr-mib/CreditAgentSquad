@@ -387,7 +387,7 @@ def assign_work_item(item_id: uuid.UUID, body: AssignIn, db: Session = Depends(g
                                  "thread instead of assigning it.")
     # the engine's ownership rule, read before the change: an analyst cannot take (or give away) another analyst's
     # client's case by assigning it (final re-review O1). The client's own analyst may still move a case of her client
-    # she assigned to someone else.
+    # that is with someone else (to herself or to a person who may hold it).
     owned = workflow.owner_refusal(db, item, user_id=user.id, user_role=user.role)
     if owned is not None and not workflow.analyst_owns_client(user.id, user.role, db.get(Borrower, item.borrower_id)):
         raise HTTPException(403, str(owned))
@@ -397,6 +397,9 @@ def assign_work_item(item_id: uuid.UUID, body: AssignIn, db: Session = Depends(g
             raise HTTPException(422, "No such person.")
         if not can(assignee.role, Permission(item.required_permission)):
             raise HTTPException(422, f"{assignee.name} cannot decide this item; it needs {item.required_permission}.")
+        not_theirs = workflow.client_refusal(db, item.borrower_id, user_id=assignee.id, user_role=assignee.role)
+        if not_theirs is not None:  # assignment never widens an analyst's portfolio (owner answer 9)
+            raise HTTPException(422, f"{assignee.name} cannot be given this case. {not_theirs}")
     payload: dict = {"assigned_to": body.assigned_to, "previous_assigned_to": item.assigned_to}
     item.assigned_to = body.assigned_to
     if "due_date" in body.model_fields_set:

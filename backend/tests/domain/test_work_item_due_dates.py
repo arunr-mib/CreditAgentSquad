@@ -71,6 +71,9 @@ def test_a_person_can_still_change_the_due_date(client, db, borrower):
     clock.set_today(db, date(2026, 11, 18))
     item = raise_test_item(db, borrower, "low")
     sign_in(client, db, "priya.raman")
+    from app.domain.org import User
+    borrower.analyst_id = db.query(User).filter(User.email == "priya.raman@bankofstoic.example").one().id  # the test's analyst owns the test's client: an analyst acts only on her own clients (owner answer 9)
+    db.flush()
     done = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": None, "due_date": "2026-11-30"})
     assert done.status_code == 200, done.text
     assert done.json()["due_date"] == "2026-11-30"

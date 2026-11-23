@@ -49,6 +49,8 @@ def test_entering_a_ci_line_on_a_vc_borrower_is_refused(db, vc):
 
 def test_manual_entry_route_follows_the_borrowers_template(client, db, vc):
     seed_users(db, password="pw")
+    vc.analyst_id = _user(db).id  # the test's analyst owns the test's client: an analyst acts only on her own clients (owner answer 9)
+    db.flush()
     client.post("/api/v1/auth/login", json={"email": "priya.raman@bankofstoic.example", "password": "pw"})
     url = f"/api/v1/borrowers/{vc.id}/facts"
     body = {"period_end": "2026-09-30", "months": 9, "value": "5", "reason": "keyed"}

@@ -19,9 +19,12 @@ def _user(db, email_start: str) -> User:
 @pytest.fixture()
 def world(db):
     seed_users(db, password=PASSWORD)
-    borrower = Borrower(code="QFL", name="Quillfeather Labs, Inc.", template_id="vc-1")
-    other = Borrower(code="ZZZ", name="Zephyr Zinc Works, Inc.")
+    analyst = _user(db, "priya.raman")
+    # both clients are Priya's: an analyst acts only on her own clients, and a client with no analyst is no
+    # analyst's (owner answer 9, 22 Nov)
+    borrower = Borrower(code="QFL", name="Quillfeather Labs, Inc.", template_id="vc-1", analyst_id=analyst.id)
+    other = Borrower(code="ZZZ", name="Zephyr Zinc Works, Inc.", analyst_id=analyst.id)
     db.add_all([borrower, other])
     db.flush()
-    return {"analyst": _user(db, "priya.raman"), "officer": _user(db, "helen.strand"),
+    return {"analyst": analyst, "officer": _user(db, "helen.strand"),
             "admin": _user(db, "admin"), "borrower": borrower, "other": other}

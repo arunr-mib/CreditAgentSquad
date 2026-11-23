@@ -19,7 +19,7 @@ from app.core.roles import Permission, can
 from app.domain.documents import DOCUMENT_TYPES, Document
 from app.domain.monitoring import WorkItem
 from app.domain.org import User
-from app.domain.workflow import ATTACHED, RETURNED, ROUTED, decision_refusal, owner_refusal
+from app.domain.workflow import ATTACHED, RETURNED, ROUTED, client_refusal, decision_refusal, owner_refusal
 
 ROUTING_ACTIONS = (ROUTED, RETURNED, ATTACHED)
 MAX_TEXT = 4000
@@ -100,6 +100,9 @@ def route_work_item(db: Session, item: WorkItem, *, user: User, to_user_id: uuid
     if to.id == user.id:
         raise ValueError("A case is routed to someone else.")
     if not may_receive(db, to, item):
+        owned = client_refusal(db, item.borrower_id, user_id=to.id, user_role=to.role)
+        if owned is not None:  # an analyst's portfolio is fixed: a case goes only to its client's analyst (owner answer 9)
+            raise ValueError(f"{to.name} cannot be sent this case. {owned}")
         raise ValueError(f"{to.name} cannot decide this case; it needs {item.required_permission}.")
     if open_match_questions(db, item):
         raise RouteBlocked("Squad found more than one document that could be what was asked for — confirm which "

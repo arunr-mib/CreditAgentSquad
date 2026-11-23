@@ -57,25 +57,40 @@ def test_the_engine_refuses_another_analyst_on_a_clients_unassigned_case_and_nam
     assert refuse(db, item, owned["officer"]) is None  # officers are unchanged
 
 
-def test_an_assigned_case_is_the_assignees_whoever_the_clients_analyst_is(db, owned):
+def test_holding_a_case_of_a_client_not_hers_does_not_let_an_analyst_act(db, owned):
+    """Owner answer 9: assignment does not widen an analyst's fixed portfolio."""
     item = _case(db, owned["borrower"])
-    item.assigned_to = owned["tomas"].id  # assigned, never routed
+    item.assigned_to = owned["tomas"].id  # however it came to be his
     db.flush()
-    assert refuse(db, item, owned["tomas"]) is None
-    assert isinstance(refuse(db, item, owned["analyst"]), PermissionError)
+    why = refuse(db, item, owned["tomas"])
+    assert isinstance(why, PermissionError) and "Priya Raman" in str(why)
+    assert isinstance(refuse(db, item, owned["analyst"]), PermissionError)  # it is with someone else
+    assert refuse(db, item, owned["officer"]) is None
 
 
-def test_a_client_with_no_analyst_is_any_analysts(db, world):
-    item = _case(db, world["borrower"])
-    assert refuse(db, item, _user(db, "tomas.keller")) is None
+def test_a_client_with_no_analyst_is_no_analysts_until_one_is_named(db, world):
+    from app.domain.credit import Borrower
+
+    unowned = Borrower(code="NOA", name="Nobody's Analytics, Inc.")
+    db.add(unowned)
+    db.flush()
+    world = {**world, "other": unowned}
+    item = _case(db, unowned)
+    for who in (world["analyst"], _user(db, "tomas.keller")):
+        why = refuse(db, item, who)
+        assert isinstance(why, PermissionError) and "has no analyst yet" in str(why)
+    assert refuse(db, item, world["officer"]) is None
+    assert workflow.client_refusal(db, world["other"].id, user_id=world["analyst"].id, user_role="analyst") is not None
 
 
-def test_a_routee_who_is_not_the_clients_analyst_may_still_receive_and_decide(db, owned):
+def test_a_case_cannot_be_routed_to_an_analyst_who_does_not_own_the_client(db, owned):
     item = _case(db, owned["borrower"])
     view = build_case(db, item, owned["analyst"])
-    assert "Tomas Keller" in [p["name"] for p in view["route_to"]]
-    route_work_item(db, item, user=owned["analyst"], to_user_id=owned["tomas"].id, view=VIEW)
-    assert refuse(db, item, owned["tomas"]) is None
+    names = [p["name"] for p in view["route_to"]]
+    assert "Tomas Keller" not in names and "Helen Strand" in names
+    with pytest.raises(ValueError, match="Priya Raman"):
+        route_work_item(db, item, user=owned["analyst"], to_user_id=owned["tomas"].id, view=VIEW)
+    assert item.assigned_to is None
 
 
 def test_routing_and_attaching_ask_the_same_ownership_rule(db, owned):
@@ -117,14 +132,13 @@ def test_the_api_refuses_tomas_deciding_routing_and_attaching_on_priyas_client(d
     assert not (case["may_route"] or case["may_attach"]) and not any(d["permitted"] for d in case["decisions"])
 
 
-def test_the_api_lets_the_assignee_decide_and_refuses_anyone_else(db, client, owned):
+def test_the_api_refuses_an_analyst_holding_a_case_of_a_client_not_hers(db, client, owned):
     item = _case(db, owned["borrower"])
     item.assigned_to = owned["tomas"].id
     db.commit()
-    sign_in(client, "priya.raman")
-    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 403
     sign_in(client, "tomas.keller")
-    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 200
+    r = client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"})
+    assert r.status_code == 403 and "Priya Raman" in r.json()["detail"]
 
 
 def test_the_officer_still_receives_a_routed_case(db, client, owned):
@@ -148,7 +162,12 @@ def test_an_analysts_unassigned_judgement_is_not_counted_for_other_roles(db, own
 
 def test_an_approver_item_and_a_client_without_an_analyst_count_for_the_officer(db, owned):
     breach = _case(db, owned["borrower"], permission="decide_breach", title="Cash below minimum")
-    loose = _case(db, owned["other"], title="Confirm revenue")  # the other client has no analyst
+    from app.domain.credit import Borrower
+
+    unowned = Borrower(code="NOA", name="Nobody's Analytics, Inc.")
+    db.add(unowned)
+    db.flush()
+    loose = _case(db, unowned, title="Confirm revenue")  # a client with no analyst
     b = build_briefing(db, owned["officer"])
     counted = {i["work_item_id"] for i in b["items"] if i["needs_you"]}
     assert counted == {str(breach.id), str(loose.id)} and b["needs_you"] == 2
@@ -204,8 +223,9 @@ def test_the_engine_refuses_another_analyst_repairing_a_clients_figures(db, owne
     assert refuse(db, owned["borrower"].id, user_id=owned["analyst"].id, user_role="analyst") is None
     assert refuse(db, owned["borrower"].id, user_id=owned["officer"].id, user_role="credit_officer") is None
     case = _case(db, owned["borrower"])
-    route_work_item(db, case, user=owned["analyst"], to_user_id=owned["tomas"].id, view=VIEW)
-    assert refuse(db, owned["borrower"].id, user_id=owned["tomas"].id, user_role="analyst") is None  # a case is with him
+    case.assigned_to = owned["tomas"].id
+    db.flush()
+    assert refuse(db, owned["borrower"].id, user_id=owned["tomas"].id, user_role="analyst") is not None  # no widening
 
 
 def test_the_fact_repair_routes_refuse_another_analyst_with_403_naming_the_clients_analyst(db, client, owned):
@@ -238,17 +258,19 @@ def test_another_analyst_cannot_assign_a_clients_case_to_himself_and_so_cannot_d
     assert client.post(f"/api/v1/facts/{fact.id}/confirm").status_code == 403
 
 
-def test_the_clients_analyst_and_an_officer_may_still_assign(db, client, owned):
+def test_a_case_cannot_be_assigned_to_an_analyst_who_does_not_own_the_client(db, client, owned):
     item = _case(db, owned["borrower"])
     db.commit()
-    sign_in(client, "priya.raman")
-    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["tomas"].id)}).status_code == 200
-    sign_in(client, "tomas.keller")  # handed over by the client's analyst: now his
-    assert client.post(f"/api/v1/work-items/{item.id}/decide", json={"decision": "no_action"}).status_code == 200
-    other = _case(db, owned["borrower"], title="Revenue fell")
-    db.commit()
+    for who in ("priya.raman", "helen.strand"):  # neither the client's analyst nor an officer can widen it
+        sign_in(client, who)
+        r = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["tomas"].id)})
+        assert r.status_code == 422 and "Priya Raman" in r.json()["detail"], who
+    db.refresh(item)
+    assert item.assigned_to is None
     sign_in(client, "helen.strand")
-    assert client.post(f"/api/v1/work-items/{other.id}/assign", json={"assigned_to": str(owned["officer"].id)}).status_code == 200
+    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["officer"].id)}).status_code == 200
+    sign_in(client, "priya.raman")  # her client: she may take it back
+    assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["analyst"].id)}).status_code == 200
 
 
 def test_an_analyst_cannot_move_a_case_on_another_analysts_client_that_is_with_someone_else(db, client, owned):
@@ -258,5 +280,15 @@ def test_an_analyst_cannot_move_a_case_on_another_analysts_client_that_is_with_s
     sign_in(client, "tomas.keller")
     r = client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["tomas"].id)})
     assert r.status_code == 403
-    sign_in(client, "priya.raman")  # her client: she may move it back
+    sign_in(client, "priya.raman")  # her client: she may move it back to herself
     assert client.post(f"/api/v1/work-items/{item.id}/assign", json={"assigned_to": str(owned["analyst"].id)}).status_code == 200
+
+
+def test_yours_and_approvals_never_count_a_case_for_an_analyst_who_does_not_own_the_client(db, owned):
+    item = _case(db, owned["borrower"])
+    item.assigned_to = owned["tomas"].id
+    db.flush()
+    rows = [i for i in build_briefing(db, owned["tomas"])["items"] if i["work_item_id"] == str(item.id)]
+    assert not any(r["needs_you"] for r in rows)
+    assert str(item.id) not in {r["work_item_id"] for r in build_approvals(db, owned["tomas"])}
+    assert rules.yours(owned["tomas"], item, owned["borrower"]) is False

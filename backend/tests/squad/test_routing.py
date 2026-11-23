@@ -236,7 +236,8 @@ def test_decide_api_refuses_a_returned_case_and_a_case_with_someone_else(db, cli
 
 def test_the_router_is_still_refused_after_a_re_route_and_a_second_router_cannot_route_it_back(db, world):
     item = _case(db, world["borrower"], permission="decide_work_item")
-    tomas = _user(db, "tomas.keller")
+    # the second router is a portfolio manager: a case goes to no analyst who does not own the client (owner answer 9)
+    tomas = _user(db, "dana.whitfield")
     route_work_item(db, item, user=world["analyst"], to_user_id=tomas.id, view=VIEW)
     route_work_item(db, item, user=tomas, to_user_id=world["officer"].id, view="Agreed.")
     for who in (world["analyst"], tomas):
@@ -292,9 +293,8 @@ def test_assign_refuses_a_routed_case_whoever_asks(db, client, world):
 
 def test_waiting_is_zero_when_approvals_is_not_offered(db, world):
     item = _case(db, world["borrower"], permission="decide_work_item")
-    tomas = _user(db, "tomas.keller")
-    route_work_item(db, item, user=world["analyst"], to_user_id=tomas.id, view=VIEW)
-    assert build_briefing(db, tomas)["approvals"] == {"offered": False, "waiting": 0}
+    route_work_item(db, item, user=world["analyst"], to_user_id=world["officer"].id, view=VIEW)
+    assert build_briefing(db, world["analyst"])["approvals"] == {"offered": False, "waiting": 0}
 
 
 def test_assign_cannot_walk_a_returned_case_back_to_the_officer(db, client, world):

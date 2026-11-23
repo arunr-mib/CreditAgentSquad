@@ -103,6 +103,8 @@ def test_each_response_can_be_recorded_by_the_right_role_and_closes_the_item(db,
     seed_users(db, password="pw")
     person = db.execute(select(User).where(User.role == role)).scalars().first()
     item = _slipped_item(db)
+    from app.domain.credit import Borrower
+    db.get(Borrower, item.borrower_id).analyst_id = person.id if role == "analyst" else None  # the test's analyst owns the test's client: an analyst acts only on her own clients (owner answer 9)
     workflow.decide_work_item(db, item, user_id=person.id, user_role=person.role, decision=decision, reason=reason)
     assert item.status == "decided" and item.decision == decision
 

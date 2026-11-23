@@ -133,15 +133,17 @@ def ensure_schema(engine: Engine) -> None:
 
 def _decider(db: Session, permission: str, cache: dict[str, Any], analyst_id: Any = None):
     """A user whose role grants the permission, created on first use. An analyst's decision is taken by the client's
-    own analyst when it has one: the engine lets an analyst decide only her own clients' cases (owner question 9)."""
+    own analyst: the engine lets an analyst act only on her own clients (owner answer 9)."""
     from app.core.roles import Permission, can
     from app.domain.org import User
 
     role = next((r for r in ROLE_ORDER if can(r, Permission(permission))), "admin")
-    if role == "analyst" and analyst_id is not None:
-        owner = db.get(User, analyst_id)
+    if role == "analyst":
+        owner = db.get(User, analyst_id) if analyst_id is not None else None
         if owner is not None:
             return owner
+        # a client with no analyst is no analyst's (owner answer 9): another role that holds the permission decides
+        role = next((r for r in ROLE_ORDER if r != "analyst" and can(r, Permission(permission))), role)
     if role not in cache:
         user = User(email=f"eval.{role}@bankofstoic.example", name=f"Evaluation {role.replace('_', ' ')}",
                     role=role, password_hash="not-a-login")

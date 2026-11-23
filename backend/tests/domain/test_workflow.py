@@ -29,6 +29,11 @@ def user(db, role):
     u = User(email=f"{uuid.uuid4().hex}@x.example", name=role, role=role, password_hash="x")
     db.add(u)
     db.flush()
+    if role == "analyst":  # the test's analyst owns the test's client: an analyst acts only on her own clients (owner answer 9)
+        from app.domain.credit import Borrower
+        for b in db.query(Borrower).filter(Borrower.analyst_id.is_(None)):
+            b.analyst_id = u.id
+        db.flush()
     return u
 
 

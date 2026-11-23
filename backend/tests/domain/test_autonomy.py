@@ -32,6 +32,7 @@ def world(db, tmp_path, monkeypatch):
     analyst = User(email="an@x.example", name="Analyst", role="analyst", password_hash="x")
     db.add_all([borrower, analyst])
     db.flush()
+    borrower.analyst_id = analyst.id  # the test's analyst owns the test's client: an analyst acts only on her own clients (owner answer 9)
     add_fact(db, borrower_id=borrower.id, key="bs.cash", period_end=date(2025, 12, 31), months=0,
              value=D(PRIOR_FYE_CASH_THOUSANDS * 1000), kind="seeded")
     doc = ingest_pdf(db, borrower_id=borrower.id, data=build_pdf(), file_name="q3.pdf", doc_type="interim_statements",
