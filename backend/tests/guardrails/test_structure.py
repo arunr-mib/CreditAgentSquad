@@ -28,6 +28,13 @@ def ok(text, st=ST, echo=""):
     "Only the two bank lines are reported; the two bank account total lines too.",
     "See page 2 for the equity components.",
     "(page 3) shows the balance sheet.",
+    # owner decision, 24 Nov: a range or list of pages the document has may be named, and a column is a part of a page
+    "The one-month columns on pages 2 to 4 were not spread.",
+    "The one-month column on page 2 was not spread.",
+    "Debt schedule rows on pages 4-5 have no separate template line.",
+    "See pages 2 through 4 for the statements.",
+    "The statements on pages 2, 3 and 4 are the monthly pack.",
+    "Rows on pages 2 and 5 were not spread.",
 ])
 def test_honest_notes_pass(text):
     assert ok(text)
@@ -46,6 +53,14 @@ def test_honest_notes_pass(text):
     "Coverage was two times coverage.",
     "EBITDA was 2025 in the nine months.",
     "Revenue of 2026 on page 5.",
+    "The columns on pages 2 to 6 were not spread.",       # the range ends past the last page
+    "The columns on pages 4 to 2 were not spread.",       # not a range
+    "Leverage on pages 2 to 4 was high.",                 # a measure, not a part of the document
+    "Rows on pages 2 to 4 times were not spread.",
+    "Rows on pages 2 to 4.5 were not spread.",
+    "Rows on pages 2 to 4 million were not spread.",
+    "Rows on page 2 to 4 were not spread.",               # one page named, then a figure
+    "Rows on pages 2 and 3 and 4 percent were not spread.",
 ])
 def test_figure_carriers_still_refused(text):
     assert not ok(text)
@@ -87,10 +102,9 @@ def test_recorded_notes_all_pass_with_the_structure_of_their_documents():
     failing = [n for n in notes
                if check_narrative(n, {}, structure=st,
                                   echo="In thousands of U.S. dollars (in thousands)")]
-    # One note of the 23 Nov re-record names a page range. The guardrail refuses the two page numbers and the product
-    # dropped the note (evals/results/rerecord-2026-11-23-batch1). Pinned as refused, not excused: whether a range
-    # inside the document's pages should pass is the owner's decision.
-    assert failing == ["The one-month columns on pages 2 to 4 were not spread."]
+    # includes the 23 Nov re-record's "The one-month columns on pages 2 to 4 were not spread.", refused until
+    # the owner allowed page ranges (24 Nov)
+    assert failing == []
 
 
 # ---- references in a covenant answer: terms versions and section numbers -------------------------

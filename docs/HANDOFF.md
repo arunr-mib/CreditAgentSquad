@@ -16,6 +16,15 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 | (note) | Commit 3629d3e ("the server serves every label") does not build on its own: it also carries the `git mv` renames and the deletion of `squad/oversight/describeEvent.ts`, so `tsc` fails at that commit (23 missing modules). It builds from 5e9ed95 on. History is not rewritten; bisect across 3629d3e..5e9ed95 as one step |
 | 5 Hosted release (Vercel project `credit-squad`, schema `squad2`) and the owner's walk-through | **Hosted and tested (24 Nov): `https://credit-squad.vercel.app`**, agents off, on a freshly loaded book. Open: the owner's walk-through and triage of its findings. Section "Hosted v2" below |
 
+## Document references in agent text (24 November 2026; owner decision; no model call)
+
+- **Owner decision, 24 Nov:** a document reference may pass the number guardrail when it points at a place the document has: yes to page ranges and to the Kestrel Bay schedule reference, in one change.
+- **Kestrel Bay's wrong-abstain was one capital letter, not the step cap.** The Covenant Agent finished and recommended escalation twice; both answers were withheld for "In Schedule 1 of the certificate". The strict rule in `guardrails/numbers.py` already let a Section, Schedule, Article, Clause, Exhibit, Annex or Appendix number stand after "in", "under", "per", "see", "by", "with" and "pursuant/subject/according to", but only in lower case. The same words now count when they open a sentence with a capital. The rule still does not check that the schedule or section exists; that would be a further tightening.
+- **Page ranges and lists** (`guardrails/narrative.py`): after "pages N" a note may go on "to M", "through M", "-M", "and M", ", M" when every page is one the document has and a span goes up. "column" is now a part of a page, with row and line. Refused, with tests: a range past the last page, a backwards range, a range after a measure, anything that reads on as a quantity.
+- **Proof by replay, whole innovation book, no model key** (`evals/results/replay-2026-11-24-references`): gate PASSED on all 20, **named failures none** (the Kestrel Bay wrong-abstain is gone), extraction 1,621 of 1,621, covenants 94.9%, precision and recall 100%; Meridew's note "The one-month columns on pages 2 to 4 were not spread." is kept. The corpus test again requires every recorded note to pass.
+- **Pellham Grain needs no re-record.** Its first covenant answer ("the original 2021 agreement", a bare "under version 1") is refused and the one retry passes; the case gets its recommendation. A line in the Covenant Agent's instructions (write "terms version N"; no year that is not a fact) would save the retry; it changes the prompt, so it needs a re-record to show (estimate 0.20 US dollars for Pellham alone) and is left for the next billable run.
+- **Not run:** the legacy book's replay of the kept three.
+
 ## Hosted v2 (24 November 2026; no model call, no key on the site)
 
 - **Address:** `https://credit-squad.vercel.app` (Vercel project `credit-squad`, schema `squad2`, three roles of its own). How to deploy, load, check and reset it: `docs/DEPLOY.md`, section "v2". Password for every demo account: `squad-demo`. Agents are off.
@@ -38,8 +47,8 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 - **Replay** (`--mode recorded`, whole innovation book, no model key; `evals/results/replay-2026-11-23-rerecorded`): **gate PASSED on all 20**, none skipped; extraction 1,621 of 1,621, covenants 94.9%, precision and recall 100%, 18 of 20 closed, 55.0% needing no person. Named failure: wrong-abstain 1, Kestrel Bay (known, not one of the eight).
 - `NOT_RECORDED` in `evals/run.py` is now empty; the skip-by-name path stays for the next rename and is tested with the eight put back on the list. `evals/results/latest*` untouched.
 - **Guardrail notes from the live run (product behaved as designed):** Meridew's spreading note "The one-month columns on pages 2 to 4 were not spread." was refused for its two page numbers and dropped; the corpus test in `backend/tests/guardrails/test_structure.py` now pins that one note as refused. Meridew's Covenant Agent wrote a bare "under version 1" in exchange 06, was refused and passed on the retry (07); the test keeps the archived pre-rename answer as its pinned example. Meridew's review `risks` section was dropped for citing no fact (known).
-- **Open decision for the owner:** should a page range inside the document's pages ("pages 2 to 4") pass the number guardrail? Not changed here.
-- **Still waiting for the owner (billable):** the Kestrel Bay wrong-abstain and Pellham wording re-records.
+- ~~Open decision for the owner: page ranges~~: decided 24 Nov, see "Document references in agent text" above.
+- ~~Still waiting for the owner (billable): the Kestrel Bay and Pellham re-records~~: neither is needed, see "Document references in agent text" above.
 
 ## CI runs for the first time, and the seed refuses a book without its PDFs (23 November 2026; no model call)
 
