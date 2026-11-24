@@ -71,19 +71,29 @@ RENAMED = {"datamarrow", "tarnavi-ai", "calvere-health", "tavernel-grid", "vantr
            "brackmere-medical", "cindrel-tech"}
 
 
-def test_the_clients_renamed_on_22_nov_are_the_ones_recorded_mode_skips_and_none_has_a_recording():
-    assert run.NOT_RECORDED == RENAMED
-    assert run.NO_RECORDING == "no recording: renamed 22 Nov, re-record needs owner go-ahead"
-    # a renamed client that is re-recorded (owner go-ahead) must leave NOT_RECORDED, or its replay is never run
+def test_the_clients_renamed_on_22_nov_were_re_recorded_and_recorded_mode_skips_no_one():
+    assert run.NOT_RECORDED == frozenset()  # re-recorded on 23 Nov with the owner's go-ahead
     recorded = {p.name for agent in run.RECORDINGS_DIR.iterdir() if agent.is_dir() for p in agent.iterdir()}
-    assert recorded and not recorded & RENAMED
+    # Calvere Health's October package is late, so its cycle never calls the model and it has nothing to record
+    assert RENAMED - recorded == {"calvere-health"}
     # the old recordings are kept, not replayed
     archive = run.REPO / "evals" / "recordings-archive" / "renamed-2026-11-22"
     assert len(list(archive.rglob("*.json"))) == 65
+    assert run.replayable(["kelvra-bio", "datamarrow", "pellham-grain"]) == (["kelvra-bio", "datamarrow", "pellham-grain"], [])
+
+
+@pytest.fixture
+def renamed_not_recorded(monkeypatch):
+    """The skip is still there for the next rename: these tests put the eight back on the list."""
+    monkeypatch.setattr(run, "NOT_RECORDED", frozenset(RENAMED))
+
+
+def test_a_client_on_the_list_is_split_from_the_ones_recorded_mode_replays(renamed_not_recorded):
+    assert run.NO_RECORDING == "no recording: renamed 22 Nov, re-record needs owner go-ahead"
     assert run.replayable(["kelvra-bio", "datamarrow", "pellham-grain"]) == (["kelvra-bio", "pellham-grain"], ["datamarrow"])
 
 
-def test_recorded_mode_refuses_a_scope_of_renamed_clients_only(tmp_path):
+def test_recorded_mode_refuses_a_scope_of_not_recorded_clients_only(tmp_path, renamed_not_recorded):
     (tmp_path / "intake").mkdir()
     (tmp_path / "intake" / "x.json").write_text("{}")
     with pytest.raises(RunRefused, match="nothing to replay: datamarrow, cindrel-tech: no recording: renamed 22 Nov"):
@@ -95,7 +105,7 @@ def test_recorded_mode_refuses_a_scope_of_renamed_clients_only(tmp_path):
 
 @pytest.mark.skipif(not BOOK_BUILT, reason="the default book has not been generated")
 @pytest.mark.parametrize("only", [None, ["kelvra-bio", "datamarrow"]])
-def test_a_recorded_run_skips_the_renamed_clients_out_loud_and_runs_the_rest(monkeypatch, only):
+def test_a_recorded_run_skips_not_recorded_clients_out_loud_and_runs_the_rest(monkeypatch, renamed_not_recorded, only):
     import evals.grade
     from evals.scorecard import _not_replayed
 
