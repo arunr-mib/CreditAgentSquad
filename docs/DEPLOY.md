@@ -85,6 +85,8 @@ The pattern is the owner's own from SpreadSense: the workspace on Vercel, the AP
 
 `https://c-squad.vercel.app` (Vercel project `csquad`) is the reference copy of the Squad demo, frozen on 20 November 2026 by the owner's decision. **Do not redeploy it, change its settings or its `ANTHROPIC_API_KEY`.** Its source is in `docs/product/prototype/` (page) and `docs/product/prototype/site/` (live-answer function); later changes to those files are for new work and must not be deployed to `csquad`. Its Vercel-assigned second address, `csquad-kappa.vercel.app`, is left as is. v2 gets its own Vercel project and its own database schema (`squad2`); see `docs/specs/2026-11-20-innovation-book-and-lending-layer-design.md`.
 
+**The v1 project is no longer connected to GitHub (owner's instruction, 24 November 2026).** `credit-agent-squad` was linked to this repository with production branch `main`: every pull request built a preview deployment on it, and a merge into `main` would have deployed over the frozen v1 site. The link was removed through the Vercel API (`DELETE /v9/projects/credit-agent-squad/link`). Nothing else on the project was changed: its production deployment, addresses and variables are as they were. `csquad` and `credit-squad` were never linked. Do not reconnect it.
+
 ## Things to know
 
 - The demo accounts and their password are public knowledge once this is on the internet. The data is synthetic; do not load anything else into a deployment that has demo accounts.
