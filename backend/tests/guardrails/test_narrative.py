@@ -277,3 +277,27 @@ def test_a_page_of_the_document_is_let_through(text):
 ])
 def test_a_page_reference_cannot_carry_a_figure(text):
     assert [n.check for n in check_narrative(text, _FACTS)] != []
+
+
+@pytest.mark.parametrize("text", [
+    # the Kestrel Bay investigation's own sentence: withheld because "In" opened the sentence with a capital
+    "In Schedule 1 of the certificate, the borrower's Total Debt and EBITDA components match the bank's inputs.",
+    "The ratio fails. Under Section 6.1 the maximum is tested quarterly.",
+    "Per Schedule 1 the borrower added pro forma cost savings.",
+    "Pursuant to Section 9.1 a waiver must be in writing.",
+])
+def test_a_reference_after_a_capitalised_preposition_opens_a_sentence(text):
+    assert check_narrative(text, _FACTS) == [], text
+
+
+@pytest.mark.parametrize("text", [
+    "In Schedule 2.75x the headroom is ample.",
+    "In Schedule 1 times EBITDA the debt is covered.",
+    "Leverage Under Section 4.25 was high.",        # a capital inside a sentence opens nothing
+    "Leverage stood In Schedule 4.25.",
+    "In Section 4.25 against the limit.",
+    "IN Schedule 4,500 the amount is shown.",
+])
+def test_a_capitalised_preposition_does_not_carry_a_figure(text):
+    assert check_narrative(text, _FACTS), text
+

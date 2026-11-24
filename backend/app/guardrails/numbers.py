@@ -81,7 +81,9 @@ _STRICT_NOT_FIGURES: list[tuple[str, re.Pattern[str]]] = [
     # a reference is one only where a reference would stand: after "under", "in", "by", "see",
     # "pursuant to" and the like, or opening a sentence. "stood at Section 4.25" is a ratio.
     ("reference", re.compile(
-        r"(?:(?:^|[.;:(,]\s*)|\b(?:under|in|by|per|see|and|or|with|(?:pursuant|subject|according)\s+to)\s+)"
+        # the same words may open a sentence with a capital ("In Schedule 1 of the certificate, ...")
+        r"(?:(?:^|[.;:(,]\s*)(?:(?:Under|In|By|Per|See|With|(?:Pursuant|Subject|According)\s+to)\s+)?"
+        r"|\b(?:under|in|by|per|see|and|or|with|(?:pursuant|subject|according)\s+to)\s+)"
         rf"(?:Sections?|Articles?|Clauses?|Exhibits?|Schedules?|Annex(?:es)?|Appendi(?:x|ces))\s+(?:{_SECTION_NO}|[IVXLC]+\b)"
         r"(?!\s+(?:against|versus|vs\.?|times|turns?)\b)")),
     # where a part of the document sits ("the debt schedule on page 5"): only straight after the

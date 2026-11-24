@@ -87,6 +87,8 @@ _BRACKETED_REF = (re.compile(r"\(\s*$"), re.compile(r"^\s*\)"))
 
 _PAGE_TAIL = r"(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|turns?|thousand|million|billion|bps|basis))"
 _PAGE_REF = re.compile(r"(?P<prep>\b(?:on|in|see|from|at)\s+)?\bpages?\s+(?P<n>\d{1,3})" + _PAGE_TAIL, re.I)
+# after "pages N": "to M", "through M", "-M" (M above the page before it), "and M", ", M"; one page at a time
+_PAGE_MORE = re.compile(r"(?P<sep>\s+(?:to|through|and)\s+|\s*[-\u2013\u2014]\s*|,\s+(?:and\s+)?)(?P<n>\d{1,3})" + _PAGE_TAIL, re.I)
 _NOTE_REF = re.compile(r"\bNotes?\s+(?P<n>\d{1,3})" + _PAGE_TAIL)
 _ENDING_REF = re.compile(r"\bending\s+(?:in\s+)?(?<![\d,.])(?P<n>\d{4})(?![\w]|[.,]\d|\s*(?:percent|%|x\b|times|thousand|million|billion))", re.I)
 # an account's last four digits as a statement prints them: "(ending 9001)", "ending in 9001", "account ... ending
@@ -102,7 +104,7 @@ _YEAR_REF = re.compile(r"(?P<lead>\b(?:\w+-(?:month|quarter|year)|comparatives?\
 # "Dividends paid on page 4"). A page after a measure ("leverage on page 5") is not one.
 _CLAUSE_START = re.compile(r"(?:^|[.;:(,\u2013\u2014-]\s*|\b(?:in|see|under|per|and|or|of|with)\s+)$", re.I)
 _PART_WORD = re.compile(
-    r"\b(?:rows?|lines?|items?|entr(?:y|ies)|schedules?|statements?|tables?|sheets?|listings?|reports?|certificates?|"
+    r"\b(?:rows?|lines?|columns?|items?|entr(?:y|ies)|schedules?|statements?|tables?|sheets?|listings?|reports?|certificates?|"
     r"pages?|notes?|sections?|components?|accounts?|balances?|rollforwards?|roll-forwards?|\w+ed|paid|shown|set|"
     r"printed|found|given|reported)\s*$|\bnotes?\s+\d{1,3}\s*$|[)'\"\u2019]\s*$", re.I)
 
@@ -172,6 +174,22 @@ def _blank_refs(text: str, refs: References) -> str:
     return "".join(chars)
 
 
+def _page_run(text: str, m: re.Match[str]) -> list[tuple[int, int]]:
+    """The pages a "pages N ..." reference goes on to name, as (page, end offset): "pages 2 to 4", "pages 2, 3 and
+    5". Only after the plural, and a span ("to", "through", a dash) must go up."""
+    if re.search(r"pages\s+\d", m.group(0), re.I) is None:
+        return []
+    found: list[tuple[int, int]] = []
+    last, at = int(m.group("n")), m.end()
+    while (more := _PAGE_MORE.match(text, at)) is not None:
+        n = int(more.group("n"))
+        if "," not in more.group("sep") and "and" not in more.group("sep").lower() and n <= last:
+            break
+        found.append((n, more.end()))
+        last, at = n, more.end()
+    return found
+
+
 def _blank_structure(text: str, st: DocumentStructure) -> str:
     """Blank the places in a note that point into the document and are true of it. Anything else
     stays for the figure checks to refuse."""
@@ -181,11 +199,10 @@ def _blank_structure(text: str, st: DocumentStructure) -> str:
         if not 1 <= n <= st.page_count:
             continue
         before = text[:m.start()]
-        if m.group("prep"):
-            if _PART_WORD.search(before) or _CLAUSE_START.search(before):
-                spans.append((m.start(), m.end()))
-        elif _CLAUSE_START.search(before):
-            spans.append((m.start(), m.end()))
+        if (_PART_WORD.search(before) or _CLAUSE_START.search(before)) if m.group("prep") else _CLAUSE_START.search(before):
+            run = _page_run(text, m)
+            if all(1 <= page <= st.page_count for page, _ in run):
+                spans.append((m.start(), run[-1][1] if run else m.end()))
     for m in _NOTE_REF.finditer(text):
         if int(m.group("n")) in st.note_numbers and _CLAUSE_START.search(text[:m.start()]):
             spans.append((m.start(), m.end()))
@@ -286,9 +303,10 @@ def check_narrative(
     if structure is not None:
         # a page the document does not have is refused, whatever else allows a page number
         for m in _PAGE_REF.finditer(outside):
-            if not 1 <= int(m.group("n")) <= structure.page_count:
-                notes.append(Note("narrative", "figure_untraceable", "retry",
-                                  "a page was named that the document does not have", subject=m.group("n")))
+            for page in (int(m.group("n")), *(n for n, _ in _page_run(outside, m))):
+                if not 1 <= page <= structure.page_count:
+                    notes.append(Note("narrative", "figure_untraceable", "retry",
+                                      "a page was named that the document does not have", subject=str(page)))
         outside = _blank_structure(outside, structure)
     for problem in untraceable_figures(outside, allowed_figures, ratios, strict=True):
         notes.append(Note(
