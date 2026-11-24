@@ -42,8 +42,14 @@ async function record(page) {
   return { b, needs: b.items.filter((i) => i.needs_you), clients: b.open_clients };
 }
 
-/** The route form lists everyone who may decide the case; the journey sends it to Helen Strand. */
+/** The route form lists everyone who may decide the case; the journey sends it to Helen Strand. With one person who
+ * may decide there is no list: the button already names her. */
 async function chooseOfficer(card) {
+  await card.getByLabel(/your view/i).waitFor();
+  if ((await card.getByLabel('Send to').count()) === 0) {
+    await card.getByRole('button', { name: 'Send to Helen Strand' }).waitFor();
+    return;
+  }
   assert((await card.getByLabel('Send to').inputValue()) === '', 'the route form preselected a person');
   assert(await card.getByRole('button', { name: 'Choose who decides' }).isDisabled(), 'Send was enabled before a person was chosen');
   const value = await card.locator('select option', { hasText: 'Helen Strand' }).first().getAttribute('value');
@@ -354,7 +360,8 @@ journey('hand-off: the analyst routes a breach with her view, the officer return
   for (const [i, n] of needs.entries()) {
     await o.getByRole('button', { name: 'Add something that is needed' }).click();
     await o.getByLabel(`Document type ${i + 1}`).selectOption(n.doc_type);
-    await o.getByLabel(`Month ${i + 1}`).fill(n.period_end.slice(0, 7));
+    await o.getByLabel(`Month ${i + 1}`).selectOption(n.period_end.slice(5, 7));
+    await o.getByLabel(`Year ${i + 1}`).selectOption(n.period_end.slice(0, 4));
   }
   await o.getByRole('button', { name: 'Return to Priya Raman' }).click();
   await o.getByText(/Returned to Priya Raman · recorded/).waitFor();

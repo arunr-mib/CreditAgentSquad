@@ -147,7 +147,7 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 function MonthPick({ index, value, onChange }: { index: number; value: string; onChange: (value: string) => void }) {
   const [year = '', month = ''] = value.split('-');
   const thisYear = new Date().getUTCFullYear();
-  const years = [thisYear + 1, thisYear, thisYear - 1, thisYear - 2, thisYear - 3].map(String);
+  const years = Array.from({ length: 12 }, (_, i) => String(thisYear + 1 - i)); // next year back to ten years ago
   return (
     <>
       <select className="sq-input" aria-label={`Month ${index}`} value={month} onChange={(e) => onChange(`${year}-${e.target.value}`)}>

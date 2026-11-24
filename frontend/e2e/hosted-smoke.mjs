@@ -190,8 +190,11 @@ if (process.env.HANDOFF === '1') {
     const view = `Smoke test ${new Date().toISOString().slice(11, 19)}: the breach is on the certificate; please decide.`;
     await open(a.page, `/clients/${item.borrower_code}?case=${item.work_item_id}`);
     const card = a.page.locator(`[data-work-item="${item.work_item_id}"][data-focused="true"]`);
-    const value = await card.locator('select option', { hasText: 'Helen Strand' }).first().getAttribute('value');
-    await card.getByLabel('Send to').selectOption(value);
+    await card.getByLabel(/your view/i).waitFor();
+    if (await card.getByLabel('Send to').count()) { // a list only when more than one person may decide
+      const value = await card.locator('select option', { hasText: 'Helen Strand' }).first().getAttribute('value');
+      await card.getByLabel('Send to').selectOption(value);
+    }
     await card.getByLabel(/your view/i).fill(view);
     await card.getByRole('button', { name: /^Send to / }).click();
     await a.page.getByText(/with your view · recorded/).waitFor({ timeout: 60_000 });
