@@ -49,9 +49,11 @@ def test_role_sql_creates_three_roles_and_names_no_v1_role():
 
 def test_role_sql_for_a_retry_alters_the_two_logins_and_creates_nothing():
     sql = v2.role_sql("SCRAM-SHA-256$4096:a$b:c", "SCRAM-SHA-256$4096:d$e:f", alter=True)
+    # Password only: Supabase's administrator is not a superuser, and PostgreSQL refuses it any ALTER ROLE that
+    # names SUPERUSER or NOSUPERUSER ("permission denied to alter role"), so the retry silently never applied
     assert sql.splitlines() == [
-        "ALTER ROLE squad2_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'SCRAM-SHA-256$4096:a$b:c';",
-        "ALTER ROLE squad2_web LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'SCRAM-SHA-256$4096:d$e:f';"]
+        "ALTER ROLE squad2_app PASSWORD 'SCRAM-SHA-256$4096:a$b:c';",
+        "ALTER ROLE squad2_web PASSWORD 'SCRAM-SHA-256$4096:d$e:f';"]
 
 
 def test_the_url_uses_the_session_pooler_user_form_and_requires_tls():

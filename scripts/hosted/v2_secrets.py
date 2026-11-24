@@ -59,14 +59,17 @@ def scram_verifier(password: str, salt: bytes | None = None, iterations: int = 4
 
 
 def role_sql(owner_verifier: str, web_verifier: str, alter: bool = False) -> str:
-    verb = "ALTER" if alter else "CREATE"
-    lines = [] if alter else ["CREATE ROLE squad2_runtime NOLOGIN;"]
-    lines += [f"{verb} ROLE squad2_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD '{owner_verifier}';",
-              f"{verb} ROLE squad2_web LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD '{web_verifier}';"]
-    if not alter:
-        lines += ["GRANT squad2_runtime TO squad2_web;",
-                  "GRANT CREATE ON DATABASE postgres TO squad2_app;"]  # its migration creates schema squad2
-    return "\n".join(lines)
+    if alter:
+        # Password only. Supabase's administrator is not a superuser, and PostgreSQL refuses a non-superuser any
+        # ALTER ROLE that names SUPERUSER or NOSUPERUSER; the attributes were set when the roles were created.
+        return "\n".join([f"ALTER ROLE squad2_app PASSWORD '{owner_verifier}';",
+                          f"ALTER ROLE squad2_web PASSWORD '{web_verifier}';"])
+    return "\n".join([
+        "CREATE ROLE squad2_runtime NOLOGIN;",
+        f"CREATE ROLE squad2_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD '{owner_verifier}';",
+        f"CREATE ROLE squad2_web LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD '{web_verifier}';",
+        "GRANT squad2_runtime TO squad2_web;",
+        "GRANT CREATE ON DATABASE postgres TO squad2_app;"])  # its migration creates schema squad2
 
 
 def connection_url(role: str, ref: str, password: str, host: str) -> str:
