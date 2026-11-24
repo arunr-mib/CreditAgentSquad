@@ -125,6 +125,15 @@ describe('Measure', () => {
     expect(list).toHaveTextContent('30 Sep 2026: Not meaningful: cash-flow positive');
   });
 
+  it('reads a percentage to a screen reader in points, as the figure beside it shows it', () => {
+    // headroom is stored as a fraction: -0.052 is -5.2%, and was read out as -0.1%
+    const pct = (value: string, period_end: string): MeasurePoint => ({ period_end, note: null, fact: { ...measured.fact!, id: `p-${period_end}`, key: 'cov.fccr.headroom_pct', value, unit: 'pct', period_end } });
+    render(<TrendBars points={[pct('0.343', '2026-06-30'), pct('-0.052', '2026-09-30')]} label="Tightest covenant headroom" />);
+    const list = screen.getByRole('list', { name: 'Tightest covenant headroom by period' });
+    expect(list).toHaveTextContent('30 Jun 2026: 34.3%');
+    expect(list).toHaveTextContent('30 Sep 2026: −5.2%');
+  });
+
   it('never shows a stored zero or a breached (negative) headroom as missing', () => {
     const at = (value: string, period_end: string): MeasurePoint => ({ period_end, note: null, fact: { ...measured.fact!, id: `f-${period_end}`, value, period_end } });
     const { container } = render(<TrendBars points={[at('0.12', '2026-08-31'), at('0', '2026-09-30'), at('-0.08', '2026-10-31'), unmeasured]} label="Tightest covenant headroom" />);

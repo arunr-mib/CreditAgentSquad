@@ -1,4 +1,5 @@
 import { formatDate, formatFigure } from '@/design';
+import { toFact } from '@/domain/labels';
 import { Absent, FactFigure } from '@/source/figures';
 import type { MeasurePoint, MeasureSeries } from '../api/types';
 
@@ -13,7 +14,7 @@ export function TrendBars({ points, label }: { points: MeasurePoint[]; label: st
     <>
       <ul className="sq-sr" aria-label={`${label} by period`}>
         {points.map((p) => (
-          <li key={p.period_end}>{formatDate(p.period_end)}: {p.fact ? formatFigure(p.fact.value, p.fact.unit).text : (p.note ?? 'Not measured')}</li>
+          <li key={p.period_end}>{formatDate(p.period_end)}: {p.fact ? formatFigure(toFact(p.fact).value, p.fact.unit).text : (p.note ?? 'Not measured')}</li>
         ))}
       </ul>
     <span className="sq-bars" aria-hidden>

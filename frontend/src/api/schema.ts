@@ -189,7 +189,8 @@ export interface DocumentRow {
   effective_date: string | null;
   source: string;
   status: string;
-  meta: { external_id?: string };
+  /** `format` is set for a spreadsheet (`xlsx`, `csv`), with its sheet names; a PDF has neither. */
+  meta: { external_id?: string; format?: string; sheets?: string[] };
 }
 
 export interface DocumentDetail extends DocumentRow {
@@ -269,6 +270,8 @@ export interface Calculation {
   outputs: Record<string, string | boolean | null>;
   facts: FactsById;
   produced?: FactSummary[];
+  /** Stored lines beside an input in a statement total that this method did not use (pledged cash beside operating cash). */
+  left_out?: { key: string; fact_id: string; part_of: string; beside: string }[];
 }
 
 export interface FactHistoryEntry {

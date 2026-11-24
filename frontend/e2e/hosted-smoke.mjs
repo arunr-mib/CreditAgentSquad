@@ -149,6 +149,18 @@ for (const [kind, email] of ROLES) {
       const bytes = Buffer.from(pdf.body);
       check(pdf.status === 200 && pdf.headers['content-type']?.includes('pdf') && bytes.subarray(0, 5).toString() === '%PDF-', 'a source PDF is served');
       writeFileSync(resolve(OUT, 'source.pdf'), bytes);
+      // Served is not seen: the owner's first walk had pages that "could not be drawn" while the bytes were fine.
+      const isSheet = (d) => ['xlsx', 'csv'].includes(d.meta?.format);
+      const aPdf = docs.find((d) => !isSheet(d));
+      await open(page, `/clients/${CLIENTS[0]}/file/documents?document=${aPdf.id}&page=1`);
+      const drawn = await page.locator('[data-source-drawer] [data-pdf-page="ready"]').first().waitFor({ timeout: 60_000 }).then(() => true, () => false);
+      check(drawn, 'a source page is drawn in the browser', `document ${aPdf.file_name}`);
+      const aSheet = docs.find(isSheet);
+      if (aSheet) {
+        await open(page, `/clients/${CLIENTS[0]}/file/documents?document=${aSheet.id}&page=1`);
+        const shown = await page.locator('[data-source-drawer]').getByRole('region', { name: 'Sheet as received' }).waitFor({ timeout: 60_000 }).then(() => true, () => false);
+        check(shown, 'a spreadsheet is shown as its stored text, not as a page', `document ${aSheet.file_name}`);
+      }
       const ledger = (await api(page, '/ledger/verify')).body;
       check(ledger.ok === true && ledger.append_only_for_this_role === true, 'ledger verifies and is append-only for this role', JSON.stringify(ledger));
       const model = (await api(page, '/agents/status')).body;
