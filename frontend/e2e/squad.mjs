@@ -320,8 +320,13 @@ journey('hand-off: the analyst routes a breach with her view, the officer return
   const a = await analystCtx.newPage();
   await signIn(a, ANALYST);
   const breaches = await api(a, '/work-items?item_type=covenant.breach');
-  const open = breaches.find((w) => !w.assigned_to);
-  assert(open, 'the seeded book should hold an open, unassigned covenant breach');
+  // one she may still send on: an analyst routes only her own clients' cases (owner answer 9), and the smoke
+  // test's hand-off may already have routed one of them
+  let open = null;
+  for (const w of breaches.filter((x) => !x.assigned_to)) {
+    if ((await api(a, `/cases/${w.id}`)).may_route) { open = w; break; }
+  }
+  assert(open, 'the book should hold an open, unassigned covenant breach the analyst may route');
   const borrower = await api(a, `/borrowers/${open.borrower_id}`);
   await a.goto(`${BASE}/clients/${borrower.code}?case=${open.id}`);
   const card = a.locator(`[data-work-item="${open.id}"][data-focused="true"]`);

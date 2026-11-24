@@ -23,7 +23,7 @@ The workspace is served as static files and the API runs as one Python serverles
 
 Steps:
 
-1. Create a PostgreSQL 16 database (Supabase, Neon or any other). With Supabase use the **session pooler** string and change the scheme: `postgresql+psycopg://postgres.<ref>:<password>@<pooler-host>:5432/postgres`.
+1. Create a PostgreSQL database (16 or later; the Supabase project in use is on 17). With Supabase use the **session pooler** string and change the scheme: `postgresql+psycopg://postgres.<ref>:<password>@<pooler-host>:5432/postgres`.
 2. In the Vercel project's environment variables set `DATABASE_URL` (step 1), `SESSION_SECRET` and `DEMO_SETUP_TOKEN` (long random strings), `SQUAD_ENV=production`, `EXTRACTION_AUTONOMY=assisted`, `DB_SCHEMA=squad`, `DB_POOL=null`. For the two-login arrangement create the roles as a database administrator (`squad_runtime` NOLOGIN, an owner login that owns the schema, a serving login that is a member of `squad_runtime`), run `python -m app.cli grant-runtime-role` as the owner, and set `MIGRATION_DATABASE_URL` to the owner login and `DATABASE_URL` to the serving login. For agents to run set `SQUAD_LLM_MODE=live` and `ANTHROPIC_API_KEY`.
 3. `./scripts/build-vercel.sh`, then from `.vercel-build/`: `npx vercel@66.0.0 deploy --prod --yes`.
 4. One-time setup, each call with the header `X-Setup-Token: <DEMO_SETUP_TOKEN>`: `POST /api/_setup/migrate`, then `POST /api/_setup/seed/<borrower-code>` once per borrower (`GET /api/_setup/status` lists the codes and what is loaded). Without the header these routes answer 404.
@@ -65,9 +65,27 @@ The pattern is the owner's own from SpreadSense: the workspace on Vercel, the AP
 3. **Vercel.** New project from the same repository with root directory `frontend`. In `frontend/vercel.json` replace `REPLACE-WITH-THE-API-HOST` with the Railway host from step 2, commit, and deploy.
 4. Open the Vercel address and sign in as `priya.raman@bankofstoic.example`, password `squad-demo`.
 
+## v2: Credit Squad on `squad2` (live since 24 November 2026)
+
+`https://credit-squad.vercel.app` (Vercel project `credit-squad`, free plan) serves the v2 build: the Squad experience on the 20-client innovation book. It shares the Supabase project "Credit Agent Squad" (PostgreSQL 17, session pooler host `aws-1-us-east-1.pooler.supabase.com`) with v1 but has its own schema and its own logins, so neither site can reach the other's tables.
+
+- **Schema `squad2`**, owned by `squad2_app`.
+- **Three roles.** `squad2_app` (login) owns the schema and runs migrations (`MIGRATION_DATABASE_URL`). `squad2_web` (login) is what the site serves with (`DATABASE_URL`); it is a member of `squad2_runtime` only. `squad2_runtime` (no login) may read and write the working tables and only SELECT and INSERT on `ledger_events`. None is a member of a v1 role or has any privilege on schema `squad`, and v1's roles have none on `squad2` (checked 24 November).
+- **Variables on the project (production), by name:** `DATABASE_URL`, `MIGRATION_DATABASE_URL`, `SESSION_SECRET`, `SQUAD_ENV`, `EXTRACTION_AUTONOMY`, `DB_SCHEMA`, `DB_RUNTIME_ROLE`, `DB_POOL`, `SQUAD_LLM_MODE`. `DEMO_SETUP_TOKEN` exists only while a load is running.
+- **Agents are off.** `SQUAD_LLM_MODE=live` with no model key: nothing is billable, questions to Squad and "Run … now" are refused, and the composer says so before anyone types. Turning agents on needs the owner's go-ahead and a key the owner adds (plan Task 17).
+- **Deploy only with `./scripts/hosted/deploy-v2.sh`.** It builds the v2 target, links the build folder to `credit-squad` by name, refuses any other link, and pins the deploy to it. The Vercel token is the cloud environment's network secret; no token goes in a command or a file.
+- **Load only with `uv run python -I scripts/hosted/v2_setup.py run --base https://credit-squad.vercel.app --project-dir .vercel-build-v2`.** It puts a one-time token on the project, redeploys, migrates, seeds one client per call, loads the squad demo, removes the token and redeploys, so the setup routes answer 404 afterwards. Measured: 27 to 41 seconds per client, about 20 minutes for the whole run with its two deploys.
+- **Before anyone uses it:** `uv run python -I scripts/hosted/v2_setup.py check --base https://credit-squad.vercel.app` must print `ready: the book is unused, agents as expected, ledger append-only`.
+- **Reset (owner's yes on record, `docs/owner-questions.md`, 22 Nov).** The ledger cannot be undone, so a used book is replaced: save what people's actions wrote to `docs/product/usability/ledger/` (the seed's events are reproducible and are not exported: the ledger is about 24,500 events, 14 MB), drop the schema, and load again. The Supabase administrator is not the schema's owner and may not `SET ROLE` to it by default, so the drop is one statement that takes and returns that right: `GRANT squad2_app TO postgres WITH SET TRUE, INHERIT FALSE; SET ROLE squad2_app; DROP SCHEMA squad2 CASCADE; RESET ROLE; REVOKE squad2_app FROM postgres;`. Never run a drop that names `squad`.
+- **New passwords** (if a login fails with "password authentication failed"): `uv run python -I scripts/hosted/v2_secrets.py --project-dir .vercel-build-v2 --ref <project ref> --pooler-host aws-1-us-east-1.pooler.supabase.com --alter`, pass the two printed `ALTER ROLE … PASSWORD` statements to the database, then load or redeploy. The database gets verifiers only; the strings exist only on Vercel.
+- **Free-tier pause.** A paused Supabase project makes sign-in fail on both sites; the owner restores it from the Supabase dashboard.
+- **Briefing timings on the hosted site** (`GET /me/briefing`, five calls each, 24 November): analysts 0.34 to 0.61 s, credit officer 0.61 to 0.83 s.
+
 ## Frozen: the clickable demo (c-squad.vercel.app)
 
 `https://c-squad.vercel.app` (Vercel project `csquad`) is the reference copy of the Squad demo, frozen on 20 November 2026 by the owner's decision. **Do not redeploy it, change its settings or its `ANTHROPIC_API_KEY`.** Its source is in `docs/product/prototype/` (page) and `docs/product/prototype/site/` (live-answer function); later changes to those files are for new work and must not be deployed to `csquad`. Its Vercel-assigned second address, `csquad-kappa.vercel.app`, is left as is. v2 gets its own Vercel project and its own database schema (`squad2`); see `docs/specs/2026-11-20-innovation-book-and-lending-layer-design.md`.
+
+**The v1 project is no longer connected to GitHub (owner's instruction, 24 November 2026).** `credit-agent-squad` was linked to this repository with production branch `main`: every pull request built a preview deployment on it, and a merge into `main` would have deployed over the frozen v1 site. The link was removed through the Vercel API (`DELETE /v9/projects/credit-agent-squad/link`). Nothing else on the project was changed: its production deployment, addresses and variables are as they were. `csquad` and `credit-squad` were never linked. Do not reconnect it.
 
 ## Things to know
 

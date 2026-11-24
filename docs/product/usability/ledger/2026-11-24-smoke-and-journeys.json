@@ -1,0 +1,147 @@
+{
+ "what": "What people's sign-ins wrote to schema squad2's ledger on the hosted v2 (credit-squad.vercel.app) during the smoke test and the writing journeys of 24 November 2026, exported before the schema was dropped and reloaded. Synthetic data.",
+ "not_exported": "The ledger held 24,545 events (14 MB). Events 1 to 24,475 are the seed and the squad demo, written by the system and reproducible from the book (seed 20261120). Of events 24,476 to 24,545, 62 are auth.signed_in by the demo users; they are counted here, not listed.",
+ "ledger_events_total": 24545,
+ "seed_and_demo_events": 24475,
+ "sign_ins_not_listed": 62,
+ "events": [
+  {
+   "seq": 24532,
+   "ts": "2026-11-24T03:34:54+00:00",
+   "actor_type": "user",
+   "actor_id": "0ee2b552-b6f3-4c3c-8c3b-a3e929ee8676",
+   "action": "work_item.routed",
+   "entity_type": "work_item",
+   "entity_id": "ed3065c3-0769-492a-acf5-19afb8fca7d7",
+   "payload": {
+    "view": "Smoke test 03:34:51: the breach is on the certificate; please decide.",
+    "assigned_to": "4e60eca6-abc5-4919-aa7c-28f107a479aa",
+    "borrower_id": "6b3545ef-3c7a-4639-9fe1-42dc655cc315",
+    "previous_assigned_to": null,
+    "previous_prepared_by_id": null,
+    "previous_requires_second_person": false
+   },
+   "note": null,
+   "prev_hash": "ae64e14aaa4eaca0c204835137cdab1220f29a8a7278117965568992d02692fb",
+   "hash": "57ff8edb1520c24e83dca5b142d808a8f10449505dfd2db21417cdfc2ed31999"
+  },
+  {
+   "seq": 24534,
+   "ts": "2026-11-24T03:35:01+00:00",
+   "actor_type": "user",
+   "actor_id": "0ee2b552-b6f3-4c3c-8c3b-a3e929ee8676",
+   "action": "work_item.decided",
+   "entity_type": "work_item",
+   "entity_id": "8edd5be2-0486-4221-8e44-8e3756a49cfe",
+   "payload": {
+    "type": "question",
+    "reason": "Mapped the same way on the last two closes.",
+    "decision": "map_to_arr"
+   },
+   "note": null,
+   "prev_hash": "be837d682dd9ff6c7b4fa331cb17c5437b3a7cc82af85316f369fcd801ab9755",
+   "hash": "e2258ecde21c22d138a56701e8f2b7e9e3afc94358c63419eec04dd7bf77ceac"
+  },
+  {
+   "seq": 24535,
+   "ts": "2026-11-24T03:35:01+00:00",
+   "actor_type": "user",
+   "actor_id": "0ee2b552-b6f3-4c3c-8c3b-a3e929ee8676",
+   "action": "lesson.recorded",
+   "entity_type": "lesson",
+   "entity_id": "0eb5523c-af7c-4e5e-b6db-9e23b688d65c",
+   "payload": {
+    "tag": "map_to_arr",
+    "topic": "line_mapping",
+    "borrower_id": "680a6aa4-0918-4be4-b638-b852c18ec84a",
+    "work_item_id": "8edd5be2-0486-4221-8e44-8e3756a49cfe"
+   },
+   "note": null,
+   "prev_hash": "e2258ecde21c22d138a56701e8f2b7e9e3afc94358c63419eec04dd7bf77ceac",
+   "hash": "574fdc8b53cf9d52f258e2c15bee4455a2005bc65a05998f5170a5b1a855c4ed"
+  },
+  {
+   "seq": 24537,
+   "ts": "2026-11-24T03:35:05+00:00",
+   "actor_type": "user",
+   "actor_id": "0ee2b552-b6f3-4c3c-8c3b-a3e929ee8676",
+   "action": "draft.edited",
+   "entity_type": "draft",
+   "entity_id": "02ff3ecd-5947-4611-8931-3b16c1d5be73",
+   "payload": {
+    "body": "Hi, October MRR please. Thanks.",
+    "borrower_id": "b2ab166d-26f5-4680-a511-9e4fb3682175"
+   },
+   "note": null,
+   "prev_hash": "5ee7358d8350ec1dac9681ef4494f2774b75481c0202ca536763a77e1adccaf0",
+   "hash": "0c47d0ebecfb1353278da1561caad39b75ecfd7a1838054484950dc9988d6355"
+  },
+  {
+   "seq": 24538,
+   "ts": "2026-11-24T03:35:06+00:00",
+   "actor_type": "user",
+   "actor_id": "0ee2b552-b6f3-4c3c-8c3b-a3e929ee8676",
+   "action": "draft.sent",
+   "entity_type": "draft",
+   "entity_id": "02ff3ecd-5947-4611-8931-3b16c1d5be73",
+   "payload": {
+    "to": "finance@client.example",
+    "delivery": "recorded_only",
+    "borrower_id": "b2ab166d-26f5-4680-a511-9e4fb3682175"
+   },
+   "note": null,
+   "prev_hash": "0c47d0ebecfb1353278da1561caad39b75ecfd7a1838054484950dc9988d6355",
+   "hash": "cb5a87d3e151dacc66be97a4f33642b71bc536bb9fa05e7dcba1fe27fab4b9ec"
+  },
+  {
+   "seq": 24541,
+   "ts": "2026-11-24T03:35:41+00:00",
+   "actor_type": "user",
+   "actor_id": "e5e312b6-9fa5-4e27-8f74-0e89d880527e",
+   "action": "review_meeting.created",
+   "entity_type": "review_meeting",
+   "entity_id": "6c0dc568-3fdd-4a2b-ad12-f25256897280",
+   "payload": {
+    "title": "Portfolio review 03:35:40",
+    "sheets": 0,
+    "period_end": "2026-10-31"
+   },
+   "note": null,
+   "prev_hash": "c31f69d156586633dedffb2ac962dced77a912852b63b01bf16e8587ccd27bc4",
+   "hash": "f904dcc70437aa65536921bd2d5f3bd7480a40f37b041096b50974ee76583761"
+  },
+  {
+   "seq": 24542,
+   "ts": "2026-11-24T03:35:42+00:00",
+   "actor_type": "user",
+   "actor_id": "e5e312b6-9fa5-4e27-8f74-0e89d880527e",
+   "action": "review_meeting.phase_changed",
+   "entity_type": "review_meeting",
+   "entity_id": "6c0dc568-3fdd-4a2b-ad12-f25256897280",
+   "payload": {
+    "to": "during",
+    "from": "before"
+   },
+   "note": null,
+   "prev_hash": "f904dcc70437aa65536921bd2d5f3bd7480a40f37b041096b50974ee76583761",
+   "hash": "5cea91762d0b9fae8e42461e33df5fb61f1f84fbe7db3d283240a76d219da1d7"
+  },
+  {
+   "seq": 24543,
+   "ts": "2026-11-24T03:35:43+00:00",
+   "actor_type": "user",
+   "actor_id": "e5e312b6-9fa5-4e27-8f74-0e89d880527e",
+   "action": "action.raised",
+   "entity_type": "action",
+   "entity_id": "f8522959-2671-4648-9821-723c6dfae575",
+   "payload": {
+    "title": "Follow up Portfolio review 03:35:40",
+    "due_date": "2026-12-15",
+    "owner_id": null
+   },
+   "note": null,
+   "prev_hash": "5cea91762d0b9fae8e42461e33df5fb61f1f84fbe7db3d283240a76d219da1d7",
+   "hash": "de5caf8d85d55f534133c53aa2d8d7d464232deea3a5c90899bdfea1c834e923"
+  }
+ ]
+}
