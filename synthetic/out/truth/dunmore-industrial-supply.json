@@ -1,0 +1,6064 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "dunmore-industrial-supply",
+  "name": "Dunmore Industrial Supply Co.",
+  "legal_form": "corporation",
+  "industry": "distribution",
+  "city": "Toledo",
+  "state": "OH",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Marcus Oyelaran",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 3,
+  "statement_scale": 1,
+  "chief_financial_officer": "Curtis Hallgren",
+  "auditor": "Greaves & Tolland, P.C."
+ },
+ "facilities": [
+  {
+   "id": "dunmore-industrial-supply-rlc",
+   "borrower_id": "dunmore-industrial-supply",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "9750000",
+   "original_amount": "9750000",
+   "closing_date": "2023-02-10",
+   "maturity_date": "2029-02-10",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-dunmore-industrial-supply-1",
+   "facility_id": "dunmore-industrial-supply-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2023-02-10",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2023-02-16",
+   "warnings": [],
+   "source_documents": [
+    "dunmore-industrial-supply.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "interest_coverage",
+      "name": "Interest Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [],
+       "denominator": [
+        "interest_expense"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "dunmore-industrial-supply.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Interest Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "dunmore-industrial-supply.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Interest Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period to (b) interest expense for such period."
+       }
+      ]
+     },
+     {
+      "id": "current_ratio",
+      "name": "Current Ratio",
+      "archetype": "current_ratio",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "1.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "dunmore-industrial-supply.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Current Ratio, measured as of the last day of each fiscal quarter, to be less than 1.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "dunmore-industrial-supply.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Current Ratio\" means, as of any date, the ratio of (a) total current assets to (b) total current liabilities of the Borrower as of such date."
+       }
+      ]
+     },
+     {
+      "id": "debt_to_tnw",
+      "name": "Total Liabilities to Tangible Net Worth Ratio",
+      "archetype": "debt_to_tnw",
+      "params": {},
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "dunmore-industrial-supply.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Total Liabilities to Tangible Net Worth Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "dunmore-industrial-supply.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Liabilities to Tangible Net Worth Ratio\" means, as of any date, the ratio of (a) total liabilities of the Borrower to (b) Tangible Net Worth as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "dunmore-industrial-supply.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "dunmore-industrial-supply.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "dunmore-industrial-supply.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "dunmore-industrial-supply.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "9750000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "3750000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "100000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "dunmore-industrial-supply.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $3,750,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "dunmore-industrial-supply.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "dunmore-industrial-supply.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "dunmore-industrial-supply.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "dunmore-industrial-supply.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "dunmore-industrial-supply.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $100,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "dunmore-industrial-supply.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $9,750,000."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "15798016",
+    "is.cogs": "12369847",
+    "is.gross_profit": "3428169",
+    "is.sga": "2369702",
+    "is.depreciation_amortization": "148812",
+    "is.other_operating_expense": "47394",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "862261",
+    "is.interest_expense": "114155",
+    "is.other_income_net": "9479",
+    "is.pretax_income": "757585",
+    "is.income_tax_expense": "189396",
+    "is.net_income": "568189",
+    "bs.cash": "1895762",
+    "bs.accounts_receivable": "6959783",
+    "bs.inventory": "7049118",
+    "bs.other_current_assets": "758305",
+    "bs.total_current_assets": "16662968",
+    "bs.net_ppe": "4538242",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "24401210",
+    "bs.accounts_payable": "5015719",
+    "bs.accrued_liabilities": "1080721",
+    "bs.revolver": "5735283",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1074085",
+    "bs.total_current_liabilities": "12905808",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1017600",
+    "bs.total_liabilities": "13923408",
+    "bs.total_equity": "10477802",
+    "bs.total_liabilities_and_equity": "24401210",
+    "cf.net_income": "568189",
+    "cf.depreciation_amortization": "148812",
+    "cf.change_in_working_capital": "26331",
+    "cf.other_operating": "11520",
+    "cf.cfo": "754852",
+    "cf.capex": "157980",
+    "cf.other_investing": "0",
+    "cf.cfi": "-157980",
+    "cf.revolver_net": "-156568",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "426142",
+    "cf.other_financing": "0",
+    "cf.cff": "-582710",
+    "cf.net_change_in_cash": "14162",
+    "sup.cash_interest_paid": "118269",
+    "sup.cash_taxes_paid": "185648",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7056924",
+    "cash.beginning_of_year": "1881600",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "32953696",
+    "is.cogs": "25787304",
+    "is.gross_profit": "7166392",
+    "is.sga": "4943054",
+    "is.depreciation_amortization": "297926",
+    "is.other_operating_expense": "98861",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1826551",
+    "is.interest_expense": "225276",
+    "is.other_income_net": "19772",
+    "is.pretax_income": "1621047",
+    "is.income_tax_expense": "405262",
+    "is.net_income": "1215785",
+    "bs.cash": "2058682",
+    "bs.accounts_receivable": "7689505",
+    "bs.inventory": "7646112",
+    "bs.other_current_assets": "823473",
+    "bs.total_current_assets": "18217772",
+    "bs.net_ppe": "4560685",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "25978457",
+    "bs.accounts_payable": "5440503",
+    "bs.accrued_liabilities": "1169315",
+    "bs.revolver": "6523234",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1176584",
+    "bs.total_current_liabilities": "14309636",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1029120",
+    "bs.total_liabilities": "15338756",
+    "bs.total_equity": "10639701",
+    "bs.total_liabilities_and_equity": "25978457",
+    "cf.net_income": "1215785",
+    "cf.depreciation_amortization": "297926",
+    "cf.change_in_working_capital": "-749676",
+    "cf.other_operating": "23040",
+    "cf.cfo": "787075",
+    "cf.capex": "329537",
+    "cf.other_investing": "0",
+    "cf.cfi": "-329537",
+    "cf.revolver_net": "631383",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "911839",
+    "cf.other_financing": "0",
+    "cf.cff": "-280456",
+    "cf.net_change_in_cash": "177082",
+    "sup.cash_interest_paid": "230402",
+    "sup.cash_taxes_paid": "375044",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7218823",
+    "cash.beginning_of_year": "1881600",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "50660896",
+    "is.cogs": "39722870",
+    "is.gross_profit": "10938026",
+    "is.sga": "7599134",
+    "is.depreciation_amortization": "447777",
+    "is.other_operating_expense": "151983",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2739132",
+    "is.interest_expense": "351664",
+    "is.other_income_net": "30396",
+    "is.pretax_income": "2417864",
+    "is.income_tax_expense": "604466",
+    "is.net_income": "1813398",
+    "bs.cash": "2124864",
+    "bs.accounts_receivable": "8014327",
+    "bs.inventory": "7941364",
+    "bs.other_current_assets": "849946",
+    "bs.total_current_assets": "18930501",
+    "bs.net_ppe": "4587906",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "26718407",
+    "bs.accounts_payable": "5650586",
+    "bs.accrued_liabilities": "1210804",
+    "bs.revolver": "6836466",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1190807",
+    "bs.total_current_liabilities": "14888663",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1040640",
+    "bs.total_liabilities": "15929303",
+    "bs.total_equity": "10789104",
+    "bs.total_liabilities_and_equity": "26718407",
+    "cf.net_income": "1813398",
+    "cf.depreciation_amortization": "447777",
+    "cf.change_in_working_capital": "-1130428",
+    "cf.other_operating": "34560",
+    "cf.cfo": "1165307",
+    "cf.capex": "506609",
+    "cf.other_investing": "0",
+    "cf.cfi": "-506609",
+    "cf.revolver_net": "944615",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1360049",
+    "cf.other_financing": "0",
+    "cf.cff": "-415434",
+    "cf.net_change_in_cash": "243264",
+    "sup.cash_interest_paid": "351701",
+    "sup.cash_taxes_paid": "590910",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7368226",
+    "cash.beginning_of_year": "1881600",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "67222112",
+    "is.cogs": "52764828",
+    "is.gross_profit": "14457284",
+    "is.sga": "10083316",
+    "is.depreciation_amortization": "598522",
+    "is.other_operating_expense": "201667",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3573779",
+    "is.interest_expense": "484121",
+    "is.other_income_net": "40333",
+    "is.pretax_income": "3129991",
+    "is.income_tax_expense": "782498",
+    "is.net_income": "2347493",
+    "bs.cash": "1987346",
+    "bs.accounts_receivable": "7259711",
+    "bs.inventory": "7432129",
+    "bs.other_current_assets": "794938",
+    "bs.total_current_assets": "17474124",
+    "bs.net_ppe": "4602773",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "25276897",
+    "bs.accounts_payable": "5288246",
+    "bs.accrued_liabilities": "1137192",
+    "bs.revolver": "5771211",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1105460",
+    "bs.total_current_liabilities": "13302109",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1052160",
+    "bs.total_liabilities": "14354269",
+    "bs.total_equity": "10922628",
+    "bs.total_liabilities_and_equity": "25276897",
+    "cf.net_income": "2347493",
+    "cf.depreciation_amortization": "598522",
+    "cf.change_in_working_capital": "-332868",
+    "cf.other_operating": "46080",
+    "cf.cfo": "2659227",
+    "cf.capex": "672221",
+    "cf.other_investing": "0",
+    "cf.cfi": "-672221",
+    "cf.revolver_net": "-120640",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1760620",
+    "cf.other_financing": "0",
+    "cf.cff": "-1881260",
+    "cf.net_change_in_cash": "105746",
+    "sup.cash_interest_paid": "482135",
+    "sup.cash_taxes_paid": "790114",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7501750",
+    "cash.beginning_of_year": "1881600",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "16657428",
+    "is.cogs": "13029440",
+    "is.gross_profit": "3627988",
+    "is.sga": "2498614",
+    "is.depreciation_amortization": "151234",
+    "is.other_operating_expense": "49972",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "928168",
+    "is.interest_expense": "111817",
+    "is.other_income_net": "9994",
+    "is.pretax_income": "826345",
+    "is.income_tax_expense": "206586",
+    "is.net_income": "619759",
+    "bs.cash": "1998891",
+    "bs.accounts_receivable": "7374905",
+    "bs.inventory": "7424996",
+    "bs.other_current_assets": "799557",
+    "bs.total_current_assets": "17598349",
+    "bs.net_ppe": "4618113",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "25416462",
+    "bs.accounts_payable": "5283170",
+    "bs.accrued_liabilities": "1136662",
+    "bs.revolver": "5715980",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1139402",
+    "bs.total_current_liabilities": "13275214",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1063680",
+    "bs.total_liabilities": "14338894",
+    "bs.total_equity": "11077568",
+    "bs.total_liabilities_and_equity": "25416462",
+    "cf.net_income": "619759",
+    "cf.depreciation_amortization": "151234",
+    "cf.change_in_working_capital": "-84344",
+    "cf.other_operating": "11520",
+    "cf.cfo": "698169",
+    "cf.capex": "166574",
+    "cf.other_investing": "0",
+    "cf.cfi": "-166574",
+    "cf.revolver_net": "-55231",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "464819",
+    "cf.other_financing": "0",
+    "cf.cff": "-520050",
+    "cf.net_change_in_cash": "11545",
+    "sup.cash_interest_paid": "118697",
+    "sup.cash_taxes_paid": "178032",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7656690",
+    "cash.beginning_of_year": "1987346",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "34603985",
+    "is.cogs": "27155175",
+    "is.gross_profit": "7448810",
+    "is.sga": "5190598",
+    "is.depreciation_amortization": "302972",
+    "is.other_operating_expense": "103812",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1851428",
+    "is.interest_expense": "222564",
+    "is.other_income_net": "20762",
+    "is.pretax_income": "1649626",
+    "is.income_tax_expense": "412406",
+    "is.net_income": "1237220",
+    "bs.cash": "2153587",
+    "bs.accounts_receivable": "8358670",
+    "bs.inventory": "8049734",
+    "bs.other_current_assets": "861435",
+    "bs.total_current_assets": "19423426",
+    "bs.net_ppe": "4645841",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "27269267",
+    "bs.accounts_payable": "5727695",
+    "bs.accrued_liabilities": "1221389",
+    "bs.revolver": "6802223",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1210827",
+    "bs.total_current_liabilities": "14962134",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1075200",
+    "bs.total_liabilities": "16037334",
+    "bs.total_equity": "11231933",
+    "bs.total_liabilities_and_equity": "27269267",
+    "cf.net_income": "1237220",
+    "cf.depreciation_amortization": "302972",
+    "cf.change_in_working_capital": "-1154048",
+    "cf.other_operating": "23040",
+    "cf.cfo": "409184",
+    "cf.capex": "346040",
+    "cf.other_investing": "0",
+    "cf.cfi": "-346040",
+    "cf.revolver_net": "1031012",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "927915",
+    "cf.other_financing": "0",
+    "cf.cff": "103097",
+    "cf.net_change_in_cash": "166241",
+    "sup.cash_interest_paid": "229800",
+    "sup.cash_taxes_paid": "384618",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7811055",
+    "cash.beginning_of_year": "1987346",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "53285081",
+    "is.cogs": "41801154",
+    "is.gross_profit": "11483927",
+    "is.sga": "7992762",
+    "is.depreciation_amortization": "455621",
+    "is.other_operating_expense": "159855",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2875689",
+    "is.interest_expense": "354357",
+    "is.other_income_net": "31971",
+    "is.pretax_income": "2553303",
+    "is.income_tax_expense": "638325",
+    "is.net_income": "1914978",
+    "bs.cash": "2241732",
+    "bs.accounts_receivable": "8455115",
+    "bs.inventory": "8346202",
+    "bs.other_current_assets": "896693",
+    "bs.total_current_assets": "19939742",
+    "bs.net_ppe": "4680003",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "27819745",
+    "bs.accounts_payable": "5938644",
+    "bs.accrued_liabilities": "1276883",
+    "bs.revolver": "6844066",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1272060",
+    "bs.total_current_liabilities": "15331653",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1086720",
+    "bs.total_liabilities": "16418373",
+    "bs.total_equity": "11401372",
+    "bs.total_liabilities_and_equity": "27819745",
+    "cf.net_income": "1914978",
+    "cf.depreciation_amortization": "455621",
+    "cf.change_in_working_capital": "-1254543",
+    "cf.other_operating": "34560",
+    "cf.cfo": "1150616",
+    "cf.capex": "532851",
+    "cf.other_investing": "0",
+    "cf.cfi": "-532851",
+    "cf.revolver_net": "1072855",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1436234",
+    "cf.other_financing": "0",
+    "cf.cff": "-363379",
+    "cf.net_change_in_cash": "254386",
+    "sup.cash_interest_paid": "354578",
+    "sup.cash_taxes_paid": "590438",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "7980494",
+    "cash.beginning_of_year": "1987346",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "70732322",
+    "is.cogs": "55446641",
+    "is.gross_profit": "15285681",
+    "is.sga": "10609848",
+    "is.depreciation_amortization": "609393",
+    "is.other_operating_expense": "212197",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3854243",
+    "is.interest_expense": "486961",
+    "is.other_income_net": "42439",
+    "is.pretax_income": "3409721",
+    "is.income_tax_expense": "852430",
+    "is.net_income": "2557291",
+    "bs.cash": "2093669",
+    "bs.accounts_receivable": "7667226",
+    "bs.inventory": "7776058",
+    "bs.other_current_assets": "837468",
+    "bs.total_current_assets": "18374421",
+    "bs.net_ppe": "4700703",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "26275124",
+    "bs.accounts_payable": "5532965",
+    "bs.accrued_liabilities": "1195719",
+    "bs.revolver": "5695100",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1191150",
+    "bs.total_current_liabilities": "13614934",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1098240",
+    "bs.total_liabilities": "14713174",
+    "bs.total_equity": "11561950",
+    "bs.total_liabilities_and_equity": "26275124",
+    "cf.net_income": "2557291",
+    "cf.depreciation_amortization": "609393",
+    "cf.change_in_working_capital": "-405038",
+    "cf.other_operating": "46080",
+    "cf.cfo": "2807726",
+    "cf.capex": "707323",
+    "cf.other_investing": "0",
+    "cf.cfi": "-707323",
+    "cf.revolver_net": "-76111",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1917969",
+    "cf.other_financing": "0",
+    "cf.cff": "-1994080",
+    "cf.net_change_in_cash": "106323",
+    "sup.cash_interest_paid": "486912",
+    "sup.cash_taxes_paid": "816357",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "8141072",
+    "cash.beginning_of_year": "1987346",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "17328722",
+    "is.cogs": "13651567",
+    "is.gross_profit": "3677155",
+    "is.sga": "2599308",
+    "is.depreciation_amortization": "154452",
+    "is.other_operating_expense": "51986",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "871409",
+    "is.interest_expense": "110343",
+    "is.other_income_net": "10397",
+    "is.pretax_income": "771463",
+    "is.income_tax_expense": "192866",
+    "is.net_income": "578597",
+    "bs.cash": "2079447",
+    "bs.accounts_receivable": "7672114",
+    "bs.inventory": "7779523",
+    "bs.other_current_assets": "831779",
+    "bs.total_current_assets": "18362863",
+    "bs.net_ppe": "4719538",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "26282401",
+    "bs.accounts_payable": "5535430",
+    "bs.accrued_liabilities": "1180477",
+    "bs.revolver": "5586861",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1163274",
+    "bs.total_current_liabilities": "13466042",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1109760",
+    "bs.total_liabilities": "14575802",
+    "bs.total_equity": "11706599",
+    "bs.total_liabilities_and_equity": "26282401",
+    "cf.net_income": "578597",
+    "cf.depreciation_amortization": "154452",
+    "cf.change_in_working_capital": "-43317",
+    "cf.other_operating": "11520",
+    "cf.cfo": "701252",
+    "cf.capex": "173287",
+    "cf.other_investing": "0",
+    "cf.cfi": "-173287",
+    "cf.revolver_net": "-108239",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "433948",
+    "cf.other_financing": "0",
+    "cf.cff": "-542187",
+    "cf.net_change_in_cash": "-14222",
+    "sup.cash_interest_paid": "117763",
+    "sup.cash_taxes_paid": "214105",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "8285721",
+    "cash.beginning_of_year": "2093669",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "36045186",
+    "is.cogs": "28334633",
+    "is.gross_profit": "7710553",
+    "is.sga": "5406778",
+    "is.depreciation_amortization": "309523",
+    "is.other_operating_expense": "108135",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1886117",
+    "is.interest_expense": "218588",
+    "is.other_income_net": "21627",
+    "is.pretax_income": "1689156",
+    "is.income_tax_expense": "422289",
+    "is.net_income": "1266867",
+    "bs.cash": "2245976",
+    "bs.accounts_receivable": "8266011",
+    "bs.inventory": "8367336",
+    "bs.other_current_assets": "898390",
+    "bs.total_current_assets": "19777713",
+    "bs.net_ppe": "4751632",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "27729345",
+    "bs.accounts_payable": "5953682",
+    "bs.accrued_liabilities": "1271369",
+    "bs.revolver": "6226803",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1277545",
+    "bs.total_current_liabilities": "14729399",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1121280",
+    "bs.total_liabilities": "15850679",
+    "bs.total_equity": "11878666",
+    "bs.total_liabilities_and_equity": "27729345",
+    "cf.net_income": "1266867",
+    "cf.depreciation_amortization": "309523",
+    "cf.change_in_working_capital": "-668223",
+    "cf.other_operating": "23040",
+    "cf.cfo": "931207",
+    "cf.capex": "360452",
+    "cf.other_investing": "0",
+    "cf.cfi": "-360452",
+    "cf.revolver_net": "531703",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "950151",
+    "cf.other_financing": "0",
+    "cf.cff": "-418448",
+    "cf.net_change_in_cash": "152307",
+    "sup.cash_interest_paid": "226707",
+    "sup.cash_taxes_paid": "406971",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "8457788",
+    "cash.beginning_of_year": "2093669",
+    "debt.term_total": "0"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "55727589",
+    "is.cogs": "43757764",
+    "is.gross_profit": "11969825",
+    "is.sga": "8359138",
+    "is.depreciation_amortization": "465648",
+    "is.other_operating_expense": "167182",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2977857",
+    "is.interest_expense": "339232",
+    "is.other_income_net": "33436",
+    "is.pretax_income": "2672061",
+    "is.income_tax_expense": "668015",
+    "is.net_income": "2004046",
+    "bs.cash": "2361888",
+    "bs.accounts_receivable": "8541624",
+    "bs.inventory": "8789072",
+    "bs.other_current_assets": "944755",
+    "bs.total_current_assets": "20637339",
+    "bs.net_ppe": "4792331",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "28629670",
+    "bs.accounts_payable": "6253763",
+    "bs.accrued_liabilities": "1339253",
+    "bs.revolver": "6492952",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1347941",
+    "bs.total_current_liabilities": "15433909",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1132800",
+    "bs.total_liabilities": "16566709",
+    "bs.total_equity": "12062961",
+    "bs.total_liabilities_and_equity": "28629670",
+    "cf.net_income": "2004046",
+    "cf.depreciation_amortization": "465648",
+    "cf.change_in_working_capital": "-973576",
+    "cf.other_operating": "34560",
+    "cf.cfo": "1530678",
+    "cf.capex": "557276",
+    "cf.other_investing": "0",
+    "cf.cfi": "-557276",
+    "cf.revolver_net": "797852",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1503035",
+    "cf.other_financing": "0",
+    "cf.cff": "-705183",
+    "cf.net_change_in_cash": "268219",
+    "sup.cash_interest_paid": "343218",
+    "sup.cash_taxes_paid": "636394",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "8642083",
+    "cash.beginning_of_year": "2093669",
+    "debt.term_total": "0"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "64000000",
+    "is.cogs": "50159152",
+    "is.gross_profit": "13840848",
+    "is.sga": "9600000",
+    "is.depreciation_amortization": "590926",
+    "is.other_operating_expense": "192000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3457922",
+    "is.interest_expense": "499960",
+    "is.other_income_net": "38400",
+    "is.pretax_income": "2996362",
+    "is.income_tax_expense": "749090",
+    "is.net_income": "2247272",
+    "bs.cash": "1881600",
+    "bs.accounts_receivable": "6993710",
+    "bs.inventory": "6993778",
+    "bs.other_current_assets": "752640",
+    "bs.total_current_assets": "16621728",
+    "bs.net_ppe": "4529074",
+    "bs.intangibles": "2560000",
+    "bs.other_noncurrent_assets": "640000",
+    "bs.total_assets": "24350802",
+    "bs.accounts_payable": "4976342",
+    "bs.accrued_liabilities": "1077046",
+    "bs.revolver": "5891851",
+    "bs.cpltd": "0",
+    "bs.other_current_liabilities": "1063728",
+    "bs.total_current_liabilities": "13008967",
+    "bs.long_term_debt": "0",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "1006080",
+    "bs.total_liabilities": "14015047",
+    "bs.total_equity": "10335755",
+    "bs.total_liabilities_and_equity": "24350802",
+    "cf.net_income": "2247272",
+    "cf.depreciation_amortization": "590926",
+    "cf.change_in_working_capital": "230926",
+    "cf.other_operating": "46080",
+    "cf.cfo": "3115204",
+    "cf.capex": "640000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-640000",
+    "cf.revolver_net": "-828149",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "0",
+    "cf.distributions": "1685455",
+    "cf.other_financing": "0",
+    "cf.cff": "-2513604",
+    "cf.net_change_in_cash": "-38400",
+    "sup.cash_interest_paid": "501194",
+    "sup.cash_taxes_paid": "735802",
+    "sup.scheduled_principal": "0",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "3420878",
+    "equity.retained_earnings": "6914877",
+    "cash.beginning_of_year": "1920000",
+    "debt.term_total": "0"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.89",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2399063"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "481783"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "799688"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "600944"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4281478"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4281478"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "481783"
+      },
+      {
+       "label": "Denominator",
+       "amount": "481783"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.33",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "17598349"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "13275214"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.68",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "14338894"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "8517568"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.81",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2368928"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "481409"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "789642"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "603568"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4243547"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4243547"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "481409"
+      },
+      {
+       "label": "Denominator",
+       "amount": "481409"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.30",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "19423426"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "14962134"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.85",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "16037334"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "8671933"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "8.95",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2449073"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "486814"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "816357"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "606366"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4358610"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4358610"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "486814"
+      },
+      {
+       "label": "Denominator",
+       "amount": "486814"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.30",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "19939742"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "15331653"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.86",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "16418373"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "8841372"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "9.25",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2557291"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "486961"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "852430"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "609393"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4506075"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4506075"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "486961"
+      },
+      {
+       "label": "Denominator",
+       "amount": "486961"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.35",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "18374421"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "13614934"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.63",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "14713174"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "9001950"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "9.17",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2516129"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "485487"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "838710"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "612611"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4452937"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4452937"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "485487"
+      },
+      {
+       "label": "Denominator",
+       "amount": "485487"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.36",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "18362863"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "13466042"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.59",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "14575802"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "9146599"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "9.42",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2586938"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "482985"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "862313"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "615944"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4548180"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4548180"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "482985"
+      },
+      {
+       "label": "Denominator",
+       "amount": "482985"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.34",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "19777713"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "14729399"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.70",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "15850679"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "9318666"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Curtis Hallgren",
+   "reported": {
+    "interest_coverage": {
+     "value": "9.79",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2646359"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "471836"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "882120"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "619420"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4619735"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4619735"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "471836"
+      },
+      {
+       "label": "Denominator",
+       "amount": "471836"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.34",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "20637339"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "15433909"
+      }
+     ]
+    },
+    "debt_to_tnw": {
+     "value": "1.74",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total liabilities",
+       "amount": "16566709"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "9502961"
+      }
+     ]
+    }
+   },
+   "document_id": "dunmore-industrial-supply.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Supply, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "420400",
+      "31_60": "122800",
+      "61_90": "16400",
+      "over_90": "0"
+     },
+     "total": "559600"
+    },
+    {
+     "customer": "Ashdown Wholesale, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "704400",
+      "31_60": "221600",
+      "61_90": "38400",
+      "over_90": "0"
+     },
+     "total": "964400"
+    },
+    {
+     "customer": "Birchfield Stores Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "194800",
+      "31_60": "76800",
+      "61_90": "14000",
+      "over_90": "0"
+     },
+     "total": "285600"
+    },
+    {
+     "customer": "Corbin Markets, Co.",
+     "category": "trade",
+     "contra": "50400",
+     "buckets": {
+      "0_30": "506400",
+      "31_60": "252800",
+      "61_90": "75600",
+      "over_90": "8400"
+     },
+     "total": "843200"
+    },
+    {
+     "customer": "Dunmore Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "257882",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "257882"
+    },
+    {
+     "customer": "Foxhollow Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "279200",
+      "31_60": "80400",
+      "61_90": "32000",
+      "over_90": "12000"
+     },
+     "total": "403600"
+    },
+    {
+     "customer": "Hartsfield Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "467600",
+      "31_60": "211200",
+      "61_90": "50800",
+      "over_90": "0"
+     },
+     "total": "729600"
+    },
+    {
+     "customer": "Ironbridge Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "309600",
+      "31_60": "85600",
+      "61_90": "25600",
+      "over_90": "8400"
+     },
+     "total": "429200"
+    },
+    {
+     "customer": "Kingsway Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "257200",
+      "31_60": "79200",
+      "61_90": "30000",
+      "over_90": "11200"
+     },
+     "total": "377600"
+    },
+    {
+     "customer": "Maplecrest Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "646800",
+      "31_60": "161600",
+      "61_90": "42400",
+      "over_90": "0"
+     },
+     "total": "850800"
+    },
+    {
+     "customer": "Norwood Supply, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "650000",
+      "31_60": "280800",
+      "61_90": "38400",
+      "over_90": "0"
+     },
+     "total": "969200"
+    },
+    {
+     "customer": "Redfern Wholesale, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "630400",
+      "31_60": "164000",
+      "61_90": "68800",
+      "over_90": "0"
+     },
+     "total": "863200"
+    },
+    {
+     "customer": "Westbrook Wholesale, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "610400",
+      "31_60": "189200",
+      "61_90": "24400",
+      "over_90": "0"
+     },
+     "total": "824000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "7742000"
+    },
+    {
+     "category": "consigned",
+     "amount": "765915"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "543482",
+    "ineligible_over_age": "40000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "50400",
+    "ineligible_concentration": "0",
+    "gross_ar": "8357882",
+    "total_ineligible_ar": "633882",
+    "eligible_ar": "7724000",
+    "ar_availability": "6565400",
+    "gross_inventory": "8507915",
+    "ineligible_inventory": "765915",
+    "eligible_inventory": "7742000",
+    "inventory_availability_before_sublimit": "3871000",
+    "inventory_availability": "3750000",
+    "reserves": "100000",
+    "borrowing_base": "10215400",
+    "commitment": "9750000",
+    "lesser_of_base_and_commitment": "9750000",
+    "outstanding": "6334000",
+    "letters_of_credit": "0",
+    "availability": "3416000"
+   },
+   "outstanding": "6334000",
+   "letters_of_credit": "0",
+   "document_id": "dunmore-industrial-supply.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Alder Supply, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "424800",
+      "31_60": "118800",
+      "61_90": "22400",
+      "over_90": "0"
+     },
+     "total": "566000"
+    },
+    {
+     "customer": "Ashdown Wholesale, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "712000",
+      "31_60": "214400",
+      "61_90": "48400",
+      "over_90": "0"
+     },
+     "total": "974800"
+    },
+    {
+     "customer": "Birchfield Stores Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "196800",
+      "31_60": "74800",
+      "61_90": "17200",
+      "over_90": "0"
+     },
+     "total": "288800"
+    },
+    {
+     "customer": "Corbin Markets, Co.",
+     "category": "trade",
+     "contra": "50800",
+     "buckets": {
+      "0_30": "512000",
+      "31_60": "246800",
+      "61_90": "85200",
+      "over_90": "8400"
+     },
+     "total": "852400"
+    },
+    {
+     "customer": "Dunmore Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "260953",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "260953"
+    },
+    {
+     "customer": "Foxhollow Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "282400",
+      "31_60": "77200",
+      "61_90": "36400",
+      "over_90": "12000"
+     },
+     "total": "408000"
+    },
+    {
+     "customer": "Hartsfield Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "472400",
+      "31_60": "206400",
+      "61_90": "58800",
+      "over_90": "0"
+     },
+     "total": "737600"
+    },
+    {
+     "customer": "Ironbridge Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "313200",
+      "31_60": "82400",
+      "61_90": "30000",
+      "over_90": "8400"
+     },
+     "total": "434000"
+    },
+    {
+     "customer": "Kingsway Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "260400",
+      "31_60": "76000",
+      "61_90": "34000",
+      "over_90": "11200"
+     },
+     "total": "381600"
+    },
+    {
+     "customer": "Maplecrest Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "653600",
+      "31_60": "154800",
+      "61_90": "51600",
+      "over_90": "0"
+     },
+     "total": "860000"
+    },
+    {
+     "customer": "Norwood Supply, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "656800",
+      "31_60": "274400",
+      "61_90": "48800",
+      "over_90": "0"
+     },
+     "total": "980000"
+    },
+    {
+     "customer": "Redfern Wholesale, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "637600",
+      "31_60": "156800",
+      "61_90": "78400",
+      "over_90": "0"
+     },
+     "total": "872800"
+    },
+    {
+     "customer": "Westbrook Wholesale, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "616400",
+      "31_60": "183200",
+      "61_90": "33200",
+      "over_90": "0"
+     },
+     "total": "832800"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "7870000"
+    },
+    {
+     "category": "consigned",
+     "amount": "778493"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "549753",
+    "ineligible_over_age": "40000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "50800",
+    "ineligible_concentration": "0",
+    "gross_ar": "8449753",
+    "total_ineligible_ar": "640553",
+    "eligible_ar": "7809200",
+    "ar_availability": "6637820",
+    "gross_inventory": "8648493",
+    "ineligible_inventory": "778493",
+    "eligible_inventory": "7870000",
+    "inventory_availability_before_sublimit": "3935000",
+    "inventory_availability": "3750000",
+    "reserves": "100000",
+    "borrowing_base": "10287820",
+    "commitment": "9750000",
+    "lesser_of_base_and_commitment": "9750000",
+    "outstanding": "6500000",
+    "letters_of_credit": "0",
+    "availability": "3250000"
+   },
+   "outstanding": "6500000",
+   "letters_of_credit": "0",
+   "document_id": "dunmore-industrial-supply.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Alder Supply, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "429200",
+      "31_60": "114400",
+      "61_90": "28400",
+      "over_90": "0"
+     },
+     "total": "572000"
+    },
+    {
+     "customer": "Ashdown Wholesale, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "720000",
+      "31_60": "206800",
+      "61_90": "58800",
+      "over_90": "0"
+     },
+     "total": "985600"
+    },
+    {
+     "customer": "Birchfield Stores Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "198800",
+      "31_60": "72800",
+      "61_90": "20400",
+      "over_90": "0"
+     },
+     "total": "292000"
+    },
+    {
+     "customer": "Corbin Markets, Co.",
+     "category": "trade",
+     "contra": "51600",
+     "buckets": {
+      "0_30": "517600",
+      "31_60": "241200",
+      "61_90": "94400",
+      "over_90": "8400"
+     },
+     "total": "861600"
+    },
+    {
+     "customer": "Dunmore Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "263624",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "263624"
+    },
+    {
+     "customer": "Foxhollow Stores, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "285200",
+      "31_60": "74000",
+      "61_90": "41200",
+      "over_90": "12000"
+     },
+     "total": "412400"
+    },
+    {
+     "customer": "Hartsfield Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "477600",
+      "31_60": "201200",
+      "61_90": "66800",
+      "over_90": "0"
+     },
+     "total": "745600"
+    },
+    {
+     "customer": "Ironbridge Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "316800",
+      "31_60": "78800",
+      "61_90": "34800",
+      "over_90": "8400"
+     },
+     "total": "438800"
+    },
+    {
+     "customer": "Kingsway Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "263200",
+      "31_60": "73200",
+      "61_90": "38400",
+      "over_90": "11200"
+     },
+     "total": "386000"
+    },
+    {
+     "customer": "Maplecrest Markets, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "660800",
+      "31_60": "147600",
+      "61_90": "60800",
+      "over_90": "0"
+     },
+     "total": "869200"
+    },
+    {
+     "customer": "Norwood Supply, LLC",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "664400",
+      "31_60": "267200",
+      "61_90": "59200",
+      "over_90": "0"
+     },
+     "total": "990800"
+    },
+    {
+     "customer": "Redfern Wholesale, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "644400",
+      "31_60": "149600",
+      "61_90": "88000",
+      "over_90": "0"
+     },
+     "total": "882000"
+    },
+    {
+     "customer": "Westbrook Wholesale, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "623200",
+      "31_60": "176800",
+      "61_90": "42000",
+      "over_90": "0"
+     },
+     "total": "842000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "7998000"
+    },
+    {
+     "category": "consigned",
+     "amount": "791072"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "555624",
+    "ineligible_over_age": "40000",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "51600",
+    "ineligible_concentration": "0",
+    "gross_ar": "8541624",
+    "total_ineligible_ar": "647224",
+    "eligible_ar": "7894400",
+    "ar_availability": "6710240",
+    "gross_inventory": "8789072",
+    "ineligible_inventory": "791072",
+    "eligible_inventory": "7998000",
+    "inventory_availability_before_sublimit": "3999000",
+    "inventory_availability": "3750000",
+    "reserves": "100000",
+    "borrowing_base": "10360240",
+    "commitment": "9750000",
+    "lesser_of_base_and_commitment": "9750000",
+    "outstanding": "6492952",
+    "letters_of_credit": "0",
+    "availability": "3257048"
+   },
+   "outstanding": "6492952",
+   "letters_of_credit": "0",
+   "document_id": "dunmore-industrial-supply.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "5775000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "5712000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "5735283",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "5908000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "6342000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "6523234",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "6621000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "6631000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "6836466",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "6423000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "6212000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "5771211",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "5799000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "5648000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "5715980",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "6127000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "6414000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "6802223",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "6918000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "6755000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "6844066",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "6526000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "6133000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "5695100",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "5653000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "5595000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "5586861",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "5887000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "5947000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "6226803",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "6334000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "6500000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "6492952",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "6564000",
+   "commitment": "9750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "0"
+  }
+ ],
+ "documents": [
+  {
+   "id": "dunmore-industrial-supply.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/dunmore-industrial-supply/credit-agreement.pdf",
+   "pages": 14,
+   "title": "Credit Agreement between Dunmore Industrial Supply Co. and Bank of Stoic",
+   "received_date": "2023-02-10",
+   "document_date": "2023-02-10"
+  },
+  {
+   "id": "dunmore-industrial-supply.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/dunmore-industrial-supply/afs-2024.pdf",
+   "pages": 7,
+   "title": "Dunmore Industrial Supply Co. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-18",
+   "document_date": "2025-04-09",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,987,346"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "7,259,711"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "7,432,129"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "794,938"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "17,474,124"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "4,602,773"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "25,276,897"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "5,288,246"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,137,192"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "5,771,211"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,105,460"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "13,302,109"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,052,160"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "14,354,269"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "10,922,628"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,276,897"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "67,222,112"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "52,764,828"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "14,457,284"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "10,083,316"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "598,522"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "201,667"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,573,779"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "484,121"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "40,333"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "3,129,991"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "782,498"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,347,493"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,347,493"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "598,522"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(332,868)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "46,080"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,659,227"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(672,221)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(672,221)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(120,640)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,760,620)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,881,260)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "105,746"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "482,135"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "790,114"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,881,600",
+    "bs.accounts_receivable": "6,993,710",
+    "bs.inventory": "6,993,778",
+    "bs.other_current_assets": "752,640",
+    "bs.total_current_assets": "16,621,728",
+    "bs.net_ppe": "4,529,074",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "24,350,802",
+    "bs.accounts_payable": "4,976,342",
+    "bs.accrued_liabilities": "1,077,046",
+    "bs.revolver": "5,891,851",
+    "bs.other_current_liabilities": "1,063,728",
+    "bs.total_current_liabilities": "13,008,967",
+    "bs.other_noncurrent_liabilities": "1,006,080",
+    "bs.total_liabilities": "14,015,047",
+    "bs.total_equity": "10,335,755",
+    "bs.total_liabilities_and_equity": "24,350,802",
+    "is.revenue": "64,000,000",
+    "is.cogs": "50,159,152",
+    "is.gross_profit": "13,840,848",
+    "is.sga": "9,600,000",
+    "is.depreciation_amortization": "590,926",
+    "is.other_operating_expense": "192,000",
+    "is.operating_income": "3,457,922",
+    "is.interest_expense": "499,960",
+    "is.other_income_net": "38,400",
+    "is.pretax_income": "2,996,362",
+    "is.income_tax_expense": "749,090",
+    "is.net_income": "2,247,272",
+    "cf.net_income": "2,247,272",
+    "cf.depreciation_amortization": "590,926",
+    "cf.change_in_working_capital": "230,926",
+    "cf.other_operating": "46,080",
+    "cf.cfo": "3,115,204",
+    "cf.capex": "(640,000)",
+    "cf.cfi": "(640,000)",
+    "cf.revolver_net": "(828,149)",
+    "cf.distributions": "(1,685,455)",
+    "cf.cff": "(2,513,604)",
+    "cf.net_change_in_cash": "(38,400)",
+    "sup.cash_interest_paid": "501,194",
+    "sup.cash_taxes_paid": "735,802",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/dunmore-industrial-supply/afs-2025.pdf",
+   "pages": 7,
+   "title": "Dunmore Industrial Supply Co. audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-23",
+   "document_date": "2026-03-14",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "2,093,669"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "7,667,226"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "7,776,058"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "837,468"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "18,374,421"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "4,700,703"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "26,275,124"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "5,532,965"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,195,719"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "5,695,100"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "1,191,150"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "13,614,934"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "1,098,240"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "14,713,174"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "11,561,950"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "26,275,124"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "70,732,322"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "55,446,641"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "15,285,681"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "10,609,848"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "609,393"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "212,197"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,854,243"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "486,961"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "42,439"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "3,409,721"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "852,430"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,557,291"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,557,291"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "609,393"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(405,038)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "46,080"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,807,726"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(707,323)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(707,323)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(76,111)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(1,917,969)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,994,080)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "106,323"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "486,912"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "816,357"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,987,346",
+    "bs.accounts_receivable": "7,259,711",
+    "bs.inventory": "7,432,129",
+    "bs.other_current_assets": "794,938",
+    "bs.total_current_assets": "17,474,124",
+    "bs.net_ppe": "4,602,773",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "25,276,897",
+    "bs.accounts_payable": "5,288,246",
+    "bs.accrued_liabilities": "1,137,192",
+    "bs.revolver": "5,771,211",
+    "bs.other_current_liabilities": "1,105,460",
+    "bs.total_current_liabilities": "13,302,109",
+    "bs.other_noncurrent_liabilities": "1,052,160",
+    "bs.total_liabilities": "14,354,269",
+    "bs.total_equity": "10,922,628",
+    "bs.total_liabilities_and_equity": "25,276,897",
+    "is.revenue": "67,222,112",
+    "is.cogs": "52,764,828",
+    "is.gross_profit": "14,457,284",
+    "is.sga": "10,083,316",
+    "is.depreciation_amortization": "598,522",
+    "is.other_operating_expense": "201,667",
+    "is.operating_income": "3,573,779",
+    "is.interest_expense": "484,121",
+    "is.other_income_net": "40,333",
+    "is.pretax_income": "3,129,991",
+    "is.income_tax_expense": "782,498",
+    "is.net_income": "2,347,493",
+    "cf.net_income": "2,347,493",
+    "cf.depreciation_amortization": "598,522",
+    "cf.change_in_working_capital": "(332,868)",
+    "cf.other_operating": "46,080",
+    "cf.cfo": "2,659,227",
+    "cf.capex": "(672,221)",
+    "cf.cfi": "(672,221)",
+    "cf.revolver_net": "(120,640)",
+    "cf.distributions": "(1,760,620)",
+    "cf.cff": "(1,881,260)",
+    "cf.net_change_in_cash": "105,746",
+    "sup.cash_interest_paid": "482,135",
+    "sup.cash_taxes_paid": "790,114",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/dunmore-industrial-supply/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Dunmore Industrial Supply Co. interim financial statements, Q1 2025",
+   "received_date": "2025-05-12",
+   "document_date": "2025-05-08",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,998,891"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,374,905"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,424,996"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "799,557"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "17,598,349"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,618,113"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "25,416,462"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,283,170"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,136,662"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,715,980"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,139,402"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "13,275,214"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,063,680"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,338,894"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,077,568"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "25,416,462"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "16,657,428"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "13,029,440"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "3,627,988"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,498,614"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "151,234"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "49,972"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "928,168"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "111,817"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "9,994"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "826,345"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "206,586"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "619,759"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "619,759"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "151,234"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(84,344)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11,520"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "698,169"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(166,574)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(166,574)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(55,231)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(464,819)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(520,050)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "11,545"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "118,697"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "178,032"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,895,762",
+    "bs.accounts_receivable": "6,959,783",
+    "bs.inventory": "7,049,118",
+    "bs.other_current_assets": "758,305",
+    "bs.total_current_assets": "16,662,968",
+    "bs.net_ppe": "4,538,242",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "24,401,210",
+    "bs.accounts_payable": "5,015,719",
+    "bs.accrued_liabilities": "1,080,721",
+    "bs.revolver": "5,735,283",
+    "bs.other_current_liabilities": "1,074,085",
+    "bs.total_current_liabilities": "12,905,808",
+    "bs.other_noncurrent_liabilities": "1,017,600",
+    "bs.total_liabilities": "13,923,408",
+    "bs.total_equity": "10,477,802",
+    "bs.total_liabilities_and_equity": "24,401,210",
+    "is.revenue": "15,798,016",
+    "is.cogs": "12,369,847",
+    "is.gross_profit": "3,428,169",
+    "is.sga": "2,369,702",
+    "is.depreciation_amortization": "148,812",
+    "is.other_operating_expense": "47,394",
+    "is.operating_income": "862,261",
+    "is.interest_expense": "114,155",
+    "is.other_income_net": "9,479",
+    "is.pretax_income": "757,585",
+    "is.income_tax_expense": "189,396",
+    "is.net_income": "568,189",
+    "cf.net_income": "568,189",
+    "cf.depreciation_amortization": "148,812",
+    "cf.change_in_working_capital": "26,331",
+    "cf.other_operating": "11,520",
+    "cf.cfo": "754,852",
+    "cf.capex": "(157,980)",
+    "cf.cfi": "(157,980)",
+    "cf.revolver_net": "(156,568)",
+    "cf.distributions": "(426,142)",
+    "cf.cff": "(582,710)",
+    "cf.net_change_in_cash": "14,162",
+    "sup.cash_interest_paid": "118,269",
+    "sup.cash_taxes_paid": "185,648",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/dunmore-industrial-supply/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Dunmore Industrial Supply Co. interim financial statements, Q2 2025",
+   "received_date": "2025-07-27",
+   "document_date": "2025-07-23",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,153,587"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,358,670"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "8,049,734"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "861,435"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "19,423,426"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,645,841"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "27,269,267"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,727,695"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,221,389"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,802,223"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,210,827"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "14,962,134"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,075,200"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "16,037,334"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,231,933"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "27,269,267"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "34,603,985"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "27,155,175"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,448,810"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,190,598"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "302,972"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "103,812"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,851,428"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "222,564"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "20,762"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,649,626"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "412,406"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,237,220"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,237,220"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "302,972"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,154,048)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "23,040"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "409,184"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(346,040)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(346,040)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,031,012"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(927,915)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "103,097"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "166,241"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "229,800"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "384,618"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,058,682",
+    "bs.accounts_receivable": "7,689,505",
+    "bs.inventory": "7,646,112",
+    "bs.other_current_assets": "823,473",
+    "bs.total_current_assets": "18,217,772",
+    "bs.net_ppe": "4,560,685",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "25,978,457",
+    "bs.accounts_payable": "5,440,503",
+    "bs.accrued_liabilities": "1,169,315",
+    "bs.revolver": "6,523,234",
+    "bs.other_current_liabilities": "1,176,584",
+    "bs.total_current_liabilities": "14,309,636",
+    "bs.other_noncurrent_liabilities": "1,029,120",
+    "bs.total_liabilities": "15,338,756",
+    "bs.total_equity": "10,639,701",
+    "bs.total_liabilities_and_equity": "25,978,457",
+    "is.revenue": "32,953,696",
+    "is.cogs": "25,787,304",
+    "is.gross_profit": "7,166,392",
+    "is.sga": "4,943,054",
+    "is.depreciation_amortization": "297,926",
+    "is.other_operating_expense": "98,861",
+    "is.operating_income": "1,826,551",
+    "is.interest_expense": "225,276",
+    "is.other_income_net": "19,772",
+    "is.pretax_income": "1,621,047",
+    "is.income_tax_expense": "405,262",
+    "is.net_income": "1,215,785",
+    "cf.net_income": "1,215,785",
+    "cf.depreciation_amortization": "297,926",
+    "cf.change_in_working_capital": "(749,676)",
+    "cf.other_operating": "23,040",
+    "cf.cfo": "787,075",
+    "cf.capex": "(329,537)",
+    "cf.cfi": "(329,537)",
+    "cf.revolver_net": "631,383",
+    "cf.distributions": "(911,839)",
+    "cf.cff": "(280,456)",
+    "cf.net_change_in_cash": "177,082",
+    "sup.cash_interest_paid": "230,402",
+    "sup.cash_taxes_paid": "375,044",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/dunmore-industrial-supply/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Dunmore Industrial Supply Co. interim financial statements, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-28",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,241,732"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,455,115"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "8,346,202"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "896,693"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "19,939,742"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,680,003"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "27,819,745"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,938,644"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,276,883"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,844,066"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,272,060"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "15,331,653"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,086,720"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "16,418,373"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,401,372"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "27,819,745"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "53,285,081"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "41,801,154"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "11,483,927"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,992,762"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "455,621"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "159,855"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,875,689"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "354,357"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "31,971"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,553,303"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "638,325"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,914,978"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,914,978"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "455,621"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(1,254,543)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "34,560"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,150,616"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(532,851)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(532,851)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,072,855"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,436,234)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(363,379)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "254,386"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "354,578"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "590,438"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,124,864",
+    "bs.accounts_receivable": "8,014,327",
+    "bs.inventory": "7,941,364",
+    "bs.other_current_assets": "849,946",
+    "bs.total_current_assets": "18,930,501",
+    "bs.net_ppe": "4,587,906",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "26,718,407",
+    "bs.accounts_payable": "5,650,586",
+    "bs.accrued_liabilities": "1,210,804",
+    "bs.revolver": "6,836,466",
+    "bs.other_current_liabilities": "1,190,807",
+    "bs.total_current_liabilities": "14,888,663",
+    "bs.other_noncurrent_liabilities": "1,040,640",
+    "bs.total_liabilities": "15,929,303",
+    "bs.total_equity": "10,789,104",
+    "bs.total_liabilities_and_equity": "26,718,407",
+    "is.revenue": "50,660,896",
+    "is.cogs": "39,722,870",
+    "is.gross_profit": "10,938,026",
+    "is.sga": "7,599,134",
+    "is.depreciation_amortization": "447,777",
+    "is.other_operating_expense": "151,983",
+    "is.operating_income": "2,739,132",
+    "is.interest_expense": "351,664",
+    "is.other_income_net": "30,396",
+    "is.pretax_income": "2,417,864",
+    "is.income_tax_expense": "604,466",
+    "is.net_income": "1,813,398",
+    "cf.net_income": "1,813,398",
+    "cf.depreciation_amortization": "447,777",
+    "cf.change_in_working_capital": "(1,130,428)",
+    "cf.other_operating": "34,560",
+    "cf.cfo": "1,165,307",
+    "cf.capex": "(506,609)",
+    "cf.cfi": "(506,609)",
+    "cf.revolver_net": "944,615",
+    "cf.distributions": "(1,360,049)",
+    "cf.cff": "(415,434)",
+    "cf.net_change_in_cash": "243,264",
+    "sup.cash_interest_paid": "351,701",
+    "sup.cash_taxes_paid": "590,910",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/dunmore-industrial-supply/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Dunmore Industrial Supply Co. interim financial statements, Q1 2026",
+   "received_date": "2026-05-10",
+   "document_date": "2026-05-06",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,079,447"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "7,672,114"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "7,779,523"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "831,779"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "18,362,863"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,719,538"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "26,282,401"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,535,430"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,180,477"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "5,586,861"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,163,274"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "13,466,042"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,109,760"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,575,802"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,706,599"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "26,282,401"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "17,328,722"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "13,651,567"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "3,677,155"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,599,308"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "154,452"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "51,986"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "871,409"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "110,343"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "10,397"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "771,463"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "192,866"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "578,597"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "578,597"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "154,452"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(43,317)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11,520"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "701,252"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(173,287)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(173,287)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(108,239)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(433,948)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(542,187)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(14,222)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "117,763"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "214,105"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,998,891",
+    "bs.accounts_receivable": "7,374,905",
+    "bs.inventory": "7,424,996",
+    "bs.other_current_assets": "799,557",
+    "bs.total_current_assets": "17,598,349",
+    "bs.net_ppe": "4,618,113",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "25,416,462",
+    "bs.accounts_payable": "5,283,170",
+    "bs.accrued_liabilities": "1,136,662",
+    "bs.revolver": "5,715,980",
+    "bs.other_current_liabilities": "1,139,402",
+    "bs.total_current_liabilities": "13,275,214",
+    "bs.other_noncurrent_liabilities": "1,063,680",
+    "bs.total_liabilities": "14,338,894",
+    "bs.total_equity": "11,077,568",
+    "bs.total_liabilities_and_equity": "25,416,462",
+    "is.revenue": "16,657,428",
+    "is.cogs": "13,029,440",
+    "is.gross_profit": "3,627,988",
+    "is.sga": "2,498,614",
+    "is.depreciation_amortization": "151,234",
+    "is.other_operating_expense": "49,972",
+    "is.operating_income": "928,168",
+    "is.interest_expense": "111,817",
+    "is.other_income_net": "9,994",
+    "is.pretax_income": "826,345",
+    "is.income_tax_expense": "206,586",
+    "is.net_income": "619,759",
+    "cf.net_income": "619,759",
+    "cf.depreciation_amortization": "151,234",
+    "cf.change_in_working_capital": "(84,344)",
+    "cf.other_operating": "11,520",
+    "cf.cfo": "698,169",
+    "cf.capex": "(166,574)",
+    "cf.cfi": "(166,574)",
+    "cf.revolver_net": "(55,231)",
+    "cf.distributions": "(464,819)",
+    "cf.cff": "(520,050)",
+    "cf.net_change_in_cash": "11,545",
+    "sup.cash_interest_paid": "118,697",
+    "sup.cash_taxes_paid": "178,032",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/dunmore-industrial-supply/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Dunmore Industrial Supply Co. interim financial statements, Q2 2026",
+   "received_date": "2026-08-01",
+   "document_date": "2026-07-28",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,245,976"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,266,011"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "8,367,336"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "898,390"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "19,777,713"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,751,632"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "27,729,345"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "5,953,682"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,271,369"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,226,803"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,277,545"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "14,729,399"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,121,280"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "15,850,679"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "11,878,666"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "27,729,345"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "36,045,186"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "28,334,633"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "7,710,553"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "5,406,778"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "309,523"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "108,135"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,886,117"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "218,588"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "21,627"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,689,156"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "422,289"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,266,867"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,266,867"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "309,523"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(668,223)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "23,040"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "931,207"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(360,452)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(360,452)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "531,703"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(950,151)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(418,448)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "152,307"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "226,707"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "406,971"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,153,587",
+    "bs.accounts_receivable": "8,358,670",
+    "bs.inventory": "8,049,734",
+    "bs.other_current_assets": "861,435",
+    "bs.total_current_assets": "19,423,426",
+    "bs.net_ppe": "4,645,841",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "27,269,267",
+    "bs.accounts_payable": "5,727,695",
+    "bs.accrued_liabilities": "1,221,389",
+    "bs.revolver": "6,802,223",
+    "bs.other_current_liabilities": "1,210,827",
+    "bs.total_current_liabilities": "14,962,134",
+    "bs.other_noncurrent_liabilities": "1,075,200",
+    "bs.total_liabilities": "16,037,334",
+    "bs.total_equity": "11,231,933",
+    "bs.total_liabilities_and_equity": "27,269,267",
+    "is.revenue": "34,603,985",
+    "is.cogs": "27,155,175",
+    "is.gross_profit": "7,448,810",
+    "is.sga": "5,190,598",
+    "is.depreciation_amortization": "302,972",
+    "is.other_operating_expense": "103,812",
+    "is.operating_income": "1,851,428",
+    "is.interest_expense": "222,564",
+    "is.other_income_net": "20,762",
+    "is.pretax_income": "1,649,626",
+    "is.income_tax_expense": "412,406",
+    "is.net_income": "1,237,220",
+    "cf.net_income": "1,237,220",
+    "cf.depreciation_amortization": "302,972",
+    "cf.change_in_working_capital": "(1,154,048)",
+    "cf.other_operating": "23,040",
+    "cf.cfo": "409,184",
+    "cf.capex": "(346,040)",
+    "cf.cfi": "(346,040)",
+    "cf.revolver_net": "1,031,012",
+    "cf.distributions": "(927,915)",
+    "cf.cff": "103,097",
+    "cf.net_change_in_cash": "166,241",
+    "sup.cash_interest_paid": "229,800",
+    "sup.cash_taxes_paid": "384,618",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/dunmore-industrial-supply/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Dunmore Industrial Supply Co. interim financial statements, Q3 2026",
+   "received_date": "2026-11-01",
+   "document_date": "2026-10-28",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "2,361,888"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "8,541,624"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "8,789,072"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "944,755"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "20,637,339"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,792,331"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,560,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "640,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "28,629,670"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "6,253,763"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,339,253"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,492,952"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "1,347,941"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "15,433,909"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "1,132,800"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "16,566,709"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "12,062,961"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "28,629,670"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "55,727,589"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "43,757,764"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "11,969,825"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,359,138"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "465,648"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "167,182"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,977,857"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "339,232"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "33,436"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,672,061"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "668,015"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,004,046"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,004,046"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "465,648"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(973,576)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "34,560"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,530,678"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(557,276)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(557,276)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "797,852"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,503,035)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(705,183)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "268,219"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "343,218"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "636,394"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "2,241,732",
+    "bs.accounts_receivable": "8,455,115",
+    "bs.inventory": "8,346,202",
+    "bs.other_current_assets": "896,693",
+    "bs.total_current_assets": "19,939,742",
+    "bs.net_ppe": "4,680,003",
+    "bs.intangibles": "2,560,000",
+    "bs.other_noncurrent_assets": "640,000",
+    "bs.total_assets": "27,819,745",
+    "bs.accounts_payable": "5,938,644",
+    "bs.accrued_liabilities": "1,276,883",
+    "bs.revolver": "6,844,066",
+    "bs.other_current_liabilities": "1,272,060",
+    "bs.total_current_liabilities": "15,331,653",
+    "bs.other_noncurrent_liabilities": "1,086,720",
+    "bs.total_liabilities": "16,418,373",
+    "bs.total_equity": "11,401,372",
+    "bs.total_liabilities_and_equity": "27,819,745",
+    "is.revenue": "53,285,081",
+    "is.cogs": "41,801,154",
+    "is.gross_profit": "11,483,927",
+    "is.sga": "7,992,762",
+    "is.depreciation_amortization": "455,621",
+    "is.other_operating_expense": "159,855",
+    "is.operating_income": "2,875,689",
+    "is.interest_expense": "354,357",
+    "is.other_income_net": "31,971",
+    "is.pretax_income": "2,553,303",
+    "is.income_tax_expense": "638,325",
+    "is.net_income": "1,914,978",
+    "cf.net_income": "1,914,978",
+    "cf.depreciation_amortization": "455,621",
+    "cf.change_in_working_capital": "(1,254,543)",
+    "cf.other_operating": "34,560",
+    "cf.cfo": "1,150,616",
+    "cf.capex": "(532,851)",
+    "cf.cfi": "(532,851)",
+    "cf.revolver_net": "1,072,855",
+    "cf.distributions": "(1,436,234)",
+    "cf.cff": "(363,379)",
+    "cf.net_change_in_cash": "254,386",
+    "sup.cash_interest_paid": "354,578",
+    "sup.cash_taxes_paid": "590,438",
+    "sup.scheduled_principal": "-",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.cpltd",
+    "bs.long_term_debt",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "cf.term_debt_repayments",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/dunmore-industrial-supply/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, Q1 2025",
+   "received_date": "2025-05-12",
+   "document_date": "2025-05-10",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/dunmore-industrial-supply/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, Q2 2025",
+   "received_date": "2025-07-27",
+   "document_date": "2025-07-25",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/dunmore-industrial-supply/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-30",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/dunmore-industrial-supply/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, FY2025",
+   "received_date": "2026-02-09",
+   "document_date": "2026-02-07",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/dunmore-industrial-supply/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, Q1 2026",
+   "received_date": "2026-05-10",
+   "document_date": "2026-05-08",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/dunmore-industrial-supply/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, Q2 2026",
+   "received_date": "2026-08-01",
+   "document_date": "2026-07-30",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/dunmore-industrial-supply/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Dunmore Industrial Supply Co. compliance certificate, Q3 2026",
+   "received_date": "2026-11-01",
+   "document_date": "2026-10-30",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/dunmore-industrial-supply/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Dunmore Industrial Supply Co. borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-09",
+   "document_date": "2026-08-07",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/dunmore-industrial-supply/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Dunmore Industrial Supply Co. borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-14",
+   "document_date": "2026-09-12",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "dunmore-industrial-supply.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/dunmore-industrial-supply/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Dunmore Industrial Supply Co. borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-11",
+   "document_date": "2026-10-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.89",
+    "pass": true,
+    "headroom": "1.9633",
+    "reported_value": "8.89",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2399063"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "481783"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "799688"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "600944"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4281478"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4281478"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "481783"
+     },
+     {
+      "label": "Denominator",
+      "amount": "481783"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.33",
+    "pass": true,
+    "headroom": "0.3300",
+    "reported_value": "1.33",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "17598349"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "13275214"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.68",
+    "pass": true,
+    "headroom": "0.3280",
+    "reported_value": "1.68",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "14338894"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "8517568"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.81",
+    "pass": true,
+    "headroom": "1.9367",
+    "reported_value": "8.81",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2368928"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "481409"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "789642"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "603568"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4243547"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4243547"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "481409"
+     },
+     {
+      "label": "Denominator",
+      "amount": "481409"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.30",
+    "pass": true,
+    "headroom": "0.3000",
+    "reported_value": "1.30",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "19423426"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "14962134"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.85",
+    "pass": true,
+    "headroom": "0.2600",
+    "reported_value": "1.85",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "16037334"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "8671933"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "8.95",
+    "pass": true,
+    "headroom": "1.9833",
+    "reported_value": "8.95",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2449073"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "486814"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "816357"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "606366"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4358610"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4358610"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "486814"
+     },
+     {
+      "label": "Denominator",
+      "amount": "486814"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.30",
+    "pass": true,
+    "headroom": "0.3000",
+    "reported_value": "1.30",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "19939742"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "15331653"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.86",
+    "pass": true,
+    "headroom": "0.2560",
+    "reported_value": "1.86",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "16418373"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "8841372"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "9.25",
+    "pass": true,
+    "headroom": "2.0833",
+    "reported_value": "9.25",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2557291"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "486961"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "852430"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "609393"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4506075"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4506075"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "486961"
+     },
+     {
+      "label": "Denominator",
+      "amount": "486961"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.35",
+    "pass": true,
+    "headroom": "0.3500",
+    "reported_value": "1.35",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "18374421"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "13614934"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.63",
+    "pass": true,
+    "headroom": "0.3480",
+    "reported_value": "1.63",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "14713174"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "9001950"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "9.17",
+    "pass": true,
+    "headroom": "2.0567",
+    "reported_value": "9.17",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2516129"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "485487"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "838710"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "612611"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4452937"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4452937"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "485487"
+     },
+     {
+      "label": "Denominator",
+      "amount": "485487"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.36",
+    "pass": true,
+    "headroom": "0.3600",
+    "reported_value": "1.36",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "18362863"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "13466042"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.59",
+    "pass": true,
+    "headroom": "0.3640",
+    "reported_value": "1.59",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "14575802"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "9146599"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "9.42",
+    "pass": true,
+    "headroom": "2.1400",
+    "reported_value": "9.42",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2586938"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "482985"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "862313"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "615944"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4548180"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4548180"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "482985"
+     },
+     {
+      "label": "Denominator",
+      "amount": "482985"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.34",
+    "pass": true,
+    "headroom": "0.3400",
+    "reported_value": "1.34",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "19777713"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "14729399"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.70",
+    "pass": true,
+    "headroom": "0.3200",
+    "reported_value": "1.70",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "15850679"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "9318666"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "interest_coverage",
+    "covenant_name": "Interest Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "3.00",
+    "value": "9.79",
+    "pass": true,
+    "headroom": "2.2633",
+    "reported_value": "9.79",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2646359"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "471836"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "882120"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "619420"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4619735"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4619735"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "471836"
+     },
+     {
+      "label": "Denominator",
+      "amount": "471836"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.34",
+    "pass": true,
+    "headroom": "0.3400",
+    "reported_value": "1.34",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "20637339"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "15433909"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "debt_to_tnw",
+    "covenant_name": "Total Liabilities to Tangible Net Worth Ratio",
+    "archetype": "debt_to_tnw",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "terms_version_id": "tv-dunmore-industrial-supply-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.74",
+    "pass": true,
+    "headroom": "0.3040",
+    "reported_value": "1.74",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total liabilities",
+      "amount": "16566709"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "9502961"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "calculated": {
+     "ineligible_excluded": "543482",
+     "ineligible_over_age": "40000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "50400",
+     "ineligible_concentration": "0",
+     "gross_ar": "8357882",
+     "total_ineligible_ar": "633882",
+     "eligible_ar": "7724000",
+     "ar_availability": "6565400",
+     "gross_inventory": "8507915",
+     "ineligible_inventory": "765915",
+     "eligible_inventory": "7742000",
+     "inventory_availability_before_sublimit": "3871000",
+     "inventory_availability": "3750000",
+     "reserves": "100000",
+     "borrowing_base": "10215400",
+     "commitment": "9750000",
+     "lesser_of_base_and_commitment": "9750000",
+     "outstanding": "6334000",
+     "letters_of_credit": "0",
+     "availability": "3416000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "3416000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "calculated": {
+     "ineligible_excluded": "549753",
+     "ineligible_over_age": "40000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "50800",
+     "ineligible_concentration": "0",
+     "gross_ar": "8449753",
+     "total_ineligible_ar": "640553",
+     "eligible_ar": "7809200",
+     "ar_availability": "6637820",
+     "gross_inventory": "8648493",
+     "ineligible_inventory": "778493",
+     "eligible_inventory": "7870000",
+     "inventory_availability_before_sublimit": "3935000",
+     "inventory_availability": "3750000",
+     "reserves": "100000",
+     "borrowing_base": "10287820",
+     "commitment": "9750000",
+     "lesser_of_base_and_commitment": "9750000",
+     "outstanding": "6500000",
+     "letters_of_credit": "0",
+     "availability": "3250000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "3250000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "dunmore-industrial-supply-rlc",
+    "calculated": {
+     "ineligible_excluded": "555624",
+     "ineligible_over_age": "40000",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "51600",
+     "ineligible_concentration": "0",
+     "gross_ar": "8541624",
+     "total_ineligible_ar": "647224",
+     "eligible_ar": "7894400",
+     "ar_availability": "6710240",
+     "gross_inventory": "8789072",
+     "ineligible_inventory": "791072",
+     "eligible_inventory": "7998000",
+     "inventory_availability_before_sublimit": "3999000",
+     "inventory_availability": "3750000",
+     "reserves": "100000",
+     "borrowing_base": "10360240",
+     "commitment": "9750000",
+     "lesser_of_base_and_commitment": "9750000",
+     "outstanding": "6492952",
+     "letters_of_credit": "0",
+     "availability": "3257048"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "3257048"
+   }
+  ],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.2560",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "debt_to_tnw",
+     "two_periods_ago": "0.3280",
+     "prior_period": "0.2600"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "0.3040",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "debt_to_tnw",
+     "two_periods_ago": "0.3640",
+     "prior_period": "0.3200"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}

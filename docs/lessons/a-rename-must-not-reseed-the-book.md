@@ -1,0 +1,8 @@
+Renaming a synthetic client must not change its figures; when random draws are seeded by the client's code, keep the old code as the seed.
+
+- **What happened (23 November 2026, the rename of eight innovation clients).** The innovation generator seeds each client's draws with `f"{seed}:{spec.id}:..."` and picks the approving credit officer with `len(spec.id) % 2`. Renaming the codes would have redrawn every figure of the eight clients and changed two approvers, so 50 signed answer-key rows would have come back unsigned and the owner's sign-off would have been lost for a cosmetic change. Found by regenerating into a scratch folder and diffing before touching the real book.
+- **Rule.** A rename changes names and codes only. Seed draws (and any choice made from a code) through one lookup (`synthetic/books/innovation/renames.py::seed_code`) that maps a renamed client to the code it was signed under. Prove it before committing: unrenamed clients byte-identical, renamed truth identical once names are normalised, oracle identical once names are normalised.
+- **Carrying signatures.** Rename the old key's rows as text, then regenerate: the generator's own rule (a row stays signed only if every value is unchanged) does the carrying. Never sign renamed rows by hand, and never loosen `_keep_sign_off` to ignore names.
+- **Recordings do not survive a rename** (documents print the name, so hashes and record keys change). Archive them under the old codes and have recorded mode skip those clients by name with the reason, so the replay neither fails nor passes silently.
+
+Applies to: `synthetic/books/innovation/`, any future rename of invented names, `evals/run.py` recorded mode.

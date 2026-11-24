@@ -1,0 +1,200 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "06d160b9-d023-4373-96e7-eba4354ac100": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "41c1c5ef-3a0b-4cb0-a7af-094cd6e5e4ef": {
+   "document": "a4e92a9f472596555a26a59353898d53bd17aaa997160b7774eecbc88d01bd1d",
+   "key": "cert.min_unrestricted_cash.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "7800000"
+  },
+  "5b3cadc2-4d3a-4705-9229-e009e5b4f1ab": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.2491"
+  },
+  "684b9aa8-5413-490b-8e50-0db96a8d7d5d": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.0524"
+  },
+  "81b68d8b-fa6a-4000-9d13-a1d53e98c396": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.3155"
+  },
+  "9386e310-4e75-427a-b239-67548985bf27": {
+   "formula_key": "covenant.min_runway_months",
+   "outputs": {
+    "avg_net_burn": "600000",
+    "headroom": "7",
+    "headroom_pct": "1.1667",
+    "passed": true,
+    "raw_value": "13",
+    "threshold": "6",
+    "value": "13"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "97c37109-a7f8-4476-be15-c93036040b7b": {
+   "document": "a4e92a9f472596555a26a59353898d53bd17aaa997160b7774eecbc88d01bd1d",
+   "key": "cert.min_runway_months.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "13"
+  },
+  "9ec6f709-1171-49be-8fdb-096740cfb82b": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4000000"
+  },
+  "cf64b5f1-0a78-4056-b538-fa948bc33eee": {
+   "formula_key": "covenant.min_unrestricted_cash",
+   "outputs": {
+    "headroom": "3800000",
+    "headroom_pct": "0.95",
+    "passed": true,
+    "raw_value": "7800000",
+    "threshold": "4000000",
+    "value": "7800000"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "d264d803-c08b-4db5-8c12-07d6ca1adf9e": {
+   "document": "a4e92a9f472596555a26a59353898d53bd17aaa997160b7774eecbc88d01bd1d",
+   "key": "cert.revenue_vs_plan.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.0524"
+  },
+  "d3a8f252-83d2-4ddf-84b5-2f3857a60379": {
+   "document": null,
+   "key": "cov.min_runway_months.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "13"
+  },
+  "d63dcae9-47e6-4812-b5ea-8687bc7491be": {
+   "document": null,
+   "key": "cov.min_runway_months.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.1667"
+  },
+  "d770f601-ebaf-4977-88d6-bfa248b29b65": {
+   "document": null,
+   "key": "cov.min_runway_months.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6"
+  },
+  "f8a2539a-06cf-4e90-9367-a919f30767ce": {
+   "formula_key": "covenant.revenue_vs_plan",
+   "outputs": {
+    "headroom": "0.2524",
+    "headroom_pct": "0.3155",
+    "passed": true,
+    "raw_value": "1.052381388621022179363548698",
+    "threshold": "0.8",
+    "value": "1.0524"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "fbba13e9-a874-4dda-8bbd-babcbf4a25ce": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.95"
+  },
+  "fee82a9e-46a2-4939-b684-e43405c110d8": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "7800000"
+  }
+ },
+ "_spec": "review@1:756954570713",
+ "content": [
+  {
+   "signature": "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",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "text": "{\"sections\":[{\"section\":\"summary\",\"body\":\"Mosswell Robotics was compliant with each of its covenants on its Venture Term Loan for the period ended October 31, 2026, and the compliance certificate agrees with the bank's calculation on each. The most notable change is a steady decline in the unrestricted cash cushion since August, flagged by a low-severity early warning signal. Cash of {{fact:fee82a9e-46a2-4939-b684-e43405c110d8}} remains above the {{fact:9ec6f709-1171-49be-8fdb-096740cfb82b}} minimum. No open work items await a decision this period.\"},{\"section\":\"covenants\",\"body\":\"Minimum Runway was calculated at {{fact:d3a8f252-83d2-4ddf-84b5-2f3857a60379}} against a requirement of {{fact:d770f601-ebaf-4977-88d6-bfa248b29b65}}, a cushion of {{fact:d63dcae9-47e6-4812-b5ea-8687bc7491be}}. Minimum Unrestricted Cash was calculated at {{fact:fee82a9e-46a2-4939-b684-e43405c110d8}} against a required {{fact:9ec6f709-1171-49be-8fdb-096740cfb82b}}, a cushion of {{fact:fbba13e9-a874-4dda-8bbd-babcbf4a25ce}}. Revenue to Plan was calculated at {{fact:684b9aa8-5413-490b-8e50-0db96a8d7d5d}} against a required {{fact:06d160b9-d023-4373-96e7-eba4354ac100}}, a cushion of {{fact:81b68d8b-fa6a-4000-9d13-a1d53e98c396}}. The certificate reports {{fact:97c37109-a7f8-4476-be15-c93036040b7b}}, {{fact:41c1c5ef-3a0b-4cb0-a7af-094cd6e5e4ef}} and {{fact:d264d803-c08b-4db5-8c12-07d6ca1adf9e}} respectively, matching the bank's calculations, and claims compliance on each covenant.\"},{\"section\":\"risks\",\"body\":\"An early warning signal of low severity fired: the cushion of unrestricted cash over the covenant minimum has fallen steadily from August to October, now standing at {{fact:fbba13e9-a874-4dda-8bbd-babcbf4a25ce}}. The signal attributes the trend to ongoing cash burn. Because the runway covenant depends on the same cash position, a reviewer may wish to consider how the burn rate bears on future runway and cash cushions. The August cushion figure is not among the facts provided here and should be confirmed from the signal record. No other signals fired and there are no open work items.\"}]}",
+   "type": "text"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "end_turn",
+ "usage": {
+  "cache_creation_input_tokens": 1349,
+  "cache_read_input_tokens": 3040,
+  "input_tokens": 4,
+  "output_tokens": 1229
+ }
+}

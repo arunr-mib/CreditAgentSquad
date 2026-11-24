@@ -1,0 +1,57 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "3e25c14d-37d3-40d2-b995-7f155db348fd": {
+   "document": null,
+   "key": "cov.fccr.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.28"
+  },
+  "47368e5d-9530-498c-bb3f-6ccd8b1b8bf5": {
+   "document": null,
+   "key": "cov.fccr.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "-0.0519"
+  },
+  "96526fb0-3f31-4d0a-a1ea-1eed755f60f1": {
+   "document": null,
+   "key": "cov.fccr.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.35"
+  }
+ },
+ "_spec": "early_warning@1:38b46a6cfb2c",
+ "content": [
+  {
+   "signature": "CAQS4AkKEAgUGAI4AUIIdGhpbmtpbmcSDN/TUNns0+e50onOuxoMTCiimzFM2OQymlVMIjBC0mwPCivI9atTH40f5zTUUnansJPkU80CqVDllL7AQ75+V0RXXiLHWtaidKF+2SIq/QhNGaF34UvG0YwoB61oH/4sWbWaOCD8kxTWsL18W1y0ui/PyZ0Uy7nHFuaQ4fNEYQ6uU3IgSbMHjZDdMao+a2nmogypFpD5e98ogIkESZ43bgaICcXEuKUN007D3Uw/IOkA3YcWmLg14Usx0EKwHT7Hbvr6XboS6JZdDescmtu6lfRbvbU9U6kp1nZmkdLY0LOvFrWuNtf6UwV1Z6Vsf4YLHr5QdiH4HEPMfUe2IF7LeHSoTHfStJeAYccbVHo7W+P3TdyBpMQFkAW87XQQyV5vcOOE/YqA1bHn6JbKLNXZ6uPgKFlf9JmfKmqCUGRiWt0/+bnEJHMqBKF2vylSm861WjWZxtFLqx4TA3OJKxboEFTPFsWcnDwOM1YasFzvSKS4qFHrzVvNHxnA3WMfsR4TVfTwlfu8N70mY70Jwfv5rrGfjGLFXJH/oH89aCapH116kV9Tmpz7WFK5sgTJPRamAQ+xzxQj3eijNFap1q5YTxXB9gcsDIK7/HbN+yyowKw2b6HvEkIFOxzk7gO8HisS1d7rixcKCnczoSLkU0fsQZIyvYWgpPWeUI6XEv8SKbh90tzwnk4h0ziK8S/ro9bu+ATHBJhIvk8a822+MuJ2JjIl9ceZt8r01diqDkYYgtb4FPUKDkIURNxOgLhdRrle/cwWDMbldAiX6MMI2ZbKoq/jrN+GHtJp0h82Zl+AAqctgpOPhadCfa2gzONxtikX3bdp7ctRQdWgfu97kdDQq1klqXxkjAfrMRsx64bgJCCtvuwk0NIny3uWAv/grvsBqGsXr5E7wbHc8zs/uQM0ZdpwflTQMwnijHIhjMBbQvpVAFRAGfkVu9gEW7gl9MGzl9wAtfO0LE/GEGFnn/EUwfObMsHP2pHEDIov43mUTvTBnqOBRdQqJtM0QhkfzDrdk9Qka3zcqiVDvBJ1mVFKxBkVEvnhOocLlDTzHVGih2/ci/qJiN5CFbfD+vMP5YG1xUHXjYFDdiBVp2cbOtA2GIuVk70SPmRjgBcKTNK6PwYDyHTRwXfWIjR9JbsR6ZPhkIoxXv6kiUD9DgklYRhhRgOKqjm2UNyPRnw69e0o/rjlbRUf/72f3bRT4SfRb5+JQ9ULvCrA6p2KpwnDiiwMQz/m3eCr77kw46J2n1KHPhpjVIKMygv1Nn74pfMGW0wnVPVX6qh1V2NazKV77JSXR9pbLHk2//T8Nd52w6gw5HS6xaNDiqejoCmAeG+0drJQBQcVfhBbyinsEi8Uo7sIhf2BvgaFX3c5HdCFceMUc3iYH1aATYuP6FAzDDjuPF89V4Ea/1lEHfjn49ldtLhmLp35dkp9KRnUV/vp0wYXijrxLKU1CV7s5Z93gpG56WSyztP2SwUz1Tytqcz9guo4LKt/4yV6Z5TUkjev8U+ofelSp6XJvrDV82GWpTneJdJ1y72apa5ratNC0svsDfmQKSugY3/urRYeSu83JZQZyY9loOIb3sHjoEf22PHjRANSt8Ai1OTzhOK+2T/qKRHEMGuncLuvR6XcuOuS6a4YAQ==",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "text": "{\"explanations\":[{\"signal_id\":\"9b4a2602-8744-4d36-88de-d5119569b6b7\",\"explanation\":\"Fixed charge coverage was {{fact:3e25c14d-37d3-40d2-b995-7f155db348fd}} against a covenant minimum of {{fact:96526fb0-3f31-4d0a-a1ea-1eed755f60f1}}, leaving headroom of {{fact:47368e5d-9530-498c-bb3f-6ccd8b1b8bf5}}. Because the headroom is negative, coverage sits below the required level rather than merely near it. Cash flow is covering fixed charges with less cushion than the lender required. No other signal fired to corroborate or explain it.\"}],\"ranking\":[\"9b4a2602-8744-4d36-88de-d5119569b6b7\"]}",
+   "type": "text"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "end_turn",
+ "usage": {
+  "cache_creation_input_tokens": 1489,
+  "cache_read_input_tokens": 0,
+  "input_tokens": 4,
+  "output_tokens": 500
+ }
+}

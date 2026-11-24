@@ -1,0 +1,121 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "20e82f95-f192-4d3b-ad4b-4c408e3fa3fc": {
+   "document": "b50a88274520a31e3375253293338b1e27ad9e11ac4ac91a9b2caf801fe5228f",
+   "key": "cert.min_unrestricted_cash.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6100000"
+  },
+  "2fabe794-3887-41f6-bc69-6654ea52676d": {
+   "sha256": "8e61cf1ad548fbf40c49c7d23b872ce51891faba0636775a1dc114e2cf8dd98a",
+   "type": "document"
+  },
+  "420db624-0e32-49de-bd64-e9d3d4a80144": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "-0.08"
+  },
+  "42b95c3d-e261-4df8-8225-9c03419e5211": {
+   "formula_key": "covenant.min_unrestricted_cash",
+   "outputs": {
+    "headroom": "-400000",
+    "headroom_pct": "-0.08",
+    "passed": false,
+    "raw_value": "4600000",
+    "threshold": "5000000",
+    "value": "4600000"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "72314421-976e-4db8-8c1a-54edfb96cefd": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4600000"
+  },
+  "797f7e18-b0f4-47b4-9561-fc9d6bb7c7f8": {
+   "document": "b624cef7b8a0c32518bbc1f7e1dc660cc29a4f092521eddd3c6dd4117bd84f59",
+   "key": "bs.cash_unrestricted",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4600000"
+  },
+  "90263cfa-801d-4997-8049-daccf4de5980": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5000000"
+  },
+  "c945fd67-d769-4aec-ab76-ed9cca0cbdd7": {
+   "document": "b50a88274520a31e3375253293338b1e27ad9e11ac4ac91a9b2caf801fe5228f",
+   "key": "cert.min_unrestricted_cash.threshold",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5000000"
+  }
+ },
+ "_spec": "covenant@2:297ca24fdcef",
+ "content": [
+  {
+   "signature": "CAQSmgYKEAgUGAI4AUIIdGhpbmtpbmcSDOvTj+qew1SOzMctXxoMnTVKyELFpCVA0RwyIjDxT6V29iIj4TyyqBrw/AXzM1GZnyqKYifAk9yQiD/ehFkHXCaA/ccCHKNFpAa1FcYqtwVv7wTwH7IeLYZT/ylZxHVFXNNUmDkUlDX7/Agz3TUJuJG2yYLh9DpJazs0Gziefhh4rSePahaKTgri/gJfWuXTkbwTYuojWehK0QeDQVzkIRQaK6/QTXM4soRqmEp3/42VL8QFLydtW1w9eDBqLKDS1K/SDm6GoAvCq8ykyONgszYWpsrPURKWnx08V213Ea8d7ZDmXRiMGOYQX5JSNlLqvUjbRKi01vlaU8sN2fjizeE0bWCnwmirf2STT6wIh8932AbRT1vhFr3bhfEoDTV9KRloL0etcBoXDMPygjln/q+JQ1FwI9IHSf36Dopf7oVvpi6gaVAOwA6D+LjZ1TFLkMD79AQD9LeWejWHS+mJNcwJ/g4S5auH+ZCFO8FoYWpeASgCzOlJbKWn+qkJaa9R0O6mo4gtKGJ7HJdPU8d/joWpY6sHcrdTQ8DfA2UfiOqWyeHH+qJ66LCxt0DZq8/wfk6AaG4k2VW7FSsLPsnDPUEE7fCbeif+yuAa2zmWvQJB/dmKVRw9PC5SmHpYcMG/PAJ/tTlvxBZVveDQu1yjSjyaTi7Uic1mgBVa/G3qOaG823oFf6Gc2ZmMCSl+2o+b/IZBlbgxr7uleZGS5JVRtTufNdYxNv/Jguo4zIwnBl7mVS+Cekiw8uUfTnqBHnrLZrhrKPCLQe4C0Ua5JR3e2is56+AyZN3CkNOABGJiMXsyf/9fKioN9SyFzQZvIsIJLNN27/0GZQqq+4IQyDsy+z/kK8DGjf9vaeAoJjXOUnjJ942m23lamgYVzDlz/TsbkyGi0LSoSI+etVoKBhUKMPdyMg8CeqkqSfcndjGPGaW3c47eC+vnwCJi1c29R6Vid7xmGDnk+AnsS1a0S901bbTrBH90XBhlU5mtQY2C87cggw8czs6ipS2/EqOvOJfAk9XV0LXMDBgB",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_015TQnTtTdmmqR94kPvHcvpJ",
+   "input": {},
+   "name": "list_documents",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01D1HwTtmmwuTB9Z9897jG7F",
+   "input": {
+    "tag": null
+   },
+   "name": "search_lessons",
+   "type": "tool_use"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "tool_use",
+ "usage": {
+  "cache_creation_input_tokens": 1257,
+  "cache_read_input_tokens": 3891,
+  "input_tokens": 2,
+  "output_tokens": 134
+ }
+}

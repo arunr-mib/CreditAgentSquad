@@ -1,0 +1,669 @@
+{
+ "meta": {
+  "suite": "monitoring-cycle",
+  "mode": "record",
+  "standin": false,
+  "label": "Mode record: answers came from a live model.",
+  "generated_at": "2026-11-23T23:58:22+00:00",
+  "commit": "9f0b401a44be878cf0089a52c9c473b8c740102a",
+  "borrowers": 3,
+  "scope": [
+   "brackmere-medical",
+   "cindrel-tech",
+   "calvere-health"
+  ],
+  "decide": true,
+  "passes": 1,
+  "seconds": 199.9,
+  "unsigned_oracle_rows": 0,
+  "standin_print_vs_truth_disagreements": [],
+  "not_replayed": [],
+  "accepted_stale": [],
+  "record_agents": [],
+  "prompt_only_verified": 0,
+  "eval_run_id": "18536a84-19fd-4b66-b2d3-abdd94d866c3"
+ },
+ "gate": {
+  "passed": true,
+  "reasons": [],
+  "run_errors": [],
+  "nothing_read": [],
+  "rule": "any invented-number or false-compliant in any pass fails; any cycle that failed on an error fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated",
+  "known_findings_applied": [],
+  "unexplained": [],
+  "stale_known_findings": []
+ },
+ "metrics": {
+  "extraction_accuracy": 1.0,
+  "extraction_facts_expected": 112,
+  "extraction_facts_correct": 112,
+  "extraction_abstain_rate": 0.0,
+  "cycles_needing_no_person": 0.0,
+  "cycles_expected_to_need_no_person": 0.0,
+  "exception_precision": 1.0,
+  "exception_recall": 1.0,
+  "covenant_outcome_accuracy": 0.6667,
+  "covenant_abstain_rate": 0.0,
+  "cycles_run": 3,
+  "cycles_closed": 1,
+  "cycles_reaching_signals": 1,
+  "disagreements": 0,
+  "input_tokens": 69340,
+  "output_tokens": 20627
+ },
+ "failure_counts": {
+  "invented-number": 0,
+  "false-compliant": 0,
+  "false-breach": 0,
+  "missed-exception": 0,
+  "false-exception": 0,
+  "wrong-citation": 0,
+  "wrong-abstain": 0,
+  "missed-abstain": 0,
+  "stale-terms": 0
+ },
+ "borrowers": {
+  "brackmere-medical": {
+   "borrower": "brackmere-medical",
+   "scenario": "restricted_account",
+   "error": null,
+   "expected_exceptions": [
+    "cash.statement_mismatch"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "cash.statement_mismatch"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 62,
+    "correct": 62,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "cash.statement_mismatch",
+       "blocks_stage": false,
+       "stage": "covenant_testing"
+      },
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "cash.statement_mismatch",
+       "decision": "reviewed",
+       "by_role": "credit_officer",
+       "error": null
+      },
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The statement of operations, cash flow statement and supplemental page print no prior-year comparative column; the second column on those pages is the single month ended October 31, 2026, which was not spread. Only the balance sheet has a comparative column (December 31, 2025), which is the prior fiscal year end rather than the same date a year earlier."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Note 1 on page 5 is a one-month rollforward of capitalised software (opening balance, additions, amortisation, closing balance); none of its rows were spread as the template has no line for them, and its closing balance matches the balance sheet line already reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The pack prints no SaaS metrics, so the SaaS lines were left out."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No stock-based compensation memo line is printed anywhere in the pack."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The document is a single-page bank statement for October 1 to October 31, 2026, not a set of financial statements. Only the two bank summary totals were reported, as at the October 31, 2026 statement date."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The summary table prints no column header, so the section heading 'Summary' is given as the column header."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed; figures are shown in whole dollars."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The restricted total includes an escrow collateral account (ending 9002) that was opened on October 14, 2026 under an escrow arrangement. The collateral account ending 9001 is pledged under the venture loan agreement."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "This document is a monthly MRR report, not a financial statement pack. Only the SaaS metric lines are reported. The figures are point-in-time month-end metrics as of October 31, 2026, not ten-month fiscal year-to-date amounts."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No prior-year comparative column is printed, so no comparative cells are reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The MRR bridge (opening MRR, new customers, expansion, contraction, churn, closing MRR) and the trailing six months table have no template lines and were not spread."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Net new ARR is labelled as being for the month only. The template line may expect a different measurement period."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/brackmere-medical/2026-10-31/01",
+     "text": "The Schedule 1 calculation of Unrestricted Cash on page two includes cash held in an escrow collateral account opened during the month; escrow collateral cash may not qualify as unrestricted, so the reported cash and runway figures may warrant review.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/brackmere-medical/2026-10-31/01",
+     "text": "The requirement for Revenue to Plan on page one wraps across two lines in the summary table.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/brackmere-medical/2026-10-31/01",
+     "text": "Unrestricted cash headroom slipped from {{fact:3ce160dd-3a08-48c9-bb27-ba864fb42ea9}} to {{fact:9c317a78-fb2b-4ef1-8d0b-99c44a0f3974}}, then fell sharply to {{fact:2906f61f-4b39-46a4-964a-c9a108fc19cf}} in October. Cash of {{fact:a280aeb3-37d8-4e61-b9b6-7bd220b149f0}} still clears the {{fact:2e0970d5-4f5d-4491-bf43-4b2ff6fc2d2e}} floor. The runway decline points the same way, suggesting cash burn picked up.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/brackmere-medical/2026-10-31/01",
+     "text": "Runway headroom fell from {{fact:bc6196a2-5e4a-405b-a31a-3507c574581f}} to {{fact:ab609b05-cc7f-49e3-885d-d5d2cabfd20f}} and then to {{fact:c088cb13-c166-4468-ba16-365e40e93a7c}}, with the steepest drop in October. Runway of {{fact:ccb823a4-d9d6-4a9a-ad4e-4b352a725383}} months is still well above the {{fact:b922f3af-45bc-42e7-abf0-39ee86c2a5e1}}-month minimum. The October drop mirrors the falling cash balance, so both covenants reflect the same liquidity pressure.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/brackmere-medical/2026-10-31/01",
+     "text": "Revenue headroom has been essentially flat, at {{fact:018378f7-0ac5-4927-a5d6-7fed9f650a7f}}, {{fact:8ecd74bb-c12a-4cbe-b597-e72a4aa38448}} and {{fact:6bee3bb8-0aa3-4731-a413-f092a6711030}}. Revenue is running at {{fact:7afe03cb-986c-438b-a580-887f6533735b}} of plan against an {{fact:5801d833-6a61-43d7-a541-8526ce1751ac}} floor. This suggests the cash and runway declines stem from spending or working capital rather than weaker sales.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/brackmere-medical/2026-10-31/02",
+     "text": "Unrestricted cash headroom slipped from {{fact:3ce160dd-3a08-48c9-bb27-ba864fb42ea9}} to {{fact:9c317a78-fb2b-4ef1-8d0b-99c44a0f3974}}, then fell sharply to {{fact:2906f61f-4b39-46a4-964a-c9a108fc19cf}} in October. Cash of {{fact:a280aeb3-37d8-4e61-b9b6-7bd220b149f0}} still clears the {{fact:2e0970d5-4f5d-4491-bf43-4b2ff6fc2d2e}} floor. The runway decline points the same way, suggesting cash burn picked up.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/brackmere-medical/2026-10-31/02",
+     "text": "Runway headroom fell from {{fact:bc6196a2-5e4a-405b-a31a-3507c574581f}} to {{fact:ab609b05-cc7f-49e3-885d-d5d2cabfd20f}} and then to {{fact:c088cb13-c166-4468-ba16-365e40e93a7c}}, with the steepest drop in October. Runway of {{fact:ccb823a4-d9d6-4a9a-ad4e-4b352a725383}} months is still well above the minimum of {{fact:b922f3af-45bc-42e7-abf0-39ee86c2a5e1}} months. The October drop mirrors the falling cash balance, so both covenants reflect the same liquidity pressure.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/brackmere-medical/2026-10-31/02",
+     "text": "Revenue headroom has been essentially flat, at {{fact:018378f7-0ac5-4927-a5d6-7fed9f650a7f}}, {{fact:8ecd74bb-c12a-4cbe-b597-e72a4aa38448}} and {{fact:6bee3bb8-0aa3-4731-a413-f092a6711030}}. Revenue is running at {{fact:7afe03cb-986c-438b-a580-887f6533735b}} of plan against an {{fact:5801d833-6a61-43d7-a541-8526ce1751ac}} floor. This suggests the cash and runway declines stem from spending or working capital rather than weaker sales.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 42036,
+    "output": 13312,
+    "cache_read": 6494
+   },
+   "ledger_ok": true,
+   "seconds": 125.57
+  },
+  "calvere-health": {
+   "borrower": "calvere-health",
+   "scenario": "late_package",
+   "error": null,
+   "expected_exceptions": [
+    "intake.missing_document"
+   ],
+   "stage_reached": "awaiting_package",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": null,
+   "raised_exceptions": [
+    "intake.missing_document"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 0,
+    "correct": 0,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": null,
+    "abstain_rate": null,
+    "by_document": {},
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "awaiting_package",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 7.99
+  },
+  "cindrel-tech": {
+   "borrower": "cindrel-tech",
+   "scenario": "cindrel_package",
+   "error": null,
+   "expected_exceptions": [
+    "intake.unclassified",
+    "spread.value_unverified"
+   ],
+   "stage_reached": "spreading",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "intake",
+   "raised_exceptions": [
+    "intake.unclassified",
+    "spread.value_unverified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [
+    "covenant test min_unrestricted_cash",
+    "covenant test min_runway_months",
+    "covenant test revenue_vs_plan",
+    "signals"
+   ],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 50,
+    "correct": 50,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 43,
+      "correct": 43
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "intake.unclassified",
+       "decision": "not_needed",
+       "by_role": "analyst",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "spreading",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "spread.value_unverified",
+       "blocks_stage": true,
+       "stage": "spreading"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The statement of operations, statement of cash flows and supplemental information print no prior-year comparative column; the second column is the single month ended October 31, 2026, which was not spread. Comparatives are reported for the balance sheet only (December 31, 2025)."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The balance sheet row 'Contract liabilities' was mapped to Deferred revenue, current (bs.deferred_revenue_current)."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Note 1 on page 5 (capitalised software roll-forward for the month) was not spread; its closing balance agrees with the balance sheet line."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The pack prints no SaaS metrics (MRR, ARR, customers, net new ARR, net revenue retention); these were left out."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "This document is a bank account statement for October 1 to October 31, 2026, not a set of financial statements. Only the two bank account total lines were spread."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The summary figures have no printed column header; the section heading 'Summary' was used as the column header."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed; the figures are shown in dollars."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The 'Total balances on deposit' row has no matching template line and was not reported."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The document is a monthly MRR report, not a set of financial statements; it contains no income statement, balance sheet or cash flow statement for the ten-month fiscal year to date, so only the SaaS metric lines were reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Net new ARR is printed for the single month of October only, not for the fiscal year to date."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Net revenue retention is printed on a trailing twelve month basis."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No prior-year comparative column is printed; the trailing six months table and MRR bridge show recent monthly history only and were not spread."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed; figures are shown in dollars."
+      }
+     ]
+    }
+   ],
+   "held_cells": [
+    {
+     "item": "spread.value_unverified",
+     "key": "bs.capitalised_software",
+     "printed_label": "Capitalised software development costs",
+     "row_label": "Capitalised software development costs",
+     "reason": "mapping_doubt",
+     "page": 1
+    },
+    {
+     "item": "spread.value_unverified",
+     "key": "bs.deferred_revenue_current",
+     "printed_label": "Contract liabilities",
+     "row_label": "Contract liabilities",
+     "reason": "mapping_doubt",
+     "page": 1
+    },
+    {
+     "item": "spread.value_unverified",
+     "key": "cf.capitalised_software_spend",
+     "printed_label": "Software development costs",
+     "row_label": "Software development costs",
+     "reason": "mapping_doubt",
+     "page": 3
+    }
+   ],
+   "unshown_text": [
+    {
+     "agent": "intake",
+     "record_key": "intake/cindrel-tech/2026-10-31/01",
+     "text": "Untitled spreadsheet export of monthly recurring revenue and customer counts with no borrower name, no title and no report date; it covers months in the prior year rather than the current period, so it cannot be confirmed as a borrower MRR report and needs a person to review.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 27304,
+    "output": 7315,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 65.31
+  }
+ },
+ "known_findings": [],
+ "passes": [
+  {
+   "metrics": {
+    "extraction_accuracy": 1.0,
+    "extraction_facts_expected": 112,
+    "extraction_facts_correct": 112,
+    "extraction_abstain_rate": 0.0,
+    "cycles_needing_no_person": 0.0,
+    "cycles_expected_to_need_no_person": 0.0,
+    "exception_precision": 1.0,
+    "exception_recall": 1.0,
+    "covenant_outcome_accuracy": 0.6667,
+    "covenant_abstain_rate": 0.0,
+    "cycles_run": 3,
+    "cycles_closed": 1,
+    "cycles_reaching_signals": 1,
+    "disagreements": 0,
+    "input_tokens": 69340,
+    "output_tokens": 20627
+   },
+   "failure_counts": {
+    "invented-number": 0,
+    "false-compliant": 0,
+    "false-breach": 0,
+    "missed-exception": 0,
+    "false-exception": 0,
+    "wrong-citation": 0,
+    "wrong-abstain": 0,
+    "missed-abstain": 0,
+    "stale-terms": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,5467 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "calder-finch-staffing",
+  "name": "Calder & Finch Staffing Group, LLC",
+  "legal_form": "llc",
+  "industry": "services",
+  "city": "Columbus",
+  "state": "OH",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Colin Abernathy",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 6,
+  "statement_scale": 1,
+  "chief_financial_officer": "Philippa Trask",
+  "auditor": "Hobart Lindgren & Co. LLP"
+ },
+ "facilities": [
+  {
+   "id": "calder-finch-staffing-rlc",
+   "borrower_id": "calder-finch-staffing",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "1250000",
+   "original_amount": "1250000",
+   "closing_date": "2023-01-20",
+   "maturity_date": "2029-01-20",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "calder-finch-staffing-tl",
+   "borrower_id": "calder-finch-staffing",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "3465000",
+   "original_amount": "3465000",
+   "closing_date": "2023-01-20",
+   "maturity_date": "2030-01-20",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "86625"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-calder-finch-staffing-1",
+   "facility_id": "calder-finch-staffing-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2023-01-20",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2023-01-26",
+   "warnings": [],
+   "source_documents": [
+    "calder-finch-staffing.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.00",
+       "steps": [
+        {
+         "from": "2026-01-01",
+         "value": "1.75"
+        }
+       ],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "calder-finch-staffing.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "calder-finch-staffing.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       },
+       {
+        "field": "test.steps[0]",
+        "document_id": "calder-finch-staffing.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "Notwithstanding the foregoing, as of the last day of each fiscal quarter ending on or after January 1, 2026, the Total Leverage Ratio shall not exceed 1.75 to 1.00."
+       }
+      ]
+     },
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "calder-finch-staffing.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "calder-finch-staffing.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "calder-finch-staffing.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "calder-finch-staffing.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "calder-finch-staffing.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "calder-finch-staffing.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "calder-finch-staffing.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "calder-finch-staffing.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $1,250,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "calder-finch-staffing.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $3,465,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "calder-finch-staffing.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $86,625 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "4212916",
+    "is.cogs": "2837399",
+    "is.gross_profit": "1375517",
+    "is.sga": "947906",
+    "is.depreciation_amortization": "84647",
+    "is.other_operating_expense": "16852",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "326112",
+    "is.interest_expense": "68355",
+    "is.other_income_net": "2528",
+    "is.pretax_income": "260285",
+    "is.income_tax_expense": "5206",
+    "is.net_income": "255079",
+    "bs.cash": "505550",
+    "bs.accounts_receivable": "2613162",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "202220",
+    "bs.total_current_assets": "3320932",
+    "bs.net_ppe": "2015471",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6656403",
+    "bs.accounts_payable": "870654",
+    "bs.accrued_liabilities": "439864",
+    "bs.revolver": "758325",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "241129",
+    "bs.total_current_liabilities": "2656472",
+    "bs.long_term_debt": "2685375",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "262350",
+    "bs.total_liabilities": "5604197",
+    "bs.total_equity": "1052206",
+    "bs.total_liabilities_and_equity": "6656403",
+    "cf.net_income": "255079",
+    "cf.depreciation_amortization": "84647",
+    "cf.change_in_working_capital": "-82065",
+    "cf.other_operating": "2970",
+    "cf.cfo": "260631",
+    "cf.capex": "92684",
+    "cf.other_investing": "0",
+    "cf.cfi": "-92684",
+    "cf.revolver_net": "87294",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "86625",
+    "cf.distributions": "158066",
+    "cf.other_financing": "0",
+    "cf.cff": "-157397",
+    "cf.net_change_in_cash": "10550",
+    "sup.cash_interest_paid": "69425",
+    "sup.cash_taxes_paid": "5288",
+    "sup.scheduled_principal": "86625",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "859241",
+    "cash.beginning_of_year": "495000",
+    "debt.term_total": "3031875"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "8615392",
+    "is.cogs": "5783096",
+    "is.gross_profit": "2832296",
+    "is.sga": "1938463",
+    "is.depreciation_amortization": "169633",
+    "is.other_operating_expense": "34462",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "689738",
+    "is.interest_expense": "136863",
+    "is.other_income_net": "5169",
+    "is.pretax_income": "558044",
+    "is.income_tax_expense": "11161",
+    "is.net_income": "546883",
+    "bs.cash": "528297",
+    "bs.accounts_receivable": "2639073",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "211319",
+    "bs.total_current_assets": "3378689",
+    "bs.net_ppe": "2027339",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6726028",
+    "bs.accounts_payable": "903885",
+    "bs.accrued_liabilities": "458681",
+    "bs.revolver": "792446",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "252494",
+    "bs.total_current_liabilities": "2754006",
+    "bs.long_term_debt": "2598750",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "265320",
+    "bs.total_liabilities": "5618076",
+    "bs.total_equity": "1107952",
+    "bs.total_liabilities_and_equity": "6726028",
+    "cf.net_income": "546883",
+    "cf.depreciation_amortization": "169633",
+    "cf.change_in_working_capital": "-53662",
+    "cf.other_operating": "5940",
+    "cf.cfo": "668794",
+    "cf.capex": "189538",
+    "cf.other_investing": "0",
+    "cf.cfi": "-189538",
+    "cf.revolver_net": "121415",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "173250",
+    "cf.distributions": "394124",
+    "cf.other_financing": "0",
+    "cf.cff": "-445959",
+    "cf.net_change_in_cash": "33297",
+    "sup.cash_interest_paid": "137882",
+    "sup.cash_taxes_paid": "10494",
+    "sup.scheduled_principal": "173250",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "914987",
+    "cash.beginning_of_year": "495000",
+    "debt.term_total": "2945250"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "13024431",
+    "is.cogs": "8722602",
+    "is.gross_profit": "4301829",
+    "is.sga": "2930497",
+    "is.depreciation_amortization": "255119",
+    "is.other_operating_expense": "52098",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1064115",
+    "is.interest_expense": "204495",
+    "is.other_income_net": "7814",
+    "is.pretax_income": "867434",
+    "is.income_tax_expense": "17349",
+    "is.net_income": "850085",
+    "bs.cash": "529085",
+    "bs.accounts_receivable": "2763803",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "211634",
+    "bs.total_current_assets": "3504522",
+    "bs.net_ppe": "2038852",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6863374",
+    "bs.accounts_payable": "901985",
+    "bs.accrued_liabilities": "459039",
+    "bs.revolver": "802148",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "253094",
+    "bs.total_current_liabilities": "2762766",
+    "bs.long_term_debt": "2512125",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "268290",
+    "bs.total_liabilities": "5543181",
+    "bs.total_equity": "1320193",
+    "bs.total_liabilities_and_equity": "6863374",
+    "cf.net_income": "850085",
+    "cf.depreciation_amortization": "255119",
+    "cf.change_in_working_capital": "-179649",
+    "cf.other_operating": "8910",
+    "cf.cfo": "934465",
+    "cf.capex": "286537",
+    "cf.other_investing": "0",
+    "cf.cfi": "-286537",
+    "cf.revolver_net": "131117",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "259875",
+    "cf.distributions": "485085",
+    "cf.other_financing": "0",
+    "cf.cff": "-613843",
+    "cf.net_change_in_cash": "34085",
+    "sup.cash_interest_paid": "205806",
+    "sup.cash_taxes_paid": "16449",
+    "sup.scheduled_principal": "259875",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1127228",
+    "cash.beginning_of_year": "495000",
+    "debt.term_total": "2858625"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "17356919",
+    "is.cogs": "11628402",
+    "is.gross_profit": "5728517",
+    "is.sga": "3905307",
+    "is.depreciation_amortization": "341091",
+    "is.other_operating_expense": "69428",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1412691",
+    "is.interest_expense": "270777",
+    "is.other_income_net": "10413",
+    "is.pretax_income": "1152327",
+    "is.income_tax_expense": "23047",
+    "is.net_income": "1129280",
+    "bs.cash": "519899",
+    "bs.accounts_receivable": "2630354",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "207959",
+    "bs.total_current_assets": "3358212",
+    "bs.net_ppe": "2048195",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6726407",
+    "bs.accounts_payable": "891643",
+    "bs.accrued_liabilities": "451010",
+    "bs.revolver": "730105",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "248317",
+    "bs.total_current_liabilities": "2667575",
+    "bs.long_term_debt": "2425500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "271260",
+    "bs.total_liabilities": "5364335",
+    "bs.total_equity": "1362072",
+    "bs.total_liabilities_and_equity": "6726407",
+    "cf.net_income": "1129280",
+    "cf.depreciation_amortization": "341091",
+    "cf.change_in_working_capital": "-65673",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1416578",
+    "cf.capex": "381852",
+    "cf.other_investing": "0",
+    "cf.cfi": "-381852",
+    "cf.revolver_net": "59074",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "722401",
+    "cf.other_financing": "0",
+    "cf.cff": "-1009827",
+    "cf.net_change_in_cash": "24899",
+    "sup.cash_interest_paid": "272538",
+    "sup.cash_taxes_paid": "22637",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1169107",
+    "cash.beginning_of_year": "495000",
+    "debt.term_total": "2772000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "4376377",
+    "is.cogs": "2926046",
+    "is.gross_profit": "1450331",
+    "is.sga": "984685",
+    "is.depreciation_amortization": "86366",
+    "is.other_operating_expense": "17506",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "361774",
+    "is.interest_expense": "63349",
+    "is.other_income_net": "2626",
+    "is.pretax_income": "301051",
+    "is.income_tax_expense": "6021",
+    "is.net_income": "295030",
+    "bs.cash": "525165",
+    "bs.accounts_receivable": "2666592",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "210066",
+    "bs.total_current_assets": "3401823",
+    "bs.net_ppe": "2058109",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6779932",
+    "bs.accounts_payable": "897855",
+    "bs.accrued_liabilities": "454377",
+    "bs.revolver": "787748",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "251098",
+    "bs.total_current_liabilities": "2737578",
+    "bs.long_term_debt": "2338875",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "274230",
+    "bs.total_liabilities": "5350683",
+    "bs.total_equity": "1429249",
+    "bs.total_liabilities_and_equity": "6779932",
+    "cf.net_income": "295030",
+    "cf.depreciation_amortization": "86366",
+    "cf.change_in_working_capital": "-25985",
+    "cf.other_operating": "2970",
+    "cf.cfo": "358381",
+    "cf.capex": "96280",
+    "cf.other_investing": "0",
+    "cf.cfi": "-96280",
+    "cf.revolver_net": "57643",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "86625",
+    "cf.distributions": "227853",
+    "cf.other_financing": "0",
+    "cf.cff": "-256835",
+    "cf.net_change_in_cash": "5266",
+    "sup.cash_interest_paid": "64327",
+    "sup.cash_taxes_paid": "5698",
+    "sup.scheduled_principal": "86625",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1236284",
+    "cash.beginning_of_year": "519899",
+    "debt.term_total": "2685375"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "9011304",
+    "is.cogs": "6043498",
+    "is.gross_profit": "2967806",
+    "is.sga": "2027544",
+    "is.depreciation_amortization": "173150",
+    "is.other_operating_expense": "36046",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "731066",
+    "is.interest_expense": "126277",
+    "is.other_income_net": "5407",
+    "is.pretax_income": "610196",
+    "is.income_tax_expense": "12204",
+    "is.net_income": "597992",
+    "bs.cash": "556191",
+    "bs.accounts_receivable": "2844448",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "222476",
+    "bs.total_current_assets": "3623115",
+    "bs.net_ppe": "2073293",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "7016408",
+    "bs.accounts_payable": "956588",
+    "bs.accrued_liabilities": "479834",
+    "bs.revolver": "834287",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "265739",
+    "bs.total_current_liabilities": "2882948",
+    "bs.long_term_debt": "2252250",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "277200",
+    "bs.total_liabilities": "5412398",
+    "bs.total_equity": "1604010",
+    "bs.total_liabilities_and_equity": "7016408",
+    "cf.net_income": "597992",
+    "cf.depreciation_amortization": "173150",
+    "cf.change_in_working_capital": "-117420",
+    "cf.other_operating": "5940",
+    "cf.cfo": "659662",
+    "cf.capex": "198248",
+    "cf.other_investing": "0",
+    "cf.cfi": "-198248",
+    "cf.revolver_net": "104182",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "173250",
+    "cf.distributions": "356054",
+    "cf.other_financing": "0",
+    "cf.cff": "-425122",
+    "cf.net_change_in_cash": "36292",
+    "sup.cash_interest_paid": "127395",
+    "sup.cash_taxes_paid": "11719",
+    "sup.scheduled_principal": "173250",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1411045",
+    "cash.beginning_of_year": "519899",
+    "debt.term_total": "2598750"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "13665045",
+    "is.cogs": "9164762",
+    "is.gross_profit": "4500283",
+    "is.sga": "3074636",
+    "is.depreciation_amortization": "260574",
+    "is.other_operating_expense": "54661",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1110412",
+    "is.interest_expense": "188569",
+    "is.other_income_net": "8199",
+    "is.pretax_income": "930042",
+    "is.income_tax_expense": "18601",
+    "is.net_income": "911441",
+    "bs.cash": "558449",
+    "bs.accounts_receivable": "2881494",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "223380",
+    "bs.total_current_assets": "3663323",
+    "bs.net_ppe": "2088251",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "7071574",
+    "bs.accounts_payable": "957758",
+    "bs.accrued_liabilities": "481484",
+    "bs.revolver": "837673",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "267006",
+    "bs.total_current_liabilities": "2890421",
+    "bs.long_term_debt": "2165625",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "280170",
+    "bs.total_liabilities": "5336216",
+    "bs.total_equity": "1735358",
+    "bs.total_liabilities_and_equity": "7071574",
+    "cf.net_income": "911441",
+    "cf.depreciation_amortization": "260574",
+    "cf.change_in_working_capital": "-151283",
+    "cf.other_operating": "8910",
+    "cf.cfo": "1029642",
+    "cf.capex": "300630",
+    "cf.other_investing": "0",
+    "cf.cfi": "-300630",
+    "cf.revolver_net": "107568",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "259875",
+    "cf.distributions": "538155",
+    "cf.other_financing": "0",
+    "cf.cff": "-690462",
+    "cf.net_change_in_cash": "38550",
+    "sup.cash_interest_paid": "189899",
+    "sup.cash_taxes_paid": "17902",
+    "sup.scheduled_principal": "259875",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1542393",
+    "cash.beginning_of_year": "519899",
+    "debt.term_total": "2512125"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "18222822",
+    "is.cogs": "12233969",
+    "is.gross_profit": "5988853",
+    "is.sga": "4100136",
+    "is.depreciation_amortization": "348629",
+    "is.other_operating_expense": "72892",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1467196",
+    "is.interest_expense": "249389",
+    "is.other_income_net": "10934",
+    "is.pretax_income": "1228741",
+    "is.income_tax_expense": "24575",
+    "is.net_income": "1204166",
+    "bs.cash": "546933",
+    "bs.accounts_receivable": "2827070",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "218773",
+    "bs.total_current_assets": "3592776",
+    "bs.net_ppe": "2100467",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "7013243",
+    "bs.accounts_payable": "941784",
+    "bs.accrued_liabilities": "471493",
+    "bs.revolver": "820400",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "261210",
+    "bs.total_current_liabilities": "2841387",
+    "bs.long_term_debt": "2079000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "283140",
+    "bs.total_liabilities": "5203527",
+    "bs.total_equity": "1809716",
+    "bs.total_liabilities_and_equity": "7013243",
+    "cf.net_income": "1204166",
+    "cf.depreciation_amortization": "348629",
+    "cf.change_in_working_capital": "-124013",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1440662",
+    "cf.capex": "400901",
+    "cf.other_investing": "0",
+    "cf.cfi": "-400901",
+    "cf.revolver_net": "90295",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "756522",
+    "cf.other_financing": "0",
+    "cf.cff": "-1012727",
+    "cf.net_change_in_cash": "27034",
+    "sup.cash_interest_paid": "251210",
+    "sup.cash_taxes_paid": "24299",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1616751",
+    "cash.beginning_of_year": "519899",
+    "debt.term_total": "2425500"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "4555808",
+    "is.cogs": "3067881",
+    "is.gross_profit": "1487927",
+    "is.sga": "1025057",
+    "is.depreciation_amortization": "88570",
+    "is.other_operating_expense": "18223",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "356077",
+    "is.interest_expense": "58948",
+    "is.other_income_net": "2733",
+    "is.pretax_income": "299862",
+    "is.income_tax_expense": "5997",
+    "is.net_income": "293865",
+    "bs.cash": "546697",
+    "bs.accounts_receivable": "2745966",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "218679",
+    "bs.total_current_assets": "3511342",
+    "bs.net_ppe": "2112125",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6943467",
+    "bs.accounts_payable": "941377",
+    "bs.accrued_liabilities": "470674",
+    "bs.revolver": "791513",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "261122",
+    "bs.total_current_liabilities": "2811186",
+    "bs.long_term_debt": "1992375",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "286110",
+    "bs.total_liabilities": "5089671",
+    "bs.total_equity": "1853796",
+    "bs.total_liabilities_and_equity": "6943467",
+    "cf.net_income": "293865",
+    "cf.depreciation_amortization": "88570",
+    "cf.change_in_working_capital": "79884",
+    "cf.other_operating": "2970",
+    "cf.cfo": "465289",
+    "cf.capex": "100228",
+    "cf.other_investing": "0",
+    "cf.cfi": "-100228",
+    "cf.revolver_net": "-28887",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "86625",
+    "cf.distributions": "249785",
+    "cf.other_financing": "0",
+    "cf.cff": "-365297",
+    "cf.net_change_in_cash": "-236",
+    "sup.cash_interest_paid": "59572",
+    "sup.cash_taxes_paid": "5974",
+    "sup.scheduled_principal": "86625",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1660831",
+    "cash.beginning_of_year": "546933",
+    "debt.term_total": "2338875"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "9384938",
+    "is.cogs": "6310159",
+    "is.gross_profit": "3074779",
+    "is.sga": "2111611",
+    "is.depreciation_amortization": "177631",
+    "is.other_operating_expense": "37540",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "747997",
+    "is.interest_expense": "115799",
+    "is.other_income_net": "5630",
+    "is.pretax_income": "637828",
+    "is.income_tax_expense": "12756",
+    "is.net_income": "625072",
+    "bs.cash": "579496",
+    "bs.accounts_receivable": "2984799",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "231798",
+    "bs.total_current_assets": "3796093",
+    "bs.net_ppe": "2129305",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "7245398",
+    "bs.accounts_payable": "994891",
+    "bs.accrued_liabilities": "497034",
+    "bs.revolver": "869243",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "277190",
+    "bs.total_current_liabilities": "2984858",
+    "bs.long_term_debt": "1905750",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "289080",
+    "bs.total_liabilities": "5179688",
+    "bs.total_equity": "2065710",
+    "bs.total_liabilities_and_equity": "7245398",
+    "cf.net_income": "625072",
+    "cf.depreciation_amortization": "177631",
+    "cf.change_in_working_capital": "-76126",
+    "cf.other_operating": "5940",
+    "cf.cfo": "732517",
+    "cf.capex": "206469",
+    "cf.other_investing": "0",
+    "cf.cfi": "-206469",
+    "cf.revolver_net": "48843",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "173250",
+    "cf.distributions": "369078",
+    "cf.other_financing": "0",
+    "cf.cff": "-493485",
+    "cf.net_change_in_cash": "32563",
+    "sup.cash_interest_paid": "117122",
+    "sup.cash_taxes_paid": "11971",
+    "sup.scheduled_principal": "173250",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1872745",
+    "cash.beginning_of_year": "546933",
+    "debt.term_total": "2252250"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "14253216",
+    "is.cogs": "9882988",
+    "is.gross_profit": "4370228",
+    "is.sga": "3206974",
+    "is.depreciation_amortization": "267417",
+    "is.other_operating_expense": "57013",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "838824",
+    "is.interest_expense": "172618",
+    "is.other_income_net": "8551",
+    "is.pretax_income": "674757",
+    "is.income_tax_expense": "13495",
+    "is.net_income": "661262",
+    "bs.cash": "584193",
+    "bs.accounts_receivable": "2987656",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "233677",
+    "bs.total_current_assets": "3805526",
+    "bs.net_ppe": "2146621",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "7272147",
+    "bs.accounts_payable": "1096320",
+    "bs.accrued_liabilities": "500900",
+    "bs.revolver": "872751",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "273363",
+    "bs.total_current_liabilities": "3089834",
+    "bs.long_term_debt": "1819125",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "292050",
+    "bs.total_liabilities": "5201009",
+    "bs.total_equity": "2071138",
+    "bs.total_liabilities_and_equity": "7272147",
+    "cf.net_income": "661262",
+    "cf.depreciation_amortization": "267417",
+    "cf.change_in_working_capital": "20606",
+    "cf.other_operating": "8910",
+    "cf.cfo": "958195",
+    "cf.capex": "313571",
+    "cf.other_investing": "0",
+    "cf.cfi": "-313571",
+    "cf.revolver_net": "52351",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "259875",
+    "cf.distributions": "399840",
+    "cf.other_financing": "0",
+    "cf.cff": "-607364",
+    "cf.net_change_in_cash": "37260",
+    "sup.cash_interest_paid": "173951",
+    "sup.cash_taxes_paid": "18730",
+    "sup.scheduled_principal": "259875",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "1878173",
+    "cash.beginning_of_year": "546933",
+    "debt.term_total": "2165625"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "16500000",
+    "is.cogs": "11040361",
+    "is.gross_profit": "5459639",
+    "is.sga": "3712500",
+    "is.depreciation_amortization": "335567",
+    "is.other_operating_expense": "66000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1345572",
+    "is.interest_expense": "294334",
+    "is.other_income_net": "9901",
+    "is.pretax_income": "1061139",
+    "is.income_tax_expense": "21223",
+    "is.net_income": "1039916",
+    "bs.cash": "495000",
+    "bs.accounts_receivable": "2499863",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "198000",
+    "bs.total_current_assets": "3192863",
+    "bs.net_ppe": "2007434",
+    "bs.intangibles": "1155000",
+    "bs.other_noncurrent_assets": "165000",
+    "bs.total_assets": "6520297",
+    "bs.accounts_payable": "847675",
+    "bs.accrued_liabilities": "432230",
+    "bs.revolver": "671031",
+    "bs.cpltd": "346500",
+    "bs.other_current_liabilities": "236288",
+    "bs.total_current_liabilities": "2533724",
+    "bs.long_term_debt": "2772000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "259380",
+    "bs.total_liabilities": "5565104",
+    "bs.total_equity": "955193",
+    "bs.total_liabilities_and_equity": "6520297",
+    "cf.net_income": "1039916",
+    "cf.depreciation_amortization": "335567",
+    "cf.change_in_working_capital": "29658",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1417021",
+    "cf.capex": "363001",
+    "cf.other_investing": "0",
+    "cf.cfi": "-363001",
+    "cf.revolver_net": "-71469",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "636051",
+    "cf.other_financing": "0",
+    "cf.cff": "-1054020",
+    "cf.net_change_in_cash": "0",
+    "sup.cash_interest_paid": "295776",
+    "sup.cash_taxes_paid": "21387",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "192965",
+    "equity.retained_earnings": "762228",
+    "cash.beginning_of_year": "495000",
+    "debt.term_total": "3118500"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.93",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3473123"
+      },
+      {
+       "label": "Net income",
+       "amount": "1169231"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "265771"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "23862"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "342810"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1801674"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "2.27",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1169231"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "265771"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "23862"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "342810"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1801674"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "385448"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "23047"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1393179"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "267440"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "613940"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.90",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3433037"
+      },
+      {
+       "label": "Net income",
+       "amount": "1180389"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "260191"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24090"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "344608"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1809278"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "2.29",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1180389"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "260191"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24090"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "344608"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1809278"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "390562"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "23862"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1394854"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "262051"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "608551"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.84",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3349798"
+      },
+      {
+       "label": "Net income",
+       "amount": "1190636"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "254851"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24299"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "346546"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1816332"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "2.32",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1190636"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "254851"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24299"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "346546"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1816332"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "395945"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "24090"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1396297"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "256631"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "603131"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.78",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3245900"
+      },
+      {
+       "label": "Net income",
+       "amount": "1204166"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "249389"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24575"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "348629"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1826759"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "2.34",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1204166"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "249389"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24575"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "348629"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1826759"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "400901"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "24299"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1401559"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "251210"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "597710"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.72",
+     "threshold": "1.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3130388"
+      },
+      {
+       "label": "Net income",
+       "amount": "1203001"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "244988"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24551"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "350833"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1823373"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "2.35",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1203001"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "244988"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "24551"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "350833"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1823373"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "404849"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "24575"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1393949"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "246455"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "592955"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.69",
+     "threshold": "1.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3121493"
+      },
+      {
+       "label": "Net income",
+       "amount": "1231246"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "238911"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "25127"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "353110"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1848394"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "2.41",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1231246"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "238911"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "25127"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "353110"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1848394"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "409122"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "24551"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1414721"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "240937"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "587437"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Philippa Trask",
+   "reported": {
+    "total_leverage": {
+     "value": "1.94",
+     "threshold": "2.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "3038376"
+      },
+      {
+       "label": "Net income",
+       "amount": "953987"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "233438"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "19469"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "355472"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1562366"
+      }
+     ]
+    },
+    "fccr": {
+     "value": "1.93",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "953987"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "233438"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "19469"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "355472"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "1562366"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "413842"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "25127"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1123397"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "235262"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "346500"
+      },
+      {
+       "label": "Denominator",
+       "amount": "581762"
+      }
+     ]
+    }
+   },
+   "document_id": "calder-finch-staffing.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "692000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3118500"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "737000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3118500"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "758325",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3031875"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "759000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3031875"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "776000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3031875"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "792446",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2945250"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "793000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2945250"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "789000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2945250"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "802148",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2858625"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "769000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2858625"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "758000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2858625"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "730105",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2772000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "743000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2772000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "772000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2772000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "787748",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2685375"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "794000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2685375"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "809000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2685375"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "834287",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2598750"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "842000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2598750"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "846000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2598750"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "837673",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2512125"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "844000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2512125"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "825000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2512125"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "820400",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2425500"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "812000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2425500"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "798000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2425500"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "791513",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2338875"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "805000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2338875"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "847000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2338875"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "869243",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2252250"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "866000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2252250"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "859000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2252250"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "872751",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2165625"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "861000",
+   "commitment": "1250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2165625"
+  }
+ ],
+ "documents": [
+  {
+   "id": "calder-finch-staffing.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/calder-finch-staffing/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Calder & Finch Staffing Group, LLC and Bank of Stoic",
+   "received_date": "2023-01-20",
+   "document_date": "2023-01-20"
+  },
+  {
+   "id": "calder-finch-staffing.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/calder-finch-staffing/afs-2024.pdf",
+   "pages": 7,
+   "title": "Calder & Finch Staffing Group, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-18",
+   "document_date": "2025-03-09",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "519,899"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "2,630,354"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "207,959"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "3,358,212"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "2,048,195"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "6,726,407"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "891,643"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "451,010"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "730,105"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "248,317"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "2,667,575"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,425,500"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "271,260"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "5,364,335"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "1,362,072"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "6,726,407"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "17,356,919"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "11,628,402"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "5,728,517"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "3,905,307"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "341,091"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "69,428"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "1,412,691"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "270,777"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "10,413"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "1,152,327"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "23,047"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,129,280"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,129,280"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "341,091"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(65,673)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "11,880"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "1,416,578"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(381,852)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(381,852)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "59,074"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(346,500)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(722,401)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,009,827)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "24,899"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "272,538"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "22,637"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "346,500"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "495,000",
+    "bs.accounts_receivable": "2,499,863",
+    "bs.other_current_assets": "198,000",
+    "bs.total_current_assets": "3,192,863",
+    "bs.net_ppe": "2,007,434",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "6,520,297",
+    "bs.accounts_payable": "847,675",
+    "bs.accrued_liabilities": "432,230",
+    "bs.revolver": "671,031",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "236,288",
+    "bs.total_current_liabilities": "2,533,724",
+    "bs.long_term_debt": "2,772,000",
+    "bs.other_noncurrent_liabilities": "259,380",
+    "bs.total_liabilities": "5,565,104",
+    "bs.total_equity": "955,193",
+    "bs.total_liabilities_and_equity": "6,520,297",
+    "is.revenue": "16,500,000",
+    "is.cogs": "11,040,361",
+    "is.gross_profit": "5,459,639",
+    "is.sga": "3,712,500",
+    "is.depreciation_amortization": "335,567",
+    "is.other_operating_expense": "66,000",
+    "is.operating_income": "1,345,572",
+    "is.interest_expense": "294,334",
+    "is.other_income_net": "9,901",
+    "is.pretax_income": "1,061,139",
+    "is.income_tax_expense": "21,223",
+    "is.net_income": "1,039,916",
+    "cf.net_income": "1,039,916",
+    "cf.depreciation_amortization": "335,567",
+    "cf.change_in_working_capital": "29,658",
+    "cf.other_operating": "11,880",
+    "cf.cfo": "1,417,021",
+    "cf.capex": "(363,001)",
+    "cf.cfi": "(363,001)",
+    "cf.revolver_net": "(71,469)",
+    "cf.term_debt_repayments": "(346,500)",
+    "cf.distributions": "(636,051)",
+    "cf.cff": "(1,054,020)",
+    "cf.net_change_in_cash": "-",
+    "sup.cash_interest_paid": "295,776",
+    "sup.cash_taxes_paid": "21,387",
+    "sup.scheduled_principal": "346,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/calder-finch-staffing/afs-2025.pdf",
+   "pages": 7,
+   "title": "Calder & Finch Staffing Group, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-18",
+   "document_date": "2026-04-09",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "546,933"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "2,827,070"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "218,773"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "3,592,776"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "2,100,467"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "7,013,243"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "941,784"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "471,493"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "820,400"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "261,210"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "2,841,387"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,079,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "283,140"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "5,203,527"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "1,809,716"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "7,013,243"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "18,222,822"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "12,233,969"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "5,988,853"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "4,100,136"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "348,629"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "72,892"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "1,467,196"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "249,389"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "10,934"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "1,228,741"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "24,575"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,204,166"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,204,166"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "348,629"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(124,013)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "11,880"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "1,440,662"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(400,901)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(400,901)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "90,295"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(346,500)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(756,522)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,012,727)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "27,034"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "251,210"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "24,299"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "346,500"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "519,899",
+    "bs.accounts_receivable": "2,630,354",
+    "bs.other_current_assets": "207,959",
+    "bs.total_current_assets": "3,358,212",
+    "bs.net_ppe": "2,048,195",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "6,726,407",
+    "bs.accounts_payable": "891,643",
+    "bs.accrued_liabilities": "451,010",
+    "bs.revolver": "730,105",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "248,317",
+    "bs.total_current_liabilities": "2,667,575",
+    "bs.long_term_debt": "2,425,500",
+    "bs.other_noncurrent_liabilities": "271,260",
+    "bs.total_liabilities": "5,364,335",
+    "bs.total_equity": "1,362,072",
+    "bs.total_liabilities_and_equity": "6,726,407",
+    "is.revenue": "17,356,919",
+    "is.cogs": "11,628,402",
+    "is.gross_profit": "5,728,517",
+    "is.sga": "3,905,307",
+    "is.depreciation_amortization": "341,091",
+    "is.other_operating_expense": "69,428",
+    "is.operating_income": "1,412,691",
+    "is.interest_expense": "270,777",
+    "is.other_income_net": "10,413",
+    "is.pretax_income": "1,152,327",
+    "is.income_tax_expense": "23,047",
+    "is.net_income": "1,129,280",
+    "cf.net_income": "1,129,280",
+    "cf.depreciation_amortization": "341,091",
+    "cf.change_in_working_capital": "(65,673)",
+    "cf.other_operating": "11,880",
+    "cf.cfo": "1,416,578",
+    "cf.capex": "(381,852)",
+    "cf.cfi": "(381,852)",
+    "cf.revolver_net": "59,074",
+    "cf.term_debt_repayments": "(346,500)",
+    "cf.distributions": "(722,401)",
+    "cf.cff": "(1,009,827)",
+    "cf.net_change_in_cash": "24,899",
+    "sup.cash_interest_paid": "272,538",
+    "sup.cash_taxes_paid": "22,637",
+    "sup.scheduled_principal": "346,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/calder-finch-staffing/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Calder & Finch Staffing Group, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-05-03",
+   "document_date": "2025-04-29",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "525,165"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "2,666,592"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "210,066"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "3,401,823"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,058,109"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "6,779,932"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "897,855"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "454,377"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "787,748"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "251,098"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "2,737,578"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,338,875"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "274,230"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "5,350,683"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "1,429,249"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "6,779,932"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "4,376,377"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "2,926,046"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "1,450,331"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "984,685"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "86,366"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "17,506"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "361,774"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "63,349"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "2,626"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "301,051"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "6,021"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "295,030"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "295,030"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "86,366"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(25,985)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "2,970"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "358,381"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(96,280)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(96,280)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "57,643"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(86,625)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(227,853)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(256,835)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "5,266"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "64,327"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "5,698"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "86,625"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "505,550",
+    "bs.accounts_receivable": "2,613,162",
+    "bs.other_current_assets": "202,220",
+    "bs.total_current_assets": "3,320,932",
+    "bs.net_ppe": "2,015,471",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "6,656,403",
+    "bs.accounts_payable": "870,654",
+    "bs.accrued_liabilities": "439,864",
+    "bs.revolver": "758,325",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "241,129",
+    "bs.total_current_liabilities": "2,656,472",
+    "bs.long_term_debt": "2,685,375",
+    "bs.other_noncurrent_liabilities": "262,350",
+    "bs.total_liabilities": "5,604,197",
+    "bs.total_equity": "1,052,206",
+    "bs.total_liabilities_and_equity": "6,656,403",
+    "is.revenue": "4,212,916",
+    "is.cogs": "2,837,399",
+    "is.gross_profit": "1,375,517",
+    "is.sga": "947,906",
+    "is.depreciation_amortization": "84,647",
+    "is.other_operating_expense": "16,852",
+    "is.operating_income": "326,112",
+    "is.interest_expense": "68,355",
+    "is.other_income_net": "2,528",
+    "is.pretax_income": "260,285",
+    "is.income_tax_expense": "5,206",
+    "is.net_income": "255,079",
+    "cf.net_income": "255,079",
+    "cf.depreciation_amortization": "84,647",
+    "cf.change_in_working_capital": "(82,065)",
+    "cf.other_operating": "2,970",
+    "cf.cfo": "260,631",
+    "cf.capex": "(92,684)",
+    "cf.cfi": "(92,684)",
+    "cf.revolver_net": "87,294",
+    "cf.term_debt_repayments": "(86,625)",
+    "cf.distributions": "(158,066)",
+    "cf.cff": "(157,397)",
+    "cf.net_change_in_cash": "10,550",
+    "sup.cash_interest_paid": "69,425",
+    "sup.cash_taxes_paid": "5,288",
+    "sup.scheduled_principal": "86,625",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/calder-finch-staffing/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Calder & Finch Staffing Group, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-08-04",
+   "document_date": "2025-07-31",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "556,191"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "2,844,448"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "222,476"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "3,623,115"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,073,293"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "7,016,408"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "956,588"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "479,834"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "834,287"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "265,739"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "2,882,948"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,252,250"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "277,200"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "5,412,398"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "1,604,010"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "7,016,408"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "9,011,304"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "6,043,498"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,967,806"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,027,544"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "173,150"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "36,046"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "731,066"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "126,277"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "5,407"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "610,196"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "12,204"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "597,992"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "597,992"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "173,150"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(117,420)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "5,940"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "659,662"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(198,248)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(198,248)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "104,182"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(173,250)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(356,054)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(425,122)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "36,292"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "127,395"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "11,719"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "173,250"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "528,297",
+    "bs.accounts_receivable": "2,639,073",
+    "bs.other_current_assets": "211,319",
+    "bs.total_current_assets": "3,378,689",
+    "bs.net_ppe": "2,027,339",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "6,726,028",
+    "bs.accounts_payable": "903,885",
+    "bs.accrued_liabilities": "458,681",
+    "bs.revolver": "792,446",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "252,494",
+    "bs.total_current_liabilities": "2,754,006",
+    "bs.long_term_debt": "2,598,750",
+    "bs.other_noncurrent_liabilities": "265,320",
+    "bs.total_liabilities": "5,618,076",
+    "bs.total_equity": "1,107,952",
+    "bs.total_liabilities_and_equity": "6,726,028",
+    "is.revenue": "8,615,392",
+    "is.cogs": "5,783,096",
+    "is.gross_profit": "2,832,296",
+    "is.sga": "1,938,463",
+    "is.depreciation_amortization": "169,633",
+    "is.other_operating_expense": "34,462",
+    "is.operating_income": "689,738",
+    "is.interest_expense": "136,863",
+    "is.other_income_net": "5,169",
+    "is.pretax_income": "558,044",
+    "is.income_tax_expense": "11,161",
+    "is.net_income": "546,883",
+    "cf.net_income": "546,883",
+    "cf.depreciation_amortization": "169,633",
+    "cf.change_in_working_capital": "(53,662)",
+    "cf.other_operating": "5,940",
+    "cf.cfo": "668,794",
+    "cf.capex": "(189,538)",
+    "cf.cfi": "(189,538)",
+    "cf.revolver_net": "121,415",
+    "cf.term_debt_repayments": "(173,250)",
+    "cf.distributions": "(394,124)",
+    "cf.cff": "(445,959)",
+    "cf.net_change_in_cash": "33,297",
+    "sup.cash_interest_paid": "137,882",
+    "sup.cash_taxes_paid": "10,494",
+    "sup.scheduled_principal": "173,250",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/calder-finch-staffing/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Calder & Finch Staffing Group, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-11-03",
+   "document_date": "2025-10-30",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "558,449"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "2,881,494"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "223,380"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "3,663,323"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,088,251"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "7,071,574"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "957,758"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "481,484"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "837,673"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "267,006"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "2,890,421"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,165,625"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "280,170"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "5,336,216"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "1,735,358"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "7,071,574"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "13,665,045"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "9,164,762"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,500,283"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,074,636"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "260,574"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "54,661"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,110,412"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "188,569"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "8,199"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "930,042"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "18,601"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "911,441"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "911,441"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "260,574"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(151,283)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "8,910"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,029,642"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(300,630)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(300,630)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "107,568"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(259,875)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(538,155)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(690,462)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "38,550"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "189,899"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "17,902"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "259,875"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "529,085",
+    "bs.accounts_receivable": "2,763,803",
+    "bs.other_current_assets": "211,634",
+    "bs.total_current_assets": "3,504,522",
+    "bs.net_ppe": "2,038,852",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "6,863,374",
+    "bs.accounts_payable": "901,985",
+    "bs.accrued_liabilities": "459,039",
+    "bs.revolver": "802,148",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "253,094",
+    "bs.total_current_liabilities": "2,762,766",
+    "bs.long_term_debt": "2,512,125",
+    "bs.other_noncurrent_liabilities": "268,290",
+    "bs.total_liabilities": "5,543,181",
+    "bs.total_equity": "1,320,193",
+    "bs.total_liabilities_and_equity": "6,863,374",
+    "is.revenue": "13,024,431",
+    "is.cogs": "8,722,602",
+    "is.gross_profit": "4,301,829",
+    "is.sga": "2,930,497",
+    "is.depreciation_amortization": "255,119",
+    "is.other_operating_expense": "52,098",
+    "is.operating_income": "1,064,115",
+    "is.interest_expense": "204,495",
+    "is.other_income_net": "7,814",
+    "is.pretax_income": "867,434",
+    "is.income_tax_expense": "17,349",
+    "is.net_income": "850,085",
+    "cf.net_income": "850,085",
+    "cf.depreciation_amortization": "255,119",
+    "cf.change_in_working_capital": "(179,649)",
+    "cf.other_operating": "8,910",
+    "cf.cfo": "934,465",
+    "cf.capex": "(286,537)",
+    "cf.cfi": "(286,537)",
+    "cf.revolver_net": "131,117",
+    "cf.term_debt_repayments": "(259,875)",
+    "cf.distributions": "(485,085)",
+    "cf.cff": "(613,843)",
+    "cf.net_change_in_cash": "34,085",
+    "sup.cash_interest_paid": "205,806",
+    "sup.cash_taxes_paid": "16,449",
+    "sup.scheduled_principal": "259,875",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/calder-finch-staffing/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Calder & Finch Staffing Group, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-04-26",
+   "document_date": "2026-04-22",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "546,697"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "2,745,966"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "218,679"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "3,511,342"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,112,125"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "6,943,467"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "941,377"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "470,674"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "791,513"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "261,122"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "2,811,186"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "1,992,375"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "286,110"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "5,089,671"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "1,853,796"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "6,943,467"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "4,555,808"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "3,067,881"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "1,487,927"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "1,025,057"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "88,570"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "18,223"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "356,077"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "58,948"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "2,733"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "299,862"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "5,997"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "293,865"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "293,865"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "88,570"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "79,884"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "2,970"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "465,289"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(100,228)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(100,228)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(28,887)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(86,625)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(249,785)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(365,297)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(236)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "59,572"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "5,974"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "86,625"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "525,165",
+    "bs.accounts_receivable": "2,666,592",
+    "bs.other_current_assets": "210,066",
+    "bs.total_current_assets": "3,401,823",
+    "bs.net_ppe": "2,058,109",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "6,779,932",
+    "bs.accounts_payable": "897,855",
+    "bs.accrued_liabilities": "454,377",
+    "bs.revolver": "787,748",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "251,098",
+    "bs.total_current_liabilities": "2,737,578",
+    "bs.long_term_debt": "2,338,875",
+    "bs.other_noncurrent_liabilities": "274,230",
+    "bs.total_liabilities": "5,350,683",
+    "bs.total_equity": "1,429,249",
+    "bs.total_liabilities_and_equity": "6,779,932",
+    "is.revenue": "4,376,377",
+    "is.cogs": "2,926,046",
+    "is.gross_profit": "1,450,331",
+    "is.sga": "984,685",
+    "is.depreciation_amortization": "86,366",
+    "is.other_operating_expense": "17,506",
+    "is.operating_income": "361,774",
+    "is.interest_expense": "63,349",
+    "is.other_income_net": "2,626",
+    "is.pretax_income": "301,051",
+    "is.income_tax_expense": "6,021",
+    "is.net_income": "295,030",
+    "cf.net_income": "295,030",
+    "cf.depreciation_amortization": "86,366",
+    "cf.change_in_working_capital": "(25,985)",
+    "cf.other_operating": "2,970",
+    "cf.cfo": "358,381",
+    "cf.capex": "(96,280)",
+    "cf.cfi": "(96,280)",
+    "cf.revolver_net": "57,643",
+    "cf.term_debt_repayments": "(86,625)",
+    "cf.distributions": "(227,853)",
+    "cf.cff": "(256,835)",
+    "cf.net_change_in_cash": "5,266",
+    "sup.cash_interest_paid": "64,327",
+    "sup.cash_taxes_paid": "5,698",
+    "sup.scheduled_principal": "86,625",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/calder-finch-staffing/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Calder & Finch Staffing Group, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-08-07",
+   "document_date": "2026-08-03",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "579,496"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "2,984,799"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "231,798"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "3,796,093"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,129,305"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "7,245,398"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "994,891"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "497,034"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "869,243"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "277,190"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "2,984,858"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "1,905,750"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "289,080"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "5,179,688"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "2,065,710"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "7,245,398"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "9,384,938"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "6,310,159"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "3,074,779"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,111,611"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "177,631"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "37,540"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "747,997"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "115,799"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "5,630"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "637,828"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "12,756"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "625,072"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "625,072"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "177,631"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(76,126)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "5,940"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "732,517"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(206,469)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(206,469)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "48,843"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(173,250)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(369,078)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(493,485)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "32,563"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "117,122"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "11,971"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "173,250"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "556,191",
+    "bs.accounts_receivable": "2,844,448",
+    "bs.other_current_assets": "222,476",
+    "bs.total_current_assets": "3,623,115",
+    "bs.net_ppe": "2,073,293",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "7,016,408",
+    "bs.accounts_payable": "956,588",
+    "bs.accrued_liabilities": "479,834",
+    "bs.revolver": "834,287",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "265,739",
+    "bs.total_current_liabilities": "2,882,948",
+    "bs.long_term_debt": "2,252,250",
+    "bs.other_noncurrent_liabilities": "277,200",
+    "bs.total_liabilities": "5,412,398",
+    "bs.total_equity": "1,604,010",
+    "bs.total_liabilities_and_equity": "7,016,408",
+    "is.revenue": "9,011,304",
+    "is.cogs": "6,043,498",
+    "is.gross_profit": "2,967,806",
+    "is.sga": "2,027,544",
+    "is.depreciation_amortization": "173,150",
+    "is.other_operating_expense": "36,046",
+    "is.operating_income": "731,066",
+    "is.interest_expense": "126,277",
+    "is.other_income_net": "5,407",
+    "is.pretax_income": "610,196",
+    "is.income_tax_expense": "12,204",
+    "is.net_income": "597,992",
+    "cf.net_income": "597,992",
+    "cf.depreciation_amortization": "173,150",
+    "cf.change_in_working_capital": "(117,420)",
+    "cf.other_operating": "5,940",
+    "cf.cfo": "659,662",
+    "cf.capex": "(198,248)",
+    "cf.cfi": "(198,248)",
+    "cf.revolver_net": "104,182",
+    "cf.term_debt_repayments": "(173,250)",
+    "cf.distributions": "(356,054)",
+    "cf.cff": "(425,122)",
+    "cf.net_change_in_cash": "36,292",
+    "sup.cash_interest_paid": "127,395",
+    "sup.cash_taxes_paid": "11,719",
+    "sup.scheduled_principal": "173,250",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/calder-finch-staffing/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Calder & Finch Staffing Group, LLC interim financial statements, Q3 2026",
+   "received_date": "2026-11-08",
+   "document_date": "2026-11-04",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "584,193"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "2,987,656"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "233,677"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "3,805,526"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,146,621"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,155,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "165,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "7,272,147"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,096,320"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "500,900"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "872,751"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "346,500"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "273,363"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "3,089,834"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "1,819,125"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "292,050"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "5,201,009"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "2,071,138"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "7,272,147"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "14,253,216"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "9,882,988"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,370,228"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,206,974"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "267,417"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "57,013"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "838,824"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "172,618"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "8,551"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "674,757"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "13,495"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "661,262"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "661,262"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "267,417"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "20,606"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "8,910"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "958,195"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(313,571)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(313,571)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "52,351"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(259,875)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(399,840)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(607,364)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "37,260"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "173,951"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "18,730"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "259,875"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "558,449",
+    "bs.accounts_receivable": "2,881,494",
+    "bs.other_current_assets": "223,380",
+    "bs.total_current_assets": "3,663,323",
+    "bs.net_ppe": "2,088,251",
+    "bs.intangibles": "1,155,000",
+    "bs.other_noncurrent_assets": "165,000",
+    "bs.total_assets": "7,071,574",
+    "bs.accounts_payable": "957,758",
+    "bs.accrued_liabilities": "481,484",
+    "bs.revolver": "837,673",
+    "bs.cpltd": "346,500",
+    "bs.other_current_liabilities": "267,006",
+    "bs.total_current_liabilities": "2,890,421",
+    "bs.long_term_debt": "2,165,625",
+    "bs.other_noncurrent_liabilities": "280,170",
+    "bs.total_liabilities": "5,336,216",
+    "bs.total_equity": "1,735,358",
+    "bs.total_liabilities_and_equity": "7,071,574",
+    "is.revenue": "13,665,045",
+    "is.cogs": "9,164,762",
+    "is.gross_profit": "4,500,283",
+    "is.sga": "3,074,636",
+    "is.depreciation_amortization": "260,574",
+    "is.other_operating_expense": "54,661",
+    "is.operating_income": "1,110,412",
+    "is.interest_expense": "188,569",
+    "is.other_income_net": "8,199",
+    "is.pretax_income": "930,042",
+    "is.income_tax_expense": "18,601",
+    "is.net_income": "911,441",
+    "cf.net_income": "911,441",
+    "cf.depreciation_amortization": "260,574",
+    "cf.change_in_working_capital": "(151,283)",
+    "cf.other_operating": "8,910",
+    "cf.cfo": "1,029,642",
+    "cf.capex": "(300,630)",
+    "cf.cfi": "(300,630)",
+    "cf.revolver_net": "107,568",
+    "cf.term_debt_repayments": "(259,875)",
+    "cf.distributions": "(538,155)",
+    "cf.cff": "(690,462)",
+    "cf.net_change_in_cash": "38,550",
+    "sup.cash_interest_paid": "189,899",
+    "sup.cash_taxes_paid": "17,902",
+    "sup.scheduled_principal": "259,875",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "calder-finch-staffing.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/calder-finch-staffing/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-05-03",
+   "document_date": "2025-05-01",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "calder-finch-staffing.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/calder-finch-staffing/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-08-04",
+   "document_date": "2025-08-02",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "calder-finch-staffing.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/calder-finch-staffing/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-11-03",
+   "document_date": "2025-11-01",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "calder-finch-staffing.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/calder-finch-staffing/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, FY2025",
+   "received_date": "2026-02-11",
+   "document_date": "2026-02-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "calder-finch-staffing.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/calder-finch-staffing/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-04-26",
+   "document_date": "2026-04-24",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "calder-finch-staffing.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/calder-finch-staffing/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-08-07",
+   "document_date": "2026-08-05",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "calder-finch-staffing.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/calder-finch-staffing/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Calder & Finch Staffing Group, LLC compliance certificate, Q3 2026",
+   "received_date": "2026-11-08",
+   "document_date": "2026-11-06",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "step_up",
+  "description": "Step-up threshold: the leverage covenant tightened on 2026-01-01. The current quarter passes the old threshold and fails the new one; the certificate tests against the old threshold.",
+  "details": {
+   "covenant_id": "total_leverage",
+   "old_threshold": "2.00",
+   "from": "2026-01-01",
+   "value": "1.75"
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.93",
+    "pass": true,
+    "headroom": "0.0350",
+    "reported_value": "1.93",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3473123"
+     },
+     {
+      "label": "Net income",
+      "amount": "1169231"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "265771"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "23862"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "342810"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1801674"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.27",
+    "pass": true,
+    "headroom": "0.8160",
+    "reported_value": "2.27",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1169231"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "265771"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "23862"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "342810"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1801674"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "385448"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "23047"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1393179"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "267440"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "613940"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.90",
+    "pass": true,
+    "headroom": "0.0500",
+    "reported_value": "1.90",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3433037"
+     },
+     {
+      "label": "Net income",
+      "amount": "1180389"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "260191"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24090"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "344608"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1809278"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.29",
+    "pass": true,
+    "headroom": "0.8320",
+    "reported_value": "2.29",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1180389"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "260191"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24090"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "344608"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1809278"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "390562"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "23862"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1394854"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "262051"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "608551"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.84",
+    "pass": true,
+    "headroom": "0.0800",
+    "reported_value": "1.84",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3349798"
+     },
+     {
+      "label": "Net income",
+      "amount": "1190636"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "254851"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24299"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "346546"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1816332"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.32",
+    "pass": true,
+    "headroom": "0.8560",
+    "reported_value": "2.32",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1190636"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "254851"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24299"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "346546"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1816332"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "395945"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "24090"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1396297"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "256631"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "603131"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.00",
+    "value": "1.78",
+    "pass": true,
+    "headroom": "0.1100",
+    "reported_value": "1.78",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3245900"
+     },
+     {
+      "label": "Net income",
+      "amount": "1204166"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "249389"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24575"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "348629"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1826759"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.34",
+    "pass": true,
+    "headroom": "0.8720",
+    "reported_value": "2.34",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1204166"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "249389"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24575"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "348629"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1826759"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "400901"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "24299"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1401559"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "251210"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "597710"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "1.75",
+    "value": "1.72",
+    "pass": true,
+    "headroom": "0.0171",
+    "reported_value": "1.72",
+    "reported_threshold": "1.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3130388"
+     },
+     {
+      "label": "Net income",
+      "amount": "1203001"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "244988"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24551"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "350833"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1823373"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.35",
+    "pass": true,
+    "headroom": "0.8800",
+    "reported_value": "2.35",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1203001"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "244988"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "24551"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "350833"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1823373"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "404849"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "24575"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1393949"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "246455"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "592955"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "1.75",
+    "value": "1.69",
+    "pass": true,
+    "headroom": "0.0343",
+    "reported_value": "1.69",
+    "reported_threshold": "1.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3121493"
+     },
+     {
+      "label": "Net income",
+      "amount": "1231246"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "238911"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "25127"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "353110"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1848394"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.41",
+    "pass": true,
+    "headroom": "0.9280",
+    "reported_value": "2.41",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1231246"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "238911"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "25127"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "353110"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1848394"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "409122"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "24551"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1414721"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "240937"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "587437"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "1.75",
+    "value": "1.94",
+    "pass": false,
+    "headroom": "-0.1086",
+    "reported_value": "1.94",
+    "reported_threshold": "2.00",
+    "reported_in_compliance": true,
+    "outcome": "breach_reported_compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "3038376"
+     },
+     {
+      "label": "Net income",
+      "amount": "953987"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "233438"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "19469"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "355472"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1562366"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "calder-finch-staffing-rlc",
+    "terms_version_id": "tv-calder-finch-staffing-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "1.93",
+    "pass": true,
+    "headroom": "0.5440",
+    "reported_value": "1.93",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "953987"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "233438"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "19469"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "355472"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "1562366"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "413842"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "25127"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1123397"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "235262"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "346500"
+     },
+     {
+      "label": "Denominator",
+      "amount": "581762"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-03-31",
+    "severity": "medium",
+    "value": "0.0350",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-06-30",
+    "severity": "medium",
+    "value": "0.0500",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2025-09-30",
+    "severity": "medium",
+    "value": "0.0800",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-03-31",
+    "severity": "medium",
+    "value": "0.0171",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-06-30",
+    "severity": "medium",
+    "value": "0.0343",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   },
+   {
+    "rule": "covenant_headroom_low",
+    "period_end": "2026-09-30",
+    "severity": "medium",
+    "value": "-0.1086",
+    "trigger": "0.10",
+    "detail": {
+     "covenant_id": "total_leverage"
+    }
+   }
+  ],
+  "exceptions": [
+   {
+    "type": "covenant.reported_mismatch",
+    "severity": "critical",
+    "period_end": "2026-09-30",
+    "subject": "covenant:total_leverage",
+    "summary": "Total Leverage Ratio fails its threshold while the certificate claims compliance."
+   }
+  ]
+ }
+}

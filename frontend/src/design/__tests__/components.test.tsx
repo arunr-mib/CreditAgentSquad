@@ -1,0 +1,418 @@
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
+import { describe, expect, it, vi } from 'vitest';
+import type { Fact } from '@/api/types';
+import { SEVERITY_TONE } from '@/domain/labels';
+import { AgentNote, AgentText, CommandPalette, DataTable, Drawer, FactsProvider, StackedBar, Figure, StatusDot, Stepper, useCommandPaletteShortcut, WorkItemCard } from '..';
+
+const documentFact: Fact = {
+  id: 'F-1',
+  key: 'is.revenue',
+  label: 'Net revenue',
+  value: '29480000',
+  unit: 'usd',
+  periodLabel: 'Nine months ended 30 Sep 2026',
+  status: 'verified',
+  provenance: {
+    kind: 'extracted',
+    documentId: 'DOC-1',
+    documentTitle: 'Internal financial statements',
+    page: 2,
+    quote: 'Net sales  29,480',
+    printed: '29,480',
+    labelText: 'Net sales',
+    scaleAsReported: 1000,
+    agentRunId: 'RUN-1',
+  },
+};
+
+const ratioFact: Fact = {
+  id: 'F-2',
+  key: 'covenant.fccr',
+  label: 'Fixed charge coverage ratio',
+  value: '1.12',
+  unit: 'ratio',
+  periodLabel: 'Twelve months ended 30 Sep 2026',
+  status: 'verified',
+  provenance: {
+    kind: 'calculated',
+    calcId: 'C-9',
+    formulaKey: 'covenant.coverage',
+    formulaVersion: 'metrics-1',
+    expression: 'Numerator ÷ Fixed charges',
+    inputs: [{ name: 'Net revenue', factId: 'F-1' }],
+  },
+};
+
+const facts = { [documentFact.id]: documentFact, [ratioFact.id]: ratioFact };
+
+describe('Figure', () => {
+  it('shows the formatted number and names its provenance', () => {
+    render(<Figure fact={documentFact} scale={1000} unitMark={false} />);
+    const button = screen.getByRole('button', { name: /29,480, Net revenue.*Read from a document/ });
+    expect(button).toHaveTextContent('29,480');
+  });
+
+  it('opens the source of a document figure: document, page and quoted text', async () => {
+    render(
+      <FactsProvider facts={facts}>
+        <Figure fact={documentFact} />
+      </FactsProvider>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /Net revenue/ }));
+    const source = await screen.findByRole('dialog', { name: 'Source of Net revenue' });
+    expect(within(source).getByText('Internal financial statements')).toBeInTheDocument();
+    expect(within(source).getByText('29,480', { selector: 'mark' })).toBeInTheDocument();
+    expect(within(source).getByText('F-1')).toHaveClass('ident');
+  });
+
+  it('opens the source of a calculated figure: formula and inputs', async () => {
+    render(
+      <FactsProvider facts={facts}>
+        <Figure fact={ratioFact} />
+      </FactsProvider>,
+    );
+    await userEvent.keyboard('{Tab}{Enter}');
+    const source = await screen.findByRole('dialog', { name: 'Source of Fixed charge coverage ratio' });
+    expect(within(source).getByText('Numerator ÷ Fixed charges')).toBeInTheDocument();
+    expect(within(source).getByRole('table', { name: /Inputs/ })).toHaveTextContent('Net revenue');
+    expect(within(source).getByText('C-9')).toBeInTheDocument();
+  });
+
+  it('pads positive money so digits line up with accounting negatives in a column', () => {
+    const { container } = render(<Figure fact={documentFact} align="column" scale={1000} unitMark={false} />);
+    expect(container.querySelector('.invisible')).toHaveTextContent(')');
+  });
+
+  it('never sets a figure in the mono face', () => {
+    const { container } = render(<Figure fact={ratioFact} />);
+    expect(container.querySelector('.tnum')).toHaveTextContent('1.12x');
+    expect(container.querySelector('.ident')).toBeNull();
+  });
+
+  it('shows a runway in months and does not throw on a unit it does not know', () => {
+    const runway: Fact = { ...ratioFact, id: 'F-3', value: '13', unit: 'months' };
+    const { container } = render(<Figure fact={runway} />);
+    expect(container.querySelector('.tnum')).toHaveTextContent('13.0 months');
+    const odd = render(<Figure fact={{ ...ratioFact, id: 'F-4', value: '4.5', unit: 'furlongs' as never }} />);
+    expect(odd.container.querySelector('.tnum')).toHaveTextContent('4.5 furlongs');
+  });
+});
+
+describe('AgentText and AgentNote', () => {
+  it('renders fact references as figures and never prints the reference', () => {
+    render(
+      <FactsProvider facts={facts}>
+        <AgentText text="Coverage calculates to {{fact:F-2}} on revenue of {{fact:F-1}}." />
+      </FactsProvider>,
+    );
+    expect(screen.getByRole('button', { name: /1\.12x/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /\$29,480,000/ })).toBeInTheDocument();
+    expect(screen.queryByText(/\{\{fact/)).toBeNull();
+  });
+
+  it('shows an unresolved reference instead of hiding it', () => {
+    render(<AgentText text="Leverage is {{fact:F-404}}." />);
+    expect(screen.getByText(/unresolved F-404/)).toBeInTheDocument();
+  });
+
+  it('marks agent writing as a draft until a person approves it', () => {
+    const { rerender } = render(<AgentNote agent="Covenant Agent" headline="Recommends escalate" body="Needs a credit officer." state="draft" />);
+    expect(screen.getByText('Draft, not yet approved')).toBeInTheDocument();
+    rerender(<AgentNote agent="Covenant Agent" headline="Recommends resolve" body="Explained by terms on file." state="approved" approvedBy="Maya Okafor" />);
+    expect(screen.getByText('Approved by Maya Okafor')).toBeInTheDocument();
+  });
+});
+
+describe('StatusDot and Stepper', () => {
+  it('always pairs the dot with a word', () => {
+    render(<StatusDot tone="breach">Breach</StatusDot>);
+    expect(screen.getByText('Breach')).toBeVisible();
+  });
+
+  it('marks the stage waiting for a person as the current step', () => {
+    render(
+      <Stepper
+        label="Cycle"
+        steps={[
+          { id: 'a', label: 'Intake', status: 'done' },
+          { id: 'b', label: 'Covenant testing', status: 'needs_person' },
+          { id: 'c', label: 'Signals', status: 'pending' },
+        ]}
+      />,
+    );
+    const current = screen.getAllByRole('listitem').find((item) => item.getAttribute('aria-current') === 'step');
+    expect(current).toHaveTextContent('Covenant testing');
+    expect(current).toHaveTextContent('Needs a person');
+  });
+
+  it('folds the stages after the next one into one item that opens', async () => {
+    const steps = [
+      { id: 'a', label: 'Intake', status: 'done' as const },
+      { id: 'b', label: 'Covenant testing', status: 'needs_person' as const },
+      { id: 'c', label: 'Borrowing base', status: 'pending' as const },
+      { id: 'd', label: 'Signals', status: 'pending' as const },
+      { id: 'e', label: 'Review preparation', status: 'pending' as const },
+      { id: 'f', label: 'Closed', status: 'pending' as const },
+    ];
+    render(<Stepper label="Cycle" steps={steps} collapseLater />);
+    // done, current and next stay; the three after that are one item
+    expect(screen.getByText('Borrowing base')).toBeVisible();
+    expect(screen.queryByText('Signals')).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: '3 later stages' }));
+    expect(screen.getByText('Signals')).toBeVisible();
+    expect(screen.getByText('Closed')).toBeVisible();
+    await userEvent.click(screen.getByRole('button', { name: 'Show fewer stages' }));
+    expect(screen.queryByText('Closed')).toBeNull();
+  });
+
+  it('shows every stage when asked not to fold, or when only one would be folded', () => {
+    const steps = [
+      { id: 'a', label: 'Intake', status: 'done' as const },
+      { id: 'b', label: 'Covenant testing', status: 'pending' as const },
+      { id: 'c', label: 'Signals', status: 'pending' as const },
+    ];
+    render(<Stepper label="Cycle" steps={steps} collapseLater />);
+    expect(screen.getByText('Signals')).toBeVisible();
+    expect(screen.queryByRole('button')).toBeNull();
+  });
+
+  it('gives each severity its own mark, the same everywhere', () => {
+    expect(SEVERITY_TONE).toEqual({ critical: 'breach', high: 'attention', medium: 'neutral', low: 'muted' });
+  });
+});
+
+describe('DataTable', () => {
+  const rows = [
+    { id: 'a', name: 'Total leverage', headroom: 11.4 },
+    { id: 'b', name: 'Fixed charge coverage', headroom: -6.7 },
+    { id: 'c', name: 'Current ratio', headroom: 20.8 },
+  ];
+  const columns = [
+    { id: 'name', header: 'Covenant', rowHeader: true, sortValue: (row: (typeof rows)[number]) => row.name, cell: (row: (typeof rows)[number]) => row.name },
+    {
+      id: 'headroom',
+      header: 'Headroom',
+      align: 'right' as const,
+      sortValue: (row: (typeof rows)[number]) => row.headroom,
+      cell: (row: (typeof rows)[number]) => `${row.headroom}%`,
+    },
+  ];
+  const names = () => screen.getAllByRole('rowheader').map((cell) => cell.textContent);
+
+  it('sorts when a column head is activated and reports the direction', async () => {
+    render(<DataTable caption="Covenants" data={rows} columns={columns} getRowId={(row) => row.id} />);
+    expect(names()).toEqual(['Total leverage', 'Fixed charge coverage', 'Current ratio']);
+    await userEvent.click(screen.getByRole('button', { name: 'Headroom' }));
+    expect(names()).toEqual(['Fixed charge coverage', 'Total leverage', 'Current ratio']);
+    expect(screen.getByRole('columnheader', { name: 'Headroom' })).toHaveAttribute('aria-sort', 'ascending');
+    await userEvent.click(screen.getByRole('button', { name: 'Headroom' }));
+    expect(names()[0]).toBe('Current ratio');
+  });
+
+  it('moves row focus with the arrow keys and activates with Enter', async () => {
+    const onActivate = vi.fn();
+    render(<DataTable caption="Covenants" data={rows} columns={columns} getRowId={(row) => row.id} onRowActivate={onActivate} />);
+    const body = screen.getAllByRole('row').slice(1);
+    body[0]?.focus();
+    await userEvent.keyboard('{ArrowDown}');
+    expect(body[1]).toHaveFocus();
+    await userEvent.keyboard('{End}');
+    expect(body[2]).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    expect(onActivate).toHaveBeenCalledWith(rows[2]);
+  });
+
+  it('moves with J and K from anywhere on the page when asked to, starting from the selected row', async () => {
+    render(<DataTable caption="Covenants" data={rows} columns={columns} getRowId={(row) => row.id} onRowActivate={() => {}} selectedRowId="b" pageKeys />);
+    const body = screen.getAllByRole('row').slice(1);
+    expect(document.activeElement).toBe(document.body);
+    await userEvent.keyboard('j');
+    expect(body[2]).toHaveFocus();
+    await userEvent.keyboard('k');
+    expect(body[1]).toHaveFocus();
+  });
+
+  it('starts at the first row when none is selected, and never acts while the reader is typing', async () => {
+    render(
+      <>
+        <input aria-label="Reason" />
+        <DataTable caption="Covenants" data={rows} columns={columns} getRowId={(row) => row.id} onRowActivate={() => {}} pageKeys />
+      </>,
+    );
+    const body = screen.getAllByRole('row').slice(1);
+    const input = screen.getByRole('textbox', { name: 'Reason' });
+    await userEvent.click(input);
+    await userEvent.keyboard('jk');
+    expect(input).toHaveFocus();
+    expect(input).toHaveValue('jk');
+    input.blur();
+    await userEvent.keyboard('j');
+    expect(body[0]).toHaveFocus();
+  });
+});
+
+describe('WorkItemCard', () => {
+  it('offers exactly one primary decision and keeps the others behind a menu', async () => {
+    const onDecide = vi.fn();
+    render(
+      <WorkItemCard
+        typeLabel="Covenant breach"
+        itemId="WI-1"
+        severity={{ tone: 'attention', label: 'Critical' }}
+        breach
+        subject="Brightwater Fastener Co."
+        question="How should the bank respond?"
+        evidence={[{ kind: 'extracted', label: 'Credit Agreement', detail: 'page 58' }]}
+        decisions={[
+          { id: 'escalate', label: 'Escalate to credit officer', primary: true },
+          { id: 'request', label: 'Request a document' },
+        ]}
+        onDecide={onDecide}
+        requiresSecondPerson
+      />,
+    );
+    expect(screen.getByRole('heading', { name: 'How should the bank respond?' })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Escalate to credit officer' }));
+    expect(onDecide).toHaveBeenCalledWith(expect.objectContaining({ id: 'escalate' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Other decisions' }));
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Request a document' }));
+    expect(onDecide).toHaveBeenLastCalledWith(expect.objectContaining({ id: 'request' }));
+  });
+});
+
+describe('CommandPalette', () => {
+  function Harness({ run }: { run: (id: string) => void }) {
+    const [open, setOpen] = useState(false);
+    useCommandPaletteShortcut(() => setOpen((value) => !value));
+    return (
+      <CommandPalette
+        open={open}
+        onOpenChange={setOpen}
+        commands={[
+          { id: 'queue', group: 'Go to', label: 'Command centre', run: () => run('queue') },
+          { id: 'portfolio', group: 'Go to', label: 'Portfolio', run: () => run('portfolio') },
+          { id: 'bw', group: 'Borrowers', label: 'Brightwater Fastener Co.', run: () => run('bw') },
+        ]}
+      />
+    );
+  }
+
+  it('opens on Ctrl-K, filters as you type and runs the highlighted command on Enter', async () => {
+    const run = vi.fn();
+    render(<Harness run={run} />);
+    expect(screen.queryByRole('combobox')).toBeNull();
+    await userEvent.keyboard('{Control>}k{/Control}');
+    const input = await screen.findByRole('combobox', { name: 'Search' });
+    expect(input).toHaveFocus();
+    expect(screen.getAllByRole('option')).toHaveLength(3);
+    await userEvent.type(input, 'bright');
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    await userEvent.keyboard('{Enter}');
+    expect(run).toHaveBeenCalledWith('bw');
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  it('moves the highlight with the arrow keys', async () => {
+    const run = vi.fn();
+    render(<Harness run={run} />);
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await screen.findByRole('combobox');
+    await userEvent.keyboard('{ArrowDown}{Enter}');
+    expect(run).toHaveBeenCalledWith('portfolio');
+  });
+
+  it('closes on Esc without running anything', async () => {
+    const run = vi.fn();
+    render(<Harness run={run} />);
+    await userEvent.keyboard('{Control>}k{/Control}');
+    await screen.findByRole('combobox');
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByRole('combobox')).toBeNull();
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it('lists a search-only command once something is typed, and cuts no row short', async () => {
+    const run = vi.fn();
+    render(
+      <CommandPalette
+        open
+        onOpenChange={() => {}}
+        commands={[
+          { id: 'critical', group: 'Queue', label: 'Show critical exceptions', hint: 'A long explanation that has to wrap onto a second line on a narrow screen', run: () => run('critical') },
+          { id: 'low', group: 'Queue', label: 'Show low-severity exceptions', searchOnly: true, run: () => run('low') },
+        ]}
+      />,
+    );
+    expect(screen.getAllByRole('option')).toHaveLength(1);
+    for (const node of screen.getByRole('option').querySelectorAll('*')) expect(node.getAttribute('class') ?? '').not.toMatch(/truncate|text-ellipsis|whitespace-nowrap|line-clamp/);
+    await userEvent.type(screen.getByRole('combobox', { name: 'Search' }), 'low');
+    expect(screen.getByRole('option', { name: /Show low-severity exceptions/ })).toBeInTheDocument();
+    await userEvent.keyboard('{Enter}');
+    expect(run).toHaveBeenCalledWith('low');
+  });
+});
+
+describe('Drawer', () => {
+  function Harness() {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <button type="button" onClick={() => setOpen(true)}>
+          Open the item
+        </button>
+        <Drawer open={open} onOpenChange={setOpen} title="the workspace drawer" header={<button type="button">Copilot</button>}>
+          <p>Evidence</p>
+        </Drawer>
+      </>
+    );
+  }
+
+  it('gives focus back to what opened it when Esc closes it from inside', async () => {
+    render(<Harness />);
+    const opener = screen.getByRole('button', { name: 'Open the item' });
+    await userEvent.click(opener);
+    expect(opener).toHaveFocus();
+    // Not modal: opening leaves focus where it was; the reader moves into the drawer.
+    await userEvent.click(screen.getByRole('button', { name: 'Copilot' }));
+    expect(screen.getByRole('button', { name: 'Copilot' })).toHaveFocus();
+    await userEvent.keyboard('{Escape}');
+    expect(screen.queryByText('Evidence')).toBeNull();
+    expect(opener).toHaveFocus();
+  });
+
+  it('gives focus back after the close button too', async () => {
+    render(<Harness />);
+    const opener = screen.getByRole('button', { name: 'Open the item' });
+    await userEvent.click(opener);
+    await userEvent.click(screen.getByRole('button', { name: 'Close the workspace drawer' }));
+    expect(screen.queryByText('Evidence')).toBeNull();
+    expect(opener).toHaveFocus();
+  });
+});
+
+describe('StackedBar', () => {
+  const segments = [
+    { id: 'breach', label: 'Breach', count: 1, fill: 'breach' as const },
+    { id: 'pass', label: 'Compliant', count: 3, fill: 'pass' as const },
+  ];
+
+  it('is one picture with a name, and holds no control inside it, even when its segments can be pressed', async () => {
+    const onSelect = vi.fn();
+    const { container } = render(<StackedBar label="Covenant tests by outcome" segments={segments} onSelect={onSelect} />);
+    const picture = screen.getByRole('img', { name: 'Covenant tests by outcome: Breach 1, Compliant 3' });
+    // axe nested-interactive: an image's children are presentational, so a button inside one is lost.
+    expect(picture.querySelector('button, a, [tabindex]')).toBeNull();
+    const targets = container.querySelectorAll('button');
+    expect(targets).toHaveLength(2);
+    for (const target of targets) expect(target).toHaveAttribute('tabindex', '-1');
+    await userEvent.click(targets[0]!);
+    expect(onSelect).toHaveBeenCalledWith('breach');
+  });
+
+  it('draws no click targets when nothing can be chosen', () => {
+    const { container } = render(<StackedBar label="Open signals" segments={segments} />);
+    expect(container.querySelector('button')).toBeNull();
+  });
+});

@@ -1,0 +1,4184 @@
+{
+ "schema": "synthetic-truth-2",
+ "seed": 20261120,
+ "as_of": "2026-11-19",
+ "current_period": "2026-10-31",
+ "borrower": {
+  "id": "pellucid-sensors",
+  "name": "Pellucid Sensors",
+  "legal_form": "corporation",
+  "industry": "Industrial IoT",
+  "stage": "Series A",
+  "city": "Minneapolis",
+  "state": "MN",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Colin Abernathy",
+  "analyst": "Tomas Keller",
+  "risk_rating": 4,
+  "statement_scale": 1,
+  "chief_financial_officer": "Garrick Lindahl",
+  "auditor": "Hobart Lindgren & Co. LLP",
+  "template_id": "vc-1"
+ },
+ "facilities": [
+  {
+   "id": "pellucid-sensors-vl",
+   "borrower_id": "pellucid-sensors",
+   "type": "term_loan",
+   "name": "Venture Term Loan",
+   "commitment": "1000000",
+   "original_amount": "1000000",
+   "closing_date": "2024-12-05",
+   "maturity_date": "2028-12-04",
+   "interest_rate": "Prime + 3.50%",
+   "borrowing_base": false
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-pellucid-sensors-1",
+   "facility_id": "pellucid-sensors-vl",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2024-12-05",
+   "effective_to": null,
+   "prepared_by": "Tomas Keller",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2024-12-11",
+   "warnings": [],
+   "source_documents": [
+    "pellucid-sensors.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {},
+    "covenants": [
+     {
+      "id": "min_unrestricted_cash",
+      "name": "Minimum Unrestricted Cash",
+      "archetype": "min_unrestricted_cash",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "3000000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "monthly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "pellucid-sensors.credit-agreement",
+        "section": "6.1",
+        "page": 4,
+        "quote": "Unrestricted Cash shall not be less than $3,000,000 at any month end."
+       },
+       {
+        "field": "definition",
+        "document_id": "pellucid-sensors.credit-agreement",
+        "section": "1.1",
+        "page": 3,
+        "quote": "\"Unrestricted Cash\" means cash held in deposit accounts of the Borrower with the Lender, excluding any cash that is pledged, escrowed or otherwise restricted."
+       }
+      ]
+     },
+     {
+      "id": "min_runway_months",
+      "name": "Minimum Runway",
+      "archetype": "min_runway_months",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "6.0",
+       "steps": [],
+       "unit": "months"
+      },
+      "measurement": {
+       "basis": "t3m",
+       "frequency": "monthly"
+      },
+      "rounding": {
+       "dp": 1,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "pellucid-sensors.credit-agreement",
+        "section": "6.2",
+        "page": 4,
+        "quote": "Runway shall not be less than 6.0 months at any month end."
+       },
+       {
+        "field": "definition",
+        "document_id": "pellucid-sensors.credit-agreement",
+        "section": "1.1",
+        "page": 3,
+        "quote": "\"Runway\" means Unrestricted Cash divided by the average monthly Net Burn for the three months then ended; if that average is zero or negative, Runway is not meaningful and the covenant is satisfied."
+       },
+       {
+        "field": "definition",
+        "document_id": "pellucid-sensors.credit-agreement",
+        "section": "1.1",
+        "page": 3,
+        "quote": "\"Net Burn\" means, for any month, capital expenditures plus capitalized software development spend, less net cash from operating activities, and excludes the proceeds of equity and debt financing."
+       }
+      ]
+     },
+     {
+      "id": "revenue_vs_plan",
+      "name": "Revenue to Plan",
+      "archetype": "revenue_vs_plan",
+      "params": {
+       "metric": "revenue",
+       "plan": [
+        {
+         "period_end": "2025-05-31",
+         "amount": "230000"
+        },
+        {
+         "period_end": "2025-06-30",
+         "amount": "235000"
+        },
+        {
+         "period_end": "2025-07-31",
+         "amount": "240000"
+        },
+        {
+         "period_end": "2025-08-31",
+         "amount": "245000"
+        },
+        {
+         "period_end": "2025-09-30",
+         "amount": "250000"
+        },
+        {
+         "period_end": "2025-10-31",
+         "amount": "256000"
+        },
+        {
+         "period_end": "2025-11-30",
+         "amount": "262000"
+        },
+        {
+         "period_end": "2025-12-31",
+         "amount": "267000"
+        },
+        {
+         "period_end": "2026-01-31",
+         "amount": "273000"
+        },
+        {
+         "period_end": "2026-02-28",
+         "amount": "279000"
+        },
+        {
+         "period_end": "2026-03-31",
+         "amount": "285000"
+        },
+        {
+         "period_end": "2026-04-30",
+         "amount": "292000"
+        },
+        {
+         "period_end": "2026-05-31",
+         "amount": "298000"
+        },
+        {
+         "period_end": "2026-06-30",
+         "amount": "305000"
+        },
+        {
+         "period_end": "2026-07-31",
+         "amount": "311000"
+        },
+        {
+         "period_end": "2026-08-31",
+         "amount": "318000"
+        },
+        {
+         "period_end": "2026-09-30",
+         "amount": "325000"
+        },
+        {
+         "period_end": "2026-10-31",
+         "amount": "332000"
+        }
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "0.80",
+       "steps": [],
+       "unit": "pct"
+      },
+      "measurement": {
+       "basis": "t3m",
+       "frequency": "monthly"
+      },
+      "rounding": {
+       "dp": 4,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "pellucid-sensors.credit-agreement",
+        "section": "6.3",
+        "page": 4,
+        "quote": "Revenue for any three-month period shall not be less than 80% of the Approved Plan for the same three months."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "monthly_financials",
+      "document_type": "monthly_financials",
+      "frequency": "monthly",
+      "due_days_after_period_end": 30,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.monthly_financials",
+       "document_id": "pellucid-sensors.credit-agreement",
+       "section": "5.1(b)",
+       "page": 3,
+       "quote": "Within 30 days after the end of each month, the Borrower shall deliver management financial statements for that month and the year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 30,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "pellucid-sensors.credit-agreement",
+       "section": "5.1(c)",
+       "page": 3,
+       "quote": "Within 30 days after the end of each month, the Borrower shall deliver a compliance certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "mrr_report",
+      "document_type": "mrr_report",
+      "frequency": "monthly",
+      "due_days_after_period_end": 15,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.mrr_report",
+       "document_id": "pellucid-sensors.credit-agreement",
+       "section": "5.1(d)",
+       "page": 3,
+       "quote": "Within 15 days after the end of each month, the Borrower shall deliver a monthly recurring revenue report."
+      }
+     },
+     {
+      "id": "bank_statements",
+      "document_type": "bank_statement",
+      "frequency": "monthly",
+      "due_days_after_period_end": 7,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.bank_statements",
+       "document_id": "pellucid-sensors.credit-agreement",
+       "section": "5.1(e)",
+       "page": 3,
+       "quote": "Within 7 days after the end of each month, the Borrower shall deliver its bank account statements for that month."
+      }
+     },
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 180,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "pellucid-sensors.credit-agreement",
+       "section": "5.1(a)",
+       "page": 3,
+       "quote": "Within 180 days after the end of each fiscal year, the Borrower shall deliver audited financial statements with an unqualified opinion."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "facilities.venture_term_loan.commitment",
+     "document_id": "pellucid-sensors.credit-agreement",
+     "section": "2.1",
+     "page": 3,
+     "quote": "The Lender has made a venture term loan to the Borrower in the aggregate principal amount of $1,000,000, bearing interest at the rate of Prime plus 3.50 percent. The venture term loan is interest-only through December 31, 2027; no principal is scheduled before then, and principal is repayable in equal monthly installments after that date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2025-05-31",
+   "months": 5,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1091748,
+    "is.services_revenue": 65505,
+    "is.cost_of_revenue": 486046,
+    "is.rnd": 650326,
+    "is.sales_marketing": 740649,
+    "is.gna": 415488,
+    "is.vc_depreciation_amortization": 45823,
+    "is.vc_interest": 43750,
+    "is.vc_other_income": 157563,
+    "is.total_revenue": 1157253,
+    "is.vc_gross_profit": 671207,
+    "is.vc_operating_loss": -1181079,
+    "is.vc_net_loss": -1067266,
+    "bs.cash_unrestricted": 10150540,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 306067,
+    "bs.other_current_assets": 72490,
+    "bs.capitalised_software": 234846,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 167073,
+    "bs.accounts_payable": 45668,
+    "bs.accrued_liabilities": 84571,
+    "bs.deferred_revenue_current": 364728,
+    "bs.deferred_revenue_noncurrent": 56989,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -20280940,
+    "bs.vc_total_cash": 10450540,
+    "bs.vc_total_assets": 11351016,
+    "bs.vc_total_liabilities": 1631956,
+    "bs.vc_total_equity": 9719060,
+    "bs.vc_total_liabilities_and_equity": 11351016,
+    "cf.vc_operating_cash_flow": -1003566,
+    "cf.vc_capex": 13887,
+    "cf.capitalised_software_spend": 81007,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1098460,
+    "sup.cash_interest_paid": 43750,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 227955,
+    "saas.arr": 2735460,
+    "saas.customers": 43
+   },
+   "memo": {
+    "saas.net_new_arr": 58884,
+    "saas.nrr_percent": 109,
+    "software.amortisation": 6227
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1324718,
+    "is.services_revenue": 79483,
+    "is.cost_of_revenue": 589764,
+    "is.rnd": 782760,
+    "is.sales_marketing": 891477,
+    "is.gna": 500099,
+    "is.vc_depreciation_amortization": 55828,
+    "is.vc_interest": 52500,
+    "is.vc_other_income": 187169,
+    "is.total_revenue": 1404201,
+    "is.vc_gross_profit": 814437,
+    "is.vc_operating_loss": -1415727,
+    "is.vc_net_loss": -1281058,
+    "bs.cash_unrestricted": 9930320,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 312801,
+    "bs.other_current_assets": 74084,
+    "bs.capitalised_software": 245608,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 166555,
+    "bs.accounts_payable": 46673,
+    "bs.accrued_liabilities": 86432,
+    "bs.deferred_revenue_current": 372752,
+    "bs.deferred_revenue_noncurrent": 58243,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -20494732,
+    "bs.vc_total_cash": 10230320,
+    "bs.vc_total_assets": 11149368,
+    "bs.vc_total_liabilities": 1644100,
+    "bs.vc_total_equity": 9505268,
+    "bs.vc_total_liabilities_and_equity": 11149368,
+    "cf.vc_operating_cash_flow": -1203537,
+    "cf.vc_capex": 16850,
+    "cf.capitalised_software_spend": 98293,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1318680,
+    "sup.cash_interest_paid": 52500,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 232970,
+    "saas.arr": 2795640,
+    "saas.customers": 44
+   },
+   "memo": {
+    "saas.net_new_arr": 60180,
+    "saas.nrr_percent": 104,
+    "software.amortisation": 6524
+   }
+  },
+  {
+   "period_end": "2025-07-31",
+   "months": 7,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1562813,
+    "is.services_revenue": 93769,
+    "is.cost_of_revenue": 695764,
+    "is.rnd": 913985,
+    "is.sales_marketing": 1040928,
+    "is.gna": 583938,
+    "is.vc_depreciation_amortization": 66120,
+    "is.vc_interest": 61250,
+    "is.vc_other_income": 216132,
+    "is.total_revenue": 1656582,
+    "is.vc_gross_profit": 960818,
+    "is.vc_operating_loss": -1644153,
+    "is.vc_net_loss": -1489271,
+    "bs.cash_unrestricted": 9715600,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 319683,
+    "bs.other_current_assets": 75714,
+    "bs.capitalised_software": 256453,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 166114,
+    "bs.accounts_payable": 47700,
+    "bs.accrued_liabilities": 88333,
+    "bs.deferred_revenue_current": 380952,
+    "bs.deferred_revenue_noncurrent": 59524,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -20702945,
+    "bs.vc_total_cash": 10015600,
+    "bs.vc_total_assets": 10953564,
+    "bs.vc_total_liabilities": 1656509,
+    "bs.vc_total_equity": 9297055,
+    "bs.vc_total_liabilities_and_equity": 10953564,
+    "cf.vc_operating_cash_flow": -1397561,
+    "cf.vc_capex": 19879,
+    "cf.capitalised_software_spend": 115960,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1533400,
+    "sup.cash_interest_paid": 61250,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 238095,
+    "saas.arr": 2857140,
+    "saas.customers": 44
+   },
+   "memo": {
+    "saas.net_new_arr": 61500,
+    "saas.nrr_percent": 107,
+    "software.amortisation": 6822
+   }
+  },
+  {
+   "period_end": "2025-08-31",
+   "months": 8,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1806146,
+    "is.services_revenue": 108369,
+    "is.cost_of_revenue": 804096,
+    "is.rnd": 1050131,
+    "is.sales_marketing": 1195983,
+    "is.gna": 670920,
+    "is.vc_depreciation_amortization": 76705,
+    "is.vc_interest": 70000,
+    "is.vc_other_income": 244469,
+    "is.total_revenue": 1914515,
+    "is.vc_gross_profit": 1110419,
+    "is.vc_operating_loss": -1883320,
+    "is.vc_net_loss": -1708851,
+    "bs.cash_unrestricted": 9489440,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 326715,
+    "bs.other_current_assets": 77380,
+    "bs.capitalised_software": 267384,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165748,
+    "bs.accounts_payable": 48749,
+    "bs.accrued_liabilities": 90277,
+    "bs.deferred_revenue_current": 389333,
+    "bs.deferred_revenue_noncurrent": 60833,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -20922525,
+    "bs.vc_total_cash": 9789440,
+    "bs.vc_total_assets": 10746667,
+    "bs.vc_total_liabilities": 1669192,
+    "bs.vc_total_equity": 9077475,
+    "bs.vc_total_liabilities_and_equity": 10746667,
+    "cf.vc_operating_cash_flow": -1602571,
+    "cf.vc_capex": 22974,
+    "cf.capitalised_software_spend": 134015,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1759560,
+    "sup.cash_interest_paid": 70000,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 243333,
+    "saas.arr": 2919996,
+    "saas.customers": 45
+   },
+   "memo": {
+    "saas.net_new_arr": 62856,
+    "saas.nrr_percent": 110,
+    "software.amortisation": 7124
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2054833,
+    "is.services_revenue": 123290,
+    "is.cost_of_revenue": 914811,
+    "is.rnd": 1184792,
+    "is.sales_marketing": 1349347,
+    "is.gna": 756954,
+    "is.vc_depreciation_amortization": 87585,
+    "is.vc_interest": 78750,
+    "is.vc_other_income": 272147,
+    "is.total_revenue": 2178123,
+    "is.vc_gross_profit": 1263312,
+    "is.vc_operating_loss": -2115366,
+    "is.vc_net_loss": -1921969,
+    "bs.cash_unrestricted": 9269660,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 333903,
+    "bs.other_current_assets": 79082,
+    "bs.capitalised_software": 278410,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165458,
+    "bs.accounts_payable": 49822,
+    "bs.accrued_liabilities": 92263,
+    "bs.deferred_revenue_current": 397899,
+    "bs.deferred_revenue_noncurrent": 62172,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -21135643,
+    "bs.vc_total_cash": 9569660,
+    "bs.vc_total_assets": 10546513,
+    "bs.vc_total_liabilities": 1682156,
+    "bs.vc_total_equity": 8864357,
+    "bs.vc_total_liabilities_and_equity": 10546513,
+    "cf.vc_operating_cash_flow": -1800735,
+    "cf.vc_capex": 26137,
+    "cf.capitalised_software_spend": 152468,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1979340,
+    "sup.cash_interest_paid": 78750,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 248687,
+    "saas.arr": 2984244,
+    "saas.customers": 46
+   },
+   "memo": {
+    "saas.net_new_arr": 64248,
+    "saas.nrr_percent": 105,
+    "software.amortisation": 7427
+   }
+  },
+  {
+   "period_end": "2025-10-31",
+   "months": 10,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2308991,
+    "is.services_revenue": 138539,
+    "is.cost_of_revenue": 1027962,
+    "is.rnd": 1322432,
+    "is.sales_marketing": 1506104,
+    "is.gna": 844890,
+    "is.vc_depreciation_amortization": 98766,
+    "is.vc_interest": 87500,
+    "is.vc_other_income": 299184,
+    "is.total_revenue": 2447530,
+    "is.vc_gross_profit": 1419568,
+    "is.vc_operating_loss": -2352624,
+    "is.vc_net_loss": -2140940,
+    "bs.cash_unrestricted": 9043940,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 341249,
+    "bs.other_current_assets": 80822,
+    "bs.capitalised_software": 289534,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165244,
+    "bs.accounts_payable": 50918,
+    "bs.accrued_liabilities": 94292,
+    "bs.deferred_revenue_current": 406653,
+    "bs.deferred_revenue_noncurrent": 63540,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -21354614,
+    "bs.vc_total_cash": 9343940,
+    "bs.vc_total_assets": 10340789,
+    "bs.vc_total_liabilities": 1695403,
+    "bs.vc_total_equity": 8645386,
+    "bs.vc_total_liabilities_and_equity": 10340789,
+    "cf.vc_operating_cash_flow": -2004364,
+    "cf.vc_capex": 29370,
+    "cf.capitalised_software_spend": 171326,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -2205060,
+    "sup.cash_interest_paid": 87500,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 254158,
+    "saas.arr": 3049896,
+    "saas.customers": 46
+   },
+   "memo": {
+    "saas.net_new_arr": 65652,
+    "saas.nrr_percent": 114,
+    "software.amortisation": 7734
+   }
+  },
+  {
+   "period_end": "2025-11-30",
+   "months": 11,
+   "fiscal_year": 2025,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2568740,
+    "is.services_revenue": 154124,
+    "is.cost_of_revenue": 1143602,
+    "is.rnd": 1455861,
+    "is.sales_marketing": 1658065,
+    "is.gna": 930137,
+    "is.vc_depreciation_amortization": 110252,
+    "is.vc_interest": 96250,
+    "is.vc_other_income": 325562,
+    "is.total_revenue": 2722864,
+    "is.vc_gross_profit": 1579262,
+    "is.vc_operating_loss": -2575053,
+    "is.vc_net_loss": -2345741,
+    "bs.cash_unrestricted": 8832300,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 348756,
+    "bs.other_current_assets": 82600,
+    "bs.capitalised_software": 300764,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165105,
+    "bs.accounts_payable": 52038,
+    "bs.accrued_liabilities": 96367,
+    "bs.deferred_revenue_current": 415598,
+    "bs.deferred_revenue_noncurrent": 64937,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -21559415,
+    "bs.vc_total_cash": 9132300,
+    "bs.vc_total_assets": 10149525,
+    "bs.vc_total_liabilities": 1708940,
+    "bs.vc_total_equity": 8440585,
+    "bs.vc_total_liabilities_and_equity": 10149525,
+    "cf.vc_operating_cash_flow": -2193427,
+    "cf.vc_capex": 32674,
+    "cf.capitalised_software_spend": 190599,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -2416700,
+    "sup.cash_interest_paid": 96250,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 259749,
+    "saas.arr": 3116988,
+    "saas.customers": 47
+   },
+   "memo": {
+    "saas.net_new_arr": 67092,
+    "saas.nrr_percent": 110,
+    "software.amortisation": 8043
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2834204,
+    "is.services_revenue": 170052,
+    "is.cost_of_revenue": 1261787,
+    "is.rnd": 1595098,
+    "is.sales_marketing": 1816641,
+    "is.gna": 1019094,
+    "is.vc_depreciation_amortization": 122047,
+    "is.vc_interest": 105000,
+    "is.vc_other_income": 351323,
+    "is.total_revenue": 3004256,
+    "is.vc_gross_profit": 1742469,
+    "is.vc_operating_loss": -2810411,
+    "is.vc_net_loss": -2564088,
+    "bs.cash_unrestricted": 8607020,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 356430,
+    "bs.other_current_assets": 84418,
+    "bs.capitalised_software": 312106,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165042,
+    "bs.accounts_payable": 53183,
+    "bs.accrued_liabilities": 98487,
+    "bs.deferred_revenue_current": 424742,
+    "bs.deferred_revenue_noncurrent": 66366,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -21777762,
+    "bs.vc_total_cash": 8907020,
+    "bs.vc_total_assets": 9945016,
+    "bs.vc_total_liabilities": 1722778,
+    "bs.vc_total_equity": 8222238,
+    "bs.vc_total_liabilities_and_equity": 9945016,
+    "cf.vc_operating_cash_flow": -2395633,
+    "cf.vc_capex": 36051,
+    "cf.capitalised_software_spend": 210296,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -2641980,
+    "sup.cash_interest_paid": 105000,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 265464,
+    "saas.arr": 3185568,
+    "saas.customers": 47
+   },
+   "memo": {
+    "saas.net_new_arr": 68580,
+    "saas.nrr_percent": 118,
+    "software.amortisation": 8355
+   }
+  },
+  {
+   "period_end": "2026-01-31",
+   "months": 1,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 271304,
+    "is.services_revenue": 16278,
+    "is.cost_of_revenue": 120784,
+    "is.rnd": 139749,
+    "is.sales_marketing": 159159,
+    "is.gna": 89285,
+    "is.vc_depreciation_amortization": 12108,
+    "is.vc_interest": 8750,
+    "is.vc_other_income": 25104,
+    "is.total_revenue": 287582,
+    "is.vc_gross_profit": 166798,
+    "is.vc_operating_loss": -233503,
+    "is.vc_net_loss": -217149,
+    "bs.cash_unrestricted": 8382840,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 364271,
+    "bs.other_current_assets": 86275,
+    "bs.capitalised_software": 323567,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165055,
+    "bs.accounts_payable": 54353,
+    "bs.accrued_liabilities": 100654,
+    "bs.deferred_revenue_current": 434086,
+    "bs.deferred_revenue_noncurrent": 67826,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -21994911,
+    "bs.vc_total_cash": 8682840,
+    "bs.vc_total_assets": 9742008,
+    "bs.vc_total_liabilities": 1736919,
+    "bs.vc_total_equity": 8005089,
+    "bs.vc_total_liabilities_and_equity": 9742008,
+    "cf.vc_operating_cash_flow": -200598,
+    "cf.vc_capex": 3451,
+    "cf.capitalised_software_spend": 20131,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -224180,
+    "sup.cash_interest_paid": 8750,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 271304,
+    "saas.arr": 3255648,
+    "saas.customers": 48
+   },
+   "memo": {
+    "saas.net_new_arr": 70080,
+    "saas.nrr_percent": 115,
+    "software.amortisation": 8670
+   }
+  },
+  {
+   "period_end": "2026-02-28",
+   "months": 2,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 548576,
+    "is.services_revenue": 32914,
+    "is.cost_of_revenue": 244225,
+    "is.rnd": 280116,
+    "is.sales_marketing": 319021,
+    "is.gna": 178963,
+    "is.vc_depreciation_amortization": 24535,
+    "is.vc_interest": 17500,
+    "is.vc_other_income": 49554,
+    "is.total_revenue": 581490,
+    "is.vc_gross_profit": 337265,
+    "is.vc_operating_loss": -465370,
+    "is.vc_net_loss": -433316,
+    "bs.cash_unrestricted": 8159540,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 372283,
+    "bs.other_current_assets": 88172,
+    "bs.capitalised_software": 335153,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165143,
+    "bs.accounts_payable": 55548,
+    "bs.accrued_liabilities": 102868,
+    "bs.deferred_revenue_current": 443635,
+    "bs.deferred_revenue_noncurrent": 69318,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -22211078,
+    "bs.vc_total_cash": 8459540,
+    "bs.vc_total_assets": 9540291,
+    "bs.vc_total_liabilities": 1751369,
+    "bs.vc_total_equity": 7788922,
+    "bs.vc_total_liabilities_and_equity": 9540291,
+    "cf.vc_operating_cash_flow": -399797,
+    "cf.vc_capex": 6978,
+    "cf.capitalised_software_spend": 40705,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -447480,
+    "sup.cash_interest_paid": 17500,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 277272,
+    "saas.arr": 3327264,
+    "saas.customers": 49
+   },
+   "memo": {
+    "saas.net_new_arr": 71616,
+    "saas.nrr_percent": 116,
+    "software.amortisation": 8988
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 831948,
+    "is.services_revenue": 49916,
+    "is.cost_of_revenue": 370382,
+    "is.rnd": 419859,
+    "is.sales_marketing": 478173,
+    "is.gna": 268244,
+    "is.vc_depreciation_amortization": 37285,
+    "is.vc_interest": 26250,
+    "is.vc_other_income": 73353,
+    "is.total_revenue": 881864,
+    "is.vc_gross_profit": 511482,
+    "is.vc_operating_loss": -692079,
+    "is.vc_net_loss": -644976,
+    "bs.cash_unrestricted": 7940640,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 380474,
+    "bs.other_current_assets": 90112,
+    "bs.capitalised_software": 346869,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165307,
+    "bs.accounts_payable": 56771,
+    "bs.accrued_liabilities": 105131,
+    "bs.deferred_revenue_current": 453395,
+    "bs.deferred_revenue_noncurrent": 70843,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -22422738,
+    "bs.vc_total_cash": 8240640,
+    "bs.vc_total_assets": 9343402,
+    "bs.vc_total_liabilities": 1766140,
+    "bs.vc_total_equity": 7577262,
+    "bs.vc_total_liabilities_and_equity": 9343402,
+    "cf.vc_operating_cash_flow": -594067,
+    "cf.vc_capex": 10582,
+    "cf.capitalised_software_spend": 61731,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -666380,
+    "sup.cash_interest_paid": 26250,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 283372,
+    "saas.arr": 3400464,
+    "saas.customers": 49
+   },
+   "memo": {
+    "saas.net_new_arr": 73200,
+    "saas.nrr_percent": 109,
+    "software.amortisation": 9310
+   }
+  },
+  {
+   "period_end": "2026-04-30",
+   "months": 4,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1121555,
+    "is.services_revenue": 67292,
+    "is.cost_of_revenue": 499315,
+    "is.rnd": 560831,
+    "is.sales_marketing": 638725,
+    "is.gna": 358310,
+    "is.vc_depreciation_amortization": 50364,
+    "is.vc_interest": 35000,
+    "is.vc_other_income": 96513,
+    "is.total_revenue": 1188847,
+    "is.vc_gross_profit": 689532,
+    "is.vc_operating_loss": -918698,
+    "is.vc_net_loss": -857185,
+    "bs.cash_unrestricted": 7721080,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 388845,
+    "bs.other_current_assets": 92095,
+    "bs.capitalised_software": 358723,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165547,
+    "bs.accounts_payable": 58020,
+    "bs.accrued_liabilities": 107444,
+    "bs.deferred_revenue_current": 463371,
+    "bs.deferred_revenue_noncurrent": 72402,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -22634947,
+    "bs.vc_total_cash": 8021080,
+    "bs.vc_total_assets": 9146290,
+    "bs.vc_total_liabilities": 1781237,
+    "bs.vc_total_equity": 7365053,
+    "bs.vc_total_liabilities_and_equity": 9146290,
+    "cf.vc_operating_cash_flow": -788454,
+    "cf.vc_capex": 14266,
+    "cf.capitalised_software_spend": 83220,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -885940,
+    "sup.cash_interest_paid": 35000,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 289607,
+    "saas.arr": 3475284,
+    "saas.customers": 50
+   },
+   "memo": {
+    "saas.net_new_arr": 74820,
+    "saas.nrr_percent": 111,
+    "software.amortisation": 9635
+   }
+  },
+  {
+   "period_end": "2026-05-31",
+   "months": 5,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1417533,
+    "is.services_revenue": 85051,
+    "is.cost_of_revenue": 631085,
+    "is.rnd": 705356,
+    "is.sales_marketing": 803322,
+    "is.gna": 450645,
+    "is.vc_depreciation_amortization": 63778,
+    "is.vc_interest": 43750,
+    "is.vc_other_income": 119033,
+    "is.total_revenue": 1502584,
+    "is.vc_gross_profit": 871499,
+    "is.vc_operating_loss": -1151602,
+    "is.vc_net_loss": -1076319,
+    "bs.cash_unrestricted": 7494480,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 397400,
+    "bs.other_current_assets": 94121,
+    "bs.capitalised_software": 370720,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 165863,
+    "bs.accounts_payable": 59297,
+    "bs.accrued_liabilities": 109808,
+    "bs.deferred_revenue_current": 473565,
+    "bs.deferred_revenue_noncurrent": 73995,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -22854081,
+    "bs.vc_total_cash": 7794480,
+    "bs.vc_total_assets": 8942584,
+    "bs.vc_total_liabilities": 1796665,
+    "bs.vc_total_equity": 7145919,
+    "bs.vc_total_liabilities_and_equity": 8942584,
+    "cf.vc_operating_cash_flow": -989327,
+    "cf.vc_capex": 18031,
+    "cf.capitalised_software_spend": 105182,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1112540,
+    "sup.cash_interest_paid": 43750,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 295978,
+    "saas.arr": 3551736,
+    "saas.customers": 51
+   },
+   "memo": {
+    "saas.net_new_arr": 76452,
+    "saas.nrr_percent": 113,
+    "software.amortisation": 9965
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1720023,
+    "is.services_revenue": 103200,
+    "is.cost_of_revenue": 765753,
+    "is.rnd": 848384,
+    "is.sales_marketing": 966215,
+    "is.gna": 542024,
+    "is.vc_depreciation_amortization": 77531,
+    "is.vc_interest": 52500,
+    "is.vc_other_income": 140892,
+    "is.total_revenue": 1823223,
+    "is.vc_gross_profit": 1057470,
+    "is.vc_operating_loss": -1376684,
+    "is.vc_net_loss": -1288292,
+    "bs.cash_unrestricted": 7274920,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 406143,
+    "bs.other_current_assets": 96192,
+    "bs.capitalised_software": 382867,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 166256,
+    "bs.accounts_payable": 60601,
+    "bs.accrued_liabilities": 112224,
+    "bs.deferred_revenue_current": 483984,
+    "bs.deferred_revenue_noncurrent": 75623,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -23066054,
+    "bs.vc_total_cash": 7574920,
+    "bs.vc_total_assets": 8746378,
+    "bs.vc_total_liabilities": 1812432,
+    "bs.vc_total_equity": 6933946,
+    "bs.vc_total_liabilities_and_equity": 8746378,
+    "cf.vc_operating_cash_flow": -1182594,
+    "cf.vc_capex": 21879,
+    "cf.capitalised_software_spend": 127627,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1332100,
+    "sup.cash_interest_paid": 52500,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 302490,
+    "saas.arr": 3629880,
+    "saas.customers": 51
+   },
+   "memo": {
+    "saas.net_new_arr": 78144,
+    "saas.nrr_percent": 107,
+    "software.amortisation": 10298
+   }
+  },
+  {
+   "period_end": "2026-07-31",
+   "months": 7,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2029167,
+    "is.services_revenue": 121749,
+    "is.cost_of_revenue": 903384,
+    "is.rnd": 1026814,
+    "is.sales_marketing": 1169427,
+    "is.gna": 656022,
+    "is.vc_depreciation_amortization": 91630,
+    "is.vc_interest": 61250,
+    "is.vc_other_income": 162111,
+    "is.total_revenue": 2150916,
+    "is.vc_gross_profit": 1247532,
+    "is.vc_operating_loss": -1696361,
+    "is.vc_net_loss": -1595500,
+    "bs.cash_unrestricted": 6960000,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 415078,
+    "bs.other_current_assets": 98308,
+    "bs.capitalised_software": 395171,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 166724,
+    "bs.accounts_payable": 61934,
+    "bs.accrued_liabilities": 114693,
+    "bs.deferred_revenue_current": 494630,
+    "bs.deferred_revenue_noncurrent": 77286,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -23373262,
+    "bs.vc_total_cash": 7260000,
+    "bs.vc_total_assets": 8455281,
+    "bs.vc_total_liabilities": 1828543,
+    "bs.vc_total_equity": 6626738,
+    "bs.vc_total_liabilities_and_equity": 8455281,
+    "cf.vc_operating_cash_flow": -1470643,
+    "cf.vc_capex": 25811,
+    "cf.capitalised_software_spend": 150566,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1647020,
+    "sup.cash_interest_paid": 61250,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 309144,
+    "saas.arr": 3709728,
+    "saas.customers": 52
+   },
+   "memo": {
+    "saas.net_new_arr": 79848,
+    "saas.nrr_percent": 115,
+    "software.amortisation": 10635
+   }
+  },
+  {
+   "period_end": "2026-08-31",
+   "months": 8,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2345112,
+    "is.services_revenue": 140706,
+    "is.cost_of_revenue": 1044043,
+    "is.rnd": 1171838,
+    "is.sales_marketing": 1334593,
+    "is.gna": 748677,
+    "is.vc_depreciation_amortization": 106080,
+    "is.vc_interest": 70000,
+    "is.vc_other_income": 182411,
+    "is.total_revenue": 2485818,
+    "is.vc_gross_profit": 1441775,
+    "is.vc_operating_loss": -1919413,
+    "is.vc_net_loss": -1807002,
+    "bs.cash_unrestricted": 6740660,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 424209,
+    "bs.other_current_assets": 100471,
+    "bs.capitalised_software": 407637,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 167270,
+    "bs.accounts_payable": 63297,
+    "bs.accrued_liabilities": 117216,
+    "bs.deferred_revenue_current": 505512,
+    "bs.deferred_revenue_noncurrent": 78986,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -23584764,
+    "bs.vc_total_cash": 7040660,
+    "bs.vc_total_assets": 8260247,
+    "bs.vc_total_liabilities": 1845011,
+    "bs.vc_total_equity": 6415236,
+    "bs.vc_total_liabilities_and_equity": 8260247,
+    "cf.vc_operating_cash_flow": -1662521,
+    "cf.vc_capex": 29830,
+    "cf.capitalised_software_spend": 174009,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1866360,
+    "sup.cash_interest_paid": 70000,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 315945,
+    "saas.arr": 3791340,
+    "saas.customers": 53
+   },
+   "memo": {
+    "saas.net_new_arr": 81612,
+    "saas.nrr_percent": 113,
+    "software.amortisation": 10977
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2668008,
+    "is.services_revenue": 160080,
+    "is.cost_of_revenue": 1187796,
+    "is.rnd": 1315064,
+    "is.sales_marketing": 1497711,
+    "is.gna": 840182,
+    "is.vc_depreciation_amortization": 120888,
+    "is.vc_interest": 78750,
+    "is.vc_other_income": 202071,
+    "is.total_revenue": 2828088,
+    "is.vc_gross_profit": 1640292,
+    "is.vc_operating_loss": -2133553,
+    "is.vc_net_loss": -2010232,
+    "bs.cash_unrestricted": 6529460,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 433542,
+    "bs.other_current_assets": 102681,
+    "bs.capitalised_software": 420273,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 167892,
+    "bs.accounts_payable": 64689,
+    "bs.accrued_liabilities": 119795,
+    "bs.deferred_revenue_current": 516634,
+    "bs.deferred_revenue_noncurrent": 80724,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -23787994,
+    "bs.vc_total_cash": 6829460,
+    "bs.vc_total_assets": 8073848,
+    "bs.vc_total_liabilities": 1861842,
+    "bs.vc_total_equity": 6212006,
+    "bs.vc_total_liabilities_and_equity": 8073848,
+    "cf.vc_operating_cash_flow": -1845655,
+    "cf.vc_capex": 33937,
+    "cf.capitalised_software_spend": 197968,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -2077560,
+    "sup.cash_interest_paid": 78750,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 322896,
+    "saas.arr": 3874752,
+    "saas.customers": 53
+   },
+   "memo": {
+    "saas.net_new_arr": 83412,
+    "saas.nrr_percent": 111,
+    "software.amortisation": 11323
+   }
+  },
+  {
+   "period_end": "2026-10-31",
+   "months": 10,
+   "fiscal_year": 2026,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 2998008,
+    "is.services_revenue": 179880,
+    "is.cost_of_revenue": 1334712,
+    "is.rnd": 1466033,
+    "is.sales_marketing": 1669647,
+    "is.gna": 936634,
+    "is.vc_depreciation_amortization": 136060,
+    "is.vc_interest": 87500,
+    "is.vc_other_income": 221115,
+    "is.total_revenue": 3177888,
+    "is.vc_gross_profit": 1843176,
+    "is.vc_operating_loss": -2365198,
+    "is.vc_net_loss": -2231583,
+    "bs.cash_unrestricted": 6300000,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 443080,
+    "bs.other_current_assets": 104940,
+    "bs.capitalised_software": 433085,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 168592,
+    "bs.accounts_payable": 66112,
+    "bs.accrued_liabilities": 122430,
+    "bs.deferred_revenue_current": 528000,
+    "bs.deferred_revenue_noncurrent": 82500,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -24009345,
+    "bs.vc_total_cash": 6600000,
+    "bs.vc_total_assets": 7869697,
+    "bs.vc_total_liabilities": 1879042,
+    "bs.vc_total_equity": 5990655,
+    "bs.vc_total_liabilities_and_equity": 7869697,
+    "cf.vc_operating_cash_flow": -2046431,
+    "cf.vc_capex": 38135,
+    "cf.capitalised_software_spend": 222454,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -2307020,
+    "sup.cash_interest_paid": 87500,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 330000,
+    "saas.arr": 3960000,
+    "saas.customers": 54
+   },
+   "memo": {
+    "saas.net_new_arr": 85248,
+    "saas.nrr_percent": 117,
+    "software.amortisation": 11674
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.subscription_revenue": 1757206,
+    "is.services_revenue": 105432,
+    "is.cost_of_revenue": 782308,
+    "is.rnd": 988961,
+    "is.sales_marketing": 1126317,
+    "is.gna": 631838,
+    "is.vc_depreciation_amortization": 75669,
+    "is.vc_interest": 65100,
+    "is.vc_other_income": 217820,
+    "is.total_revenue": 1862638,
+    "is.vc_gross_profit": 1080330,
+    "is.vc_operating_loss": -1742455,
+    "is.vc_net_loss": -1589735,
+    "bs.cash_unrestricted": 11249000,
+    "bs.cash_restricted": 300000,
+    "bs.short_term_investments": 0,
+    "bs.accounts_receivable": 274512,
+    "bs.other_current_assets": 65016,
+    "bs.capitalised_software": 182040,
+    "bs.vc_other_intangibles": 120000,
+    "bs.other_noncurrent_assets": 170808,
+    "bs.accounts_payable": 40960,
+    "bs.accrued_liabilities": 75852,
+    "bs.deferred_revenue_current": 327125,
+    "bs.deferred_revenue_noncurrent": 51113,
+    "bs.venture_debt_current": 0,
+    "bs.venture_debt_noncurrent": 1000000,
+    "bs.convertible_notes": 0,
+    "bs.safes": 0,
+    "bs.vc_other_liabilities": 80000,
+    "bs.preferred_equity": 30000000,
+    "bs.common_equity": -19213674,
+    "bs.vc_total_cash": 11549000,
+    "bs.vc_total_assets": 12361376,
+    "bs.vc_total_liabilities": 1575050,
+    "bs.vc_total_equity": 10786326,
+    "bs.vc_total_liabilities_and_equity": 12361376,
+    "cf.vc_operating_cash_flow": -1485292,
+    "cf.vc_capex": 22352,
+    "cf.capitalised_software_spend": 130384,
+    "cf.equity_raised": 0,
+    "cf.debt_raised": 0,
+    "cf.vc_other_financing": 0,
+    "cf.vc_net_change_in_cash": -1638028,
+    "sup.cash_interest_paid": 65100,
+    "sup.scheduled_principal": 0,
+    "saas.mrr": 204453,
+    "saas.arr": 2453436,
+    "saas.customers": 40
+   },
+   "memo": {
+    "derived": "fiscal 2024 flows are fiscal 2025 flows scaled by 0.62"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2026-08-31",
+   "scale": 1,
+   "signed_by": "Garrick Lindahl",
+   "reported": {
+    "min_unrestricted_cash": {
+     "value": "6740660",
+     "threshold": "3000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash in operating accounts",
+       "amount": 6740660
+      },
+      {
+       "label": "Unrestricted Cash",
+       "amount": 6740660
+      }
+     ]
+    },
+    "min_runway_months": {
+     "value": "26.8",
+     "threshold": "6.0",
+     "in_compliance": true,
+     "unit": "months",
+     "calculation": [
+      {
+       "label": "Unrestricted Cash (as above)",
+       "amount": 6740660
+      },
+      {
+       "label": "Net Burn for the three months ended",
+       "amount": 753820
+      },
+      {
+       "label": "Average monthly Net Burn",
+       "amount": "251273"
+      }
+     ]
+    },
+    "revenue_vs_plan": {
+     "value": "1.0527",
+     "threshold": "0.80",
+     "in_compliance": true,
+     "unit": "pct",
+     "calculation": [
+      {
+       "label": "Revenue for the three months ended",
+       "amount": 983234
+      },
+      {
+       "label": "Approved Plan for the same three months",
+       "amount": 934000
+      }
+     ]
+    }
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Garrick Lindahl",
+   "reported": {
+    "min_unrestricted_cash": {
+     "value": "6529460",
+     "threshold": "3000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash in operating accounts",
+       "amount": 6529460
+      },
+      {
+       "label": "Unrestricted Cash",
+       "amount": 6529460
+      }
+     ]
+    },
+    "min_runway_months": {
+     "value": "26.3",
+     "threshold": "6.0",
+     "in_compliance": true,
+     "unit": "months",
+     "calculation": [
+      {
+       "label": "Unrestricted Cash (as above)",
+       "amount": 6529460
+      },
+      {
+       "label": "Net Burn for the three months ended",
+       "amount": 745460
+      },
+      {
+       "label": "Average monthly Net Burn",
+       "amount": "248487"
+      }
+     ]
+    },
+    "revenue_vs_plan": {
+     "value": "1.0533",
+     "threshold": "0.80",
+     "in_compliance": true,
+     "unit": "pct",
+     "calculation": [
+      {
+       "label": "Revenue for the three months ended",
+       "amount": 1004865
+      },
+      {
+       "label": "Approved Plan for the same three months",
+       "amount": 954000
+      }
+     ]
+    }
+   }
+  },
+  {
+   "period_end": "2026-10-31",
+   "scale": 1,
+   "signed_by": "Garrick Lindahl",
+   "reported": {
+    "min_unrestricted_cash": {
+     "value": "6300000",
+     "threshold": "3000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash in operating accounts",
+       "amount": 6300000
+      },
+      {
+       "label": "Unrestricted Cash",
+       "amount": 6300000
+      }
+     ]
+    },
+    "min_runway_months": {
+     "value": "28.6",
+     "threshold": "6.0",
+     "in_compliance": true,
+     "unit": "months",
+     "calculation": [
+      {
+       "label": "Unrestricted Cash (as above)",
+       "amount": 6300000
+      },
+      {
+       "label": "Net Burn for the three months ended",
+       "amount": 660000
+      },
+      {
+       "label": "Average monthly Net Burn",
+       "amount": "220000"
+      }
+     ]
+    },
+    "revenue_vs_plan": {
+     "value": "1.0533",
+     "threshold": "0.80",
+     "in_compliance": true,
+     "unit": "pct",
+     "calculation": [
+      {
+       "label": "Revenue for the three months ended",
+       "amount": 1026972
+      },
+      {
+       "label": "Approved Plan for the same three months",
+       "amount": 975000
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [],
+ "funding_events": [],
+ "documents": [
+  {
+   "id": "pellucid-sensors.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/pellucid-sensors/credit-agreement.pdf",
+   "pages": 5,
+   "title": "Venture Loan and Security Agreement between Pellucid Sensors and Bank of Stoic",
+   "received_date": "2024-12-05",
+   "document_date": "2024-12-05"
+  },
+  {
+   "id": "pellucid-sensors.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/pellucid-sensors/afs-2025.pdf",
+   "pages": 6,
+   "title": "Audited financial statements, fiscal 2025",
+   "received_date": "2026-04-12",
+   "document_date": "2026-04-12",
+   "scale": 1,
+   "quality": "audited",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 6
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 3,
+     "label": "Cash in operating accounts",
+     "printed": "8,607,020"
+    },
+    "bs.cash_restricted": {
+     "page": 3,
+     "label": "Cash pledged or restricted",
+     "printed": "300,000"
+    },
+    "bs.vc_total_cash": {
+     "page": 3,
+     "label": "Total cash",
+     "printed": "8,907,020"
+    },
+    "bs.short_term_investments": {
+     "page": 3,
+     "label": "Short-term investments",
+     "printed": "-"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "356,430"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "84,418"
+    },
+    "bs.capitalised_software": {
+     "page": 3,
+     "label": "Capitalised software, net",
+     "printed": "312,106"
+    },
+    "bs.vc_other_intangibles": {
+     "page": 3,
+     "label": "Other intangibles, net",
+     "printed": "120,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "165,042"
+    },
+    "bs.vc_total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "9,945,016"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "53,183"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "98,487"
+    },
+    "bs.deferred_revenue_current": {
+     "page": 3,
+     "label": "Deferred revenue, current",
+     "printed": "424,742"
+    },
+    "bs.deferred_revenue_noncurrent": {
+     "page": 3,
+     "label": "Deferred revenue, non-current",
+     "printed": "66,366"
+    },
+    "bs.venture_debt_current": {
+     "page": 3,
+     "label": "Venture debt, current portion",
+     "printed": "-"
+    },
+    "bs.venture_debt_noncurrent": {
+     "page": 3,
+     "label": "Venture debt, net of current portion",
+     "printed": "1,000,000"
+    },
+    "bs.convertible_notes": {
+     "page": 3,
+     "label": "Convertible notes",
+     "printed": "-"
+    },
+    "bs.safes": {
+     "page": 3,
+     "label": "SAFEs",
+     "printed": "-"
+    },
+    "bs.vc_other_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "80,000"
+    },
+    "bs.vc_total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "1,722,778"
+    },
+    "bs.preferred_equity": {
+     "page": 3,
+     "label": "Preferred stock",
+     "printed": "30,000,000"
+    },
+    "bs.common_equity": {
+     "page": 3,
+     "label": "Common stock and accumulated deficit",
+     "printed": "(21,777,762)"
+    },
+    "bs.vc_total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "8,222,238"
+    },
+    "bs.vc_total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "9,945,016"
+    },
+    "is.subscription_revenue": {
+     "page": 4,
+     "label": "Subscription revenue",
+     "printed": "2,834,204"
+    },
+    "is.services_revenue": {
+     "page": 4,
+     "label": "Services revenue",
+     "printed": "170,052"
+    },
+    "is.total_revenue": {
+     "page": 4,
+     "label": "Total revenue",
+     "printed": "3,004,256"
+    },
+    "is.cost_of_revenue": {
+     "page": 4,
+     "label": "Cost of revenue",
+     "printed": "1,261,787"
+    },
+    "is.vc_gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "1,742,469"
+    },
+    "is.rnd": {
+     "page": 4,
+     "label": "Research and development",
+     "printed": "1,595,098"
+    },
+    "is.sales_marketing": {
+     "page": 4,
+     "label": "Sales and marketing",
+     "printed": "1,816,641"
+    },
+    "is.gna": {
+     "page": 4,
+     "label": "General and administrative",
+     "printed": "1,019,094"
+    },
+    "is.vc_depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "122,047"
+    },
+    "is.vc_operating_loss": {
+     "page": 4,
+     "label": "Operating income (loss)",
+     "printed": "(2,810,411)"
+    },
+    "is.vc_interest": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "105,000"
+    },
+    "is.vc_other_income": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "351,323"
+    },
+    "is.vc_net_loss": {
+     "page": 4,
+     "label": "Net income (loss)",
+     "printed": "(2,564,088)"
+    },
+    "cf.vc_operating_cash_flow": {
+     "page": 5,
+     "label": "Net cash used in operating activities",
+     "printed": "(2,395,633)"
+    },
+    "cf.vc_capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(36,051)"
+    },
+    "cf.capitalised_software_spend": {
+     "page": 5,
+     "label": "Capitalised software development",
+     "printed": "(210,296)"
+    },
+    "cf.equity_raised": {
+     "page": 5,
+     "label": "Proceeds from issuance of preferred stock",
+     "printed": "-"
+    },
+    "cf.debt_raised": {
+     "page": 5,
+     "label": "Proceeds from venture debt",
+     "printed": "-"
+    },
+    "cf.vc_other_financing": {
+     "page": 5,
+     "label": "Other financing",
+     "printed": "-"
+    },
+    "cf.vc_net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "(2,641,980)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 6,
+     "label": "Cash paid for interest",
+     "printed": "105,000"
+    },
+    "sup.scheduled_principal": {
+     "page": 6,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    }
+   },
+   "comparative_period_end": "2024-12-31"
+  },
+  {
+   "id": "pellucid-sensors.bank-2026-08-31",
+   "type": "bank_statement",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/bank-2026-08-31.pdf",
+   "pages": 1,
+   "title": "Account statement, August 2026",
+   "received_date": "2026-09-06",
+   "document_date": "2026-09-06",
+   "page_map": {
+    "summary": 1,
+    "totals": 1
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 1,
+     "label": "Total operating accounts (unrestricted)",
+     "printed": "$6,740,660"
+    },
+    "bs.cash_restricted": {
+     "page": 1,
+     "label": "Total pledged and restricted accounts",
+     "printed": "$300,000"
+    }
+   }
+  },
+  {
+   "id": "pellucid-sensors.mrr-2026-08-31",
+   "type": "mrr_report",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/mrr-2026-08-31.pdf",
+   "pages": 1,
+   "title": "MRR report, August 2026",
+   "received_date": "2026-09-04",
+   "document_date": "2026-09-04",
+   "page_map": {
+    "summary": 1,
+    "bridge": 1,
+    "trend": 1
+   },
+   "figures": {
+    "saas.mrr": {
+     "page": 1,
+     "label": "Monthly recurring revenue (MRR)",
+     "printed": "$315,945"
+    },
+    "saas.arr": {
+     "page": 1,
+     "label": "Annual recurring revenue (ARR)",
+     "printed": "$3,791,340"
+    },
+    "saas.customers": {
+     "page": 1,
+     "label": "Customers",
+     "printed": "53"
+    },
+    "saas.net_new_arr": {
+     "page": 1,
+     "label": "Net new ARR in the month",
+     "printed": "$81,612"
+    },
+    "saas.net_revenue_retention": {
+     "page": 1,
+     "label": "Net revenue retention, trailing 12 months",
+     "printed": "113%"
+    }
+   }
+  },
+  {
+   "id": "pellucid-sensors.mf-2026-08-31",
+   "type": "monthly_financials",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/mf-2026-08-31.pdf",
+   "pages": 5,
+   "title": "Management financial statements, August 2026",
+   "received_date": "2026-09-17",
+   "document_date": "2026-09-17",
+   "scale": 1,
+   "page_map": {
+    "balance_sheet": 1,
+    "income_statement": 2,
+    "cash_flow": 3,
+    "supplemental": 4
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 1,
+     "label": "Cash in operating accounts",
+     "printed": "6,740,660"
+    },
+    "bs.cash_restricted": {
+     "page": 1,
+     "label": "Cash pledged or restricted",
+     "printed": "300,000"
+    },
+    "bs.vc_total_cash": {
+     "page": 1,
+     "label": "Total cash",
+     "printed": "7,040,660"
+    },
+    "bs.short_term_investments": {
+     "page": 1,
+     "label": "Short-term investments",
+     "printed": "-"
+    },
+    "bs.accounts_receivable": {
+     "page": 1,
+     "label": "Accounts receivable, net",
+     "printed": "424,209"
+    },
+    "bs.other_current_assets": {
+     "page": 1,
+     "label": "Other current assets",
+     "printed": "100,471"
+    },
+    "bs.capitalised_software": {
+     "page": 1,
+     "label": "Capitalised software, net",
+     "printed": "407,637"
+    },
+    "bs.vc_other_intangibles": {
+     "page": 1,
+     "label": "Other intangibles, net",
+     "printed": "120,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 1,
+     "label": "Other assets",
+     "printed": "167,270"
+    },
+    "bs.vc_total_assets": {
+     "page": 1,
+     "label": "Total assets",
+     "printed": "8,260,247"
+    },
+    "bs.accounts_payable": {
+     "page": 1,
+     "label": "Accounts payable",
+     "printed": "63,297"
+    },
+    "bs.accrued_liabilities": {
+     "page": 1,
+     "label": "Accrued liabilities",
+     "printed": "117,216"
+    },
+    "bs.deferred_revenue_current": {
+     "page": 1,
+     "label": "Deferred revenue, current",
+     "printed": "505,512"
+    },
+    "bs.deferred_revenue_noncurrent": {
+     "page": 1,
+     "label": "Deferred revenue, non-current",
+     "printed": "78,986"
+    },
+    "bs.venture_debt_current": {
+     "page": 1,
+     "label": "Venture debt, current portion",
+     "printed": "-"
+    },
+    "bs.venture_debt_noncurrent": {
+     "page": 1,
+     "label": "Venture debt, net of current portion",
+     "printed": "1,000,000"
+    },
+    "bs.convertible_notes": {
+     "page": 1,
+     "label": "Convertible notes",
+     "printed": "-"
+    },
+    "bs.safes": {
+     "page": 1,
+     "label": "SAFEs",
+     "printed": "-"
+    },
+    "bs.vc_other_liabilities": {
+     "page": 1,
+     "label": "Other liabilities",
+     "printed": "80,000"
+    },
+    "bs.vc_total_liabilities": {
+     "page": 1,
+     "label": "Total liabilities",
+     "printed": "1,845,011"
+    },
+    "bs.preferred_equity": {
+     "page": 1,
+     "label": "Preferred stock",
+     "printed": "30,000,000"
+    },
+    "bs.common_equity": {
+     "page": 1,
+     "label": "Common stock and accumulated deficit",
+     "printed": "(23,584,764)"
+    },
+    "bs.vc_total_equity": {
+     "page": 1,
+     "label": "Total stockholders' equity",
+     "printed": "6,415,236"
+    },
+    "bs.vc_total_liabilities_and_equity": {
+     "page": 1,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "8,260,247"
+    },
+    "is.subscription_revenue": {
+     "page": 2,
+     "label": "Subscription revenue",
+     "printed": "2,345,112"
+    },
+    "is.services_revenue": {
+     "page": 2,
+     "label": "Services revenue",
+     "printed": "140,706"
+    },
+    "is.total_revenue": {
+     "page": 2,
+     "label": "Total revenue",
+     "printed": "2,485,818"
+    },
+    "is.cost_of_revenue": {
+     "page": 2,
+     "label": "Cost of revenue",
+     "printed": "1,044,043"
+    },
+    "is.vc_gross_profit": {
+     "page": 2,
+     "label": "Gross profit",
+     "printed": "1,441,775"
+    },
+    "is.rnd": {
+     "page": 2,
+     "label": "Research and development",
+     "printed": "1,171,838"
+    },
+    "is.sales_marketing": {
+     "page": 2,
+     "label": "Sales and marketing",
+     "printed": "1,334,593"
+    },
+    "is.gna": {
+     "page": 2,
+     "label": "General and administrative",
+     "printed": "748,677"
+    },
+    "is.vc_depreciation_amortization": {
+     "page": 2,
+     "label": "Depreciation and amortization",
+     "printed": "106,080"
+    },
+    "is.vc_operating_loss": {
+     "page": 2,
+     "label": "Operating income (loss)",
+     "printed": "(1,919,413)"
+    },
+    "is.vc_interest": {
+     "page": 2,
+     "label": "Interest expense",
+     "printed": "70,000"
+    },
+    "is.vc_other_income": {
+     "page": 2,
+     "label": "Other income (expense), net",
+     "printed": "182,411"
+    },
+    "is.vc_net_loss": {
+     "page": 2,
+     "label": "Net income (loss)",
+     "printed": "(1,807,002)"
+    },
+    "cf.vc_operating_cash_flow": {
+     "page": 3,
+     "label": "Net cash used in operating activities",
+     "printed": "(1,662,521)"
+    },
+    "cf.vc_capex": {
+     "page": 3,
+     "label": "Purchases of property and equipment",
+     "printed": "(29,830)"
+    },
+    "cf.capitalised_software_spend": {
+     "page": 3,
+     "label": "Capitalised software development",
+     "printed": "(174,009)"
+    },
+    "cf.equity_raised": {
+     "page": 3,
+     "label": "Proceeds from issuance of preferred stock",
+     "printed": "-"
+    },
+    "cf.debt_raised": {
+     "page": 3,
+     "label": "Proceeds from venture debt",
+     "printed": "-"
+    },
+    "cf.vc_other_financing": {
+     "page": 3,
+     "label": "Other financing",
+     "printed": "-"
+    },
+    "cf.vc_net_change_in_cash": {
+     "page": 3,
+     "label": "Net change in cash",
+     "printed": "(1,866,360)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 4,
+     "label": "Cash paid for interest",
+     "printed": "70,000"
+    },
+    "sup.scheduled_principal": {
+     "page": 4,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    }
+   },
+   "months": 8,
+   "period_basis": "fiscal_year_to_date"
+  },
+  {
+   "id": "pellucid-sensors.mcc-2026-08-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/pellucid-sensors/mcc-2026-08-31.pdf",
+   "pages": 2,
+   "title": "Monthly compliance certificate, August 2026",
+   "received_date": "2026-09-18",
+   "document_date": "2026-09-18",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellucid-sensors.bank-2026-09-30",
+   "type": "bank_statement",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/bank-2026-09-30.pdf",
+   "pages": 1,
+   "title": "Account statement, September 2026",
+   "received_date": "2026-10-06",
+   "document_date": "2026-10-06",
+   "page_map": {
+    "summary": 1,
+    "totals": 1
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 1,
+     "label": "Total operating accounts (unrestricted)",
+     "printed": "$6,529,460"
+    },
+    "bs.cash_restricted": {
+     "page": 1,
+     "label": "Total pledged and restricted accounts",
+     "printed": "$300,000"
+    }
+   }
+  },
+  {
+   "id": "pellucid-sensors.mrr-2026-09-30",
+   "type": "mrr_report",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/mrr-2026-09-30.pdf",
+   "pages": 1,
+   "title": "MRR report, September 2026",
+   "received_date": "2026-10-06",
+   "document_date": "2026-10-06",
+   "page_map": {
+    "summary": 1,
+    "bridge": 1,
+    "trend": 1
+   },
+   "figures": {
+    "saas.mrr": {
+     "page": 1,
+     "label": "Monthly recurring revenue (MRR)",
+     "printed": "$322,896"
+    },
+    "saas.arr": {
+     "page": 1,
+     "label": "Annual recurring revenue (ARR)",
+     "printed": "$3,874,752"
+    },
+    "saas.customers": {
+     "page": 1,
+     "label": "Customers",
+     "printed": "53"
+    },
+    "saas.net_new_arr": {
+     "page": 1,
+     "label": "Net new ARR in the month",
+     "printed": "$83,412"
+    },
+    "saas.net_revenue_retention": {
+     "page": 1,
+     "label": "Net revenue retention, trailing 12 months",
+     "printed": "111%"
+    }
+   }
+  },
+  {
+   "id": "pellucid-sensors.mf-2026-09-30",
+   "type": "monthly_financials",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/mf-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Management financial statements, September 2026",
+   "received_date": "2026-10-12",
+   "document_date": "2026-10-12",
+   "scale": 1,
+   "page_map": {
+    "balance_sheet": 1,
+    "income_statement": 2,
+    "cash_flow": 3,
+    "supplemental": 4
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 1,
+     "label": "Cash in operating accounts",
+     "printed": "6,529,460"
+    },
+    "bs.cash_restricted": {
+     "page": 1,
+     "label": "Cash pledged or restricted",
+     "printed": "300,000"
+    },
+    "bs.vc_total_cash": {
+     "page": 1,
+     "label": "Total cash",
+     "printed": "6,829,460"
+    },
+    "bs.short_term_investments": {
+     "page": 1,
+     "label": "Short-term investments",
+     "printed": "-"
+    },
+    "bs.accounts_receivable": {
+     "page": 1,
+     "label": "Accounts receivable, net",
+     "printed": "433,542"
+    },
+    "bs.other_current_assets": {
+     "page": 1,
+     "label": "Other current assets",
+     "printed": "102,681"
+    },
+    "bs.capitalised_software": {
+     "page": 1,
+     "label": "Capitalised software, net",
+     "printed": "420,273"
+    },
+    "bs.vc_other_intangibles": {
+     "page": 1,
+     "label": "Other intangibles, net",
+     "printed": "120,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 1,
+     "label": "Other assets",
+     "printed": "167,892"
+    },
+    "bs.vc_total_assets": {
+     "page": 1,
+     "label": "Total assets",
+     "printed": "8,073,848"
+    },
+    "bs.accounts_payable": {
+     "page": 1,
+     "label": "Accounts payable",
+     "printed": "64,689"
+    },
+    "bs.accrued_liabilities": {
+     "page": 1,
+     "label": "Accrued liabilities",
+     "printed": "119,795"
+    },
+    "bs.deferred_revenue_current": {
+     "page": 1,
+     "label": "Deferred revenue, current",
+     "printed": "516,634"
+    },
+    "bs.deferred_revenue_noncurrent": {
+     "page": 1,
+     "label": "Deferred revenue, non-current",
+     "printed": "80,724"
+    },
+    "bs.venture_debt_current": {
+     "page": 1,
+     "label": "Venture debt, current portion",
+     "printed": "-"
+    },
+    "bs.venture_debt_noncurrent": {
+     "page": 1,
+     "label": "Venture debt, net of current portion",
+     "printed": "1,000,000"
+    },
+    "bs.convertible_notes": {
+     "page": 1,
+     "label": "Convertible notes",
+     "printed": "-"
+    },
+    "bs.safes": {
+     "page": 1,
+     "label": "SAFEs",
+     "printed": "-"
+    },
+    "bs.vc_other_liabilities": {
+     "page": 1,
+     "label": "Other liabilities",
+     "printed": "80,000"
+    },
+    "bs.vc_total_liabilities": {
+     "page": 1,
+     "label": "Total liabilities",
+     "printed": "1,861,842"
+    },
+    "bs.preferred_equity": {
+     "page": 1,
+     "label": "Preferred stock",
+     "printed": "30,000,000"
+    },
+    "bs.common_equity": {
+     "page": 1,
+     "label": "Common stock and accumulated deficit",
+     "printed": "(23,787,994)"
+    },
+    "bs.vc_total_equity": {
+     "page": 1,
+     "label": "Total stockholders' equity",
+     "printed": "6,212,006"
+    },
+    "bs.vc_total_liabilities_and_equity": {
+     "page": 1,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "8,073,848"
+    },
+    "is.subscription_revenue": {
+     "page": 2,
+     "label": "Subscription revenue",
+     "printed": "2,668,008"
+    },
+    "is.services_revenue": {
+     "page": 2,
+     "label": "Services revenue",
+     "printed": "160,080"
+    },
+    "is.total_revenue": {
+     "page": 2,
+     "label": "Total revenue",
+     "printed": "2,828,088"
+    },
+    "is.cost_of_revenue": {
+     "page": 2,
+     "label": "Cost of revenue",
+     "printed": "1,187,796"
+    },
+    "is.vc_gross_profit": {
+     "page": 2,
+     "label": "Gross profit",
+     "printed": "1,640,292"
+    },
+    "is.rnd": {
+     "page": 2,
+     "label": "Research and development",
+     "printed": "1,315,064"
+    },
+    "is.sales_marketing": {
+     "page": 2,
+     "label": "Sales and marketing",
+     "printed": "1,497,711"
+    },
+    "is.gna": {
+     "page": 2,
+     "label": "General and administrative",
+     "printed": "840,182"
+    },
+    "is.vc_depreciation_amortization": {
+     "page": 2,
+     "label": "Depreciation and amortization",
+     "printed": "120,888"
+    },
+    "is.vc_operating_loss": {
+     "page": 2,
+     "label": "Operating income (loss)",
+     "printed": "(2,133,553)"
+    },
+    "is.vc_interest": {
+     "page": 2,
+     "label": "Interest expense",
+     "printed": "78,750"
+    },
+    "is.vc_other_income": {
+     "page": 2,
+     "label": "Other income (expense), net",
+     "printed": "202,071"
+    },
+    "is.vc_net_loss": {
+     "page": 2,
+     "label": "Net income (loss)",
+     "printed": "(2,010,232)"
+    },
+    "cf.vc_operating_cash_flow": {
+     "page": 3,
+     "label": "Net cash used in operating activities",
+     "printed": "(1,845,655)"
+    },
+    "cf.vc_capex": {
+     "page": 3,
+     "label": "Purchases of property and equipment",
+     "printed": "(33,937)"
+    },
+    "cf.capitalised_software_spend": {
+     "page": 3,
+     "label": "Capitalised software development",
+     "printed": "(197,968)"
+    },
+    "cf.equity_raised": {
+     "page": 3,
+     "label": "Proceeds from issuance of preferred stock",
+     "printed": "-"
+    },
+    "cf.debt_raised": {
+     "page": 3,
+     "label": "Proceeds from venture debt",
+     "printed": "-"
+    },
+    "cf.vc_other_financing": {
+     "page": 3,
+     "label": "Other financing",
+     "printed": "-"
+    },
+    "cf.vc_net_change_in_cash": {
+     "page": 3,
+     "label": "Net change in cash",
+     "printed": "(2,077,560)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 4,
+     "label": "Cash paid for interest",
+     "printed": "78,750"
+    },
+    "sup.scheduled_principal": {
+     "page": 4,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    }
+   },
+   "months": 9,
+   "period_basis": "fiscal_year_to_date"
+  },
+  {
+   "id": "pellucid-sensors.mcc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/pellucid-sensors/mcc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Monthly compliance certificate, September 2026",
+   "received_date": "2026-10-14",
+   "document_date": "2026-10-14",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "pellucid-sensors.bank-2026-10-31",
+   "type": "bank_statement",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/bank-2026-10-31.pdf",
+   "pages": 1,
+   "title": "Account statement, October 2026",
+   "received_date": "2026-11-05",
+   "document_date": "2026-11-05",
+   "page_map": {
+    "summary": 1,
+    "totals": 1
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 1,
+     "label": "Total operating accounts (unrestricted)",
+     "printed": "$6,300,000"
+    },
+    "bs.cash_restricted": {
+     "page": 1,
+     "label": "Total pledged and restricted accounts",
+     "printed": "$300,000"
+    }
+   }
+  },
+  {
+   "id": "pellucid-sensors.mrr-2026-10-31",
+   "type": "mrr_report",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/mrr-2026-10-31.pdf",
+   "pages": 1,
+   "title": "MRR report, October 2026",
+   "received_date": "2026-11-09",
+   "document_date": "2026-11-09",
+   "page_map": {
+    "summary": 1,
+    "bridge": 1,
+    "trend": 1
+   },
+   "figures": {
+    "saas.mrr": {
+     "page": 1,
+     "label": "Monthly recurring revenue (MRR)",
+     "printed": "$330,000"
+    },
+    "saas.arr": {
+     "page": 1,
+     "label": "Annual recurring revenue (ARR)",
+     "printed": "$3,960,000"
+    },
+    "saas.customers": {
+     "page": 1,
+     "label": "Customers",
+     "printed": "54"
+    },
+    "saas.net_new_arr": {
+     "page": 1,
+     "label": "Net new ARR in the month",
+     "printed": "$85,248"
+    },
+    "saas.net_revenue_retention": {
+     "page": 1,
+     "label": "Net revenue retention, trailing 12 months",
+     "printed": "117%"
+    }
+   }
+  },
+  {
+   "id": "pellucid-sensors.mf-2026-10-31",
+   "type": "monthly_financials",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/mf-2026-10-31.pdf",
+   "pages": 5,
+   "title": "Management financial statements, October 2026",
+   "received_date": "2026-11-10",
+   "document_date": "2026-11-10",
+   "scale": 1,
+   "page_map": {
+    "balance_sheet": 1,
+    "income_statement": 2,
+    "cash_flow": 3,
+    "supplemental": 4
+   },
+   "figures": {
+    "bs.cash_unrestricted": {
+     "page": 1,
+     "label": "Cash in operating accounts",
+     "printed": "6,300,000"
+    },
+    "bs.cash_restricted": {
+     "page": 1,
+     "label": "Cash pledged or restricted",
+     "printed": "300,000"
+    },
+    "bs.vc_total_cash": {
+     "page": 1,
+     "label": "Total cash",
+     "printed": "6,600,000"
+    },
+    "bs.short_term_investments": {
+     "page": 1,
+     "label": "Short-term investments",
+     "printed": "-"
+    },
+    "bs.accounts_receivable": {
+     "page": 1,
+     "label": "Accounts receivable, net",
+     "printed": "443,080"
+    },
+    "bs.other_current_assets": {
+     "page": 1,
+     "label": "Other current assets",
+     "printed": "104,940"
+    },
+    "bs.capitalised_software": {
+     "page": 1,
+     "label": "Capitalised software, net",
+     "printed": "433,085"
+    },
+    "bs.vc_other_intangibles": {
+     "page": 1,
+     "label": "Other intangibles, net",
+     "printed": "120,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 1,
+     "label": "Other assets",
+     "printed": "168,592"
+    },
+    "bs.vc_total_assets": {
+     "page": 1,
+     "label": "Total assets",
+     "printed": "7,869,697"
+    },
+    "bs.accounts_payable": {
+     "page": 1,
+     "label": "Accounts payable",
+     "printed": "66,112"
+    },
+    "bs.accrued_liabilities": {
+     "page": 1,
+     "label": "Accrued liabilities",
+     "printed": "122,430"
+    },
+    "bs.deferred_revenue_current": {
+     "page": 1,
+     "label": "Deferred revenue, current",
+     "printed": "528,000"
+    },
+    "bs.deferred_revenue_noncurrent": {
+     "page": 1,
+     "label": "Deferred revenue, non-current",
+     "printed": "82,500"
+    },
+    "bs.venture_debt_current": {
+     "page": 1,
+     "label": "Venture debt, current portion",
+     "printed": "-"
+    },
+    "bs.venture_debt_noncurrent": {
+     "page": 1,
+     "label": "Venture debt, net of current portion",
+     "printed": "1,000,000"
+    },
+    "bs.convertible_notes": {
+     "page": 1,
+     "label": "Convertible notes",
+     "printed": "-"
+    },
+    "bs.safes": {
+     "page": 1,
+     "label": "SAFEs",
+     "printed": "-"
+    },
+    "bs.vc_other_liabilities": {
+     "page": 1,
+     "label": "Other liabilities",
+     "printed": "80,000"
+    },
+    "bs.vc_total_liabilities": {
+     "page": 1,
+     "label": "Total liabilities",
+     "printed": "1,879,042"
+    },
+    "bs.preferred_equity": {
+     "page": 1,
+     "label": "Preferred stock",
+     "printed": "30,000,000"
+    },
+    "bs.common_equity": {
+     "page": 1,
+     "label": "Common stock and accumulated deficit",
+     "printed": "(24,009,345)"
+    },
+    "bs.vc_total_equity": {
+     "page": 1,
+     "label": "Total stockholders' equity",
+     "printed": "5,990,655"
+    },
+    "bs.vc_total_liabilities_and_equity": {
+     "page": 1,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "7,869,697"
+    },
+    "is.subscription_revenue": {
+     "page": 2,
+     "label": "Subscription revenue",
+     "printed": "2,998,008"
+    },
+    "is.services_revenue": {
+     "page": 2,
+     "label": "Services revenue",
+     "printed": "179,880"
+    },
+    "is.total_revenue": {
+     "page": 2,
+     "label": "Total revenue",
+     "printed": "3,177,888"
+    },
+    "is.cost_of_revenue": {
+     "page": 2,
+     "label": "Cost of revenue",
+     "printed": "1,334,712"
+    },
+    "is.vc_gross_profit": {
+     "page": 2,
+     "label": "Gross profit",
+     "printed": "1,843,176"
+    },
+    "is.rnd": {
+     "page": 2,
+     "label": "Research and development",
+     "printed": "1,466,033"
+    },
+    "is.sales_marketing": {
+     "page": 2,
+     "label": "Sales and marketing",
+     "printed": "1,669,647"
+    },
+    "is.gna": {
+     "page": 2,
+     "label": "General and administrative",
+     "printed": "936,634"
+    },
+    "is.vc_depreciation_amortization": {
+     "page": 2,
+     "label": "Depreciation and amortization",
+     "printed": "136,060"
+    },
+    "is.vc_operating_loss": {
+     "page": 2,
+     "label": "Operating income (loss)",
+     "printed": "(2,365,198)"
+    },
+    "is.vc_interest": {
+     "page": 2,
+     "label": "Interest expense",
+     "printed": "87,500"
+    },
+    "is.vc_other_income": {
+     "page": 2,
+     "label": "Other income (expense), net",
+     "printed": "221,115"
+    },
+    "is.vc_net_loss": {
+     "page": 2,
+     "label": "Net income (loss)",
+     "printed": "(2,231,583)"
+    },
+    "cf.vc_operating_cash_flow": {
+     "page": 3,
+     "label": "Net cash used in operating activities",
+     "printed": "(2,046,431)"
+    },
+    "cf.vc_capex": {
+     "page": 3,
+     "label": "Purchases of property and equipment",
+     "printed": "(38,135)"
+    },
+    "cf.capitalised_software_spend": {
+     "page": 3,
+     "label": "Capitalised software development",
+     "printed": "(222,454)"
+    },
+    "cf.equity_raised": {
+     "page": 3,
+     "label": "Proceeds from issuance of preferred stock",
+     "printed": "-"
+    },
+    "cf.debt_raised": {
+     "page": 3,
+     "label": "Proceeds from venture debt",
+     "printed": "-"
+    },
+    "cf.vc_other_financing": {
+     "page": 3,
+     "label": "Other financing",
+     "printed": "-"
+    },
+    "cf.vc_net_change_in_cash": {
+     "page": 3,
+     "label": "Net change in cash",
+     "printed": "(2,307,020)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 4,
+     "label": "Cash paid for interest",
+     "printed": "87,500"
+    },
+    "sup.scheduled_principal": {
+     "page": 4,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "-"
+    }
+   },
+   "months": 10,
+   "period_basis": "fiscal_year_to_date"
+  },
+  {
+   "id": "pellucid-sensors.mcc-2026-10-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-10-31",
+   "path": "documents/pellucid-sensors/mcc-2026-10-31.pdf",
+   "pages": 2,
+   "title": "Monthly compliance certificate, October 2026",
+   "received_date": "2026-11-13",
+   "document_date": "2026-11-13",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: covenants pass with room, documents complete and on time, no loud signal.",
+  "details": {
+   "reporting": [
+    {
+     "requirement": "bank_statements",
+     "document_type": "bank_statement",
+     "due_date": "2026-11-07",
+     "received_date": "2026-11-05",
+     "days_late": -2
+    },
+    {
+     "requirement": "mrr_report",
+     "document_type": "mrr_report",
+     "due_date": "2026-11-15",
+     "received_date": "2026-11-09",
+     "days_late": -6
+    },
+    {
+     "requirement": "monthly_financials",
+     "document_type": "monthly_financials",
+     "due_date": "2026-11-30",
+     "received_date": "2026-11-10",
+     "days_late": -20
+    },
+    {
+     "requirement": "compliance_certificate",
+     "document_type": "compliance_certificate",
+     "due_date": "2026-11-30",
+     "received_date": "2026-11-13",
+     "days_late": -17
+    }
+   ]
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-08-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "9489440",
+    "pass": true,
+    "headroom": "2.1631",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-08-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "43.1",
+    "pass": true,
+    "headroom": "6.1833",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-08-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0518",
+    "pass": true,
+    "headroom": "0.3148",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "9269660",
+    "pass": true,
+    "headroom": "2.0899",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "42.1",
+    "pass": true,
+    "headroom": "6.0167",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0530",
+    "pass": true,
+    "headroom": "0.3163",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-10-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "9043940",
+    "pass": true,
+    "headroom": "2.0146",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-10-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "40.4",
+    "pass": true,
+    "headroom": "5.7333",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-10-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0532",
+    "pass": true,
+    "headroom": "0.3165",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-11-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "8832300",
+    "pass": true,
+    "headroom": "1.9441",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-11-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "40.3",
+    "pass": true,
+    "headroom": "5.7167",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-11-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0525",
+    "pass": true,
+    "headroom": "0.3156",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "8607020",
+    "pass": true,
+    "headroom": "1.8690",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "39.0",
+    "pass": true,
+    "headroom": "5.5000",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0524",
+    "pass": true,
+    "headroom": "0.3155",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-01-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "8382840",
+    "pass": true,
+    "headroom": "1.7943",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-01-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "38.0",
+    "pass": true,
+    "headroom": "5.3333",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-01-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0528",
+    "pass": true,
+    "headroom": "0.3160",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-02-28",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "8159540",
+    "pass": true,
+    "headroom": "1.7198",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-02-28",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "36.4",
+    "pass": true,
+    "headroom": "5.0667",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-02-28",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0536",
+    "pass": true,
+    "headroom": "0.3170",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "7940640",
+    "pass": true,
+    "headroom": "1.6469",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "35.7",
+    "pass": true,
+    "headroom": "4.9500",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0536",
+    "pass": true,
+    "headroom": "0.3170",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-04-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "7721080",
+    "pass": true,
+    "headroom": "1.5737",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-04-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "35.0",
+    "pass": true,
+    "headroom": "4.8333",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-04-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0529",
+    "pass": true,
+    "headroom": "0.3161",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-05-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "7494480",
+    "pass": true,
+    "headroom": "1.4982",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-05-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "33.8",
+    "pass": true,
+    "headroom": "4.6333",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-05-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0527",
+    "pass": true,
+    "headroom": "0.3159",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "7274920",
+    "pass": true,
+    "headroom": "1.4250",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "32.8",
+    "pass": true,
+    "headroom": "4.4667",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0518",
+    "pass": true,
+    "headroom": "0.3148",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-07-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "6960000",
+    "pass": true,
+    "headroom": "1.3200",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-07-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "27.4",
+    "pass": true,
+    "headroom": "3.5667",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-07-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0526",
+    "pass": true,
+    "headroom": "0.3158",
+    "note": null,
+    "reported_value": null,
+    "reported_threshold": null,
+    "reported_in_compliance": null,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-08-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "6740660",
+    "pass": true,
+    "headroom": "1.2469",
+    "note": null,
+    "reported_value": "6740660",
+    "reported_threshold": "3000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-08-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "26.8",
+    "pass": true,
+    "headroom": "3.4667",
+    "note": null,
+    "reported_value": "26.8",
+    "reported_threshold": "6.0",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-08-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0527",
+    "pass": true,
+    "headroom": "0.3159",
+    "note": null,
+    "reported_value": "1.0527",
+    "reported_threshold": "0.80",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "6529460",
+    "pass": true,
+    "headroom": "1.1765",
+    "note": null,
+    "reported_value": "6529460",
+    "reported_threshold": "3000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "26.3",
+    "pass": true,
+    "headroom": "3.3833",
+    "note": null,
+    "reported_value": "26.3",
+    "reported_threshold": "6.0",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0533",
+    "pass": true,
+    "headroom": "0.3166",
+    "note": null,
+    "reported_value": "1.0533",
+    "reported_threshold": "0.80",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-10-31",
+    "covenant_id": "min_unrestricted_cash",
+    "covenant_name": "Minimum Unrestricted Cash",
+    "archetype": "min_unrestricted_cash",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "3000000",
+    "value": "6300000",
+    "pass": true,
+    "headroom": "1.1000",
+    "note": null,
+    "reported_value": "6300000",
+    "reported_threshold": "3000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-10-31",
+    "covenant_id": "min_runway_months",
+    "covenant_name": "Minimum Runway",
+    "archetype": "min_runway_months",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "months",
+    "operator": ">=",
+    "threshold": "6.0",
+    "value": "28.6",
+    "pass": true,
+    "headroom": "3.7667",
+    "note": null,
+    "reported_value": "28.6",
+    "reported_threshold": "6.0",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   },
+   {
+    "period_end": "2026-10-31",
+    "covenant_id": "revenue_vs_plan",
+    "covenant_name": "Revenue to Plan",
+    "archetype": "revenue_vs_plan",
+    "facility_id": "pellucid-sensors-vl",
+    "terms_version_id": "tv-pellucid-sensors-1",
+    "terms_version": 1,
+    "unit": "pct",
+    "operator": ">=",
+    "threshold": "0.80",
+    "value": "1.0533",
+    "pass": true,
+    "headroom": "0.3166",
+    "note": null,
+    "reported_value": "1.0533",
+    "reported_threshold": "0.80",
+    "reported_in_compliance": true,
+    "outcome": "compliant"
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-11-30",
+    "severity": "low",
+    "value": "5.7167",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-11-30",
+    "severity": "low",
+    "value": "1.9441",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "5.5000",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "1.8690",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.3155",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "revenue_vs_plan"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-01-31",
+    "severity": "low",
+    "value": "5.3333",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-01-31",
+    "severity": "low",
+    "value": "1.7943",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-02-28",
+    "severity": "low",
+    "value": "5.0667",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-02-28",
+    "severity": "low",
+    "value": "1.7198",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "4.9500",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "1.6469",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-04-30",
+    "severity": "low",
+    "value": "4.8333",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-04-30",
+    "severity": "low",
+    "value": "1.5737",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-05-31",
+    "severity": "low",
+    "value": "4.6333",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-05-31",
+    "severity": "low",
+    "value": "1.4982",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-05-31",
+    "severity": "low",
+    "value": "0.3159",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "revenue_vs_plan"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "4.4667",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "1.4250",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.3148",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "revenue_vs_plan"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-07-31",
+    "severity": "low",
+    "value": "3.5667",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-07-31",
+    "severity": "low",
+    "value": "1.3200",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "runway_falling",
+    "period_end": "2026-07-31",
+    "severity": "medium",
+    "value": "27.43",
+    "trigger": null,
+    "detail": {}
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-08-31",
+    "severity": "low",
+    "value": "3.4667",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-08-31",
+    "severity": "low",
+    "value": "1.2469",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "3.3833",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_runway_months"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-09-30",
+    "severity": "low",
+    "value": "1.1765",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-10-31",
+    "severity": "low",
+    "value": "1.1000",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_unrestricted_cash"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}

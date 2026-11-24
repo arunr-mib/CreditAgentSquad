@@ -1,0 +1,3434 @@
+{
+ "meta": {
+  "suite": "monitoring-cycle",
+  "mode": "recorded",
+  "standin": false,
+  "label": "Mode recorded: answers came from recorded model responses.",
+  "generated_at": "2026-11-21T08:05:31+00:00",
+  "commit": "e6830878ac1906795f2e335c6423a3792f469513",
+  "borrowers": 21,
+  "scope": "whole book",
+  "decide": true,
+  "passes": 1,
+  "seconds": 123.8,
+  "unsigned_oracle_rows": 0,
+  "standin_print_vs_truth_disagreements": [],
+  "accepted_stale": [],
+  "record_agents": [],
+  "prompt_only_verified": 0,
+  "eval_run_id": "ec2a03c8-5d3d-41e4-af15-a827731808b8"
+ },
+ "gate": {
+  "passed": false,
+  "reasons": [
+   "run-error: 18 cycle(s) failed on an error, so nothing was measured. First: ashgrove-fleet (intake run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ashgrove-fleet/2026-09-30/01.json; brindlewood-home-health (intake run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/brindlewood-home-health/2026-09-30/01.json; calder-finch-staffing (intake run): RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/calder-finch-staffing/2026-09-30/01.json",
+   "nothing-read: 15 borrower(s) expected to have facts had none read: ashgrove-fleet (0 of 72), brindlewood-home-health (0 of 105), calder-finch-staffing (0 of 100), dunmore-industrial-supply (0 of 187), halvorsen-plastics (0 of 191)"
+  ],
+  "run_errors": [
+   {
+    "pass": 1,
+    "borrower": "ashgrove-fleet",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ashgrove-fleet/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "brindlewood-home-health",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/brindlewood-home-health/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "calder-finch-staffing",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/calder-finch-staffing/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "dunmore-industrial-supply",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/dunmore-industrial-supply/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "halvorsen-plastics",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/halvorsen-plastics/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "kestrel-bay-packaging",
+    "stage": "covenant run",
+    "message": "RecordingStale: covenant/kestrel-bay-packaging/2026-09-30/total_leverage/09: the recorded answer cites 99eeceb9-29fb-4de5-b615-ca46e2a2e792, described as {\"formula_key\": \"covenant.total_leverage\", \"outputs\": {\"headroom\": \"-0.1\", \"headroom_pct\": \"-0.04\", \"passed\": false, \"raw_value\": \"2.5986031546731"
+   },
+   {
+    "pass": 1,
+    "borrower": "larkspur-environmental",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/larkspur-environmental/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "marlowe-ridge-logistics",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/marlowe-ridge-logistics/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "northgale-electrical",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/northgale-electrical/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "ostrander-valley-foods",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ostrander-valley-foods/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "pellham-grain",
+    "stage": "covenant run",
+    "message": "RecordingStale: covenant/pellham-grain/2026-09-30/fccr/06: the recorded answer cites 1c16f09a-c51a-4b5b-9af7-5d83aab98236, described as {\"formula_key\": \"covenant.fccr\", \"outputs\": {\"headroom\": \"-0.07\", \"headroom_pct\": \"-0.0519\", \"passed\": false, \"raw_value\": \"1.277777777777777777777777778\", \"thresho"
+   },
+   {
+    "pass": 1,
+    "borrower": "quillfeather-bakery",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/quillfeather-bakery/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "sablewood-dental",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/sablewood-dental/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "stanmoor-mechanical",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/stanmoor-mechanical/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "tallwater-foodservice",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/tallwater-foodservice/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "thornbury-metal",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/thornbury-metal/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "vantry-freight",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/vantry-freight/2026-09-30/01.json"
+   },
+   {
+    "pass": 1,
+    "borrower": "wrenfield-diagnostics",
+    "stage": "intake run",
+    "message": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/wrenfield-diagnostics/2026-09-30/01.json"
+   }
+  ],
+  "nothing_read": [
+   {
+    "pass": 1,
+    "borrower": "ashgrove-fleet",
+    "expected": 72
+   },
+   {
+    "pass": 1,
+    "borrower": "brindlewood-home-health",
+    "expected": 105
+   },
+   {
+    "pass": 1,
+    "borrower": "calder-finch-staffing",
+    "expected": 100
+   },
+   {
+    "pass": 1,
+    "borrower": "dunmore-industrial-supply",
+    "expected": 187
+   },
+   {
+    "pass": 1,
+    "borrower": "halvorsen-plastics",
+    "expected": 191
+   },
+   {
+    "pass": 1,
+    "borrower": "larkspur-environmental",
+    "expected": 103
+   },
+   {
+    "pass": 1,
+    "borrower": "marlowe-ridge-logistics",
+    "expected": 107
+   },
+   {
+    "pass": 1,
+    "borrower": "northgale-electrical",
+    "expected": 189
+   },
+   {
+    "pass": 1,
+    "borrower": "ostrander-valley-foods",
+    "expected": 201
+   },
+   {
+    "pass": 1,
+    "borrower": "quillfeather-bakery",
+    "expected": 104
+   },
+   {
+    "pass": 1,
+    "borrower": "sablewood-dental",
+    "expected": 98
+   },
+   {
+    "pass": 1,
+    "borrower": "tallwater-foodservice",
+    "expected": 202
+   },
+   {
+    "pass": 1,
+    "borrower": "thornbury-metal",
+    "expected": 105
+   },
+   {
+    "pass": 1,
+    "borrower": "vantry-freight",
+    "expected": 104
+   },
+   {
+    "pass": 1,
+    "borrower": "wrenfield-diagnostics",
+    "expected": 108
+   }
+  ],
+  "rule": "any invented-number or false-compliant in any pass fails; any cycle that failed on an error fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated",
+  "known_findings_applied": [],
+  "unexplained": [],
+  "stale_known_findings": []
+ },
+ "metrics": {
+  "extraction_accuracy": 0.2619,
+  "extraction_facts_expected": 2677,
+  "extraction_facts_correct": 701,
+  "extraction_abstain_rate": 0.7381,
+  "cycles_needing_no_person": 0.0476,
+  "cycles_expected_to_need_no_person": 0.4762,
+  "exception_precision": 0.1111,
+  "exception_recall": 0.3333,
+  "covenant_outcome_accuracy": 0.3333,
+  "covenant_abstain_rate": 0.6667,
+  "cycles_run": 21,
+  "cycles_closed": 4,
+  "cycles_reaching_signals": 4,
+  "disagreements": 25,
+  "input_tokens": 178069,
+  "output_tokens": 52177
+ },
+ "failure_counts": {
+  "invented-number": 0,
+  "false-compliant": 0,
+  "false-breach": 0,
+  "missed-exception": 8,
+  "false-exception": 32,
+  "wrong-citation": 0,
+  "wrong-abstain": 61,
+  "missed-abstain": 0,
+  "stale-terms": 0
+ },
+ "borrowers": {
+  "ashgrove-fleet": {
+   "borrower": "ashgrove-fleet",
+   "scenario": "missing_page",
+   "error": null,
+   "expected_exceptions": [
+    "spread.does_not_foot"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "spread.does_not_foot",
+     "detail": "expected for scenario missing_page; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario missing_page: Ashgrove Fleet Maintenance, LLC: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario missing_page: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ashgrove-fleet/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ashgrove-fleet/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 72,
+    "correct": 0,
+    "missing": 72,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 72,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 6.64
+  },
+  "briarstone-beverage": {
+   "borrower": "briarstone-beverage",
+   "scenario": "over_advance",
+   "error": null,
+   "expected_exceptions": [
+    "bb.over_advance"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "bb.over_advance"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 201,
+    "correct": 201,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 99,
+      "correct": 99
+     }
+    },
+    "ungraded_facts": {
+     "signal": 1,
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "borrowing_base",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "bb.over_advance",
+       "blocks_stage": true,
+       "stage": "borrowing_base"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "bb.over_advance",
+       "decision": "paydown_required",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Statements are unaudited, prepared by management, and cover the nine months ended September 30, 2026 with a nine-month 2025 comparative."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Equity components (Common stock and additional paid-in capital; Retained earnings) on page 2 are not reported separately; the printed Total stockholders' equity row is reported under bs.total_equity."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Dividends paid on page 4 is mapped to cf.distributions."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Cash flow rows 'Cash and equivalents, beginning of period' and 'Cash and equivalents, end of period' on page 4 have no template line and are not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Debt schedule rows on page 5 (Revolving line of credit - Bank of Stoic, Term notes payable - Bank of Stoic, Total debt outstanding, Term debt principal due within twelve months) have no separate template line and are not reported; they correspond to balance sheet debt lines already spread."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Capital expenditures financed with purchase-money debt is printed as a dash in both columns and is reported as printed."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the answer explained a signal that code did not fire; it was ignored"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the ranking named a signal that code did not fire"
+      },
+      {
+       "check": "ranking_incomplete",
+       "layer": "scope",
+       "action": "completed_by_code",
+       "detail": "1 signal(s) were left out of the ranking and were placed after the rest by severity"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/briarstone-beverage/2026-09-30/01",
+     "text": "Both covenants in the approved terms are reported in the summary table on the first page and are also shown in the calculation schedule on the second page.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/briarstone-beverage/2026-09-30/01",
+     "text": "No embedded instructions were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The availability line is labeled as availability with over-advance in brackets and shows a bracketed negative figure; no separate over-advance line is printed, so over_advance is not reported.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The inventory sublimit line on the certificate has no matching line name in the request and was not reported; advance rate percentage rows were skipped.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The certification text states that revolving loans outstanding exceed the borrowing base.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "The inventory page states that work in process and consignment inventory are not eligible and that quantities come from perpetual records last counted at the most recent fiscal year end.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/briarstone-beverage/2026-09-30/01",
+     "text": "No embedded instructions directed at the reader were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/briarstone-beverage/2026-09-30/01",
+     "text": "Availability is negative at {{fact:9e2dab62-4d73-4bda-b7e1-467cdf4c1f07}}, or {{fact:5f5be829-042c-4038-88a5-8e02289aeab0}} of the {{fact:8552d2bc-ccdd-4d8c-9268-90dd5a019406}} commitment. Advances exceed what the collateral supports, so the borrower is over-advanced and has no revolver headroom for working capital. No other signal fired, so these facts do not show whether collateral shrank or borrowings rose.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 38364,
+    "output": 12917,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 8.93
+  },
+  "brindlewood-home-health": {
+   "borrower": "brindlewood-home-health",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Brindlewood Home Health Partners, LLC: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "dscr @ 2026-09-30",
+     "detail": "truth compliant at 3.04; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.60; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "min_liquidity @ 2026-09-30",
+     "detail": "truth compliant at 2291000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/brindlewood-home-health/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/brindlewood-home-health/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 105,
+    "correct": 0,
+    "missing": 105,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 3
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.34
+  },
+  "calder-finch-staffing": {
+   "borrower": "calder-finch-staffing",
+   "scenario": "step_up",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "covenant.reported_mismatch",
+     "detail": "expected for scenario step_up; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario step_up: Calder & Finch Staffing Group, LLC: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario step_up: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth breach_reported_compliant at 1.94; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant at 1.93; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/calder-finch-staffing/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "1 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/calder-finch-staffing/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 100,
+    "correct": 0,
+    "missing": 100,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.27
+  },
+  "dunmore-industrial-supply": {
+   "borrower": "dunmore-industrial-supply",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Dunmore Industrial Supply Co.: reporting is 28 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed; bbc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "interest_coverage @ 2026-09-30",
+     "detail": "truth compliant at 9.79; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "current_ratio @ 2026-09-30",
+     "detail": "truth compliant at 1.34; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "debt_to_tnw @ 2026-09-30",
+     "detail": "truth compliant at 1.74; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "borrowing base @ 2026-09-30",
+     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/dunmore-industrial-supply/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "1 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/dunmore-industrial-supply/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 187,
+    "correct": 0,
+    "missing": 187,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 90,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 0
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 88,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 3
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.15
+  },
+  "eastmere-building": {
+   "borrower": "eastmere-building",
+   "scenario": "late_reporting",
+   "error": null,
+   "expected_exceptions": [
+    "intake.missing_document"
+   ],
+   "stage_reached": "awaiting_package",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": null,
+   "raised_exceptions": [
+    "intake.missing_document"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 0,
+    "correct": 0,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": null,
+    "abstain_rate": null,
+    "by_document": {},
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "awaiting_package",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": null,
+   "ledger_ok": true,
+   "seconds": 5.2
+  },
+  "halvorsen-plastics": {
+   "borrower": "halvorsen-plastics",
+   "scenario": "restated_comparative",
+   "error": null,
+   "expected_exceptions": [
+    "spread.restatement"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "spread.restatement",
+     "detail": "expected for scenario restated_comparative; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario restated_comparative: Halvorsen Plastics & Molding, Inc.: reporting is 28 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario restated_comparative: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed; bbc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant at 1.50; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.91; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "borrowing base @ 2026-09-30",
+     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/halvorsen-plastics/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/halvorsen-plastics/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 191,
+    "correct": 0,
+    "missing": 191,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 89,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.2
+  },
+  "harrowgate-precision": {
+   "borrower": "harrowgate-precision",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 199,
+    "correct": 199,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     }
+    },
+    "ungraded_facts": {
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Statements are interim, unaudited and prepared by management for the nine months ended September 30, 2026; the comparative column is the nine months ended September 30, 2025, and the comparative balance sheet is also as of September 30, 2025 rather than a fiscal year-end."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Equity components (common stock and additional paid-in capital; retained earnings) were not reported separately; the printed total stockholders' equity row was reported under bs.total_equity."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Dividends paid on the cash flow statement was mapped to cf.distributions."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Cash flow rows for cash and equivalents at beginning and end of period have no template line and were not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The debt schedule on page 5 (revolving line of credit, term notes payable, total debt outstanding, term debt principal due within twelve months) has no template lines and was not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Capital expenditures financed with purchase-money debt is printed as a dash in both columns and was reported as printed."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/harrowgate-precision/2026-09-30/01",
+     "text": "All three covenants in the approved terms are reported in the summary table on page one; the calculation schedule on page two shows the same reported values.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/harrowgate-precision/2026-09-30/01",
+     "text": "No instructions were found inside the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The certificate prints a single combined line labelled Availability (over-advance); it is reported under availability, and no separate over-advance line is stated, so over_advance is not reported.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The certificate's Inventory sublimit row does not match any requested line name and is not reported; the advance rate percentage rows were skipped.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "Cross-aged accounts, concentration in excess of limit, and letters of credit outstanding are printed as dashes on the certificate.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The aging is stated as aged from invoice date; the inventory report is stated at lower of cost and market.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "The inventory page states that work in process and consignment inventory are not eligible, and that quantities come from perpetual records last counted at the most recent fiscal year end; no consignment category is listed separately.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/harrowgate-precision/2026-09-30/01",
+     "text": "No embedded instructions were found in the document.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 39776,
+    "output": 14454,
+    "cache_read": 5967
+   },
+   "ledger_ok": true,
+   "seconds": 7.72
+  },
+  "kestrel-bay-packaging": {
+   "borrower": "kestrel-bay-packaging",
+   "scenario": "hidden_breach",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.reported_mismatch"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "wrong-abstain",
+     "item": "covenant run",
+     "detail": "the run failed: RecordingStale: covenant/kestrel-bay-packaging/2026-09-30/total_leverage/09: the recorded answer cites 99eeceb9-29fb-4de5-b615-ca46e2a2e792, described as {\"formula_key\": \"covenant.total_leverage\", \"outputs\": {\"headroom\": \"-0.1\", \"headroom_pct\": \"-0.04\", \"passed\": false, \"raw_value\": "
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "investigation of covenant.reported_mismatch (total_leverage)",
+     "detail": "the Covenant Agent's investigation ended without a recommendation (abstain)"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "covenant run",
+     "detail": "RecordingStale: covenant/kestrel-bay-packaging/2026-09-30/total_leverage/09: the recorded answer cites 99eeceb9-29fb-4de5-b615-ca46e2a2e792, described as {\"formula_key\": \"covenant.total_leverage\", \"outputs\": {\"headroom\": \"-0.1\", \"headroom_pct\": \"-0.04\", \"passed\": false, \"raw_value\": \"2.598603154673153888409322765\", \"threshold\": \"2.5\", \"value\": \"2.6\"}, \"period_end\": \"2026-09-30\", \"terms_version\": 1, \"type\": \"calc\"}, which matches 2 ids in this run (ambiguous)"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 102,
+    "correct": 102,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 6
+     }
+    },
+    "ungraded_facts": {
+     "rerun": 3,
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 2,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.reported_mismatch",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.reported_mismatch",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Statements are interim, unaudited, prepared by management and not reviewed; income and cash flow figures cover nine months year to date."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The comparative balance sheet column is as of the prior-year interim date, not the prior fiscal year end."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Equity components (common stock and additional paid-in capital; retained earnings) were not reported separately; the printed total stockholders' equity row was reported under bs.total_equity."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Dividends paid was mapped to cf.distributions."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Cash flow rows for cash and equivalents at beginning and end of period have no template line and were not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The debt schedule on page 5 (revolving line of credit, term notes payable, total debt outstanding, term debt principal due within twelve months) has no template lines and was not reported; balance sheet debt lines were used instead."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Capital expenditures financed with purchase-money debt is printed as a dash in both columns."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The cover page states units as 'In thousands of u.s. dollars'; the statement pages use the phrase reported as the scale statement."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the answer explained a signal that code did not fire; it was ignored"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the answer explained a signal that code did not fire; it was ignored"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the answer explained a signal that code did not fire; it was ignored"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the ranking named a signal that code did not fire"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the ranking named a signal that code did not fire"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the ranking named a signal that code did not fire"
+      },
+      {
+       "check": "ranking_incomplete",
+       "layer": "scope",
+       "action": "completed_by_code",
+       "detail": "3 signal(s) were left out of the ranking and were placed after the rest by severity"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/kestrel-bay-packaging/2026-09-30/01",
+     "text": "Both covenants in the approved terms are reported in the summary table on page one and in Schedule 1 on page two.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/kestrel-bay-packaging/2026-09-30/01",
+     "text": "The Total Leverage Ratio calculation in Schedule 1 uses EBITDA as calculated by the Borrower, which adds back pro forma cost savings from plant consolidation; the credit team may wish to confirm this add-back is permitted under the Credit Agreement.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/kestrel-bay-packaging/2026-09-30/01",
+     "text": "No embedded instructions were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/kestrel-bay-packaging/2026-09-30/01",
+     "text": "Headroom is negative ({{fact:d244409c-a353-432f-a267-dac29a6c83f3}}): total leverage of {{fact:7f1d14a5-6178-4b7b-be1f-768e73e5a9f5}} sits above the {{fact:52af138a-22de-4f34-80d0-e9e9d0229614}} maximum, so the covenant appears breached at September 30, 2026, not just tight. Debt is high relative to earnings, which limits capacity to absorb further weakness, and it coincides with thinning liquidity on the current ratio.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/kestrel-bay-packaging/2026-09-30/01",
+     "text": "The current ratio of {{fact:2dc41a87-0592-441f-b50e-43e9149cef7f}} is only slightly above the {{fact:dd0fd424-6d8e-4f30-8a6c-dde1399b6ebd}} minimum, leaving headroom of {{fact:6c9788e7-b03b-41c3-a1c0-401bd00064e1}}. Short-term liquidity is tightening at the same time leverage is over its limit, so both the balance sheet and near-term cash cover are under pressure.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/kestrel-bay-packaging/2026-09-30/01",
+     "text": "Current ratio headroom has declined each quarter this year, from {{fact:8e37855c-a2c1-4d69-ada4-38a797eb07f7}} in March to {{fact:cad86925-4ebf-473c-8c65-5185301e70c7}} in June, then dropped sharply to {{fact:6c9788e7-b03b-41c3-a1c0-401bd00064e1}} in September. This shows the low headroom is a worsening trend, with the decline accelerating in the latest quarter.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 47077,
+    "output": 11592,
+    "cache_read": 68536
+   },
+   "ledger_ok": true,
+   "seconds": 6.68
+  },
+  "larkspur-environmental": {
+   "borrower": "larkspur-environmental",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Larkspur Environmental Services, Inc.: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant at 1.47; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.40; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "max_capex @ 2026-09-30",
+     "detail": "truth compliant at 1307000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/larkspur-environmental/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "1 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/larkspur-environmental/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 103,
+    "correct": 0,
+    "missing": 103,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 3
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 6.01
+  },
+  "marlowe-ridge-logistics": {
+   "borrower": "marlowe-ridge-logistics",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Marlowe Ridge Cold Storage & Logistics, Inc.: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant at 1.56; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.61; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "max_capex @ 2026-09-30",
+     "detail": "truth compliant at 5768000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/marlowe-ridge-logistics/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/marlowe-ridge-logistics/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 107,
+    "correct": 0,
+    "missing": 107,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 3
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.75
+  },
+  "northgale-electrical": {
+   "borrower": "northgale-electrical",
+   "scenario": "miscounted_ineligible",
+   "error": null,
+   "expected_exceptions": [
+    "bb.certificate_mismatch"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "bb.certificate_mismatch",
+     "detail": "expected for scenario miscounted_ineligible; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario miscounted_ineligible: Northgale Electrical Wholesale, Inc.: reporting is 28 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario miscounted_ineligible: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed; bbc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "interest_coverage @ 2026-09-30",
+     "detail": "truth compliant at 9.08; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "debt_to_tnw @ 2026-09-30",
+     "detail": "truth compliant at 1.69; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "borrowing base @ 2026-09-30",
+     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/northgale-electrical/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/northgale-electrical/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 189,
+    "correct": 0,
+    "missing": 189,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 90,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 93,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.14
+  },
+  "ostrander-valley-foods": {
+   "borrower": "ostrander-valley-foods",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Ostrander Valley Foods, Inc.: reporting is 28 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed; bbc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant at 1.63; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.71; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "min_tnw @ 2026-09-30",
+     "detail": "truth compliant at 44391000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "borrowing base @ 2026-09-30",
+     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ostrander-valley-foods/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/ostrander-valley-foods/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 201,
+    "correct": 0,
+    "missing": 201,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 0
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 3
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.41
+  },
+  "pellham-grain": {
+   "borrower": "pellham-grain",
+   "scenario": "reported_breach",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.breach"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.breach"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "wrong-abstain",
+     "item": "covenant run",
+     "detail": "the run failed: RecordingStale: covenant/pellham-grain/2026-09-30/fccr/06: the recorded answer cites 1c16f09a-c51a-4b5b-9af7-5d83aab98236, described as {\"formula_key\": \"covenant.fccr\", \"outputs\": {\"headroom\": \"-0.07\", \"headroom_pct\": \"-0.0519\", \"passed\": false, \"raw_value\": \"1.2777777777777777777777"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "investigation of covenant.breach (fccr)",
+     "detail": "the Covenant Agent's investigation ended without a recommendation (abstain)"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "covenant run",
+     "detail": "RecordingStale: covenant/pellham-grain/2026-09-30/fccr/06: the recorded answer cites 1c16f09a-c51a-4b5b-9af7-5d83aab98236, described as {\"formula_key\": \"covenant.fccr\", \"outputs\": {\"headroom\": \"-0.07\", \"headroom_pct\": \"-0.0519\", \"passed\": false, \"raw_value\": \"1.277777777777777777777777778\", \"threshold\": \"1.35\", \"value\": \"1.28\"}, \"period_end\": \"2026-09-30\", \"terms_version\": 1, \"type\": \"calc\"}, which matches 2 ids in this run (ambiguous)"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 199,
+    "correct": 199,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 96
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 9
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 94,
+      "correct": 94
+     }
+    },
+    "ungraded_facts": {
+     "rerun": 3,
+     "metric": 15
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.breach",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.breach",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Statements are interim, unaudited, management-prepared for the nine months ended September 30, 2026 with nine-month comparatives for 2025."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Total stockholders' equity reported under bs.total_equity; its component rows (common stock and additional paid-in capital, retained earnings) are not reported as the template has no separate lines for them."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Dividends paid on the cash flow statement mapped to cf.distributions."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Cash flow rows for cash and equivalents at beginning and end of period were not placed; the template has no line for them."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Debt schedule rows on page 5 (revolving line of credit, term notes payable, total debt outstanding, term debt principal due within twelve months) were not placed; the template has no lines for them."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The cover page also states the units as in thousands of U.S. dollars; the scale phrase was taken from the balance sheet page."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "error",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run did not finish"
+      }
+     ]
+    },
+    {
+     "agent": "borrowing_base_reader",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the answer explained a signal that code did not fire; it was ignored"
+      },
+      {
+       "check": "unknown_signal",
+       "layer": "scope",
+       "action": "ignored",
+       "detail": "the ranking named a signal that code did not fire"
+      },
+      {
+       "check": "ranking_incomplete",
+       "layer": "scope",
+       "action": "completed_by_code",
+       "detail": "1 signal(s) were left out of the ranking and were placed after the rest by severity"
+      }
+     ]
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "recorded",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/pellham-grain/2026-09-30/01",
+     "text": "All three covenants in the approved terms are reported in the summary table on the first page; the borrower reports non-compliance with the Fixed Charge Coverage Ratio.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/pellham-grain/2026-09-30/01",
+     "text": "No embedded instructions were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/pellham-grain/2026-09-30/01",
+     "text": "No separate over-advance line is printed; the certificate shows a single combined line labelled Availability (over-advance), reported under availability, so over_advance is omitted.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/pellham-grain/2026-09-30/01",
+     "text": "The Inventory sublimit line on the certificate does not match any requested line name and was not reported; advance rate percentage rows were skipped.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/pellham-grain/2026-09-30/01",
+     "text": "The aging and inventory pages also state units in U.S. dollars; the certificate page statement is reported.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/pellham-grain/2026-09-30/01",
+     "text": "The aging total row and the inventory total row were excluded as instructed.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/pellham-grain/2026-09-30/01",
+     "text": "The inventory page states that inventory was last counted at the most recent fiscal year end, with quantities from perpetual records.",
+     "typed_figures": []
+    },
+    {
+     "agent": "collateral",
+     "record_key": "collateral/pellham-grain/2026-09-30/01",
+     "text": "No embedded instructions were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/pellham-grain/2026-09-30/01",
+     "text": "Fixed charge coverage was {{fact:2226066d-f15f-4bb4-87a3-f99e6fcd4dd2}} against a covenant minimum of {{fact:e1d1e659-5e30-4f98-978c-24ef2cd08265}}, leaving headroom of {{fact:b0071475-23ce-402f-909f-685ee99f0e1c}}. Because the headroom is negative, coverage sits below the required level rather than merely near it. Cash flow is covering fixed charges with less cushion than the lender required. No other signal fired to corroborate or explain it.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 52852,
+    "output": 13214,
+    "cache_read": 34662
+   },
+   "ledger_ok": true,
+   "seconds": 7.74
+  },
+  "quillfeather-bakery": {
+   "borrower": "quillfeather-bakery",
+   "scenario": "addback_over_cap",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario addback_over_cap: Quillfeather Bakery Brands, Inc.: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario addback_over_cap: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant_variance at 1.96; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant_variance at 1.45; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/quillfeather-bakery/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "1 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/quillfeather-bakery/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 104,
+    "correct": 0,
+    "missing": 104,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 4.74
+  },
+  "sablewood-dental": {
+   "borrower": "sablewood-dental",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Sablewood Dental Management, LLC: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "dscr @ 2026-09-30",
+     "detail": "truth compliant at 3.26; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.27; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/sablewood-dental/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/sablewood-dental/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 98,
+    "correct": 0,
+    "missing": 98,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 92,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 4.84
+  },
+  "stanmoor-mechanical": {
+   "borrower": "stanmoor-mechanical",
+   "scenario": "image_only",
+   "error": null,
+   "expected_exceptions": [
+    "spread.image_only"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "spread.image_only",
+     "detail": "expected for scenario image_only; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario image_only: Stanmoor Mechanical Contractors, Inc.: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario image_only: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/stanmoor-mechanical/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/stanmoor-mechanical/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 0,
+    "correct": 0,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": null,
+    "abstain_rate": null,
+    "by_document": {},
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.09
+  },
+  "tallwater-foodservice": {
+   "borrower": "tallwater-foodservice",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario clean: Tallwater Foodservice Supply, LLC: reporting is 28 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario clean: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed; bbc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "fccr @ 2026-09-30",
+     "detail": "truth compliant at 2.41; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "senior_leverage @ 2026-09-30",
+     "detail": "truth compliant at 2.18; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "borrowing base @ 2026-09-30",
+     "detail": "the truth has a recalculated base; the product recorded no review (stage pending)"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/tallwater-foodservice/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/tallwater-foodservice/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 202,
+    "correct": 0,
+    "missing": 202,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     },
+     "bbc-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.03
+  },
+  "thornbury-metal": {
+   "borrower": "thornbury-metal",
+   "scenario": "deteriorating_trend",
+   "error": null,
+   "expected_exceptions": [
+    "signal.high"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "signal.high",
+     "detail": "expected for scenario deteriorating_trend; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario deteriorating_trend: Thornbury Metal Fabricators, Inc.: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario deteriorating_trend: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 3.92; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "interest_coverage @ 2026-09-30",
+     "detail": "truth compliant at 3.64; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "current_ratio @ 2026-09-30",
+     "detail": "truth compliant at 1.20; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/thornbury-metal/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "13 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/thornbury-metal/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 105,
+    "correct": 0,
+    "missing": 105,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 9,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 0,
+    "abstained": 3
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 5.33
+  },
+  "vantry-freight": {
+   "borrower": "vantry-freight",
+   "scenario": "unapproved_amendment",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch",
+    "terms.unapproved_amendment"
+   ],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "missed-exception",
+     "item": "covenant.reported_mismatch",
+     "detail": "expected for scenario unapproved_amendment; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "missed-exception",
+     "item": "terms.unapproved_amendment",
+     "detail": "expected for scenario unapproved_amendment; the cycle rests at intake (needs_person)"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario unapproved_amendment: Vantry Freight Systems, LLC: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario unapproved_amendment: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth breach_reported_compliant at 2.09; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "interest_coverage @ 2026-09-30",
+     "detail": "truth compliant_variance at 6.72; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/vantry-freight/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "5 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/vantry-freight/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 104,
+    "correct": 0,
+    "missing": 104,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 98,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 6,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 2,
+    "correct": 0,
+    "abstained": 2
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 6.01
+  },
+  "wrenfield-diagnostics": {
+   "borrower": "wrenfield-diagnostics",
+   "scenario": "scale_trap",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "intake",
+   "stage_status": "needs_person",
+   "cycle_status": "open",
+   "last_stage_done": "awaiting_package",
+   "raised_exceptions": [
+    "intake.missing_document",
+    "intake.unclassified"
+   ],
+   "routine_approvals": [],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "false-exception",
+     "item": "intake.missing_document",
+     "detail": "not expected for scenario scale_trap: Wrenfield Diagnostic Laboratories, Inc.: reporting is 3 days past due"
+    },
+    {
+     "name": "false-exception",
+     "item": "intake.unclassified",
+     "detail": "not expected for scenario scale_trap: ifs-2026-09-30.pdf could not be filed; cc-2026-09-30.pdf could not be filed"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "total_leverage @ 2026-09-30",
+     "detail": "truth compliant at 1.61; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "min_tnw @ 2026-09-30",
+     "detail": "truth compliant at 3699000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "max_capex @ 2026-09-30",
+     "detail": "truth compliant at 1772000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "min_liquidity @ 2026-09-30",
+     "detail": "truth compliant at 2013000; the product recorded no test"
+    },
+    {
+     "name": "wrong-abstain",
+     "item": "intake run",
+     "detail": "the run failed: RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/wrenfield-diagnostics/2026-09-30/01.json"
+    }
+   ],
+   "disagreements": [
+    {
+     "kind": "signals-not-run",
+     "item": "signals @ 2026-09-30",
+     "detail": "1 expected signal(s); the signals stage is pending"
+    },
+    {
+     "kind": "run-error",
+     "item": "intake run",
+     "detail": "RecordingMissing: no recorded model response at /home/user/arunr-mib/creditfleet/evals/recordings/intake/wrenfield-diagnostics/2026-09-30/01.json"
+    }
+   ],
+   "observations": [],
+   "extraction": {
+    "expected": 108,
+    "correct": 0,
+    "missing": 108,
+    "wrong": 0,
+    "accuracy": 0.0,
+    "abstain_rate": 1.0,
+    "by_document": {
+     "ifs-2026-09-30.pdf": {
+      "expected": 96,
+      "correct": 0
+     },
+     "cc-2026-09-30.pdf": {
+      "expected": 12,
+      "correct": 0
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 4,
+    "correct": 0,
+    "abstained": 4
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "intake",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.unclassified",
+       "blocks_stage": true,
+       "stage": "intake"
+      },
+      {
+       "type": "intake.missing_document",
+       "blocks_stage": true,
+       "stage": "awaiting_package"
+      }
+     ],
+     "decisions": []
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "failed",
+     "llm_mode": "recorded",
+     "served_model": null,
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [],
+   "tokens": {
+    "input": 0,
+    "output": 0,
+    "cache_read": 0
+   },
+   "ledger_ok": true,
+   "seconds": 6.15
+  }
+ },
+ "known_findings": [],
+ "passes": [
+  {
+   "metrics": {
+    "extraction_accuracy": 0.2619,
+    "extraction_facts_expected": 2677,
+    "extraction_facts_correct": 701,
+    "extraction_abstain_rate": 0.7381,
+    "cycles_needing_no_person": 0.0476,
+    "cycles_expected_to_need_no_person": 0.4762,
+    "exception_precision": 0.1111,
+    "exception_recall": 0.3333,
+    "covenant_outcome_accuracy": 0.3333,
+    "covenant_abstain_rate": 0.6667,
+    "cycles_run": 21,
+    "cycles_closed": 4,
+    "cycles_reaching_signals": 4,
+    "disagreements": 25,
+    "input_tokens": 178069,
+    "output_tokens": 52177
+   },
+   "failure_counts": {
+    "invented-number": 0,
+    "false-compliant": 0,
+    "false-breach": 0,
+    "missed-exception": 8,
+    "false-exception": 32,
+    "wrong-citation": 0,
+    "wrong-abstain": 61,
+    "missed-abstain": 0,
+    "stale-terms": 0
+   }
+  }
+ ]
+}

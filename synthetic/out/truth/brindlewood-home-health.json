@@ -1,0 +1,5798 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "brindlewood-home-health",
+  "name": "Brindlewood Home Health Partners, LLC",
+  "legal_form": "llc",
+  "industry": "healthcare services",
+  "city": "Chattanooga",
+  "state": "TN",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Priya Venkataraman",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 4,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Marisol Ybarra",
+  "auditor": "Morrow Castellan LLP"
+ },
+ "facilities": [
+  {
+   "id": "brindlewood-home-health-rlc",
+   "borrower_id": "brindlewood-home-health",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "2750000",
+   "original_amount": "2750000",
+   "closing_date": "2022-11-04",
+   "maturity_date": "2028-11-04",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "brindlewood-home-health-tl",
+   "borrower_id": "brindlewood-home-health",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "10506000",
+   "original_amount": "10506000",
+   "closing_date": "2022-11-04",
+   "maturity_date": "2029-11-04",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "256000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-brindlewood-home-health-1",
+   "facility_id": "brindlewood-home-health-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-11-04",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2022-11-10",
+   "warnings": [],
+   "source_documents": [
+    "brindlewood-home-health.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "dscr",
+      "name": "Debt Service Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "cash_taxes"
+       ],
+       "denominator": [
+        "interest_expense",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "brindlewood-home-health.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Debt Service Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "brindlewood-home-health.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Debt Service Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus cash paid for income taxes for such period to (b) the sum of interest expense and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.75",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "brindlewood-home-health.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.75 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "brindlewood-home-health.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "min_liquidity",
+      "name": "Minimum Liquidity",
+      "archetype": "min_liquidity",
+      "params": {
+       "include_availability": true
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1800000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "brindlewood-home-health.credit-agreement",
+        "section": "6.3",
+        "page": 7,
+        "quote": "The Borrower shall maintain Liquidity, measured as of the last day of each fiscal quarter, of not less than $1,800,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "brindlewood-home-health.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Liquidity\" means, as of any date, unrestricted cash and equivalents of the Borrower plus unused availability under the Revolving Commitment as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "brindlewood-home-health.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "brindlewood-home-health.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "brindlewood-home-health.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "brindlewood-home-health.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "brindlewood-home-health.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "brindlewood-home-health.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $2,750,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "brindlewood-home-health.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $10,506,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "brindlewood-home-health.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $256,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "10716000",
+    "is.cogs": "6628000",
+    "is.gross_profit": "4088000",
+    "is.sga": "2893000",
+    "is.depreciation_amortization": "248000",
+    "is.other_operating_expense": "54000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "893000",
+    "is.interest_expense": "199000",
+    "is.other_income_net": "6000",
+    "is.pretax_income": "700000",
+    "is.income_tax_expense": "14000",
+    "is.net_income": "686000",
+    "bs.cash": "1286000",
+    "bs.accounts_receivable": "5848000",
+    "bs.inventory": "363000",
+    "bs.other_current_assets": "514000",
+    "bs.total_current_assets": "8011000",
+    "bs.net_ppe": "6673000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20014000",
+    "bs.accounts_payable": "2179000",
+    "bs.accrued_liabilities": "1339000",
+    "bs.revolver": "1715000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "614000",
+    "bs.total_current_liabilities": "6871000",
+    "bs.long_term_debt": "7946000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "650000",
+    "bs.total_liabilities": "15467000",
+    "bs.total_equity": "4547000",
+    "bs.total_liabilities_and_equity": "20014000",
+    "cf.net_income": "686000",
+    "cf.depreciation_amortization": "248000",
+    "cf.change_in_working_capital": "17000",
+    "cf.other_operating": "7000",
+    "cf.cfo": "958000",
+    "cf.capex": "279000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-279000",
+    "cf.revolver_net": "-90000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "256000",
+    "cf.distributions": "302000",
+    "cf.other_financing": "0",
+    "cf.cff": "-648000",
+    "cf.net_change_in_cash": "31000",
+    "sup.cash_interest_paid": "199000",
+    "sup.cash_taxes_paid": "14000",
+    "sup.scheduled_principal": "256000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "3495000",
+    "cash.beginning_of_year": "1255000",
+    "debt.term_total": "8970000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "21471000",
+    "is.cogs": "13277000",
+    "is.gross_profit": "8194000",
+    "is.sga": "5797000",
+    "is.depreciation_amortization": "497000",
+    "is.other_operating_expense": "108000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1792000",
+    "is.interest_expense": "391000",
+    "is.other_income_net": "12000",
+    "is.pretax_income": "1413000",
+    "is.income_tax_expense": "28000",
+    "is.net_income": "1385000",
+    "bs.cash": "1291000",
+    "bs.accounts_receivable": "5893000",
+    "bs.inventory": "364000",
+    "bs.other_current_assets": "516000",
+    "bs.total_current_assets": "8064000",
+    "bs.net_ppe": "6704000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20098000",
+    "bs.accounts_payable": "2186000",
+    "bs.accrued_liabilities": "1342000",
+    "bs.revolver": "1721000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "616000",
+    "bs.total_current_liabilities": "6889000",
+    "bs.long_term_debt": "7690000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "657000",
+    "bs.total_liabilities": "15236000",
+    "bs.total_equity": "4862000",
+    "bs.total_liabilities_and_equity": "20098000",
+    "cf.net_income": "1385000",
+    "cf.depreciation_amortization": "497000",
+    "cf.change_in_working_capital": "-19000",
+    "cf.other_operating": "14000",
+    "cf.cfo": "1877000",
+    "cf.capex": "559000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-559000",
+    "cf.revolver_net": "-84000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "512000",
+    "cf.distributions": "686000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1282000",
+    "cf.net_change_in_cash": "36000",
+    "sup.cash_interest_paid": "393000",
+    "sup.cash_taxes_paid": "28000",
+    "sup.scheduled_principal": "512000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "3810000",
+    "cash.beginning_of_year": "1255000",
+    "debt.term_total": "8714000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "31935000",
+    "is.cogs": "19746000",
+    "is.gross_profit": "12189000",
+    "is.sga": "8622000",
+    "is.depreciation_amortization": "748000",
+    "is.other_operating_expense": "160000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2659000",
+    "is.interest_expense": "579000",
+    "is.other_income_net": "18000",
+    "is.pretax_income": "2098000",
+    "is.income_tax_expense": "42000",
+    "is.net_income": "2056000",
+    "bs.cash": "1256000",
+    "bs.accounts_receivable": "5780000",
+    "bs.inventory": "354000",
+    "bs.other_current_assets": "502000",
+    "bs.total_current_assets": "7892000",
+    "bs.net_ppe": "6725000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "19947000",
+    "bs.accounts_payable": "2127000",
+    "bs.accrued_liabilities": "1306000",
+    "bs.revolver": "1674000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "600000",
+    "bs.total_current_liabilities": "6731000",
+    "bs.long_term_debt": "7434000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "664000",
+    "bs.total_liabilities": "14829000",
+    "bs.total_equity": "5118000",
+    "bs.total_liabilities_and_equity": "19947000",
+    "cf.net_income": "2056000",
+    "cf.depreciation_amortization": "748000",
+    "cf.change_in_working_capital": "7000",
+    "cf.other_operating": "21000",
+    "cf.cfo": "2832000",
+    "cf.capex": "831000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-831000",
+    "cf.revolver_net": "-131000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "768000",
+    "cf.distributions": "1101000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2000000",
+    "cf.net_change_in_cash": "1000",
+    "sup.cash_interest_paid": "582000",
+    "sup.cash_taxes_paid": "42000",
+    "sup.scheduled_principal": "768000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "4066000",
+    "cash.beginning_of_year": "1255000",
+    "debt.term_total": "8458000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "42942000",
+    "is.cogs": "26524000",
+    "is.gross_profit": "16418000",
+    "is.sga": "11594000",
+    "is.depreciation_amortization": "999000",
+    "is.other_operating_expense": "215000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3610000",
+    "is.interest_expense": "762000",
+    "is.other_income_net": "25000",
+    "is.pretax_income": "2873000",
+    "is.income_tax_expense": "58000",
+    "is.net_income": "2815000",
+    "bs.cash": "1321000",
+    "bs.accounts_receivable": "5826000",
+    "bs.inventory": "371000",
+    "bs.other_current_assets": "528000",
+    "bs.total_current_assets": "8046000",
+    "bs.net_ppe": "6760000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20136000",
+    "bs.accounts_payable": "2228000",
+    "bs.accrued_liabilities": "1369000",
+    "bs.revolver": "1761000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "632000",
+    "bs.total_current_liabilities": "7014000",
+    "bs.long_term_debt": "7178000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "671000",
+    "bs.total_liabilities": "14863000",
+    "bs.total_equity": "5273000",
+    "bs.total_liabilities_and_equity": "20136000",
+    "cf.net_income": "2815000",
+    "cf.depreciation_amortization": "999000",
+    "cf.change_in_working_capital": "114000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "3956000",
+    "cf.capex": "1117000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1117000",
+    "cf.revolver_net": "-44000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1024000",
+    "cf.distributions": "1705000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2773000",
+    "cf.net_change_in_cash": "66000",
+    "sup.cash_interest_paid": "767000",
+    "sup.cash_taxes_paid": "56000",
+    "sup.scheduled_principal": "1024000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "4221000",
+    "cash.beginning_of_year": "1255000",
+    "debt.term_total": "8202000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "11294000",
+    "is.cogs": "6973000",
+    "is.gross_profit": "4321000",
+    "is.sga": "3049000",
+    "is.depreciation_amortization": "253000",
+    "is.other_operating_expense": "56000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "963000",
+    "is.interest_expense": "180000",
+    "is.other_income_net": "7000",
+    "is.pretax_income": "790000",
+    "is.income_tax_expense": "16000",
+    "is.net_income": "774000",
+    "bs.cash": "1355000",
+    "bs.accounts_receivable": "6164000",
+    "bs.inventory": "382000",
+    "bs.other_current_assets": "542000",
+    "bs.total_current_assets": "8443000",
+    "bs.net_ppe": "6801000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20574000",
+    "bs.accounts_payable": "2292000",
+    "bs.accrued_liabilities": "1402000",
+    "bs.revolver": "1807000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "648000",
+    "bs.total_current_liabilities": "7173000",
+    "bs.long_term_debt": "6922000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "678000",
+    "bs.total_liabilities": "14773000",
+    "bs.total_equity": "5801000",
+    "bs.total_liabilities_and_equity": "20574000",
+    "cf.net_income": "774000",
+    "cf.depreciation_amortization": "253000",
+    "cf.change_in_working_capital": "-250000",
+    "cf.other_operating": "7000",
+    "cf.cfo": "784000",
+    "cf.capex": "294000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-294000",
+    "cf.revolver_net": "46000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "256000",
+    "cf.distributions": "246000",
+    "cf.other_financing": "0",
+    "cf.cff": "-456000",
+    "cf.net_change_in_cash": "34000",
+    "sup.cash_interest_paid": "181000",
+    "sup.cash_taxes_paid": "16000",
+    "sup.scheduled_principal": "256000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "4749000",
+    "cash.beginning_of_year": "1321000",
+    "debt.term_total": "7946000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "22659000",
+    "is.cogs": "13994000",
+    "is.gross_profit": "8665000",
+    "is.sga": "6118000",
+    "is.depreciation_amortization": "507000",
+    "is.other_operating_expense": "113000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1927000",
+    "is.interest_expense": "356000",
+    "is.other_income_net": "14000",
+    "is.pretax_income": "1585000",
+    "is.income_tax_expense": "32000",
+    "is.net_income": "1553000",
+    "bs.cash": "1364000",
+    "bs.accounts_receivable": "5928000",
+    "bs.inventory": "385000",
+    "bs.other_current_assets": "546000",
+    "bs.total_current_assets": "8223000",
+    "bs.net_ppe": "6842000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20395000",
+    "bs.accounts_payable": "2308000",
+    "bs.accrued_liabilities": "1409000",
+    "bs.revolver": "1733000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "652000",
+    "bs.total_current_liabilities": "7126000",
+    "bs.long_term_debt": "6666000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "685000",
+    "bs.total_liabilities": "14477000",
+    "bs.total_equity": "5918000",
+    "bs.total_liabilities_and_equity": "20395000",
+    "cf.net_income": "1553000",
+    "cf.depreciation_amortization": "507000",
+    "cf.change_in_working_capital": "6000",
+    "cf.other_operating": "14000",
+    "cf.cfo": "2080000",
+    "cf.capex": "589000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-589000",
+    "cf.revolver_net": "-28000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "512000",
+    "cf.distributions": "908000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1448000",
+    "cf.net_change_in_cash": "43000",
+    "sup.cash_interest_paid": "358000",
+    "sup.cash_taxes_paid": "32000",
+    "sup.scheduled_principal": "512000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "4866000",
+    "cash.beginning_of_year": "1321000",
+    "debt.term_total": "7690000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "33659000",
+    "is.cogs": "20774000",
+    "is.gross_profit": "12885000",
+    "is.sga": "9088000",
+    "is.depreciation_amortization": "763000",
+    "is.other_operating_expense": "168000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2866000",
+    "is.interest_expense": "526000",
+    "is.other_income_net": "21000",
+    "is.pretax_income": "2361000",
+    "is.income_tax_expense": "48000",
+    "is.net_income": "2313000",
+    "bs.cash": "1320000",
+    "bs.accounts_receivable": "5967000",
+    "bs.inventory": "372000",
+    "bs.other_current_assets": "528000",
+    "bs.total_current_assets": "8187000",
+    "bs.net_ppe": "6872000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20389000",
+    "bs.accounts_payable": "2229000",
+    "bs.accrued_liabilities": "1364000",
+    "bs.revolver": "1760000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "632000",
+    "bs.total_current_liabilities": "7009000",
+    "bs.long_term_debt": "6410000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "692000",
+    "bs.total_liabilities": "14111000",
+    "bs.total_equity": "6278000",
+    "bs.total_liabilities_and_equity": "20389000",
+    "cf.net_income": "2313000",
+    "cf.depreciation_amortization": "763000",
+    "cf.change_in_working_capital": "-146000",
+    "cf.other_operating": "21000",
+    "cf.cfo": "2951000",
+    "cf.capex": "875000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-875000",
+    "cf.revolver_net": "-1000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "768000",
+    "cf.distributions": "1308000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2077000",
+    "cf.net_change_in_cash": "-1000",
+    "sup.cash_interest_paid": "530000",
+    "sup.cash_taxes_paid": "48000",
+    "sup.scheduled_principal": "768000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "5226000",
+    "cash.beginning_of_year": "1321000",
+    "debt.term_total": "7434000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "45160000",
+    "is.cogs": "27815000",
+    "is.gross_profit": "17345000",
+    "is.sga": "12193000",
+    "is.depreciation_amortization": "1020000",
+    "is.other_operating_expense": "226000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3906000",
+    "is.interest_expense": "692000",
+    "is.other_income_net": "28000",
+    "is.pretax_income": "3242000",
+    "is.income_tax_expense": "66000",
+    "is.net_income": "3176000",
+    "bs.cash": "1380000",
+    "bs.accounts_receivable": "6214000",
+    "bs.inventory": "386000",
+    "bs.other_current_assets": "552000",
+    "bs.total_current_assets": "8532000",
+    "bs.net_ppe": "6914000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20776000",
+    "bs.accounts_payable": "2315000",
+    "bs.accrued_liabilities": "1421000",
+    "bs.revolver": "1840000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "662000",
+    "bs.total_current_liabilities": "7262000",
+    "bs.long_term_debt": "6154000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "699000",
+    "bs.total_liabilities": "14115000",
+    "bs.total_equity": "6661000",
+    "bs.total_liabilities_and_equity": "20776000",
+    "cf.net_income": "3176000",
+    "cf.depreciation_amortization": "1020000",
+    "cf.change_in_working_capital": "-258000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "3966000",
+    "cf.capex": "1174000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1174000",
+    "cf.revolver_net": "79000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1024000",
+    "cf.distributions": "1788000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2733000",
+    "cf.net_change_in_cash": "59000",
+    "sup.cash_interest_paid": "698000",
+    "sup.cash_taxes_paid": "64000",
+    "sup.scheduled_principal": "1024000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "5609000",
+    "cash.beginning_of_year": "1321000",
+    "debt.term_total": "7178000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "11868000",
+    "is.cogs": "7336000",
+    "is.gross_profit": "4532000",
+    "is.sga": "3204000",
+    "is.depreciation_amortization": "258000",
+    "is.other_operating_expense": "59000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1011000",
+    "is.interest_expense": "163000",
+    "is.other_income_net": "7000",
+    "is.pretax_income": "855000",
+    "is.income_tax_expense": "17000",
+    "is.net_income": "838000",
+    "bs.cash": "1424000",
+    "bs.accounts_receivable": "6295000",
+    "bs.inventory": "402000",
+    "bs.other_current_assets": "570000",
+    "bs.total_current_assets": "8691000",
+    "bs.net_ppe": "6965000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "20986000",
+    "bs.accounts_payable": "2412000",
+    "bs.accrued_liabilities": "1464000",
+    "bs.revolver": "1899000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "682000",
+    "bs.total_current_liabilities": "7481000",
+    "bs.long_term_debt": "5898000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "706000",
+    "bs.total_liabilities": "14085000",
+    "bs.total_equity": "6901000",
+    "bs.total_liabilities_and_equity": "20986000",
+    "cf.net_income": "838000",
+    "cf.depreciation_amortization": "258000",
+    "cf.change_in_working_capital": "45000",
+    "cf.other_operating": "7000",
+    "cf.cfo": "1148000",
+    "cf.capex": "309000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-309000",
+    "cf.revolver_net": "59000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "256000",
+    "cf.distributions": "598000",
+    "cf.other_financing": "0",
+    "cf.cff": "-795000",
+    "cf.net_change_in_cash": "44000",
+    "sup.cash_interest_paid": "164000",
+    "sup.cash_taxes_paid": "18000",
+    "sup.scheduled_principal": "256000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "5849000",
+    "cash.beginning_of_year": "1380000",
+    "debt.term_total": "6922000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "23748000",
+    "is.cogs": "14661000",
+    "is.gross_profit": "9087000",
+    "is.sga": "6412000",
+    "is.depreciation_amortization": "518000",
+    "is.other_operating_expense": "118000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2039000",
+    "is.interest_expense": "323000",
+    "is.other_income_net": "14000",
+    "is.pretax_income": "1730000",
+    "is.income_tax_expense": "35000",
+    "is.net_income": "1695000",
+    "bs.cash": "1426000",
+    "bs.accounts_receivable": "6405000",
+    "bs.inventory": "401000",
+    "bs.other_current_assets": "570000",
+    "bs.total_current_assets": "8802000",
+    "bs.net_ppe": "7014000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "21146000",
+    "bs.accounts_payable": "2408000",
+    "bs.accrued_liabilities": "1465000",
+    "bs.revolver": "1901000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "683000",
+    "bs.total_current_liabilities": "7481000",
+    "bs.long_term_debt": "5642000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "713000",
+    "bs.total_liabilities": "13836000",
+    "bs.total_equity": "7310000",
+    "bs.total_liabilities_and_equity": "21146000",
+    "cf.net_income": "1695000",
+    "cf.depreciation_amortization": "518000",
+    "cf.change_in_working_capital": "-66000",
+    "cf.other_operating": "14000",
+    "cf.cfo": "2161000",
+    "cf.capex": "618000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-618000",
+    "cf.revolver_net": "61000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "512000",
+    "cf.distributions": "1046000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1497000",
+    "cf.net_change_in_cash": "46000",
+    "sup.cash_interest_paid": "325000",
+    "sup.cash_taxes_paid": "35000",
+    "sup.scheduled_principal": "512000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "6258000",
+    "cash.beginning_of_year": "1380000",
+    "debt.term_total": "6666000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "35236000",
+    "is.cogs": "21730000",
+    "is.gross_profit": "13506000",
+    "is.sga": "9514000",
+    "is.depreciation_amortization": "780000",
+    "is.other_operating_expense": "175000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3037000",
+    "is.interest_expense": "478000",
+    "is.other_income_net": "21000",
+    "is.pretax_income": "2580000",
+    "is.income_tax_expense": "52000",
+    "is.net_income": "2528000",
+    "bs.cash": "1379000",
+    "bs.accounts_receivable": "6345000",
+    "bs.inventory": "387000",
+    "bs.other_current_assets": "551000",
+    "bs.total_current_assets": "8662000",
+    "bs.net_ppe": "7051000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "21043000",
+    "bs.accounts_payable": "2324000",
+    "bs.accrued_liabilities": "1417000",
+    "bs.revolver": "1838000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "660000",
+    "bs.total_current_liabilities": "7263000",
+    "bs.long_term_debt": "5386000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "720000",
+    "bs.total_liabilities": "13369000",
+    "bs.total_equity": "7674000",
+    "bs.total_liabilities_and_equity": "21043000",
+    "cf.net_income": "2528000",
+    "cf.depreciation_amortization": "780000",
+    "cf.change_in_working_capital": "-128000",
+    "cf.other_operating": "21000",
+    "cf.cfo": "3201000",
+    "cf.capex": "917000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-917000",
+    "cf.revolver_net": "-2000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "768000",
+    "cf.distributions": "1515000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2285000",
+    "cf.net_change_in_cash": "-1000",
+    "sup.cash_interest_paid": "481000",
+    "sup.cash_taxes_paid": "53000",
+    "sup.scheduled_principal": "768000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "6622000",
+    "cash.beginning_of_year": "1380000",
+    "debt.term_total": "6410000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "41000000",
+    "is.cogs": "25285000",
+    "is.gross_profit": "15715000",
+    "is.sga": "11071000",
+    "is.depreciation_amortization": "985000",
+    "is.other_operating_expense": "204000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3455000",
+    "is.interest_expense": "827000",
+    "is.other_income_net": "24000",
+    "is.pretax_income": "2652000",
+    "is.income_tax_expense": "54000",
+    "is.net_income": "2598000",
+    "bs.cash": "1255000",
+    "bs.accounts_receivable": "5786000",
+    "bs.inventory": "354000",
+    "bs.other_current_assets": "502000",
+    "bs.total_current_assets": "7897000",
+    "bs.net_ppe": "6642000",
+    "bs.intangibles": "4920000",
+    "bs.other_noncurrent_assets": "410000",
+    "bs.total_assets": "19869000",
+    "bs.accounts_payable": "2125000",
+    "bs.accrued_liabilities": "1308000",
+    "bs.revolver": "1805000",
+    "bs.cpltd": "1024000",
+    "bs.other_current_liabilities": "599000",
+    "bs.total_current_liabilities": "6861000",
+    "bs.long_term_debt": "8202000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "643000",
+    "bs.total_liabilities": "15706000",
+    "bs.total_equity": "4163000",
+    "bs.total_liabilities_and_equity": "19869000",
+    "cf.net_income": "2598000",
+    "cf.depreciation_amortization": "985000",
+    "cf.change_in_working_capital": "-219000",
+    "cf.other_operating": "28000",
+    "cf.cfo": "3392000",
+    "cf.capex": "1067000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1067000",
+    "cf.revolver_net": "165000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1024000",
+    "cf.distributions": "1441000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2300000",
+    "cf.net_change_in_cash": "25000",
+    "sup.cash_interest_paid": "832000",
+    "sup.cash_taxes_paid": "55000",
+    "sup.scheduled_principal": "1024000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "1052000",
+    "equity.retained_earnings": "3111000",
+    "cash.beginning_of_year": "1230000",
+    "debt.term_total": "9226000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "2.63",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2903000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "743000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "60000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1004000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4710000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "58000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4652000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "743000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1767000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "2.07",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9753000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2903000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "743000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "60000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1004000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4710000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2298000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1355000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "943000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2298000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "2.70",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2983000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "727000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "62000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1009000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4781000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "60000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4721000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "727000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1751000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.97",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9423000"
+      },
+      {
+       "label": "Net income",
+       "amount": "2983000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "727000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "62000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1009000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4781000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2381000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1364000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "1017000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2381000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "2.77",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3072000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "709000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "64000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1014000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4859000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "62000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4797000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "709000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1733000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.89",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9194000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3072000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "709000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "64000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1014000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4859000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2310000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1320000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "990000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2310000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "2.85",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3176000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "692000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "66000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1020000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4954000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "64000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4890000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "692000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1716000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.82",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "9018000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3176000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "692000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "66000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1020000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "4954000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2290000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1380000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "910000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2290000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "2.91",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3240000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "675000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "67000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1025000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5007000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "66000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "4941000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "675000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1699000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.76",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "8821000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3240000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "675000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "67000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1025000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5007000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2275000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1424000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "851000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2275000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "2.98",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3318000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "659000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "69000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1031000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5077000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "67000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5010000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "659000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1683000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.69",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "8567000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3318000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "659000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "69000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1031000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5077000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2275000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1426000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "849000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2275000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Marisol Ybarra",
+   "reported": {
+    "dscr": {
+     "value": "3.04",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "3391000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "644000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "70000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1037000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5142000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "69000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "5073000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "644000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "1024000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1668000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.60",
+     "threshold": "2.75",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "8248000"
+      },
+      {
+       "label": "Net income",
+       "amount": "3391000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "644000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "70000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1037000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "5142000"
+      }
+     ]
+    },
+    "min_liquidity": {
+     "value": "2291000",
+     "threshold": "1800000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Cash and equivalents",
+       "amount": "1379000"
+      },
+      {
+       "label": "Unused availability under the Revolving Commitment",
+       "amount": "912000"
+      },
+      {
+       "label": "Liquidity",
+       "amount": "2291000"
+      }
+     ]
+    }
+   },
+   "document_id": "brindlewood-home-health.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "1789000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9226000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "1726000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "9226000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "1715000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8970000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "1724000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8970000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "1697000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8970000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "1721000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8714000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "1681000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8714000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "1666000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8714000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "1674000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8458000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "1725000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8458000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "1744000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8458000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "1761000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8202000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "1803000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8202000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "1792000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "8202000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "1807000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7946000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "1789000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7946000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "1773000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7946000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "1733000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7690000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "1742000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7690000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "1751000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7690000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "1760000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7434000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "1780000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7434000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "1788000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7434000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "1840000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7178000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "1882000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7178000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "1879000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "7178000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "1899000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6922000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "1888000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6922000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "1887000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6922000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "1901000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6666000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "1871000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6666000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "1831000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6666000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "1838000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6410000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "1816000",
+   "commitment": "2750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6410000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "brindlewood-home-health.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/brindlewood-home-health/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Brindlewood Home Health Partners, LLC and Bank of Stoic",
+   "received_date": "2022-11-04",
+   "document_date": "2022-11-04"
+  },
+  {
+   "id": "brindlewood-home-health.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/brindlewood-home-health/afs-2024.pdf",
+   "pages": 7,
+   "title": "Brindlewood Home Health Partners, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-11",
+   "document_date": "2025-04-02",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,321"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "5,826"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "371"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "528"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "8,046"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "6,760"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "20,136"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "2,228"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,369"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,761"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "632"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "7,014"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "7,178"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "671"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "14,863"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "5,273"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "20,136"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "42,942"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "26,524"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "16,418"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "11,594"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "999"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "215"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,610"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "762"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "25"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,873"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "58"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,815"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "2,815"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "999"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "114"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "28"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,956"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,117)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,117)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(44)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,024)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(1,705)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,773)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "66"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "767"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "56"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,024"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,255",
+    "bs.accounts_receivable": "5,786",
+    "bs.inventory": "354",
+    "bs.other_current_assets": "502",
+    "bs.total_current_assets": "7,897",
+    "bs.net_ppe": "6,642",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "19,869",
+    "bs.accounts_payable": "2,125",
+    "bs.accrued_liabilities": "1,308",
+    "bs.revolver": "1,805",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "599",
+    "bs.total_current_liabilities": "6,861",
+    "bs.long_term_debt": "8,202",
+    "bs.other_noncurrent_liabilities": "643",
+    "bs.total_liabilities": "15,706",
+    "bs.total_equity": "4,163",
+    "bs.total_liabilities_and_equity": "19,869",
+    "is.revenue": "41,000",
+    "is.cogs": "25,285",
+    "is.gross_profit": "15,715",
+    "is.sga": "11,071",
+    "is.depreciation_amortization": "985",
+    "is.other_operating_expense": "204",
+    "is.operating_income": "3,455",
+    "is.interest_expense": "827",
+    "is.other_income_net": "24",
+    "is.pretax_income": "2,652",
+    "is.income_tax_expense": "54",
+    "is.net_income": "2,598",
+    "cf.net_income": "2,598",
+    "cf.depreciation_amortization": "985",
+    "cf.change_in_working_capital": "(219)",
+    "cf.other_operating": "28",
+    "cf.cfo": "3,392",
+    "cf.capex": "(1,067)",
+    "cf.cfi": "(1,067)",
+    "cf.revolver_net": "165",
+    "cf.term_debt_repayments": "(1,024)",
+    "cf.distributions": "(1,441)",
+    "cf.cff": "(2,300)",
+    "cf.net_change_in_cash": "25",
+    "sup.cash_interest_paid": "832",
+    "sup.cash_taxes_paid": "55",
+    "sup.scheduled_principal": "1,024",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/brindlewood-home-health/afs-2025.pdf",
+   "pages": 7,
+   "title": "Brindlewood Home Health Partners, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-16",
+   "document_date": "2026-04-07",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,380"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "6,214"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "386"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "552"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "8,532"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "6,914"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "20,776"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "2,315"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,421"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,840"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "662"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "7,262"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,154"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "699"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "14,115"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "6,661"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "20,776"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "45,160"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "27,815"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "17,345"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "12,193"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,020"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "226"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "3,906"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "692"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "28"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "3,242"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "66"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,176"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "3,176"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,020"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(258)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "28"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "3,966"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,174)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(1,174)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "79"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,024)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(1,788)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,733)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "59"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "698"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "64"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,024"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,321",
+    "bs.accounts_receivable": "5,826",
+    "bs.inventory": "371",
+    "bs.other_current_assets": "528",
+    "bs.total_current_assets": "8,046",
+    "bs.net_ppe": "6,760",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "20,136",
+    "bs.accounts_payable": "2,228",
+    "bs.accrued_liabilities": "1,369",
+    "bs.revolver": "1,761",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "632",
+    "bs.total_current_liabilities": "7,014",
+    "bs.long_term_debt": "7,178",
+    "bs.other_noncurrent_liabilities": "671",
+    "bs.total_liabilities": "14,863",
+    "bs.total_equity": "5,273",
+    "bs.total_liabilities_and_equity": "20,136",
+    "is.revenue": "42,942",
+    "is.cogs": "26,524",
+    "is.gross_profit": "16,418",
+    "is.sga": "11,594",
+    "is.depreciation_amortization": "999",
+    "is.other_operating_expense": "215",
+    "is.operating_income": "3,610",
+    "is.interest_expense": "762",
+    "is.other_income_net": "25",
+    "is.pretax_income": "2,873",
+    "is.income_tax_expense": "58",
+    "is.net_income": "2,815",
+    "cf.net_income": "2,815",
+    "cf.depreciation_amortization": "999",
+    "cf.change_in_working_capital": "114",
+    "cf.other_operating": "28",
+    "cf.cfo": "3,956",
+    "cf.capex": "(1,117)",
+    "cf.cfi": "(1,117)",
+    "cf.revolver_net": "(44)",
+    "cf.term_debt_repayments": "(1,024)",
+    "cf.distributions": "(1,705)",
+    "cf.cff": "(2,773)",
+    "cf.net_change_in_cash": "66",
+    "sup.cash_interest_paid": "767",
+    "sup.cash_taxes_paid": "56",
+    "sup.scheduled_principal": "1,024",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/brindlewood-home-health/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Brindlewood Home Health Partners, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-05-09",
+   "document_date": "2025-05-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,355"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,164"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "382"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "542"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "8,443"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,801"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "20,574"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,292"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,402"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,807"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "648"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "7,173"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,922"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "678"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,773"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "5,801"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "20,574"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "11,294"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "6,973"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,321"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,049"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "253"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "56"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "963"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "180"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "7"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "790"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "16"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "774"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "774"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "253"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(250)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "7"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "784"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(294)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(294)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "46"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(256)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(246)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(456)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "34"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "181"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "16"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "256"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,286",
+    "bs.accounts_receivable": "5,848",
+    "bs.inventory": "363",
+    "bs.other_current_assets": "514",
+    "bs.total_current_assets": "8,011",
+    "bs.net_ppe": "6,673",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "20,014",
+    "bs.accounts_payable": "2,179",
+    "bs.accrued_liabilities": "1,339",
+    "bs.revolver": "1,715",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "614",
+    "bs.total_current_liabilities": "6,871",
+    "bs.long_term_debt": "7,946",
+    "bs.other_noncurrent_liabilities": "650",
+    "bs.total_liabilities": "15,467",
+    "bs.total_equity": "4,547",
+    "bs.total_liabilities_and_equity": "20,014",
+    "is.revenue": "10,716",
+    "is.cogs": "6,628",
+    "is.gross_profit": "4,088",
+    "is.sga": "2,893",
+    "is.depreciation_amortization": "248",
+    "is.other_operating_expense": "54",
+    "is.operating_income": "893",
+    "is.interest_expense": "199",
+    "is.other_income_net": "6",
+    "is.pretax_income": "700",
+    "is.income_tax_expense": "14",
+    "is.net_income": "686",
+    "cf.net_income": "686",
+    "cf.depreciation_amortization": "248",
+    "cf.change_in_working_capital": "17",
+    "cf.other_operating": "7",
+    "cf.cfo": "958",
+    "cf.capex": "(279)",
+    "cf.cfi": "(279)",
+    "cf.revolver_net": "(90)",
+    "cf.term_debt_repayments": "(256)",
+    "cf.distributions": "(302)",
+    "cf.cff": "(648)",
+    "cf.net_change_in_cash": "31",
+    "sup.cash_interest_paid": "199",
+    "sup.cash_taxes_paid": "14",
+    "sup.scheduled_principal": "256",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/brindlewood-home-health/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Brindlewood Home Health Partners, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-07-29",
+   "document_date": "2025-07-25",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,364"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,928"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "385"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "546"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "8,223"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,842"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "20,395"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,308"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,409"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,733"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "652"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "7,126"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,666"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "685"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,477"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "5,918"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "20,395"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "22,659"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "13,994"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,665"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,118"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "507"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "113"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,927"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "356"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "14"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,585"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "32"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,553"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,553"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "507"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "6"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "14"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,080"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(589)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(589)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(28)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(512)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(908)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,448)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "43"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "358"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "32"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "512"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,291",
+    "bs.accounts_receivable": "5,893",
+    "bs.inventory": "364",
+    "bs.other_current_assets": "516",
+    "bs.total_current_assets": "8,064",
+    "bs.net_ppe": "6,704",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "20,098",
+    "bs.accounts_payable": "2,186",
+    "bs.accrued_liabilities": "1,342",
+    "bs.revolver": "1,721",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "616",
+    "bs.total_current_liabilities": "6,889",
+    "bs.long_term_debt": "7,690",
+    "bs.other_noncurrent_liabilities": "657",
+    "bs.total_liabilities": "15,236",
+    "bs.total_equity": "4,862",
+    "bs.total_liabilities_and_equity": "20,098",
+    "is.revenue": "21,471",
+    "is.cogs": "13,277",
+    "is.gross_profit": "8,194",
+    "is.sga": "5,797",
+    "is.depreciation_amortization": "497",
+    "is.other_operating_expense": "108",
+    "is.operating_income": "1,792",
+    "is.interest_expense": "391",
+    "is.other_income_net": "12",
+    "is.pretax_income": "1,413",
+    "is.income_tax_expense": "28",
+    "is.net_income": "1,385",
+    "cf.net_income": "1,385",
+    "cf.depreciation_amortization": "497",
+    "cf.change_in_working_capital": "(19)",
+    "cf.other_operating": "14",
+    "cf.cfo": "1,877",
+    "cf.capex": "(559)",
+    "cf.cfi": "(559)",
+    "cf.revolver_net": "(84)",
+    "cf.term_debt_repayments": "(512)",
+    "cf.distributions": "(686)",
+    "cf.cff": "(1,282)",
+    "cf.net_change_in_cash": "36",
+    "sup.cash_interest_paid": "393",
+    "sup.cash_taxes_paid": "28",
+    "sup.scheduled_principal": "512",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/brindlewood-home-health/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Brindlewood Home Health Partners, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-10-30",
+   "document_date": "2025-10-26",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,320"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,967"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "372"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "528"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "8,187"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,872"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "20,389"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,229"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,364"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,760"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "632"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "7,009"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "6,410"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "692"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,111"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "6,278"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "20,389"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "33,659"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "20,774"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "12,885"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "9,088"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "763"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "168"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,866"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "526"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "21"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,361"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "48"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,313"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,313"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "763"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(146)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "21"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,951"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(875)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(875)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(1)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(768)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,308)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,077)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(1)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "530"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "48"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "768"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,256",
+    "bs.accounts_receivable": "5,780",
+    "bs.inventory": "354",
+    "bs.other_current_assets": "502",
+    "bs.total_current_assets": "7,892",
+    "bs.net_ppe": "6,725",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "19,947",
+    "bs.accounts_payable": "2,127",
+    "bs.accrued_liabilities": "1,306",
+    "bs.revolver": "1,674",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "600",
+    "bs.total_current_liabilities": "6,731",
+    "bs.long_term_debt": "7,434",
+    "bs.other_noncurrent_liabilities": "664",
+    "bs.total_liabilities": "14,829",
+    "bs.total_equity": "5,118",
+    "bs.total_liabilities_and_equity": "19,947",
+    "is.revenue": "31,935",
+    "is.cogs": "19,746",
+    "is.gross_profit": "12,189",
+    "is.sga": "8,622",
+    "is.depreciation_amortization": "748",
+    "is.other_operating_expense": "160",
+    "is.operating_income": "2,659",
+    "is.interest_expense": "579",
+    "is.other_income_net": "18",
+    "is.pretax_income": "2,098",
+    "is.income_tax_expense": "42",
+    "is.net_income": "2,056",
+    "cf.net_income": "2,056",
+    "cf.depreciation_amortization": "748",
+    "cf.change_in_working_capital": "7",
+    "cf.other_operating": "21",
+    "cf.cfo": "2,832",
+    "cf.capex": "(831)",
+    "cf.cfi": "(831)",
+    "cf.revolver_net": "(131)",
+    "cf.term_debt_repayments": "(768)",
+    "cf.distributions": "(1,101)",
+    "cf.cff": "(2,000)",
+    "cf.net_change_in_cash": "1",
+    "sup.cash_interest_paid": "582",
+    "sup.cash_taxes_paid": "42",
+    "sup.scheduled_principal": "768",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/brindlewood-home-health/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Brindlewood Home Health Partners, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-05-09",
+   "document_date": "2026-05-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,424"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,295"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "402"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "570"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "8,691"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "6,965"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "20,986"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,412"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,464"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,899"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "682"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "7,481"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,898"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "706"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "14,085"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "6,901"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "20,986"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "11,868"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "7,336"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "4,532"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,204"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "258"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "59"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,011"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "163"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "7"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "855"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "17"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "838"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "838"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "258"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "45"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "7"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,148"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(309)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(309)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "59"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(256)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(598)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(795)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "44"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "164"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "18"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "256"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,355",
+    "bs.accounts_receivable": "6,164",
+    "bs.inventory": "382",
+    "bs.other_current_assets": "542",
+    "bs.total_current_assets": "8,443",
+    "bs.net_ppe": "6,801",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "20,574",
+    "bs.accounts_payable": "2,292",
+    "bs.accrued_liabilities": "1,402",
+    "bs.revolver": "1,807",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "648",
+    "bs.total_current_liabilities": "7,173",
+    "bs.long_term_debt": "6,922",
+    "bs.other_noncurrent_liabilities": "678",
+    "bs.total_liabilities": "14,773",
+    "bs.total_equity": "5,801",
+    "bs.total_liabilities_and_equity": "20,574",
+    "is.revenue": "11,294",
+    "is.cogs": "6,973",
+    "is.gross_profit": "4,321",
+    "is.sga": "3,049",
+    "is.depreciation_amortization": "253",
+    "is.other_operating_expense": "56",
+    "is.operating_income": "963",
+    "is.interest_expense": "180",
+    "is.other_income_net": "7",
+    "is.pretax_income": "790",
+    "is.income_tax_expense": "16",
+    "is.net_income": "774",
+    "cf.net_income": "774",
+    "cf.depreciation_amortization": "253",
+    "cf.change_in_working_capital": "(250)",
+    "cf.other_operating": "7",
+    "cf.cfo": "784",
+    "cf.capex": "(294)",
+    "cf.cfi": "(294)",
+    "cf.revolver_net": "46",
+    "cf.term_debt_repayments": "(256)",
+    "cf.distributions": "(246)",
+    "cf.cff": "(456)",
+    "cf.net_change_in_cash": "34",
+    "sup.cash_interest_paid": "181",
+    "sup.cash_taxes_paid": "16",
+    "sup.scheduled_principal": "256",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/brindlewood-home-health/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Brindlewood Home Health Partners, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-08-11",
+   "document_date": "2026-08-07",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,426"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,405"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "401"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "570"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "8,802"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "7,014"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "21,146"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,408"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,465"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,901"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "683"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "7,481"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,642"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "713"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "13,836"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "7,310"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "21,146"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "23,748"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "14,661"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "9,087"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,412"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "518"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "118"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,039"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "323"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "14"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,730"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "35"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,695"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,695"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "518"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(66)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "14"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,161"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(618)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(618)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "61"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(512)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,046)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,497)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "46"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "325"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "35"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "512"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,364",
+    "bs.accounts_receivable": "5,928",
+    "bs.inventory": "385",
+    "bs.other_current_assets": "546",
+    "bs.total_current_assets": "8,223",
+    "bs.net_ppe": "6,842",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "20,395",
+    "bs.accounts_payable": "2,308",
+    "bs.accrued_liabilities": "1,409",
+    "bs.revolver": "1,733",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "652",
+    "bs.total_current_liabilities": "7,126",
+    "bs.long_term_debt": "6,666",
+    "bs.other_noncurrent_liabilities": "685",
+    "bs.total_liabilities": "14,477",
+    "bs.total_equity": "5,918",
+    "bs.total_liabilities_and_equity": "20,395",
+    "is.revenue": "22,659",
+    "is.cogs": "13,994",
+    "is.gross_profit": "8,665",
+    "is.sga": "6,118",
+    "is.depreciation_amortization": "507",
+    "is.other_operating_expense": "113",
+    "is.operating_income": "1,927",
+    "is.interest_expense": "356",
+    "is.other_income_net": "14",
+    "is.pretax_income": "1,585",
+    "is.income_tax_expense": "32",
+    "is.net_income": "1,553",
+    "cf.net_income": "1,553",
+    "cf.depreciation_amortization": "507",
+    "cf.change_in_working_capital": "6",
+    "cf.other_operating": "14",
+    "cf.cfo": "2,080",
+    "cf.capex": "(589)",
+    "cf.cfi": "(589)",
+    "cf.revolver_net": "(28)",
+    "cf.term_debt_repayments": "(512)",
+    "cf.distributions": "(908)",
+    "cf.cff": "(1,448)",
+    "cf.net_change_in_cash": "43",
+    "sup.cash_interest_paid": "358",
+    "sup.cash_taxes_paid": "32",
+    "sup.scheduled_principal": "512",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/brindlewood-home-health/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Brindlewood Home Health Partners, LLC interim financial statements, Q3 2026",
+   "received_date": "2026-10-27",
+   "document_date": "2026-10-23",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,379"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "6,345"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "387"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "551"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "8,662"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "7,051"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "4,920"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "410"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "21,043"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "2,324"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,417"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,838"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "1,024"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "660"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "7,263"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "5,386"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "720"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "13,369"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "7,674"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "21,043"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "35,236"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "21,730"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "13,506"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "9,514"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "780"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "175"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,037"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "478"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "21"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,580"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "52"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,528"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,528"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "780"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(128)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "21"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,201"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(917)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(917)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(2)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(768)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,515)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,285)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(1)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "481"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "53"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "768"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,320",
+    "bs.accounts_receivable": "5,967",
+    "bs.inventory": "372",
+    "bs.other_current_assets": "528",
+    "bs.total_current_assets": "8,187",
+    "bs.net_ppe": "6,872",
+    "bs.intangibles": "4,920",
+    "bs.other_noncurrent_assets": "410",
+    "bs.total_assets": "20,389",
+    "bs.accounts_payable": "2,229",
+    "bs.accrued_liabilities": "1,364",
+    "bs.revolver": "1,760",
+    "bs.cpltd": "1,024",
+    "bs.other_current_liabilities": "632",
+    "bs.total_current_liabilities": "7,009",
+    "bs.long_term_debt": "6,410",
+    "bs.other_noncurrent_liabilities": "692",
+    "bs.total_liabilities": "14,111",
+    "bs.total_equity": "6,278",
+    "bs.total_liabilities_and_equity": "20,389",
+    "is.revenue": "33,659",
+    "is.cogs": "20,774",
+    "is.gross_profit": "12,885",
+    "is.sga": "9,088",
+    "is.depreciation_amortization": "763",
+    "is.other_operating_expense": "168",
+    "is.operating_income": "2,866",
+    "is.interest_expense": "526",
+    "is.other_income_net": "21",
+    "is.pretax_income": "2,361",
+    "is.income_tax_expense": "48",
+    "is.net_income": "2,313",
+    "cf.net_income": "2,313",
+    "cf.depreciation_amortization": "763",
+    "cf.change_in_working_capital": "(146)",
+    "cf.other_operating": "21",
+    "cf.cfo": "2,951",
+    "cf.capex": "(875)",
+    "cf.cfi": "(875)",
+    "cf.revolver_net": "(1)",
+    "cf.term_debt_repayments": "(768)",
+    "cf.distributions": "(1,308)",
+    "cf.cff": "(2,077)",
+    "cf.net_change_in_cash": "(1)",
+    "sup.cash_interest_paid": "530",
+    "sup.cash_taxes_paid": "48",
+    "sup.scheduled_principal": "768",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "brindlewood-home-health.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/brindlewood-home-health/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-05-09",
+   "document_date": "2025-05-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "brindlewood-home-health.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/brindlewood-home-health/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-07-29",
+   "document_date": "2025-07-27",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "brindlewood-home-health.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/brindlewood-home-health/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-10-30",
+   "document_date": "2025-10-28",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "brindlewood-home-health.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/brindlewood-home-health/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, FY2025",
+   "received_date": "2026-02-03",
+   "document_date": "2026-02-01",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "brindlewood-home-health.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/brindlewood-home-health/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-05-09",
+   "document_date": "2026-05-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "brindlewood-home-health.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/brindlewood-home-health/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-08-11",
+   "document_date": "2026-08-09",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "brindlewood-home-health.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/brindlewood-home-health/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Brindlewood Home Health Partners, LLC compliance certificate, Q3 2026",
+   "received_date": "2026-10-27",
+   "document_date": "2026-10-25",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.63",
+    "pass": true,
+    "headroom": "1.1040",
+    "reported_value": "2.63",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2903000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "743000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "60000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1004000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4710000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "58000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4652000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "743000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1767000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "2.07",
+    "pass": true,
+    "headroom": "0.2473",
+    "reported_value": "2.07",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9753000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2903000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "743000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "60000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1004000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4710000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2298000",
+    "pass": true,
+    "headroom": "0.2767",
+    "reported_value": "2298000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1355000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "943000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2298000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.70",
+    "pass": true,
+    "headroom": "1.1600",
+    "reported_value": "2.70",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "2983000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "727000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "62000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1009000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4781000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "60000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4721000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "727000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1751000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.97",
+    "pass": true,
+    "headroom": "0.2836",
+    "reported_value": "1.97",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9423000"
+     },
+     {
+      "label": "Net income",
+      "amount": "2983000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "727000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "62000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1009000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4781000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2381000",
+    "pass": true,
+    "headroom": "0.3228",
+    "reported_value": "2381000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1364000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "1017000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2381000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.77",
+    "pass": true,
+    "headroom": "1.2160",
+    "reported_value": "2.77",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3072000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "709000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "64000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1014000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4859000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "62000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4797000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "709000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1733000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.89",
+    "pass": true,
+    "headroom": "0.3127",
+    "reported_value": "1.89",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9194000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3072000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "709000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "64000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1014000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4859000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2310000",
+    "pass": true,
+    "headroom": "0.2833",
+    "reported_value": "2310000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1320000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "990000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2310000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.85",
+    "pass": true,
+    "headroom": "1.2800",
+    "reported_value": "2.85",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3176000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "692000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "66000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1020000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4954000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "64000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4890000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "692000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1716000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.82",
+    "pass": true,
+    "headroom": "0.3382",
+    "reported_value": "1.82",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "9018000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3176000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "692000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "66000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1020000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "4954000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2290000",
+    "pass": true,
+    "headroom": "0.2722",
+    "reported_value": "2290000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1380000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "910000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2290000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.91",
+    "pass": true,
+    "headroom": "1.3280",
+    "reported_value": "2.91",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3240000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "675000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "67000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1025000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5007000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "66000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "4941000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "675000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1699000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.76",
+    "pass": true,
+    "headroom": "0.3600",
+    "reported_value": "1.76",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "8821000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3240000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "675000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "67000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1025000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5007000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2275000",
+    "pass": true,
+    "headroom": "0.2639",
+    "reported_value": "2275000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1424000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "851000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2275000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.98",
+    "pass": true,
+    "headroom": "1.3840",
+    "reported_value": "2.98",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3318000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "659000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "69000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1031000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5077000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "67000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5010000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "659000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1683000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.69",
+    "pass": true,
+    "headroom": "0.3855",
+    "reported_value": "1.69",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "8567000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3318000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "659000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "69000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1031000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5077000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2275000",
+    "pass": true,
+    "headroom": "0.2639",
+    "reported_value": "2275000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1426000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "849000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2275000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "3.04",
+    "pass": true,
+    "headroom": "1.4320",
+    "reported_value": "3.04",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "3391000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "644000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "70000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1037000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5142000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "69000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "5073000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "644000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "1024000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1668000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.75",
+    "value": "1.60",
+    "pass": true,
+    "headroom": "0.4182",
+    "reported_value": "1.60",
+    "reported_threshold": "2.75",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "8248000"
+     },
+     {
+      "label": "Net income",
+      "amount": "3391000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "644000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "70000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1037000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "5142000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_liquidity",
+    "covenant_name": "Minimum Liquidity",
+    "archetype": "min_liquidity",
+    "facility_id": "brindlewood-home-health-rlc",
+    "terms_version_id": "tv-brindlewood-home-health-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "1800000",
+    "value": "2291000",
+    "pass": true,
+    "headroom": "0.2728",
+    "reported_value": "2291000",
+    "reported_threshold": "1800000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Cash and equivalents",
+      "amount": "1379000"
+     },
+     {
+      "label": "Unused availability under the Revolving Commitment",
+      "amount": "912000"
+     },
+     {
+      "label": "Liquidity",
+      "amount": "2291000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.2722",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_liquidity",
+     "two_periods_ago": "0.3228",
+     "prior_period": "0.2833"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.2639",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "min_liquidity",
+     "two_periods_ago": "0.2833",
+     "prior_period": "0.2722"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}

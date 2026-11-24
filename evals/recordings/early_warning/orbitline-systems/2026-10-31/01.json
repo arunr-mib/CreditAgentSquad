@@ -1,0 +1,77 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "48436028-b328-441d-a7c5-8f1cbd5a49bc": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.0628"
+  },
+  "4aedce9f-55a4-47eb-9bb2-41b57a80afa9": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "3900000"
+  },
+  "4d10c5d3-75ad-4f5c-b10a-cc269fc4c516": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.1637"
+  },
+  "52a5a022-0321-4421-96be-ab3750384dec": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.95"
+  },
+  "d6484092-cc24-4ebc-b93f-2506d3cd9a4a": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "2000000"
+  }
+ },
+ "_spec": "early_warning@1:38b46a6cfb2c",
+ "content": [
+  {
+   "signature": "CAQS+gYKEAgUGAI4AUIIdGhpbmtpbmcSDFinYIidcTunTd0xChoMI1T879FjqOTrtVybIjBC07d4oEcnWnf9c2rFkN+dgsbhv67QjI6PPZO50lqZ10SGBkyN6HtHsdvvpiSQLkoqlwZGZySX5RVwDsES1ptaCr2Oto/H4xIt76INmppW9CpHzdXOjw0CIVNuq8FIpMVWeeWXsJSXsGvbef53YSYywWHlHLXxNMNoUWjK99JDAH3z/CZpBdYAY4esJgxhdmeJbCt3jz/Eu34T+I346DUJsse97Tg5T0miZj9ANOBS8bPtRJ6aVLCPleckWP9w2PPP9IdanYrnOqPE1I1nwN5nVgfxFnuHcyyYi8+EabaZ+E1g45511mjr3bHKVcVlDalB/AOIu4pTe2tNJ5dC1pgdYGu+Y1l/WzpigF1CyILd5/zu9xtTwTIwq6foWzgnPuad2/70fVn/T5oH4mPuspvlmkDC6v7scnarFepipC39VWI6hq0frqh2f9qVp6obFJLsAEjX7qdI8R3PttUQ532hg+26yM5mSfr8TVB+qcWGBIYJO9Hgd++LVKpigzpl3PVNFgQ8UWo44zfQL4qie6i7xayQ+6FEJn8OikdouWnJbzRFsEbu1VCsAwo9NeYft0YBXzrdkMKGNzvQh2Gv5UI2fchcG3awnMwdnHHU5SZobJVFmSgajrfSZ0WOJouw3rq9i/jl0YPqiURh/rEnd9etqgxlHoTSlPK8dQ2HDflkI+0GLsbJQQSN0WmmEbCERcKVyshJCsoqaVe9gxZ4mGi0YuoyGfxRXAQYl9Spz/Cg9LxQAVF/a5d9UgYKqGzVDu1/JkIhDwe4Q74DfmuMfIHfu9j0K2hZVg4kh8//JmNGZHB85E+aU1JQ3qpno5/R5T3vOzEeQVLbyn7E7D9J0AmezbUwrhUWk99bua2V/Cp1DflHH4rV69JA0kQaZ+7+hEyJNb7V57rQI9dtpq+e6v0s8Sk3aqc0pqC7P2zpwek2nKUITloT6i3p7vSBR7des3iUndvyZ5XPCPESYGYalh0cMTEKXHXcJld2HnN5M+fjE9LFFulg+rZgT1idd2jjcdym6P/mDJkToqjbKpR96yjyefJiF7WbPIbdHr50gR8kgwupQ+LeoG94IR72WXClaG9kRn4z/VRUIfNGVLHscbHKdCnbAoyUeBiq3xgB",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "text": "{\"explanations\":[{\"signal_id\":\"47ebb35f-d40c-4f88-9221-72f9bd73a6b5\",\"explanation\":\"Unrestricted cash still sits well above the covenant floor ({{fact:4aedce9f-55a4-47eb-9bb2-41b57a80afa9}} against {{fact:d6484092-cc24-4ebc-b93f-2506d3cd9a4a}}), but headroom has fallen steadily from {{fact:4d10c5d3-75ad-4f5c-b10a-cc269fc4c516}} to {{fact:52a5a022-0321-4421-96be-ab3750384dec}} over three month-ends. A cash-based covenant eroding month after month points to ongoing cash burn. No other signal fired to explain or confirm it.\"}],\"ranking\":[\"47ebb35f-d40c-4f88-9221-72f9bd73a6b5\"]}",
+   "type": "text"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "end_turn",
+ "usage": {
+  "cache_creation_input_tokens": 1677,
+  "cache_read_input_tokens": 0,
+  "input_tokens": 4,
+  "output_tokens": 420
+ }
+}

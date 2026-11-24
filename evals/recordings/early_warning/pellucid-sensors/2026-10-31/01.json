@@ -1,0 +1,72 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "05b6d22f-6fed-420e-9fff-296fabc4f19a": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.1765"
+  },
+  "42ababe7-9a58-48b0-a9ae-6b34d1c02184": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "3000000"
+  },
+  "9eded154-4a97-4052-9152-04adb81692ad": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6300000"
+  },
+  "a8d34e6d-7944-42a3-a427-b5ba27eedff6": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "1.1"
+  },
+  "aaf5ce44-5ac7-40da-ac53-5e1a0a2a5092": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.2469"
+  }
+ },
+ "_spec": "early_warning@1:38b46a6cfb2c",
+ "content": [
+  {
+   "text": "{\"explanations\":[{\"signal_id\":\"8bc64891-cb46-420d-8b8d-ff3f46911772\",\"explanation\":\"Unrestricted cash headroom has narrowed steadily, from {{fact:aaf5ce44-5ac7-40da-ac53-5e1a0a2a5092}} in August to {{fact:a8d34e6d-7944-42a3-a427-b5ba27eedff6}} in October, pointing to ongoing cash burn. Cash of {{fact:9eded154-4a97-4052-9152-04adb81692ad}} still sits well above the {{fact:42ababe7-9a58-48b0-a9ae-6b34d1c02184}} minimum, so the concern is the trend rather than an imminent breach. No other signal fired to explain or confirm it.\"}],\"ranking\":[\"8bc64891-cb46-420d-8b8d-ff3f46911772\"]}",
+   "type": "text"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "end_turn",
+ "usage": {
+  "cache_creation_input_tokens": 1678,
+  "cache_read_input_tokens": 0,
+  "input_tokens": 4,
+  "output_tokens": 305
+ }
+}

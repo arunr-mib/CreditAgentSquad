@@ -1,0 +1,450 @@
+{
+ "meta": {
+  "suite": "monitoring-cycle",
+  "mode": "record",
+  "standin": false,
+  "label": "Mode record: answers came from a live model.",
+  "generated_at": "2026-11-21T02:44:45+00:00",
+  "commit": "90fa2d718fa66b2232f7c5d3afb6ebb1be387e0d",
+  "borrowers": 1,
+  "scope": [
+   "dataflake"
+  ],
+  "decide": true,
+  "passes": 1,
+  "seconds": 134.0,
+  "unsigned_oracle_rows": 0,
+  "standin_print_vs_truth_disagreements": [],
+  "accepted_stale": [],
+  "prompt_only_verified": 0
+ },
+ "gate": {
+  "passed": true,
+  "reasons": [],
+  "run_errors": [],
+  "nothing_read": [],
+  "rule": "any invented-number or false-compliant in any pass fails; any cycle that failed on an error fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated",
+  "known_findings_applied": [],
+  "unexplained": [],
+  "stale_known_findings": []
+ },
+ "metrics": {
+  "extraction_accuracy": 1.0,
+  "extraction_facts_expected": 62,
+  "extraction_facts_correct": 62,
+  "extraction_abstain_rate": 0.0,
+  "cycles_needing_no_person": 0.0,
+  "cycles_expected_to_need_no_person": 0.0,
+  "exception_precision": 1.0,
+  "exception_recall": 1.0,
+  "covenant_outcome_accuracy": 1.0,
+  "covenant_abstain_rate": 0.0,
+  "cycles_run": 1,
+  "cycles_closed": 1,
+  "cycles_reaching_signals": 1,
+  "disagreements": 0,
+  "input_tokens": 49777,
+  "output_tokens": 12342
+ },
+ "failure_counts": {
+  "invented-number": 0,
+  "false-compliant": 0,
+  "false-breach": 0,
+  "missed-exception": 0,
+  "false-exception": 0,
+  "wrong-citation": 0,
+  "wrong-abstain": 1,
+  "missed-abstain": 0,
+  "stale-terms": 0
+ },
+ "borrowers": {
+  "dataflake": {
+   "borrower": "dataflake",
+   "scenario": "pledged_cash",
+   "error": null,
+   "expected_exceptions": [
+    "covenant.reported_mismatch",
+    "signal.high"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "covenant.reported_mismatch",
+    "signal.high"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "wrong-abstain",
+     "item": "covenant run",
+     "detail": "the run abstained: no answer"
+    }
+   ],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 62,
+    "correct": 62,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {
+     "metric": 1
+    }
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "covenant_testing",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "covenant.reported_mismatch",
+       "blocks_stage": true,
+       "stage": "covenant_testing"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "covenant.reported_mismatch",
+       "decision": "escalate_to_committee",
+       "by_role": "credit_officer",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "signals",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "signal.high",
+       "blocks_stage": true,
+       "stage": "signals"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "signal.high",
+       "decision": "acknowledged",
+       "by_role": "analyst",
+       "error": null
+      }
+     ]
+    },
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The statement of operations, statement of cash flows and supplemental page print no prior-year comparative column; their second column is the one month ended October 31, 2026, which is not a comparative period and was not spread. Only the balance sheet comparative (December 31, 2025) is reported."
+      },
+      {
+       "check": "figure_untraceable",
+       "layer": "narrative",
+       "action": "dropped",
+       "detail": "a note from the agent contained a typed figure and was removed"
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The pack prints no SaaS metrics (MRR, ARR, customers, net new ARR, net revenue retention); these lines are left out."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No stock-based compensation memo line is printed in the pack."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "figure_untraceable",
+       "layer": "narrative",
+       "action": "dropped",
+       "detail": "a note from the agent contained a typed figure and was removed"
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The Summary amounts have no printed column header; the section heading 'Summary' was used as the column header."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The row 'Total balances on deposit' fits no template line for a bank statement and was not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The collateral account is pledged to secure a hosting lease letter of credit and is not available for withdrawal."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No prior-period comparative is printed."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The document is a monthly MRR report, not a financial-statement pack, so only the SaaS metric lines are reported. Its metrics are point-in-time as of October 31, 2026 rather than a ten-month year-to-date period."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No prior-year comparative column is printed; the trailing six months table covers only months of the current year and was not used."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The MRR bridge rows (opening MRR, new customers, expansion, contraction, churn, closing MRR) fit no template line and were not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed; figures are shown in dollars."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "covenant",
+     "status": "abstained",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "step_cap",
+       "layer": "runtime",
+       "action": "abstain",
+       "detail": "the run reached its step cap before giving an answer"
+      }
+     ]
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "spreading",
+     "record_key": "spreading/dataflake/2026-10-31/b624cef7b8a0/01",
+     "text": "Note 1 on page 5 is a one-month capitalised software rollforward; it was not spread as it covers the month only and has no template line beyond the balance sheet figure.",
+     "typed_figures": [
+      "1"
+     ]
+    },
+    {
+     "agent": "spreading",
+     "record_key": "spreading/dataflake/2026-10-31/519d8d3e0cee/01",
+     "text": "The document is a bank statement for October 2026, not a set of financial statements, so only the two bank account total lines were reported.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/dataflake/2026-10-31/01",
+     "text": "The Schedule 1 calculation for Minimum Unrestricted Cash on page two includes cash held in the pledged collateral account within Unrestricted Cash; a reviewer may wish to confirm whether pledged collateral cash qualifies as unrestricted under the credit agreement.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/dataflake/2026-10-31/01",
+     "text": "The requirement for Revenue to Plan wraps across two lines in the summary table on page one.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/01",
+     "text": "Dataflake has about {{fact:78f6ae81-0bfe-4964-bff9-c570772de4ee}} months of cash at current burn, which limits its ability to absorb setbacks before it needs new funding. The low-severity runway covenant signal shows this has been shrinking quickly. The cash covenant signals show the same pressure on its balance sheet.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/01",
+     "text": "Unrestricted cash of {{fact:c6b23fca-d829-47de-afb9-2c23d0a23106}} is below the {{fact:dfe07fca-0fbc-40ee-b40b-3a228a34e2f2}} minimum, giving headroom of {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}}. That means the level is past the threshold, not merely close to it, though the signal is rated medium. It is the balance-sheet side of the short runway.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/01",
+     "text": "Runway covenant headroom fell from {{fact:0ac55194-1dd2-43ef-8b72-a1df0510d927}} in August to {{fact:3caa60a2-0f31-4409-a26f-9fb416c6117f}} in September and {{fact:09bff13b-0bba-432a-8f89-e9c4a43c04b8}} in October. Runway of {{fact:88465eb6-1917-4cd2-b16b-08d16b705fd9}} months remains above the {{fact:629bd59a-680f-43d2-9cd0-1e4063fb047e}}-month floor, but at this pace the cushion is thin. This is the trend behind the high-severity runway signal.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/01",
+     "text": "Cash covenant headroom moved from {{fact:c62ed519-9cd5-4290-86ff-3a880e7c459e}} in August to {{fact:34304bd5-0c7c-4ff3-a214-d8e31aa6b48b}} in September, then to {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}} in October. The steady decline crossed below the minimum. This shows the medium-severity cash signal reflects ongoing burn, not a one-month dip.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/02",
+     "text": "Dataflake has about {{fact:78f6ae81-0bfe-4964-bff9-c570772de4ee}} months of cash at current burn, which limits its ability to absorb setbacks before it needs new funding. The low-severity runway covenant signal shows this has been shrinking quickly. The cash covenant signals show the same pressure on its balance sheet.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/02",
+     "text": "Unrestricted cash of {{fact:c6b23fca-d829-47de-afb9-2c23d0a23106}} is below the {{fact:dfe07fca-0fbc-40ee-b40b-3a228a34e2f2}} minimum, giving headroom of {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}}. That means the level is past the threshold, not merely close to it, though the signal is rated medium. It is the balance-sheet side of the short runway.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/02",
+     "text": "Runway covenant headroom fell from {{fact:0ac55194-1dd2-43ef-8b72-a1df0510d927}} in August to {{fact:3caa60a2-0f31-4409-a26f-9fb416c6117f}} in September and {{fact:09bff13b-0bba-432a-8f89-e9c4a43c04b8}} in October. Runway of {{fact:88465eb6-1917-4cd2-b16b-08d16b705fd9}} months remains above the floor of {{fact:629bd59a-680f-43d2-9cd0-1e4063fb047e}} months, but at this pace the cushion is thin. This is the trend behind the high-severity runway signal.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/dataflake/2026-10-31/02",
+     "text": "Cash covenant headroom moved from {{fact:c62ed519-9cd5-4290-86ff-3a880e7c459e}} in August to {{fact:34304bd5-0c7c-4ff3-a214-d8e31aa6b48b}} in September, then to {{fact:4485e2b5-96b8-4ad6-ba54-6343194e8b1c}} in October. The steady decline crossed below the minimum. This shows the medium-severity cash signal reflects ongoing burn, not a one-month dip.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 49777,
+    "output": 12342,
+    "cache_read": 18550
+   },
+   "ledger_ok": true,
+   "seconds": 131.72
+  }
+ },
+ "known_findings": [],
+ "passes": [
+  {
+   "metrics": {
+    "extraction_accuracy": 1.0,
+    "extraction_facts_expected": 62,
+    "extraction_facts_correct": 62,
+    "extraction_abstain_rate": 0.0,
+    "cycles_needing_no_person": 0.0,
+    "cycles_expected_to_need_no_person": 0.0,
+    "exception_precision": 1.0,
+    "exception_recall": 1.0,
+    "covenant_outcome_accuracy": 1.0,
+    "covenant_abstain_rate": 0.0,
+    "cycles_run": 1,
+    "cycles_closed": 1,
+    "cycles_reaching_signals": 1,
+    "disagreements": 0,
+    "input_tokens": 49777,
+    "output_tokens": 12342
+   },
+   "failure_counts": {
+    "invented-number": 0,
+    "false-compliant": 0,
+    "false-breach": 0,
+    "missed-exception": 0,
+    "false-exception": 0,
+    "wrong-citation": 0,
+    "wrong-abstain": 1,
+    "missed-abstain": 0,
+    "stale-terms": 0
+   }
+  }
+ ]
+}

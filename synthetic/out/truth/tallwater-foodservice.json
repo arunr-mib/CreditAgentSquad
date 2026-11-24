@@ -1,0 +1,6346 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "tallwater-foodservice",
+  "name": "Tallwater Foodservice Supply, LLC",
+  "legal_form": "llc",
+  "industry": "distribution",
+  "city": "Fresno",
+  "state": "CA",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Marcus Oyelaran",
+  "analyst": "Naomi Castellano",
+  "risk_rating": 5,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Raymond Okeke",
+  "auditor": "Greaves & Tolland, P.C."
+ },
+ "facilities": [
+  {
+   "id": "tallwater-foodservice-rlc",
+   "borrower_id": "tallwater-foodservice",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "27000000",
+   "original_amount": "27000000",
+   "closing_date": "2021-09-30",
+   "maturity_date": "2027-09-30",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": true
+  },
+  {
+   "id": "tallwater-foodservice-tl",
+   "borrower_id": "tallwater-foodservice",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "23850000",
+   "original_amount": "23850000",
+   "closing_date": "2021-09-30",
+   "maturity_date": "2028-09-30",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "530000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-tallwater-foodservice-1",
+   "facility_id": "tallwater-foodservice-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2021-09-30",
+   "effective_to": null,
+   "prepared_by": "Naomi Castellano",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2021-10-06",
+   "warnings": [],
+   "source_documents": [
+    "tallwater-foodservice.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "tallwater-foodservice.credit-agreement",
+        "section": "6.1",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "tallwater-foodservice.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "senior_leverage",
+      "name": "Senior Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "senior_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "tallwater-foodservice.credit-agreement",
+        "section": "6.2",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Senior Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "tallwater-foodservice.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Senior Leverage Ratio\" means, as of any date, the ratio of (a) Senior Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "tallwater-foodservice.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "tallwater-foodservice.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "tallwater-foodservice.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     },
+     {
+      "id": "borrowing_base_certificate",
+      "document_type": "borrowing_base_certificate",
+      "frequency": "monthly",
+      "due_days_after_period_end": 20,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.borrowing_base_certificate",
+       "document_id": "tallwater-foodservice.credit-agreement",
+       "section": "5.1(d)",
+       "page": 8,
+       "quote": "Within 20 days after the end of each calendar month, the Borrower shall deliver to the Lender a Borrowing Base Certificate as of the last day of such month, together with an accounts receivable aging and an inventory report."
+      }
+     }
+    ],
+    "borrowing_base": {
+     "commitment": "27000000",
+     "components": [
+      {
+       "collateral": "accounts_receivable",
+       "advance_rate": "0.85",
+       "eligibility": {
+        "max_age_days": 90,
+        "cross_aging_pct": "0.50",
+        "concentration_limit_pct": "0.25",
+        "exclude": [
+         "intercompany",
+         "foreign",
+         "government",
+         "contra"
+        ]
+       }
+      },
+      {
+       "collateral": "inventory",
+       "advance_rate": "0.50",
+       "sublimit": "10750000",
+       "eligibility": {
+        "exclude": [
+         "work_in_process",
+         "consigned"
+        ]
+       }
+      }
+     ],
+     "reserves": [
+      {
+       "name": "Rent reserve",
+       "amount": "300000"
+      }
+     ],
+     "frequency": "monthly",
+     "citation": {
+      "field": "borrowing_base",
+      "document_id": "tallwater-foodservice.credit-agreement",
+      "section": "1.1",
+      "page": 4,
+      "quote": "\"Borrowing Base\" means, as of any date, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of 50% of Eligible Inventory and $10,750,000, minus (c) Reserves."
+     }
+    }
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "borrowing_base.components[accounts_receivable].eligibility",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"Eligible Accounts\" means accounts receivable of the Borrower arising in the ordinary course of business, excluding (a) any account that remains unpaid more than 90 days after its invoice date, (b) all accounts owing by an account debtor if more than 50% of the aggregate balance owing by such account debtor remains unpaid more than 90 days after invoice date, (c) accounts owing by an Affiliate of the Borrower, by an account debtor located outside the United States, or by a governmental authority, (d) accounts to the extent subject to offset by amounts owed by the Borrower to the account debtor, and (e) accounts owing by any single account debtor to the extent that such accounts exceed 25% of the aggregate amount of all accounts that are Eligible Accounts before giving effect to this clause (e)."
+    },
+    {
+     "field": "borrowing_base.components[inventory].eligibility",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Eligible Inventory\" means inventory of the Borrower valued at the lower of cost and market, excluding work in process and inventory held on consignment."
+    },
+    {
+     "field": "borrowing_base.reserves",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Reserves\" means a rent reserve in the amount of $300,000."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "2.1",
+     "page": 6,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $27,000,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $23,850,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "tallwater-foodservice.credit-agreement",
+     "section": "2.2",
+     "page": 6,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $530,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "51718000",
+    "is.cogs": "40712000",
+    "is.gross_profit": "11006000",
+    "is.sga": "7758000",
+    "is.depreciation_amortization": "493000",
+    "is.other_operating_expense": "155000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2600000",
+    "is.interest_expense": "792000",
+    "is.other_income_net": "31000",
+    "is.pretax_income": "1839000",
+    "is.income_tax_expense": "37000",
+    "is.net_income": "1802000",
+    "bs.cash": "6206000",
+    "bs.accounts_receivable": "23974000",
+    "bs.inventory": "23200000",
+    "bs.other_current_assets": "2482000",
+    "bs.total_current_assets": "55862000",
+    "bs.net_ppe": "15026000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "81488000",
+    "bs.accounts_payable": "16508000",
+    "bs.accrued_liabilities": "3678000",
+    "bs.revolver": "15515000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "2933000",
+    "bs.total_current_liabilities": "40754000",
+    "bs.long_term_debt": "16430000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3370000",
+    "bs.total_liabilities": "65854000",
+    "bs.total_equity": "15634000",
+    "bs.total_liabilities_and_equity": "81488000",
+    "cf.net_income": "1802000",
+    "cf.depreciation_amortization": "493000",
+    "cf.change_in_working_capital": "-110000",
+    "cf.other_operating": "38000",
+    "cf.cfo": "2223000",
+    "cf.capex": "517000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-517000",
+    "cf.revolver_net": "-12000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "530000",
+    "cf.distributions": "1191000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1733000",
+    "cf.net_change_in_cash": "-27000",
+    "sup.cash_interest_paid": "803000",
+    "sup.cash_taxes_paid": "35000",
+    "sup.scheduled_principal": "530000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "11212000",
+    "cash.beginning_of_year": "6233000",
+    "debt.term_total": "18550000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "108836000",
+    "is.cogs": "85510000",
+    "is.gross_profit": "23326000",
+    "is.sga": "16326000",
+    "is.depreciation_amortization": "987000",
+    "is.other_operating_expense": "326000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5687000",
+    "is.interest_expense": "1574000",
+    "is.other_income_net": "65000",
+    "is.pretax_income": "4178000",
+    "is.income_tax_expense": "84000",
+    "is.net_income": "4094000",
+    "bs.cash": "6854000",
+    "bs.accounts_receivable": "26478000",
+    "bs.inventory": "25529000",
+    "bs.other_current_assets": "2742000",
+    "bs.total_current_assets": "61603000",
+    "bs.net_ppe": "15103000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "87306000",
+    "bs.accounts_payable": "18165000",
+    "bs.accrued_liabilities": "4031000",
+    "bs.revolver": "17898000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3246000",
+    "bs.total_current_liabilities": "45460000",
+    "bs.long_term_debt": "15900000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3408000",
+    "bs.total_liabilities": "70068000",
+    "bs.total_equity": "17238000",
+    "bs.total_liabilities_and_equity": "87306000",
+    "cf.net_income": "4094000",
+    "cf.depreciation_amortization": "987000",
+    "cf.change_in_working_capital": "-2880000",
+    "cf.other_operating": "76000",
+    "cf.cfo": "2277000",
+    "cf.capex": "1088000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1088000",
+    "cf.revolver_net": "2371000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1060000",
+    "cf.distributions": "1879000",
+    "cf.other_financing": "0",
+    "cf.cff": "-568000",
+    "cf.net_change_in_cash": "621000",
+    "sup.cash_interest_paid": "1588000",
+    "sup.cash_taxes_paid": "72000",
+    "sup.scheduled_principal": "1060000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "12816000",
+    "cash.beginning_of_year": "6233000",
+    "debt.term_total": "18020000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "167608000",
+    "is.cogs": "131575000",
+    "is.gross_profit": "36033000",
+    "is.sga": "25142000",
+    "is.depreciation_amortization": "1483000",
+    "is.other_operating_expense": "502000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8906000",
+    "is.interest_expense": "2393000",
+    "is.other_income_net": "100000",
+    "is.pretax_income": "6613000",
+    "is.income_tax_expense": "133000",
+    "is.net_income": "6480000",
+    "bs.cash": "7053000",
+    "bs.accounts_receivable": "27116000",
+    "bs.inventory": "26251000",
+    "bs.other_current_assets": "2821000",
+    "bs.total_current_assets": "63241000",
+    "bs.net_ppe": "15195000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "89036000",
+    "bs.accounts_payable": "18678000",
+    "bs.accrued_liabilities": "4152000",
+    "bs.revolver": "17722000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3340000",
+    "bs.total_current_liabilities": "46012000",
+    "bs.long_term_debt": "15370000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3446000",
+    "bs.total_liabilities": "70128000",
+    "bs.total_equity": "18908000",
+    "bs.total_liabilities_and_equity": "89036000",
+    "cf.net_income": "6480000",
+    "cf.depreciation_amortization": "1483000",
+    "cf.change_in_working_capital": "-3591000",
+    "cf.other_operating": "114000",
+    "cf.cfo": "4486000",
+    "cf.capex": "1676000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1676000",
+    "cf.revolver_net": "2195000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1590000",
+    "cf.distributions": "2595000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1990000",
+    "cf.net_change_in_cash": "820000",
+    "sup.cash_interest_paid": "2395000",
+    "sup.cash_taxes_paid": "119000",
+    "sup.scheduled_principal": "1590000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "14486000",
+    "cash.beginning_of_year": "6233000",
+    "debt.term_total": "17490000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "221854000",
+    "is.cogs": "174022000",
+    "is.gross_profit": "47832000",
+    "is.sga": "33279000",
+    "is.depreciation_amortization": "1982000",
+    "is.other_operating_expense": "665000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "11906000",
+    "is.interest_expense": "3199000",
+    "is.other_income_net": "133000",
+    "is.pretax_income": "8840000",
+    "is.income_tax_expense": "178000",
+    "is.net_income": "8662000",
+    "bs.cash": "6510000",
+    "bs.accounts_receivable": "24374000",
+    "bs.inventory": "24189000",
+    "bs.other_current_assets": "2604000",
+    "bs.total_current_assets": "57677000",
+    "bs.net_ppe": "15238000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "83515000",
+    "bs.accounts_payable": "17211000",
+    "bs.accrued_liabilities": "3849000",
+    "bs.revolver": "14393000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3083000",
+    "bs.total_current_liabilities": "40656000",
+    "bs.long_term_debt": "14840000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3484000",
+    "bs.total_liabilities": "64280000",
+    "bs.total_equity": "19235000",
+    "bs.total_liabilities_and_equity": "83515000",
+    "cf.net_income": "8662000",
+    "cf.depreciation_amortization": "1982000",
+    "cf.change_in_working_capital": "-597000",
+    "cf.other_operating": "152000",
+    "cf.cfo": "10199000",
+    "cf.capex": "2218000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2218000",
+    "cf.revolver_net": "-1134000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2120000",
+    "cf.distributions": "4450000",
+    "cf.other_financing": "0",
+    "cf.cff": "-7704000",
+    "cf.net_change_in_cash": "277000",
+    "sup.cash_interest_paid": "3205000",
+    "sup.cash_taxes_paid": "168000",
+    "sup.scheduled_principal": "2120000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "14813000",
+    "cash.beginning_of_year": "6233000",
+    "debt.term_total": "16960000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "53735000",
+    "is.cogs": "42032000",
+    "is.gross_profit": "11703000",
+    "is.sga": "8060000",
+    "is.depreciation_amortization": "501000",
+    "is.other_operating_expense": "161000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2981000",
+    "is.interest_expense": "732000",
+    "is.other_income_net": "32000",
+    "is.pretax_income": "2281000",
+    "is.income_tax_expense": "46000",
+    "is.net_income": "2235000",
+    "bs.cash": "6448000",
+    "bs.accounts_receivable": "23496000",
+    "bs.inventory": "23952000",
+    "bs.other_current_assets": "2579000",
+    "bs.total_current_assets": "56475000",
+    "bs.net_ppe": "15274000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "82349000",
+    "bs.accounts_payable": "17043000",
+    "bs.accrued_liabilities": "3790000",
+    "bs.revolver": "13639000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3055000",
+    "bs.total_current_liabilities": "39647000",
+    "bs.long_term_debt": "14310000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3522000",
+    "bs.total_liabilities": "62779000",
+    "bs.total_equity": "19570000",
+    "bs.total_liabilities_and_equity": "82349000",
+    "cf.net_income": "2235000",
+    "cf.depreciation_amortization": "501000",
+    "cf.change_in_working_capital": "885000",
+    "cf.other_operating": "38000",
+    "cf.cfo": "3659000",
+    "cf.capex": "537000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-537000",
+    "cf.revolver_net": "-754000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "530000",
+    "cf.distributions": "1900000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3184000",
+    "cf.net_change_in_cash": "-62000",
+    "sup.cash_interest_paid": "757000",
+    "sup.cash_taxes_paid": "45000",
+    "sup.scheduled_principal": "530000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "15148000",
+    "cash.beginning_of_year": "6510000",
+    "debt.term_total": "16430000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "113166000",
+    "is.cogs": "88477000",
+    "is.gross_profit": "24689000",
+    "is.sga": "16975000",
+    "is.depreciation_amortization": "1003000",
+    "is.other_operating_expense": "339000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6372000",
+    "is.interest_expense": "1440000",
+    "is.other_income_net": "68000",
+    "is.pretax_income": "5000000",
+    "is.income_tax_expense": "100000",
+    "is.net_income": "4900000",
+    "bs.cash": "7132000",
+    "bs.accounts_receivable": "27550000",
+    "bs.inventory": "26467000",
+    "bs.other_current_assets": "2853000",
+    "bs.total_current_assets": "64002000",
+    "bs.net_ppe": "15366000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "89968000",
+    "bs.accounts_payable": "18832000",
+    "bs.accrued_liabilities": "4159000",
+    "bs.revolver": "17829000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3382000",
+    "bs.total_current_liabilities": "46322000",
+    "bs.long_term_debt": "13780000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3560000",
+    "bs.total_liabilities": "68962000",
+    "bs.total_equity": "21006000",
+    "bs.total_liabilities_and_equity": "89968000",
+    "cf.net_income": "4900000",
+    "cf.depreciation_amortization": "1003000",
+    "cf.change_in_working_capital": "-3473000",
+    "cf.other_operating": "76000",
+    "cf.cfo": "2506000",
+    "cf.capex": "1131000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1131000",
+    "cf.revolver_net": "3436000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1060000",
+    "cf.distributions": "3129000",
+    "cf.other_financing": "0",
+    "cf.cff": "-753000",
+    "cf.net_change_in_cash": "622000",
+    "sup.cash_interest_paid": "1473000",
+    "sup.cash_taxes_paid": "91000",
+    "sup.scheduled_principal": "1060000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "16584000",
+    "cash.beginning_of_year": "6510000",
+    "debt.term_total": "15900000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "174195000",
+    "is.cogs": "136562000",
+    "is.gross_profit": "37633000",
+    "is.sga": "26129000",
+    "is.depreciation_amortization": "1508000",
+    "is.other_operating_expense": "522000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "9474000",
+    "is.interest_expense": "2220000",
+    "is.other_income_net": "105000",
+    "is.pretax_income": "7359000",
+    "is.income_tax_expense": "147000",
+    "is.net_income": "7212000",
+    "bs.cash": "7323000",
+    "bs.accounts_receivable": "27154000",
+    "bs.inventory": "27402000",
+    "bs.other_current_assets": "2929000",
+    "bs.total_current_assets": "64808000",
+    "bs.net_ppe": "15471000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "90879000",
+    "bs.accounts_payable": "19497000",
+    "bs.accrued_liabilities": "4288000",
+    "bs.revolver": "18008000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3465000",
+    "bs.total_current_liabilities": "47378000",
+    "bs.long_term_debt": "13250000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3598000",
+    "bs.total_liabilities": "69526000",
+    "bs.total_equity": "21353000",
+    "bs.total_liabilities_and_equity": "90879000",
+    "cf.net_income": "7212000",
+    "cf.depreciation_amortization": "1508000",
+    "cf.change_in_working_capital": "-3211000",
+    "cf.other_operating": "114000",
+    "cf.cfo": "5623000",
+    "cf.capex": "1741000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1741000",
+    "cf.revolver_net": "3615000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1590000",
+    "cf.distributions": "5094000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3069000",
+    "cf.net_change_in_cash": "813000",
+    "sup.cash_interest_paid": "2229000",
+    "sup.cash_taxes_paid": "145000",
+    "sup.scheduled_principal": "1590000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "16931000",
+    "cash.beginning_of_year": "6510000",
+    "debt.term_total": "15370000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "231506000",
+    "is.cogs": "181597000",
+    "is.gross_profit": "49909000",
+    "is.sga": "34726000",
+    "is.depreciation_amortization": "2016000",
+    "is.other_operating_expense": "694000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "12473000",
+    "is.interest_expense": "2994000",
+    "is.other_income_net": "139000",
+    "is.pretax_income": "9618000",
+    "is.income_tax_expense": "192000",
+    "is.net_income": "9426000",
+    "bs.cash": "6877000",
+    "bs.accounts_receivable": "25562000",
+    "bs.inventory": "25664000",
+    "bs.other_current_assets": "2751000",
+    "bs.total_current_assets": "60854000",
+    "bs.net_ppe": "15536000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "86990000",
+    "bs.accounts_payable": "18261000",
+    "bs.accrued_liabilities": "4041000",
+    "bs.revolver": "15973000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3254000",
+    "bs.total_current_liabilities": "43649000",
+    "bs.long_term_debt": "12720000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3636000",
+    "bs.total_liabilities": "65305000",
+    "bs.total_equity": "21685000",
+    "bs.total_liabilities_and_equity": "86990000",
+    "cf.net_income": "9426000",
+    "cf.depreciation_amortization": "2016000",
+    "cf.change_in_working_capital": "-1397000",
+    "cf.other_operating": "152000",
+    "cf.cfo": "10197000",
+    "cf.capex": "2314000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2314000",
+    "cf.revolver_net": "1580000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2120000",
+    "cf.distributions": "6976000",
+    "cf.other_financing": "0",
+    "cf.cff": "-7516000",
+    "cf.net_change_in_cash": "367000",
+    "sup.cash_interest_paid": "3005000",
+    "sup.cash_taxes_paid": "192000",
+    "sup.scheduled_principal": "2120000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "17263000",
+    "cash.beginning_of_year": "6510000",
+    "debt.term_total": "14840000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "56029000",
+    "is.cogs": "43876000",
+    "is.gross_profit": "12153000",
+    "is.sga": "8404000",
+    "is.depreciation_amortization": "510000",
+    "is.other_operating_expense": "168000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "3071000",
+    "is.interest_expense": "725000",
+    "is.other_income_net": "34000",
+    "is.pretax_income": "2380000",
+    "is.income_tax_expense": "48000",
+    "is.net_income": "2332000",
+    "bs.cash": "6723000",
+    "bs.accounts_receivable": "25666000",
+    "bs.inventory": "25003000",
+    "bs.other_current_assets": "2689000",
+    "bs.total_current_assets": "60081000",
+    "bs.net_ppe": "15586000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "86267000",
+    "bs.accounts_payable": "17791000",
+    "bs.accrued_liabilities": "3940000",
+    "bs.revolver": "16031000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3186000",
+    "bs.total_current_liabilities": "43068000",
+    "bs.long_term_debt": "12190000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3674000",
+    "bs.total_liabilities": "64232000",
+    "bs.total_equity": "22035000",
+    "bs.total_liabilities_and_equity": "86267000",
+    "cf.net_income": "2332000",
+    "cf.depreciation_amortization": "510000",
+    "cf.change_in_working_capital": "-20000",
+    "cf.other_operating": "38000",
+    "cf.cfo": "2860000",
+    "cf.capex": "560000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-560000",
+    "cf.revolver_net": "58000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "530000",
+    "cf.distributions": "1982000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2454000",
+    "cf.net_change_in_cash": "-154000",
+    "sup.cash_interest_paid": "741000",
+    "sup.cash_taxes_paid": "45000",
+    "sup.scheduled_principal": "530000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "17613000",
+    "cash.beginning_of_year": "6877000",
+    "debt.term_total": "14310000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "117659000",
+    "is.cogs": "92323000",
+    "is.gross_profit": "25336000",
+    "is.sga": "17649000",
+    "is.depreciation_amortization": "1022000",
+    "is.other_operating_expense": "353000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "6312000",
+    "is.interest_expense": "1442000",
+    "is.other_income_net": "71000",
+    "is.pretax_income": "4941000",
+    "is.income_tax_expense": "99000",
+    "is.net_income": "4842000",
+    "bs.cash": "7396000",
+    "bs.accounts_receivable": "27556000",
+    "bs.inventory": "27608000",
+    "bs.other_current_assets": "2958000",
+    "bs.total_current_assets": "65518000",
+    "bs.net_ppe": "15690000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "91808000",
+    "bs.accounts_payable": "19644000",
+    "bs.accrued_liabilities": "4307000",
+    "bs.revolver": "18489000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3502000",
+    "bs.total_current_liabilities": "48062000",
+    "bs.long_term_debt": "11660000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3712000",
+    "bs.total_liabilities": "68734000",
+    "bs.total_equity": "23074000",
+    "bs.total_liabilities_and_equity": "91808000",
+    "cf.net_income": "4842000",
+    "cf.depreciation_amortization": "1022000",
+    "cf.change_in_working_capital": "-2248000",
+    "cf.other_operating": "76000",
+    "cf.cfo": "3692000",
+    "cf.capex": "1176000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1176000",
+    "cf.revolver_net": "2516000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1060000",
+    "cf.distributions": "3453000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1997000",
+    "cf.net_change_in_cash": "519000",
+    "sup.cash_interest_paid": "1461000",
+    "sup.cash_taxes_paid": "93000",
+    "sup.scheduled_principal": "1060000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "18652000",
+    "cash.beginning_of_year": "6877000",
+    "debt.term_total": "13780000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "180989000",
+    "is.cogs": "142094000",
+    "is.gross_profit": "38895000",
+    "is.sga": "27149000",
+    "is.depreciation_amortization": "1538000",
+    "is.other_operating_expense": "543000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "9665000",
+    "is.interest_expense": "2197000",
+    "is.other_income_net": "109000",
+    "is.pretax_income": "7577000",
+    "is.income_tax_expense": "152000",
+    "is.net_income": "7425000",
+    "bs.cash": "7600000",
+    "bs.accounts_receivable": "29080000",
+    "bs.inventory": "28363000",
+    "bs.other_current_assets": "3040000",
+    "bs.total_current_assets": "68083000",
+    "bs.net_ppe": "15807000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "94490000",
+    "bs.accounts_payable": "20181000",
+    "bs.accrued_liabilities": "4432000",
+    "bs.revolver": "19096000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "3599000",
+    "bs.total_current_liabilities": "49428000",
+    "bs.long_term_debt": "11130000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3750000",
+    "bs.total_liabilities": "69608000",
+    "bs.total_equity": "24882000",
+    "bs.total_liabilities_and_equity": "94490000",
+    "cf.net_income": "7425000",
+    "cf.depreciation_amortization": "1538000",
+    "cf.change_in_working_capital": "-3850000",
+    "cf.other_operating": "114000",
+    "cf.cfo": "5227000",
+    "cf.capex": "1809000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1809000",
+    "cf.revolver_net": "3123000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1590000",
+    "cf.distributions": "4228000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2695000",
+    "cf.net_change_in_cash": "723000",
+    "sup.cash_interest_paid": "2203000",
+    "sup.cash_taxes_paid": "144000",
+    "sup.scheduled_principal": "1590000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "20460000",
+    "cash.beginning_of_year": "6877000",
+    "debt.term_total": "13250000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "212000000",
+    "is.cogs": "166728000",
+    "is.gross_profit": "45272000",
+    "is.sga": "31801000",
+    "is.depreciation_amortization": "1958000",
+    "is.other_operating_expense": "636000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "10877000",
+    "is.interest_expense": "3275000",
+    "is.other_income_net": "127000",
+    "is.pretax_income": "7729000",
+    "is.income_tax_expense": "154000",
+    "is.net_income": "7575000",
+    "bs.cash": "6233000",
+    "bs.accounts_receivable": "23850000",
+    "bs.inventory": "23335000",
+    "bs.other_current_assets": "2493000",
+    "bs.total_current_assets": "55911000",
+    "bs.net_ppe": "15002000",
+    "bs.intangibles": "8480000",
+    "bs.other_noncurrent_assets": "2120000",
+    "bs.total_assets": "81513000",
+    "bs.accounts_payable": "16604000",
+    "bs.accrued_liabilities": "3703000",
+    "bs.revolver": "15527000",
+    "bs.cpltd": "2120000",
+    "bs.other_current_liabilities": "2944000",
+    "bs.total_current_liabilities": "40898000",
+    "bs.long_term_debt": "16960000",
+    "bs.subordinated_debt": "5300000",
+    "bs.other_noncurrent_liabilities": "3332000",
+    "bs.total_liabilities": "66490000",
+    "bs.total_equity": "15023000",
+    "bs.total_liabilities_and_equity": "81513000",
+    "cf.net_income": "7575000",
+    "cf.depreciation_amortization": "1958000",
+    "cf.change_in_working_capital": "-14000",
+    "cf.other_operating": "152000",
+    "cf.cfo": "9671000",
+    "cf.capex": "2120000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2120000",
+    "cf.revolver_net": "-373000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2120000",
+    "cf.distributions": "5185000",
+    "cf.other_financing": "0",
+    "cf.cff": "-7678000",
+    "cf.net_change_in_cash": "-127000",
+    "sup.cash_interest_paid": "3279000",
+    "sup.cash_taxes_paid": "158000",
+    "sup.scheduled_principal": "2120000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "4422000",
+    "equity.retained_earnings": "10601000",
+    "cash.beginning_of_year": "6360000",
+    "debt.term_total": "19080000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.27",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9095000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3139000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "187000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1990000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14411000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2238000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "178000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "11995000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3159000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5279000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.09",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "30069000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9095000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3139000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "187000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1990000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14411000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.36",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9468000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3065000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "194000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1998000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14725000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2261000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "187000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12277000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3090000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5210000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.29",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "33729000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9468000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3065000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "194000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "1998000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14725000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.35",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9394000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3026000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "192000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2007000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14619000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2283000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "194000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12142000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3039000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5159000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.28",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "33378000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9394000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "3026000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "192000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2007000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14619000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.37",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9426000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2994000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "192000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2016000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14628000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2314000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "192000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12122000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "3005000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5125000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.11",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "30813000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9426000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2994000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "192000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2016000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14628000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.39",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9523000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2987000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "194000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2025000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14729000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2337000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "192000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12200000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2989000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5109000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.06",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "30341000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9523000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2987000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "194000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2025000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14729000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.35",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9368000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2996000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "191000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2035000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14590000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2359000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "194000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12037000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2993000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5113000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.21",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "32269000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9368000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2996000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "191000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2035000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14590000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Raymond Okeke",
+   "reported": {
+    "fccr": {
+     "value": "2.41",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "9639000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2971000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "197000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2046000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14853000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "2382000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "191000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "12280000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2979000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2120000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5099000"
+      }
+     ]
+    },
+    "senior_leverage": {
+     "value": "2.18",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Senior Debt",
+       "amount": "32346000"
+      },
+      {
+       "label": "Net income",
+       "amount": "9639000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2971000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "197000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "2046000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "14853000"
+      }
+     ]
+    }
+   },
+   "document_id": "tallwater-foodservice.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [
+  {
+   "period_end": "2026-07-31",
+   "ar_aging": [
+    {
+     "customer": "Ashdown Supply, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "372000",
+      "31_60": "116400",
+      "61_90": "26400",
+      "over_90": "15600"
+     },
+     "total": "530400"
+    },
+    {
+     "customer": "Dunleith Stores, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1424000",
+      "31_60": "488400",
+      "61_90": "169600",
+      "over_90": "42400"
+     },
+     "total": "2124400"
+    },
+    {
+     "customer": "Glenhaven Supply, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1551200",
+      "31_60": "403600",
+      "61_90": "148400",
+      "over_90": "21200"
+     },
+     "total": "2124400"
+    },
+    {
+     "customer": "Hartsfield Markets Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "684000",
+      "31_60": "224400",
+      "61_90": "68000",
+      "over_90": "0"
+     },
+     "total": "976400"
+    },
+    {
+     "customer": "Ironbridge Supply, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1218000",
+      "31_60": "376800",
+      "61_90": "85600",
+      "over_90": "34000"
+     },
+     "total": "1714400"
+    },
+    {
+     "customer": "Juniper Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1092800",
+      "31_60": "536800",
+      "61_90": "143200",
+      "over_90": "17600"
+     },
+     "total": "1790400"
+    },
+    {
+     "customer": "Kingsway Supply, Corp.",
+     "category": "trade",
+     "contra": "115600",
+     "buckets": {
+      "0_30": "1138000",
+      "31_60": "558800",
+      "61_90": "173200",
+      "over_90": "57600"
+     },
+     "total": "1927600"
+    },
+    {
+     "customer": "Lowell Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "370000",
+      "31_60": "102400",
+      "61_90": "25600",
+      "over_90": "15200"
+     },
+     "total": "513200"
+    },
+    {
+     "customer": "Norwood Contractors, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "746000",
+      "31_60": "196400",
+      "61_90": "62000",
+      "over_90": "30800"
+     },
+     "total": "1035200"
+    },
+    {
+     "customer": "Prescott Contractors, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "846400",
+      "31_60": "245200",
+      "61_90": "98000",
+      "over_90": "36400"
+     },
+     "total": "1226000"
+    },
+    {
+     "customer": "Quarry Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "5742400",
+      "31_60": "2261600",
+      "61_90": "608800",
+      "over_90": "86800"
+     },
+     "total": "8699600"
+    },
+    {
+     "customer": "Redfern Supply, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "854800",
+      "31_60": "312800",
+      "61_90": "36000",
+      "over_90": "0"
+     },
+     "total": "1203600"
+    },
+    {
+     "customer": "Tallwater Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "859200",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "859200"
+    },
+    {
+     "customer": "Underhill Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1566400",
+      "31_60": "462800",
+      "61_90": "176400",
+      "over_90": "0"
+     },
+     "total": "2205600"
+    },
+    {
+     "customer": "Valemount Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "828000",
+      "31_60": "215200",
+      "61_90": "90400",
+      "over_90": "0"
+     },
+     "total": "1133600"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "25352400"
+    },
+    {
+     "category": "consigned",
+     "amount": "2507600"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1835600",
+    "ineligible_over_age": "357600",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "115600",
+    "ineligible_concentration": "2174000",
+    "gross_ar": "28064000",
+    "total_ineligible_ar": "4482800",
+    "eligible_ar": "23581200",
+    "ar_availability": "20044020",
+    "gross_inventory": "27860000",
+    "ineligible_inventory": "2507600",
+    "eligible_inventory": "25352400",
+    "inventory_availability_before_sublimit": "12676200",
+    "inventory_availability": "10750000",
+    "reserves": "300000",
+    "borrowing_base": "30494020",
+    "commitment": "27000000",
+    "lesser_of_base_and_commitment": "27000000",
+    "outstanding": "18897000",
+    "letters_of_credit": "400000",
+    "availability": "7703000"
+   },
+   "outstanding": "18897000",
+   "letters_of_credit": "400000",
+   "document_id": "tallwater-foodservice.bbc-2026-07-31"
+  },
+  {
+   "period_end": "2026-08-31",
+   "ar_aging": [
+    {
+     "customer": "Ashdown Supply, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "378400",
+      "31_60": "113200",
+      "61_90": "32400",
+      "over_90": "16000"
+     },
+     "total": "540000"
+    },
+    {
+     "customer": "Dunleith Stores, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1449600",
+      "31_60": "475600",
+      "61_90": "194400",
+      "over_90": "43200"
+     },
+     "total": "2162800"
+    },
+    {
+     "customer": "Glenhaven Supply, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1579200",
+      "31_60": "389200",
+      "61_90": "172800",
+      "over_90": "21600"
+     },
+     "total": "2162800"
+    },
+    {
+     "customer": "Hartsfield Markets Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "696400",
+      "31_60": "218400",
+      "61_90": "79200",
+      "over_90": "0"
+     },
+     "total": "994000"
+    },
+    {
+     "customer": "Ironbridge Supply, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1240000",
+      "31_60": "366400",
+      "61_90": "104400",
+      "over_90": "34800"
+     },
+     "total": "1745600"
+    },
+    {
+     "customer": "Juniper Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1112400",
+      "31_60": "528400",
+      "61_90": "164000",
+      "over_90": "18000"
+     },
+     "total": "1822800"
+    },
+    {
+     "customer": "Kingsway Supply, Corp.",
+     "category": "trade",
+     "contra": "117600",
+     "buckets": {
+      "0_30": "1158800",
+      "31_60": "549200",
+      "61_90": "196000",
+      "over_90": "58800"
+     },
+     "total": "1962800"
+    },
+    {
+     "customer": "Lowell Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "376800",
+      "31_60": "99200",
+      "61_90": "31200",
+      "over_90": "15600"
+     },
+     "total": "522800"
+    },
+    {
+     "customer": "Norwood Contractors, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "759200",
+      "31_60": "189600",
+      "61_90": "73600",
+      "over_90": "31600"
+     },
+     "total": "1054000"
+    },
+    {
+     "customer": "Prescott Contractors, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "862400",
+      "31_60": "236800",
+      "61_90": "112000",
+      "over_90": "37200"
+     },
+     "total": "1248400"
+    },
+    {
+     "customer": "Quarry Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "5846400",
+      "31_60": "2214000",
+      "61_90": "708400",
+      "over_90": "88400"
+     },
+     "total": "8857200"
+    },
+    {
+     "customer": "Redfern Supply, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "870400",
+      "31_60": "306400",
+      "61_90": "48800",
+      "over_90": "0"
+     },
+     "total": "1225600"
+    },
+    {
+     "customer": "Tallwater Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "873600",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "873600"
+    },
+    {
+     "customer": "Underhill Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1594800",
+      "31_60": "448800",
+      "61_90": "202000",
+      "over_90": "0"
+     },
+     "total": "2245600"
+    },
+    {
+     "customer": "Valemount Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "842800",
+      "31_60": "207600",
+      "61_90": "103600",
+      "over_90": "0"
+     },
+     "total": "1154000"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "25580800"
+    },
+    {
+     "category": "consigned",
+     "amount": "2530200"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1867600",
+    "ineligible_over_age": "365200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "117600",
+    "ineligible_concentration": "2213400",
+    "gross_ar": "28572000",
+    "total_ineligible_ar": "4563800",
+    "eligible_ar": "24008200",
+    "ar_availability": "20406970",
+    "gross_inventory": "28111000",
+    "ineligible_inventory": "2530200",
+    "eligible_inventory": "25580800",
+    "inventory_availability_before_sublimit": "12790400",
+    "inventory_availability": "10750000",
+    "reserves": "300000",
+    "borrowing_base": "30856970",
+    "commitment": "27000000",
+    "lesser_of_base_and_commitment": "27000000",
+    "outstanding": "18705000",
+    "letters_of_credit": "400000",
+    "availability": "7895000"
+   },
+   "outstanding": "18705000",
+   "letters_of_credit": "400000",
+   "document_id": "tallwater-foodservice.bbc-2026-08-31"
+  },
+  {
+   "period_end": "2026-09-30",
+   "ar_aging": [
+    {
+     "customer": "Ashdown Supply, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "385200",
+      "31_60": "109600",
+      "61_90": "38400",
+      "over_90": "16400"
+     },
+     "total": "549600"
+    },
+    {
+     "customer": "Dunleith Stores, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1475200",
+      "31_60": "462000",
+      "61_90": "220000",
+      "over_90": "44000"
+     },
+     "total": "2201200"
+    },
+    {
+     "customer": "Glenhaven Supply, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1607200",
+      "31_60": "374000",
+      "61_90": "198000",
+      "over_90": "22000"
+     },
+     "total": "2201200"
+    },
+    {
+     "customer": "Hartsfield Markets Ltd. (Canada)",
+     "category": "foreign",
+     "contra": "0",
+     "buckets": {
+      "0_30": "708400",
+      "31_60": "212400",
+      "61_90": "90800",
+      "over_90": "0"
+     },
+     "total": "1011600"
+    },
+    {
+     "customer": "Ironbridge Supply, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1262000",
+      "31_60": "355200",
+      "61_90": "124000",
+      "over_90": "35200"
+     },
+     "total": "1776400"
+    },
+    {
+     "customer": "Juniper Markets, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1132400",
+      "31_60": "519200",
+      "61_90": "185200",
+      "over_90": "18400"
+     },
+     "total": "1855200"
+    },
+    {
+     "customer": "Kingsway Supply, Corp.",
+     "category": "trade",
+     "contra": "119600",
+     "buckets": {
+      "0_30": "1179200",
+      "31_60": "539200",
+      "61_90": "219600",
+      "over_90": "59600"
+     },
+     "total": "1997600"
+    },
+    {
+     "customer": "Lowell Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "383600",
+      "31_60": "95600",
+      "61_90": "37200",
+      "over_90": "15600"
+     },
+     "total": "532000"
+    },
+    {
+     "customer": "Norwood Contractors, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "773200",
+      "31_60": "182000",
+      "61_90": "85600",
+      "over_90": "32000"
+     },
+     "total": "1072800"
+    },
+    {
+     "customer": "Prescott Contractors, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "877200",
+      "31_60": "228400",
+      "61_90": "126800",
+      "over_90": "38000"
+     },
+     "total": "1270400"
+    },
+    {
+     "customer": "Quarry Contractors, Inc.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "5950400",
+      "31_60": "2163200",
+      "61_90": "811200",
+      "over_90": "90000"
+     },
+     "total": "9014800"
+    },
+    {
+     "customer": "Redfern Supply, Corp.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "886000",
+      "31_60": "299200",
+      "61_90": "62000",
+      "over_90": "0"
+     },
+     "total": "1247200"
+    },
+    {
+     "customer": "Tallwater Holdings, LLC (affiliate)",
+     "category": "intercompany",
+     "contra": "0",
+     "buckets": {
+      "0_30": "889600",
+      "31_60": "0",
+      "61_90": "0",
+      "over_90": "0"
+     },
+     "total": "889600"
+    },
+    {
+     "customer": "Underhill Markets, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "1623200",
+      "31_60": "434000",
+      "61_90": "228400",
+      "over_90": "0"
+     },
+     "total": "2285600"
+    },
+    {
+     "customer": "Valemount Wholesale, Co.",
+     "category": "trade",
+     "contra": "0",
+     "buckets": {
+      "0_30": "858000",
+      "31_60": "199600",
+      "61_90": "117200",
+      "over_90": "0"
+     },
+     "total": "1174800"
+    }
+   ],
+   "inventory": [
+    {
+     "category": "finished_goods",
+     "amount": "25810000"
+    },
+    {
+     "category": "consigned",
+     "amount": "2553000"
+    }
+   ],
+   "certificate": {
+    "ineligible_excluded": "1901200",
+    "ineligible_over_age": "371200",
+    "ineligible_cross_aging": "0",
+    "ineligible_contra": "119600",
+    "ineligible_concentration": "2252800",
+    "gross_ar": "29080000",
+    "total_ineligible_ar": "4644800",
+    "eligible_ar": "24435200",
+    "ar_availability": "20769920",
+    "gross_inventory": "28363000",
+    "ineligible_inventory": "2553000",
+    "eligible_inventory": "25810000",
+    "inventory_availability_before_sublimit": "12905000",
+    "inventory_availability": "10750000",
+    "reserves": "300000",
+    "borrowing_base": "31219920",
+    "commitment": "27000000",
+    "lesser_of_base_and_commitment": "27000000",
+    "outstanding": "19096000",
+    "letters_of_credit": "400000",
+    "availability": "7504000"
+   },
+   "outstanding": "19096000",
+   "letters_of_credit": "400000",
+   "document_id": "tallwater-foodservice.bbc-2026-09-30"
+  }
+ ],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "15663000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19080000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "15535000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "19080000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "15515000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18550000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "16554000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18550000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "16967000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18550000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "17898000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18020000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "17750000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18020000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "17816000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "18020000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "17722000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17490000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "16845000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17490000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "15301000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "17490000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "14393000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16960000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "14170000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16960000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "13835000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16960000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "13639000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16430000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "14825000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16430000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "16449000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "16430000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "17829000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15900000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "17978000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15900000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "17984000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15900000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "18008000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15370000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "17347000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15370000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "16585000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "15370000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "15973000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14840000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "16024000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14840000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "16076000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14840000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "16031000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14310000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "17069000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14310000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "17705000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "14310000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "18489000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13780000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "18897000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13780000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "18705000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13780000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "19096000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13250000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "19382000",
+   "commitment": "27000000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "13250000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "tallwater-foodservice.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/tallwater-foodservice/credit-agreement.pdf",
+   "pages": 13,
+   "title": "Credit Agreement between Tallwater Foodservice Supply, LLC and Bank of Stoic",
+   "received_date": "2021-09-30",
+   "document_date": "2021-09-30"
+  },
+  {
+   "id": "tallwater-foodservice.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/tallwater-foodservice/afs-2024.pdf",
+   "pages": 7,
+   "title": "Tallwater Foodservice Supply, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-03-18",
+   "document_date": "2025-03-09",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "6,510"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "24,374"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "24,189"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "2,604"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "57,677"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "15,238"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "83,515"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "17,211"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "3,849"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "14,393"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "3,083"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "40,656"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,840"
+    },
+    "bs.subordinated_debt": {
+     "page": 3,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "3,484"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "64,280"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "19,235"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "83,515"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "221,854"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "174,022"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "47,832"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "33,279"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,982"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "665"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "11,906"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "3,199"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "133"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "8,840"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "178"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "8,662"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "8,662"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "1,982"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(597)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "152"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "10,199"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,218)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(2,218)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(1,134)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,120)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(4,450)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(7,704)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "277"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "3,205"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "168"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,120"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,233",
+    "bs.accounts_receivable": "23,850",
+    "bs.inventory": "23,335",
+    "bs.other_current_assets": "2,493",
+    "bs.total_current_assets": "55,911",
+    "bs.net_ppe": "15,002",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "81,513",
+    "bs.accounts_payable": "16,604",
+    "bs.accrued_liabilities": "3,703",
+    "bs.revolver": "15,527",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "2,944",
+    "bs.total_current_liabilities": "40,898",
+    "bs.long_term_debt": "16,960",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,332",
+    "bs.total_liabilities": "66,490",
+    "bs.total_equity": "15,023",
+    "bs.total_liabilities_and_equity": "81,513",
+    "is.revenue": "212,000",
+    "is.cogs": "166,728",
+    "is.gross_profit": "45,272",
+    "is.sga": "31,801",
+    "is.depreciation_amortization": "1,958",
+    "is.other_operating_expense": "636",
+    "is.operating_income": "10,877",
+    "is.interest_expense": "3,275",
+    "is.other_income_net": "127",
+    "is.pretax_income": "7,729",
+    "is.income_tax_expense": "154",
+    "is.net_income": "7,575",
+    "cf.net_income": "7,575",
+    "cf.depreciation_amortization": "1,958",
+    "cf.change_in_working_capital": "(14)",
+    "cf.other_operating": "152",
+    "cf.cfo": "9,671",
+    "cf.capex": "(2,120)",
+    "cf.cfi": "(2,120)",
+    "cf.revolver_net": "(373)",
+    "cf.term_debt_repayments": "(2,120)",
+    "cf.distributions": "(5,185)",
+    "cf.cff": "(7,678)",
+    "cf.net_change_in_cash": "(127)",
+    "sup.cash_interest_paid": "3,279",
+    "sup.cash_taxes_paid": "158",
+    "sup.scheduled_principal": "2,120",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/tallwater-foodservice/afs-2025.pdf",
+   "pages": 7,
+   "title": "Tallwater Foodservice Supply, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-02",
+   "document_date": "2026-03-24",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "6,877"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "25,562"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "25,664"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "2,751"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "60,854"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "15,536"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "86,990"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "18,261"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "4,041"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "15,973"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "3,254"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "43,649"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "12,720"
+    },
+    "bs.subordinated_debt": {
+     "page": 3,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "3,636"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "65,305"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "21,685"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "86,990"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net sales",
+     "printed": "231,506"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of goods sold",
+     "printed": "181,597"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "49,909"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "34,726"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,016"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "694"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "12,473"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,994"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "139"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "9,618"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "192"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "9,426"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "9,426"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "2,016"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(1,397)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "152"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "10,197"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,314)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(2,314)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "1,580"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,120)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(6,976)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(7,516)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "367"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "3,005"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "192"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,120"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,510",
+    "bs.accounts_receivable": "24,374",
+    "bs.inventory": "24,189",
+    "bs.other_current_assets": "2,604",
+    "bs.total_current_assets": "57,677",
+    "bs.net_ppe": "15,238",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "83,515",
+    "bs.accounts_payable": "17,211",
+    "bs.accrued_liabilities": "3,849",
+    "bs.revolver": "14,393",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "3,083",
+    "bs.total_current_liabilities": "40,656",
+    "bs.long_term_debt": "14,840",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,484",
+    "bs.total_liabilities": "64,280",
+    "bs.total_equity": "19,235",
+    "bs.total_liabilities_and_equity": "83,515",
+    "is.revenue": "221,854",
+    "is.cogs": "174,022",
+    "is.gross_profit": "47,832",
+    "is.sga": "33,279",
+    "is.depreciation_amortization": "1,982",
+    "is.other_operating_expense": "665",
+    "is.operating_income": "11,906",
+    "is.interest_expense": "3,199",
+    "is.other_income_net": "133",
+    "is.pretax_income": "8,840",
+    "is.income_tax_expense": "178",
+    "is.net_income": "8,662",
+    "cf.net_income": "8,662",
+    "cf.depreciation_amortization": "1,982",
+    "cf.change_in_working_capital": "(597)",
+    "cf.other_operating": "152",
+    "cf.cfo": "10,199",
+    "cf.capex": "(2,218)",
+    "cf.cfi": "(2,218)",
+    "cf.revolver_net": "(1,134)",
+    "cf.term_debt_repayments": "(2,120)",
+    "cf.distributions": "(4,450)",
+    "cf.cff": "(7,704)",
+    "cf.net_change_in_cash": "277",
+    "sup.cash_interest_paid": "3,205",
+    "sup.cash_taxes_paid": "168",
+    "sup.scheduled_principal": "2,120",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/tallwater-foodservice/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Tallwater Foodservice Supply, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-05-01",
+   "document_date": "2025-04-27",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "6,448"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "23,496"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "23,952"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,579"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "56,475"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,274"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "82,349"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "17,043"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,790"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "13,639"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,055"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "39,647"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "14,310"
+    },
+    "bs.subordinated_debt": {
+     "page": 2,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,522"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "62,779"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "19,570"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "82,349"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "53,735"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "42,032"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "11,703"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,060"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "501"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "161"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,981"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "732"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "32"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,281"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "46"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,235"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,235"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "501"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "885"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "38"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,659"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(537)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(537)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(754)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(530)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,900)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(3,184)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(62)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "757"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "45"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "530"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,206",
+    "bs.accounts_receivable": "23,974",
+    "bs.inventory": "23,200",
+    "bs.other_current_assets": "2,482",
+    "bs.total_current_assets": "55,862",
+    "bs.net_ppe": "15,026",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "81,488",
+    "bs.accounts_payable": "16,508",
+    "bs.accrued_liabilities": "3,678",
+    "bs.revolver": "15,515",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "2,933",
+    "bs.total_current_liabilities": "40,754",
+    "bs.long_term_debt": "16,430",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,370",
+    "bs.total_liabilities": "65,854",
+    "bs.total_equity": "15,634",
+    "bs.total_liabilities_and_equity": "81,488",
+    "is.revenue": "51,718",
+    "is.cogs": "40,712",
+    "is.gross_profit": "11,006",
+    "is.sga": "7,758",
+    "is.depreciation_amortization": "493",
+    "is.other_operating_expense": "155",
+    "is.operating_income": "2,600",
+    "is.interest_expense": "792",
+    "is.other_income_net": "31",
+    "is.pretax_income": "1,839",
+    "is.income_tax_expense": "37",
+    "is.net_income": "1,802",
+    "cf.net_income": "1,802",
+    "cf.depreciation_amortization": "493",
+    "cf.change_in_working_capital": "(110)",
+    "cf.other_operating": "38",
+    "cf.cfo": "2,223",
+    "cf.capex": "(517)",
+    "cf.cfi": "(517)",
+    "cf.revolver_net": "(12)",
+    "cf.term_debt_repayments": "(530)",
+    "cf.distributions": "(1,191)",
+    "cf.cff": "(1,733)",
+    "cf.net_change_in_cash": "(27)",
+    "sup.cash_interest_paid": "803",
+    "sup.cash_taxes_paid": "35",
+    "sup.scheduled_principal": "530",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/tallwater-foodservice/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Tallwater Foodservice Supply, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-27",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,132"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "27,550"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "26,467"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,853"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "64,002"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,366"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "89,968"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "18,832"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "4,159"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "17,829"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,382"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "46,322"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "13,780"
+    },
+    "bs.subordinated_debt": {
+     "page": 2,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,560"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "68,962"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "21,006"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "89,968"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "113,166"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "88,477"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "24,689"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "16,975"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,003"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "339"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,372"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,440"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "68"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "5,000"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "100"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "4,900"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,900"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,003"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(3,473)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "76"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,506"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,131)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,131)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "3,436"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,060)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(3,129)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(753)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "622"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,473"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "91"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,060"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,854",
+    "bs.accounts_receivable": "26,478",
+    "bs.inventory": "25,529",
+    "bs.other_current_assets": "2,742",
+    "bs.total_current_assets": "61,603",
+    "bs.net_ppe": "15,103",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "87,306",
+    "bs.accounts_payable": "18,165",
+    "bs.accrued_liabilities": "4,031",
+    "bs.revolver": "17,898",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "3,246",
+    "bs.total_current_liabilities": "45,460",
+    "bs.long_term_debt": "15,900",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,408",
+    "bs.total_liabilities": "70,068",
+    "bs.total_equity": "17,238",
+    "bs.total_liabilities_and_equity": "87,306",
+    "is.revenue": "108,836",
+    "is.cogs": "85,510",
+    "is.gross_profit": "23,326",
+    "is.sga": "16,326",
+    "is.depreciation_amortization": "987",
+    "is.other_operating_expense": "326",
+    "is.operating_income": "5,687",
+    "is.interest_expense": "1,574",
+    "is.other_income_net": "65",
+    "is.pretax_income": "4,178",
+    "is.income_tax_expense": "84",
+    "is.net_income": "4,094",
+    "cf.net_income": "4,094",
+    "cf.depreciation_amortization": "987",
+    "cf.change_in_working_capital": "(2,880)",
+    "cf.other_operating": "76",
+    "cf.cfo": "2,277",
+    "cf.capex": "(1,088)",
+    "cf.cfi": "(1,088)",
+    "cf.revolver_net": "2,371",
+    "cf.term_debt_repayments": "(1,060)",
+    "cf.distributions": "(1,879)",
+    "cf.cff": "(568)",
+    "cf.net_change_in_cash": "621",
+    "sup.cash_interest_paid": "1,588",
+    "sup.cash_taxes_paid": "72",
+    "sup.scheduled_principal": "1,060",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/tallwater-foodservice/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Tallwater Foodservice Supply, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-11-04",
+   "document_date": "2025-10-31",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,323"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "27,154"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "27,402"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,929"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "64,808"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,471"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "90,879"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "19,497"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "4,288"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "18,008"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,465"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "47,378"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "13,250"
+    },
+    "bs.subordinated_debt": {
+     "page": 2,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,598"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "69,526"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "21,353"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "90,879"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "174,195"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "136,562"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "37,633"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "26,129"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,508"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "522"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "9,474"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "2,220"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "105"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "7,359"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "147"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "7,212"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "7,212"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,508"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(3,211)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "114"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,623"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,741)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,741)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "3,615"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,590)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(5,094)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(3,069)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "813"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "2,229"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "145"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,590"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "7,053",
+    "bs.accounts_receivable": "27,116",
+    "bs.inventory": "26,251",
+    "bs.other_current_assets": "2,821",
+    "bs.total_current_assets": "63,241",
+    "bs.net_ppe": "15,195",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "89,036",
+    "bs.accounts_payable": "18,678",
+    "bs.accrued_liabilities": "4,152",
+    "bs.revolver": "17,722",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "3,340",
+    "bs.total_current_liabilities": "46,012",
+    "bs.long_term_debt": "15,370",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,446",
+    "bs.total_liabilities": "70,128",
+    "bs.total_equity": "18,908",
+    "bs.total_liabilities_and_equity": "89,036",
+    "is.revenue": "167,608",
+    "is.cogs": "131,575",
+    "is.gross_profit": "36,033",
+    "is.sga": "25,142",
+    "is.depreciation_amortization": "1,483",
+    "is.other_operating_expense": "502",
+    "is.operating_income": "8,906",
+    "is.interest_expense": "2,393",
+    "is.other_income_net": "100",
+    "is.pretax_income": "6,613",
+    "is.income_tax_expense": "133",
+    "is.net_income": "6,480",
+    "cf.net_income": "6,480",
+    "cf.depreciation_amortization": "1,483",
+    "cf.change_in_working_capital": "(3,591)",
+    "cf.other_operating": "114",
+    "cf.cfo": "4,486",
+    "cf.capex": "(1,676)",
+    "cf.cfi": "(1,676)",
+    "cf.revolver_net": "2,195",
+    "cf.term_debt_repayments": "(1,590)",
+    "cf.distributions": "(2,595)",
+    "cf.cff": "(1,990)",
+    "cf.net_change_in_cash": "820",
+    "sup.cash_interest_paid": "2,395",
+    "sup.cash_taxes_paid": "119",
+    "sup.scheduled_principal": "1,590",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/tallwater-foodservice/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Tallwater Foodservice Supply, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-05-08",
+   "document_date": "2026-05-04",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "6,723"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "25,666"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "25,003"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,689"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "60,081"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,586"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "86,267"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "17,791"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "3,940"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "16,031"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,186"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "43,068"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "12,190"
+    },
+    "bs.subordinated_debt": {
+     "page": 2,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,674"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "64,232"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "22,035"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "86,267"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "56,029"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "43,876"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "12,153"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,404"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "510"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "168"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "3,071"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "725"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "34"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,380"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "48"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "2,332"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "2,332"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "510"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(20)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "38"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,860"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(560)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(560)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "58"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(530)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(1,982)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,454)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(154)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "741"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "45"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "530"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "6,448",
+    "bs.accounts_receivable": "23,496",
+    "bs.inventory": "23,952",
+    "bs.other_current_assets": "2,579",
+    "bs.total_current_assets": "56,475",
+    "bs.net_ppe": "15,274",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "82,349",
+    "bs.accounts_payable": "17,043",
+    "bs.accrued_liabilities": "3,790",
+    "bs.revolver": "13,639",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "3,055",
+    "bs.total_current_liabilities": "39,647",
+    "bs.long_term_debt": "14,310",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,522",
+    "bs.total_liabilities": "62,779",
+    "bs.total_equity": "19,570",
+    "bs.total_liabilities_and_equity": "82,349",
+    "is.revenue": "53,735",
+    "is.cogs": "42,032",
+    "is.gross_profit": "11,703",
+    "is.sga": "8,060",
+    "is.depreciation_amortization": "501",
+    "is.other_operating_expense": "161",
+    "is.operating_income": "2,981",
+    "is.interest_expense": "732",
+    "is.other_income_net": "32",
+    "is.pretax_income": "2,281",
+    "is.income_tax_expense": "46",
+    "is.net_income": "2,235",
+    "cf.net_income": "2,235",
+    "cf.depreciation_amortization": "501",
+    "cf.change_in_working_capital": "885",
+    "cf.other_operating": "38",
+    "cf.cfo": "3,659",
+    "cf.capex": "(537)",
+    "cf.cfi": "(537)",
+    "cf.revolver_net": "(754)",
+    "cf.term_debt_repayments": "(530)",
+    "cf.distributions": "(1,900)",
+    "cf.cff": "(3,184)",
+    "cf.net_change_in_cash": "(62)",
+    "sup.cash_interest_paid": "757",
+    "sup.cash_taxes_paid": "45",
+    "sup.scheduled_principal": "530",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/tallwater-foodservice/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Tallwater Foodservice Supply, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-08-10",
+   "document_date": "2026-08-06",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,396"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "27,556"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "27,608"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "2,958"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "65,518"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,690"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "91,808"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "19,644"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "4,307"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "18,489"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,502"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "48,062"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,660"
+    },
+    "bs.subordinated_debt": {
+     "page": 2,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,712"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "68,734"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "23,074"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "91,808"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "117,659"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "92,323"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "25,336"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "17,649"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,022"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "353"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "6,312"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,442"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "71"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,941"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "99"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "4,842"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "4,842"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,022"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(2,248)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "76"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,692"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,176)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,176)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "2,516"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,060)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(3,453)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,997)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "519"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,461"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "93"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,060"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "7,132",
+    "bs.accounts_receivable": "27,550",
+    "bs.inventory": "26,467",
+    "bs.other_current_assets": "2,853",
+    "bs.total_current_assets": "64,002",
+    "bs.net_ppe": "15,366",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "89,968",
+    "bs.accounts_payable": "18,832",
+    "bs.accrued_liabilities": "4,159",
+    "bs.revolver": "17,829",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "3,382",
+    "bs.total_current_liabilities": "46,322",
+    "bs.long_term_debt": "13,780",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,560",
+    "bs.total_liabilities": "68,962",
+    "bs.total_equity": "21,006",
+    "bs.total_liabilities_and_equity": "89,968",
+    "is.revenue": "113,166",
+    "is.cogs": "88,477",
+    "is.gross_profit": "24,689",
+    "is.sga": "16,975",
+    "is.depreciation_amortization": "1,003",
+    "is.other_operating_expense": "339",
+    "is.operating_income": "6,372",
+    "is.interest_expense": "1,440",
+    "is.other_income_net": "68",
+    "is.pretax_income": "5,000",
+    "is.income_tax_expense": "100",
+    "is.net_income": "4,900",
+    "cf.net_income": "4,900",
+    "cf.depreciation_amortization": "1,003",
+    "cf.change_in_working_capital": "(3,473)",
+    "cf.other_operating": "76",
+    "cf.cfo": "2,506",
+    "cf.capex": "(1,131)",
+    "cf.cfi": "(1,131)",
+    "cf.revolver_net": "3,436",
+    "cf.term_debt_repayments": "(1,060)",
+    "cf.distributions": "(3,129)",
+    "cf.cff": "(753)",
+    "cf.net_change_in_cash": "622",
+    "sup.cash_interest_paid": "1,473",
+    "sup.cash_taxes_paid": "91",
+    "sup.scheduled_principal": "1,060",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/tallwater-foodservice/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Tallwater Foodservice Supply, LLC interim financial statements, Q3 2026",
+   "received_date": "2026-11-02",
+   "document_date": "2026-10-29",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "7,600"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "29,080"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "28,363"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "3,040"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "68,083"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "15,807"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,480"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "2,120"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "94,490"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "20,181"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "4,432"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "19,096"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,120"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "3,599"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "49,428"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "11,130"
+    },
+    "bs.subordinated_debt": {
+     "page": 2,
+     "label": "Subordinated debt",
+     "printed": "5,300"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "3,750"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "69,608"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total members' equity",
+     "printed": "24,882"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and members' equity",
+     "printed": "94,490"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net sales",
+     "printed": "180,989"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of goods sold",
+     "printed": "142,094"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "38,895"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "27,149"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,538"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "543"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "9,665"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "2,197"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "109"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "7,577"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "152"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "7,425"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "7,425"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,538"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(3,850)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "114"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,227"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,809)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,809)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "3,123"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,590)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(4,228)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(2,695)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "723"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "2,203"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "144"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,590"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "7,323",
+    "bs.accounts_receivable": "27,154",
+    "bs.inventory": "27,402",
+    "bs.other_current_assets": "2,929",
+    "bs.total_current_assets": "64,808",
+    "bs.net_ppe": "15,471",
+    "bs.intangibles": "8,480",
+    "bs.other_noncurrent_assets": "2,120",
+    "bs.total_assets": "90,879",
+    "bs.accounts_payable": "19,497",
+    "bs.accrued_liabilities": "4,288",
+    "bs.revolver": "18,008",
+    "bs.cpltd": "2,120",
+    "bs.other_current_liabilities": "3,465",
+    "bs.total_current_liabilities": "47,378",
+    "bs.long_term_debt": "13,250",
+    "bs.subordinated_debt": "5,300",
+    "bs.other_noncurrent_liabilities": "3,598",
+    "bs.total_liabilities": "69,526",
+    "bs.total_equity": "21,353",
+    "bs.total_liabilities_and_equity": "90,879",
+    "is.revenue": "174,195",
+    "is.cogs": "136,562",
+    "is.gross_profit": "37,633",
+    "is.sga": "26,129",
+    "is.depreciation_amortization": "1,508",
+    "is.other_operating_expense": "522",
+    "is.operating_income": "9,474",
+    "is.interest_expense": "2,220",
+    "is.other_income_net": "105",
+    "is.pretax_income": "7,359",
+    "is.income_tax_expense": "147",
+    "is.net_income": "7,212",
+    "cf.net_income": "7,212",
+    "cf.depreciation_amortization": "1,508",
+    "cf.change_in_working_capital": "(3,211)",
+    "cf.other_operating": "114",
+    "cf.cfo": "5,623",
+    "cf.capex": "(1,741)",
+    "cf.cfi": "(1,741)",
+    "cf.revolver_net": "3,615",
+    "cf.term_debt_repayments": "(1,590)",
+    "cf.distributions": "(5,094)",
+    "cf.cff": "(3,069)",
+    "cf.net_change_in_cash": "813",
+    "sup.cash_interest_paid": "2,229",
+    "sup.cash_taxes_paid": "145",
+    "sup.scheduled_principal": "1,590",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "tallwater-foodservice.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/tallwater-foodservice/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-05-01",
+   "document_date": "2025-04-29",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/tallwater-foodservice/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-07-31",
+   "document_date": "2025-07-29",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/tallwater-foodservice/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-11-04",
+   "document_date": "2025-11-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/tallwater-foodservice/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, FY2025",
+   "received_date": "2026-02-07",
+   "document_date": "2026-02-05",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/tallwater-foodservice/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-05-08",
+   "document_date": "2026-05-06",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/tallwater-foodservice/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-08-10",
+   "document_date": "2026-08-08",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/tallwater-foodservice/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Tallwater Foodservice Supply, LLC compliance certificate, Q3 2026",
+   "received_date": "2026-11-02",
+   "document_date": "2026-10-31",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "tallwater-foodservice.bbc-2026-07-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-07-31",
+   "path": "documents/tallwater-foodservice/bbc-2026-07-31.pdf",
+   "pages": 3,
+   "title": "Tallwater Foodservice Supply, LLC borrowing base certificate as of 2026-07-31",
+   "received_date": "2026-08-11",
+   "document_date": "2026-08-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "tallwater-foodservice.bbc-2026-08-31",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-08-31",
+   "path": "documents/tallwater-foodservice/bbc-2026-08-31.pdf",
+   "pages": 3,
+   "title": "Tallwater Foodservice Supply, LLC borrowing base certificate as of 2026-08-31",
+   "received_date": "2026-09-11",
+   "document_date": "2026-09-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  },
+  {
+   "id": "tallwater-foodservice.bbc-2026-09-30",
+   "type": "borrowing_base_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/tallwater-foodservice/bbc-2026-09-30.pdf",
+   "pages": 3,
+   "title": "Tallwater Foodservice Supply, LLC borrowing base certificate as of 2026-09-30",
+   "received_date": "2026-10-09",
+   "document_date": "2026-10-07",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "ar_aging": 2,
+    "inventory": 3
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.27",
+    "pass": true,
+    "headroom": "0.8160",
+    "reported_value": "2.27",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9095000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3139000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "187000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1990000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14411000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2238000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "178000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "11995000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3159000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5279000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.09",
+    "pass": true,
+    "headroom": "0.3033",
+    "reported_value": "2.09",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "30069000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9095000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3139000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "187000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1990000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14411000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.36",
+    "pass": true,
+    "headroom": "0.8880",
+    "reported_value": "2.36",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9468000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3065000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "194000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1998000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14725000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2261000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "187000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12277000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3090000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5210000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.29",
+    "pass": true,
+    "headroom": "0.2367",
+    "reported_value": "2.29",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "33729000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9468000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3065000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "194000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "1998000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14725000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.35",
+    "pass": true,
+    "headroom": "0.8800",
+    "reported_value": "2.35",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9394000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3026000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "192000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2007000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14619000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2283000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "194000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12142000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3039000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5159000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.28",
+    "pass": true,
+    "headroom": "0.2400",
+    "reported_value": "2.28",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "33378000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9394000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "3026000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "192000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2007000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14619000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.37",
+    "pass": true,
+    "headroom": "0.8960",
+    "reported_value": "2.37",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9426000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2994000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "192000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2016000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14628000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2314000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "192000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12122000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "3005000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5125000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.11",
+    "pass": true,
+    "headroom": "0.2967",
+    "reported_value": "2.11",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "30813000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9426000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2994000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "192000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2016000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14628000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.39",
+    "pass": true,
+    "headroom": "0.9120",
+    "reported_value": "2.39",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9523000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2987000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "194000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2025000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14729000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2337000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "192000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12200000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2989000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5109000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.06",
+    "pass": true,
+    "headroom": "0.3133",
+    "reported_value": "2.06",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "30341000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9523000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2987000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "194000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2025000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14729000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.35",
+    "pass": true,
+    "headroom": "0.8800",
+    "reported_value": "2.35",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9368000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2996000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "191000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2035000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14590000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2359000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "194000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12037000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2993000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5113000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.21",
+    "pass": true,
+    "headroom": "0.2633",
+    "reported_value": "2.21",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "32269000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9368000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2996000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "191000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2035000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14590000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.41",
+    "pass": true,
+    "headroom": "0.9280",
+    "reported_value": "2.41",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "9639000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2971000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "197000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2046000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14853000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "2382000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "191000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "12280000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2979000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2120000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5099000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "senior_leverage",
+    "covenant_name": "Senior Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "tallwater-foodservice-rlc",
+    "terms_version_id": "tv-tallwater-foodservice-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "2.18",
+    "pass": true,
+    "headroom": "0.2733",
+    "reported_value": "2.18",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Senior Debt",
+      "amount": "32346000"
+     },
+     {
+      "label": "Net income",
+      "amount": "9639000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2971000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "197000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "2046000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "14853000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [
+   {
+    "period_end": "2026-07-31",
+    "facility_id": "tallwater-foodservice-rlc",
+    "calculated": {
+     "ineligible_excluded": "1835600",
+     "ineligible_over_age": "357600",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "115600",
+     "ineligible_concentration": "2174000",
+     "gross_ar": "28064000",
+     "total_ineligible_ar": "4482800",
+     "eligible_ar": "23581200",
+     "ar_availability": "20044020",
+     "gross_inventory": "27860000",
+     "ineligible_inventory": "2507600",
+     "eligible_inventory": "25352400",
+     "inventory_availability_before_sublimit": "12676200",
+     "inventory_availability": "10750000",
+     "reserves": "300000",
+     "borrowing_base": "30494020",
+     "commitment": "27000000",
+     "lesser_of_base_and_commitment": "27000000",
+     "outstanding": "18897000",
+     "letters_of_credit": "400000",
+     "availability": "7703000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "7703000"
+   },
+   {
+    "period_end": "2026-08-31",
+    "facility_id": "tallwater-foodservice-rlc",
+    "calculated": {
+     "ineligible_excluded": "1867600",
+     "ineligible_over_age": "365200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "117600",
+     "ineligible_concentration": "2213400",
+     "gross_ar": "28572000",
+     "total_ineligible_ar": "4563800",
+     "eligible_ar": "24008200",
+     "ar_availability": "20406970",
+     "gross_inventory": "28111000",
+     "ineligible_inventory": "2530200",
+     "eligible_inventory": "25580800",
+     "inventory_availability_before_sublimit": "12790400",
+     "inventory_availability": "10750000",
+     "reserves": "300000",
+     "borrowing_base": "30856970",
+     "commitment": "27000000",
+     "lesser_of_base_and_commitment": "27000000",
+     "outstanding": "18705000",
+     "letters_of_credit": "400000",
+     "availability": "7895000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "7895000"
+   },
+   {
+    "period_end": "2026-09-30",
+    "facility_id": "tallwater-foodservice-rlc",
+    "calculated": {
+     "ineligible_excluded": "1901200",
+     "ineligible_over_age": "371200",
+     "ineligible_cross_aging": "0",
+     "ineligible_contra": "119600",
+     "ineligible_concentration": "2252800",
+     "gross_ar": "29080000",
+     "total_ineligible_ar": "4644800",
+     "eligible_ar": "24435200",
+     "ar_availability": "20769920",
+     "gross_inventory": "28363000",
+     "ineligible_inventory": "2553000",
+     "eligible_inventory": "25810000",
+     "inventory_availability_before_sublimit": "12905000",
+     "inventory_availability": "10750000",
+     "reserves": "300000",
+     "borrowing_base": "31219920",
+     "commitment": "27000000",
+     "lesser_of_base_and_commitment": "27000000",
+     "outstanding": "19096000",
+     "letters_of_credit": "400000",
+     "availability": "7504000"
+    },
+    "differences": [],
+    "certificate_matches": true,
+    "over_advance": false,
+    "availability": "7504000"
+   }
+  ],
+  "signals": [],
+  "exceptions": []
+ }
+}

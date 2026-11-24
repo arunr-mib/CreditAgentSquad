@@ -1,0 +1,72 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "5b3cadc2-4d3a-4705-9229-e009e5b4f1ab": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-08-31",
+   "type": "fact",
+   "value": "1.2491"
+  },
+  "9ec6f709-1171-49be-8fdb-096740cfb82b": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4000000"
+  },
+  "fbba13e9-a874-4dda-8bbd-babcbf4a25ce": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.95"
+  },
+  "fee82a9e-46a2-4939-b684-e43405c110d8": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "7800000"
+  },
+  "ff5c9e45-ddb3-497c-ace6-7499285894fe": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.0937"
+  }
+ },
+ "_spec": "early_warning@1:38b46a6cfb2c",
+ "content": [
+  {
+   "text": "{\"explanations\":[{\"signal_id\":\"d0cbd535-ee8d-4be1-bac5-084202e6361d\",\"explanation\":\"Unrestricted cash cushion over the covenant minimum has shrunk steadily, from {{fact:5b3cadc2-4d3a-4705-9229-e009e5b4f1ab}} in August to {{fact:fbba13e9-a874-4dda-8bbd-babcbf4a25ce}} in October, suggesting ongoing cash burn. Cash of {{fact:fee82a9e-46a2-4939-b684-e43405c110d8}} still sits well above the {{fact:9ec6f709-1171-49be-8fdb-096740cfb82b}} floor. No other signal fired, so this trend stands alone for now.\"}],\"ranking\":[\"d0cbd535-ee8d-4be1-bac5-084202e6361d\"]}",
+   "type": "text"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "end_turn",
+ "usage": {
+  "cache_creation_input_tokens": 1676,
+  "cache_read_input_tokens": 0,
+  "input_tokens": 4,
+  "output_tokens": 299
+ }
+}

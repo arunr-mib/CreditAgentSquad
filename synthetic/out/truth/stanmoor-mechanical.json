@@ -1,0 +1,5430 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "stanmoor-mechanical",
+  "name": "Stanmoor Mechanical Contractors, Inc.",
+  "legal_form": "corporation",
+  "industry": "services",
+  "city": "Reno",
+  "state": "NV",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Priya Venkataraman",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 5,
+  "statement_scale": 1,
+  "chief_financial_officer": "Ignatius Fairweather",
+  "auditor": "Morrow Castellan LLP"
+ },
+ "facilities": [
+  {
+   "id": "stanmoor-mechanical-rlc",
+   "borrower_id": "stanmoor-mechanical",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "2500000",
+   "original_amount": "2500000",
+   "closing_date": "2022-09-16",
+   "maturity_date": "2028-09-16",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "stanmoor-mechanical-tl",
+   "borrower_id": "stanmoor-mechanical",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "7276500",
+   "original_amount": "7276500",
+   "closing_date": "2022-09-16",
+   "maturity_date": "2029-09-16",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "173250"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-stanmoor-mechanical-1",
+   "facility_id": "stanmoor-mechanical-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2022-09-16",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2022-09-22",
+   "warnings": [],
+   "source_documents": [
+    "stanmoor-mechanical.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "dscr",
+      "name": "Debt Service Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "cash_taxes"
+       ],
+       "denominator": [
+        "interest_expense",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "stanmoor-mechanical.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Debt Service Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "stanmoor-mechanical.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Debt Service Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus cash paid for income taxes for such period to (b) the sum of interest expense and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "current_ratio",
+      "name": "Current Ratio",
+      "archetype": "current_ratio",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "1.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "stanmoor-mechanical.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Current Ratio, measured as of the last day of each fiscal quarter, to be less than 1.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "stanmoor-mechanical.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Current Ratio\" means, as of any date, the ratio of (a) total current assets to (b) total current liabilities of the Borrower as of such date."
+       }
+      ]
+     },
+     {
+      "id": "min_tnw",
+      "name": "Minimum Tangible Net Worth",
+      "archetype": "min_tangible_net_worth",
+      "params": {
+       "step_up_pct_of_net_income": null
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "340000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "stanmoor-mechanical.credit-agreement",
+        "section": "6.3",
+        "page": 7,
+        "quote": "The Borrower shall maintain Tangible Net Worth, measured as of the last day of each fiscal quarter, of not less than $340,000."
+       },
+       {
+        "field": "definition",
+        "document_id": "stanmoor-mechanical.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Tangible Net Worth\" means, as of any date, total equity of the Borrower minus goodwill and intangibles as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "stanmoor-mechanical.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "stanmoor-mechanical.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "stanmoor-mechanical.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "stanmoor-mechanical.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "stanmoor-mechanical.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "stanmoor-mechanical.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $2,500,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "stanmoor-mechanical.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $7,276,500."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "stanmoor-mechanical.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $173,250 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "8276986",
+    "is.cogs": "5565445",
+    "is.gross_profit": "2711541",
+    "is.sga": "1862322",
+    "is.depreciation_amortization": "169294",
+    "is.other_operating_expense": "33108",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "646817",
+    "is.interest_expense": "137453",
+    "is.other_income_net": "4966",
+    "is.pretax_income": "514330",
+    "is.income_tax_expense": "128583",
+    "is.net_income": "385747",
+    "bs.cash": "993238",
+    "bs.accounts_receivable": "5043292",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "397295",
+    "bs.total_current_assets": "6433825",
+    "bs.net_ppe": "4027666",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13101491",
+    "bs.accounts_payable": "1707753",
+    "bs.accrued_liabilities": "865240",
+    "bs.revolver": "1489857",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "592094",
+    "bs.total_current_liabilities": "5347944",
+    "bs.long_term_debt": "5370750",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "524700",
+    "bs.total_liabilities": "11243394",
+    "bs.total_equity": "1858097",
+    "bs.total_liabilities_and_equity": "13101491",
+    "cf.net_income": "385747",
+    "cf.depreciation_amortization": "169294",
+    "cf.change_in_working_capital": "-50597",
+    "cf.other_operating": "5940",
+    "cf.cfo": "510384",
+    "cf.capex": "182094",
+    "cf.other_investing": "0",
+    "cf.cfi": "-182094",
+    "cf.revolver_net": "109393",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "173250",
+    "cf.distributions": "261195",
+    "cf.other_financing": "0",
+    "cf.cff": "-325052",
+    "cf.net_change_in_cash": "3238",
+    "sup.cash_interest_paid": "139345",
+    "sup.cash_taxes_paid": "137766",
+    "sup.scheduled_principal": "173250",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "1516054",
+    "cash.beginning_of_year": "990000",
+    "debt.term_total": "6063750"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "16910289",
+    "is.cogs": "11338535",
+    "is.gross_profit": "5571754",
+    "is.sga": "3804815",
+    "is.depreciation_amortization": "339127",
+    "is.other_operating_expense": "67641",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1360171",
+    "is.interest_expense": "273951",
+    "is.other_income_net": "10146",
+    "is.pretax_income": "1096366",
+    "is.income_tax_expense": "274092",
+    "is.net_income": "822274",
+    "bs.cash": "1035996",
+    "bs.accounts_receivable": "5345552",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "414399",
+    "bs.total_current_assets": "6795947",
+    "bs.net_ppe": "4047766",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13483713",
+    "bs.accounts_payable": "1771469",
+    "bs.accrued_liabilities": "900196",
+    "bs.revolver": "1553995",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "628974",
+    "bs.total_current_liabilities": "5547634",
+    "bs.long_term_debt": "5197500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "530640",
+    "bs.total_liabilities": "11275774",
+    "bs.total_equity": "2207939",
+    "bs.total_liabilities_and_equity": "13483713",
+    "cf.net_income": "822274",
+    "cf.depreciation_amortization": "339127",
+    "cf.change_in_working_capital": "-234409",
+    "cf.other_operating": "11880",
+    "cf.cfo": "938872",
+    "cf.capex": "372027",
+    "cf.other_investing": "0",
+    "cf.cfi": "-372027",
+    "cf.revolver_net": "173531",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "347880",
+    "cf.other_financing": "0",
+    "cf.cff": "-520849",
+    "cf.net_change_in_cash": "45996",
+    "sup.cash_interest_paid": "276162",
+    "sup.cash_taxes_paid": "266349",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "1865896",
+    "cash.beginning_of_year": "990000",
+    "debt.term_total": "5890500"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "25719953",
+    "is.cogs": "17233081",
+    "is.gross_profit": "8486872",
+    "is.sga": "5786989",
+    "is.depreciation_amortization": "509808",
+    "is.other_operating_expense": "102880",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2087195",
+    "is.interest_expense": "408616",
+    "is.other_income_net": "15432",
+    "is.pretax_income": "1694011",
+    "is.income_tax_expense": "423503",
+    "is.net_income": "1270508",
+    "bs.cash": "1057160",
+    "bs.accounts_receivable": "5425788",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "422864",
+    "bs.total_current_assets": "6905812",
+    "bs.net_ppe": "4070898",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13616710",
+    "bs.accounts_payable": "1808737",
+    "bs.accrued_liabilities": "917045",
+    "bs.revolver": "1585740",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "642752",
+    "bs.total_current_liabilities": "5647274",
+    "bs.long_term_debt": "5024250",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "536580",
+    "bs.total_liabilities": "11208104",
+    "bs.total_equity": "2408606",
+    "bs.total_liabilities_and_equity": "13616710",
+    "cf.net_income": "1270508",
+    "cf.depreciation_amortization": "509808",
+    "cf.change_in_working_capital": "-255215",
+    "cf.other_operating": "17820",
+    "cf.cfo": "1542921",
+    "cf.capex": "565840",
+    "cf.other_investing": "0",
+    "cf.cfi": "-565840",
+    "cf.revolver_net": "205276",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "519750",
+    "cf.distributions": "595447",
+    "cf.other_financing": "0",
+    "cf.cff": "-909921",
+    "cf.net_change_in_cash": "67160",
+    "sup.cash_interest_paid": "411438",
+    "sup.cash_taxes_paid": "411858",
+    "sup.scheduled_principal": "519750",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "2066563",
+    "cash.beginning_of_year": "990000",
+    "debt.term_total": "5717250"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "34436078",
+    "is.cogs": "23097290",
+    "is.gross_profit": "11338788",
+    "is.sga": "7748117",
+    "is.depreciation_amortization": "681464",
+    "is.other_operating_expense": "137745",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2771462",
+    "is.interest_expense": "540821",
+    "is.other_income_net": "20662",
+    "is.pretax_income": "2251303",
+    "is.income_tax_expense": "562826",
+    "is.net_income": "1688477",
+    "bs.cash": "1045935",
+    "bs.accounts_receivable": "5358626",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "418374",
+    "bs.total_current_assets": "6822935",
+    "bs.net_ppe": "4090997",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13553932",
+    "bs.accounts_payable": "1799429",
+    "bs.accrued_liabilities": "906964",
+    "bs.revolver": "1568903",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "627426",
+    "bs.total_current_liabilities": "5595722",
+    "bs.long_term_debt": "4851000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "542520",
+    "bs.total_liabilities": "10989242",
+    "bs.total_equity": "2564690",
+    "bs.total_liabilities_and_equity": "13553932",
+    "cf.net_income": "1688477",
+    "cf.depreciation_amortization": "681464",
+    "cf.change_in_working_capital": "-218278",
+    "cf.other_operating": "23760",
+    "cf.cfo": "2175423",
+    "cf.capex": "757595",
+    "cf.other_investing": "0",
+    "cf.cfi": "-757595",
+    "cf.revolver_net": "188439",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "693000",
+    "cf.distributions": "857332",
+    "cf.other_financing": "0",
+    "cf.cff": "-1361893",
+    "cf.net_change_in_cash": "55935",
+    "sup.cash_interest_paid": "544463",
+    "sup.cash_taxes_paid": "561269",
+    "sup.scheduled_principal": "693000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "2222647",
+    "cash.beginning_of_year": "990000",
+    "debt.term_total": "5544000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "8672626",
+    "is.cogs": "5831474",
+    "is.gross_profit": "2841152",
+    "is.sga": "1951341",
+    "is.depreciation_amortization": "172504",
+    "is.other_operating_expense": "34691",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "682616",
+    "is.interest_expense": "128803",
+    "is.other_income_net": "5204",
+    "is.pretax_income": "559017",
+    "is.income_tax_expense": "139754",
+    "is.net_income": "419263",
+    "bs.cash": "1040715",
+    "bs.accounts_receivable": "5331883",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "416286",
+    "bs.total_current_assets": "6788884",
+    "bs.net_ppe": "4109291",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13538175",
+    "bs.accounts_payable": "1789384",
+    "bs.accrued_liabilities": "901524",
+    "bs.revolver": "1561073",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "625421",
+    "bs.total_current_liabilities": "5570402",
+    "bs.long_term_debt": "4677750",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "548460",
+    "bs.total_liabilities": "10796612",
+    "bs.total_equity": "2741563",
+    "bs.total_liabilities_and_equity": "13538175",
+    "cf.net_income": "419263",
+    "cf.depreciation_amortization": "172504",
+    "cf.change_in_working_capital": "11341",
+    "cf.other_operating": "5940",
+    "cf.cfo": "609048",
+    "cf.capex": "190798",
+    "cf.other_investing": "0",
+    "cf.cfi": "-190798",
+    "cf.revolver_net": "-7830",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "173250",
+    "cf.distributions": "242390",
+    "cf.other_financing": "0",
+    "cf.cff": "-423470",
+    "cf.net_change_in_cash": "-5220",
+    "sup.cash_interest_paid": "129937",
+    "sup.cash_taxes_paid": "139323",
+    "sup.scheduled_principal": "173250",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "2399520",
+    "cash.beginning_of_year": "1045935",
+    "debt.term_total": "5370750"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "17606368",
+    "is.cogs": "11817975",
+    "is.gross_profit": "5788393",
+    "is.sga": "3961433",
+    "is.depreciation_amortization": "345779",
+    "is.other_operating_expense": "70426",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1410755",
+    "is.interest_expense": "254380",
+    "is.other_income_net": "10564",
+    "is.pretax_income": "1166939",
+    "is.income_tax_expense": "291735",
+    "is.net_income": "875204",
+    "bs.cash": "1072049",
+    "bs.accounts_receivable": "5472835",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "428820",
+    "bs.total_current_assets": "6973704",
+    "bs.net_ppe": "4132558",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13746262",
+    "bs.accounts_payable": "1836954",
+    "bs.accrued_liabilities": "926299",
+    "bs.revolver": "1608074",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "652271",
+    "bs.total_current_liabilities": "5716598",
+    "bs.long_term_debt": "4504500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "554400",
+    "bs.total_liabilities": "10775498",
+    "bs.total_equity": "2970764",
+    "bs.total_liabilities_and_equity": "13746262",
+    "cf.net_income": "875204",
+    "cf.depreciation_amortization": "345779",
+    "cf.change_in_working_capital": "-42950",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1189913",
+    "cf.capex": "387340",
+    "cf.other_investing": "0",
+    "cf.cfi": "-387340",
+    "cf.revolver_net": "39171",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "469130",
+    "cf.other_financing": "0",
+    "cf.cff": "-776459",
+    "cf.net_change_in_cash": "26114",
+    "sup.cash_interest_paid": "256589",
+    "sup.cash_taxes_paid": "279077",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "2628721",
+    "cash.beginning_of_year": "1045935",
+    "debt.term_total": "5197500"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "26786919",
+    "is.cogs": "18000158",
+    "is.gross_profit": "8786761",
+    "is.sga": "6027057",
+    "is.depreciation_amortization": "520035",
+    "is.other_operating_expense": "107148",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2132521",
+    "is.interest_expense": "377792",
+    "is.other_income_net": "16072",
+    "is.pretax_income": "1770801",
+    "is.income_tax_expense": "442701",
+    "is.net_income": "1328100",
+    "bs.cash": "1101666",
+    "bs.accounts_receivable": "5563665",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "440666",
+    "bs.total_current_assets": "7105997",
+    "bs.net_ppe": "4160274",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13906271",
+    "bs.accounts_payable": "1896999",
+    "bs.accrued_liabilities": "950012",
+    "bs.revolver": "1652499",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "665077",
+    "bs.total_current_liabilities": "5857587",
+    "bs.long_term_debt": "4331250",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "560340",
+    "bs.total_liabilities": "10749177",
+    "bs.total_equity": "3157094",
+    "bs.total_liabilities_and_equity": "13906271",
+    "cf.net_income": "1328100",
+    "cf.depreciation_amortization": "520035",
+    "cf.change_in_working_capital": "-49062",
+    "cf.other_operating": "17820",
+    "cf.cfo": "1816893",
+    "cf.capex": "589312",
+    "cf.other_investing": "0",
+    "cf.cfi": "-589312",
+    "cf.revolver_net": "83596",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "519750",
+    "cf.distributions": "735696",
+    "cf.other_financing": "0",
+    "cf.cff": "-1171850",
+    "cf.net_change_in_cash": "55731",
+    "sup.cash_interest_paid": "380723",
+    "sup.cash_taxes_paid": "431058",
+    "sup.scheduled_principal": "519750",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "2815051",
+    "cash.beginning_of_year": "1045935",
+    "debt.term_total": "5024250"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "35986789",
+    "is.cogs": "24153951",
+    "is.gross_profit": "11832838",
+    "is.sga": "8097028",
+    "is.depreciation_amortization": "695460",
+    "is.other_operating_expense": "143947",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2896403",
+    "is.interest_expense": "498990",
+    "is.other_income_net": "21592",
+    "is.pretax_income": "2419005",
+    "is.income_tax_expense": "604752",
+    "is.net_income": "1814253",
+    "bs.cash": "1103984",
+    "bs.accounts_receivable": "5615701",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "441594",
+    "bs.total_current_assets": "7161279",
+    "bs.net_ppe": "4187246",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13988525",
+    "bs.accounts_payable": "1888287",
+    "bs.accrued_liabilities": "951186",
+    "bs.revolver": "1655977",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "677244",
+    "bs.total_current_liabilities": "5865694",
+    "bs.long_term_debt": "4158000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "566280",
+    "bs.total_liabilities": "10589974",
+    "bs.total_equity": "3398551",
+    "bs.total_liabilities_and_equity": "13988525",
+    "cf.net_income": "1814253",
+    "cf.depreciation_amortization": "695460",
+    "cf.change_in_working_capital": "-97397",
+    "cf.other_operating": "23760",
+    "cf.cfo": "2436076",
+    "cf.capex": "791709",
+    "cf.other_investing": "0",
+    "cf.cfi": "-791709",
+    "cf.revolver_net": "87074",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "693000",
+    "cf.distributions": "980392",
+    "cf.other_financing": "0",
+    "cf.cff": "-1586318",
+    "cf.net_change_in_cash": "58049",
+    "sup.cash_interest_paid": "502659",
+    "sup.cash_taxes_paid": "582024",
+    "sup.scheduled_principal": "693000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "3056508",
+    "cash.beginning_of_year": "1045935",
+    "debt.term_total": "4851000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "8962292",
+    "is.cogs": "5984122",
+    "is.gross_profit": "2978170",
+    "is.sga": "2016516",
+    "is.depreciation_amortization": "176562",
+    "is.other_operating_expense": "35849",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "749243",
+    "is.interest_expense": "118190",
+    "is.other_income_net": "5377",
+    "is.pretax_income": "636430",
+    "is.income_tax_expense": "159108",
+    "is.net_income": "477322",
+    "bs.cash": "1075475",
+    "bs.accounts_receivable": "5460860",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "430190",
+    "bs.total_current_assets": "6966525",
+    "bs.net_ppe": "4207854",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13814379",
+    "bs.accounts_payable": "1836224",
+    "bs.accrued_liabilities": "926664",
+    "bs.revolver": "1613213",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "660996",
+    "bs.total_current_liabilities": "5730097",
+    "bs.long_term_debt": "3984750",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "572220",
+    "bs.total_liabilities": "10287067",
+    "bs.total_equity": "3527312",
+    "bs.total_liabilities_and_equity": "13814379",
+    "cf.net_income": "477322",
+    "cf.depreciation_amortization": "176562",
+    "cf.change_in_working_capital": "73412",
+    "cf.other_operating": "5940",
+    "cf.cfo": "733236",
+    "cf.capex": "197170",
+    "cf.other_investing": "0",
+    "cf.cfi": "-197170",
+    "cf.revolver_net": "-42764",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "173250",
+    "cf.distributions": "348561",
+    "cf.other_financing": "0",
+    "cf.cff": "-564575",
+    "cf.net_change_in_cash": "-28509",
+    "sup.cash_interest_paid": "119192",
+    "sup.cash_taxes_paid": "162051",
+    "sup.scheduled_principal": "173250",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "3185269",
+    "cash.beginning_of_year": "1103984",
+    "debt.term_total": "4677750"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "18311453",
+    "is.cogs": "12217208",
+    "is.gross_profit": "6094245",
+    "is.sga": "4120077",
+    "is.depreciation_amortization": "353993",
+    "is.other_operating_expense": "73246",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1546929",
+    "is.interest_expense": "232476",
+    "is.other_income_net": "10986",
+    "is.pretax_income": "1325439",
+    "is.income_tax_expense": "331360",
+    "is.net_income": "994079",
+    "bs.cash": "1121899",
+    "bs.accounts_receivable": "5737567",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "448760",
+    "bs.total_current_assets": "7308226",
+    "bs.net_ppe": "4236105",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "14184331",
+    "bs.accounts_payable": "1912618",
+    "bs.accrued_liabilities": "963662",
+    "bs.revolver": "1682849",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "695805",
+    "bs.total_current_liabilities": "5947934",
+    "bs.long_term_debt": "3811500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "578160",
+    "bs.total_liabilities": "10337594",
+    "bs.total_equity": "3846737",
+    "bs.total_liabilities_and_equity": "14184331",
+    "cf.net_income": "994079",
+    "cf.depreciation_amortization": "353993",
+    "cf.change_in_working_capital": "-73664",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1286288",
+    "cf.capex": "402852",
+    "cf.other_investing": "0",
+    "cf.cfi": "-402852",
+    "cf.revolver_net": "26872",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "545893",
+    "cf.other_financing": "0",
+    "cf.cff": "-865521",
+    "cf.net_change_in_cash": "17915",
+    "sup.cash_interest_paid": "234780",
+    "sup.cash_taxes_paid": "321159",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "3504694",
+    "cash.beginning_of_year": "1103984",
+    "debt.term_total": "4504500"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "27815159",
+    "is.cogs": "18552378",
+    "is.gross_profit": "9262781",
+    "is.sga": "6258411",
+    "is.depreciation_amortization": "532615",
+    "is.other_operating_expense": "111261",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2360494",
+    "is.interest_expense": "345036",
+    "is.other_income_net": "16688",
+    "is.pretax_income": "2032146",
+    "is.income_tax_expense": "508037",
+    "is.net_income": "1524109",
+    "bs.cash": "1140445",
+    "bs.accounts_receivable": "5738676",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "456178",
+    "bs.total_current_assets": "7335299",
+    "bs.net_ppe": "4266565",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "14241864",
+    "bs.accounts_payable": "1943943",
+    "bs.accrued_liabilities": "978387",
+    "bs.revolver": "1710667",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "708885",
+    "bs.total_current_liabilities": "6034882",
+    "bs.long_term_debt": "3638250",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "584100",
+    "bs.total_liabilities": "10257232",
+    "bs.total_equity": "3984632",
+    "bs.total_liabilities_and_equity": "14241864",
+    "cf.net_income": "1524109",
+    "cf.depreciation_amortization": "532615",
+    "cf.change_in_working_capital": "-23061",
+    "cf.other_operating": "17820",
+    "cf.cfo": "2051483",
+    "cf.capex": "611934",
+    "cf.other_investing": "0",
+    "cf.cfi": "-611934",
+    "cf.revolver_net": "54690",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "519750",
+    "cf.distributions": "938028",
+    "cf.other_financing": "0",
+    "cf.cff": "-1403088",
+    "cf.net_change_in_cash": "36461",
+    "sup.cash_interest_paid": "347915",
+    "sup.cash_taxes_paid": "493411",
+    "sup.scheduled_principal": "519750",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "3642589",
+    "cash.beginning_of_year": "1103984",
+    "debt.term_total": "4331250"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "33000000",
+    "is.cogs": "22083608",
+    "is.gross_profit": "10916392",
+    "is.sga": "7425001",
+    "is.depreciation_amortization": "671134",
+    "is.other_operating_expense": "132000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2688257",
+    "is.interest_expense": "588730",
+    "is.other_income_net": "19801",
+    "is.pretax_income": "2119328",
+    "is.income_tax_expense": "529832",
+    "is.net_income": "1589496",
+    "bs.cash": "990000",
+    "bs.accounts_receivable": "4981644",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "396000",
+    "bs.total_current_assets": "6367644",
+    "bs.net_ppe": "4014866",
+    "bs.intangibles": "2310000",
+    "bs.other_noncurrent_assets": "330000",
+    "bs.total_assets": "13022510",
+    "bs.accounts_payable": "1688515",
+    "bs.accrued_liabilities": "864460",
+    "bs.revolver": "1380464",
+    "bs.cpltd": "693000",
+    "bs.other_current_liabilities": "599766",
+    "bs.total_current_liabilities": "5226205",
+    "bs.long_term_debt": "5544000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "518760",
+    "bs.total_liabilities": "11288965",
+    "bs.total_equity": "1733545",
+    "bs.total_liabilities_and_equity": "13022510",
+    "cf.net_income": "1589496",
+    "cf.depreciation_amortization": "671134",
+    "cf.change_in_working_capital": "72364",
+    "cf.other_operating": "23760",
+    "cf.cfo": "2356754",
+    "cf.capex": "726000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-726000",
+    "cf.revolver_net": "-104536",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "693000",
+    "cf.distributions": "833218",
+    "cf.other_financing": "0",
+    "cf.cff": "-1630754",
+    "cf.net_change_in_cash": "0",
+    "sup.cash_interest_paid": "591613",
+    "sup.cash_taxes_paid": "528360",
+    "sup.scheduled_principal": "693000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "342043",
+    "equity.retained_earnings": "1391502",
+    "cash.beginning_of_year": "990000",
+    "debt.term_total": "6237000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.41",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1721993"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "532171"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "573997"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "684674"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3512835"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "562826"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2950009"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "532171"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1225171"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.22",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "6788884"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "5570402"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "431563",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "2741563"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "431563"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.44",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1741407"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "521250"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "580469"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "688116"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3531242"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "573997"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2957245"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "521250"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1214250"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.22",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "6973704"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "5716598"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "660764",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "2970764"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "660764"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.45",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1746069"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "509997"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "582024"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "691691"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3529781"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "580469"
+      },
+      {
+       "label": "Numerator",
+       "amount": "2949312"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "509997"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1202997"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.21",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "7105997"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "5857587"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "847094",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "3157094"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "847094"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.54",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1814253"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "498990"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "604752"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "695460"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3613455"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "582024"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3031431"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "498990"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1191990"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.22",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "7161279"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "5865694"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1088551",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "3398551"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1088551"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.61",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1872312"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "488377"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "624106"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "699518"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3684313"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "604752"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3079561"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "488377"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1181377"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.22",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "6966525"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "5730097"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1217312",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "3527312"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1217312"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.68",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1933128"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "477086"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "644377"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "703674"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3758265"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "624106"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3134159"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "477086"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1170086"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.23",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "7308226"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "5947934"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1536737",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "3846737"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1536737"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Ignatius Fairweather",
+   "reported": {
+    "dscr": {
+     "value": "2.77",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "2010262"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "466234"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "670088"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "708040"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "3854624"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "644377"
+      },
+      {
+       "label": "Numerator",
+       "amount": "3210247"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "466234"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "693000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "1159234"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.22",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "7335299"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "6034882"
+      }
+     ]
+    },
+    "min_tnw": {
+     "value": "1674632",
+     "threshold": "340000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Total equity",
+       "amount": "3984632"
+      },
+      {
+       "label": "Less: Goodwill and intangibles",
+       "amount": "2310000"
+      },
+      {
+       "label": "Tangible Net Worth",
+       "amount": "1674632"
+      }
+     ]
+    }
+   },
+   "document_id": "stanmoor-mechanical.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "1437000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6237000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "1445000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6237000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "1489857",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6063750"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "1532000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6063750"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "1519000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "6063750"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "1553995",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5890500"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "1557000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5890500"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "1583000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5890500"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "1585740",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5717250"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "1558000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5717250"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "1571000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5717250"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "1568903",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5544000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "1557000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5544000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "1584000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5544000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "1561073",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5370750"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "1581000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5370750"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "1604000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5370750"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "1608074",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5197500"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "1644000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5197500"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "1630000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5197500"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "1652499",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5024250"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "1669000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5024250"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "1642000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "5024250"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "1655977",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4851000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "1634000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4851000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "1634000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4851000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "1613213",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4677750"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "1648000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4677750"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "1666000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4677750"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "1682849",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4504500"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "1707000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4504500"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "1676000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4504500"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "1710667",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4331250"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "1731000",
+   "commitment": "2500000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4331250"
+  }
+ ],
+ "documents": [
+  {
+   "id": "stanmoor-mechanical.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/stanmoor-mechanical/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Stanmoor Mechanical Contractors, Inc. and Bank of Stoic",
+   "received_date": "2022-09-16",
+   "document_date": "2022-09-16"
+  },
+  {
+   "id": "stanmoor-mechanical.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/stanmoor-mechanical/afs-2024.pdf",
+   "pages": 7,
+   "title": "Stanmoor Mechanical Contractors, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-10",
+   "document_date": "2025-04-01",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,045,935"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "5,358,626"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "418,374"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "6,822,935"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "4,090,997"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "13,553,932"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,799,429"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "906,964"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,568,903"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "627,426"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "5,595,722"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,851,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "542,520"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "10,989,242"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "2,564,690"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "13,553,932"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "34,436,078"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "23,097,290"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "11,338,788"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "7,748,117"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "681,464"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "137,745"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "2,771,462"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "540,821"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "20,662"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,251,303"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "562,826"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,688,477"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,688,477"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "681,464"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(218,278)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "23,760"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,175,423"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(757,595)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(757,595)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "188,439"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(693,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(857,332)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,361,893)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "55,935"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "544,463"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "561,269"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "693,000"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "990,000",
+    "bs.accounts_receivable": "4,981,644",
+    "bs.other_current_assets": "396,000",
+    "bs.total_current_assets": "6,367,644",
+    "bs.net_ppe": "4,014,866",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,022,510",
+    "bs.accounts_payable": "1,688,515",
+    "bs.accrued_liabilities": "864,460",
+    "bs.revolver": "1,380,464",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "599,766",
+    "bs.total_current_liabilities": "5,226,205",
+    "bs.long_term_debt": "5,544,000",
+    "bs.other_noncurrent_liabilities": "518,760",
+    "bs.total_liabilities": "11,288,965",
+    "bs.total_equity": "1,733,545",
+    "bs.total_liabilities_and_equity": "13,022,510",
+    "is.revenue": "33,000,000",
+    "is.cogs": "22,083,608",
+    "is.gross_profit": "10,916,392",
+    "is.sga": "7,425,001",
+    "is.depreciation_amortization": "671,134",
+    "is.other_operating_expense": "132,000",
+    "is.operating_income": "2,688,257",
+    "is.interest_expense": "588,730",
+    "is.other_income_net": "19,801",
+    "is.pretax_income": "2,119,328",
+    "is.income_tax_expense": "529,832",
+    "is.net_income": "1,589,496",
+    "cf.net_income": "1,589,496",
+    "cf.depreciation_amortization": "671,134",
+    "cf.change_in_working_capital": "72,364",
+    "cf.other_operating": "23,760",
+    "cf.cfo": "2,356,754",
+    "cf.capex": "(726,000)",
+    "cf.cfi": "(726,000)",
+    "cf.revolver_net": "(104,536)",
+    "cf.term_debt_repayments": "(693,000)",
+    "cf.distributions": "(833,218)",
+    "cf.cff": "(1,630,754)",
+    "cf.net_change_in_cash": "-",
+    "sup.cash_interest_paid": "591,613",
+    "sup.cash_taxes_paid": "528,360",
+    "sup.scheduled_principal": "693,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/stanmoor-mechanical/afs-2025.pdf",
+   "pages": 7,
+   "title": "Stanmoor Mechanical Contractors, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-03-24",
+   "document_date": "2026-03-15",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "1,103,984"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "5,615,701"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "441,594"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "7,161,279"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "4,187,246"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "13,988,525"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,888,287"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "951,186"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,655,977"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "677,244"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "5,865,694"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,158,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "566,280"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "10,589,974"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "3,398,551"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "13,988,525"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "35,986,789"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "24,153,951"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "11,832,838"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "8,097,028"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "695,460"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "143,947"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "2,896,403"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "498,990"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "21,592"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "2,419,005"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "604,752"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,814,253"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,814,253"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "695,460"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(97,397)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "23,760"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "2,436,076"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(791,709)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(791,709)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "87,074"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(693,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(980,392)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,586,318)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "58,049"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "502,659"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "582,024"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "693,000"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,045,935",
+    "bs.accounts_receivable": "5,358,626",
+    "bs.other_current_assets": "418,374",
+    "bs.total_current_assets": "6,822,935",
+    "bs.net_ppe": "4,090,997",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,553,932",
+    "bs.accounts_payable": "1,799,429",
+    "bs.accrued_liabilities": "906,964",
+    "bs.revolver": "1,568,903",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "627,426",
+    "bs.total_current_liabilities": "5,595,722",
+    "bs.long_term_debt": "4,851,000",
+    "bs.other_noncurrent_liabilities": "542,520",
+    "bs.total_liabilities": "10,989,242",
+    "bs.total_equity": "2,564,690",
+    "bs.total_liabilities_and_equity": "13,553,932",
+    "is.revenue": "34,436,078",
+    "is.cogs": "23,097,290",
+    "is.gross_profit": "11,338,788",
+    "is.sga": "7,748,117",
+    "is.depreciation_amortization": "681,464",
+    "is.other_operating_expense": "137,745",
+    "is.operating_income": "2,771,462",
+    "is.interest_expense": "540,821",
+    "is.other_income_net": "20,662",
+    "is.pretax_income": "2,251,303",
+    "is.income_tax_expense": "562,826",
+    "is.net_income": "1,688,477",
+    "cf.net_income": "1,688,477",
+    "cf.depreciation_amortization": "681,464",
+    "cf.change_in_working_capital": "(218,278)",
+    "cf.other_operating": "23,760",
+    "cf.cfo": "2,175,423",
+    "cf.capex": "(757,595)",
+    "cf.cfi": "(757,595)",
+    "cf.revolver_net": "188,439",
+    "cf.term_debt_repayments": "(693,000)",
+    "cf.distributions": "(857,332)",
+    "cf.cff": "(1,361,893)",
+    "cf.net_change_in_cash": "55,935",
+    "sup.cash_interest_paid": "544,463",
+    "sup.cash_taxes_paid": "561,269",
+    "sup.scheduled_principal": "693,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/stanmoor-mechanical/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Stanmoor Mechanical Contractors, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-11",
+   "document_date": "2025-05-07",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,040,715"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,331,883"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "416,286"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "6,788,884"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,109,291"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "13,538,175"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,789,384"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "901,524"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,561,073"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "625,421"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "5,570,402"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,677,750"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "548,460"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "10,796,612"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "2,741,563"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "13,538,175"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "8,672,626"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "5,831,474"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,841,152"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "1,951,341"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "172,504"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "34,691"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "682,616"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "128,803"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "5,204"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "559,017"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "139,754"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "419,263"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "419,263"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "172,504"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "11,341"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "5,940"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "609,048"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(190,798)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(190,798)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(7,830)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(173,250)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(242,390)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(423,470)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(5,220)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "129,937"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "139,323"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "173,250"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "993,238",
+    "bs.accounts_receivable": "5,043,292",
+    "bs.other_current_assets": "397,295",
+    "bs.total_current_assets": "6,433,825",
+    "bs.net_ppe": "4,027,666",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,101,491",
+    "bs.accounts_payable": "1,707,753",
+    "bs.accrued_liabilities": "865,240",
+    "bs.revolver": "1,489,857",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "592,094",
+    "bs.total_current_liabilities": "5,347,944",
+    "bs.long_term_debt": "5,370,750",
+    "bs.other_noncurrent_liabilities": "524,700",
+    "bs.total_liabilities": "11,243,394",
+    "bs.total_equity": "1,858,097",
+    "bs.total_liabilities_and_equity": "13,101,491",
+    "is.revenue": "8,276,986",
+    "is.cogs": "5,565,445",
+    "is.gross_profit": "2,711,541",
+    "is.sga": "1,862,322",
+    "is.depreciation_amortization": "169,294",
+    "is.other_operating_expense": "33,108",
+    "is.operating_income": "646,817",
+    "is.interest_expense": "137,453",
+    "is.other_income_net": "4,966",
+    "is.pretax_income": "514,330",
+    "is.income_tax_expense": "128,583",
+    "is.net_income": "385,747",
+    "cf.net_income": "385,747",
+    "cf.depreciation_amortization": "169,294",
+    "cf.change_in_working_capital": "(50,597)",
+    "cf.other_operating": "5,940",
+    "cf.cfo": "510,384",
+    "cf.capex": "(182,094)",
+    "cf.cfi": "(182,094)",
+    "cf.revolver_net": "109,393",
+    "cf.term_debt_repayments": "(173,250)",
+    "cf.distributions": "(261,195)",
+    "cf.cff": "(325,052)",
+    "cf.net_change_in_cash": "3,238",
+    "sup.cash_interest_paid": "139,345",
+    "sup.cash_taxes_paid": "137,766",
+    "sup.scheduled_principal": "173,250",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/stanmoor-mechanical/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Stanmoor Mechanical Contractors, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-08-07",
+   "document_date": "2025-08-03",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,072,049"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,472,835"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "428,820"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "6,973,704"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,132,558"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "13,746,262"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,836,954"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "926,299"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,608,074"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "652,271"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "5,716,598"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,504,500"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "554,400"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "10,775,498"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "2,970,764"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "13,746,262"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "17,606,368"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "11,817,975"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "5,788,393"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,961,433"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "345,779"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "70,426"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,410,755"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "254,380"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "10,564"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,166,939"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "291,735"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "875,204"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "875,204"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "345,779"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(42,950)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11,880"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,189,913"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(387,340)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(387,340)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "39,171"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(346,500)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(469,130)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(776,459)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "26,114"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "256,589"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "279,077"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "346,500"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,035,996",
+    "bs.accounts_receivable": "5,345,552",
+    "bs.other_current_assets": "414,399",
+    "bs.total_current_assets": "6,795,947",
+    "bs.net_ppe": "4,047,766",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,483,713",
+    "bs.accounts_payable": "1,771,469",
+    "bs.accrued_liabilities": "900,196",
+    "bs.revolver": "1,553,995",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "628,974",
+    "bs.total_current_liabilities": "5,547,634",
+    "bs.long_term_debt": "5,197,500",
+    "bs.other_noncurrent_liabilities": "530,640",
+    "bs.total_liabilities": "11,275,774",
+    "bs.total_equity": "2,207,939",
+    "bs.total_liabilities_and_equity": "13,483,713",
+    "is.revenue": "16,910,289",
+    "is.cogs": "11,338,535",
+    "is.gross_profit": "5,571,754",
+    "is.sga": "3,804,815",
+    "is.depreciation_amortization": "339,127",
+    "is.other_operating_expense": "67,641",
+    "is.operating_income": "1,360,171",
+    "is.interest_expense": "273,951",
+    "is.other_income_net": "10,146",
+    "is.pretax_income": "1,096,366",
+    "is.income_tax_expense": "274,092",
+    "is.net_income": "822,274",
+    "cf.net_income": "822,274",
+    "cf.depreciation_amortization": "339,127",
+    "cf.change_in_working_capital": "(234,409)",
+    "cf.other_operating": "11,880",
+    "cf.cfo": "938,872",
+    "cf.capex": "(372,027)",
+    "cf.cfi": "(372,027)",
+    "cf.revolver_net": "173,531",
+    "cf.term_debt_repayments": "(346,500)",
+    "cf.distributions": "(347,880)",
+    "cf.cff": "(520,849)",
+    "cf.net_change_in_cash": "45,996",
+    "sup.cash_interest_paid": "276,162",
+    "sup.cash_taxes_paid": "266,349",
+    "sup.scheduled_principal": "346,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/stanmoor-mechanical/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Stanmoor Mechanical Contractors, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-28",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,101,666"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,563,665"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "440,666"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "7,105,997"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,160,274"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "13,906,271"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,896,999"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "950,012"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,652,499"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "665,077"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "5,857,587"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "4,331,250"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "560,340"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "10,749,177"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "3,157,094"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "13,906,271"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "26,786,919"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "18,000,158"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,786,761"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "6,027,057"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "520,035"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "107,148"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,132,521"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "377,792"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "16,072"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,770,801"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "442,701"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,328,100"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,328,100"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "520,035"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(49,062)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "17,820"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,816,893"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(589,312)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(589,312)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "83,596"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(519,750)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(735,696)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,171,850)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "55,731"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "380,723"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "431,058"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "519,750"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,057,160",
+    "bs.accounts_receivable": "5,425,788",
+    "bs.other_current_assets": "422,864",
+    "bs.total_current_assets": "6,905,812",
+    "bs.net_ppe": "4,070,898",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,616,710",
+    "bs.accounts_payable": "1,808,737",
+    "bs.accrued_liabilities": "917,045",
+    "bs.revolver": "1,585,740",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "642,752",
+    "bs.total_current_liabilities": "5,647,274",
+    "bs.long_term_debt": "5,024,250",
+    "bs.other_noncurrent_liabilities": "536,580",
+    "bs.total_liabilities": "11,208,104",
+    "bs.total_equity": "2,408,606",
+    "bs.total_liabilities_and_equity": "13,616,710",
+    "is.revenue": "25,719,953",
+    "is.cogs": "17,233,081",
+    "is.gross_profit": "8,486,872",
+    "is.sga": "5,786,989",
+    "is.depreciation_amortization": "509,808",
+    "is.other_operating_expense": "102,880",
+    "is.operating_income": "2,087,195",
+    "is.interest_expense": "408,616",
+    "is.other_income_net": "15,432",
+    "is.pretax_income": "1,694,011",
+    "is.income_tax_expense": "423,503",
+    "is.net_income": "1,270,508",
+    "cf.net_income": "1,270,508",
+    "cf.depreciation_amortization": "509,808",
+    "cf.change_in_working_capital": "(255,215)",
+    "cf.other_operating": "17,820",
+    "cf.cfo": "1,542,921",
+    "cf.capex": "(565,840)",
+    "cf.cfi": "(565,840)",
+    "cf.revolver_net": "205,276",
+    "cf.term_debt_repayments": "(519,750)",
+    "cf.distributions": "(595,447)",
+    "cf.cff": "(909,921)",
+    "cf.net_change_in_cash": "67,160",
+    "sup.cash_interest_paid": "411,438",
+    "sup.cash_taxes_paid": "411,858",
+    "sup.scheduled_principal": "519,750",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/stanmoor-mechanical/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Stanmoor Mechanical Contractors, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-04-29",
+   "document_date": "2026-04-25",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,075,475"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,460,860"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "430,190"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "6,966,525"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,207,854"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "13,814,379"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,836,224"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "926,664"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,613,213"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "660,996"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "5,730,097"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,984,750"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "572,220"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "10,287,067"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "3,527,312"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "13,814,379"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "8,962,292"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "5,984,122"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "2,978,170"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "2,016,516"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "176,562"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "35,849"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "749,243"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "118,190"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "5,377"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "636,430"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "159,108"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "477,322"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "477,322"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "176,562"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "73,412"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "5,940"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "733,236"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(197,170)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(197,170)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(42,764)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(173,250)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(348,561)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(564,575)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(28,509)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "119,192"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "162,051"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "173,250"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,040,715",
+    "bs.accounts_receivable": "5,331,883",
+    "bs.other_current_assets": "416,286",
+    "bs.total_current_assets": "6,788,884",
+    "bs.net_ppe": "4,109,291",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,538,175",
+    "bs.accounts_payable": "1,789,384",
+    "bs.accrued_liabilities": "901,524",
+    "bs.revolver": "1,561,073",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "625,421",
+    "bs.total_current_liabilities": "5,570,402",
+    "bs.long_term_debt": "4,677,750",
+    "bs.other_noncurrent_liabilities": "548,460",
+    "bs.total_liabilities": "10,796,612",
+    "bs.total_equity": "2,741,563",
+    "bs.total_liabilities_and_equity": "13,538,175",
+    "is.revenue": "8,672,626",
+    "is.cogs": "5,831,474",
+    "is.gross_profit": "2,841,152",
+    "is.sga": "1,951,341",
+    "is.depreciation_amortization": "172,504",
+    "is.other_operating_expense": "34,691",
+    "is.operating_income": "682,616",
+    "is.interest_expense": "128,803",
+    "is.other_income_net": "5,204",
+    "is.pretax_income": "559,017",
+    "is.income_tax_expense": "139,754",
+    "is.net_income": "419,263",
+    "cf.net_income": "419,263",
+    "cf.depreciation_amortization": "172,504",
+    "cf.change_in_working_capital": "11,341",
+    "cf.other_operating": "5,940",
+    "cf.cfo": "609,048",
+    "cf.capex": "(190,798)",
+    "cf.cfi": "(190,798)",
+    "cf.revolver_net": "(7,830)",
+    "cf.term_debt_repayments": "(173,250)",
+    "cf.distributions": "(242,390)",
+    "cf.cff": "(423,470)",
+    "cf.net_change_in_cash": "(5,220)",
+    "sup.cash_interest_paid": "129,937",
+    "sup.cash_taxes_paid": "139,323",
+    "sup.scheduled_principal": "173,250",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/stanmoor-mechanical/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Stanmoor Mechanical Contractors, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-08-10",
+   "document_date": "2026-08-06",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,121,899"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,737,567"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "448,760"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "7,308,226"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,236,105"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "14,184,331"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,912,618"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "963,662"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,682,849"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "695,805"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "5,947,934"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,811,500"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "578,160"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "10,337,594"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "3,846,737"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "14,184,331"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "18,311,453"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "12,217,208"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,094,245"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,120,077"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "353,993"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "73,246"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,546,929"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "232,476"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "10,986"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,325,439"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "331,360"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "994,079"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "994,079"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "353,993"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(73,664)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11,880"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,286,288"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(402,852)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(402,852)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "26,872"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(346,500)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(545,893)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(865,521)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "17,915"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "234,780"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "321,159"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "346,500"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,072,049",
+    "bs.accounts_receivable": "5,472,835",
+    "bs.other_current_assets": "428,820",
+    "bs.total_current_assets": "6,973,704",
+    "bs.net_ppe": "4,132,558",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,746,262",
+    "bs.accounts_payable": "1,836,954",
+    "bs.accrued_liabilities": "926,299",
+    "bs.revolver": "1,608,074",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "652,271",
+    "bs.total_current_liabilities": "5,716,598",
+    "bs.long_term_debt": "4,504,500",
+    "bs.other_noncurrent_liabilities": "554,400",
+    "bs.total_liabilities": "10,775,498",
+    "bs.total_equity": "2,970,764",
+    "bs.total_liabilities_and_equity": "13,746,262",
+    "is.revenue": "17,606,368",
+    "is.cogs": "11,817,975",
+    "is.gross_profit": "5,788,393",
+    "is.sga": "3,961,433",
+    "is.depreciation_amortization": "345,779",
+    "is.other_operating_expense": "70,426",
+    "is.operating_income": "1,410,755",
+    "is.interest_expense": "254,380",
+    "is.other_income_net": "10,564",
+    "is.pretax_income": "1,166,939",
+    "is.income_tax_expense": "291,735",
+    "is.net_income": "875,204",
+    "cf.net_income": "875,204",
+    "cf.depreciation_amortization": "345,779",
+    "cf.change_in_working_capital": "(42,950)",
+    "cf.other_operating": "11,880",
+    "cf.cfo": "1,189,913",
+    "cf.capex": "(387,340)",
+    "cf.cfi": "(387,340)",
+    "cf.revolver_net": "39,171",
+    "cf.term_debt_repayments": "(346,500)",
+    "cf.distributions": "(469,130)",
+    "cf.cff": "(776,459)",
+    "cf.net_change_in_cash": "26,114",
+    "sup.cash_interest_paid": "256,589",
+    "sup.cash_taxes_paid": "279,077",
+    "sup.scheduled_principal": "346,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "stanmoor-mechanical.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/stanmoor-mechanical/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Stanmoor Mechanical Contractors, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-11-06",
+   "document_date": "2026-11-02",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "1,140,445"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "5,738,676"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "456,178"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "7,335,299"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "4,266,565"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "2,310,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "330,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "14,241,864"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "1,943,943"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "978,387"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "1,710,667"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "693,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "708,885"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "6,034,882"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,638,250"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "584,100"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "10,257,232"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "3,984,632"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "14,241,864"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,524,109"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "532,615"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(23,061)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "17,820"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,051,483"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(611,934)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(611,934)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "54,690"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(519,750)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(938,028)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,403,088)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "36,461"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "347,915"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "493,411"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "519,750"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "1,101,666",
+    "bs.accounts_receivable": "5,563,665",
+    "bs.other_current_assets": "440,666",
+    "bs.total_current_assets": "7,105,997",
+    "bs.net_ppe": "4,160,274",
+    "bs.intangibles": "2,310,000",
+    "bs.other_noncurrent_assets": "330,000",
+    "bs.total_assets": "13,906,271",
+    "bs.accounts_payable": "1,896,999",
+    "bs.accrued_liabilities": "950,012",
+    "bs.revolver": "1,652,499",
+    "bs.cpltd": "693,000",
+    "bs.other_current_liabilities": "665,077",
+    "bs.total_current_liabilities": "5,857,587",
+    "bs.long_term_debt": "4,331,250",
+    "bs.other_noncurrent_liabilities": "560,340",
+    "bs.total_liabilities": "10,749,177",
+    "bs.total_equity": "3,157,094",
+    "bs.total_liabilities_and_equity": "13,906,271",
+    "cf.net_income": "1,328,100",
+    "cf.depreciation_amortization": "520,035",
+    "cf.change_in_working_capital": "(49,062)",
+    "cf.other_operating": "17,820",
+    "cf.cfo": "1,816,893",
+    "cf.capex": "(589,312)",
+    "cf.cfi": "(589,312)",
+    "cf.revolver_net": "83,596",
+    "cf.term_debt_repayments": "(519,750)",
+    "cf.distributions": "(735,696)",
+    "cf.cff": "(1,171,850)",
+    "cf.net_change_in_cash": "55,731",
+    "sup.cash_interest_paid": "380,723",
+    "sup.cash_taxes_paid": "431,058",
+    "sup.scheduled_principal": "519,750",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [
+    "is.revenue",
+    "is.cogs",
+    "is.gross_profit",
+    "is.sga",
+    "is.depreciation_amortization",
+    "is.other_operating_expense",
+    "is.operating_income",
+    "is.interest_expense",
+    "is.other_income_net",
+    "is.pretax_income",
+    "is.income_tax_expense",
+    "is.net_income"
+   ],
+   "defects": [
+    {
+     "type": "image_only_page",
+     "section": "income_statement",
+     "page": 3
+    }
+   ]
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/stanmoor-mechanical/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-11",
+   "document_date": "2025-05-09",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/stanmoor-mechanical/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-08-07",
+   "document_date": "2025-08-05",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/stanmoor-mechanical/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-30",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/stanmoor-mechanical/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-03",
+   "document_date": "2026-02-01",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/stanmoor-mechanical/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-04-29",
+   "document_date": "2026-04-27",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/stanmoor-mechanical/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-08-10",
+   "document_date": "2026-08-08",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "stanmoor-mechanical.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/stanmoor-mechanical/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Stanmoor Mechanical Contractors, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-11-06",
+   "document_date": "2026-11-04",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "image_only",
+  "description": "Image-only page: the income statement page of the current interim statements is a scanned image with no text layer.",
+  "details": {
+   "document_id": "stanmoor-mechanical.ifs-2026-09-30",
+   "image_section": "income statement",
+   "defects": [
+    {
+     "document_id": "stanmoor-mechanical.ifs-2026-09-30",
+     "type": "image_only_page",
+     "section": "income_statement",
+     "page": 3
+    }
+   ]
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.41",
+    "pass": true,
+    "headroom": "0.9280",
+    "reported_value": "2.41",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1721993"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "532171"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "573997"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "684674"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3512835"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "562826"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2950009"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "532171"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "693000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1225171"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.22",
+    "pass": true,
+    "headroom": "0.2200",
+    "reported_value": "1.22",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "6788884"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "5570402"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": "431563",
+    "pass": true,
+    "headroom": "0.2693",
+    "reported_value": "431563",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "2741563"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "2310000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "431563"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.44",
+    "pass": true,
+    "headroom": "0.9520",
+    "reported_value": "2.44",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1741407"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "521250"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "580469"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "688116"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3531242"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "573997"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2957245"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "521250"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "693000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1214250"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.22",
+    "pass": true,
+    "headroom": "0.2200",
+    "reported_value": "1.22",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "6973704"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "5716598"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": "660764",
+    "pass": true,
+    "headroom": "0.9434",
+    "reported_value": "660764",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "2970764"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "2310000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "660764"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.45",
+    "pass": true,
+    "headroom": "0.9600",
+    "reported_value": "2.45",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1746069"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "509997"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "582024"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "691691"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3529781"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "580469"
+     },
+     {
+      "label": "Numerator",
+      "amount": "2949312"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "509997"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "693000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1202997"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.21",
+    "pass": true,
+    "headroom": "0.2100",
+    "reported_value": "1.21",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "7105997"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "5857587"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": "847094",
+    "pass": true,
+    "headroom": "1.4915",
+    "reported_value": "847094",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "3157094"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "2310000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "847094"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.54",
+    "pass": true,
+    "headroom": "1.0320",
+    "reported_value": "2.54",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1814253"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "498990"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "604752"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "695460"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3613455"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "582024"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3031431"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "498990"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "693000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1191990"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.22",
+    "pass": true,
+    "headroom": "0.2200",
+    "reported_value": "1.22",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "7161279"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "5865694"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": "1088551",
+    "pass": true,
+    "headroom": "2.2016",
+    "reported_value": "1088551",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "3398551"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "2310000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "1088551"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.61",
+    "pass": true,
+    "headroom": "1.0880",
+    "reported_value": "2.61",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1872312"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "488377"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "624106"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "699518"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3684313"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "604752"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3079561"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "488377"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "693000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1181377"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.22",
+    "pass": true,
+    "headroom": "0.2200",
+    "reported_value": "1.22",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "6966525"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "5730097"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": "1217312",
+    "pass": true,
+    "headroom": "2.5803",
+    "reported_value": "1217312",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "3527312"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "2310000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "1217312"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.68",
+    "pass": true,
+    "headroom": "1.1440",
+    "reported_value": "2.68",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1933128"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "477086"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "644377"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "703674"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "3758265"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "624106"
+     },
+     {
+      "label": "Numerator",
+      "amount": "3134159"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "477086"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "693000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "1170086"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.23",
+    "pass": true,
+    "headroom": "0.2300",
+    "reported_value": "1.23",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "7308226"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "5947934"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": "1536737",
+    "pass": true,
+    "headroom": "3.5198",
+    "reported_value": "1536737",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total equity",
+      "amount": "3846737"
+     },
+     {
+      "label": "Less: Goodwill and intangibles",
+      "amount": "2310000"
+     },
+     {
+      "label": "Tangible Net Worth",
+      "amount": "1536737"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "dscr",
+    "covenant_name": "Debt Service Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": "2.77",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "2.77",
+     "pass": true,
+     "headroom": "1.2160",
+     "outcome": "compliant"
+    },
+    "missing": "spread_incomplete: the income statement page has no text layer"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": "1.22",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "1.22",
+     "pass": true,
+     "headroom": "0.2200",
+     "outcome": "compliant"
+    },
+    "missing": "spread_incomplete: the income statement page has no text layer"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "min_tnw",
+    "covenant_name": "Minimum Tangible Net Worth",
+    "archetype": "min_tangible_net_worth",
+    "facility_id": "stanmoor-mechanical-rlc",
+    "terms_version_id": "tv-stanmoor-mechanical-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": ">=",
+    "threshold": "340000",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": "1674632",
+    "reported_threshold": "340000",
+    "reported_in_compliance": true,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "1674632",
+     "pass": true,
+     "headroom": "3.9254",
+     "outcome": "compliant"
+    },
+    "missing": "spread_incomplete: the income statement page has no text layer"
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [],
+  "exceptions": [
+   {
+    "type": "spread.image_only",
+    "severity": "medium",
+    "period_end": "2026-09-30",
+    "subject": "document:stanmoor-mechanical.ifs-2026-09-30",
+    "summary": "The income statement page is an image with no text layer."
+   }
+  ]
+ }
+}

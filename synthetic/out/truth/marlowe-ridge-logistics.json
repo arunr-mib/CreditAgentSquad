@@ -1,0 +1,6077 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "marlowe-ridge-logistics",
+  "name": "Marlowe Ridge Cold Storage & Logistics, Inc.",
+  "legal_form": "corporation",
+  "industry": "logistics",
+  "city": "Allentown",
+  "state": "PA",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Colin Abernathy",
+  "analyst": "Jules Hartmann",
+  "risk_rating": 5,
+  "statement_scale": 1000,
+  "chief_financial_officer": "Desmond Achterberg",
+  "auditor": "Hobart Lindgren & Co. LLP"
+ },
+ "facilities": [
+  {
+   "id": "marlowe-ridge-logistics-rlc",
+   "borrower_id": "marlowe-ridge-logistics",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "9250000",
+   "original_amount": "9250000",
+   "closing_date": "2021-06-25",
+   "maturity_date": "2027-06-25",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "marlowe-ridge-logistics-tl",
+   "borrower_id": "marlowe-ridge-logistics",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "34592000",
+   "original_amount": "34592000",
+   "closing_date": "2021-06-25",
+   "maturity_date": "2028-06-25",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "736000"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-marlowe-ridge-logistics-1",
+   "facility_id": "marlowe-ridge-logistics-rlc",
+   "version": 1,
+   "status": "superseded",
+   "effective_from": "2021-06-25",
+   "effective_to": "2025-06-30",
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2021-07-01",
+   "warnings": [],
+   "source_documents": [
+    "marlowe-ridge-logistics.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.20",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.20 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "3.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 3.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "max_capex",
+      "name": "Maximum Capital Expenditures",
+      "archetype": "max_capex",
+      "params": {},
+      "test": {
+       "operator": "<=",
+       "threshold": "12000000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall not make Capital Expenditures in an aggregate amount exceeding $12,000,000 in any period of four consecutive fiscal quarters, measured as of the last day of each fiscal quarter."
+       },
+       {
+        "field": "definition",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Capital Expenditures\" means, for any period, purchases of property and equipment by the Borrower during such period."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "marlowe-ridge-logistics.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "marlowe-ridge-logistics.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "marlowe-ridge-logistics.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $9,250,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $34,592,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $736,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  },
+  {
+   "id": "tv-marlowe-ridge-logistics-2",
+   "facility_id": "marlowe-ridge-logistics-rlc",
+   "version": 2,
+   "status": "approved",
+   "effective_from": "2025-07-01",
+   "effective_to": null,
+   "prepared_by": "Jules Hartmann",
+   "approved_by": "Graham Sedgwick",
+   "approved_at": "2025-06-29",
+   "warnings": [],
+   "source_documents": [
+    "marlowe-ridge-logistics.credit-agreement",
+    "marlowe-ridge-logistics.amendment-1"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.20",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.20 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "marlowe-ridge-logistics.amendment-1",
+        "section": "1",
+        "page": 1,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "max_capex",
+      "name": "Maximum Capital Expenditures",
+      "archetype": "max_capex",
+      "params": {},
+      "test": {
+       "operator": "<=",
+       "threshold": "12000000",
+       "steps": [],
+       "unit": "usd"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 0,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall not make Capital Expenditures in an aggregate amount exceeding $12,000,000 in any period of four consecutive fiscal quarters, measured as of the last day of each fiscal quarter."
+       },
+       {
+        "field": "definition",
+        "document_id": "marlowe-ridge-logistics.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Capital Expenditures\" means, for any period, purchases of property and equipment by the Borrower during such period."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "marlowe-ridge-logistics.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "marlowe-ridge-logistics.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "marlowe-ridge-logistics.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $9,250,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $34,592,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "marlowe-ridge-logistics.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $736,000 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "32397000",
+    "is.cogs": "24891000",
+    "is.gross_profit": "7506000",
+    "is.sga": "3726000",
+    "is.depreciation_amortization": "1186000",
+    "is.other_operating_expense": "130000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2464000",
+    "is.interest_expense": "585000",
+    "is.other_income_net": "19000",
+    "is.pretax_income": "1898000",
+    "is.income_tax_expense": "475000",
+    "is.net_income": "1423000",
+    "bs.cash": "3888000",
+    "bs.accounts_receivable": "16119000",
+    "bs.inventory": "546000",
+    "bs.other_current_assets": "1555000",
+    "bs.total_current_assets": "22108000",
+    "bs.net_ppe": "54269000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "86617000",
+    "bs.accounts_payable": "7911000",
+    "bs.accrued_liabilities": "1834000",
+    "bs.revolver": "5831000",
+    "bs.cpltd": "2944000",
+    "bs.other_current_liabilities": "2289000",
+    "bs.total_current_liabilities": "20809000",
+    "bs.long_term_debt": "22816000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2035000",
+    "bs.total_liabilities": "45660000",
+    "bs.total_equity": "40957000",
+    "bs.total_liabilities_and_equity": "86617000",
+    "cf.net_income": "1423000",
+    "cf.depreciation_amortization": "1186000",
+    "cf.change_in_working_capital": "-361000",
+    "cf.other_operating": "23000",
+    "cf.cfo": "2271000",
+    "cf.capex": "1296000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1296000",
+    "cf.revolver_net": "-102000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "736000",
+    "cf.distributions": "204000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1042000",
+    "cf.net_change_in_cash": "-67000",
+    "sup.cash_interest_paid": "589000",
+    "sup.cash_taxes_paid": "536000",
+    "sup.scheduled_principal": "736000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "28285000",
+    "cash.beginning_of_year": "3955000",
+    "debt.term_total": "25760000"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "65479000",
+    "is.cogs": "50119000",
+    "is.gross_profit": "15360000",
+    "is.sga": "7530000",
+    "is.depreciation_amortization": "2375000",
+    "is.other_operating_expense": "262000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5193000",
+    "is.interest_expense": "1155000",
+    "is.other_income_net": "39000",
+    "is.pretax_income": "4077000",
+    "is.income_tax_expense": "1020000",
+    "is.net_income": "3057000",
+    "bs.cash": "3970000",
+    "bs.accounts_receivable": "15626000",
+    "bs.inventory": "553000",
+    "bs.other_current_assets": "1588000",
+    "bs.total_current_assets": "21737000",
+    "bs.net_ppe": "54403000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "86380000",
+    "bs.accounts_payable": "8018000",
+    "bs.accrued_liabilities": "1864000",
+    "bs.revolver": "5653000",
+    "bs.cpltd": "2944000",
+    "bs.other_current_liabilities": "2398000",
+    "bs.total_current_liabilities": "20877000",
+    "bs.long_term_debt": "22080000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2058000",
+    "bs.total_liabilities": "45015000",
+    "bs.total_equity": "41365000",
+    "bs.total_liabilities_and_equity": "86380000",
+    "cf.net_income": "3057000",
+    "cf.depreciation_amortization": "2375000",
+    "cf.change_in_working_capital": "338000",
+    "cf.other_operating": "46000",
+    "cf.cfo": "5816000",
+    "cf.capex": "2619000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2619000",
+    "cf.revolver_net": "-280000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1472000",
+    "cf.distributions": "1430000",
+    "cf.other_financing": "0",
+    "cf.cff": "-3182000",
+    "cf.net_change_in_cash": "15000",
+    "sup.cash_interest_paid": "1164000",
+    "sup.cash_taxes_paid": "1011000",
+    "sup.scheduled_principal": "1472000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "28693000",
+    "cash.beginning_of_year": "3955000",
+    "debt.term_total": "25024000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "99273000",
+    "is.cogs": "76029000",
+    "is.gross_profit": "23244000",
+    "is.sga": "11416000",
+    "is.depreciation_amortization": "3567000",
+    "is.other_operating_expense": "397000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "7864000",
+    "is.interest_expense": "1709000",
+    "is.other_income_net": "59000",
+    "is.pretax_income": "6214000",
+    "is.income_tax_expense": "1554000",
+    "is.net_income": "4660000",
+    "bs.cash": "4055000",
+    "bs.accounts_receivable": "16221000",
+    "bs.inventory": "568000",
+    "bs.other_current_assets": "1622000",
+    "bs.total_current_assets": "22466000",
+    "bs.net_ppe": "54563000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "87269000",
+    "bs.accounts_payable": "8234000",
+    "bs.accrued_liabilities": "1895000",
+    "bs.revolver": "6083000",
+    "bs.cpltd": "2944000",
+    "bs.other_current_liabilities": "2426000",
+    "bs.total_current_liabilities": "21582000",
+    "bs.long_term_debt": "21344000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2081000",
+    "bs.total_liabilities": "45007000",
+    "bs.total_equity": "42262000",
+    "bs.total_liabilities_and_equity": "87269000",
+    "cf.net_income": "4660000",
+    "cf.depreciation_amortization": "3567000",
+    "cf.change_in_working_capital": "-31000",
+    "cf.other_operating": "69000",
+    "cf.cfo": "8265000",
+    "cf.capex": "3971000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-3971000",
+    "cf.revolver_net": "150000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2208000",
+    "cf.distributions": "2136000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4194000",
+    "cf.net_change_in_cash": "100000",
+    "sup.cash_interest_paid": "1723000",
+    "sup.cash_taxes_paid": "1556000",
+    "sup.scheduled_principal": "2208000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "29590000",
+    "cash.beginning_of_year": "3955000",
+    "debt.term_total": "24288000"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "133977000",
+    "is.cogs": "102470000",
+    "is.gross_profit": "31507000",
+    "is.sga": "15407000",
+    "is.depreciation_amortization": "4762000",
+    "is.other_operating_expense": "536000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "10802000",
+    "is.interest_expense": "2258000",
+    "is.other_income_net": "80000",
+    "is.pretax_income": "8624000",
+    "is.income_tax_expense": "2157000",
+    "is.net_income": "6467000",
+    "bs.cash": "4164000",
+    "bs.accounts_receivable": "16962000",
+    "bs.inventory": "580000",
+    "bs.other_current_assets": "1666000",
+    "bs.total_current_assets": "23372000",
+    "bs.net_ppe": "54756000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "88368000",
+    "bs.accounts_payable": "8403000",
+    "bs.accrued_liabilities": "1939000",
+    "bs.revolver": "6247000",
+    "bs.cpltd": "2944000",
+    "bs.other_current_liabilities": "2546000",
+    "bs.total_current_liabilities": "22079000",
+    "bs.long_term_debt": "20608000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2104000",
+    "bs.total_liabilities": "44791000",
+    "bs.total_equity": "43577000",
+    "bs.total_liabilities_and_equity": "88368000",
+    "cf.net_income": "6467000",
+    "cf.depreciation_amortization": "4762000",
+    "cf.change_in_working_capital": "-495000",
+    "cf.other_operating": "92000",
+    "cf.cfo": "10826000",
+    "cf.capex": "5359000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5359000",
+    "cf.revolver_net": "314000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2944000",
+    "cf.distributions": "2628000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5258000",
+    "cf.net_change_in_cash": "209000",
+    "sup.cash_interest_paid": "2274000",
+    "sup.cash_taxes_paid": "2090000",
+    "sup.scheduled_principal": "2944000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "30905000",
+    "cash.beginning_of_year": "3955000",
+    "debt.term_total": "23552000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "33981000",
+    "is.cogs": "25897000",
+    "is.gross_profit": "8084000",
+    "is.sga": "3908000",
+    "is.depreciation_amortization": "1199000",
+    "is.other_operating_expense": "136000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2841000",
+    "is.interest_expense": "539000",
+    "is.other_income_net": "20000",
+    "is.pretax_income": "2322000",
+    "is.income_tax_expense": "581000",
+    "is.net_income": "1741000",
+    "bs.cash": "4078000",
+    "bs.accounts_receivable": "16795000",
+    "bs.inventory": "568000",
+    "bs.other_current_assets": "1631000",
+    "bs.total_current_assets": "23072000",
+    "bs.net_ppe": "54916000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "88228000",
+    "bs.accounts_payable": "8230000",
+    "bs.accrued_liabilities": "1900000",
+    "bs.revolver": "6117000",
+    "bs.cpltd": "2944000",
+    "bs.other_current_liabilities": "2484000",
+    "bs.total_current_liabilities": "21675000",
+    "bs.long_term_debt": "19872000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2127000",
+    "bs.total_liabilities": "43674000",
+    "bs.total_equity": "44554000",
+    "bs.total_liabilities_and_equity": "88228000",
+    "cf.net_income": "1741000",
+    "cf.depreciation_amortization": "1199000",
+    "cf.change_in_working_capital": "-60000",
+    "cf.other_operating": "23000",
+    "cf.cfo": "2903000",
+    "cf.capex": "1359000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1359000",
+    "cf.revolver_net": "-130000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "736000",
+    "cf.distributions": "764000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1630000",
+    "cf.net_change_in_cash": "-86000",
+    "sup.cash_interest_paid": "542000",
+    "sup.cash_taxes_paid": "603000",
+    "sup.scheduled_principal": "736000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "31882000",
+    "cash.beginning_of_year": "4164000",
+    "debt.term_total": "22816000"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "68251000",
+    "is.cogs": "52131000",
+    "is.gross_profit": "16120000",
+    "is.sga": "7849000",
+    "is.depreciation_amortization": "2402000",
+    "is.other_operating_expense": "273000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5596000",
+    "is.interest_expense": "1063000",
+    "is.other_income_net": "41000",
+    "is.pretax_income": "4574000",
+    "is.income_tax_expense": "1144000",
+    "is.net_income": "3430000",
+    "bs.cash": "4112000",
+    "bs.accounts_receivable": "16750000",
+    "bs.inventory": "575000",
+    "bs.other_current_assets": "1645000",
+    "bs.total_current_assets": "23082000",
+    "bs.net_ppe": "58284000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "91606000",
+    "bs.accounts_payable": "8337000",
+    "bs.accrued_liabilities": "1909000",
+    "bs.revolver": "6169000",
+    "bs.cpltd": "3584000",
+    "bs.other_current_liabilities": "2482000",
+    "bs.total_current_liabilities": "22481000",
+    "bs.long_term_debt": "21696000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2150000",
+    "bs.total_liabilities": "46327000",
+    "bs.total_equity": "45279000",
+    "bs.total_liabilities_and_equity": "91606000",
+    "cf.net_income": "3430000",
+    "cf.depreciation_amortization": "2402000",
+    "cf.change_in_working_capital": "78000",
+    "cf.other_operating": "46000",
+    "cf.cfo": "5956000",
+    "cf.capex": "5930000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5930000",
+    "cf.revolver_net": "-78000",
+    "cf.term_debt_proceeds": "3200000",
+    "cf.term_debt_repayments": "1472000",
+    "cf.distributions": "1728000",
+    "cf.other_financing": "0",
+    "cf.cff": "-78000",
+    "cf.net_change_in_cash": "-52000",
+    "sup.cash_interest_paid": "1071000",
+    "sup.cash_taxes_paid": "1184000",
+    "sup.scheduled_principal": "1472000",
+    "sup.financed_capex": "3200000"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "32607000",
+    "cash.beginning_of_year": "4164000",
+    "debt.term_total": "25280000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "103224000",
+    "is.cogs": "78945000",
+    "is.gross_profit": "24279000",
+    "is.sga": "11871000",
+    "is.depreciation_amortization": "3679000",
+    "is.other_operating_expense": "413000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8316000",
+    "is.interest_expense": "1631000",
+    "is.other_income_net": "62000",
+    "is.pretax_income": "6747000",
+    "is.income_tax_expense": "1687000",
+    "is.net_income": "5060000",
+    "bs.cash": "4197000",
+    "bs.accounts_receivable": "16595000",
+    "bs.inventory": "588000",
+    "bs.other_current_assets": "1679000",
+    "bs.total_current_assets": "23059000",
+    "bs.net_ppe": "58406000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "91705000",
+    "bs.accounts_payable": "8522000",
+    "bs.accrued_liabilities": "1959000",
+    "bs.revolver": "6295000",
+    "bs.cpltd": "3584000",
+    "bs.other_current_liabilities": "2501000",
+    "bs.total_current_liabilities": "22861000",
+    "bs.long_term_debt": "20800000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2173000",
+    "bs.total_liabilities": "45834000",
+    "bs.total_equity": "45871000",
+    "bs.total_liabilities_and_equity": "91705000",
+    "cf.net_income": "5060000",
+    "cf.depreciation_amortization": "3679000",
+    "cf.change_in_working_capital": "440000",
+    "cf.other_operating": "69000",
+    "cf.cfo": "9248000",
+    "cf.capex": "7329000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-7329000",
+    "cf.revolver_net": "48000",
+    "cf.term_debt_proceeds": "3200000",
+    "cf.term_debt_repayments": "2368000",
+    "cf.distributions": "2766000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1886000",
+    "cf.net_change_in_cash": "33000",
+    "sup.cash_interest_paid": "1625000",
+    "sup.cash_taxes_paid": "1747000",
+    "sup.scheduled_principal": "2368000",
+    "sup.financed_capex": "3200000"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "33199000",
+    "cash.beginning_of_year": "4164000",
+    "debt.term_total": "24384000"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "139795000",
+    "is.cogs": "106812000",
+    "is.gross_profit": "32983000",
+    "is.sga": "16077000",
+    "is.depreciation_amortization": "4958000",
+    "is.other_operating_expense": "559000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "11389000",
+    "is.interest_expense": "2186000",
+    "is.other_income_net": "84000",
+    "is.pretax_income": "9287000",
+    "is.income_tax_expense": "2322000",
+    "is.net_income": "6965000",
+    "bs.cash": "4389000",
+    "bs.accounts_receivable": "17875000",
+    "bs.inventory": "611000",
+    "bs.other_current_assets": "1755000",
+    "bs.total_current_assets": "24630000",
+    "bs.net_ppe": "58590000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "93460000",
+    "bs.accounts_payable": "8856000",
+    "bs.accrued_liabilities": "2036000",
+    "bs.revolver": "6616000",
+    "bs.cpltd": "3584000",
+    "bs.other_current_liabilities": "2683000",
+    "bs.total_current_liabilities": "23775000",
+    "bs.long_term_debt": "19904000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2196000",
+    "bs.total_liabilities": "45875000",
+    "bs.total_equity": "47585000",
+    "bs.total_liabilities_and_equity": "93460000",
+    "cf.net_income": "6965000",
+    "cf.depreciation_amortization": "4958000",
+    "cf.change_in_working_capital": "-346000",
+    "cf.other_operating": "92000",
+    "cf.cfo": "11669000",
+    "cf.capex": "8792000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-8792000",
+    "cf.revolver_net": "369000",
+    "cf.term_debt_proceeds": "3200000",
+    "cf.term_debt_repayments": "3264000",
+    "cf.distributions": "2957000",
+    "cf.other_financing": "0",
+    "cf.cff": "-2652000",
+    "cf.net_change_in_cash": "225000",
+    "sup.cash_interest_paid": "2184000",
+    "sup.cash_taxes_paid": "2290000",
+    "sup.scheduled_principal": "3264000",
+    "sup.financed_capex": "3200000"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "34913000",
+    "cash.beginning_of_year": "4164000",
+    "debt.term_total": "23488000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "35721000",
+    "is.cogs": "27287000",
+    "is.gross_profit": "8434000",
+    "is.sga": "4108000",
+    "is.depreciation_amortization": "1283000",
+    "is.other_operating_expense": "143000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "2900000",
+    "is.interest_expense": "545000",
+    "is.other_income_net": "21000",
+    "is.pretax_income": "2376000",
+    "is.income_tax_expense": "594000",
+    "is.net_income": "1782000",
+    "bs.cash": "4287000",
+    "bs.accounts_receivable": "17498000",
+    "bs.inventory": "598000",
+    "bs.other_current_assets": "1715000",
+    "bs.total_current_assets": "24098000",
+    "bs.net_ppe": "58736000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "93074000",
+    "bs.accounts_payable": "8672000",
+    "bs.accrued_liabilities": "1990000",
+    "bs.revolver": "6430000",
+    "bs.cpltd": "3584000",
+    "bs.other_current_liabilities": "2594000",
+    "bs.total_current_liabilities": "23270000",
+    "bs.long_term_debt": "19008000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2219000",
+    "bs.total_liabilities": "44497000",
+    "bs.total_equity": "48577000",
+    "bs.total_liabilities_and_equity": "93074000",
+    "cf.net_income": "1782000",
+    "cf.depreciation_amortization": "1283000",
+    "cf.change_in_working_capital": "111000",
+    "cf.other_operating": "23000",
+    "cf.cfo": "3199000",
+    "cf.capex": "1429000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-1429000",
+    "cf.revolver_net": "-186000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "896000",
+    "cf.distributions": "790000",
+    "cf.other_financing": "0",
+    "cf.cff": "-1872000",
+    "cf.net_change_in_cash": "-102000",
+    "sup.cash_interest_paid": "548000",
+    "sup.cash_taxes_paid": "635000",
+    "sup.scheduled_principal": "896000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "35905000",
+    "cash.beginning_of_year": "4389000",
+    "debt.term_total": "22592000"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "71204000",
+    "is.cogs": "54456000",
+    "is.gross_profit": "16748000",
+    "is.sga": "8189000",
+    "is.depreciation_amortization": "2570000",
+    "is.other_operating_expense": "285000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "5704000",
+    "is.interest_expense": "1071000",
+    "is.other_income_net": "42000",
+    "is.pretax_income": "4675000",
+    "is.income_tax_expense": "1169000",
+    "is.net_income": "3506000",
+    "bs.cash": "4258000",
+    "bs.accounts_receivable": "16876000",
+    "bs.inventory": "595000",
+    "bs.other_current_assets": "1703000",
+    "bs.total_current_assets": "23432000",
+    "bs.net_ppe": "58868000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "92540000",
+    "bs.accounts_payable": "8635000",
+    "bs.accrued_liabilities": "1971000",
+    "bs.revolver": "6387000",
+    "bs.cpltd": "3584000",
+    "bs.other_current_liabilities": "2562000",
+    "bs.total_current_liabilities": "23139000",
+    "bs.long_term_debt": "18112000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2242000",
+    "bs.total_liabilities": "43493000",
+    "bs.total_equity": "49047000",
+    "bs.total_liabilities_and_equity": "92540000",
+    "cf.net_income": "3506000",
+    "cf.depreciation_amortization": "2570000",
+    "cf.change_in_working_capital": "660000",
+    "cf.other_operating": "46000",
+    "cf.cfo": "6782000",
+    "cf.capex": "2848000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-2848000",
+    "cf.revolver_net": "-229000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "1792000",
+    "cf.distributions": "2044000",
+    "cf.other_financing": "0",
+    "cf.cff": "-4065000",
+    "cf.net_change_in_cash": "-131000",
+    "sup.cash_interest_paid": "1081000",
+    "sup.cash_taxes_paid": "1229000",
+    "sup.scheduled_principal": "1792000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "36375000",
+    "cash.beginning_of_year": "4389000",
+    "debt.term_total": "21696000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "107621000",
+    "is.cogs": "82213000",
+    "is.gross_profit": "25408000",
+    "is.sga": "12377000",
+    "is.depreciation_amortization": "3859000",
+    "is.other_operating_expense": "431000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "8741000",
+    "is.interest_expense": "1580000",
+    "is.other_income_net": "64000",
+    "is.pretax_income": "7225000",
+    "is.income_tax_expense": "1807000",
+    "is.net_income": "5418000",
+    "bs.cash": "4370000",
+    "bs.accounts_receivable": "17201000",
+    "bs.inventory": "608000",
+    "bs.other_current_assets": "1748000",
+    "bs.total_current_assets": "23927000",
+    "bs.net_ppe": "59036000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "93203000",
+    "bs.accounts_payable": "8821000",
+    "bs.accrued_liabilities": "2013000",
+    "bs.revolver": "6555000",
+    "bs.cpltd": "3584000",
+    "bs.other_current_liabilities": "2677000",
+    "bs.total_current_liabilities": "23650000",
+    "bs.long_term_debt": "17216000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2265000",
+    "bs.total_liabilities": "43131000",
+    "bs.total_equity": "50072000",
+    "bs.total_liabilities_and_equity": "93203000",
+    "cf.net_income": "5418000",
+    "cf.depreciation_amortization": "3859000",
+    "cf.change_in_working_capital": "620000",
+    "cf.other_operating": "69000",
+    "cf.cfo": "9966000",
+    "cf.capex": "4305000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-4305000",
+    "cf.revolver_net": "-61000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2688000",
+    "cf.distributions": "2931000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5680000",
+    "cf.net_change_in_cash": "-19000",
+    "sup.cash_interest_paid": "1595000",
+    "sup.cash_taxes_paid": "1804000",
+    "sup.scheduled_principal": "2688000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "37400000",
+    "cash.beginning_of_year": "4389000",
+    "debt.term_total": "20800000"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1000,
+   "values": {
+    "is.revenue": "128000000",
+    "is.cogs": "97713000",
+    "is.gross_profit": "30287000",
+    "is.sga": "14720000",
+    "is.depreciation_amortization": "4721000",
+    "is.other_operating_expense": "512000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "10334000",
+    "is.interest_expense": "2460000",
+    "is.other_income_net": "76000",
+    "is.pretax_income": "7950000",
+    "is.income_tax_expense": "1988000",
+    "is.net_income": "5962000",
+    "bs.cash": "3955000",
+    "bs.accounts_receivable": "15929000",
+    "bs.inventory": "551000",
+    "bs.other_current_assets": "1582000",
+    "bs.total_current_assets": "22017000",
+    "bs.net_ppe": "54159000",
+    "bs.intangibles": "8960000",
+    "bs.other_noncurrent_assets": "1280000",
+    "bs.total_assets": "86416000",
+    "bs.accounts_payable": "7988000",
+    "bs.accrued_liabilities": "1867000",
+    "bs.revolver": "5933000",
+    "bs.cpltd": "2944000",
+    "bs.other_current_liabilities": "2382000",
+    "bs.total_current_liabilities": "21114000",
+    "bs.long_term_debt": "23552000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "2012000",
+    "bs.total_liabilities": "46678000",
+    "bs.total_equity": "39738000",
+    "bs.total_liabilities_and_equity": "86416000",
+    "cf.net_income": "5962000",
+    "cf.depreciation_amortization": "4721000",
+    "cf.change_in_working_capital": "-340000",
+    "cf.other_operating": "92000",
+    "cf.cfo": "10435000",
+    "cf.capex": "5120000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-5120000",
+    "cf.revolver_net": "173000",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "2944000",
+    "cf.distributions": "2429000",
+    "cf.other_financing": "0",
+    "cf.cff": "-5200000",
+    "cf.net_change_in_cash": "115000",
+    "sup.cash_interest_paid": "2472000",
+    "sup.cash_taxes_paid": "2068000",
+    "sup.scheduled_principal": "2944000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "12672000",
+    "equity.retained_earnings": "27066000",
+    "cash.beginning_of_year": "3840000",
+    "debt.term_total": "26496000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.64",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6785000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2212000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2263000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4775000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16035000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5422000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2157000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8456000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2227000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2944000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5171000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.80",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "28933000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6785000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2212000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2263000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4775000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16035000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "5422000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "5422000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.63",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6840000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2166000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2281000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4789000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16076000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5470000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2263000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8343000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2181000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "2944000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5125000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.96",
+     "threshold": "3.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "31449000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6840000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2166000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2281000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4789000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16076000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "8670000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "8670000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.59",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6867000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2180000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2290000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4874000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16211000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5517000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2281000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8413000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2176000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3104000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5280000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.89",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "30679000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6867000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2180000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2290000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4874000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16211000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "8717000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "8717000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.57",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "6965000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2186000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2322000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4958000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16431000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5592000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2290000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8549000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2184000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3264000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5448000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.83",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "30104000"
+      },
+      {
+       "label": "Net income",
+       "amount": "6965000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2186000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2322000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "4958000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16431000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "8792000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "8792000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.53",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7006000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2192000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2335000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5042000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16575000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5662000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2322000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8591000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2190000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3424000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5614000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.75",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "29022000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7006000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2192000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2335000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5042000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16575000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "8862000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "8862000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.50",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7041000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2194000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2347000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5126000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16708000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5710000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2335000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8663000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2194000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3584000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5778000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.68",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "28083000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7041000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2194000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2347000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5126000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "16708000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "5710000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "5710000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1000,
+   "signed_by": "Desmond Achterberg",
+   "reported": {
+    "fccr": {
+     "value": "1.56",
+     "threshold": "1.20",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "7323000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2135000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2442000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5138000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17038000"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "5768000"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "2347000"
+      },
+      {
+       "label": "Numerator",
+       "amount": "8923000"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "2154000"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "3584000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "5738000"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.61",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "27355000"
+      },
+      {
+       "label": "Net income",
+       "amount": "7323000"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "2135000"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "2442000"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "5138000"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "17038000"
+      }
+     ]
+    },
+    "max_capex": {
+     "value": "5768000",
+     "threshold": "12000000",
+     "in_compliance": true,
+     "unit": "usd",
+     "calculation": [
+      {
+       "label": "Capital Expenditures, trailing four quarters",
+       "amount": "5768000"
+      }
+     ]
+    }
+   },
+   "document_id": "marlowe-ridge-logistics.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "5870000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26496000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "5877000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "26496000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "5831000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25760000"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "5749000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25760000"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "5775000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25760000"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "5653000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25024000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "5866000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25024000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "6023000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25024000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "6083000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24288000"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "6181000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24288000"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "6285000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24288000"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "6247000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23552000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "6111000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23552000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "6068000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23552000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "6117000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22816000"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "6055000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22816000"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "6102000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22816000"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "6169000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25280000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "6199000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25280000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "6322000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "25280000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "6295000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24384000"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "6312000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24384000"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "6411000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "24384000"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "6616000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23488000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "6541000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23488000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "6531000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "23488000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "6430000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22592000"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "6461000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22592000"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "6453000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "22592000"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "6387000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21696000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "6456000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21696000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "6493000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "21696000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "6555000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20800000"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "6529000",
+   "commitment": "9250000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "20800000"
+  }
+ ],
+ "documents": [
+  {
+   "id": "marlowe-ridge-logistics.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/marlowe-ridge-logistics/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Marlowe Ridge Cold Storage & Logistics, Inc. and Bank of Stoic",
+   "received_date": "2021-06-25",
+   "document_date": "2021-06-25"
+  },
+  {
+   "id": "marlowe-ridge-logistics.amendment-1",
+   "type": "amendment",
+   "period_end": null,
+   "path": "documents/marlowe-ridge-logistics/amendment-1.pdf",
+   "pages": 2,
+   "title": "First Amendment to Credit Agreement, Marlowe Ridge Cold Storage & Logistics, Inc.",
+   "received_date": "2025-06-29",
+   "document_date": "2025-06-26"
+  },
+  {
+   "id": "marlowe-ridge-logistics.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/marlowe-ridge-logistics/afs-2024.pdf",
+   "pages": 7,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-12",
+   "document_date": "2025-04-03",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "4,164"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "16,962"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "580"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,666"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "23,372"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "54,756"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "88,368"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "8,403"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "1,939"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "6,247"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "2,944"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "2,546"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "22,079"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "20,608"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,104"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "44,791"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "43,577"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "88,368"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "133,977"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "102,470"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "31,507"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "15,407"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "4,762"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "536"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "10,802"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,258"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "80"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "8,624"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "2,157"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,467"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,467"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "4,762"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(495)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "92"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "10,826"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(5,359)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(5,359)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "314"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,944)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(2,628)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(5,258)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "209"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,274"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "2,090"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,944"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,955",
+    "bs.accounts_receivable": "15,929",
+    "bs.inventory": "551",
+    "bs.other_current_assets": "1,582",
+    "bs.total_current_assets": "22,017",
+    "bs.net_ppe": "54,159",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "86,416",
+    "bs.accounts_payable": "7,988",
+    "bs.accrued_liabilities": "1,867",
+    "bs.revolver": "5,933",
+    "bs.cpltd": "2,944",
+    "bs.other_current_liabilities": "2,382",
+    "bs.total_current_liabilities": "21,114",
+    "bs.long_term_debt": "23,552",
+    "bs.other_noncurrent_liabilities": "2,012",
+    "bs.total_liabilities": "46,678",
+    "bs.total_equity": "39,738",
+    "bs.total_liabilities_and_equity": "86,416",
+    "is.revenue": "128,000",
+    "is.cogs": "97,713",
+    "is.gross_profit": "30,287",
+    "is.sga": "14,720",
+    "is.depreciation_amortization": "4,721",
+    "is.other_operating_expense": "512",
+    "is.operating_income": "10,334",
+    "is.interest_expense": "2,460",
+    "is.other_income_net": "76",
+    "is.pretax_income": "7,950",
+    "is.income_tax_expense": "1,988",
+    "is.net_income": "5,962",
+    "cf.net_income": "5,962",
+    "cf.depreciation_amortization": "4,721",
+    "cf.change_in_working_capital": "(340)",
+    "cf.other_operating": "92",
+    "cf.cfo": "10,435",
+    "cf.capex": "(5,120)",
+    "cf.cfi": "(5,120)",
+    "cf.revolver_net": "173",
+    "cf.term_debt_repayments": "(2,944)",
+    "cf.distributions": "(2,429)",
+    "cf.cff": "(5,200)",
+    "cf.net_change_in_cash": "115",
+    "sup.cash_interest_paid": "2,472",
+    "sup.cash_taxes_paid": "2,068",
+    "sup.scheduled_principal": "2,944",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/marlowe-ridge-logistics/afs-2025.pdf",
+   "pages": 7,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-10",
+   "document_date": "2026-04-01",
+   "scale": 1000,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 7
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "4,389"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "17,875"
+    },
+    "bs.inventory": {
+     "page": 3,
+     "label": "Inventory",
+     "printed": "611"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "1,755"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "24,630"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "58,590"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "93,460"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "8,856"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "2,036"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "6,616"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "3,584"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "2,683"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "23,775"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "19,904"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "2,196"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "45,875"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total stockholders' equity",
+     "printed": "47,585"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "93,460"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "139,795"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "106,812"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "32,983"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "16,077"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "4,958"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "559"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "11,389"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "2,186"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "84"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "9,287"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "2,322"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "6,965"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "6,965"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "4,958"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(346)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "92"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "11,669"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(8,792)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(8,792)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "369"
+    },
+    "cf.term_debt_proceeds": {
+     "page": 5,
+     "label": "Proceeds from long-term debt",
+     "printed": "3,200"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(3,264)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Dividends paid",
+     "printed": "(2,957)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(2,652)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "225"
+    },
+    "sup.cash_interest_paid": {
+     "page": 7,
+     "label": "Cash paid for interest",
+     "printed": "2,184"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 7,
+     "label": "Cash paid for income taxes",
+     "printed": "2,290"
+    },
+    "sup.scheduled_principal": {
+     "page": 7,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "3,264"
+    },
+    "sup.financed_capex": {
+     "page": 7,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "3,200"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,164",
+    "bs.accounts_receivable": "16,962",
+    "bs.inventory": "580",
+    "bs.other_current_assets": "1,666",
+    "bs.total_current_assets": "23,372",
+    "bs.net_ppe": "54,756",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "88,368",
+    "bs.accounts_payable": "8,403",
+    "bs.accrued_liabilities": "1,939",
+    "bs.revolver": "6,247",
+    "bs.cpltd": "2,944",
+    "bs.other_current_liabilities": "2,546",
+    "bs.total_current_liabilities": "22,079",
+    "bs.long_term_debt": "20,608",
+    "bs.other_noncurrent_liabilities": "2,104",
+    "bs.total_liabilities": "44,791",
+    "bs.total_equity": "43,577",
+    "bs.total_liabilities_and_equity": "88,368",
+    "is.revenue": "133,977",
+    "is.cogs": "102,470",
+    "is.gross_profit": "31,507",
+    "is.sga": "15,407",
+    "is.depreciation_amortization": "4,762",
+    "is.other_operating_expense": "536",
+    "is.operating_income": "10,802",
+    "is.interest_expense": "2,258",
+    "is.other_income_net": "80",
+    "is.pretax_income": "8,624",
+    "is.income_tax_expense": "2,157",
+    "is.net_income": "6,467",
+    "cf.net_income": "6,467",
+    "cf.depreciation_amortization": "4,762",
+    "cf.change_in_working_capital": "(495)",
+    "cf.other_operating": "92",
+    "cf.cfo": "10,826",
+    "cf.capex": "(5,359)",
+    "cf.cfi": "(5,359)",
+    "cf.revolver_net": "314",
+    "cf.term_debt_proceeds": "-",
+    "cf.term_debt_repayments": "(2,944)",
+    "cf.distributions": "(2,628)",
+    "cf.cff": "(5,258)",
+    "cf.net_change_in_cash": "209",
+    "sup.cash_interest_paid": "2,274",
+    "sup.cash_taxes_paid": "2,090",
+    "sup.scheduled_principal": "2,944",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/marlowe-ridge-logistics/ifs-2025-03-31.pdf",
+   "pages": 5,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. interim financial statements, Q1 2025",
+   "received_date": "2025-05-09",
+   "document_date": "2025-05-05",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,078"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,795"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "568"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,631"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,072"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "54,916"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "88,228"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,230"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,900"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,117"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "2,944"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,484"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "21,675"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "19,872"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,127"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "43,674"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "44,554"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "88,228"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "33,981"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "25,897"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,084"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "3,908"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,199"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "136"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,841"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "539"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "20"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,322"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "581"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,741"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,741"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,199"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(60)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "23"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "2,903"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,359)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,359)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(130)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(736)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(764)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,630)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(86)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "542"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "603"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "736"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,888",
+    "bs.accounts_receivable": "16,119",
+    "bs.inventory": "546",
+    "bs.other_current_assets": "1,555",
+    "bs.total_current_assets": "22,108",
+    "bs.net_ppe": "54,269",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "86,617",
+    "bs.accounts_payable": "7,911",
+    "bs.accrued_liabilities": "1,834",
+    "bs.revolver": "5,831",
+    "bs.cpltd": "2,944",
+    "bs.other_current_liabilities": "2,289",
+    "bs.total_current_liabilities": "20,809",
+    "bs.long_term_debt": "22,816",
+    "bs.other_noncurrent_liabilities": "2,035",
+    "bs.total_liabilities": "45,660",
+    "bs.total_equity": "40,957",
+    "bs.total_liabilities_and_equity": "86,617",
+    "is.revenue": "32,397",
+    "is.cogs": "24,891",
+    "is.gross_profit": "7,506",
+    "is.sga": "3,726",
+    "is.depreciation_amortization": "1,186",
+    "is.other_operating_expense": "130",
+    "is.operating_income": "2,464",
+    "is.interest_expense": "585",
+    "is.other_income_net": "19",
+    "is.pretax_income": "1,898",
+    "is.income_tax_expense": "475",
+    "is.net_income": "1,423",
+    "cf.net_income": "1,423",
+    "cf.depreciation_amortization": "1,186",
+    "cf.change_in_working_capital": "(361)",
+    "cf.other_operating": "23",
+    "cf.cfo": "2,271",
+    "cf.capex": "(1,296)",
+    "cf.cfi": "(1,296)",
+    "cf.revolver_net": "(102)",
+    "cf.term_debt_repayments": "(736)",
+    "cf.distributions": "(204)",
+    "cf.cff": "(1,042)",
+    "cf.net_change_in_cash": "(67)",
+    "sup.cash_interest_paid": "589",
+    "sup.cash_taxes_paid": "536",
+    "sup.scheduled_principal": "736",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/marlowe-ridge-logistics/ifs-2025-06-30.pdf",
+   "pages": 5,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. interim financial statements, Q2 2025",
+   "received_date": "2025-07-26",
+   "document_date": "2025-07-22",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,112"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,750"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "575"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,645"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,082"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "58,284"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "91,606"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,337"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,909"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,169"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,584"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,482"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "22,481"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "21,696"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,150"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "46,327"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "45,279"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "91,606"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "68,251"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "52,131"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "16,120"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "7,849"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,402"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "273"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,596"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,063"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "41"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,574"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,144"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,430"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,430"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,402"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "78"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "46"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "5,956"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(5,930)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(5,930)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(78)"
+    },
+    "cf.term_debt_proceeds": {
+     "page": 4,
+     "label": "Proceeds from long-term debt",
+     "printed": "3,200"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,472)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(1,728)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(78)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(52)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,071"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,184"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,472"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "3,200"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "3,970",
+    "bs.accounts_receivable": "15,626",
+    "bs.inventory": "553",
+    "bs.other_current_assets": "1,588",
+    "bs.total_current_assets": "21,737",
+    "bs.net_ppe": "54,403",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "86,380",
+    "bs.accounts_payable": "8,018",
+    "bs.accrued_liabilities": "1,864",
+    "bs.revolver": "5,653",
+    "bs.cpltd": "2,944",
+    "bs.other_current_liabilities": "2,398",
+    "bs.total_current_liabilities": "20,877",
+    "bs.long_term_debt": "22,080",
+    "bs.other_noncurrent_liabilities": "2,058",
+    "bs.total_liabilities": "45,015",
+    "bs.total_equity": "41,365",
+    "bs.total_liabilities_and_equity": "86,380",
+    "is.revenue": "65,479",
+    "is.cogs": "50,119",
+    "is.gross_profit": "15,360",
+    "is.sga": "7,530",
+    "is.depreciation_amortization": "2,375",
+    "is.other_operating_expense": "262",
+    "is.operating_income": "5,193",
+    "is.interest_expense": "1,155",
+    "is.other_income_net": "39",
+    "is.pretax_income": "4,077",
+    "is.income_tax_expense": "1,020",
+    "is.net_income": "3,057",
+    "cf.net_income": "3,057",
+    "cf.depreciation_amortization": "2,375",
+    "cf.change_in_working_capital": "338",
+    "cf.other_operating": "46",
+    "cf.cfo": "5,816",
+    "cf.capex": "(2,619)",
+    "cf.cfi": "(2,619)",
+    "cf.revolver_net": "(280)",
+    "cf.term_debt_proceeds": "-",
+    "cf.term_debt_repayments": "(1,472)",
+    "cf.distributions": "(1,430)",
+    "cf.cff": "(3,182)",
+    "cf.net_change_in_cash": "15",
+    "sup.cash_interest_paid": "1,164",
+    "sup.cash_taxes_paid": "1,011",
+    "sup.scheduled_principal": "1,472",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/marlowe-ridge-logistics/ifs-2025-09-30.pdf",
+   "pages": 5,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. interim financial statements, Q3 2025",
+   "received_date": "2025-11-02",
+   "document_date": "2025-10-29",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,197"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,595"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "588"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,679"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,059"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "58,406"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "91,705"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,522"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,959"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,295"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,584"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,501"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "22,861"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "20,800"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,173"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "45,834"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "45,871"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "91,705"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "103,224"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "78,945"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "24,279"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "11,871"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "3,679"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "413"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "8,316"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,631"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "62"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "6,747"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,687"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "5,060"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,060"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,679"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "440"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "69"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "9,248"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(7,329)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(7,329)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "48"
+    },
+    "cf.term_debt_proceeds": {
+     "page": 4,
+     "label": "Proceeds from long-term debt",
+     "printed": "3,200"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,368)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,766)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,886)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "33"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,625"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,747"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,368"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "3,200"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,055",
+    "bs.accounts_receivable": "16,221",
+    "bs.inventory": "568",
+    "bs.other_current_assets": "1,622",
+    "bs.total_current_assets": "22,466",
+    "bs.net_ppe": "54,563",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "87,269",
+    "bs.accounts_payable": "8,234",
+    "bs.accrued_liabilities": "1,895",
+    "bs.revolver": "6,083",
+    "bs.cpltd": "2,944",
+    "bs.other_current_liabilities": "2,426",
+    "bs.total_current_liabilities": "21,582",
+    "bs.long_term_debt": "21,344",
+    "bs.other_noncurrent_liabilities": "2,081",
+    "bs.total_liabilities": "45,007",
+    "bs.total_equity": "42,262",
+    "bs.total_liabilities_and_equity": "87,269",
+    "is.revenue": "99,273",
+    "is.cogs": "76,029",
+    "is.gross_profit": "23,244",
+    "is.sga": "11,416",
+    "is.depreciation_amortization": "3,567",
+    "is.other_operating_expense": "397",
+    "is.operating_income": "7,864",
+    "is.interest_expense": "1,709",
+    "is.other_income_net": "59",
+    "is.pretax_income": "6,214",
+    "is.income_tax_expense": "1,554",
+    "is.net_income": "4,660",
+    "cf.net_income": "4,660",
+    "cf.depreciation_amortization": "3,567",
+    "cf.change_in_working_capital": "(31)",
+    "cf.other_operating": "69",
+    "cf.cfo": "8,265",
+    "cf.capex": "(3,971)",
+    "cf.cfi": "(3,971)",
+    "cf.revolver_net": "150",
+    "cf.term_debt_proceeds": "-",
+    "cf.term_debt_repayments": "(2,208)",
+    "cf.distributions": "(2,136)",
+    "cf.cff": "(4,194)",
+    "cf.net_change_in_cash": "100",
+    "sup.cash_interest_paid": "1,723",
+    "sup.cash_taxes_paid": "1,556",
+    "sup.scheduled_principal": "2,208",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/marlowe-ridge-logistics/ifs-2026-03-31.pdf",
+   "pages": 5,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. interim financial statements, Q1 2026",
+   "received_date": "2026-05-04",
+   "document_date": "2026-04-30",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,287"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,498"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "598"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,715"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "24,098"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "58,736"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "93,074"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,672"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,990"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,430"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,584"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,594"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "23,270"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "19,008"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,219"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "44,497"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "48,577"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "93,074"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "35,721"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "27,287"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "8,434"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,108"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "1,283"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "143"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "2,900"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "545"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "21"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "2,376"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "594"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,782"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,782"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "1,283"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "111"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "23"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "3,199"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(1,429)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(1,429)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(186)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(896)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(790)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(1,872)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(102)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "548"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "635"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "896"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,078",
+    "bs.accounts_receivable": "16,795",
+    "bs.inventory": "568",
+    "bs.other_current_assets": "1,631",
+    "bs.total_current_assets": "23,072",
+    "bs.net_ppe": "54,916",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "88,228",
+    "bs.accounts_payable": "8,230",
+    "bs.accrued_liabilities": "1,900",
+    "bs.revolver": "6,117",
+    "bs.cpltd": "2,944",
+    "bs.other_current_liabilities": "2,484",
+    "bs.total_current_liabilities": "21,675",
+    "bs.long_term_debt": "19,872",
+    "bs.other_noncurrent_liabilities": "2,127",
+    "bs.total_liabilities": "43,674",
+    "bs.total_equity": "44,554",
+    "bs.total_liabilities_and_equity": "88,228",
+    "is.revenue": "33,981",
+    "is.cogs": "25,897",
+    "is.gross_profit": "8,084",
+    "is.sga": "3,908",
+    "is.depreciation_amortization": "1,199",
+    "is.other_operating_expense": "136",
+    "is.operating_income": "2,841",
+    "is.interest_expense": "539",
+    "is.other_income_net": "20",
+    "is.pretax_income": "2,322",
+    "is.income_tax_expense": "581",
+    "is.net_income": "1,741",
+    "cf.net_income": "1,741",
+    "cf.depreciation_amortization": "1,199",
+    "cf.change_in_working_capital": "(60)",
+    "cf.other_operating": "23",
+    "cf.cfo": "2,903",
+    "cf.capex": "(1,359)",
+    "cf.cfi": "(1,359)",
+    "cf.revolver_net": "(130)",
+    "cf.term_debt_repayments": "(736)",
+    "cf.distributions": "(764)",
+    "cf.cff": "(1,630)",
+    "cf.net_change_in_cash": "(86)",
+    "sup.cash_interest_paid": "542",
+    "sup.cash_taxes_paid": "603",
+    "sup.scheduled_principal": "736",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/marlowe-ridge-logistics/ifs-2026-06-30.pdf",
+   "pages": 5,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. interim financial statements, Q2 2026",
+   "received_date": "2026-07-31",
+   "document_date": "2026-07-27",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,258"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "16,876"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "595"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,703"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,432"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "58,868"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "92,540"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,635"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "1,971"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,387"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,584"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,562"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "23,139"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "18,112"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,242"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "43,493"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "49,047"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "92,540"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "71,204"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "54,456"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "16,748"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "8,189"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "2,570"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "285"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "5,704"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,071"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "42"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "4,675"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,169"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "3,506"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "3,506"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "2,570"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "660"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "46"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "6,782"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(2,848)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(2,848)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(229)"
+    },
+    "cf.term_debt_proceeds": {
+     "page": 4,
+     "label": "Proceeds from long-term debt",
+     "printed": "-"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(1,792)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,044)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(4,065)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(131)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,081"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,229"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "1,792"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,112",
+    "bs.accounts_receivable": "16,750",
+    "bs.inventory": "575",
+    "bs.other_current_assets": "1,645",
+    "bs.total_current_assets": "23,082",
+    "bs.net_ppe": "58,284",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "91,606",
+    "bs.accounts_payable": "8,337",
+    "bs.accrued_liabilities": "1,909",
+    "bs.revolver": "6,169",
+    "bs.cpltd": "3,584",
+    "bs.other_current_liabilities": "2,482",
+    "bs.total_current_liabilities": "22,481",
+    "bs.long_term_debt": "21,696",
+    "bs.other_noncurrent_liabilities": "2,150",
+    "bs.total_liabilities": "46,327",
+    "bs.total_equity": "45,279",
+    "bs.total_liabilities_and_equity": "91,606",
+    "is.revenue": "68,251",
+    "is.cogs": "52,131",
+    "is.gross_profit": "16,120",
+    "is.sga": "7,849",
+    "is.depreciation_amortization": "2,402",
+    "is.other_operating_expense": "273",
+    "is.operating_income": "5,596",
+    "is.interest_expense": "1,063",
+    "is.other_income_net": "41",
+    "is.pretax_income": "4,574",
+    "is.income_tax_expense": "1,144",
+    "is.net_income": "3,430",
+    "cf.net_income": "3,430",
+    "cf.depreciation_amortization": "2,402",
+    "cf.change_in_working_capital": "78",
+    "cf.other_operating": "46",
+    "cf.cfo": "5,956",
+    "cf.capex": "(5,930)",
+    "cf.cfi": "(5,930)",
+    "cf.revolver_net": "(78)",
+    "cf.term_debt_proceeds": "3,200",
+    "cf.term_debt_repayments": "(1,472)",
+    "cf.distributions": "(1,728)",
+    "cf.cff": "(78)",
+    "cf.net_change_in_cash": "(52)",
+    "sup.cash_interest_paid": "1,071",
+    "sup.cash_taxes_paid": "1,184",
+    "sup.scheduled_principal": "1,472",
+    "sup.financed_capex": "3,200"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/marlowe-ridge-logistics/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. interim financial statements, Q3 2026",
+   "received_date": "2026-11-05",
+   "document_date": "2026-11-01",
+   "scale": 1000,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "4,370"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "17,201"
+    },
+    "bs.inventory": {
+     "page": 2,
+     "label": "Inventory",
+     "printed": "608"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "1,748"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "23,927"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "59,036"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "8,960"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "1,280"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "93,203"
+    },
+    "bs.accounts_payable": {
+     "page": 2,
+     "label": "Accounts payable",
+     "printed": "8,821"
+    },
+    "bs.accrued_liabilities": {
+     "page": 2,
+     "label": "Accrued liabilities",
+     "printed": "2,013"
+    },
+    "bs.revolver": {
+     "page": 2,
+     "label": "Line of credit",
+     "printed": "6,555"
+    },
+    "bs.cpltd": {
+     "page": 2,
+     "label": "Current portion of long-term debt",
+     "printed": "3,584"
+    },
+    "bs.other_current_liabilities": {
+     "page": 2,
+     "label": "Other current liabilities",
+     "printed": "2,677"
+    },
+    "bs.total_current_liabilities": {
+     "page": 2,
+     "label": "Total current liabilities",
+     "printed": "23,650"
+    },
+    "bs.long_term_debt": {
+     "page": 2,
+     "label": "Long-term debt, net of current portion",
+     "printed": "17,216"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 2,
+     "label": "Other liabilities",
+     "printed": "2,265"
+    },
+    "bs.total_liabilities": {
+     "page": 2,
+     "label": "Total liabilities",
+     "printed": "43,131"
+    },
+    "bs.total_equity": {
+     "page": 2,
+     "label": "Total stockholders' equity",
+     "printed": "50,072"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 2,
+     "label": "Total liabilities and stockholders' equity",
+     "printed": "93,203"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "107,621"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "82,213"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "25,408"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "12,377"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "3,859"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "431"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "8,741"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "1,580"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "64"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "7,225"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "1,807"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "5,418"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "5,418"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "3,859"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "620"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "69"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "9,966"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(4,305)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(4,305)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "(61)"
+    },
+    "cf.term_debt_proceeds": {
+     "page": 4,
+     "label": "Proceeds from long-term debt",
+     "printed": "-"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(2,688)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Dividends paid",
+     "printed": "(2,931)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(5,680)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "(19)"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "1,595"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "1,804"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "2,688"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "4,197",
+    "bs.accounts_receivable": "16,595",
+    "bs.inventory": "588",
+    "bs.other_current_assets": "1,679",
+    "bs.total_current_assets": "23,059",
+    "bs.net_ppe": "58,406",
+    "bs.intangibles": "8,960",
+    "bs.other_noncurrent_assets": "1,280",
+    "bs.total_assets": "91,705",
+    "bs.accounts_payable": "8,522",
+    "bs.accrued_liabilities": "1,959",
+    "bs.revolver": "6,295",
+    "bs.cpltd": "3,584",
+    "bs.other_current_liabilities": "2,501",
+    "bs.total_current_liabilities": "22,861",
+    "bs.long_term_debt": "20,800",
+    "bs.other_noncurrent_liabilities": "2,173",
+    "bs.total_liabilities": "45,834",
+    "bs.total_equity": "45,871",
+    "bs.total_liabilities_and_equity": "91,705",
+    "is.revenue": "103,224",
+    "is.cogs": "78,945",
+    "is.gross_profit": "24,279",
+    "is.sga": "11,871",
+    "is.depreciation_amortization": "3,679",
+    "is.other_operating_expense": "413",
+    "is.operating_income": "8,316",
+    "is.interest_expense": "1,631",
+    "is.other_income_net": "62",
+    "is.pretax_income": "6,747",
+    "is.income_tax_expense": "1,687",
+    "is.net_income": "5,060",
+    "cf.net_income": "5,060",
+    "cf.depreciation_amortization": "3,679",
+    "cf.change_in_working_capital": "440",
+    "cf.other_operating": "69",
+    "cf.cfo": "9,248",
+    "cf.capex": "(7,329)",
+    "cf.cfi": "(7,329)",
+    "cf.revolver_net": "48",
+    "cf.term_debt_proceeds": "3,200",
+    "cf.term_debt_repayments": "(2,368)",
+    "cf.distributions": "(2,766)",
+    "cf.cff": "(1,886)",
+    "cf.net_change_in_cash": "33",
+    "sup.cash_interest_paid": "1,625",
+    "sup.cash_taxes_paid": "1,747",
+    "sup.scheduled_principal": "2,368",
+    "sup.financed_capex": "3,200"
+   },
+   "absent_keys": [
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/marlowe-ridge-logistics/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, Q1 2025",
+   "received_date": "2025-05-09",
+   "document_date": "2025-05-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/marlowe-ridge-logistics/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, Q2 2025",
+   "received_date": "2025-07-26",
+   "document_date": "2025-07-24",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/marlowe-ridge-logistics/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, Q3 2025",
+   "received_date": "2025-11-02",
+   "document_date": "2025-10-31",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/marlowe-ridge-logistics/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, FY2025",
+   "received_date": "2026-02-09",
+   "document_date": "2026-02-07",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/marlowe-ridge-logistics/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, Q1 2026",
+   "received_date": "2026-05-04",
+   "document_date": "2026-05-02",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/marlowe-ridge-logistics/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, Q2 2026",
+   "received_date": "2026-07-31",
+   "document_date": "2026-07-29",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "marlowe-ridge-logistics.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/marlowe-ridge-logistics/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Marlowe Ridge Cold Storage & Logistics, Inc. compliance certificate, Q3 2026",
+   "received_date": "2026-11-05",
+   "document_date": "2026-11-03",
+   "scale": 1000,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "clean",
+  "description": "Clean performer: every covenant passes with room, documents are complete and on time.",
+  "details": {}
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.64",
+    "pass": true,
+    "headroom": "0.3667",
+    "reported_value": "1.64",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6785000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2212000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2263000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4775000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16035000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5422000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2157000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8456000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2227000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2944000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5171000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "1.80",
+    "pass": true,
+    "headroom": "0.4000",
+    "reported_value": "1.80",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "28933000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6785000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2212000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2263000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4775000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16035000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "5422000",
+    "pass": true,
+    "headroom": "0.5482",
+    "reported_value": "5422000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "5422000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.63",
+    "pass": true,
+    "headroom": "0.3583",
+    "reported_value": "1.63",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6840000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2166000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2281000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4789000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16076000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5470000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2263000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8343000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2181000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "2944000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5125000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "3.00",
+    "value": "1.96",
+    "pass": true,
+    "headroom": "0.3467",
+    "reported_value": "1.96",
+    "reported_threshold": "3.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "31449000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6840000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2166000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2281000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4789000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16076000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-1",
+    "terms_version": 1,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "8670000",
+    "pass": true,
+    "headroom": "0.2775",
+    "reported_value": "8670000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "8670000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.59",
+    "pass": true,
+    "headroom": "0.3250",
+    "reported_value": "1.59",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6867000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2180000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2290000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4874000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16211000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5517000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2281000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8413000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2176000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3104000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5280000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.89",
+    "pass": true,
+    "headroom": "0.2440",
+    "reported_value": "1.89",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "30679000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6867000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2180000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2290000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4874000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16211000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "8717000",
+    "pass": true,
+    "headroom": "0.2736",
+    "reported_value": "8717000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "8717000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.57",
+    "pass": true,
+    "headroom": "0.3083",
+    "reported_value": "1.57",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "6965000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2186000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2322000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4958000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16431000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5592000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2290000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8549000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2184000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3264000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5448000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.83",
+    "pass": true,
+    "headroom": "0.2680",
+    "reported_value": "1.83",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "30104000"
+     },
+     {
+      "label": "Net income",
+      "amount": "6965000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2186000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2322000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "4958000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16431000"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "8792000",
+    "pass": true,
+    "headroom": "0.2673",
+    "reported_value": "8792000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "8792000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.53",
+    "pass": true,
+    "headroom": "0.2750",
+    "reported_value": "1.53",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7006000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2192000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2335000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5042000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16575000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5662000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2322000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8591000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2190000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3424000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5614000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.75",
+    "pass": true,
+    "headroom": "0.3000",
+    "reported_value": "1.75",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "29022000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7006000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2192000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2335000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5042000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16575000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "8862000",
+    "pass": true,
+    "headroom": "0.2615",
+    "reported_value": "8862000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "8862000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.50",
+    "pass": true,
+    "headroom": "0.2500",
+    "reported_value": "1.50",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7041000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2194000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2347000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5126000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16708000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5710000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2335000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8663000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2194000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3584000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5778000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.68",
+    "pass": true,
+    "headroom": "0.3280",
+    "reported_value": "1.68",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "28083000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7041000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2194000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2347000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5126000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "16708000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "5710000",
+    "pass": true,
+    "headroom": "0.5242",
+    "reported_value": "5710000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "5710000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.20",
+    "value": "1.56",
+    "pass": true,
+    "headroom": "0.3000",
+    "reported_value": "1.56",
+    "reported_threshold": "1.20",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "7323000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2135000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2442000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5138000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17038000"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "5768000"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "2347000"
+     },
+     {
+      "label": "Numerator",
+      "amount": "8923000"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "2154000"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "3584000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "5738000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.61",
+    "pass": true,
+    "headroom": "0.3560",
+    "reported_value": "1.61",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "27355000"
+     },
+     {
+      "label": "Net income",
+      "amount": "7323000"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "2135000"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "2442000"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "5138000"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "17038000"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "max_capex",
+    "covenant_name": "Maximum Capital Expenditures",
+    "archetype": "max_capex",
+    "facility_id": "marlowe-ridge-logistics-rlc",
+    "terms_version_id": "tv-marlowe-ridge-logistics-2",
+    "terms_version": 2,
+    "unit": "usd",
+    "operator": "<=",
+    "threshold": "12000000",
+    "value": "5768000",
+    "pass": true,
+    "headroom": "0.5193",
+    "reported_value": "5768000",
+    "reported_threshold": "12000000",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Capital Expenditures, trailing four quarters",
+      "amount": "5768000"
+     }
+    ]
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.3250",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "fccr",
+     "two_periods_ago": "0.3667",
+     "prior_period": "0.3583"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.2440",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "total_leverage",
+     "two_periods_ago": "0.4000",
+     "prior_period": "0.3467"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-09-30",
+    "severity": "low",
+    "value": "0.2736",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.5482",
+     "prior_period": "0.2775"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.3083",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "fccr",
+     "two_periods_ago": "0.3583",
+     "prior_period": "0.3250"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2025-12-31",
+    "severity": "low",
+    "value": "0.2673",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2775",
+     "prior_period": "0.2736"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.2750",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "fccr",
+     "two_periods_ago": "0.3250",
+     "prior_period": "0.3083"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-03-31",
+    "severity": "low",
+    "value": "0.2615",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "max_capex",
+     "two_periods_ago": "0.2736",
+     "prior_period": "0.2673"
+    }
+   },
+   {
+    "rule": "covenant_headroom_falling",
+    "period_end": "2026-06-30",
+    "severity": "low",
+    "value": "0.2500",
+    "trigger": null,
+    "detail": {
+     "covenant_id": "fccr",
+     "two_periods_ago": "0.3083",
+     "prior_period": "0.2750"
+    }
+   }
+  ],
+  "exceptions": []
+ }
+}

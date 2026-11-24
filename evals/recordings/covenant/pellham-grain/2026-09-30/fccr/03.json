@@ -1,0 +1,464 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "0003623b-88be-4b20-aefd-3bfa1ef798b9": {
+   "sha256": "810e83870e8257476d92ec35f29b0e0837ba8e6b8893422678c95763b6d563d4",
+   "type": "document"
+  },
+  "0240dbe7-75fb-4af9-8829-272e3a891da7": {
+   "document": null,
+   "key": "sup.scheduled_principal",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "3870000"
+  },
+  "0b148c8f-dfe5-4055-861b-065feeb5a0ac": {
+   "document": null,
+   "key": "is.depreciation_amortization",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "6890000"
+  },
+  "0d037d2c-ffca-4c98-be3b-e07758fc986d": {
+   "document": null,
+   "key": "sup.cash_taxes_paid",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "3538000"
+  },
+  "0f23081b-6312-41d8-a9bf-aabca8e7445c": {
+   "document": null,
+   "key": "sup.financed_capex",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "0"
+  },
+  "1129612b-5ffa-4286-9e5d-e558093455f4": {
+   "sha256": "324088579de92c3884ff1c28fd6d2dca7b4a73ae93ddebd5b17db5db36b63b7b",
+   "type": "document"
+  },
+  "1653c9e9-2af3-454e-92b7-a05766394fb4": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "is.income_tax_expense",
+   "kind": "extracted",
+   "months": 9,
+   "page": 3,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "2170000"
+  },
+  "1c16f09a-c51a-4b5b-9af7-5d83aab98236": {
+   "formula_key": "covenant.fccr",
+   "outputs": {
+    "headroom": "-0.07",
+    "headroom_pct": "-0.0519",
+    "passed": false,
+    "raw_value": "1.277777777777777777777777778",
+    "threshold": "1.35",
+    "value": "1.28"
+   },
+   "period_end": "2026-09-30",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "1d8f7bcf-98ee-42e5-bd43-ee9b9d39133a": {
+   "sha256": "4796660867d87b29187ed8e0dc614e58fd579eaafe5912aae1a1ec1ba92725e9",
+   "type": "document"
+  },
+  "238155b7-3786-45ea-b619-d134e11d4eb2": {
+   "sha256": "8affd2942a59f196b730dbaee2ad7f223428dffa052d9fbc5534f39a787c2567",
+   "type": "document"
+  },
+  "26d1a594-7ff6-4108-b842-79d321df428f": {
+   "document": "9d4436c97525d296f7e4d68226723730f39998195a887b435bd7ea14c71c87a0",
+   "key": "cert.fccr.threshold",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.35"
+  },
+  "2841000a-c5e2-4e68-8b5c-5550ced3d1f9": {
+   "sha256": "bb23279d47a76a0b38c39584b20e51b590ab3474633a61227ecc1d48a53814d0",
+   "type": "document"
+  },
+  "380ff477-79e2-4f40-ba3f-67d4460e6d39": {
+   "document": null,
+   "key": "sup.financed_capex",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "0"
+  },
+  "3e25c14d-37d3-40d2-b995-7f155db348fd": {
+   "document": null,
+   "key": "cov.fccr.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.28"
+  },
+  "3f817b5e-3e85-47cc-9e31-c8c1cfcff4d3": {
+   "sha256": "bac76cf826b6cb40b5d0a5c61140448c08357c8ad2fc30fcc188fbedfb1b3ce7",
+   "type": "document"
+  },
+  "47368e5d-9530-498c-bb3f-6ccd8b1b8bf5": {
+   "document": null,
+   "key": "cov.fccr.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "-0.0519"
+  },
+  "4d82ecf3-1e7b-494b-b231-d02b8bf1e7e6": {
+   "sha256": "3af9e9f46ec445349287ae9574836167cb8c7e95fa6fe7f1c03a51ec79305663",
+   "type": "document"
+  },
+  "531b4d83-6e93-421d-8474-72222732fc2f": {
+   "sha256": "ffe571310a9611e4924f8961359d57505b5073096f2e64e61e82820adfe04b87",
+   "type": "document"
+  },
+  "5556df0d-87aa-4196-98fa-e554519a9d28": {
+   "sha256": "50b8182063a893aee45e7def58fd001ac416dd73961254c228c8b68306f3aa35",
+   "type": "document"
+  },
+  "5ab433cf-1be8-466b-b121-339039c2ab2a": {
+   "document": null,
+   "key": "sup.cash_interest_paid",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "3751000"
+  },
+  "617ac16c-ad04-4d81-9d8b-64e48f9b8912": {
+   "sha256": "2f6b12c9447ef1d13d767ec8a98c4f6c618bd4b3cc8e70382ccd8e87501c73c6",
+   "type": "document"
+  },
+  "62b1ad65-46a8-4dd3-9b90-3dbd1a9c9440": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "sup.scheduled_principal",
+   "kind": "extracted",
+   "months": 9,
+   "page": 5,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "3870000"
+  },
+  "65e674ed-e182-4f89-bf3c-828d405e46f8": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "sup.cash_taxes_paid",
+   "kind": "extracted",
+   "months": 9,
+   "page": 5,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "2929000"
+  },
+  "6d74fff8-1f75-44ce-b69b-563a0fd0cf9d": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "sup.cash_interest_paid",
+   "kind": "extracted",
+   "months": 9,
+   "page": 5,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "2574000"
+  },
+  "6fe3ecf1-de08-4cec-b03c-b57870d80638": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "cf.capex",
+   "kind": "extracted",
+   "months": 9,
+   "page": 4,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "6193000"
+  },
+  "70093d31-8e18-4b20-a9b5-90bc20f9d671": {
+   "document": "9d4436c97525d296f7e4d68226723730f39998195a887b435bd7ea14c71c87a0",
+   "key": "cert.fccr.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.28"
+  },
+  "70ec66fc-9308-4308-a78d-0d9232630f1a": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "sup.financed_capex",
+   "kind": "extracted",
+   "months": 9,
+   "page": 5,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "0"
+  },
+  "77b1ea1b-70a5-464c-bea6-27c710879600": {
+   "sha256": "7c7fc11f683ce77a030820c4a6fdcd2e63a49752f9514a812c9e04b53d6f3dbb",
+   "type": "document"
+  },
+  "7f9c5a11-d205-4e01-90f1-494a6f4cbc62": {
+   "sha256": "fb36f51300d469226b0f36579fc43fea7ffbb04de86e3bae9661d9abeb9beaf5",
+   "type": "document"
+  },
+  "8868f794-633e-4920-ab17-26a06b27bd85": {
+   "document": null,
+   "key": "is.interest_expense",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "3726000"
+  },
+  "89261fd6-28a5-42bb-ad4c-a25096c9f22f": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "is.interest_expense",
+   "kind": "extracted",
+   "months": 9,
+   "page": 3,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "2552000"
+  },
+  "96526fb0-3f31-4d0a-a1ea-1eed755f60f1": {
+   "document": null,
+   "key": "cov.fccr.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "1.35"
+  },
+  "99eebdeb-9f80-4fc4-bc7f-e34d086867ed": {
+   "document": null,
+   "key": "is.interest_expense",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "2825000"
+  },
+  "9a1d358d-de8d-41b5-80e6-dc44ade4a007": {
+   "document": null,
+   "key": "sup.scheduled_principal",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "5160000"
+  },
+  "a134b927-a193-45d2-b067-c6738e7ff8a5": {
+   "sha256": "40ee5cb1dc7946be35af82546a3bea0198f0b321ae8cf85817568d8cd8a99246",
+   "type": "document"
+  },
+  "a302bb23-089b-41f7-88ca-9da6e334dbc3": {
+   "document": null,
+   "key": "is.net_income",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "7979000"
+  },
+  "a59a2fea-7bf9-4280-9a6a-35c0635d313b": {
+   "sha256": "5a42277801053a5eedc9ac1b4bf1740428ea938dcb1ffd532752146c7e17dfc8",
+   "type": "document"
+  },
+  "a830e908-7638-4d8e-aa5b-27a8c3519661": {
+   "sha256": "f9a8f5773ab2da5757df3076266112ff4a2b15185a72917f1128c85b380bc8c6",
+   "type": "document"
+  },
+  "a949d45a-e589-498c-bd0a-f21a40138340": {
+   "document": null,
+   "key": "is.depreciation_amortization",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "5158000"
+  },
+  "acaf9076-eebe-48b4-8fb2-fc98e266ebd9": {
+   "sha256": "93af56fa824b1e643058d4e9a8717666ec98fd8bc81f5bdbfd0ff6bcd1ec0d73",
+   "type": "document"
+  },
+  "b0d27238-6ce0-43a1-aa16-81cce3abe91c": {
+   "document": null,
+   "key": "is.net_income",
+   "kind": "calculated",
+   "months": 9,
+   "page": null,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "6508000"
+  },
+  "b6b7a681-50b1-4994-92fd-63afc443eed6": {
+   "document": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "key": "is.depreciation_amortization",
+   "kind": "extracted",
+   "months": 9,
+   "page": 3,
+   "period_end": "2026-09-30",
+   "type": "fact",
+   "value": "5238000"
+  },
+  "b783093f-9240-4076-adb6-0803c0d86243": {
+   "document": null,
+   "key": "cf.capex",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "8003000"
+  },
+  "bcb669e2-dc94-4e75-aba8-acdd44cd15b2": {
+   "document": null,
+   "key": "is.income_tax_expense",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "2660000"
+  },
+  "cbce2fca-2c1c-4c44-9715-f0e6000d7686": {
+   "document": null,
+   "key": "sup.cash_taxes_paid",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "2601000"
+  },
+  "cd5b0fcb-e2ed-4a82-94b7-b42681956e06": {
+   "document": null,
+   "key": "cf.capex",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "5924000"
+  },
+  "db6989d2-a693-4413-a279-990440dc80b2": {
+   "document": null,
+   "key": "is.income_tax_expense",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "3679000"
+  },
+  "e0395b1d-85c6-4627-b2d5-4fcc30f52173": {
+   "sha256": "2a0e263a61eb291088b7a91acf34ea63d85ab9917e7733002d34e4a9637b039e",
+   "type": "document"
+  },
+  "f470c5c4-8b3c-43c2-8e8d-93b7754775a1": {
+   "document": null,
+   "key": "is.net_income",
+   "kind": "seeded",
+   "months": 12,
+   "page": null,
+   "period_end": "2025-12-31",
+   "type": "fact",
+   "value": "11037000"
+  },
+  "f91d8cd5-ad6f-4f32-b228-e084c1181b47": {
+   "sha256": "ebf6970e5bdffc59075bbc31e91ad76d87540876e2f82bb385d66319c1e77c7b",
+   "type": "document"
+  },
+  "facc47aa-1e4f-45b4-b66d-d61649e86dc7": {
+   "sha256": "9d4436c97525d296f7e4d68226723730f39998195a887b435bd7ea14c71c87a0",
+   "type": "document"
+  },
+  "fb765d31-62bf-44d2-ae61-4ac1a0bef65a": {
+   "document": null,
+   "key": "sup.cash_interest_paid",
+   "kind": "seeded",
+   "months": 9,
+   "page": null,
+   "period_end": "2025-09-30",
+   "type": "fact",
+   "value": "2845000"
+  }
+ },
+ "_spec": "covenant@2:297ca24fdcef",
+ "content": [
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01Y39ML1P84bLxR2xyJerWPd",
+   "input": {
+    "document_id": "facc47aa-1e4f-45b4-b66d-d61649e86dc7",
+    "page": 1
+   },
+   "name": "read_page",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01DvpPHVbKUj1h6zvfAwZ5pa",
+   "input": {
+    "document_id": "facc47aa-1e4f-45b4-b66d-d61649e86dc7",
+    "page": 2
+   },
+   "name": "read_page",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01DhFrUVDSYvg6v3979ajxCQ",
+   "input": {
+    "document_id": "4d82ecf3-1e7b-494b-b231-d02b8bf1e7e6",
+    "page": 8
+   },
+   "name": "read_page",
+   "type": "tool_use"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "tool_use",
+ "usage": {
+  "cache_creation_input_tokens": 2533,
+  "cache_read_input_tokens": 7548,
+  "input_tokens": 2,
+  "output_tokens": 285
+ }
+}

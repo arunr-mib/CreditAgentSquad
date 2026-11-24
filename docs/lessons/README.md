@@ -1,0 +1,1 @@
+One lesson per file. First line is a one-line summary. Then: what happened, the rule, the reason, and where it applies. Lessons marked "Inherited" come from the owner's earlier projects (CreditScout, SpreadSense, creditapp-evals) and have not yet been re-proven here.

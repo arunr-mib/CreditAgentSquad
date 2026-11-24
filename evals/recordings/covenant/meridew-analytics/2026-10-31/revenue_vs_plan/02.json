@@ -1,0 +1,164 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "32b5f800-7ba4-40ae-a06e-98552fb2dd87": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.6521"
+  },
+  "35b96211-258d-456d-9c15-c10caa937655": {
+   "sha256": "4755c20cbad26dd2aed2f41491f30d73255aefa59c7384346c1d1ad519b2267c",
+   "type": "document"
+  },
+  "3de8cb95-06e2-423d-a232-bb7b4f4f886c": {
+   "document": "1b39ada9e7625d60aec234d0da8af2e8ac347b54647f128ba4e184bc8ac81f62",
+   "key": "is.services_revenue",
+   "kind": "extracted",
+   "months": 10,
+   "page": 2,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "503264"
+  },
+  "76c82a74-9c9b-4a6d-8eef-668deba57b38": {
+   "formula_key": "covenant.revenue_vs_plan",
+   "outputs": {
+    "headroom": "-0.1479",
+    "headroom_pct": "-0.1849",
+    "passed": false,
+    "raw_value": "0.6520653789004457652303120357",
+    "threshold": "0.8",
+    "value": "0.6521"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "76cd453d-92fa-4e7f-9576-e17ea7ae2ed6": {
+   "document": "0ebe8ecc0be1368a1056759c1b25e53fec1866a33023da93be6ed0b219d0e714",
+   "key": "cert.revenue_vs_plan.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.6521"
+  },
+  "7bc80243-ca4e-479d-a856-f959bf681aca": {
+   "document": null,
+   "key": "is.services_revenue",
+   "kind": "seeded",
+   "months": 7,
+   "page": null,
+   "period_end": "2026-07-31",
+   "type": "fact",
+   "value": "354224"
+  },
+  "97c5f746-53de-4edc-8b8d-533a44d4b33e": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "ae43e3ef-1fea-4417-960e-f71e423237bb": {
+   "document": null,
+   "key": "cov.revenue_vs_plan.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "-0.1849"
+  },
+  "c30c677f-449d-4f83-82ba-1efc66fd9cdd": {
+   "document": "1b39ada9e7625d60aec234d0da8af2e8ac347b54647f128ba4e184bc8ac81f62",
+   "key": "is.subscription_revenue",
+   "kind": "extracted",
+   "months": 10,
+   "page": 2,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "8387735"
+  },
+  "db95d3bb-c659-4ee5-98f8-3d12f8ba171b": {
+   "document": "0ebe8ecc0be1368a1056759c1b25e53fec1866a33023da93be6ed0b219d0e714",
+   "key": "cert.revenue_vs_plan.threshold",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "0.8"
+  },
+  "de2a0761-14d3-4d66-8965-d33c81100558": {
+   "document": null,
+   "key": "is.subscription_revenue",
+   "kind": "seeded",
+   "months": 7,
+   "page": null,
+   "period_end": "2026-07-31",
+   "type": "fact",
+   "value": "5903735"
+  }
+ },
+ "_ids_order": [
+  "35b96211-258d-456d-9c15-c10caa937655",
+  "76c82a74-9c9b-4a6d-8eef-668deba57b38",
+  "32b5f800-7ba4-40ae-a06e-98552fb2dd87",
+  "97c5f746-53de-4edc-8b8d-533a44d4b33e",
+  "ae43e3ef-1fea-4417-960e-f71e423237bb",
+  "c30c677f-449d-4f83-82ba-1efc66fd9cdd",
+  "de2a0761-14d3-4d66-8965-d33c81100558",
+  "3de8cb95-06e2-423d-a232-bb7b4f4f886c",
+  "7bc80243-ca4e-479d-a856-f959bf681aca",
+  "76cd453d-92fa-4e7f-9576-e17ea7ae2ed6",
+  "db95d3bb-c659-4ee5-98f8-3d12f8ba171b"
+ ],
+ "_spec": "covenant@2:297ca24fdcef",
+ "content": [
+  {
+   "signature": "CAQS2QUKEAgUGAI4AUIIdGhpbmtpbmcSDOqXge86By5C90K+5RoMtAE1K3kFeOKwPb6yIjDN0B1Xv/JW5NNk7tkXA1nkRMZbbbjM9Sl0DpAlkZdLyCmpTeppL1ioKtAx23VDoAwq9gThAw/FoatyQr3cE5QBdvvqueMfWP7wXrFCf0DaE+ioAuxk6oxB7rA8zYwpl0VZeVvoePybidIsQpfVI+ebW0yEZLoxpjhvJ3vqn3TmNreVStwMV29nJivpTnrgAbJwRGkS4+d1EmD6AyrhLsj0TxXCpjNEOuVyrIdsO3Xu2nM5Mm1ZWCs4Y4Jd1ZEjLNXX4WK7NPp6Nw5QDCZmAX9hol99jQEIrPNaSRE1a9IREDgPhXDSOiVqwt+tja+SqhIQ7CGjP5oSTh4ItZPcU1ydONrhAMIClxAWfA1OO0lbVk84nIVXPasEc7WJuBriBGoJmWMMJJzdYeZmPdkcAv1f7U3tNvORK5/R0KawNwOOZUUTGSvo7grboFw51lo3VYLvA3DKeq9al3UbLzOthcR3aVL30f4veuiYKGv3IS1QEaXbrih3azFjxL2hToOWrUBvgG9XriaqSl6M1ChBN/fkSyRAAz1KHioR48PLETihdDISyLqX4HUwKozEfNrU+DRF3f/stHvZ0O0at94SPvI58X/Gknd9AzJl3GyuVieEdZ60+tL86gKLI9ySVNmUw4OFJiE97jSIqynRMkawGQcYapB1C9UKCFif5WTHJTqy68nw8NZNU9Vc5ITQoa60TTdSXUenh475TowffcIVC+qc6OChvXNTbtW7OSP/zzaWo6V54R/fhTzESajjf01UVQPDjJf2Q16PudlTj8QydlYSlMy3xio1GyMdUUAGPu2lXZxBBYEshY4eXMQvE0L62cjNxUq1A/I0TRvcjmGeRc7NH5a52WIIVcvoxr1Ek8svun1k7JYcSjqz+okWK7zSEF3BMylIxrW96AQYAQ==",
+   "thinking": "",
+   "type": "thinking"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01EdHUy9WFDyqL6Qg1MmDzgy",
+   "input": {},
+   "name": "list_documents",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01C7Px5N6GQARDGoFKPApMUk",
+   "input": {
+    "tag": "true_breach"
+   },
+   "name": "search_lessons",
+   "type": "tool_use"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "tool_use",
+ "usage": {
+  "cache_creation_input_tokens": 1791,
+  "cache_read_input_tokens": 3858,
+  "input_tokens": 2,
+  "output_tokens": 106
+ }
+}

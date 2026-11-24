@@ -1,0 +1,133 @@
+{
+ "_basis": "full",
+ "_ids": {
+  "0d926f3d-25a6-4680-8940-1ca839f05045": {
+   "document": "79143deabf97810ec84cb39faeab3c66e1867a78cfa4aa1b33d842ab3cdc0384",
+   "key": "cert.min_unrestricted_cash.threshold",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5000000"
+  },
+  "3ebf12fc-c267-4cdd-979c-69dba2eae6b6": {
+   "document": "79143deabf97810ec84cb39faeab3c66e1867a78cfa4aa1b33d842ab3cdc0384",
+   "key": "cert.min_unrestricted_cash.value",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "6100000"
+  },
+  "4997fac0-37f5-4f13-a395-3bb37ca2e51d": {
+   "document": "1e535ccd964ddc2ed42b1de617510686b09fc507bb48212ae8f2333c9c9bd963",
+   "key": "bs.cash_unrestricted",
+   "kind": "extracted",
+   "months": 0,
+   "page": 1,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4600000"
+  },
+  "67191a39-ad10-421c-9f51-e02edde92d53": {
+   "sha256": "d3868a3e1bd7a346ecd2a3e152afa518d18aaa15ee1171f2fd9faeb5539b410b",
+   "type": "document"
+  },
+  "6f471b56-89b0-4bdc-829f-4e4b5f8f9ac7": {
+   "formula_key": "covenant.min_unrestricted_cash",
+   "outputs": {
+    "headroom": "-400000",
+    "headroom_pct": "-0.08",
+    "passed": false,
+    "raw_value": "4600000",
+    "threshold": "5000000",
+    "value": "4600000"
+   },
+   "period_end": "2026-10-31",
+   "terms_version": 1,
+   "type": "calc"
+  },
+  "9776bf85-4868-48f0-b981-81214cd2b2f1": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.headroom_pct",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "-0.08"
+  },
+  "dd933902-67d2-4a16-b45e-74e0de748a96": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.value",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "4600000"
+  },
+  "f333b89d-4d27-489d-9610-89b687ea4fc0": {
+   "document": null,
+   "key": "cov.min_unrestricted_cash.threshold",
+   "kind": "calculated",
+   "months": 0,
+   "page": null,
+   "period_end": "2026-10-31",
+   "type": "fact",
+   "value": "5000000"
+  }
+ },
+ "_ids_order": [
+  "67191a39-ad10-421c-9f51-e02edde92d53",
+  "6f471b56-89b0-4bdc-829f-4e4b5f8f9ac7",
+  "dd933902-67d2-4a16-b45e-74e0de748a96",
+  "f333b89d-4d27-489d-9610-89b687ea4fc0",
+  "9776bf85-4868-48f0-b981-81214cd2b2f1",
+  "4997fac0-37f5-4f13-a395-3bb37ca2e51d",
+  "3ebf12fc-c267-4cdd-979c-69dba2eae6b6",
+  "0d926f3d-25a6-4680-8940-1ca839f05045"
+ ],
+ "_spec": "covenant@2:297ca24fdcef",
+ "content": [
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_016R2oBTBp7MwDBx8J9BPQpJ",
+   "input": {},
+   "name": "list_terms_versions",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01GgLkgfabYuScCaao4NKF9B",
+   "input": {},
+   "name": "list_unapproved_amendments",
+   "type": "tool_use"
+  },
+  {
+   "caller": {
+    "type": "direct"
+   },
+   "id": "toolu_01TQExdCGFYYycdhTML14mav",
+   "input": {},
+   "name": "list_documents",
+   "type": "tool_use"
+  }
+ ],
+ "model": "claude-opus-5-5",
+ "request_id": null,
+ "stop_details": null,
+ "stop_reason": "tool_use",
+ "usage": {
+  "cache_creation_input_tokens": 1025,
+  "cache_read_input_tokens": 3893,
+  "input_tokens": 2,
+  "output_tokens": 84
+ }
+}

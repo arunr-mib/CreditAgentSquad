@@ -1,0 +1,102 @@
+import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useAuth } from '@/auth/context';
+import { AgentBody } from '@/source/AgentBody';
+import { useBriefing, type CopilotReply } from '../api/hooks';
+import type { BriefingItem } from '../api/types';
+import { threadHref } from '../links';
+import { AskReply } from '../thread/AskReply';
+import { Composer } from '../thread/Composer';
+
+const word = (n: number) => (n === 1 ? '1 needs you' : `${n} need you`);
+
+function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boolean }) {
+  const href = threadHref(item.borrower_code, item.work_item_id ?? undefined);
+  return (
+    <li>
+      <Link {...href} className={item.needs_you ? 'sq-row sq-row-needs' : 'sq-row'}>
+        <span className={`sq-dotmark sq-sev-${item.severity}`} aria-hidden />
+        <span className="sq-grow sq-rowtext">
+          {/* the server's subject has the client's name taken off the front: the row names the client once */}
+          <span className="sq-rowtitle">{showClient ? <><b>{item.borrower_name}</b><span className="sq-muted"> · {item.subject ?? item.title}</span></> : item.subject ?? item.title}</span>
+        </span>
+        <span className={item.needs_you ? 'sq-state sq-state-needs' : 'sq-state'}>{item.state}</span>
+      </Link>
+    </li>
+  );
+}
+
+/** A question about the whole portfolio: no thread holds it, so the answer is shown here, under the same guarantees. */
+function PortfolioAsk() {
+  const [reply, setReply] = useState<CopilotReply | null>(null);
+  return (
+    <section aria-label="Ask about the portfolio">
+      <h2 className="sq-h2">Ask Squad</h2>
+      <Composer borrowerId={null} onReply={setReply} />
+      {reply ? <AskReply reply={reply} /> : null}
+    </section>
+  );
+}
+
+export function SquadHome() {
+  const { user } = useAuth();
+  const briefing = useBriefing();
+  if (briefing.isPending) return <p role="status" className="sq-muted">Squad is reading the overnight record.</p>;
+  if (briefing.error || !briefing.data)
+    return (
+      <div role="alert">
+        <p>The briefing could not be loaded.</p>
+        <button type="button" className="sq-btn" onClick={() => void briefing.refetch()}>Try again</button>
+      </div>
+    );
+  const { items, overnight } = briefing.data;
+  const needs = items.filter((i) => i.needs_you);
+  const decided = items.filter((i) => !i.needs_you && i.kind === 'decided');
+  const watching = items.filter((i) => !i.needs_you && i.kind !== 'decided');
+  const clients = [...new Map(watching.map((i) => [i.borrower_id, i.borrower_name])).entries()];
+  return (
+    <div className="sq-home" data-ready="">
+      <h1 className="sq-h1">Hello, {user?.name.split(' ')[0] ?? 'there'}.</h1>
+      <h2 className="sq-lede">{needs.length ? word(needs.length) : 'Nothing needs you.'}</h2>
+      {needs.length > 0 ? (
+        <ul className="sq-list" aria-label="Needs you">
+          {needs.map((i) => <Row key={i.key} item={i} />)}
+        </ul>
+      ) : null}
+      {clients.length > 0 ? (
+        <section aria-label="Watching">
+          <h2 className="sq-h2">Watching</h2>
+          {clients.map(([id, name]) => {
+            const rows = watching.filter((i) => i.borrower_id === id);
+            return (
+              <details key={id} className="sq-group" aria-label={name}>
+                <summary><b>{name}</b> <span className="sq-faint">· {rows.length === 1 ? `${rows[0]?.subject ?? rows[0]?.title} · ${rows[0]?.state}` : `${rows.length} things to watch`}</span></summary>
+                <ul className="sq-list">{rows.map((i) => <Row key={i.key} item={i} showClient={false} />)}</ul>
+              </details>
+            );
+          })}
+        </section>
+      ) : null}
+      {decided.length > 0 ? (
+        <details className="sq-group">
+          <summary className="sq-h2">Recently decided</summary>
+          <ul className="sq-list" aria-label="Recently decided">{decided.map((i) => <Row key={i.key} item={i} />)}</ul>
+        </details>
+      ) : null}
+      {overnight.length > 0 ? (
+        <details className="sq-group">
+          <summary className="sq-h2">What Squad did overnight ({overnight.length})</summary>
+          <ul className="sq-list" aria-label="Overnight">
+            {overnight.map((o) => (
+              <li key={`${o.agent_name}|${o.finished_at}|${o.borrower_id}`} className="sq-card sq-squad">
+                <p className="sq-faint"><b>{o.agent_label}</b> · {o.borrower_name}</p>
+                <AgentBody text={o.text} />
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+      <PortfolioAsk />
+    </div>
+  );
+}

@@ -1,0 +1,5652 @@
+{
+ "schema": "synthetic-truth-1",
+ "seed": 20261117,
+ "as_of": "2026-11-17",
+ "current_period": "2026-09-30",
+ "borrower": {
+  "id": "ashgrove-fleet",
+  "name": "Ashgrove Fleet Maintenance, LLC",
+  "legal_form": "llc",
+  "industry": "services",
+  "city": "Wichita",
+  "state": "KS",
+  "fiscal_year_end_month": 12,
+  "lender": "Bank of Stoic",
+  "relationship_manager": "Marcus Oyelaran",
+  "analyst": "Theo Lindqvist",
+  "risk_rating": 5,
+  "statement_scale": 1,
+  "chief_financial_officer": "Rosalind Eckhart",
+  "auditor": "Greaves & Tolland, P.C."
+ },
+ "facilities": [
+  {
+   "id": "ashgrove-fleet-rlc",
+   "borrower_id": "ashgrove-fleet",
+   "type": "revolver",
+   "name": "Revolving Line of Credit",
+   "commitment": "1750000",
+   "original_amount": "1750000",
+   "closing_date": "2023-06-30",
+   "maturity_date": "2029-06-30",
+   "interest_rate": "Term SOFR + 2.75%",
+   "borrowing_base": false
+  },
+  {
+   "id": "ashgrove-fleet-tl",
+   "borrower_id": "ashgrove-fleet",
+   "type": "term_loan",
+   "name": "Term Loan",
+   "commitment": "4620000",
+   "original_amount": "4620000",
+   "closing_date": "2023-06-30",
+   "maturity_date": "2030-06-30",
+   "interest_rate": "Term SOFR + 3.00%",
+   "borrowing_base": false,
+   "quarterly_installment": "115500"
+  }
+ ],
+ "terms_versions": [
+  {
+   "id": "tv-ashgrove-fleet-1",
+   "facility_id": "ashgrove-fleet-rlc",
+   "version": 1,
+   "status": "approved",
+   "effective_from": "2023-06-30",
+   "effective_to": null,
+   "prepared_by": "Theo Lindqvist",
+   "approved_by": "Ruth Okafor-Bell",
+   "approved_at": "2023-07-06",
+   "warnings": [],
+   "source_documents": [
+    "ashgrove-fleet.credit-agreement"
+   ],
+   "terms": {
+    "definitions": {
+     "ebitda": {
+      "base": "ebitda",
+      "addbacks": []
+     }
+    },
+    "covenants": [
+     {
+      "id": "fccr",
+      "name": "Fixed Charge Coverage Ratio",
+      "archetype": "coverage",
+      "params": {
+       "numerator_base": "ebitda",
+       "deductions": [
+        "unfinanced_capex",
+        "cash_taxes"
+       ],
+       "denominator": [
+        "cash_interest",
+        "scheduled_principal"
+       ]
+      },
+      "test": {
+       "operator": ">=",
+       "threshold": "1.25",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "ashgrove-fleet.credit-agreement",
+        "section": "6.1",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Fixed Charge Coverage Ratio, measured as of the last day of each fiscal quarter for the period of four consecutive fiscal quarters then ended, to be less than 1.25 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "ashgrove-fleet.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Fixed Charge Coverage Ratio\" means, for any period of four consecutive fiscal quarters, the ratio of (a) EBITDA for such period minus Unfinanced Capital Expenditures and cash paid for income taxes for such period to (b) the sum of cash paid for interest and scheduled principal payments on term debt for such period."
+       }
+      ]
+     },
+     {
+      "id": "total_leverage",
+      "name": "Total Leverage Ratio",
+      "archetype": "leverage",
+      "params": {
+       "debt": "total_debt",
+       "ebitda": "ebitda"
+      },
+      "test": {
+       "operator": "<=",
+       "threshold": "2.50",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "ttm",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "ashgrove-fleet.credit-agreement",
+        "section": "6.2",
+        "page": 7,
+        "quote": "The Borrower shall not permit the Total Leverage Ratio, measured as of the last day of each fiscal quarter, to exceed 2.50 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "ashgrove-fleet.credit-agreement",
+        "section": "1.1",
+        "page": 5,
+        "quote": "\"Total Leverage Ratio\" means, as of any date, the ratio of (a) Total Debt as of such date to (b) EBITDA for the period of four consecutive fiscal quarters then ended."
+       }
+      ]
+     },
+     {
+      "id": "current_ratio",
+      "name": "Current Ratio",
+      "archetype": "current_ratio",
+      "params": {},
+      "test": {
+       "operator": ">=",
+       "threshold": "1.00",
+       "steps": [],
+       "unit": "ratio"
+      },
+      "measurement": {
+       "basis": "point",
+       "frequency": "quarterly"
+      },
+      "rounding": {
+       "dp": 2,
+       "mode": "half_up"
+      },
+      "citations": [
+       {
+        "field": "test.threshold",
+        "document_id": "ashgrove-fleet.credit-agreement",
+        "section": "6.3",
+        "page": 8,
+        "quote": "The Borrower shall not permit the Current Ratio, measured as of the last day of each fiscal quarter, to be less than 1.00 to 1.00."
+       },
+       {
+        "field": "definition",
+        "document_id": "ashgrove-fleet.credit-agreement",
+        "section": "1.1",
+        "page": 4,
+        "quote": "\"Current Ratio\" means, as of any date, the ratio of (a) total current assets to (b) total current liabilities of the Borrower as of such date."
+       }
+      ]
+     }
+    ],
+    "reporting_requirements": [
+     {
+      "id": "annual_statements",
+      "document_type": "annual_financial_statements",
+      "frequency": "annual",
+      "due_days_after_period_end": 120,
+      "quality": "audited",
+      "citation": {
+       "field": "reporting_requirements.annual_statements",
+       "document_id": "ashgrove-fleet.credit-agreement",
+       "section": "5.1(a)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 120 days after the end of each fiscal year, the Borrower shall deliver to the Lender audited financial statements of the Borrower for such fiscal year, accompanied by an unqualified opinion of independent certified public accountants acceptable to the Lender."
+      }
+     },
+     {
+      "id": "quarterly_statements",
+      "document_type": "interim_financial_statements",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": "internal",
+      "citation": {
+       "field": "reporting_requirements.quarterly_statements",
+       "document_id": "ashgrove-fleet.credit-agreement",
+       "section": "5.1(b)",
+       "page": 7,
+       "quote": "As soon as available, and in any event within 45 days after the end of each of the first three fiscal quarters of each fiscal year, the Borrower shall deliver to the Lender internally prepared financial statements of the Borrower for the fiscal year to date."
+      }
+     },
+     {
+      "id": "compliance_certificate",
+      "document_type": "compliance_certificate",
+      "frequency": "quarterly",
+      "due_days_after_period_end": 45,
+      "quality": null,
+      "citation": {
+       "field": "reporting_requirements.compliance_certificate",
+       "document_id": "ashgrove-fleet.credit-agreement",
+       "section": "5.1(c)",
+       "page": 7,
+       "quote": "Within 45 days after the end of each fiscal quarter, the Borrower shall deliver to the Lender a Compliance Certificate signed by its chief financial officer."
+      }
+     }
+    ],
+    "borrowing_base": null
+   },
+   "clause_index": [
+    {
+     "field": "definitions.ebitda",
+     "document_id": "ashgrove-fleet.credit-agreement",
+     "section": "1.1",
+     "page": 4,
+     "quote": "\"EBITDA\" means, for any period, net income of the Borrower for such period plus, to the extent deducted in determining net income for such period, interest expense, income tax expense, and depreciation and amortization, all determined in accordance with GAAP."
+    },
+    {
+     "field": "definitions.total_debt",
+     "document_id": "ashgrove-fleet.credit-agreement",
+     "section": "1.1",
+     "page": 5,
+     "quote": "\"Total Debt\" means, as of any date, the sum of the outstanding principal amount of the line of credit, the current portion of long-term debt, long-term debt net of current portion, and Subordinated Debt of the Borrower as of such date."
+    },
+    {
+     "field": "facilities.revolver.commitment",
+     "document_id": "ashgrove-fleet.credit-agreement",
+     "section": "2.1",
+     "page": 5,
+     "quote": "Subject to the terms and conditions of this Agreement, the Lender agrees to make revolving loans to the Borrower from time to time until the Revolving Maturity Date in an aggregate principal amount at any time outstanding not to exceed $1,750,000."
+    },
+    {
+     "field": "facilities.term_loan.original_amount",
+     "document_id": "ashgrove-fleet.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Lender has made a term loan to the Borrower on the Closing Date in the original principal amount of $4,620,000."
+    },
+    {
+     "field": "facilities.term_loan.quarterly_installment",
+     "document_id": "ashgrove-fleet.credit-agreement",
+     "section": "2.2",
+     "page": 5,
+     "quote": "The Borrower shall repay the Term Loan in consecutive quarterly installments of $115,500 each, payable on the last day of each fiscal quarter, with the remaining unpaid balance due and payable on the Term Maturity Date."
+    }
+   ]
+  }
+ ],
+ "periods": [
+  {
+   "period_end": "2024-03-31",
+   "months": 3,
+   "fiscal_year": 2024,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "5609753",
+    "is.cogs": "3742266",
+    "is.gross_profit": "1867487",
+    "is.sga": "1262194",
+    "is.depreciation_amortization": "112862",
+    "is.other_operating_expense": "22439",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "469992",
+    "is.interest_expense": "92986",
+    "is.other_income_net": "3366",
+    "is.pretax_income": "380372",
+    "is.income_tax_expense": "7607",
+    "is.net_income": "372765",
+    "bs.cash": "673170",
+    "bs.accounts_receivable": "3498027",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "269268",
+    "bs.total_current_assets": "4440465",
+    "bs.net_ppe": "2687130",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "8887595",
+    "bs.accounts_payable": "1148312",
+    "bs.accrued_liabilities": "586360",
+    "bs.revolver": "1009756",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "321753",
+    "bs.total_current_liabilities": "3528181",
+    "bs.long_term_debt": "3580500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "349800",
+    "bs.total_liabilities": "7458481",
+    "bs.total_equity": "1429114",
+    "bs.total_liabilities_and_equity": "8887595",
+    "cf.net_income": "372765",
+    "cf.depreciation_amortization": "112862",
+    "cf.change_in_working_capital": "-80186",
+    "cf.other_operating": "3960",
+    "cf.cfo": "409401",
+    "cf.capex": "123415",
+    "cf.other_investing": "0",
+    "cf.cfi": "-123415",
+    "cf.revolver_net": "19756",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "115500",
+    "cf.distributions": "177072",
+    "cf.other_financing": "0",
+    "cf.cff": "-272816",
+    "cf.net_change_in_cash": "13170",
+    "sup.cash_interest_paid": "93368",
+    "sup.cash_taxes_paid": "7109",
+    "sup.scheduled_principal": "115500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1171828",
+    "cash.beginning_of_year": "660000",
+    "debt.term_total": "4042500"
+   }
+  },
+  {
+   "period_end": "2024-06-30",
+   "months": 6,
+   "fiscal_year": 2024,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "11419728",
+    "is.cogs": "7645407",
+    "is.gross_profit": "3774321",
+    "is.sga": "2569438",
+    "is.depreciation_amortization": "226169",
+    "is.other_operating_expense": "45679",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "933035",
+    "is.interest_expense": "184304",
+    "is.other_income_net": "6852",
+    "is.pretax_income": "755583",
+    "is.income_tax_expense": "15111",
+    "is.net_income": "740472",
+    "bs.cash": "697197",
+    "bs.accounts_receivable": "3648346",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "278879",
+    "bs.total_current_assets": "4624422",
+    "bs.net_ppe": "2701642",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9086064",
+    "bs.accounts_payable": "1197676",
+    "bs.accrued_liabilities": "605626",
+    "bs.revolver": "1045796",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "332863",
+    "bs.total_current_liabilities": "3643961",
+    "bs.long_term_debt": "3465000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "353760",
+    "bs.total_liabilities": "7462721",
+    "bs.total_equity": "1623343",
+    "bs.total_liabilities_and_equity": "9086064",
+    "cf.net_income": "740472",
+    "cf.depreciation_amortization": "226169",
+    "cf.change_in_working_capital": "-160376",
+    "cf.other_operating": "7920",
+    "cf.cfo": "814185",
+    "cf.capex": "251234",
+    "cf.other_investing": "0",
+    "cf.cfi": "-251234",
+    "cf.revolver_net": "55796",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "231000",
+    "cf.distributions": "350550",
+    "cf.other_financing": "0",
+    "cf.cff": "-525754",
+    "cf.net_change_in_cash": "37197",
+    "sup.cash_interest_paid": "185242",
+    "sup.cash_taxes_paid": "14716",
+    "sup.scheduled_principal": "231000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1366057",
+    "cash.beginning_of_year": "660000",
+    "debt.term_total": "3927000"
+   }
+  },
+  {
+   "period_end": "2024-09-30",
+   "months": 9,
+   "fiscal_year": 2024,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "17328180",
+    "is.cogs": "11606433",
+    "is.gross_profit": "5721747",
+    "is.sga": "3898840",
+    "is.depreciation_amortization": "340088",
+    "is.other_operating_expense": "69313",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1413506",
+    "is.interest_expense": "274271",
+    "is.other_income_net": "10397",
+    "is.pretax_income": "1149632",
+    "is.income_tax_expense": "22992",
+    "is.net_income": "1126640",
+    "bs.cash": "709014",
+    "bs.accounts_receivable": "3723134",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "283606",
+    "bs.total_current_assets": "4715754",
+    "bs.net_ppe": "2717709",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9193463",
+    "bs.accounts_payable": "1215438",
+    "bs.accrued_liabilities": "614926",
+    "bs.revolver": "1063521",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "338754",
+    "bs.total_current_liabilities": "3694639",
+    "bs.long_term_debt": "3349500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "357720",
+    "bs.total_liabilities": "7401859",
+    "bs.total_equity": "1791604",
+    "bs.total_liabilities_and_equity": "9193463",
+    "cf.net_income": "1126640",
+    "cf.depreciation_amortization": "340088",
+    "cf.change_in_working_capital": "-206938",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1271670",
+    "cf.capex": "381220",
+    "cf.other_investing": "0",
+    "cf.cfi": "-381220",
+    "cf.revolver_net": "73521",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "568457",
+    "cf.other_financing": "0",
+    "cf.cff": "-841436",
+    "cf.net_change_in_cash": "49014",
+    "sup.cash_interest_paid": "275659",
+    "sup.cash_taxes_paid": "22220",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1534318",
+    "cash.beginning_of_year": "660000",
+    "debt.term_total": "3811500"
+   }
+  },
+  {
+   "period_end": "2024-12-31",
+   "months": 12,
+   "fiscal_year": 2024,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "23032780",
+    "is.cogs": "15428515",
+    "is.gross_profit": "7604265",
+    "is.sga": "5182375",
+    "is.depreciation_amortization": "454685",
+    "is.other_operating_expense": "92131",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1875074",
+    "is.interest_expense": "362531",
+    "is.other_income_net": "13820",
+    "is.pretax_income": "1526363",
+    "is.income_tax_expense": "30527",
+    "is.net_income": "1495836",
+    "bs.cash": "684552",
+    "bs.accounts_receivable": "3557170",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "273821",
+    "bs.total_current_assets": "4515543",
+    "bs.net_ppe": "2728613",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9004156",
+    "bs.accounts_payable": "1172803",
+    "bs.accrued_liabilities": "594175",
+    "bs.revolver": "1005522",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "326993",
+    "bs.total_current_liabilities": "3561493",
+    "bs.long_term_debt": "3234000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "361680",
+    "bs.total_liabilities": "7157173",
+    "bs.total_equity": "1846983",
+    "bs.total_liabilities_and_equity": "9004156",
+    "cf.net_income": "1495836",
+    "cf.depreciation_amortization": "454685",
+    "cf.change_in_working_capital": "-106336",
+    "cf.other_operating": "15840",
+    "cf.cfo": "1860025",
+    "cf.capex": "506721",
+    "cf.other_investing": "0",
+    "cf.cfi": "-506721",
+    "cf.revolver_net": "15522",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "462000",
+    "cf.distributions": "882274",
+    "cf.other_financing": "0",
+    "cf.cff": "-1328752",
+    "cf.net_change_in_cash": "24552",
+    "sup.cash_interest_paid": "364488",
+    "sup.cash_taxes_paid": "30101",
+    "sup.scheduled_principal": "462000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1589697",
+    "cash.beginning_of_year": "660000",
+    "debt.term_total": "3696000"
+   }
+  },
+  {
+   "period_end": "2025-03-31",
+   "months": 3,
+   "fiscal_year": 2025,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "5893607",
+    "is.cogs": "3942823",
+    "is.gross_profit": "1950784",
+    "is.sga": "1326062",
+    "is.depreciation_amortization": "115057",
+    "is.other_operating_expense": "23574",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "486091",
+    "is.interest_expense": "85086",
+    "is.other_income_net": "3536",
+    "is.pretax_income": "404541",
+    "is.income_tax_expense": "8091",
+    "is.net_income": "396450",
+    "bs.cash": "707233",
+    "bs.accounts_receivable": "3520017",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "282893",
+    "bs.total_current_assets": "4510143",
+    "bs.net_ppe": "2743215",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9013358",
+    "bs.accounts_payable": "1209853",
+    "bs.accrued_liabilities": "611829",
+    "bs.revolver": "1000953",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "338133",
+    "bs.total_current_liabilities": "3622768",
+    "bs.long_term_debt": "3118500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "365640",
+    "bs.total_liabilities": "7106908",
+    "bs.total_equity": "1906450",
+    "bs.total_liabilities_and_equity": "9013358",
+    "cf.net_income": "396450",
+    "cf.depreciation_amortization": "115057",
+    "cf.change_in_working_capital": "93925",
+    "cf.other_operating": "3960",
+    "cf.cfo": "609392",
+    "cf.capex": "129659",
+    "cf.other_investing": "0",
+    "cf.cfi": "-129659",
+    "cf.revolver_net": "-4569",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "115500",
+    "cf.distributions": "336983",
+    "cf.other_financing": "0",
+    "cf.cff": "-457052",
+    "cf.net_change_in_cash": "22681",
+    "sup.cash_interest_paid": "86144",
+    "sup.cash_taxes_paid": "7535",
+    "sup.scheduled_principal": "115500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1649164",
+    "cash.beginning_of_year": "684552",
+    "debt.term_total": "3580500"
+   }
+  },
+  {
+   "period_end": "2025-06-30",
+   "months": 6,
+   "fiscal_year": 2025,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "11938305",
+    "is.cogs": "7978868",
+    "is.gross_profit": "3959437",
+    "is.sga": "2686119",
+    "is.depreciation_amortization": "230729",
+    "is.other_operating_expense": "47753",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "994836",
+    "is.interest_expense": "168033",
+    "is.other_income_net": "7163",
+    "is.pretax_income": "833966",
+    "is.income_tax_expense": "16680",
+    "is.net_income": "817286",
+    "bs.cash": "725364",
+    "bs.accounts_receivable": "3616882",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "290146",
+    "bs.total_current_assets": "4632392",
+    "bs.net_ppe": "2760526",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9152918",
+    "bs.accounts_payable": "1238458",
+    "bs.accrued_liabilities": "626074",
+    "bs.revolver": "1088046",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "347092",
+    "bs.total_current_liabilities": "3761670",
+    "bs.long_term_debt": "3003000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "369600",
+    "bs.total_liabilities": "7134270",
+    "bs.total_equity": "2018648",
+    "bs.total_liabilities_and_equity": "9152918",
+    "cf.net_income": "817286",
+    "cf.depreciation_amortization": "230729",
+    "cf.change_in_working_capital": "41616",
+    "cf.other_operating": "7920",
+    "cf.cfo": "1097551",
+    "cf.capex": "262642",
+    "cf.other_investing": "0",
+    "cf.cfi": "-262642",
+    "cf.revolver_net": "82524",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "231000",
+    "cf.distributions": "645621",
+    "cf.other_financing": "0",
+    "cf.cff": "-794097",
+    "cf.net_change_in_cash": "40812",
+    "sup.cash_interest_paid": "169804",
+    "sup.cash_taxes_paid": "15626",
+    "sup.scheduled_principal": "231000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1761362",
+    "cash.beginning_of_year": "684552",
+    "debt.term_total": "3465000"
+   }
+  },
+  {
+   "period_end": "2025-09-30",
+   "months": 9,
+   "fiscal_year": 2025,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "18162268",
+    "is.cogs": "12149546",
+    "is.gross_profit": "6012722",
+    "is.sga": "4086511",
+    "is.depreciation_amortization": "347131",
+    "is.other_operating_expense": "72649",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1506431",
+    "is.interest_expense": "250618",
+    "is.other_income_net": "10897",
+    "is.pretax_income": "1266710",
+    "is.income_tax_expense": "25335",
+    "is.net_income": "1241375",
+    "bs.cash": "746876",
+    "bs.accounts_receivable": "3730967",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "298750",
+    "bs.total_current_assets": "4776593",
+    "bs.net_ppe": "2781051",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9317644",
+    "bs.accounts_payable": "1279770",
+    "bs.accrued_liabilities": "643700",
+    "bs.revolver": "1120313",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "357197",
+    "bs.total_current_liabilities": "3862980",
+    "bs.long_term_debt": "2887500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "373560",
+    "bs.total_liabilities": "7124040",
+    "bs.total_equity": "2193604",
+    "bs.total_liabilities_and_equity": "9317644",
+    "cf.net_income": "1241375",
+    "cf.depreciation_amortization": "347131",
+    "cf.change_in_working_capital": "-12030",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1588356",
+    "cf.capex": "399569",
+    "cf.other_investing": "0",
+    "cf.cfi": "-399569",
+    "cf.revolver_net": "114791",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "894754",
+    "cf.other_financing": "0",
+    "cf.cff": "-1126463",
+    "cf.net_change_in_cash": "62324",
+    "sup.cash_interest_paid": "252510",
+    "sup.cash_taxes_paid": "24215",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "1936318",
+    "cash.beginning_of_year": "684552",
+    "debt.term_total": "3349500"
+   }
+  },
+  {
+   "period_end": "2025-12-31",
+   "months": 12,
+   "fiscal_year": 2025,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "24165219",
+    "is.cogs": "16189532",
+    "is.gross_profit": "7975687",
+    "is.sga": "5437175",
+    "is.depreciation_amortization": "464399",
+    "is.other_operating_expense": "96661",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1977452",
+    "is.interest_expense": "331778",
+    "is.other_income_net": "14499",
+    "is.pretax_income": "1660173",
+    "is.income_tax_expense": "33204",
+    "is.net_income": "1626969",
+    "bs.cash": "720354",
+    "bs.accounts_receivable": "3605060",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "288142",
+    "bs.total_current_assets": "4613556",
+    "bs.net_ppe": "2795848",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9169404",
+    "bs.accounts_payable": "1239667",
+    "bs.accrued_liabilities": "621345",
+    "bs.revolver": "1080531",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "344034",
+    "bs.total_current_liabilities": "3747577",
+    "bs.long_term_debt": "2772000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "377520",
+    "bs.total_liabilities": "6897097",
+    "bs.total_equity": "2272307",
+    "bs.total_liabilities_and_equity": "9169404",
+    "cf.net_income": "1626969",
+    "cf.depreciation_amortization": "464399",
+    "cf.change_in_working_capital": "48864",
+    "cf.other_operating": "15840",
+    "cf.cfo": "2156072",
+    "cf.capex": "531634",
+    "cf.other_investing": "0",
+    "cf.cfi": "-531634",
+    "cf.revolver_net": "75009",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "462000",
+    "cf.distributions": "1201645",
+    "cf.other_financing": "0",
+    "cf.cff": "-1588636",
+    "cf.net_change_in_cash": "35802",
+    "sup.cash_interest_paid": "334145",
+    "sup.cash_taxes_paid": "32870",
+    "sup.scheduled_principal": "462000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "2015021",
+    "cash.beginning_of_year": "684552",
+    "debt.term_total": "3234000"
+   }
+  },
+  {
+   "period_end": "2026-03-31",
+   "months": 3,
+   "fiscal_year": 2026,
+   "quarter": 1,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "6125815",
+    "is.cogs": "4105521",
+    "is.gross_profit": "2020294",
+    "is.sga": "1378308",
+    "is.depreciation_amortization": "117892",
+    "is.other_operating_expense": "24503",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "499591",
+    "is.interest_expense": "78339",
+    "is.other_income_net": "3675",
+    "is.pretax_income": "424927",
+    "is.income_tax_expense": "8499",
+    "is.net_income": "416428",
+    "bs.cash": "735098",
+    "bs.accounts_receivable": "3779544",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "294039",
+    "bs.total_current_assets": "4808681",
+    "bs.net_ppe": "2812724",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9381405",
+    "bs.accounts_payable": "1259776",
+    "bs.accrued_liabilities": "632569",
+    "bs.revolver": "1102647",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "351545",
+    "bs.total_current_liabilities": "3808537",
+    "bs.long_term_debt": "2656500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "381480",
+    "bs.total_liabilities": "6846517",
+    "bs.total_equity": "2534888",
+    "bs.total_liabilities_and_equity": "9381405",
+    "cf.net_income": "416428",
+    "cf.depreciation_amortization": "117892",
+    "cf.change_in_working_capital": "-141537",
+    "cf.other_operating": "3960",
+    "cf.cfo": "396743",
+    "cf.capex": "134768",
+    "cf.other_investing": "0",
+    "cf.cfi": "-134768",
+    "cf.revolver_net": "22116",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "115500",
+    "cf.distributions": "153847",
+    "cf.other_financing": "0",
+    "cf.cff": "-247231",
+    "cf.net_change_in_cash": "14744",
+    "sup.cash_interest_paid": "79279",
+    "sup.cash_taxes_paid": "7869",
+    "sup.scheduled_principal": "115500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "2277602",
+    "cash.beginning_of_year": "720354",
+    "debt.term_total": "3118500"
+   }
+  },
+  {
+   "period_end": "2026-06-30",
+   "months": 6,
+   "fiscal_year": 2026,
+   "quarter": 2,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "12397189",
+    "is.cogs": "8322393",
+    "is.gross_profit": "4074796",
+    "is.sga": "2789367",
+    "is.depreciation_amortization": "236495",
+    "is.other_operating_expense": "49588",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "999346",
+    "is.interest_expense": "155056",
+    "is.other_income_net": "7438",
+    "is.pretax_income": "851728",
+    "is.income_tax_expense": "17035",
+    "is.net_income": "834693",
+    "bs.cash": "752565",
+    "bs.accounts_receivable": "3800624",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "301026",
+    "bs.total_current_assets": "4854215",
+    "bs.net_ppe": "2832091",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9446306",
+    "bs.accounts_payable": "1293944",
+    "bs.accrued_liabilities": "646438",
+    "bs.revolver": "1128847",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "359733",
+    "bs.total_current_liabilities": "3890962",
+    "bs.long_term_debt": "2541000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "385440",
+    "bs.total_liabilities": "6817402",
+    "bs.total_equity": "2628904",
+    "bs.total_liabilities_and_equity": "9446306",
+    "cf.net_income": "834693",
+    "cf.depreciation_amortization": "236495",
+    "cf.change_in_working_capital": "-113379",
+    "cf.other_operating": "7920",
+    "cf.cfo": "965729",
+    "cf.capex": "272738",
+    "cf.other_investing": "0",
+    "cf.cfi": "-272738",
+    "cf.revolver_net": "48316",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "231000",
+    "cf.distributions": "478096",
+    "cf.other_financing": "0",
+    "cf.cff": "-660780",
+    "cf.net_change_in_cash": "32211",
+    "sup.cash_interest_paid": "156537",
+    "sup.cash_taxes_paid": "16368",
+    "sup.scheduled_principal": "231000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "2371618",
+    "cash.beginning_of_year": "720354",
+    "debt.term_total": "3003000"
+   }
+  },
+  {
+   "period_end": "2026-09-30",
+   "months": 9,
+   "fiscal_year": 2026,
+   "quarter": 3,
+   "quality": "internal",
+   "scale": 1,
+   "values": {
+    "is.revenue": "18883803",
+    "is.cogs": "12664532",
+    "is.gross_profit": "6219271",
+    "is.sga": "4248855",
+    "is.depreciation_amortization": "355915",
+    "is.other_operating_expense": "75534",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1538967",
+    "is.interest_expense": "230231",
+    "is.other_income_net": "11330",
+    "is.pretax_income": "1320066",
+    "is.income_tax_expense": "26402",
+    "is.net_income": "1293664",
+    "bs.cash": "778394",
+    "bs.accounts_receivable": "3959500",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "311357",
+    "bs.total_current_assets": "5049251",
+    "bs.net_ppe": "2855377",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "9664628",
+    "bs.accounts_payable": "1332382",
+    "bs.accrued_liabilities": "667233",
+    "bs.revolver": "1167591",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "372617",
+    "bs.total_current_liabilities": "4001823",
+    "bs.long_term_debt": "2425500",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "389400",
+    "bs.total_liabilities": "6816723",
+    "bs.total_equity": "2847905",
+    "bs.total_liabilities_and_equity": "9664628",
+    "cf.net_income": "1293664",
+    "cf.depreciation_amortization": "355915",
+    "cf.change_in_working_capital": "-210469",
+    "cf.other_operating": "11880",
+    "cf.cfo": "1450990",
+    "cf.capex": "415444",
+    "cf.other_investing": "0",
+    "cf.cfi": "-415444",
+    "cf.revolver_net": "87060",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "346500",
+    "cf.distributions": "718066",
+    "cf.other_financing": "0",
+    "cf.cff": "-977506",
+    "cf.net_change_in_cash": "58040",
+    "sup.cash_interest_paid": "232226",
+    "sup.cash_taxes_paid": "24904",
+    "sup.scheduled_principal": "346500",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "2590619",
+    "cash.beginning_of_year": "720354",
+    "debt.term_total": "2887500"
+   }
+  }
+ ],
+ "comparative_periods": [
+  {
+   "period_end": "2023-12-31",
+   "months": 12,
+   "fiscal_year": 2023,
+   "quarter": 4,
+   "quality": "audited",
+   "scale": 1,
+   "values": {
+    "is.revenue": "22000000",
+    "is.cogs": "14732037",
+    "is.gross_profit": "7267963",
+    "is.sga": "4950000",
+    "is.depreciation_amortization": "447423",
+    "is.other_operating_expense": "88000",
+    "is.nonrecurring_expense": "0",
+    "is.operating_income": "1782540",
+    "is.interest_expense": "391156",
+    "is.other_income_net": "13200",
+    "is.pretax_income": "1404584",
+    "is.income_tax_expense": "28091",
+    "is.net_income": "1376493",
+    "bs.cash": "660000",
+    "bs.accounts_receivable": "3387397",
+    "bs.inventory": "0",
+    "bs.other_current_assets": "264000",
+    "bs.total_current_assets": "4311397",
+    "bs.net_ppe": "2676577",
+    "bs.intangibles": "1540000",
+    "bs.other_noncurrent_assets": "220000",
+    "bs.total_assets": "8747974",
+    "bs.accounts_payable": "1129727",
+    "bs.accrued_liabilities": "575877",
+    "bs.revolver": "990000",
+    "bs.cpltd": "462000",
+    "bs.other_current_liabilities": "315109",
+    "bs.total_current_liabilities": "3472713",
+    "bs.long_term_debt": "3696000",
+    "bs.subordinated_debt": "0",
+    "bs.other_noncurrent_liabilities": "345840",
+    "bs.total_liabilities": "7514553",
+    "bs.total_equity": "1233421",
+    "bs.total_liabilities_and_equity": "8747974",
+    "cf.net_income": "1376493",
+    "cf.depreciation_amortization": "447423",
+    "cf.change_in_working_capital": "-15580",
+    "cf.other_operating": "15840",
+    "cf.cfo": "1824176",
+    "cf.capex": "484000",
+    "cf.other_investing": "0",
+    "cf.cfi": "-484000",
+    "cf.revolver_net": "0",
+    "cf.term_debt_proceeds": "0",
+    "cf.term_debt_repayments": "462000",
+    "cf.distributions": "878176",
+    "cf.other_financing": "0",
+    "cf.cff": "-1340176",
+    "cf.net_change_in_cash": "0",
+    "sup.cash_interest_paid": "393508",
+    "sup.cash_taxes_paid": "28251",
+    "sup.scheduled_principal": "462000",
+    "sup.financed_capex": "0"
+   },
+   "memo": {
+    "equity.paid_in_capital": "257286",
+    "equity.retained_earnings": "976135",
+    "cash.beginning_of_year": "660000",
+    "debt.term_total": "4158000"
+   }
+  }
+ ],
+ "certificates": [
+  {
+   "period_end": "2025-03-31",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.22",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1519521"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "354631"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "31011"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "456880"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2362043"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "512965"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "30527"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1818551"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "357264"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "819264"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.94",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4581453"
+      },
+      {
+       "label": "Net income",
+       "amount": "1519521"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "354631"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "31011"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "456880"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2362043"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.24",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "4510143"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "3622768"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2025-03-31"
+  },
+  {
+   "period_end": "2025-06-30",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.29",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1572650"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "346260"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "32096"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "459245"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2410251"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "518129"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "31011"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1861111"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "349050"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "811050"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.89",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4553046"
+      },
+      {
+       "label": "Net income",
+       "amount": "1572650"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "346260"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "32096"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "459245"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2410251"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.23",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "4632392"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "3761670"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2025-06-30"
+  },
+  {
+   "period_end": "2025-09-30",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.35",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1610571"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "338878"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "32870"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "461728"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2444047"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "525070"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "32096"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1886881"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "341339"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "803339"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.83",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4469813"
+      },
+      {
+       "label": "Net income",
+       "amount": "1610571"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "338878"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "32870"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "461728"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2444047"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.24",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "4776593"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "3862980"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2025-09-30"
+  },
+  {
+   "period_end": "2025-12-31",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.38",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1626969"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "331778"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "33204"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "464399"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2456350"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "531634"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "32870"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1891846"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "334145"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "796145"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.76",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4314531"
+      },
+      {
+       "label": "Net income",
+       "amount": "1626969"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "331778"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "33204"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "464399"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2456350"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.23",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "4613556"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "3747577"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2025-12-31"
+  },
+  {
+   "period_end": "2026-03-31",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.41",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1646947"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "325031"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "33612"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "467234"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2472824"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "536743"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "33204"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1902877"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "327280"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "789280"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.71",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4221147"
+      },
+      {
+       "label": "Net income",
+       "amount": "1646947"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "325031"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "33612"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "467234"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2472824"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.26",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "4808681"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "3808537"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2026-03-31"
+  },
+  {
+   "period_end": "2026-06-30",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.42",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1644376"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "318801"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "33559"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "470165"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2466901"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "541730"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "33612"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1891559"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "320878"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "782878"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.67",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4131847"
+      },
+      {
+       "label": "Net income",
+       "amount": "1644376"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "318801"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "33559"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "470165"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2466901"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.25",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "4854215"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "3890962"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2026-06-30"
+  },
+  {
+   "period_end": "2026-09-30",
+   "scale": 1,
+   "signed_by": "Rosalind Eckhart",
+   "reported": {
+    "fccr": {
+     "value": "2.47",
+     "threshold": "1.25",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Net income",
+       "amount": "1679258"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "311391"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "34271"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "473183"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2498103"
+      },
+      {
+       "label": "Less: Unfinanced capital expenditures",
+       "amount": "547509"
+      },
+      {
+       "label": "Less: Cash paid for income taxes",
+       "amount": "33559"
+      },
+      {
+       "label": "Numerator",
+       "amount": "1917035"
+      },
+      {
+       "label": "Cash paid for interest",
+       "amount": "313861"
+      },
+      {
+       "label": "Scheduled principal payments on term debt",
+       "amount": "462000"
+      },
+      {
+       "label": "Denominator",
+       "amount": "775861"
+      }
+     ]
+    },
+    "total_leverage": {
+     "value": "1.62",
+     "threshold": "2.50",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total Debt",
+       "amount": "4055091"
+      },
+      {
+       "label": "Net income",
+       "amount": "1679258"
+      },
+      {
+       "label": "Interest expense",
+       "amount": "311391"
+      },
+      {
+       "label": "Income tax expense",
+       "amount": "34271"
+      },
+      {
+       "label": "Depreciation and amortization",
+       "amount": "473183"
+      },
+      {
+       "label": "EBITDA",
+       "amount": "2498103"
+      }
+     ]
+    },
+    "current_ratio": {
+     "value": "1.26",
+     "threshold": "1.00",
+     "in_compliance": true,
+     "unit": "ratio",
+     "calculation": [
+      {
+       "label": "Total current assets",
+       "amount": "5049251"
+      },
+      {
+       "label": "Total current liabilities",
+       "amount": "4001823"
+      }
+     ]
+    }
+   },
+   "document_id": "ashgrove-fleet.cc-2026-09-30"
+  }
+ ],
+ "borrowing_base": [],
+ "system_of_record": [
+  {
+   "date": "2024-01-31",
+   "revolver_outstanding": "983000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4158000"
+  },
+  {
+   "date": "2024-02-29",
+   "revolver_outstanding": "988000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4158000"
+  },
+  {
+   "date": "2024-03-31",
+   "revolver_outstanding": "1009756",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4042500"
+  },
+  {
+   "date": "2024-04-30",
+   "revolver_outstanding": "1008000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4042500"
+  },
+  {
+   "date": "2024-05-31",
+   "revolver_outstanding": "1032000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "4042500"
+  },
+  {
+   "date": "2024-06-30",
+   "revolver_outstanding": "1045796",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3927000"
+  },
+  {
+   "date": "2024-07-31",
+   "revolver_outstanding": "1067000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3927000"
+  },
+  {
+   "date": "2024-08-31",
+   "revolver_outstanding": "1048000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3927000"
+  },
+  {
+   "date": "2024-09-30",
+   "revolver_outstanding": "1063521",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3811500"
+  },
+  {
+   "date": "2024-10-31",
+   "revolver_outstanding": "1045000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3811500"
+  },
+  {
+   "date": "2024-11-30",
+   "revolver_outstanding": "1028000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3811500"
+  },
+  {
+   "date": "2024-12-31",
+   "revolver_outstanding": "1005522",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3696000"
+  },
+  {
+   "date": "2025-01-31",
+   "revolver_outstanding": "1004000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3696000"
+  },
+  {
+   "date": "2025-02-28",
+   "revolver_outstanding": "1001000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3696000"
+  },
+  {
+   "date": "2025-03-31",
+   "revolver_outstanding": "1000953",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3580500"
+  },
+  {
+   "date": "2025-04-30",
+   "revolver_outstanding": "1025000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3580500"
+  },
+  {
+   "date": "2025-05-31",
+   "revolver_outstanding": "1051000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3580500"
+  },
+  {
+   "date": "2025-06-30",
+   "revolver_outstanding": "1088046",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3465000"
+  },
+  {
+   "date": "2025-07-31",
+   "revolver_outstanding": "1115000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3465000"
+  },
+  {
+   "date": "2025-08-31",
+   "revolver_outstanding": "1104000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3465000"
+  },
+  {
+   "date": "2025-09-30",
+   "revolver_outstanding": "1120313",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3349500"
+  },
+  {
+   "date": "2025-10-31",
+   "revolver_outstanding": "1102000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3349500"
+  },
+  {
+   "date": "2025-11-30",
+   "revolver_outstanding": "1084000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3349500"
+  },
+  {
+   "date": "2025-12-31",
+   "revolver_outstanding": "1080531",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3234000"
+  },
+  {
+   "date": "2026-01-31",
+   "revolver_outstanding": "1084000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3234000"
+  },
+  {
+   "date": "2026-02-28",
+   "revolver_outstanding": "1105000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3234000"
+  },
+  {
+   "date": "2026-03-31",
+   "revolver_outstanding": "1102647",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3118500"
+  },
+  {
+   "date": "2026-04-30",
+   "revolver_outstanding": "1104000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3118500"
+  },
+  {
+   "date": "2026-05-31",
+   "revolver_outstanding": "1122000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3118500"
+  },
+  {
+   "date": "2026-06-30",
+   "revolver_outstanding": "1128847",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3003000"
+  },
+  {
+   "date": "2026-07-31",
+   "revolver_outstanding": "1128000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3003000"
+  },
+  {
+   "date": "2026-08-31",
+   "revolver_outstanding": "1144000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "3003000"
+  },
+  {
+   "date": "2026-09-30",
+   "revolver_outstanding": "1167591",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2887500"
+  },
+  {
+   "date": "2026-10-31",
+   "revolver_outstanding": "1151000",
+   "commitment": "1750000",
+   "past_due_days": 0,
+   "term_loan_outstanding": "2887500"
+  }
+ ],
+ "documents": [
+  {
+   "id": "ashgrove-fleet.credit-agreement",
+   "type": "credit_agreement",
+   "period_end": null,
+   "path": "documents/ashgrove-fleet/credit-agreement.pdf",
+   "pages": 12,
+   "title": "Credit Agreement between Ashgrove Fleet Maintenance, LLC and Bank of Stoic",
+   "received_date": "2023-06-30",
+   "document_date": "2023-06-30"
+  },
+  {
+   "id": "ashgrove-fleet.afs-2024",
+   "type": "annual_financial_statements",
+   "period_end": "2024-12-31",
+   "path": "documents/ashgrove-fleet/afs-2024.pdf",
+   "pages": 8,
+   "title": "Ashgrove Fleet Maintenance, LLC audited financial statements, fiscal year 2024",
+   "received_date": "2025-04-05",
+   "document_date": "2025-03-27",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2023-12-31",
+   "page_map": {
+    "balance_sheet_assets": 3,
+    "balance_sheet_liabilities": 4,
+    "income_statement": 5,
+    "cash_flow": 6,
+    "supplemental": 8
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "684,552"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "3,557,170"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "273,821"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "4,515,543"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "2,728,613"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "9,004,156"
+    },
+    "bs.accounts_payable": {
+     "page": 4,
+     "label": "Accounts payable",
+     "printed": "1,172,803"
+    },
+    "bs.accrued_liabilities": {
+     "page": 4,
+     "label": "Accrued liabilities",
+     "printed": "594,175"
+    },
+    "bs.revolver": {
+     "page": 4,
+     "label": "Line of credit",
+     "printed": "1,005,522"
+    },
+    "bs.cpltd": {
+     "page": 4,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 4,
+     "label": "Other current liabilities",
+     "printed": "326,993"
+    },
+    "bs.total_current_liabilities": {
+     "page": 4,
+     "label": "Total current liabilities",
+     "printed": "3,561,493"
+    },
+    "bs.long_term_debt": {
+     "page": 4,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,234,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 4,
+     "label": "Other liabilities",
+     "printed": "361,680"
+    },
+    "bs.total_liabilities": {
+     "page": 4,
+     "label": "Total liabilities",
+     "printed": "7,157,173"
+    },
+    "bs.total_equity": {
+     "page": 4,
+     "label": "Total members' equity",
+     "printed": "1,846,983"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 4,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,004,156"
+    },
+    "is.revenue": {
+     "page": 5,
+     "label": "Net revenue",
+     "printed": "23,032,780"
+    },
+    "is.cogs": {
+     "page": 5,
+     "label": "Cost of services",
+     "printed": "15,428,515"
+    },
+    "is.gross_profit": {
+     "page": 5,
+     "label": "Gross profit",
+     "printed": "7,604,265"
+    },
+    "is.sga": {
+     "page": 5,
+     "label": "Selling, general and administrative",
+     "printed": "5,182,375"
+    },
+    "is.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "454,685"
+    },
+    "is.other_operating_expense": {
+     "page": 5,
+     "label": "Other operating expense",
+     "printed": "92,131"
+    },
+    "is.operating_income": {
+     "page": 5,
+     "label": "Operating income",
+     "printed": "1,875,074"
+    },
+    "is.interest_expense": {
+     "page": 5,
+     "label": "Interest expense",
+     "printed": "362,531"
+    },
+    "is.other_income_net": {
+     "page": 5,
+     "label": "Other income (expense), net",
+     "printed": "13,820"
+    },
+    "is.pretax_income": {
+     "page": 5,
+     "label": "Income before taxes",
+     "printed": "1,526,363"
+    },
+    "is.income_tax_expense": {
+     "page": 5,
+     "label": "Income tax expense",
+     "printed": "30,527"
+    },
+    "is.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,495,836"
+    },
+    "cf.net_income": {
+     "page": 6,
+     "label": "Net income",
+     "printed": "1,495,836"
+    },
+    "cf.depreciation_amortization": {
+     "page": 6,
+     "label": "Depreciation and amortization",
+     "printed": "454,685"
+    },
+    "cf.change_in_working_capital": {
+     "page": 6,
+     "label": "Changes in working capital",
+     "printed": "(106,336)"
+    },
+    "cf.other_operating": {
+     "page": 6,
+     "label": "Other operating items",
+     "printed": "15,840"
+    },
+    "cf.cfo": {
+     "page": 6,
+     "label": "Net cash from operating activities",
+     "printed": "1,860,025"
+    },
+    "cf.capex": {
+     "page": 6,
+     "label": "Purchases of property and equipment",
+     "printed": "(506,721)"
+    },
+    "cf.cfi": {
+     "page": 6,
+     "label": "Net cash from investing",
+     "printed": "(506,721)"
+    },
+    "cf.revolver_net": {
+     "page": 6,
+     "label": "Net borrowings on line of credit",
+     "printed": "15,522"
+    },
+    "cf.term_debt_repayments": {
+     "page": 6,
+     "label": "Repayments of long-term debt",
+     "printed": "(462,000)"
+    },
+    "cf.distributions": {
+     "page": 6,
+     "label": "Distributions to members",
+     "printed": "(882,274)"
+    },
+    "cf.cff": {
+     "page": 6,
+     "label": "Net cash from financing",
+     "printed": "(1,328,752)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 6,
+     "label": "Net change in cash",
+     "printed": "24,552"
+    },
+    "sup.cash_interest_paid": {
+     "page": 8,
+     "label": "Cash paid for interest",
+     "printed": "364,488"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 8,
+     "label": "Cash paid for income taxes",
+     "printed": "30,101"
+    },
+    "sup.scheduled_principal": {
+     "page": 8,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "462,000"
+    },
+    "sup.financed_capex": {
+     "page": 8,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "660,000",
+    "bs.accounts_receivable": "3,387,397",
+    "bs.other_current_assets": "264,000",
+    "bs.total_current_assets": "4,311,397",
+    "bs.net_ppe": "2,676,577",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "8,747,974",
+    "bs.accounts_payable": "1,129,727",
+    "bs.accrued_liabilities": "575,877",
+    "bs.revolver": "990,000",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "315,109",
+    "bs.total_current_liabilities": "3,472,713",
+    "bs.long_term_debt": "3,696,000",
+    "bs.other_noncurrent_liabilities": "345,840",
+    "bs.total_liabilities": "7,514,553",
+    "bs.total_equity": "1,233,421",
+    "bs.total_liabilities_and_equity": "8,747,974",
+    "is.revenue": "22,000,000",
+    "is.cogs": "14,732,037",
+    "is.gross_profit": "7,267,963",
+    "is.sga": "4,950,000",
+    "is.depreciation_amortization": "447,423",
+    "is.other_operating_expense": "88,000",
+    "is.operating_income": "1,782,540",
+    "is.interest_expense": "391,156",
+    "is.other_income_net": "13,200",
+    "is.pretax_income": "1,404,584",
+    "is.income_tax_expense": "28,091",
+    "is.net_income": "1,376,493",
+    "cf.net_income": "1,376,493",
+    "cf.depreciation_amortization": "447,423",
+    "cf.change_in_working_capital": "(15,580)",
+    "cf.other_operating": "15,840",
+    "cf.cfo": "1,824,176",
+    "cf.capex": "(484,000)",
+    "cf.cfi": "(484,000)",
+    "cf.revolver_net": "-",
+    "cf.term_debt_repayments": "(462,000)",
+    "cf.distributions": "(878,176)",
+    "cf.cff": "(1,340,176)",
+    "cf.net_change_in_cash": "-",
+    "sup.cash_interest_paid": "393,508",
+    "sup.cash_taxes_paid": "28,251",
+    "sup.scheduled_principal": "462,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.afs-2025",
+   "type": "annual_financial_statements",
+   "period_end": "2025-12-31",
+   "path": "documents/ashgrove-fleet/afs-2025.pdf",
+   "pages": 8,
+   "title": "Ashgrove Fleet Maintenance, LLC audited financial statements, fiscal year 2025",
+   "received_date": "2026-04-10",
+   "document_date": "2026-04-01",
+   "scale": 1,
+   "quality": "audited",
+   "comparative_period_end": "2024-12-31",
+   "page_map": {
+    "balance_sheet_assets": 3,
+    "balance_sheet_liabilities": 4,
+    "income_statement": 5,
+    "cash_flow": 6,
+    "supplemental": 8
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 3,
+     "label": "Cash and equivalents",
+     "printed": "720,354"
+    },
+    "bs.accounts_receivable": {
+     "page": 3,
+     "label": "Accounts receivable, net",
+     "printed": "3,605,060"
+    },
+    "bs.other_current_assets": {
+     "page": 3,
+     "label": "Other current assets",
+     "printed": "288,142"
+    },
+    "bs.total_current_assets": {
+     "page": 3,
+     "label": "Total current assets",
+     "printed": "4,613,556"
+    },
+    "bs.net_ppe": {
+     "page": 3,
+     "label": "Property and equipment, net",
+     "printed": "2,795,848"
+    },
+    "bs.intangibles": {
+     "page": 3,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 3,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 3,
+     "label": "Total assets",
+     "printed": "9,169,404"
+    },
+    "bs.accounts_payable": {
+     "page": 4,
+     "label": "Accounts payable",
+     "printed": "1,239,667"
+    },
+    "bs.accrued_liabilities": {
+     "page": 4,
+     "label": "Accrued liabilities",
+     "printed": "621,345"
+    },
+    "bs.revolver": {
+     "page": 4,
+     "label": "Line of credit",
+     "printed": "1,080,531"
+    },
+    "bs.cpltd": {
+     "page": 4,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 4,
+     "label": "Other current liabilities",
+     "printed": "344,034"
+    },
+    "bs.total_current_liabilities": {
+     "page": 4,
+     "label": "Total current liabilities",
+     "printed": "3,747,577"
+    },
+    "bs.long_term_debt": {
+     "page": 4,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,772,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 4,
+     "label": "Other liabilities",
+     "printed": "377,520"
+    },
+    "bs.total_liabilities": {
+     "page": 4,
+     "label": "Total liabilities",
+     "printed": "6,897,097"
+    },
+    "bs.total_equity": {
+     "page": 4,
+     "label": "Total members' equity",
+     "printed": "2,272,307"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 4,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,169,404"
+    },
+    "is.revenue": {
+     "page": 5,
+     "label": "Net revenue",
+     "printed": "24,165,219"
+    },
+    "is.cogs": {
+     "page": 5,
+     "label": "Cost of services",
+     "printed": "16,189,532"
+    },
+    "is.gross_profit": {
+     "page": 5,
+     "label": "Gross profit",
+     "printed": "7,975,687"
+    },
+    "is.sga": {
+     "page": 5,
+     "label": "Selling, general and administrative",
+     "printed": "5,437,175"
+    },
+    "is.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "464,399"
+    },
+    "is.other_operating_expense": {
+     "page": 5,
+     "label": "Other operating expense",
+     "printed": "96,661"
+    },
+    "is.operating_income": {
+     "page": 5,
+     "label": "Operating income",
+     "printed": "1,977,452"
+    },
+    "is.interest_expense": {
+     "page": 5,
+     "label": "Interest expense",
+     "printed": "331,778"
+    },
+    "is.other_income_net": {
+     "page": 5,
+     "label": "Other income (expense), net",
+     "printed": "14,499"
+    },
+    "is.pretax_income": {
+     "page": 5,
+     "label": "Income before taxes",
+     "printed": "1,660,173"
+    },
+    "is.income_tax_expense": {
+     "page": 5,
+     "label": "Income tax expense",
+     "printed": "33,204"
+    },
+    "is.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,626,969"
+    },
+    "cf.net_income": {
+     "page": 6,
+     "label": "Net income",
+     "printed": "1,626,969"
+    },
+    "cf.depreciation_amortization": {
+     "page": 6,
+     "label": "Depreciation and amortization",
+     "printed": "464,399"
+    },
+    "cf.change_in_working_capital": {
+     "page": 6,
+     "label": "Changes in working capital",
+     "printed": "48,864"
+    },
+    "cf.other_operating": {
+     "page": 6,
+     "label": "Other operating items",
+     "printed": "15,840"
+    },
+    "cf.cfo": {
+     "page": 6,
+     "label": "Net cash from operating activities",
+     "printed": "2,156,072"
+    },
+    "cf.capex": {
+     "page": 6,
+     "label": "Purchases of property and equipment",
+     "printed": "(531,634)"
+    },
+    "cf.cfi": {
+     "page": 6,
+     "label": "Net cash from investing",
+     "printed": "(531,634)"
+    },
+    "cf.revolver_net": {
+     "page": 6,
+     "label": "Net borrowings on line of credit",
+     "printed": "75,009"
+    },
+    "cf.term_debt_repayments": {
+     "page": 6,
+     "label": "Repayments of long-term debt",
+     "printed": "(462,000)"
+    },
+    "cf.distributions": {
+     "page": 6,
+     "label": "Distributions to members",
+     "printed": "(1,201,645)"
+    },
+    "cf.cff": {
+     "page": 6,
+     "label": "Net cash from financing",
+     "printed": "(1,588,636)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 6,
+     "label": "Net change in cash",
+     "printed": "35,802"
+    },
+    "sup.cash_interest_paid": {
+     "page": 8,
+     "label": "Cash paid for interest",
+     "printed": "334,145"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 8,
+     "label": "Cash paid for income taxes",
+     "printed": "32,870"
+    },
+    "sup.scheduled_principal": {
+     "page": 8,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "462,000"
+    },
+    "sup.financed_capex": {
+     "page": 8,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "684,552",
+    "bs.accounts_receivable": "3,557,170",
+    "bs.other_current_assets": "273,821",
+    "bs.total_current_assets": "4,515,543",
+    "bs.net_ppe": "2,728,613",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "9,004,156",
+    "bs.accounts_payable": "1,172,803",
+    "bs.accrued_liabilities": "594,175",
+    "bs.revolver": "1,005,522",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "326,993",
+    "bs.total_current_liabilities": "3,561,493",
+    "bs.long_term_debt": "3,234,000",
+    "bs.other_noncurrent_liabilities": "361,680",
+    "bs.total_liabilities": "7,157,173",
+    "bs.total_equity": "1,846,983",
+    "bs.total_liabilities_and_equity": "9,004,156",
+    "is.revenue": "23,032,780",
+    "is.cogs": "15,428,515",
+    "is.gross_profit": "7,604,265",
+    "is.sga": "5,182,375",
+    "is.depreciation_amortization": "454,685",
+    "is.other_operating_expense": "92,131",
+    "is.operating_income": "1,875,074",
+    "is.interest_expense": "362,531",
+    "is.other_income_net": "13,820",
+    "is.pretax_income": "1,526,363",
+    "is.income_tax_expense": "30,527",
+    "is.net_income": "1,495,836",
+    "cf.net_income": "1,495,836",
+    "cf.depreciation_amortization": "454,685",
+    "cf.change_in_working_capital": "(106,336)",
+    "cf.other_operating": "15,840",
+    "cf.cfo": "1,860,025",
+    "cf.capex": "(506,721)",
+    "cf.cfi": "(506,721)",
+    "cf.revolver_net": "15,522",
+    "cf.term_debt_repayments": "(462,000)",
+    "cf.distributions": "(882,274)",
+    "cf.cff": "(1,328,752)",
+    "cf.net_change_in_cash": "24,552",
+    "sup.cash_interest_paid": "364,488",
+    "sup.cash_taxes_paid": "30,101",
+    "sup.scheduled_principal": "462,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.ifs-2025-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2025-03-31",
+   "path": "documents/ashgrove-fleet/ifs-2025-03-31.pdf",
+   "pages": 6,
+   "title": "Ashgrove Fleet Maintenance, LLC interim financial statements, Q1 2025",
+   "received_date": "2025-04-29",
+   "document_date": "2025-04-25",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-03-31",
+   "page_map": {
+    "balance_sheet_assets": 2,
+    "balance_sheet_liabilities": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 6
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "707,233"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,520,017"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "282,893"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "4,510,143"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,743,215"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "9,013,358"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,209,853"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "611,829"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,000,953"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "338,133"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,622,768"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,118,500"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "365,640"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "7,106,908"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "1,906,450"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,013,358"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "5,893,607"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "3,942,823"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "1,950,784"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "1,326,062"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "115,057"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "23,574"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "486,091"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "85,086"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "3,536"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "404,541"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "8,091"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "396,450"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "396,450"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "115,057"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "93,925"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "3,960"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "609,392"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(129,659)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(129,659)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "(4,569)"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(115,500)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(336,983)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(457,052)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "22,681"
+    },
+    "sup.cash_interest_paid": {
+     "page": 6,
+     "label": "Cash paid for interest",
+     "printed": "86,144"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 6,
+     "label": "Cash paid for income taxes",
+     "printed": "7,535"
+    },
+    "sup.scheduled_principal": {
+     "page": 6,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "115,500"
+    },
+    "sup.financed_capex": {
+     "page": 6,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "673,170",
+    "bs.accounts_receivable": "3,498,027",
+    "bs.other_current_assets": "269,268",
+    "bs.total_current_assets": "4,440,465",
+    "bs.net_ppe": "2,687,130",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "8,887,595",
+    "bs.accounts_payable": "1,148,312",
+    "bs.accrued_liabilities": "586,360",
+    "bs.revolver": "1,009,756",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "321,753",
+    "bs.total_current_liabilities": "3,528,181",
+    "bs.long_term_debt": "3,580,500",
+    "bs.other_noncurrent_liabilities": "349,800",
+    "bs.total_liabilities": "7,458,481",
+    "bs.total_equity": "1,429,114",
+    "bs.total_liabilities_and_equity": "8,887,595",
+    "is.revenue": "5,609,753",
+    "is.cogs": "3,742,266",
+    "is.gross_profit": "1,867,487",
+    "is.sga": "1,262,194",
+    "is.depreciation_amortization": "112,862",
+    "is.other_operating_expense": "22,439",
+    "is.operating_income": "469,992",
+    "is.interest_expense": "92,986",
+    "is.other_income_net": "3,366",
+    "is.pretax_income": "380,372",
+    "is.income_tax_expense": "7,607",
+    "is.net_income": "372,765",
+    "cf.net_income": "372,765",
+    "cf.depreciation_amortization": "112,862",
+    "cf.change_in_working_capital": "(80,186)",
+    "cf.other_operating": "3,960",
+    "cf.cfo": "409,401",
+    "cf.capex": "(123,415)",
+    "cf.cfi": "(123,415)",
+    "cf.revolver_net": "19,756",
+    "cf.term_debt_repayments": "(115,500)",
+    "cf.distributions": "(177,072)",
+    "cf.cff": "(272,816)",
+    "cf.net_change_in_cash": "13,170",
+    "sup.cash_interest_paid": "93,368",
+    "sup.cash_taxes_paid": "7,109",
+    "sup.scheduled_principal": "115,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.ifs-2025-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-06-30",
+   "path": "documents/ashgrove-fleet/ifs-2025-06-30.pdf",
+   "pages": 6,
+   "title": "Ashgrove Fleet Maintenance, LLC interim financial statements, Q2 2025",
+   "received_date": "2025-08-07",
+   "document_date": "2025-08-03",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-06-30",
+   "page_map": {
+    "balance_sheet_assets": 2,
+    "balance_sheet_liabilities": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 6
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "725,364"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,616,882"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "290,146"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "4,632,392"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,760,526"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "9,152,918"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,238,458"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "626,074"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,088,046"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "347,092"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,761,670"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "3,003,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "369,600"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "7,134,270"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "2,018,648"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,152,918"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "11,938,305"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "7,978,868"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "3,959,437"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "2,686,119"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "230,729"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "47,753"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "994,836"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "168,033"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "7,163"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "833,966"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "16,680"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "817,286"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "817,286"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "230,729"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "41,616"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "7,920"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "1,097,551"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(262,642)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(262,642)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "82,524"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(231,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(645,621)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(794,097)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "40,812"
+    },
+    "sup.cash_interest_paid": {
+     "page": 6,
+     "label": "Cash paid for interest",
+     "printed": "169,804"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 6,
+     "label": "Cash paid for income taxes",
+     "printed": "15,626"
+    },
+    "sup.scheduled_principal": {
+     "page": 6,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "231,000"
+    },
+    "sup.financed_capex": {
+     "page": 6,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "697,197",
+    "bs.accounts_receivable": "3,648,346",
+    "bs.other_current_assets": "278,879",
+    "bs.total_current_assets": "4,624,422",
+    "bs.net_ppe": "2,701,642",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "9,086,064",
+    "bs.accounts_payable": "1,197,676",
+    "bs.accrued_liabilities": "605,626",
+    "bs.revolver": "1,045,796",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "332,863",
+    "bs.total_current_liabilities": "3,643,961",
+    "bs.long_term_debt": "3,465,000",
+    "bs.other_noncurrent_liabilities": "353,760",
+    "bs.total_liabilities": "7,462,721",
+    "bs.total_equity": "1,623,343",
+    "bs.total_liabilities_and_equity": "9,086,064",
+    "is.revenue": "11,419,728",
+    "is.cogs": "7,645,407",
+    "is.gross_profit": "3,774,321",
+    "is.sga": "2,569,438",
+    "is.depreciation_amortization": "226,169",
+    "is.other_operating_expense": "45,679",
+    "is.operating_income": "933,035",
+    "is.interest_expense": "184,304",
+    "is.other_income_net": "6,852",
+    "is.pretax_income": "755,583",
+    "is.income_tax_expense": "15,111",
+    "is.net_income": "740,472",
+    "cf.net_income": "740,472",
+    "cf.depreciation_amortization": "226,169",
+    "cf.change_in_working_capital": "(160,376)",
+    "cf.other_operating": "7,920",
+    "cf.cfo": "814,185",
+    "cf.capex": "(251,234)",
+    "cf.cfi": "(251,234)",
+    "cf.revolver_net": "55,796",
+    "cf.term_debt_repayments": "(231,000)",
+    "cf.distributions": "(350,550)",
+    "cf.cff": "(525,754)",
+    "cf.net_change_in_cash": "37,197",
+    "sup.cash_interest_paid": "185,242",
+    "sup.cash_taxes_paid": "14,716",
+    "sup.scheduled_principal": "231,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.ifs-2025-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2025-09-30",
+   "path": "documents/ashgrove-fleet/ifs-2025-09-30.pdf",
+   "pages": 6,
+   "title": "Ashgrove Fleet Maintenance, LLC interim financial statements, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-28",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2024-09-30",
+   "page_map": {
+    "balance_sheet_assets": 2,
+    "balance_sheet_liabilities": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 6
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "746,876"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,730,967"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "298,750"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "4,776,593"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,781,051"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "9,317,644"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,279,770"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "643,700"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,120,313"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "357,197"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,862,980"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,887,500"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "373,560"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "7,124,040"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "2,193,604"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,317,644"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "18,162,268"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "12,149,546"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "6,012,722"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "4,086,511"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "347,131"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "72,649"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "1,506,431"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "250,618"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "10,897"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "1,266,710"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "25,335"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,241,375"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "1,241,375"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "347,131"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(12,030)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "11,880"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "1,588,356"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(399,569)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(399,569)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "114,791"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(346,500)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(894,754)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(1,126,463)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "62,324"
+    },
+    "sup.cash_interest_paid": {
+     "page": 6,
+     "label": "Cash paid for interest",
+     "printed": "252,510"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 6,
+     "label": "Cash paid for income taxes",
+     "printed": "24,215"
+    },
+    "sup.scheduled_principal": {
+     "page": 6,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "346,500"
+    },
+    "sup.financed_capex": {
+     "page": 6,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "709,014",
+    "bs.accounts_receivable": "3,723,134",
+    "bs.other_current_assets": "283,606",
+    "bs.total_current_assets": "4,715,754",
+    "bs.net_ppe": "2,717,709",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "9,193,463",
+    "bs.accounts_payable": "1,215,438",
+    "bs.accrued_liabilities": "614,926",
+    "bs.revolver": "1,063,521",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "338,754",
+    "bs.total_current_liabilities": "3,694,639",
+    "bs.long_term_debt": "3,349,500",
+    "bs.other_noncurrent_liabilities": "357,720",
+    "bs.total_liabilities": "7,401,859",
+    "bs.total_equity": "1,791,604",
+    "bs.total_liabilities_and_equity": "9,193,463",
+    "is.revenue": "17,328,180",
+    "is.cogs": "11,606,433",
+    "is.gross_profit": "5,721,747",
+    "is.sga": "3,898,840",
+    "is.depreciation_amortization": "340,088",
+    "is.other_operating_expense": "69,313",
+    "is.operating_income": "1,413,506",
+    "is.interest_expense": "274,271",
+    "is.other_income_net": "10,397",
+    "is.pretax_income": "1,149,632",
+    "is.income_tax_expense": "22,992",
+    "is.net_income": "1,126,640",
+    "cf.net_income": "1,126,640",
+    "cf.depreciation_amortization": "340,088",
+    "cf.change_in_working_capital": "(206,938)",
+    "cf.other_operating": "11,880",
+    "cf.cfo": "1,271,670",
+    "cf.capex": "(381,220)",
+    "cf.cfi": "(381,220)",
+    "cf.revolver_net": "73,521",
+    "cf.term_debt_repayments": "(346,500)",
+    "cf.distributions": "(568,457)",
+    "cf.cff": "(841,436)",
+    "cf.net_change_in_cash": "49,014",
+    "sup.cash_interest_paid": "275,659",
+    "sup.cash_taxes_paid": "22,220",
+    "sup.scheduled_principal": "346,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.ifs-2026-03-31",
+   "type": "interim_financial_statements",
+   "period_end": "2026-03-31",
+   "path": "documents/ashgrove-fleet/ifs-2026-03-31.pdf",
+   "pages": 6,
+   "title": "Ashgrove Fleet Maintenance, LLC interim financial statements, Q1 2026",
+   "received_date": "2026-04-28",
+   "document_date": "2026-04-24",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-03-31",
+   "page_map": {
+    "balance_sheet_assets": 2,
+    "balance_sheet_liabilities": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 6
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "735,098"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,779,544"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "294,039"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "4,808,681"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,812,724"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "9,381,405"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,259,776"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "632,569"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,102,647"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "351,545"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,808,537"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,656,500"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "381,480"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "6,846,517"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "2,534,888"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,381,405"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "6,125,815"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "4,105,521"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "2,020,294"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "1,378,308"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "117,892"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "24,503"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "499,591"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "78,339"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "3,675"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "424,927"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "8,499"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "416,428"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "416,428"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "117,892"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(141,537)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "3,960"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "396,743"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(134,768)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(134,768)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "22,116"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(115,500)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(153,847)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(247,231)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "14,744"
+    },
+    "sup.cash_interest_paid": {
+     "page": 6,
+     "label": "Cash paid for interest",
+     "printed": "79,279"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 6,
+     "label": "Cash paid for income taxes",
+     "printed": "7,869"
+    },
+    "sup.scheduled_principal": {
+     "page": 6,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "115,500"
+    },
+    "sup.financed_capex": {
+     "page": 6,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "707,233",
+    "bs.accounts_receivable": "3,520,017",
+    "bs.other_current_assets": "282,893",
+    "bs.total_current_assets": "4,510,143",
+    "bs.net_ppe": "2,743,215",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "9,013,358",
+    "bs.accounts_payable": "1,209,853",
+    "bs.accrued_liabilities": "611,829",
+    "bs.revolver": "1,000,953",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "338,133",
+    "bs.total_current_liabilities": "3,622,768",
+    "bs.long_term_debt": "3,118,500",
+    "bs.other_noncurrent_liabilities": "365,640",
+    "bs.total_liabilities": "7,106,908",
+    "bs.total_equity": "1,906,450",
+    "bs.total_liabilities_and_equity": "9,013,358",
+    "is.revenue": "5,893,607",
+    "is.cogs": "3,942,823",
+    "is.gross_profit": "1,950,784",
+    "is.sga": "1,326,062",
+    "is.depreciation_amortization": "115,057",
+    "is.other_operating_expense": "23,574",
+    "is.operating_income": "486,091",
+    "is.interest_expense": "85,086",
+    "is.other_income_net": "3,536",
+    "is.pretax_income": "404,541",
+    "is.income_tax_expense": "8,091",
+    "is.net_income": "396,450",
+    "cf.net_income": "396,450",
+    "cf.depreciation_amortization": "115,057",
+    "cf.change_in_working_capital": "93,925",
+    "cf.other_operating": "3,960",
+    "cf.cfo": "609,392",
+    "cf.capex": "(129,659)",
+    "cf.cfi": "(129,659)",
+    "cf.revolver_net": "(4,569)",
+    "cf.term_debt_repayments": "(115,500)",
+    "cf.distributions": "(336,983)",
+    "cf.cff": "(457,052)",
+    "cf.net_change_in_cash": "22,681",
+    "sup.cash_interest_paid": "86,144",
+    "sup.cash_taxes_paid": "7,535",
+    "sup.scheduled_principal": "115,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.ifs-2026-06-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-06-30",
+   "path": "documents/ashgrove-fleet/ifs-2026-06-30.pdf",
+   "pages": 6,
+   "title": "Ashgrove Fleet Maintenance, LLC interim financial statements, Q2 2026",
+   "received_date": "2026-07-26",
+   "document_date": "2026-07-22",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-06-30",
+   "page_map": {
+    "balance_sheet_assets": 2,
+    "balance_sheet_liabilities": 3,
+    "income_statement": 4,
+    "cash_flow": 5,
+    "supplemental": 6
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "752,565"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,800,624"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "301,026"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "4,854,215"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,832,091"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "9,446,306"
+    },
+    "bs.accounts_payable": {
+     "page": 3,
+     "label": "Accounts payable",
+     "printed": "1,293,944"
+    },
+    "bs.accrued_liabilities": {
+     "page": 3,
+     "label": "Accrued liabilities",
+     "printed": "646,438"
+    },
+    "bs.revolver": {
+     "page": 3,
+     "label": "Line of credit",
+     "printed": "1,128,847"
+    },
+    "bs.cpltd": {
+     "page": 3,
+     "label": "Current portion of long-term debt",
+     "printed": "462,000"
+    },
+    "bs.other_current_liabilities": {
+     "page": 3,
+     "label": "Other current liabilities",
+     "printed": "359,733"
+    },
+    "bs.total_current_liabilities": {
+     "page": 3,
+     "label": "Total current liabilities",
+     "printed": "3,890,962"
+    },
+    "bs.long_term_debt": {
+     "page": 3,
+     "label": "Long-term debt, net of current portion",
+     "printed": "2,541,000"
+    },
+    "bs.other_noncurrent_liabilities": {
+     "page": 3,
+     "label": "Other liabilities",
+     "printed": "385,440"
+    },
+    "bs.total_liabilities": {
+     "page": 3,
+     "label": "Total liabilities",
+     "printed": "6,817,402"
+    },
+    "bs.total_equity": {
+     "page": 3,
+     "label": "Total members' equity",
+     "printed": "2,628,904"
+    },
+    "bs.total_liabilities_and_equity": {
+     "page": 3,
+     "label": "Total liabilities and members' equity",
+     "printed": "9,446,306"
+    },
+    "is.revenue": {
+     "page": 4,
+     "label": "Net revenue",
+     "printed": "12,397,189"
+    },
+    "is.cogs": {
+     "page": 4,
+     "label": "Cost of services",
+     "printed": "8,322,393"
+    },
+    "is.gross_profit": {
+     "page": 4,
+     "label": "Gross profit",
+     "printed": "4,074,796"
+    },
+    "is.sga": {
+     "page": 4,
+     "label": "Selling, general and administrative",
+     "printed": "2,789,367"
+    },
+    "is.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "236,495"
+    },
+    "is.other_operating_expense": {
+     "page": 4,
+     "label": "Other operating expense",
+     "printed": "49,588"
+    },
+    "is.operating_income": {
+     "page": 4,
+     "label": "Operating income",
+     "printed": "999,346"
+    },
+    "is.interest_expense": {
+     "page": 4,
+     "label": "Interest expense",
+     "printed": "155,056"
+    },
+    "is.other_income_net": {
+     "page": 4,
+     "label": "Other income (expense), net",
+     "printed": "7,438"
+    },
+    "is.pretax_income": {
+     "page": 4,
+     "label": "Income before taxes",
+     "printed": "851,728"
+    },
+    "is.income_tax_expense": {
+     "page": 4,
+     "label": "Income tax expense",
+     "printed": "17,035"
+    },
+    "is.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "834,693"
+    },
+    "cf.net_income": {
+     "page": 5,
+     "label": "Net income",
+     "printed": "834,693"
+    },
+    "cf.depreciation_amortization": {
+     "page": 5,
+     "label": "Depreciation and amortization",
+     "printed": "236,495"
+    },
+    "cf.change_in_working_capital": {
+     "page": 5,
+     "label": "Changes in working capital",
+     "printed": "(113,379)"
+    },
+    "cf.other_operating": {
+     "page": 5,
+     "label": "Other operating items",
+     "printed": "7,920"
+    },
+    "cf.cfo": {
+     "page": 5,
+     "label": "Net cash from operating activities",
+     "printed": "965,729"
+    },
+    "cf.capex": {
+     "page": 5,
+     "label": "Purchases of property and equipment",
+     "printed": "(272,738)"
+    },
+    "cf.cfi": {
+     "page": 5,
+     "label": "Net cash from investing",
+     "printed": "(272,738)"
+    },
+    "cf.revolver_net": {
+     "page": 5,
+     "label": "Net borrowings on line of credit",
+     "printed": "48,316"
+    },
+    "cf.term_debt_repayments": {
+     "page": 5,
+     "label": "Repayments of long-term debt",
+     "printed": "(231,000)"
+    },
+    "cf.distributions": {
+     "page": 5,
+     "label": "Distributions to members",
+     "printed": "(478,096)"
+    },
+    "cf.cff": {
+     "page": 5,
+     "label": "Net cash from financing",
+     "printed": "(660,780)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 5,
+     "label": "Net change in cash",
+     "printed": "32,211"
+    },
+    "sup.cash_interest_paid": {
+     "page": 6,
+     "label": "Cash paid for interest",
+     "printed": "156,537"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 6,
+     "label": "Cash paid for income taxes",
+     "printed": "16,368"
+    },
+    "sup.scheduled_principal": {
+     "page": 6,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "231,000"
+    },
+    "sup.financed_capex": {
+     "page": 6,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "725,364",
+    "bs.accounts_receivable": "3,616,882",
+    "bs.other_current_assets": "290,146",
+    "bs.total_current_assets": "4,632,392",
+    "bs.net_ppe": "2,760,526",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "9,152,918",
+    "bs.accounts_payable": "1,238,458",
+    "bs.accrued_liabilities": "626,074",
+    "bs.revolver": "1,088,046",
+    "bs.cpltd": "462,000",
+    "bs.other_current_liabilities": "347,092",
+    "bs.total_current_liabilities": "3,761,670",
+    "bs.long_term_debt": "3,003,000",
+    "bs.other_noncurrent_liabilities": "369,600",
+    "bs.total_liabilities": "7,134,270",
+    "bs.total_equity": "2,018,648",
+    "bs.total_liabilities_and_equity": "9,152,918",
+    "is.revenue": "11,938,305",
+    "is.cogs": "7,978,868",
+    "is.gross_profit": "3,959,437",
+    "is.sga": "2,686,119",
+    "is.depreciation_amortization": "230,729",
+    "is.other_operating_expense": "47,753",
+    "is.operating_income": "994,836",
+    "is.interest_expense": "168,033",
+    "is.other_income_net": "7,163",
+    "is.pretax_income": "833,966",
+    "is.income_tax_expense": "16,680",
+    "is.net_income": "817,286",
+    "cf.net_income": "817,286",
+    "cf.depreciation_amortization": "230,729",
+    "cf.change_in_working_capital": "41,616",
+    "cf.other_operating": "7,920",
+    "cf.cfo": "1,097,551",
+    "cf.capex": "(262,642)",
+    "cf.cfi": "(262,642)",
+    "cf.revolver_net": "82,524",
+    "cf.term_debt_repayments": "(231,000)",
+    "cf.distributions": "(645,621)",
+    "cf.cff": "(794,097)",
+    "cf.net_change_in_cash": "40,812",
+    "sup.cash_interest_paid": "169,804",
+    "sup.cash_taxes_paid": "15,626",
+    "sup.scheduled_principal": "231,000",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [],
+   "defects": []
+  },
+  {
+   "id": "ashgrove-fleet.ifs-2026-09-30",
+   "type": "interim_financial_statements",
+   "period_end": "2026-09-30",
+   "path": "documents/ashgrove-fleet/ifs-2026-09-30.pdf",
+   "pages": 5,
+   "title": "Ashgrove Fleet Maintenance, LLC interim financial statements, Q3 2026",
+   "received_date": "2026-11-01",
+   "document_date": "2026-10-28",
+   "scale": 1,
+   "quality": "internal",
+   "comparative_period_end": "2025-09-30",
+   "page_map": {
+    "balance_sheet_assets": 2,
+    "income_statement": 3,
+    "cash_flow": 4,
+    "supplemental": 5
+   },
+   "figures": {
+    "bs.cash": {
+     "page": 2,
+     "label": "Cash and equivalents",
+     "printed": "778,394"
+    },
+    "bs.accounts_receivable": {
+     "page": 2,
+     "label": "Accounts receivable, net",
+     "printed": "3,959,500"
+    },
+    "bs.other_current_assets": {
+     "page": 2,
+     "label": "Other current assets",
+     "printed": "311,357"
+    },
+    "bs.total_current_assets": {
+     "page": 2,
+     "label": "Total current assets",
+     "printed": "5,049,251"
+    },
+    "bs.net_ppe": {
+     "page": 2,
+     "label": "Property and equipment, net",
+     "printed": "2,855,377"
+    },
+    "bs.intangibles": {
+     "page": 2,
+     "label": "Goodwill and intangibles",
+     "printed": "1,540,000"
+    },
+    "bs.other_noncurrent_assets": {
+     "page": 2,
+     "label": "Other assets",
+     "printed": "220,000"
+    },
+    "bs.total_assets": {
+     "page": 2,
+     "label": "Total assets",
+     "printed": "9,664,628"
+    },
+    "is.revenue": {
+     "page": 3,
+     "label": "Net revenue",
+     "printed": "18,883,803"
+    },
+    "is.cogs": {
+     "page": 3,
+     "label": "Cost of services",
+     "printed": "12,664,532"
+    },
+    "is.gross_profit": {
+     "page": 3,
+     "label": "Gross profit",
+     "printed": "6,219,271"
+    },
+    "is.sga": {
+     "page": 3,
+     "label": "Selling, general and administrative",
+     "printed": "4,248,855"
+    },
+    "is.depreciation_amortization": {
+     "page": 3,
+     "label": "Depreciation and amortization",
+     "printed": "355,915"
+    },
+    "is.other_operating_expense": {
+     "page": 3,
+     "label": "Other operating expense",
+     "printed": "75,534"
+    },
+    "is.operating_income": {
+     "page": 3,
+     "label": "Operating income",
+     "printed": "1,538,967"
+    },
+    "is.interest_expense": {
+     "page": 3,
+     "label": "Interest expense",
+     "printed": "230,231"
+    },
+    "is.other_income_net": {
+     "page": 3,
+     "label": "Other income (expense), net",
+     "printed": "11,330"
+    },
+    "is.pretax_income": {
+     "page": 3,
+     "label": "Income before taxes",
+     "printed": "1,320,066"
+    },
+    "is.income_tax_expense": {
+     "page": 3,
+     "label": "Income tax expense",
+     "printed": "26,402"
+    },
+    "is.net_income": {
+     "page": 3,
+     "label": "Net income",
+     "printed": "1,293,664"
+    },
+    "cf.net_income": {
+     "page": 4,
+     "label": "Net income",
+     "printed": "1,293,664"
+    },
+    "cf.depreciation_amortization": {
+     "page": 4,
+     "label": "Depreciation and amortization",
+     "printed": "355,915"
+    },
+    "cf.change_in_working_capital": {
+     "page": 4,
+     "label": "Changes in working capital",
+     "printed": "(210,469)"
+    },
+    "cf.other_operating": {
+     "page": 4,
+     "label": "Other operating items",
+     "printed": "11,880"
+    },
+    "cf.cfo": {
+     "page": 4,
+     "label": "Net cash from operating activities",
+     "printed": "1,450,990"
+    },
+    "cf.capex": {
+     "page": 4,
+     "label": "Purchases of property and equipment",
+     "printed": "(415,444)"
+    },
+    "cf.cfi": {
+     "page": 4,
+     "label": "Net cash from investing",
+     "printed": "(415,444)"
+    },
+    "cf.revolver_net": {
+     "page": 4,
+     "label": "Net borrowings on line of credit",
+     "printed": "87,060"
+    },
+    "cf.term_debt_repayments": {
+     "page": 4,
+     "label": "Repayments of long-term debt",
+     "printed": "(346,500)"
+    },
+    "cf.distributions": {
+     "page": 4,
+     "label": "Distributions to members",
+     "printed": "(718,066)"
+    },
+    "cf.cff": {
+     "page": 4,
+     "label": "Net cash from financing",
+     "printed": "(977,506)"
+    },
+    "cf.net_change_in_cash": {
+     "page": 4,
+     "label": "Net change in cash",
+     "printed": "58,040"
+    },
+    "sup.cash_interest_paid": {
+     "page": 5,
+     "label": "Cash paid for interest",
+     "printed": "232,226"
+    },
+    "sup.cash_taxes_paid": {
+     "page": 5,
+     "label": "Cash paid for income taxes",
+     "printed": "24,904"
+    },
+    "sup.scheduled_principal": {
+     "page": 5,
+     "label": "Scheduled principal payments on term debt",
+     "printed": "346,500"
+    },
+    "sup.financed_capex": {
+     "page": 5,
+     "label": "Capital expenditures financed with purchase-money debt",
+     "printed": "-"
+    }
+   },
+   "comparative_printed": {
+    "bs.cash": "746,876",
+    "bs.accounts_receivable": "3,730,967",
+    "bs.other_current_assets": "298,750",
+    "bs.total_current_assets": "4,776,593",
+    "bs.net_ppe": "2,781,051",
+    "bs.intangibles": "1,540,000",
+    "bs.other_noncurrent_assets": "220,000",
+    "bs.total_assets": "9,317,644",
+    "is.revenue": "18,162,268",
+    "is.cogs": "12,149,546",
+    "is.gross_profit": "6,012,722",
+    "is.sga": "4,086,511",
+    "is.depreciation_amortization": "347,131",
+    "is.other_operating_expense": "72,649",
+    "is.operating_income": "1,506,431",
+    "is.interest_expense": "250,618",
+    "is.other_income_net": "10,897",
+    "is.pretax_income": "1,266,710",
+    "is.income_tax_expense": "25,335",
+    "is.net_income": "1,241,375",
+    "cf.net_income": "1,241,375",
+    "cf.depreciation_amortization": "347,131",
+    "cf.change_in_working_capital": "(12,030)",
+    "cf.other_operating": "11,880",
+    "cf.cfo": "1,588,356",
+    "cf.capex": "(399,569)",
+    "cf.cfi": "(399,569)",
+    "cf.revolver_net": "114,791",
+    "cf.term_debt_repayments": "(346,500)",
+    "cf.distributions": "(894,754)",
+    "cf.cff": "(1,126,463)",
+    "cf.net_change_in_cash": "62,324",
+    "sup.cash_interest_paid": "252,510",
+    "sup.cash_taxes_paid": "24,215",
+    "sup.scheduled_principal": "346,500",
+    "sup.financed_capex": "-"
+   },
+   "absent_keys": [
+    "bs.inventory",
+    "bs.subordinated_debt",
+    "cf.other_financing",
+    "cf.other_investing",
+    "cf.term_debt_proceeds",
+    "is.nonrecurring_expense"
+   ],
+   "unreadable_keys": [
+    "bs.accounts_payable",
+    "bs.accrued_liabilities",
+    "bs.revolver",
+    "bs.cpltd",
+    "bs.other_current_liabilities",
+    "bs.total_current_liabilities",
+    "bs.long_term_debt",
+    "bs.other_noncurrent_liabilities",
+    "bs.total_liabilities",
+    "bs.total_equity",
+    "bs.total_liabilities_and_equity"
+   ],
+   "defects": [
+    {
+     "type": "missing_page",
+     "section": "balance_sheet_liabilities",
+     "printed_page_number": 3
+    }
+   ]
+  },
+  {
+   "id": "ashgrove-fleet.cc-2025-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-03-31",
+   "path": "documents/ashgrove-fleet/cc-2025-03-31.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, Q1 2025",
+   "received_date": "2025-04-29",
+   "document_date": "2025-04-27",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ashgrove-fleet.cc-2025-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-06-30",
+   "path": "documents/ashgrove-fleet/cc-2025-06-30.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, Q2 2025",
+   "received_date": "2025-08-07",
+   "document_date": "2025-08-05",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ashgrove-fleet.cc-2025-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2025-09-30",
+   "path": "documents/ashgrove-fleet/cc-2025-09-30.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, Q3 2025",
+   "received_date": "2025-11-01",
+   "document_date": "2025-10-30",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ashgrove-fleet.cc-2025-12-31",
+   "type": "compliance_certificate",
+   "period_end": "2025-12-31",
+   "path": "documents/ashgrove-fleet/cc-2025-12-31.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, FY2025",
+   "received_date": "2026-02-10",
+   "document_date": "2026-02-08",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ashgrove-fleet.cc-2026-03-31",
+   "type": "compliance_certificate",
+   "period_end": "2026-03-31",
+   "path": "documents/ashgrove-fleet/cc-2026-03-31.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, Q1 2026",
+   "received_date": "2026-04-28",
+   "document_date": "2026-04-26",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ashgrove-fleet.cc-2026-06-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-06-30",
+   "path": "documents/ashgrove-fleet/cc-2026-06-30.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, Q2 2026",
+   "received_date": "2026-07-26",
+   "document_date": "2026-07-24",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  },
+  {
+   "id": "ashgrove-fleet.cc-2026-09-30",
+   "type": "compliance_certificate",
+   "period_end": "2026-09-30",
+   "path": "documents/ashgrove-fleet/cc-2026-09-30.pdf",
+   "pages": 2,
+   "title": "Ashgrove Fleet Maintenance, LLC compliance certificate, Q3 2026",
+   "received_date": "2026-11-01",
+   "document_date": "2026-10-30",
+   "scale": 1,
+   "page_map": {
+    "summary": 1,
+    "calculations": 2
+   }
+  }
+ ],
+ "scenario": {
+  "code": "missing_page",
+  "description": "Missing page: the liabilities and equity page of the current interim balance sheet was omitted from the delivered file, so the balance sheet cannot foot.",
+  "details": {
+   "document_id": "ashgrove-fleet.ifs-2026-09-30",
+   "omitted_section": "balance sheet: liabilities and equity",
+   "defects": [
+    {
+     "document_id": "ashgrove-fleet.ifs-2026-09-30",
+     "type": "missing_page",
+     "section": "balance_sheet_liabilities",
+     "printed_page_number": 3
+    }
+   ]
+  }
+ },
+ "expected": {
+  "covenant_tests": [
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.22",
+    "pass": true,
+    "headroom": "0.7760",
+    "reported_value": "2.22",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1519521"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "354631"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "31011"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "456880"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2362043"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "512965"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "30527"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1818551"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "357264"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "462000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "819264"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.94",
+    "pass": true,
+    "headroom": "0.2240",
+    "reported_value": "1.94",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4581453"
+     },
+     {
+      "label": "Net income",
+      "amount": "1519521"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "354631"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "31011"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "456880"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2362043"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.24",
+    "pass": true,
+    "headroom": "0.2400",
+    "reported_value": "1.24",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "4510143"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "3622768"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.29",
+    "pass": true,
+    "headroom": "0.8320",
+    "reported_value": "2.29",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1572650"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "346260"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "32096"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "459245"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2410251"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "518129"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "31011"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1861111"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "349050"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "462000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "811050"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.89",
+    "pass": true,
+    "headroom": "0.2440",
+    "reported_value": "1.89",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4553046"
+     },
+     {
+      "label": "Net income",
+      "amount": "1572650"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "346260"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "32096"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "459245"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2410251"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.23",
+    "pass": true,
+    "headroom": "0.2300",
+    "reported_value": "1.23",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "4632392"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "3761670"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.35",
+    "pass": true,
+    "headroom": "0.8800",
+    "reported_value": "2.35",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1610571"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "338878"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "32870"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "461728"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2444047"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "525070"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "32096"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1886881"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "341339"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "462000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "803339"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.83",
+    "pass": true,
+    "headroom": "0.2680",
+    "reported_value": "1.83",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4469813"
+     },
+     {
+      "label": "Net income",
+      "amount": "1610571"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "338878"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "32870"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "461728"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2444047"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.24",
+    "pass": true,
+    "headroom": "0.2400",
+    "reported_value": "1.24",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "4776593"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "3862980"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.38",
+    "pass": true,
+    "headroom": "0.9040",
+    "reported_value": "2.38",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1626969"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "331778"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "33204"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "464399"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2456350"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "531634"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "32870"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1891846"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "334145"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "462000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "796145"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.76",
+    "pass": true,
+    "headroom": "0.2960",
+    "reported_value": "1.76",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4314531"
+     },
+     {
+      "label": "Net income",
+      "amount": "1626969"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "331778"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "33204"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "464399"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2456350"
+     }
+    ]
+   },
+   {
+    "period_end": "2025-12-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.23",
+    "pass": true,
+    "headroom": "0.2300",
+    "reported_value": "1.23",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "4613556"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "3747577"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.41",
+    "pass": true,
+    "headroom": "0.9280",
+    "reported_value": "2.41",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1646947"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "325031"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "33612"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "467234"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2472824"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "536743"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "33204"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1902877"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "327280"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "462000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "789280"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.71",
+    "pass": true,
+    "headroom": "0.3160",
+    "reported_value": "1.71",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4221147"
+     },
+     {
+      "label": "Net income",
+      "amount": "1646947"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "325031"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "33612"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "467234"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2472824"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-03-31",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.26",
+    "pass": true,
+    "headroom": "0.2600",
+    "reported_value": "1.26",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "4808681"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "3808537"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": "2.42",
+    "pass": true,
+    "headroom": "0.9360",
+    "reported_value": "2.42",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Net income",
+      "amount": "1644376"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "318801"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "33559"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "470165"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2466901"
+     },
+     {
+      "label": "Less: Unfinanced capital expenditures",
+      "amount": "541730"
+     },
+     {
+      "label": "Less: Cash paid for income taxes",
+      "amount": "33612"
+     },
+     {
+      "label": "Numerator",
+      "amount": "1891559"
+     },
+     {
+      "label": "Cash paid for interest",
+      "amount": "320878"
+     },
+     {
+      "label": "Scheduled principal payments on term debt",
+      "amount": "462000"
+     },
+     {
+      "label": "Denominator",
+      "amount": "782878"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": "1.67",
+    "pass": true,
+    "headroom": "0.3320",
+    "reported_value": "1.67",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total Debt",
+      "amount": "4131847"
+     },
+     {
+      "label": "Net income",
+      "amount": "1644376"
+     },
+     {
+      "label": "Interest expense",
+      "amount": "318801"
+     },
+     {
+      "label": "Income tax expense",
+      "amount": "33559"
+     },
+     {
+      "label": "Depreciation and amortization",
+      "amount": "470165"
+     },
+     {
+      "label": "EBITDA",
+      "amount": "2466901"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-06-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": "1.25",
+    "pass": true,
+    "headroom": "0.2500",
+    "reported_value": "1.25",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "compliant",
+    "calculation": [
+     {
+      "label": "Total current assets",
+      "amount": "4854215"
+     },
+     {
+      "label": "Total current liabilities",
+      "amount": "3890962"
+     }
+    ]
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "fccr",
+    "covenant_name": "Fixed Charge Coverage Ratio",
+    "archetype": "coverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.25",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": "2.47",
+    "reported_threshold": "1.25",
+    "reported_in_compliance": true,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "2.47",
+     "pass": true,
+     "headroom": "0.9760",
+     "outcome": "compliant"
+    },
+    "missing": "spread_incomplete: the balance sheet does not foot (page missing)"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "total_leverage",
+    "covenant_name": "Total Leverage Ratio",
+    "archetype": "leverage",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": "<=",
+    "threshold": "2.50",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": "1.62",
+    "reported_threshold": "2.50",
+    "reported_in_compliance": true,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "1.62",
+     "pass": true,
+     "headroom": "0.3520",
+     "outcome": "compliant"
+    },
+    "missing": "spread_incomplete: the balance sheet does not foot (page missing)"
+   },
+   {
+    "period_end": "2026-09-30",
+    "covenant_id": "current_ratio",
+    "covenant_name": "Current Ratio",
+    "archetype": "current_ratio",
+    "facility_id": "ashgrove-fleet-rlc",
+    "terms_version_id": "tv-ashgrove-fleet-1",
+    "terms_version": 1,
+    "unit": "ratio",
+    "operator": ">=",
+    "threshold": "1.00",
+    "value": null,
+    "pass": null,
+    "headroom": null,
+    "reported_value": "1.26",
+    "reported_threshold": "1.00",
+    "reported_in_compliance": true,
+    "outcome": "cannot_test",
+    "calculation": [],
+    "after_repair": {
+     "value": "1.26",
+     "pass": true,
+     "headroom": "0.2600",
+     "outcome": "compliant"
+    },
+    "missing": "spread_incomplete: the balance sheet does not foot (page missing)"
+   }
+  ],
+  "borrowing_base": [],
+  "signals": [],
+  "exceptions": [
+   {
+    "type": "spread.does_not_foot",
+    "severity": "medium",
+    "period_end": "2026-09-30",
+    "subject": "document:ashgrove-fleet.ifs-2026-09-30",
+    "summary": "The liabilities and equity page of the balance sheet is missing, so total assets cannot be agreed to total liabilities and equity."
+   }
+  ]
+ }
+}

@@ -1,0 +1,637 @@
+{
+ "meta": {
+  "suite": "monitoring-cycle",
+  "mode": "record",
+  "standin": false,
+  "label": "Mode record: answers came from a live model.",
+  "generated_at": "2026-11-21T08:00:18+00:00",
+  "commit": "e6830878ac1906795f2e335c6423a3792f469513",
+  "borrowers": 2,
+  "scope": [
+   "tidewell-medical",
+   "veridia-payments"
+  ],
+  "decide": true,
+  "passes": 1,
+  "seconds": 96.2,
+  "unsigned_oracle_rows": 0,
+  "standin_print_vs_truth_disagreements": [],
+  "accepted_stale": [],
+  "record_agents": [
+   "covenant",
+   "early_warning",
+   "review"
+  ],
+  "prompt_only_verified": 0,
+  "eval_run_id": "d1eaeec1-9239-4dd0-a73c-d5c67356629f"
+ },
+ "gate": {
+  "passed": false,
+  "reasons": [
+   "pass 1: 3 invented-number"
+  ],
+  "run_errors": [],
+  "nothing_read": [],
+  "rule": "any invented-number or false-compliant in any pass fails; any cycle that failed on an error fails; a borrower with expected facts and none read (nothing-read) fails; other accuracy is reported, not gated",
+  "known_findings_applied": [],
+  "unexplained": [],
+  "stale_known_findings": []
+ },
+ "metrics": {
+  "extraction_accuracy": 1.0,
+  "extraction_facts_expected": 124,
+  "extraction_facts_correct": 124,
+  "extraction_abstain_rate": 0.0,
+  "cycles_needing_no_person": 0.5,
+  "cycles_expected_to_need_no_person": 0.5,
+  "exception_precision": 1.0,
+  "exception_recall": 1.0,
+  "covenant_outcome_accuracy": 1.0,
+  "covenant_abstain_rate": 0.0,
+  "cycles_run": 2,
+  "cycles_closed": 2,
+  "cycles_reaching_signals": 2,
+  "disagreements": 0,
+  "input_tokens": 78975,
+  "output_tokens": 22665
+ },
+ "failure_counts": {
+  "invented-number": 3,
+  "false-compliant": 0,
+  "false-breach": 0,
+  "missed-exception": 0,
+  "false-exception": 0,
+  "wrong-citation": 0,
+  "wrong-abstain": 0,
+  "missed-abstain": 0,
+  "stale-terms": 0
+ },
+ "borrowers": {
+  "tidewell-medical": {
+   "borrower": "tidewell-medical",
+   "scenario": "restricted_account",
+   "error": null,
+   "expected_exceptions": [
+    "cash.statement_mismatch"
+   ],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [
+    "cash.statement_mismatch"
+   ],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "invented-number",
+     "item": "spreading note",
+     "detail": "a note shown to a person types a figure: 'Note 1 (page 5) presents a one-month capitalised software roll-forward only; it was not spread, and its closing balance agrees in label to the balance sheet line already reported.'"
+    },
+    {
+     "name": "invented-number",
+     "item": "spreading note",
+     "detail": "a note shown to a person types a figure: 'A new restricted escrow collateral account (ending 9002) was opened on October 14, 2026 under an escrow arrangement. It is included in the printed total of pledged and restricted accounts, and the reviewer may wish to confirm the related arrangement.'"
+    }
+   ],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 62,
+    "correct": 62,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": false,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "cash.statement_mismatch",
+       "blocks_stage": false,
+       "stage": "covenant_testing"
+      },
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "cash.statement_mismatch",
+       "decision": "reviewed",
+       "by_role": "credit_officer",
+       "error": null
+      },
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The statement of operations, cash flow statement and supplemental page print a one-month column for October 2026 rather than a prior-year comparative period, so no comparative cells are reported for those statements; only the balance sheet carries a prior year-end comparative (December 31, 2025)."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Note 1 (page 5) presents a one-month capitalised software roll-forward only; it was not spread, and its closing balance agrees in label to the balance sheet line already reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The pack does not print SaaS metrics (MRR, ARR, customers, net new ARR, net revenue retention); these lines are left out. Bank statement lines do not apply to this financial-statement pack."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "This document is a bank statement for the month of October 2026, not a set of financial statements, so only the two bank account total lines are reported. The balances are as at October 31, 2026, the requested period end."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The summary table prints no column header above its figures, so the section heading 'Summary' is given as the column header."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The 'Total balances on deposit' row was not reported because it has no line in the template."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "A new restricted escrow collateral account (ending 9002) was opened on October 14, 2026 under an escrow arrangement. It is included in the printed total of pledged and restricted accounts, and the reviewer may wish to confirm the related arrangement."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed. Figures are shown in whole dollars."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The document is a monthly MRR report, not a financial-statement pack, so only the SaaS metric lines are reported. Its metrics are point-in-time as of October 31, 2026, not a ten-month year-to-date period."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No prior-year comparative column is printed. The trailing six months table covers only recent months."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The MRR bridge rows (opening MRR, new customers, expansion, contraction, churn, closing MRR) have no template line and are not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed. Figures are shown in dollars with a currency sign."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/tidewell-medical/2026-10-31/01",
+     "text": "All three covenants in the approved terms are reported in the summary table on page one.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/tidewell-medical/2026-10-31/01",
+     "text": "Schedule 1 shows that the reported Unrestricted Cash includes cash held in an escrow collateral account, which may not qualify as unrestricted; this should be reviewed by a person.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/tidewell-medical/2026-10-31/01",
+     "text": "In the summary table the requirement for Revenue to Plan wraps across two lines.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/tidewell-medical/2026-10-31/01",
+     "text": "No instructions directed at the reader were found in the document.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/tidewell-medical/2026-10-31/01",
+     "text": "Unrestricted cash headroom has narrowed each month, from {{fact:735d4528-2bc3-4245-ae80-f5fe5ee72941}} to {{fact:47642701-27fe-490a-928f-b33adde90f1c}} and then sharply to {{fact:370f7427-3266-4da7-b8ed-3e2ef5795114}}. Cash of {{fact:c71186d0-4532-4650-b75d-ba279b3f1fd5}} against a {{fact:587ac04d-68ab-41c8-acab-61e61e84577d}} floor is the tightest cushion of the three. The same cash decline is likely driving the falling runway signal.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/tidewell-medical/2026-10-31/01",
+     "text": "Runway headroom fell from {{fact:5923156d-5b17-4795-b08d-aaba65784c4f}} to {{fact:2be480c2-276a-4efa-87fa-e64211c8e831}}, with the steepest drop in October. Runway of {{fact:5c962657-cdc9-4c76-86e7-d5549a472a92}} months is still well above the {{fact:5924794a-483f-4ff7-a304-12c5266711bc}}-month minimum. The decline mirrors the shrinking cash cushion and points to faster burn rather than a separate problem.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/tidewell-medical/2026-10-31/01",
+     "text": "Revenue headroom is essentially flat, slipping only marginally to {{fact:9a38fdcd-b162-4b44-b97a-35e865451eb5}}. Revenue of {{fact:c277bd3c-74ac-4e79-b397-8c5931c3ba02}} of plan is comfortably above the {{fact:aa19c384-9083-4796-ab5b-79411e86381e}} threshold. Because sales are on track, the falling cash and runway look driven by spending or working capital rather than weaker revenue.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/tidewell-medical/2026-10-31/02",
+     "text": "Unrestricted cash headroom has narrowed each month, from {{fact:735d4528-2bc3-4245-ae80-f5fe5ee72941}} to {{fact:47642701-27fe-490a-928f-b33adde90f1c}} and then sharply to {{fact:370f7427-3266-4da7-b8ed-3e2ef5795114}}. Cash of {{fact:c71186d0-4532-4650-b75d-ba279b3f1fd5}} against a {{fact:587ac04d-68ab-41c8-acab-61e61e84577d}} floor is the tightest cushion among these signals. The same cash decline is likely driving the falling runway signal.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/tidewell-medical/2026-10-31/02",
+     "text": "Runway headroom fell from {{fact:5923156d-5b17-4795-b08d-aaba65784c4f}} to {{fact:2be480c2-276a-4efa-87fa-e64211c8e831}}, with the steepest drop in October. Runway of {{fact:5c962657-cdc9-4c76-86e7-d5549a472a92}} months is still well above the minimum of {{fact:5924794a-483f-4ff7-a304-12c5266711bc}} months. The decline mirrors the shrinking cash cushion and points to faster burn rather than a separate problem.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/tidewell-medical/2026-10-31/02",
+     "text": "Revenue headroom is essentially flat, slipping only marginally to {{fact:9a38fdcd-b162-4b44-b97a-35e865451eb5}}. Revenue of {{fact:c277bd3c-74ac-4e79-b397-8c5931c3ba02}} of plan is comfortably above the {{fact:aa19c384-9083-4796-ab5b-79411e86381e}} threshold. Because sales are on track, the falling cash and runway look driven by spending or working capital rather than weaker revenue.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 39759,
+    "output": 11455,
+    "cache_read": 2687
+   },
+   "ledger_ok": true,
+   "seconds": 49.13
+  },
+  "veridia-payments": {
+   "borrower": "veridia-payments",
+   "scenario": "clean",
+   "error": null,
+   "expected_exceptions": [],
+   "stage_reached": "closed",
+   "stage_status": "done",
+   "cycle_status": "closed",
+   "last_stage_done": "closed",
+   "raised_exceptions": [],
+   "routine_approvals": [
+    "review.commentary_approval"
+   ],
+   "not_reached": [],
+   "failures": [
+    {
+     "name": "invented-number",
+     "item": "spreading note",
+     "detail": "a note shown to a person types a figure: 'Page 5 (Note 1, capitalised software roll-forward) presents the month only and has no matching template lines; it was not spread.'"
+    }
+   ],
+   "disagreements": [],
+   "observations": [],
+   "extraction": {
+    "expected": 62,
+    "correct": 62,
+    "missing": 0,
+    "wrong": 0,
+    "accuracy": 1.0,
+    "abstain_rate": 0.0,
+    "by_document": {
+     "mf-2026-10-31.pdf": {
+      "expected": 46,
+      "correct": 46
+     },
+     "bank-2026-10-31.pdf": {
+      "expected": 2,
+      "correct": 2
+     },
+     "mrr-2026-10-31.pdf": {
+      "expected": 5,
+      "correct": 5
+     },
+     "mcc-2026-10-31.pdf": {
+      "expected": 9,
+      "correct": 9
+     }
+    },
+    "ungraded_facts": {}
+   },
+   "covenants": {
+    "expected": 3,
+    "correct": 3,
+    "abstained": 0
+   },
+   "needs_no_person": true,
+   "stops": [
+    {
+     "stage": "review_prep",
+     "stage_status": "needs_person",
+     "open_items": [
+      {
+       "type": "review.commentary_approval",
+       "blocks_stage": true,
+       "stage": "review_prep"
+      }
+     ],
+     "decisions": [
+      {
+       "type": "review.commentary_approval",
+       "decision": "approve",
+       "by_role": "portfolio_manager",
+       "error": null
+      }
+     ]
+    }
+   ],
+   "agent_runs": [
+    {
+     "agent": "intake",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The statement of operations, cash flow statement and supplemental page print no prior-year comparative column; the second column on those pages is the single month ended October 31, 2026, which was not spread. Balance sheet comparatives are from the December 31, 2025 column."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "Page 5 (Note 1, capitalised software roll-forward) presents the month only and has no matching template lines; it was not spread."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No SaaS metrics are printed in this pack, so the SaaS lines were left out."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "This document is a one-page bank statement (Bank of Stoic, statement period October 1, 2026 to October 31, 2026), not a set of financial statements, so only the two bank summary lines are reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The summary section prints no column header; the section heading 'Summary' is used as the column header."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The statement prints no prior-period comparative column, so no comparative cells are reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed; figures are shown in whole dollars."
+      }
+     ]
+    },
+    {
+     "agent": "spreading",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": [
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The document is a monthly recurring revenue report, not a financial statement pack, so only the SaaS metric lines are reported; the income statement, balance sheet, cash flow and supplemental lines for the fiscal year to date are not in this document."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The report prints no prior-year comparative column; the trailing six months table and the MRR bridge rows (opening MRR, new customers, expansion, contraction, churn) fit no template line and were not reported."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "No units phrase is printed; figures are shown in dollars with currency signs."
+      },
+      {
+       "check": "note",
+       "layer": "agent",
+       "action": "shown",
+       "detail": "The document is marked as synthetic, for demonstration."
+      }
+     ]
+    },
+    {
+     "agent": "certificate_reader",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "early_warning",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    },
+    {
+     "agent": "review",
+     "status": "completed",
+     "llm_mode": "record",
+     "served_model": "claude-opus-5-5",
+     "guardrail_notes": []
+    }
+   ],
+   "held_cells": [],
+   "unshown_text": [
+    {
+     "agent": "certificate",
+     "record_key": "certificate/veridia-payments/2026-10-31/01",
+     "text": "All three covenants in the approved terms are reported in the summary table on page one and agree with the Schedule 1 calculations on page two.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/veridia-payments/2026-10-31/01",
+     "text": "The Revenue to Plan requirement wraps across two lines in the summary table on page one.",
+     "typed_figures": []
+    },
+    {
+     "agent": "certificate",
+     "record_key": "certificate/veridia-payments/2026-10-31/01",
+     "text": "On page one the Actual and In compliance column headers overlap in the rendered table.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/veridia-payments/2026-10-31/01",
+     "text": "Unrestricted cash headroom narrowed steadily, from {{fact:93a7f83d-996b-4908-861d-723a8d16193f}} in August to {{fact:5927a04e-a91f-4c77-83e6-6daaa17ae2f9}} in September and {{fact:325e2386-52d1-44bd-a92a-b5fd4954210e}} at October 31. Cash of {{fact:28ab73da-d0c2-4579-a5ff-f07545fb48f7}} remains comfortably above the {{fact:0aaf58ab-8c61-4ac7-817d-7030666e6bb9}} minimum, but the consistent drain matters for a payments business. No other signal corroborates it.",
+     "typed_figures": []
+    },
+    {
+     "agent": "early_warning",
+     "record_key": "early_warning/veridia-payments/2026-10-31/02",
+     "text": "Unrestricted cash headroom narrowed steadily, from {{fact:93a7f83d-996b-4908-861d-723a8d16193f}} in August to {{fact:5927a04e-a91f-4c77-83e6-6daaa17ae2f9}} in September and {{fact:325e2386-52d1-44bd-a92a-b5fd4954210e}} at October month-end. Cash of {{fact:28ab73da-d0c2-4579-a5ff-f07545fb48f7}} remains comfortably above the {{fact:0aaf58ab-8c61-4ac7-817d-7030666e6bb9}} minimum, but the consistent drain matters for a payments business. No other signal corroborates it.",
+     "typed_figures": []
+    }
+   ],
+   "tokens": {
+    "input": 39216,
+    "output": 11210,
+    "cache_read": 4736
+   },
+   "ledger_ok": true,
+   "seconds": 45.96
+  }
+ },
+ "known_findings": [],
+ "passes": [
+  {
+   "metrics": {
+    "extraction_accuracy": 1.0,
+    "extraction_facts_expected": 124,
+    "extraction_facts_correct": 124,
+    "extraction_abstain_rate": 0.0,
+    "cycles_needing_no_person": 0.5,
+    "cycles_expected_to_need_no_person": 0.5,
+    "exception_precision": 1.0,
+    "exception_recall": 1.0,
+    "covenant_outcome_accuracy": 1.0,
+    "covenant_abstain_rate": 0.0,
+    "cycles_run": 2,
+    "cycles_closed": 2,
+    "cycles_reaching_signals": 2,
+    "disagreements": 0,
+    "input_tokens": 78975,
+    "output_tokens": 22665
+   },
+   "failure_counts": {
+    "invented-number": 3,
+    "false-compliant": 0,
+    "false-breach": 0,
+    "missed-exception": 0,
+    "false-exception": 0,
+    "wrong-citation": 0,
+    "wrong-abstain": 0,
+    "missed-abstain": 0,
+    "stale-terms": 0
+   }
+  }
+ ]
+}

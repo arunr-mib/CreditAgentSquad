@@ -1,0 +1,7 @@
+A replay seeded from ground truth passes while the live path is broken, because the truth carries values and names that documents do not print; only a run through the documents proves the cycle.
+
+Confirmed 2026-11-17. The full-book test (`backend/tests/test_seed_book.py`, seeded mode) agreed with the generator on every covenant test, borrowing base and exception. The first run of the same book through the live cycle with a perfect reader (`evals/`, stand-in mode) stopped every borrower: a line the statement does not print was never stored, so 15 of 21 borrowers could not be tested (the truth file carries an explicit zero); the borrowing base prompt crashed on a line name with no help text (seeded mode never builds the prompt); the certificate prints "Inventory held on consignment" where the terms say `consigned` (seeded mode passes the truth's category codes); a late package fired two signals where the book expects one (the seeded test compared sets).
+
+Rule: a result counts as verified only when it was reached from the documents through the stage handlers. Keep the stand-in suite (`uv run pytest evals/tests`) green beside the seeded test; compare counts, not sets, where a duplicate would matter; when the stand-in suite disagrees with the truth, report the product finding, never adjust the grader or the reader to agree.
+
+Applies to: `evals/`, `backend/app/domain/stages.py`, every new agent wired into the cycle.

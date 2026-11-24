@@ -1,0 +1,51 @@
+# Local stack: database, API, background worker and workspace.
+#   cp .env.example .env    (set SESSION_SECRET and RUNTIME_DATABASE_PASSWORD; ANTHROPIC_API_KEY only for live model runs)
+#   docker compose up --build
+#   docker compose exec api sh -c "cd /srv && python -m synthetic.books.innovation.generate && python -m app.seed_book"
+# Workspace: http://localhost:8080   API: http://localhost:8000/api/v1/health
+#
+# Two database roles. `squad` owns the tables and is used only by the `migrate` service, which
+# applies migrations and creates the application's login. The API and the worker connect as
+# `squad_app`, a member of `squad_runtime`: it owns nothing and may only SELECT and INSERT on
+# the ledger, so the application cannot switch off the ledger's append-only guard.
+services:
+  db:
+    image: postgres:16
+    environment: { POSTGRES_USER: squad, POSTGRES_PASSWORD: squad, POSTGRES_DB: credit_agent_squad }
+    volumes: [dbdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD", "pg_isready", "-U", "squad"], interval: 5s, timeout: 5s, retries: 10 }
+  migrate:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://squad:squad@db:5432/credit_agent_squad   # the owner
+      MIGRATION_DATABASE_URL: ""
+      RUNTIME_DATABASE_PASSWORD: ${RUNTIME_DATABASE_PASSWORD:?set RUNTIME_DATABASE_PASSWORD in .env}
+    depends_on: { db: { condition: service_healthy } }
+    command: ["sh", "-c", "alembic upgrade head && python -m app.cli runtime-login squad_app"]
+    restart: "no"
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://squad_app:${RUNTIME_DATABASE_PASSWORD:?set RUNTIME_DATABASE_PASSWORD in .env}@db:5432/credit_agent_squad
+      FILE_STORE_DIR: /data/files
+    volumes: [files:/data/files]
+    depends_on: { migrate: { condition: service_completed_successfully } }
+    # the image's default command also runs migrations, which the runtime role may not do
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["8000:8000"]
+  worker:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://squad_app:${RUNTIME_DATABASE_PASSWORD:?set RUNTIME_DATABASE_PASSWORD in .env}@db:5432/credit_agent_squad
+      FILE_STORE_DIR: /data/files
+    volumes: [files:/data/files]
+    depends_on: { api: { condition: service_started } }
+    command: ["python", "-m", "app.worker"]
+  web:
+    build: ./frontend
+    depends_on: [api]
+    ports: ["8080:80"]
+volumes: { dbdata: {}, files: {} }
