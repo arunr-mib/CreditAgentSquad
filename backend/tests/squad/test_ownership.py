@@ -292,3 +292,22 @@ def test_yours_and_approvals_never_count_a_case_for_an_analyst_who_does_not_own_
     assert not any(r["needs_you"] for r in rows)
     assert str(item.id) not in {r["work_item_id"] for r in build_approvals(db, owned["tomas"])}
     assert rules.yours(owned["tomas"], item, owned["borrower"]) is False
+
+
+# ---- whose client it is, said where the work happens (owner's walk, 24 Nov: nothing on another analyst's client
+# said she could only look)
+
+def test_the_client_list_says_who_may_only_look_with_the_engines_own_words(db, client, owned):
+    from .conftest import sign_in
+
+    db.commit()
+    sign_in(client, "tomas.keller")
+    row = next(b for b in client.get("/api/v1/borrowers").json() if b["code"] == owned["borrower"].code)
+    assert row["analyst"] == "Priya Raman"
+    assert row["look_only"] == str(workflow.client_refusal(db, owned["borrower"].id, user_id=owned["tomas"].id, user_role="analyst"))
+    assert "is Priya Raman's client" in row["look_only"]
+    sign_in(client, "priya.raman")
+    mine = next(b for b in client.get("/api/v1/borrowers").json() if b["code"] == owned["borrower"].code)
+    assert mine["look_only"] is None
+    sign_in(client, "helen.strand")  # other roles are not split by client
+    assert next(b for b in client.get("/api/v1/borrowers").json() if b["code"] == owned["borrower"].code)["look_only"] is None

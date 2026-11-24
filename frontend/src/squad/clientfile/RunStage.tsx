@@ -41,7 +41,7 @@ export function RunStage({ cycle, code }: { cycle: Cycle; code?: string }) {
               : !status.data
                 ? 'Checking whether a model is connected.'
                 : !connected
-                  ? `Agents cannot run here. ${status.data.reason}`
+                  ? status.data.reason || 'Agents are off on this site.'
                   : `Runs one stage with its agent (model ${status.data.model}) and stops. Each run is billable and is recorded in the ledger in your name.`}
         </p>
       </div>

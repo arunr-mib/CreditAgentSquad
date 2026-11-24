@@ -21,7 +21,8 @@ export function DraftMessage({ message }: { message: Draft }) {
   const [justSent, setJustSent] = useState(false);
   const sent = message.status === 'sent' || justSent;
   const withdrawn = message.status === 'withdrawn';
-  const mayWrite = can('edit_commentary');
+  // the server's answer when it sends one (it knows whose client this is); the role alone on an older server
+  const mayWrite = message.may_write ?? can('edit_commentary');
   const dirty = body !== message.body;
   const first = user?.name.split(' ')[0] ?? 'you';
 
@@ -68,7 +69,7 @@ export function DraftMessage({ message }: { message: Draft }) {
           {dirty ? <button type="button" className="sq-btn" disabled={edit.isPending} onClick={() => void save().then((ok) => ok && say('Draft saved'))}>Save changes</button> : null}
         </div>
       ) : null}
-      {!sent && !withdrawn && !mayWrite ? <p className="sq-muted">You can't send this draft.</p> : null}
+      {!sent && !withdrawn && !mayWrite ? <p className="sq-muted">{message.write_refusal ?? "You can't send this draft."}</p> : null}
       {error ? <p role="alert" className="sq-error">{error}</p> : null}
     </article>
   );

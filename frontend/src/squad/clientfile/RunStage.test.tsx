@@ -58,8 +58,8 @@ describe('running a stage by hand', () => {
   });
 
   it('is switched off, with the reason, where no model is connected', async () => {
-    show(SPREADING_NEXT, ['run_agents'], { model_connected: false, reason: 'No model key is set for this deployment.' });
-    expect(await screen.findByText('Agents cannot run here. No model key is set for this deployment.')).toBeVisible();
+    show(SPREADING_NEXT, ['run_agents'], { model_connected: false, reason: 'Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here.' });
+    expect(await screen.findByText('Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here.')).toBeVisible();
     expect(screen.getByRole('button', { name: 'Run Spreading now' })).toBeDisabled();
   });
 

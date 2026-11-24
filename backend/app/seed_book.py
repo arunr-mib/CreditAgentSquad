@@ -41,6 +41,7 @@ from app.domain.signals_service import run_signals
 from app.domain.terms import TermsVersion
 from app.domain.terms_service import check_provenance, raise_unapproved_amendments
 from app.domain.work_items import raise_item
+from app.seed_users import DEMO_USERS
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 # two books: v2's default is innovation banking; legacy is the frozen 21-borrower C&I book the engine tests run on
@@ -175,16 +176,28 @@ def _slug(name: str) -> str:
     return re.sub(r"[^a-z]+", ".", name.lower()).strip(".")
 
 
-def ensure_user(db: Session, name: str, role: Role, title: str, password_hash: str) -> User:
+def ensure_user(db: Session, name: str, role: Role, title: str, password_hash: str, *, active: bool = True) -> User:
+    """The person of that name, created if missing. `active=False` is for someone the book's documents name (a
+    relationship manager, an approving officer) who is not a workspace user: on the record, but with no sign-in and
+    never offered as someone to send a case to. A person who already exists is left as they are."""
     user = db.execute(select(User).where(User.name == name)).scalar_one_or_none()
     if user is None:
         user = User(email=f"{_slug(name)}@bankofstoic.example", name=name, title=title, role=role.value,
-                    password_hash=password_hash)
+                    password_hash=password_hash, is_active=active)
         db.add(user)
         db.flush()
         ledger.record(db, actor_type="system", actor_id="seed", action="user.created", entity_type="user",
                       entity_id=user.id, payload={"email": user.email, "role": role.value})
     return user
+
+
+_DEMO_NAMES = frozenset(name for _, name, _, _ in DEMO_USERS)
+
+
+def _named_on_record(db: Session, name: str, role: Role, title: str, password_hash: str) -> User:
+    """Someone the book's documents name. A demo user of that name is a workspace user whichever seed ran first; anyone
+    else is on the record only, inactive."""
+    return ensure_user(db, name, role, title, password_hash, active=name in _DEMO_NAMES)
 
 
 def _seed_facts(db: Session, borrower: Borrower, period: dict[str, Any]) -> int:
@@ -244,7 +257,7 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
                   report: SeedReport) -> Borrower:
     info = truth["borrower"]
     as_of, current_period = _day(truth["as_of"]), _day(truth["current_period"])
-    rm = ensure_user(db, info["relationship_manager"], Role.PORTFOLIO_MANAGER, "Relationship Manager", password_hash)
+    rm = _named_on_record(db, info["relationship_manager"], Role.PORTFOLIO_MANAGER, "Relationship Manager", password_hash)
     analyst = ensure_user(db, info["analyst"], Role.ANALYST, "Credit Analyst", password_hash)
     borrower = Borrower(
         code=info["id"], name=info["name"], industry=info["industry"], template_id=info.get("template_id", "ci-1"),
@@ -319,8 +332,8 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
         terms = normalise_terms(tv["terms"], tv.get("clause_index"))
         Terms.model_validate(terms)
         approved = tv["status"] in ("approved", "superseded")
-        approver = ensure_user(db, tv["approved_by"], Role.CREDIT_OFFICER, "Credit Officer", password_hash) \
-            if approved and tv.get("approved_by") else None
+        approver = _named_on_record(db, tv["approved_by"], Role.CREDIT_OFFICER, "Credit Officer",
+                                    password_hash) if approved and tv.get("approved_by") else None
         row = TermsVersion(
             facility_id=facility.id, version=tv["version"], status=tv["status"],
             effective_from=_day(tv["effective_from"]), effective_to=_day(tv.get("effective_to")), terms=terms,

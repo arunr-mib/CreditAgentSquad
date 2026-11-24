@@ -1,4 +1,5 @@
 // frontend/src/squad/thread/ClientThread.tsx
+import { ClientOwner } from '../shell/ClientOwner';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { useBorrowerByCode } from '@/api/hooks';
@@ -55,7 +56,10 @@ export function ClientThread() {
   return (
     <section className="sq-thread" aria-label={`${borrower.name} thread`} data-ready="">
       <header className="sq-threadhead">
-        <h1 className="sq-h1">{borrower.name}</h1>
+        <div>
+          <h1 className="sq-h1">{borrower.name}</h1>
+          <ClientOwner analyst={borrower.analyst} lookOnly={borrower.look_only} />
+        </div>
         <Link to={clientFile(borrower.code)} className="sq-link">Open in client file</Link>
       </header>
       {messages.length === 0 ? <p className="sq-muted">Nothing here yet. Squad will write here as documents arrive and work is done.</p> : null}

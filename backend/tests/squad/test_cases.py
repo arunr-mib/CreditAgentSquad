@@ -101,6 +101,11 @@ def test_each_decision_is_served_with_its_words_and_hint_and_the_thread_agrees(d
     assert decision_words("some_new_decision") == "some new decision"
     # the thread's past tense and the case's label come from the one module: every labelled decision reads as words in the past tense too
     assert all("_" not in decision_words(k) for k in DECISION_WORDS)
+    # "reminder email", never "chaser"; and the option says who sent it, because Squad emails nothing
+    assert DECISION_WORDS["chaser_sent"] == {"label": "I sent the reminder email",
+                                             "hint": "You sent it yourself, outside Squad. Squad records this and emails nothing."}
+    assert decision_words("chaser_sent") == "reminder email sent"  # reads "reminder email sent by Priya Raman"
+    assert not any("chaser" in (v["label"] + v["hint"]).lower() for v in DECISION_WORDS.values())
 
 
 # ---- final review I5: rows say the client once ----

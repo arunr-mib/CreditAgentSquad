@@ -42,23 +42,23 @@ describe('sign in', () => {
 describe('Time', () => {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ['Date'] });
-    vi.setSystemTime(new Date(2026, 10, 20, 15, 30));
+    vi.setSystemTime(new Date(Date.UTC(2026, 10, 20, 15, 30)));
   });
   afterEach(() => vi.useRealTimers());
 
-  it('shows only the time for today', () => {
-    render(<Time ts={new Date(2026, 10, 20, 14, 2).toISOString()} />);
-    expect(screen.getByText(/2:02/)).toBeInTheDocument();
+  it('shows only the time for today, in UTC and saying so', () => {
+    render(<Time ts="2026-11-20T14:02:00Z" />);
+    expect(screen.getByText('14:02 UTC')).toBeInTheDocument();
     expect(screen.queryByText(/Nov/)).not.toBeInTheDocument();
   });
 
   it('shows the date, then the time, for another day', () => {
-    render(<Time ts={new Date(2026, 10, 18, 14, 2).toISOString()} />);
-    expect(screen.getByText(/18 Nov.*2:02/)).toBeInTheDocument();
+    render(<Time ts="2026-11-18T14:02:00Z" />);
+    expect(screen.getByText('18 Nov, 14:02 UTC')).toBeInTheDocument();
   });
 
   it('adds the year for another year', () => {
-    render(<Time ts={new Date(2025, 10, 18, 14, 2).toISOString()} />);
+    render(<Time ts="2025-11-18T14:02:00Z" />);
     expect(screen.getByText(/18 Nov 2025/)).toBeInTheDocument();
   });
 });
@@ -133,10 +133,10 @@ describe('Trail', () => {
     expect(within(checks).getByText(/All figures traced/)).toBeInTheDocument();
   });
 
-  it('still says nothing is recorded when there is nothing at all', async () => {
+  it('says no agent ran when there is nothing at all', async () => {
     hooks.trail = data({});
     mount();
     await open();
-    expect(screen.getByText(/no agent work is recorded/i)).toBeInTheDocument();
+    expect(screen.getByText(/no agent ran on this case/i)).toBeInTheDocument();
   });
 });

@@ -64,6 +64,25 @@ export function quarterLabel(periodEnd: string): string {
   return quarter ? `${quarter} ${year}` : formatDate(periodEnd);
 }
 
+/** "period ended 30 Sep 2026": true of a monthly and of a quarterly period, where the screen does not know which it is. */
+export function periodEnded(periodEnd: string): string {
+  return `period ended ${formatDate(periodEnd)}`;
+}
+
+/** A period in a list of choices: "Q3 2026 · 30 Sep 2026" for a calendar quarter end; the date once for any other month end. */
+export function periodOption(periodEnd: string): string {
+  const quarter = quarterLabel(periodEnd);
+  const day = formatDate(periodEnd);
+  return quarter === day ? day : `${quarter} · ${day}`;
+}
+
+/** "September 2026" for a monthly schedule; the quarter for any other. */
+export function schedulePeriod(periodEnd: string, cadence: string | undefined): string {
+  if (cadence !== 'monthly') return quarterLabel(periodEnd);
+  const [year, month] = periodEnd.split('-').map(Number);
+  return new Date(Date.UTC(year ?? 1970, (month ?? 1) - 1, 1)).toLocaleDateString('en-GB', { timeZone: 'UTC', month: 'long', year: 'numeric' });
+}
+
 /** "17 Nov 2026, 08:37" in UTC, as the ledger records it. */
 export function formatTimestamp(iso: string | null | undefined): string {
   if (!iso) return '';

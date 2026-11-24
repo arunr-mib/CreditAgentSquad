@@ -96,7 +96,7 @@ def state_words(item: WorkItem, names: dict[str, str], borrower: Borrower | None
     if item.assigned_to:
         return f"With {names.get(str(item.assigned_to), 'a colleague')}"
     if item.required_permission == Permission.DECIDE_BREACH.value:
-        return "With the credit officer"
+        return "Not yet sent to a credit officer, who decides it"
     if borrower is not None and borrower.analyst_id:
         return f"With {names.get(str(borrower.analyst_id), 'the client’s analyst')}"
     return "Open"

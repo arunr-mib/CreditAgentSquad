@@ -30,10 +30,10 @@ export type ThreadMessage = MessageBase &
     | { type: 'report'; agent_name: string; agent_label: string; task: string; text: string; run_id: string }
     | { type: 'case'; work_item_id: string; item_type: string; title: string; subject?: string; question: string; severity: string; status: string; allowed_decisions: string[]; needs_you: boolean; state_words: string }
     | { type: 'ask'; work_item_id: string; title: string; question: string; options: AskOption[]; status: string; choice: string | null; chosen_by: string | null; needs_you: boolean; state_words: string; habits: Habit[] }
-    | { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }
-    | { type: 'arrivals'; title: string; period_end: string; documents: Array<MessageBase & { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null }> }
+    | { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null; received_date?: string | null }
+    | { type: 'arrivals'; title: string; period_end: string; documents: Array<MessageBase & { type: 'document'; document_id: string; title: string; doc_type: string | null; doc_type_words: string; pages: number; period_end: string | null; received_date?: string | null }> }
     | { type: 'held'; document_id: string; title: string; reason: string }
-    | { type: 'draft'; draft_id: string; borrower_id: string; to: string; subject: string; body: string; kind: string; status: 'draft' | 'sent' | 'withdrawn'; created_by: string; created_at: string; edited_by: string | null; sent_by: string | null; sent_at: string | null; work_item_id: string | null }
+    | { type: 'draft'; /** The engine's answer for this viewer; absent from an older server. */ may_write?: boolean; write_refusal?: string | null; draft_id: string; borrower_id: string; to: string; subject: string; body: string; kind: string; status: 'draft' | 'sent' | 'withdrawn'; created_by: string; created_at: string; edited_by: string | null; sent_by: string | null; sent_at: string | null; work_item_id: string | null }
     | { type: 'decision'; work_item_id: string; decision: string | null; decision_words?: string; reason: string; by: string; by_id: string }
     | { type: 'handoff'; work_item_id: string; assigned_to: string | null; assigned_to_id: string | null; by: string; view?: string | null }
     | { type: 'returned'; work_item_id: string; reason: string; by: string; to: string | null }

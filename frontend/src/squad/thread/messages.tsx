@@ -1,6 +1,7 @@
 // frontend/src/squad/thread/messages.tsx
 import { Link, useNavigate } from '@tanstack/react-router';
 import { word } from '@/api/words';
+import { formatDate } from '@/design';
 import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import type { ThreadMessage } from '../api/types';
@@ -27,6 +28,11 @@ export function caseState(message: Extract<ThreadMessage, { type: 'case' }>, all
   if (last?.type === 'returned') return { text: `Returned to ${last.to ?? 'the analyst'}`, needsYou: false };
   if (last?.type === 'handoff') return { text: `With ${last.assigned_to ?? 'no one in particular'}`, needsYou: false };
   return { text: message.state_words || 'Open', needsYou: false };
+}
+
+/** A document's two dates, told apart: the day the client sent it (the document's own record) and when it was put on file here. */
+function OnFile({ received, ts }: { received?: string | null; ts: string }) {
+  return <span className="sq-faint">{received ? `received ${formatDate(received)} · ` : ''}put on file <Time ts={ts} /></span>;
 }
 
 export function MessageView({ message, focused, borrowerCode, thread = [] }: { message: ThreadMessage; focused: boolean; borrowerCode: string; thread?: ThreadMessage[] }) {
@@ -62,7 +68,7 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
     case 'document':
       return (
         <article className="sq-msg sq-card">
-          <header className="sq-msghead"><b>Document arrived</b> <Time ts={message.ts} /></header>
+          <header className="sq-msghead"><b>Document arrived</b> <OnFile received={message.received_date} ts={message.ts} /></header>
           <button type="button" className="sq-link" aria-label={`Open ${message.title}`} onClick={() => source.open({ type: 'document', documentId: message.document_id, page: 1, title: message.title, borrowerCode })}>
             {message.title}
           </button>
@@ -72,12 +78,12 @@ export function MessageView({ message, focused, borrowerCode, thread = [] }: { m
     case 'arrivals':
       return (
         <article className="sq-msg sq-card">
-          <header className="sq-msghead"><b>{message.title}</b> <Time ts={message.ts} /></header>
+          <header className="sq-msghead"><b>{message.title}</b> <OnFile ts={message.ts} /></header>
           <ul className="sq-plainlist">
             {message.documents.map((d) => (
               <li key={d.document_id}>
                 <button type="button" className="sq-link" aria-label={`Open ${d.title}`} onClick={() => source.open({ type: 'document', documentId: d.document_id, page: 1, title: d.title, borrowerCode })}>{d.title}</button>
-                <span className="sq-faint"> · {d.doc_type_words} · {d.pages} {d.pages === 1 ? 'page' : 'pages'}</span>
+                <span className="sq-faint"> · {d.doc_type_words} · {d.pages} {d.pages === 1 ? 'page' : 'pages'}{d.received_date ? ` · received ${formatDate(d.received_date)}` : ''}</span>
               </li>
             ))}
           </ul>

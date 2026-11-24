@@ -52,6 +52,8 @@ export interface BorrowerRow {
   fiscal_year_end_month: number;
   relationship_manager: string | null;
   analyst: string | null;
+  /** The engine's ownership refusal for the signed-in person, or null when they may act on this client. */
+  look_only?: string | null;
   total_commitment: string | null;
   open_work_items: number;
   open_signals: number;

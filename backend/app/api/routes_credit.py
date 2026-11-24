@@ -40,7 +40,9 @@ def _borrower_or_404(db: Session, borrower_id: uuid.UUID) -> Borrower:
 
 
 @router.get("/borrowers")
-def list_borrowers(db: Session = Depends(get_db), _: User = Depends(current_user)) -> list[dict]:
+def list_borrowers(db: Session = Depends(get_db), user: User = Depends(current_user)) -> list[dict]:
+    from app.domain.workflow import client_refusal
+
     open_items = dict(db.execute(select(WorkItem.borrower_id, func.count()).where(WorkItem.status == "open")
                                  .group_by(WorkItem.borrower_id)).all())
     open_signals = dict(db.execute(select(Signal.borrower_id, func.count()).where(Signal.status == "open")
@@ -67,6 +69,10 @@ def list_borrowers(db: Session = Depends(get_db), _: User = Depends(current_user
         out.append({
             **row(b, exclude=("profile",)),
             "relationship_manager": users.get(b.relationship_manager_id), "analyst": users.get(b.analyst_id),
+            # the engine's ownership refusal for this person, or None: the screens say "you can look, not act"
+            # in these words, so a header and the server cannot disagree
+            "look_only": (lambda refused: str(refused) if refused else None)(
+                client_refusal(db, b.id, user_id=user.id, user_role=user.role)),
             "total_commitment": plain(commitments.get(b.id)), "open_work_items": open_items.get(b.id, 0),
             "open_signals": open_signals.get(b.id, 0),
             "latest_cycle": {"id": str(cycle.id), "period_end": cycle.period_end.isoformat(), "stage": cycle.stage,

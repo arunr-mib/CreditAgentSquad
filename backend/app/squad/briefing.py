@@ -1,4 +1,4 @@
-"""What Squad tells the signed-in person on opening: what needs them, ordered by consequence,
+"""What Squad tells the signed-in person on opening: what needs them, most serious first,
 and what agents finished overnight. Every count is taken from the list that is returned."""
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -128,7 +128,8 @@ def build_briefing(db: Session, user: User) -> dict[str, Any]:
                           "state": f.status, "severity": "low", "needs_you": False, "work_item_id": None,
                           "_due": f.expected_close})
 
-    items.sort(key=lambda i: (KIND_RANK[i["kind"]], SEVERITY_RANK.get(i["severity"], 9), i["_due"] or today))
+    # Most serious first; among equals a breach before an overdue report before a signal, then the earlier due date.
+    items.sort(key=lambda i: (SEVERITY_RANK.get(i["severity"], 9), KIND_RANK[i["kind"]], i["_due"] or today))
     for i in items:
         i.pop("_due")
 

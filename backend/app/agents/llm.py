@@ -317,11 +317,11 @@ def model_status(settings: Settings | None = None) -> dict[str, Any]:
     mode = s.squad_llm_mode
     if mode in ("live", "record"):
         connected = bool(s.anthropic_api_key.strip())
-        reason = "" if connected else "No model key is set for this deployment."
+        reason = "" if connected else "Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here."
     else:
         root = Path(s.squad_recordings_dir)
         connected = root.is_dir() and any(root.rglob("*.json"))
-        reason = "" if connected else "This deployment replays recorded model responses and has none stored."
+        reason = "" if connected else "Agents are off on this site: it replays stored model answers and has none. Squad cannot answer questions or run a stage here."
     return {"mode": mode, "model": s.squad_model, "connected": connected, "reason": reason}
 
 

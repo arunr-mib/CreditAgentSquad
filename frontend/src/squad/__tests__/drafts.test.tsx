@@ -36,6 +36,15 @@ describe('DraftMessage', () => {
     expect(screen.queryByRole('button', { name: /save changes/i })).not.toBeInTheDocument();
   });
 
+  it('offers no Send on another analyst’s client, and says why in the server’s words', () => {
+    const why = "Quillfeather Labs, Inc. is Tomas Keller's client; only that analyst, or a credit officer, portfolio manager or credit administration, can act on it.";
+    mount(draft({ may_write: false, write_refusal: why }));
+    expect(screen.queryByRole('button', { name: /^Send as/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveAttribute('readonly');
+    expect(screen.getByText(why)).toBeInTheDocument();
+    expect(screen.queryByText("You can't send this draft.")).not.toBeInTheDocument();
+  });
+
   it('shows a request the document made unnecessary as no longer needed, with nothing to send', () => {
     mount(draft({ status: 'withdrawn' }));
     expect(screen.getByText('No longer needed')).toBeInTheDocument();

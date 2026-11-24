@@ -53,5 +53,5 @@ One typeface (Inter); JetBrains Mono only for identifiers; figures use tabular n
 - Confirm before anything destructive, billable, or pushed to `main` or to another repository.
 - Report only what a tool result in the session verified; say what is unverified.
 - Tell the owner about every pull request merge, in the same reply or the next one: which pull request, into which branch, and the merge commit. This holds when the merge was approved in advance or done automatically on green checks.
-- Commits are authored in the owner's name (`git config user.name` and `user.email` set to the owner's GitHub identity at the start of a session), so GitHub lists the owner as a contributor. The session's co-author trailer stays.
+- Commits are authored as Claude (`noreply@anthropic.com`, so GitHub shows them as Verified) and every commit message ends with a `Co-authored-by:` line naming the owner with the owner's GitHub email, so GitHub lists the owner as a contributor. Take the owner's name and email from their merge commits in `git log`.
 - `.claude/settings.json` allows merging and opening pull requests without a prompt. Statements on the project database keep asking: the frozen v1's data shares that database.

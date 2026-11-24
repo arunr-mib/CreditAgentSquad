@@ -4,7 +4,7 @@ import { API, ApiError, errorMessage, get, post } from '@/api/client';
 import { useCycles } from '@/api/hooks';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Select, StatusDot } from '@/design';
-import { formatTimestamp, humanize, quarterLabel } from '@/domain/labels';
+import { formatTimestamp, humanize, periodEnded, periodOption } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import type { BorrowerRow } from '@/api/schema';
 import { usePresence } from '../presence/Presence';
@@ -71,7 +71,7 @@ function PackageCard({ item }: { item: PackageRow }) {
     <Card data-package={item.id}>
       <CardHeader
         as="h3"
-        eyebrow={`${item.scope === 'borrower' ? 'Client' : humanize(item.scope)} package · ${quarterLabel(item.period_end)}`}
+        eyebrow={`${item.scope === 'borrower' ? 'Client' : humanize(item.scope)} package · ${periodEnded(item.period_end)}`}
         title={item.title}
         meta={
           <>
@@ -79,7 +79,7 @@ function PackageCard({ item }: { item: PackageRow }) {
             {item.snapshot ? (
               <>
                 {' '}
-                · snapshot <span className="ident">{item.snapshot.sha256.slice(0, 10)}</span> of <span className="tnum">{item.snapshot.facts}</span> facts as of {formatDate(item.snapshot.as_of)}
+                · snapshot <span className="ident">{item.snapshot.sha256.slice(0, 10)}</span> holding <span className="tnum">{item.snapshot.facts.toLocaleString('en-US')}</span> stored facts and <span className="tnum">{item.snapshot.derived.toLocaleString('en-US')}</span> figures calculated from them, as of {formatDate(item.snapshot.as_of)}
               </>
             ) : null}
           </>
@@ -98,7 +98,7 @@ function PackageCard({ item }: { item: PackageRow }) {
             <span className="font-medium text-ink">{FORMAT_LABEL[file.format] ?? file.format}</span>
             <span className="ident min-w-0 break-all text-ink-700 max-sm:col-span-2 max-sm:row-start-2">{file.name}</span>
             <span className="text-caption text-ink-500 max-sm:col-span-2 max-sm:row-start-3">
-              <span className="tnum">{file.facts_used}</span> facts cited · <span className="ident">{file.sha256.slice(0, 10)}</span>
+              <span className="tnum">{file.facts_used.toLocaleString('en-US')}</span> of the snapshot’s facts and calculated figures cited · <span className="ident">{file.sha256.slice(0, 10)}</span>
             </span>
             <a href={`${API}/packages/${item.id}/files/${encodeURIComponent(file.name)}`} className="link font-medium" aria-label={`Download ${file.name}`} download>
               Download
@@ -113,11 +113,11 @@ function PackageCard({ item }: { item: PackageRow }) {
           ) : verify.data ? (
             verify.data.ok ? (
               <StatusDot tone="pass" emphasis>
-                Verified: all <span className="tnum">{verify.data.figures_checked.toLocaleString('en-US')}</span> figures in the files trace to the snapshot
+                Verified: all <span className="tnum">{verify.data.figures_checked.toLocaleString('en-US')}</span> figures printed in the files trace to the snapshot. A fact printed in more than one place is counted each time.
               </StatusDot>
             ) : (
               <StatusDot tone="attention" emphasis>
-                <span className="tnum">{verify.data.problems.length}</span> of <span className="tnum">{verify.data.figures_checked.toLocaleString('en-US')}</span> figures do not trace to the snapshot
+                <span className="tnum">{verify.data.problems.length}</span> of <span className="tnum">{verify.data.figures_checked.toLocaleString('en-US')}</span> figures printed in the files do not trace to the snapshot
               </StatusDot>
             )
           ) : (
@@ -203,7 +203,7 @@ export function Packages({ borrower }: { borrower: BorrowerRow }) {
         <CardHeader as="h2" title="Prepare a package" meta="Code builds the files from stored facts. Releasing is a separate step, decided by a person." />
         <form onSubmit={submit} className="space-y-3 border-t border-hairline px-4 pt-3 pb-4">
           {periods.length > 0 ? (
-            <Select label="Period" value={chosen} onValueChange={setPeriod} options={periods.map((value) => ({ value, label: `${quarterLabel(value)} · ${formatDate(value)}` }))} />
+            <Select label="Period" value={chosen} onValueChange={setPeriod} options={periods.map((value) => ({ value, label: periodOption(value) }))} />
           ) : (
             <p className="text-body text-ink-700">No monitoring cycle exists for this client yet.</p>
           )}

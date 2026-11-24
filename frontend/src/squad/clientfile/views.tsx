@@ -13,11 +13,11 @@ import { outcomeOf } from '@/domain/labels';
 import { RunStage } from '@/squad/clientfile/RunStage';
 import { UploadDocument } from '@/squad/clientfile/UploadDocument';
 import { Commentary } from '@/squad/clientfile/review/Commentary';
-import { AgentBody } from '@/source/AgentBody';
 import { useSource } from '@/source/context';
 import { Absent, FactFigure, SourcedFigure } from '@/source/figures';
 import { useDocumentTypeWords, useFundingEvents, useLessons, useMeasure, useTrackRecord } from '../api/hooks';
-import { DocType, useSignalWords } from '../DocType';
+import { DocType } from '../DocType';
+import { SignalList } from './SignalList';
 import { Time } from '../thread/Time';
 import { BorrowingBase } from './BorrowingBase';
 import { MeasureNow, TrendBars } from './Measure';
@@ -35,7 +35,6 @@ export function Overview({ borrower }: Props) {
   const overview = useBorrowerOverview(borrower.id);
   const measure = useMeasure(borrower.id);
   const signals = useSignals({ borrower_id: borrower.id });
-  const signalWords = useSignalWords();
   const track = useTrackRecord(borrower.id);
   const lessons = useLessons(borrower.id);
   if (overview.isPending) return <Loading what="the overview" />;
@@ -74,9 +73,7 @@ export function Overview({ borrower }: Props) {
       <section className="sq-card" aria-label="Signals">
         <h2 className="sq-h2">Signals</h2>
         {(signals.data ?? []).length === 0 ? <p className="sq-muted">No open signal.</p> : (
-          <ul className="sq-plainlist">
-            {(signals.data ?? []).map((s) => <li key={s.id}><span className={`sq-dotmark sq-sev-${s.severity}`} aria-hidden /> {signalWords(s.rule_id)} · <span className="sq-faint">{formatDate(s.period_end)}</span>{s.explanation?.text ? <AgentBody text={s.explanation.text} /> : null}</li>)}
-          </ul>
+          <SignalList signals={signals.data ?? []} />
         )}
       </section>
       <section className="sq-card" aria-label="Track record">

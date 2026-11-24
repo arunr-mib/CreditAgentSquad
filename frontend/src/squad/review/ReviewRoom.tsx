@@ -19,7 +19,7 @@ import {
 import type { ActionRow, Meeting, ReviewSheetDetail } from '@/api/schema';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Input, PageHeader, Select, StatusDot, Stepper, type Step } from '@/design';
-import { humanize, outcomeOf, quarterLabel } from '@/domain/labels';
+import { humanize, outcomeOf, periodEnded, periodOption } from '@/domain/labels';
 import { cx } from '@/lib/cx';
 import { FactFigure } from '@/source/figures';
 import { EmptyCard, ErrorNotice, Load, Notice, SeverityDot } from '@/screens/parts';
@@ -28,6 +28,13 @@ import { CasePanel } from '../case/CasePanel';
 import { useSignalWords } from '../DocType';
 import { clientFile, threadHref } from '../links';
 import { usePresence } from '../presence/Presence';
+
+/** What creating a meeting did, from the server's own count: it never says sheets were attached when none were. */
+export function meetingCreatedWords(sheetsAttached: number | undefined): string {
+  if (sheetsAttached === undefined) return 'Meeting created · recorded';
+  if (sheetsAttached === 0) return 'Meeting created · no review sheet was waiting for this period, so none is attached · recorded';
+  return `Meeting created · ${sheetsAttached} review ${sheetsAttached === 1 ? 'sheet' : 'sheets'} for the period attached · recorded`;
+}
 
 const PHASES: Array<{ id: Meeting['phase']; label: string; detail: string }> = [
   { id: 'before', label: 'Before', detail: 'Sheets are prepared and commentary is approved' },
@@ -52,7 +59,7 @@ function MeetingCard({ meeting, onOpenSheet, sheetId }: { meeting: Meeting; onOp
     <Card data-meeting={meeting.id}>
       <CardHeader
         as="h2"
-        eyebrow={`Review meeting · ${quarterLabel(meeting.period_end)}`}
+        eyebrow={`Review meeting · ${periodEnded(meeting.period_end)}`}
         title={meeting.title}
         meta={`${formatDate(meeting.meeting_date)} · ${meeting.sheets.length} review ${meeting.sheets.length === 1 ? 'sheet' : 'sheets'}`}
         actions={
@@ -79,7 +86,7 @@ function MeetingCard({ meeting, onOpenSheet, sheetId }: { meeting: Meeting; onOp
         <h3 className="eyebrow px-4 pt-3 pb-1.5">Review sheets on the agenda</h3>
         {meeting.sheets.length === 0 ? (
           <p className="border-t border-hairline px-4 py-3 text-body text-pretty text-ink-700">
-            No review sheet is attached. Sheets for the period are attached when the meeting is created; none had been prepared for {quarterLabel(meeting.period_end)}. A sheet is prepared
+            No review sheet is attached. Sheets for the period are attached when the meeting is created; none had been prepared for the {periodEnded(meeting.period_end)}. A sheet is prepared
             when a cycle reaches review preparation and the Review Agent has drafted its commentary.
           </p>
         ) : (
@@ -111,8 +118,8 @@ function NewMeeting({ periods }: { periods: string[] }) {
     create.mutate(
       { title: title.trim(), meeting_date: date, period_end: period },
       {
-        onSuccess: () => {
-          say('Meeting created · review sheets for the period attached · recorded');
+        onSuccess: (meeting) => {
+          say(meetingCreatedWords((meeting as { sheets_attached?: number } | undefined)?.sheets_attached));
           setTitle('');
           setDate('');
         },
@@ -126,7 +133,7 @@ function NewMeeting({ periods }: { periods: string[] }) {
         <Input label="Title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Quarterly portfolio review" />
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Input label="Meeting date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
-          <Select label="Period reviewed" value={period} onValueChange={setPeriod} options={periods.map((value) => ({ value, label: `${quarterLabel(value)} · ${formatDate(value)}` }))} />
+          <Select label="Period reviewed" value={period} onValueChange={setPeriod} options={periods.map((value) => ({ value, label: periodOption(value) }))} />
         </div>
         {create.error ? (
           <Notice tone="attention" title="The meeting was not created">
@@ -164,7 +171,7 @@ function Sheet({ sheet }: { sheet: ReviewSheetDetail }) {
         <CardHeader
           as="h2"
           className="max-sm:flex-wrap max-sm:gap-y-1"
-          eyebrow={`Review sheet · ${quarterLabel(sheet.period_end)}`}
+          eyebrow={`Review sheet · ${periodEnded(sheet.period_end)}`}
           title={sheet.borrower_name}
           meta={
             <>
@@ -455,7 +462,7 @@ export function ReviewRoom() {
                       <li key={row.id} className="border-b border-hairline last:border-b-0">
                         <button type="button" aria-pressed={row.id === search.sheet} onClick={() => openSheet(row.id)} className="flex min-h-[34px] w-full items-center justify-between gap-4 px-4 py-1.5 text-left text-body t-colors hover:bg-hover aria-pressed:bg-cobalt-bg last:rounded-b-md">
                           <span className="font-medium text-ink">
-                            {row.borrower_name} <span className="font-regular text-ink-500">· {quarterLabel(row.period_end)}</span>
+                            {row.borrower_name} <span className="font-regular text-ink-500">· {periodEnded(row.period_end)}</span>
                           </span>
                           <StatusDot tone={row.status === 'draft' ? 'attention' : 'pass'}>{row.status === 'draft' ? 'Draft, not yet approved' : humanize(row.status)}</StatusDot>
                         </button>

@@ -59,10 +59,14 @@ def _events(db: Session, action_prefix: str, ids: list[str] | None = None, entit
     return db.execute(query).scalars().all()
 
 
-def drafts_messages(db: Session, borrower_id: uuid.UUID, names: dict[str, str]) -> list[dict[str, Any]]:
-    from app.squad.drafts import drafts_for
+def drafts_messages(db: Session, borrower_id: uuid.UUID, names: dict[str, str],
+                    viewer: User | None = None) -> list[dict[str, Any]]:
+    from app.squad.drafts import drafts_for, write_refusal
 
-    return [{**d, "id": f"draft:{d['draft_id']}", "type": "draft", "ts": d["created_at"]}
+    # the engine's own answer, so the screen cannot offer a Send the server would refuse
+    refused = write_refusal(db, borrower_id, viewer)
+    return [{**d, "id": f"draft:{d['draft_id']}", "type": "draft", "ts": d["created_at"],
+             "may_write": refused is None, "write_refusal": str(refused) if refused else None}
             for d in drafts_for(db, borrower_id)]
 
 
@@ -114,7 +118,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
         else:
             messages.append({**base, "type": "document", "doc_type": d.doc_type,
                              "doc_type_words": document_type_words(d.doc_type), "pages": d.page_count,
-                             "period_end": plain(d.period_end)})
+                             "period_end": plain(d.period_end), "received_date": plain(d.received_date)})
 
     items = db.execute(select(WorkItem).where(WorkItem.borrower_id == borrower_id)).scalars().all()
     lessons = lessons_for(db, borrower_id, names={u.id: u.name for u in db.execute(select(User)).scalars()})
@@ -187,7 +191,7 @@ def build_thread(db: Session, borrower_id: uuid.UUID, viewer: User | None = None
                          "citations": p.get("citations", []), "status": p.get("status", "answered"),
                          "run_id": e.entity_id, "asked_by": names.get(e.actor_id, e.actor_id)})
 
-    messages += drafts_messages(db, borrower_id, names)
+    messages += drafts_messages(db, borrower_id, names, viewer)
     messages = _group_arrivals(messages)
     # Ledger instants are whole seconds while rows carry microseconds, so order by the second and then by
     # how a case unfolds (documents in, then the case, then who it was handed to, then the decision).

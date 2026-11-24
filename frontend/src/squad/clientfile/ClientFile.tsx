@@ -1,4 +1,5 @@
 // frontend/src/squad/clientfile/ClientFile.tsx
+import { ClientOwner } from '../shell/ClientOwner';
 import { Link, useParams } from '@tanstack/react-router';
 import { useBorrowerByCode } from '@/api/hooks';
 import { clientFile, threadHref, type ClientFileView } from '../links';
@@ -39,6 +40,7 @@ export function ClientFile() {
         <div>
           <h1 className="sq-h1">{borrower.name}</h1>
           <p className="sq-faint">Client file · <span className="sq-mono">{borrower.code}</span></p>
+          <ClientOwner analyst={borrower.analyst} lookOnly={borrower.look_only} />
         </div>
         <Link {...threadHref(borrower.code)} className="sq-link">Back to the thread</Link>
       </header>

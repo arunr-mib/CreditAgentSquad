@@ -144,3 +144,40 @@ def test_the_draft_route_bounds_every_field(db, client, world, field, value):
     assert client.post(url, json={**good, field: value}).status_code == 422
     assert client.post(url, json=good).status_code == 201
     assert client.post(url, json={**good, "to": "a" * 320, "subject": "s" * 200, "body": "b" * 8000}).status_code == 201
+
+
+# ---- owner answer 9 reaches drafts: an analyst writes to her own clients only (found on the hosted v2, 24 Nov,
+# where another analyst's sign-in sent the reminder on Priya Raman's client)
+
+def test_another_analyst_can_neither_edit_nor_send_nor_start_a_draft_on_a_client_that_is_not_hers(db, client, world):
+    from .conftest import _user
+
+    tomas = _user(db, "tomas.keller")
+    d = _draft(db, world["borrower"])  # Quillfeather is Priya Raman's
+    for act in (lambda: edit_draft(db, uuid.UUID(d["draft_id"]), tomas, body="mine now"),
+                lambda: send_draft(db, uuid.UUID(d["draft_id"]), tomas)):
+        with pytest.raises(PermissionError, match="is Priya Raman's client"):
+            act()
+    assert drafts_for(db, world["borrower"].id)[0]["status"] == "draft"
+    db.commit()
+    sign_in(client, "tomas.keller")
+    refused = client.post(f"/api/v1/drafts/{d['draft_id']}/send")
+    assert refused.status_code == 403 and "is Priya Raman's client" in refused.json()["detail"]
+    assert client.post(f"/api/v1/drafts/{d['draft_id']}/edit", json={"body": "x"}).status_code == 403
+    assert client.post(f"/api/v1/borrowers/{world['borrower'].id}/drafts",
+                       json={"to": "a@b.example", "subject": "s", "body": "b"}).status_code == 403
+    # her own analyst still can, and Squad's own drafts (no person behind them) are not touched by the rule
+    sign_in(client, "priya.raman")
+    assert client.post(f"/api/v1/drafts/{d['draft_id']}/send").status_code == 200
+
+
+def test_the_thread_says_whether_this_person_may_write_a_draft_with_the_engines_own_answer(db, world):
+    from .conftest import _user
+
+    _draft(db, world["borrower"])
+    mine = next(m for m in build_thread(db, world["borrower"].id, world["analyst"])["messages"] if m["type"] == "draft")
+    assert mine["may_write"] is True and mine["write_refusal"] is None
+    theirs = next(m for m in build_thread(db, world["borrower"].id, _user(db, "tomas.keller"))["messages"] if m["type"] == "draft")
+    assert theirs["may_write"] is False and "is Priya Raman's client" in theirs["write_refusal"]
+    officer = next(m for m in build_thread(db, world["borrower"].id, world["officer"])["messages"] if m["type"] == "draft")
+    assert officer["may_write"] is False  # an officer does not send client email (permission, as before)

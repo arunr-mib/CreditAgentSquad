@@ -46,15 +46,15 @@ export function SquadNav({ collapsed, onToggle, needs, showApprovals, openClient
         <span className="sq-navlabel">Review room</span>
       </Link>
       {openClients.length > 0 && collapsed ? (
-        <button type="button" className="sq-navlink sq-navbtn" onClick={onToggle} title="Open cases"
-          aria-label={`Open cases: ${openClients.length} ${openClients.length === 1 ? 'client' : 'clients'}`}>
+        <button type="button" className="sq-navlink sq-navbtn" onClick={onToggle} title="Clients with open cases"
+          aria-label={`Clients with open cases: ${openClients.length}`}>
           <FolderOpen size={18} aria-hidden />
           <span className="sq-count">{openClients.length}</span>
         </button>
       ) : null}
       {openClients.length > 0 && !collapsed ? (
-        <nav aria-label="Open cases" className="sq-cases">
-          <p className="sq-navhead sq-navlabel">Open cases</p>
+        <nav aria-label="Clients with open cases" className="sq-cases">
+          <p className="sq-navhead sq-navlabel">Clients with open cases</p>
           {openClients.map((c) => (
             <Link key={c.borrower_id} to="/clients/$code" params={{ code: c.code }} className="sq-navlink" title={c.name}
               aria-current={pathname === `/clients/${c.code}` ? 'page' : undefined}>

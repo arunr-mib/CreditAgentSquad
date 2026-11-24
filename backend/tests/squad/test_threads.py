@@ -110,7 +110,7 @@ def test_a_case_says_per_viewer_whether_it_needs_them(db, world):
     officer = _case(db, world["officer"], world["borrower"].id)
     analyst = _case(db, world["analyst"], world["borrower"].id)
     assert officer["needs_you"] is True
-    assert analyst["needs_you"] is False and analyst["state_words"] == "With the credit officer"
+    assert analyst["needs_you"] is False and analyst["state_words"] == "Not yet sent to a credit officer, who decides it"
     assert _case(db, None, world["borrower"].id)["needs_you"] is False
 
 

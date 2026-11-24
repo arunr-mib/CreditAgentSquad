@@ -42,8 +42,14 @@ async function record(page) {
   return { b, needs: b.items.filter((i) => i.needs_you), clients: b.open_clients };
 }
 
-/** The route form lists everyone who may decide the case; the journey sends it to Helen Strand. */
+/** The route form lists everyone who may decide the case; the journey sends it to Helen Strand. With one person who
+ * may decide there is no list: the button already names her. */
 async function chooseOfficer(card) {
+  await card.getByLabel(/your view/i).waitFor();
+  if ((await card.getByLabel('Send to').count()) === 0) {
+    await card.getByRole('button', { name: 'Send to Helen Strand' }).waitFor();
+    return;
+  }
   assert((await card.getByLabel('Send to').inputValue()) === '', 'the route form preselected a person');
   assert(await card.getByRole('button', { name: 'Choose who decides' }).isDisabled(), 'Send was enabled before a person was chosen');
   const value = await card.locator('select option', { hasText: 'Helen Strand' }).first().getAttribute('value');
@@ -103,17 +109,18 @@ journey('rows name the client once, and at 1000 px every Approvals subject is sh
   }
 });
 
-journey('nav: "Open cases" lists exactly the clients with something open, and each lands in its thread', async ({ page }) => {
+journey('nav: "Clients with open cases" lists exactly the clients with something open, and each lands in its thread', async ({ page }) => {
   await signIn(page, ANALYST);
   const { clients } = await record(page);
-  await page.getByRole('button', { name: /expand navigation/i }).click();
-  const links = page.getByRole('navigation', { name: 'Open cases' }).getByRole('link');
+  const expand = page.getByRole('button', { name: /expand navigation/i }); // open already where there is room
+  if (await expand.count()) await expand.click();
+  const links = page.getByRole('navigation', { name: 'Clients with open cases' }).getByRole('link');
   assert((await links.count()) === clients.length, 'Open cases differs from the clients with open work');
   const portfolio = (await api(page, '/me/portfolio')).sections.flatMap((x) => x.rows);
   for (const c of clients) assert(portfolio.find((r) => r.code === c.code)?.open === c.open, `${c.name}: the nav count differs from the Portfolio's Open`);
   assert(portfolio.filter((r) => r.open > 0).length === clients.length, 'a client with open cases is missing from Open cases, or one without is listed');
   for (const c of clients) {
-    await page.getByRole('navigation', { name: 'Open cases' }).getByRole('link', { name: new RegExp(c.name) }).click();
+    await page.getByRole('navigation', { name: 'Clients with open cases' }).getByRole('link', { name: new RegExp(c.name) }).click();
     await page.waitForURL(new RegExp(`/clients/${c.code}$`));
     await page.getByRole('heading', { level: 1, name: c.name }).waitFor();
   }
@@ -353,7 +360,8 @@ journey('hand-off: the analyst routes a breach with her view, the officer return
   for (const [i, n] of needs.entries()) {
     await o.getByRole('button', { name: 'Add something that is needed' }).click();
     await o.getByLabel(`Document type ${i + 1}`).selectOption(n.doc_type);
-    await o.getByLabel(`Month ${i + 1}`).fill(n.period_end.slice(0, 7));
+    await o.getByLabel(`Month ${i + 1}`).selectOption(n.period_end.slice(5, 7));
+    await o.getByLabel(`Year ${i + 1}`).selectOption(n.period_end.slice(0, 4));
   }
   await o.getByRole('button', { name: 'Return to Priya Raman' }).click();
   await o.getByText(/Returned to Priya Raman · recorded/).waitFor();
@@ -541,7 +549,7 @@ for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER]]) {
         if (m.type === 'case') {
           // a case opens CasePanel: its decision form is there exactly when the server permits a decision
           const view = await api(page, `/cases/${m.work_item_id}`);
-          // count only once the panel has loaded: while it says "Opening the case." no form is shown yet
+          // count only once the panel has loaded: while it says "Loading the case." no form is shown yet
           await card.locator(`[data-case="${m.work_item_id}"]`).waitFor();
           const decide = await card.getByRole('button', { name: 'Record decision' }).count();
           assert((decide > 0) === view.decisions.some((d) => d.permitted), `${b.name}: the decision form disagrees with the server for ${m.title}`);

@@ -263,7 +263,7 @@ export function Evidence({ item, code, headingLevel: Heading }: { item: WorkItem
         <p className="border-t border-ink pt-2 text-body text-ink-500">No evidence is attached to this item.</p>
       ) : null}
       {draft ? (
-        <AgentNote agent="Intake Agent" headline="Drafted a chaser, not sent" state="draft" className="mt-3">
+        <AgentNote agent="Intake Agent" headline="Drafted a reminder email. Squad sends nothing: copy it and send it yourself" state="draft" className="mt-3">
           <p className="text-body whitespace-pre-line text-ink">{draft}</p>
         </AgentNote>
       ) : null}

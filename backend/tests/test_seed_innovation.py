@@ -279,3 +279,23 @@ def test_a_calculation_names_the_cash_it_leaves_out_so_a_certificate_gap_can_be_
         CovenantTest.borrower_id == datamarrow.id, CovenantTest.covenant_id == "revenue_vs_plan",
         CovenantTest.period_end == _day("2026-10-31"))).scalar_one()
     assert calculation_out(db, db.get(CalcRun, plan.calc_run_id), _Labels(db))["left_out"] == []
+
+
+def test_people_who_are_only_named_on_the_record_cannot_sign_in_or_be_sent_a_case(seeded):
+    """The book's documents name relationship managers and approving officers (Dana Whitcombe, Ruth Okafor-Bell) who
+    are not workspace users. They stay on the record, but inactive: on the owner's walk they stood in Send-to lists
+    beside the demo users with nearly the same names (Dana Whitfield, Ruth Calloway)."""
+    from app.domain.org import User
+    from app.seed_users import DEMO_USERS
+
+    db, truths, _ = seeded
+    people = {u.name: u for u in db.execute(select(User)).scalars()}
+    demo = {name for _, name, _, _ in DEMO_USERS}
+    named = {t["borrower"]["relationship_manager"] for t in truths.values()} | {
+        tv["approved_by"] for t in truths.values() for tv in t["terms_versions"] if tv.get("approved_by")}
+    analysts = {t["borrower"]["analyst"] for t in truths.values()}
+    assert {"Dana Whitcombe", "Ruth Okafor-Bell"} <= named - demo
+    for name in named - demo - analysts:
+        assert people[name].is_active is False, name
+    for name in (demo & people.keys()) | analysts:  # demo users here, and analysts who own clients, are unchanged
+        assert people[name].is_active is True, name

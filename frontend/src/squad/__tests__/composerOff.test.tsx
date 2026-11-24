@@ -16,7 +16,7 @@ vi.mock('../api/hooks', () => ({
 }));
 vi.mock('../presence/Presence', () => ({ usePresence: () => ({ beginWork: () => () => {}, pulse: () => {}, say: () => {} }) }));
 
-const OFF = { model_connected: false, reason: 'No model key is set for this deployment.' };
+const OFF = { model_connected: false, reason: 'Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here.' };
 
 describe('Composer when the deployment has no model', () => {
   it.each([
@@ -25,7 +25,7 @@ describe('Composer when the deployment has no model', () => {
   ])('on %s says why in the server words and offers no Ask, before anyone types', (_where, props, name) => {
     status.data = OFF;
     render(<Composer {...props} />);
-    expect(screen.getByText('No model key is set for this deployment.')).toBeInTheDocument();
+    expect(screen.getByText('Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here.')).toBeInTheDocument();
     const box = screen.getByRole('textbox', { name });
     expect(box).toHaveAttribute('aria-disabled', 'true');
     expect(box).toHaveAttribute('readonly');
@@ -38,7 +38,7 @@ describe('Composer when the deployment has no model', () => {
     await userEvent.tab();
     const box = screen.getByRole('textbox', { name: /Ask Squad about Cindrel Tech/ });
     expect(box).toHaveFocus();
-    expect(box).toHaveAccessibleDescription('No model key is set for this deployment.');
+    expect(box).toHaveAccessibleDescription('Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here.');
     await userEvent.keyboard('Which covenants fail?');
     expect(box).toHaveValue('');
   });
@@ -64,7 +64,7 @@ describe('Composer when the deployment has no model', () => {
       </QueryClientProvider>,
     );
     expect(await screen.findByRole('textbox', { name: 'Ask Squad about the whole portfolio' })).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByText('No model key is set for this deployment.')).toBeInTheDocument();
+    expect(screen.getByText('Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here.')).toBeInTheDocument();
   });
 
   it('is unchanged while the status loads or when the model is connected', () => {

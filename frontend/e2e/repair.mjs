@@ -439,7 +439,7 @@ const journeys = [
       await page.waitForFunction((n) => document.querySelectorAll('[data-package]').length === n, before + 1);
       const card = page.locator('[data-package]').first();
       await card.getByRole('button', { name: 'Verify the files' }).click();
-      await card.locator('[data-verify-result]').getByText(/Verified: all .* figures in the files trace to the snapshot/).waitFor();
+      await card.locator('[data-verify-result]').getByText(/Verified: all .* figures printed in the files trace to the snapshot/).waitFor();
       await card.getByRole('button', { name: 'Release' }).click();
       await card.getByText(/^Released/).waitFor();
       const id = await card.getAttribute('data-package');

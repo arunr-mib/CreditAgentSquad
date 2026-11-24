@@ -70,3 +70,13 @@ describe('ReviewRoom in Squad', () => {
     expect(container.textContent).not.toMatch(/portfolio manager|credit officer|credit analyst/i);
   });
 });
+
+describe('the words after a meeting is created', () => {
+  it('say how many sheets were attached, and say none when none were', async () => {
+    const { meetingCreatedWords } = await import('../review/ReviewRoom');
+    expect(meetingCreatedWords(0)).toBe('Meeting created · no review sheet was waiting for this period, so none is attached · recorded');
+    expect(meetingCreatedWords(1)).toBe('Meeting created · 1 review sheet for the period attached · recorded');
+    expect(meetingCreatedWords(3)).toBe('Meeting created · 3 review sheets for the period attached · recorded');
+    expect(meetingCreatedWords(undefined)).toBe('Meeting created · recorded'); // an older server sends no count
+  });
+});
