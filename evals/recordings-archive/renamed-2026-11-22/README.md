@@ -7,8 +7,8 @@ under the codes they were recorded with, as the record of what the model answere
 Why they cannot replay: the renamed clients' documents print the new names, so every document hash, file name and
 record key changed. The figures did not change (see `docs/owner-signoff-rename-2026-11-23.md`).
 
-`--mode recorded` skips the eight with "no recording: renamed 22 Nov, re-record needs owner go-ahead" and replays the
-other twelve innovation clients. Re-recording them is a billable live run and needs the owner's go-ahead.
+The eight were re-recorded under their new codes on 23 November 2026 with the owner's go-ahead (`evals/recordings/`),
+so `--mode recorded` replays them again from those. Before that it skipped them by name.
 
 | Recorded as | Now | Recordings |
 |---|---|---|

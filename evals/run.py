@@ -34,7 +34,6 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from evals.book import BOOKS, DEFAULT_BOOK, REPO, Book, Borrower, load_book, oracle_for, unsigned_oracle_rows
-from synthetic.books.innovation.renames import SEED_CODE
 
 # The evaluation measures the automatic path: what the product does with a reading when no
 # person looks at it. A deployment defaults to "assisted", where a person confirms every reading.
@@ -44,9 +43,10 @@ RESULTS_DIR = REPO / "evals" / "results"
 RECORDINGS_DIR = REPO / "evals" / "recordings"
 MODES = ("standin", "recorded", "live", "record")
 BILLABLE = ("live", "record")
-# Clients renamed on 22 Nov: their documents print the new names, so no recording matches them. Their recordings are
-# archived under the old codes (evals/recordings-archive/renamed-2026-11-22); recorded mode skips them, out loud.
-NOT_RECORDED = frozenset(SEED_CODE)
+# Clients whose recordings no longer match their documents: recorded mode skips them, out loud. Empty since
+# 23 Nov, when the eight clients renamed on 22 Nov were re-recorded under their new codes (their old recordings are
+# archived in evals/recordings-archive/renamed-2026-11-22). A later rename or document change puts codes back here.
+NOT_RECORDED: frozenset[str] = frozenset()
 NO_RECORDING = "no recording: renamed 22 Nov, re-record needs owner go-ahead"
 SUITE = "monitoring-cycle"
 STANDIN_LABEL = ("STAND-IN: a perfect reader built from the book's ground truth answered in place of the model. "
