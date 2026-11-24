@@ -1,0 +1,152 @@
+{
+ "what": "What people's sign-ins (and Squad acting on them) wrote to schema squad2's ledger on the hosted v2 (credit-squad.vercel.app) during the owner's self-guided walk of 23 November 2026 (US Pacific; 24 November UTC), exported before the schema was dropped and reloaded for the batch 1 deploy. Synthetic data. Payloads are summarised; hashes are the ledger's own.",
+ "not_listed": "The ledger held 24,678 events. Events up to 24,472 are the seed, and the squad demo follows it; both are reproducible from the book. Not listed: 11 auth.signed_in and 7 auth.signed_out events, 4 cycle.stage_changed events that followed two of the decisions, and 166 fact.recorded events written by the system when the two packages were prepared.",
+ "ledger_events_total": 24678,
+ "events": [
+  {
+   "seq": 24480,
+   "ts": "2026-11-24T06:34:06+00:00",
+   "by": "Tomas Keller",
+   "action": "draft.sent",
+   "summary": "Calvere Health demo reminder draft recorded as sent (Calvere is Priya Raman's client: the ownership rule did not yet cover drafts)",
+   "hash": "b91e4aa7835b3a1eccc478d166c2bda274cd4a14b547c2315a3803108bb034e7"
+  },
+  {
+   "seq": 24482,
+   "ts": "2026-11-24T06:50:17+00:00",
+   "by": "Priya Raman",
+   "action": "work_item.decided",
+   "summary": "Cindrel Tech question answered ARR, remembered: 'The statement labels the line annual recurring revenue.'",
+   "hash": "5a47e4012187fcc63719edffa32c06182a6d42d3e45a2affe48ee9ce9e378721"
+  },
+  {
+   "seq": 24483,
+   "ts": "2026-11-24T06:50:17+00:00",
+   "by": "Priya Raman",
+   "action": "lesson.recorded",
+   "summary": "Lesson recorded from that answer",
+   "hash": "ce4a110c7113d17535918d2e87eaafa4758afe3000878452d0ca8a6a9d9d5bb3"
+  },
+  {
+   "seq": 24484,
+   "ts": "2026-11-24T06:52:05+00:00",
+   "by": "Priya Raman",
+   "action": "work_item.decided",
+   "summary": "Calvere Health overdue reporting: chaser recorded as sent, with a note that the draft gave one due date for both items",
+   "hash": "7088423e7a39ff889bf2477bc7b2769906a9e863e880db8a419944e8530629b0"
+  },
+  {
+   "seq": 24487,
+   "ts": "2026-11-24T06:53:26+00:00",
+   "by": "Priya Raman",
+   "action": "work_item.routed",
+   "summary": "Meridew Analytics Revenue to Plan breach routed to Helen Strand with her view",
+   "hash": "28dca373dfb98cd080de994614fa60a068c5473c1823ae4493d1d4fdee7e0472"
+  },
+  {
+   "seq": 24490,
+   "ts": "2026-11-24T06:57:38+00:00",
+   "by": "Helen Strand",
+   "action": "work_item.returned",
+   "summary": "Returned: gather the October bank statement and an October investor update",
+   "hash": "ba1a28cf629a0d5d93589555c61d3d881d805d8636f345680cee2e06aa119075"
+  },
+  {
+   "seq": 24491,
+   "ts": "2026-11-24T06:57:38+00:00",
+   "by": "Squad (system)",
+   "action": "work_item.evidence_attached",
+   "summary": "Attached the Bank statement for October 2026 that Helen Strand asked for",
+   "hash": "52775a5806875ffcb28233043562326062feefdc47ddb4be414ceedfbb89f097"
+  },
+  {
+   "seq": 24492,
+   "ts": "2026-11-24T06:57:38+00:00",
+   "by": "Squad (agent)",
+   "action": "draft.created",
+   "summary": "Request for the Investor update for October 2026 drafted to Meridew Analytics",
+   "hash": "7aece711ce06aefccb3e3ea73cc95a33fcf5bef2692d1b400d1120d6fc6035c2"
+  },
+  {
+   "seq": 24495,
+   "ts": "2026-11-24T06:59:39+00:00",
+   "by": "Priya Raman",
+   "action": "work_item.routed",
+   "summary": "Routed back to Helen Strand: bank statement attached, investor update outstanding",
+   "hash": "7616c96be84e52f3b4ef752008a18fda01d7e0593f89b009bc658c386ff653b6"
+  },
+  {
+   "seq": 24499,
+   "ts": "2026-11-24T07:00:37+00:00",
+   "by": "Priya Raman",
+   "action": "snapshot.frozen",
+   "summary": "Brightvane Energy snapshot frozen for a package",
+   "hash": "0db9a4b6a94ff7911b10144d2c3535ec2b711732e2a157ac5f2b6fb1c35a3363"
+  },
+  {
+   "seq": 24500,
+   "ts": "2026-11-24T07:00:37+00:00",
+   "by": "Priya Raman",
+   "action": "package.generated",
+   "summary": "Brightvane Energy credit review package, 30 Sep 2026, generated",
+   "hash": "a26de68c8f6c5a88920dbf3e9b1e55c6f53bfcfd75f29d3f749bd68f05990135"
+  },
+  {
+   "seq": 24503,
+   "ts": "2026-11-24T07:01:47+00:00",
+   "by": "Dana Whitfield",
+   "action": "review_meeting.created",
+   "summary": "Review meeting 'Quarterly portfolio review' created",
+   "hash": "7ef15dd2271d94d0e5bf99dfc0ed5e8fdcc1b3c1328a886eb421a9f0c42d965d"
+  },
+  {
+   "seq": 24504,
+   "ts": "2026-11-24T07:02:42+00:00",
+   "by": "Dana Whitfield",
+   "action": "action.raised",
+   "summary": "Action for Priya Raman on Meridew Analytics: chase the investor update, then send the case back",
+   "hash": "24a9349179b1095a2cde7fb218bf68a6ffb78f8e84ef7681729b9ee079e9d4fd"
+  },
+  {
+   "seq": 24509,
+   "ts": "2026-11-24T07:04:32+00:00",
+   "by": "Helen Strand",
+   "action": "work_item.decided",
+   "summary": "Meridew Analytics breach decided: reserve rights, with her reason",
+   "hash": "48c5c47afdb2dd75755360f9095068d94af0056e6802a39089a4685fd67db72b"
+  },
+  {
+   "seq": 24675,
+   "ts": "2026-11-24T08:01:00+00:00",
+   "by": "Tomas Keller",
+   "action": "snapshot.frozen",
+   "summary": "A second snapshot frozen for a package, about an hour after the walk",
+   "hash": "6995444a91135f6d4cd1759a726d6a0c52c83f21229087e165e37aacc6b7d623"
+  },
+  {
+   "seq": 24676,
+   "ts": "2026-11-24T08:01:00+00:00",
+   "by": "Tomas Keller",
+   "action": "package.generated",
+   "summary": "A second package generated under Tomas Keller's sign-in",
+   "hash": "e56c74d9ccc8e646b5a296b7aee3d97976a8717e0b96c79d8d25417a594290a1"
+  },
+  {
+   "seq": 24677,
+   "ts": "2026-11-24T08:08:57+00:00",
+   "by": "Tomas Keller",
+   "action": "snapshot.frozen",
+   "summary": "A third snapshot frozen for a package, minutes before the reload",
+   "hash": "4ebc998fe1522eeb4eba7ca67ef52ec04caf3782ec231daf67df45da0e8f9961"
+  },
+  {
+   "seq": 24678,
+   "ts": "2026-11-24T08:08:57+00:00",
+   "by": "Tomas Keller",
+   "action": "package.generated",
+   "summary": "A third package generated under Tomas Keller's sign-in",
+   "hash": "854f33df7e1a1af9b893e9e92609de99d25b64d946f87b847743c65f82a2c5a5"
+  }
+ ],
+ "note": "Tomas Keller's sign-in was still in use at 08:01 and 08:08 UTC, after the walk the owner reported (06:46 to 07:06 UTC). Who was using it is not known to the session that made this export; the owner had asked for the reload."
+}

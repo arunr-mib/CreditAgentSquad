@@ -215,6 +215,67 @@ describe('the source of a covenant headroom', () => {
   });
 });
 
+describe('a calculation that leaves a stored line out', () => {
+  const CASH = summary({ id: 'f-cash-1', key: 'cov.min_unrestricted_cash.value', label: 'Minimum Unrestricted Cash', value: '4600000', unit: 'usd', calc_run_id: 'calc-cash' });
+  const OPERATING = summary({ id: 'f-op-1', key: 'bs.cash_unrestricted', label: 'Cash in operating accounts', value: '4600000', unit: 'usd', kind: 'extracted', calc_run_id: null });
+  const PLEDGED = summary({ id: 'f-pl-1', key: 'bs.cash_restricted', label: 'Cash pledged or restricted', value: '1500000', unit: 'usd', kind: 'extracted', calc_run_id: null });
+  const calculation = (left_out: unknown[]) => ({
+    id: 'calc-cash', formula_key: 'covenant.min_unrestricted_cash', formula_version: '1', engine_version: '1', period_end: '2026-10-31',
+    error: null, created_at: '2026-11-17T08:00:00', created_by_type: 'system', created_by_id: 'seed', terms_version: null, expression: null,
+    inputs: [{ key: 'bs.cash_unrestricted', name: 'Cash in operating accounts', sign: 1, value: '4600000', fact_id: OPERATING.id, period_end: '2026-10-31', months: 0 }],
+    steps: [], addbacks: [], outputs: {}, facts: { [OPERATING.id]: OPERATING, [PLEDGED.id]: PLEDGED }, left_out,
+  });
+  const LEFT = [{ key: 'bs.cash_restricted', fact_id: PLEDGED.id, part_of: 'Total cash', beside: 'bs.cash_unrestricted' }];
+
+  it('names the line, where it sits and that it was not counted, and opens its source', async () => {
+    mockApi({
+      [`/api/v1/ui/facts/${CASH.id}/source`]: base(CASH, { calculation: calculation(LEFT) as never }),
+      [`/api/v1/ui/facts/${PLEDGED.id}/source`]: base(PLEDGED),
+      '/api/v1/ui/facts?': { [OPERATING.id]: OPERATING, [PLEDGED.id]: PLEDGED },
+    });
+    const drawer = await openSource(CASH.id);
+    const section = await within(drawer).findByRole('region', { name: 'Not counted in this calculation' });
+    expect(section).toHaveTextContent('Cash pledged or restricted');
+    expect(section).toHaveTextContent('On file in Total cash, beside Cash in operating accounts. This method does not use it.');
+    await userEvent.click(within(section).getByRole('button', { name: /\$1,500,000/ }));
+    expect(await within(screen.getByRole('dialog')).findByText('Cash pledged or restricted', { selector: 'h2' })).toBeInTheDocument();
+  });
+
+  it('shows no such section when nothing was left out, or when an older API says nothing', async () => {
+    mockApi({ [`/api/v1/ui/facts/${CASH.id}/source`]: base(CASH, { calculation: calculation([]) as never }), '/api/v1/ui/facts?': { [OPERATING.id]: OPERATING } });
+    const drawer = await openSource(CASH.id);
+    await within(drawer).findByRole('region', { name: 'Calculation' });
+    expect(within(drawer).queryByRole('region', { name: 'Not counted in this calculation' })).not.toBeInTheDocument();
+  });
+});
+
+describe('a spreadsheet that was received', () => {
+  function SheetOpener() {
+    const source = useSource();
+    return <button type="button" onClick={() => source.open({ type: 'document', documentId: 'd-sheet', page: 1, title: 'mrr_export' })}>open</button>;
+  }
+
+  it('shows the text stored from the sheet and offers the file, and never tries to draw it as a page', async () => {
+    mockApi({
+      '/api/v1/documents/d-sheet/pages/1': { page_number: 1, width: 0, height: 0, has_text: true, text: 'month\tmrr_usd\tcustomers\n2025-01\t803771\t128', citations: [] },
+      '/api/v1/documents/d-sheet': { id: 'd-sheet', borrower_id: 'b-1', title: 'mrr_export', file_name: 'mrr_export.xlsx', page_count: 1, doc_type: null, doc_type_source: 'unclassified', period_end: null, received_date: '2026-11-05', effective_date: null, source: 'upload', status: 'indexed', meta: { format: 'xlsx', sheets: ['export'] }, facts_by_page: {} },
+    });
+    const root = createRootRoute();
+    const page = createRoute({ getParentRoute: () => root, path: '/', component: () => (<SourceProvider><SheetOpener /></SourceProvider>) });
+    const router = createRouter({ routeTree: root.addChildren([page]), history: createMemoryHistory({ initialEntries: ['/'] }) });
+    render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><RouterProvider router={router as never} /></QueryClientProvider>);
+    await userEvent.click(await screen.findByRole('button', { name: 'open' }));
+    const drawer = await screen.findByRole('dialog');
+    const section = await within(drawer).findByRole('region', { name: 'Sheet as received' });
+    expect(section).toHaveTextContent('2025-01');
+    expect(section).toHaveTextContent('803771');
+    expect(section).toHaveTextContent('A spreadsheet is shown as the text stored when it was received, not as a picture of a page.');
+    expect(within(drawer).getByText(/Sheet 1 of 1 · export/)).toBeInTheDocument();
+    expect(within(section).getByRole('link', { name: 'Download mrr_export.xlsx' })).toHaveAttribute('href', '/api/v1/documents/d-sheet/file');
+    expect(within(drawer).queryByTestId('page')).not.toBeInTheDocument();
+  });
+});
+
 describe('reading a document page by page', () => {
   async function openDocument(page: number) {
     mockApi({ '/api/v1/documents/d-1': { id: 'd-1', title: 'Credit agreement', page_count: 3, doc_type: 'credit_agreement' } });
@@ -236,7 +297,9 @@ describe('reading a document page by page', () => {
     const real = globalThis.fetch;
     vi.stubGlobal('fetch', (url: string, init?: RequestInit) => (String(url).startsWith('/api/v1/documents/') ? new Promise(() => {}) : real(url, init)));
     const drawer = await drawerPromise;
-    expect(within(drawer).getByRole('button', { name: 'Next page' })).toBeDisabled();
+    // nothing is drawn until the file is known to be a PDF (a spreadsheet is shown as text), so no page is offered
+    expect(within(drawer).getByRole('status')).toHaveTextContent('Loading the document');
+    expect(within(drawer).queryByRole('button', { name: 'Next page' })).not.toBeInTheDocument();
   });
 
   it('says which page of how many, and turns pages both ways, stopping at the ends', async () => {

@@ -96,6 +96,14 @@ export function useUploadDocument(borrowerId: string) {
 }
 export const useDocument = (id?: string | null) =>
   useQuery({ queryKey: ['document', id], queryFn: () => get<DocumentDetail>(`/documents/${id}`), enabled: enabled(id), staleTime: 10 * 60_000 });
+/** The text stored from one page (or one sheet of a spreadsheet) when the file was received. */
+export const useDocumentPageText = (documentId?: string | null, page?: number | null) =>
+  useQuery({
+    queryKey: ['document', documentId, 'page-text', page],
+    queryFn: () => get<{ page_number: number; has_text: boolean; text: string }>(`/documents/${documentId}/pages/${page}`),
+    enabled: enabled(documentId) && Boolean(page),
+    staleTime: 10 * 60_000,
+  });
 export const useQuoteLocation = (documentId?: string | null, page?: number | null, quote?: string | null) =>
   useQuery({
     queryKey: ['document', documentId, 'locate', page, quote],

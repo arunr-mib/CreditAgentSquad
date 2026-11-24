@@ -202,6 +202,16 @@ def test_stand_in_items_are_marked_as_seeded_and_never_block(seeded):
         raised = db.execute(select(LedgerEvent).where(LedgerEvent.action == "work_item.raised",
                                                       LedgerEvent.entity_id == str(item.id))).scalar_one()
         assert (raised.actor_type, raised.actor_id) == ("system", "seed")
+    # why the held file is held is said on the case, in words: the answer key's own summary names years, and a
+    # stand-in's text is shown unsourced
+    from app.squad.words import figure_free
+
+    held = next(i for i in items if i.item_type == "intake.unclassified")
+    assert held.evidence["note"] == ("The file names no company, and its rows are dated a year earlier than this package. "
+                                    "Open it to see the rows. Stand-in for the item the Intake Agent raises on a live run.")
+    assert figure_free(held.evidence["note"])
+    other = next(i for i in items if i.item_type == "spread.value_unverified")
+    assert other.evidence["note"] == "Stand-in for the item the Spreading Agent raises on a live run."
 
 
 def test_funding_evidence_belongs_to_the_borrower_and_each_event_is_recorded_once(seeded):
@@ -245,3 +255,27 @@ def test_no_ledger_summary_work_item_title_or_question_carries_an_unsourced_figu
             if check_narrative(text or "", {}):
                 bad.append((w.item_type, text))
     assert bad == []
+
+
+def test_a_calculation_names_the_cash_it_leaves_out_so_a_certificate_gap_can_be_seen(seeded):
+    """Datamarrow's certificate counts 1.5 million of pledged cash as unrestricted. The covenant uses cash in
+    operating accounts only, so the calculation's source must show the pledged line beside it, as a stored fact."""
+    from app.api.routes_ui import _Labels, calculation_out
+    from app.domain.facts import CalcRun
+
+    db, _, _ = seeded
+    datamarrow = borrower(db, "datamarrow")
+    test = db.execute(select(CovenantTest).where(
+        CovenantTest.borrower_id == datamarrow.id, CovenantTest.covenant_id == "min_unrestricted_cash",
+        CovenantTest.period_end == _day("2026-10-31"))).scalar_one()
+    out = calculation_out(db, db.get(CalcRun, test.calc_run_id), _Labels(db))
+    assert [i["key"] for i in out["inputs"]] == ["bs.cash_unrestricted"]
+    [left] = out["left_out"]
+    assert (left["key"], left["part_of"]) == ("bs.cash_restricted", "Total cash")
+    fact = out["facts"][left["fact_id"]]
+    assert D(fact["value"]) == D("1500000") and fact["label"] == "Cash pledged or restricted"
+    # a calculation that touches no part of a total leaves nothing out
+    plan = db.execute(select(CovenantTest).where(
+        CovenantTest.borrower_id == datamarrow.id, CovenantTest.covenant_id == "revenue_vs_plan",
+        CovenantTest.period_end == _day("2026-10-31"))).scalar_one()
+    assert calculation_out(db, db.get(CalcRun, plan.calc_run_id), _Labels(db))["left_out"] == []

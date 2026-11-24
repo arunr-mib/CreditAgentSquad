@@ -4,8 +4,9 @@ import { Dialog as RadixDialog } from 'radix-ui';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { errorMessage } from '@/api/client';
 import { mul } from '@/api/decimal';
-import { useCalculation, useDocument, useFactsById, useFactSource, useQuoteLocation } from '@/api/hooks';
-import type { CovenantOperator, FactSource, FactSummary, HeadroomSource, SourcePage, TermSource } from '@/api/schema';
+import { API } from '@/api/client';
+import { useCalculation, useDocument, useDocumentPageText, useFactsById, useFactSource, useQuoteLocation } from '@/api/hooks';
+import type { Calculation, CovenantOperator, FactSource, FactSummary, HeadroomSource, SourcePage, TermSource } from '@/api/schema';
 import type { ProvenanceKind, Unit } from '@/api/types';
 import { useAuth } from '@/auth/context';
 import { Button, formatDate, formatFigure, provenance, ProvenanceGlyph, Quote, Skeleton, StatusDot, type StatusTone } from '@/design';
@@ -266,6 +267,7 @@ function FactView({ id, onNavigate }: { id: string; onNavigate: () => void }) {
           </dl>
         </Section>
       ) : null}
+      {calculation && !term && !headroom ? <LeftOut calc={calculation} /> : null}
 
       {clause && !term ? (
         <Section title="Clause that sets the threshold" note={clause.section ? `Section ${clause.section}` : undefined}>
@@ -540,6 +542,7 @@ function CalculationView({ id, title }: { id: string; title?: string }) {
           </p>
         </Section>
       )}
+      <LeftOut calc={data} />
       <Section title="Record">
         <dl>
           <Row label="Method">
@@ -565,6 +568,31 @@ function CalculationView({ id, title }: { id: string; title?: string }) {
   );
 }
 
+/** Lines on file beside an input that the method did not use. Each is a stored fact and opens its own source; the
+ * gap to a figure someone else reported is left for the reader to see, never worked out here. */
+function LeftOut({ calc }: { calc: Calculation }) {
+  const rows = (calc.left_out ?? []).flatMap((item) => {
+    const fact = calc.facts[item.fact_id];
+    return fact ? [{ item, fact, beside: Object.values(calc.facts).find((f) => f.key === item.beside)?.label ?? 'an input' }] : [];
+  });
+  if (rows.length === 0) return null;
+  return (
+    <Section title="Not counted in this calculation">
+      <ul className="border-t border-ink">
+        {rows.map(({ item, fact, beside }) => (
+          <li key={item.key} className="border-b border-hairline py-1.5 text-body">
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="text-ink-700">{fact.label}</span>
+              <InlineFact id={fact.id} text={formatFigure(toFact(fact).value, fact.unit).text} kind={fact.kind} label={fact.label} />
+            </div>
+            <p className="text-caption text-ink-500">On file in {item.part_of}, beside {beside}. This method does not use it.</p>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
 function InlineFact({ id, text, kind, label }: { id: string; text: string; kind: ProvenanceKind; label?: string }) {
   const source = useSource();
   return (
@@ -580,10 +608,58 @@ function InlineFact({ id, text, kind, label }: { id: string; text: string; kind:
   );
 }
 
+const SHEET_FORMATS = ['xlsx', 'csv'];
+
+/** A spreadsheet has no pages to draw: it is shown as the text stored from each sheet when it was received, with
+ * the file itself to download. */
+function SheetView({ documentId, title, fileName, sheets, pageCount, startAt }: { documentId: string; title: string; fileName: string; sheets: string[]; pageCount: number; startAt: number }) {
+  const [sheet, setSheet] = useState(Math.min(Math.max(startAt, 1), Math.max(pageCount, 1)));
+  const text = useDocumentPageText(documentId, sheet);
+  const name = sheets[sheet - 1];
+  return (
+    <>
+      <Heading kind="extracted" eyebrow="Spreadsheet" title={title} context={`Sheet ${sheet} of ${pageCount}${name ? ` · ${name}` : ''}`} />
+      <Section title="Sheet as received">
+        <p className="mb-2 text-caption text-ink-500">A spreadsheet is shown as the text stored when it was received, not as a picture of a page.</p>
+        {text.isPending ? (
+          <p role="status" className="text-caption text-ink-500">Loading the sheet</p>
+        ) : text.data?.text ? (
+          // the window scrolls, so it takes focus for keyboard scrolling (as a drawn page does)
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          <div role="group" tabIndex={0} aria-label={`Sheet ${sheet} of ${title}`} className="max-h-[360px] overflow-auto rounded-sm border border-hairline-strong p-3">
+            <pre className="font-mono text-caption text-ink">{text.data.text}</pre>
+          </div>
+        ) : (
+          <p role="alert" className="text-body text-ink-700">No text was stored from this sheet. The file itself can still be downloaded.</p>
+        )}
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <Button size="sm" disabled={sheet <= 1} onClick={() => setSheet(sheet - 1)}>
+            Previous sheet
+          </Button>
+          <a className="link text-body" href={`${API}/documents/${documentId}/file`} download>
+            Download {fileName}
+          </a>
+          <Button size="sm" disabled={sheet >= pageCount} onClick={() => setSheet(sheet + 1)}>
+            Next sheet
+          </Button>
+        </div>
+      </Section>
+    </>
+  );
+}
+
 function DocumentView({ source, onNavigate }: { source: Extract<SourceRef, { type: 'document' }>; onNavigate: () => void }) {
-  const [turned, setTurned] = useState<number | null>(null);
   const doc = useDocument(source.documentId);
-  const pageCount = doc.data?.page_count ?? null;
+  // which kind of file it is decides what is shown, so nothing is drawn until that is known
+  if (doc.isPending) return <LoadingBody label="Loading the document" />;
+  if (doc.data && SHEET_FORMATS.includes(doc.data.meta?.format ?? '')) {
+    return <SheetView documentId={source.documentId} title={source.title ?? doc.data.title} fileName={doc.data.file_name} sheets={doc.data.meta.sheets ?? []} pageCount={doc.data.page_count} startAt={source.page} />;
+  }
+  return <PagedDocumentView source={source} onNavigate={onNavigate} pageCount={doc.data?.page_count ?? null} />;
+}
+
+function PagedDocumentView({ source, onNavigate, pageCount }: { source: Extract<SourceRef, { type: 'document' }>; onNavigate: () => void; pageCount: number | null }) {
+  const [turned, setTurned] = useState<number | null>(null);
   const page = turned ?? source.page;
   const onCited = page === source.page; // the quote and its outline belong to the cited page only
   const needsLocation = onCited && !source.boxes && Boolean(source.quote);

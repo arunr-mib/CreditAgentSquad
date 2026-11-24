@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
-import type * as PdfJs from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+// The build for older browsers. The default build calls methods only the newest browsers have, and where one is
+// missing every page fails to draw; this one carries its own.
+import type * as PdfJs from 'pdfjs-dist/legacy/build/pdf.mjs';
+import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 import { API } from '@/api/client';
 import type { Box } from '@/api/schema';
 import { cx } from '@/lib/cx';
@@ -13,10 +15,13 @@ const documents = new Map<string, Promise<PdfDocument>>();
 
 /** The PDF renderer is loaded on first use, so screens without a page never pay for it. */
 function loadPdf(documentId: string): Promise<PdfDocument> {
-  pdfModule ??= import('pdfjs-dist').then((module) => {
-    module.GlobalWorkerOptions.workerSrc = workerUrl;
-    return module;
-  });
+  if (!pdfModule) {
+    pdfModule = import('pdfjs-dist/legacy/build/pdf.mjs').then((module) => {
+      module.GlobalWorkerOptions.workerSrc = workerUrl;
+      return module;
+    });
+    pdfModule.catch(() => (pdfModule = null)); // a renderer that failed to load is asked for again on the next try
+  }
   let document = documents.get(documentId);
   if (!document) {
     document = pdfModule.then((module) => module.getDocument({ url: `${API}/documents/${documentId}/file`, withCredentials: true }).promise);
@@ -77,7 +82,8 @@ export function PdfPage({ documentId, page, width, title, marks = [], maxHeight,
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<{ key: string; status: 'ready' | 'error'; pointWidth: number; pointHeight: number } | null>(null);
-  const key = `${documentId}:${page}:${width}`;
+  const [attempt, setAttempt] = useState(0);
+  const key = `${documentId}:${page}:${width}:${attempt}`;
   const current = state?.key === key ? state : null;
 
   useEffect(() => {
@@ -109,7 +115,7 @@ export function PdfPage({ documentId, page, width, title, marks = [], maxHeight,
       cancelled = true;
       task?.cancel();
     };
-  }, [documentId, page, width, key]);
+  }, [documentId, page, width, key]); // `key` carries the attempt: Try again draws afresh
 
   const scale = current?.status === 'ready' ? width / current.pointWidth : 0;
   const height = current?.status === 'ready' ? current.pointHeight * scale : Math.round(width * 1.294);
@@ -173,9 +179,14 @@ export function PdfPage({ documentId, page, width, title, marks = [], maxHeight,
             )
           : null}
         {current?.status === 'error' ? (
-          <p role="alert" className="absolute inset-x-0 top-10 px-6 text-center text-body text-ink-700">
-            This page could not be drawn. The quoted text beside it is still what the fact records.
-          </p>
+          <div className="absolute inset-x-0 top-10 px-6 text-center">
+            <p role="alert" className="text-body text-ink-700">
+              This page could not be drawn. The quoted text beside it is still what the fact records.
+            </p>
+            <button type="button" className="link mt-2 text-body" onClick={() => setAttempt((n) => n + 1)}>
+              Try again
+            </button>
+          </div>
         ) : null}
         {!current ? (
           <p role="status" className="absolute inset-x-0 top-10 text-center text-caption text-ink-500">

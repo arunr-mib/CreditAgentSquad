@@ -87,6 +87,22 @@ SEEDED_WHERE = {"intake.unclassified": ("intake", "upload_document")}
 _SEEDED_TITLE_WORDS = {"intake.unclassified": "a file names no company or month: which client and month?"}
 
 
+# Why a stand-in is there, in words, where the answer key's summary cannot be shown (it names years). Keyed by the
+# reason the truth's scenario records for the held file, so a different reason gets no borrowed sentence.
+_HELD_FILE_WORDS = {
+    "no company name; rows are 2025, not 2026":
+        "The file names no company, and its rows are dated a year earlier than this package. Open it to see the rows.",
+}
+_SEEDED_AGENT = {"intake": "Intake Agent"}
+
+
+def _seeded_note(truth: dict[str, Any], expected: dict, stage: str) -> str:
+    stand_in = f"Stand-in for the item the {_SEEDED_AGENT.get(stage, 'Spreading Agent')} raises on a live run."
+    held = ((truth.get("scenario") or {}).get("details") or {}).get("held_file") or {}
+    why = _HELD_FILE_WORDS.get(str(held.get("reason"))) if expected["type"] == "intake.unclassified" else None
+    return f"{why} {stand_in}" if why else stand_in
+
+
 def _seeded_title(expected: dict) -> str:
     from app.squad.words import figure_free
 
@@ -383,7 +399,7 @@ def seed_borrower(db: Session, truth: dict[str, Any], *, docs_root: Path, curren
                         item_type=expected["type"], severity="high" if blocks else "medium",
                         title=f"{borrower.name}: {_seeded_title(expected)}", question=question,
                         allowed_decisions=decisions, required_permission=permission, blocks_stage=blocks,
-                        evidence={"seeded": True, "note": "Stand-in for the item the Spreading Agent raises on a live run.",
+                        evidence={"seeded": True, "note": _seeded_note(truth, expected, stage),
                                   "subject": expected.get("subject")},
                         actor=SEED_ACTOR, dedupe_key=f"{expected['type']}:{cycle.id}")
         for facility in ({} if stops_here else {f.id: f for f in terms_facilities}).values():

@@ -349,6 +349,48 @@ def expression_text(node: Any, top: bool = True) -> str:
     return f"{_pretty(str(op))}({', '.join(args)})" if args else _pretty(str(op))
 
 
+def _left_out(db: Session, calc: CalcRun, inputs: list[dict[str, Any]], labels: _Labels) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Stored lines that sit beside an input in a statement total and that this calculation did not use: a covenant
+    on cash in operating accounts leaves the pledged cash out of "Total cash". Shown so that a gap to a figure
+    someone else reported can be seen; nothing here is calculated. A line with no stored figure, or a stored zero,
+    is not listed."""
+    from app.calc.template import TEMPLATES
+    from app.domain.facts_service import current_fact
+
+    # only totals that split one balance by a condition; "Gross profit" or "Total current assets" beside one of
+    # their lines would list every other line of the statement
+    split_totals = ("bs.vc_total_cash",)
+
+    used = {str(i.get("key")): i for i in inputs if i.get("key")}
+    found: list[dict[str, Any]] = []
+    facts: dict[str, Any] = {}
+    seen: set[str] = set()
+    for lines in TEMPLATES.values():
+        for total in lines:
+            parts = [key for _, key in total.formula]
+            if total.key not in split_totals or total.key in used or not any(k in used for k in parts):
+                continue
+            for key in parts:
+                if key in used or key in seen:
+                    continue
+                seen.add(key)
+                beside = next(used[k] for k in parts if k in used)
+                # the stored input's own period and months: the calculation's record carries the fiscal month count
+                # even for a balance, which is stored at zero months
+                try:
+                    used_fact = db.get(Fact, uuid.UUID(str(beside.get("fact_id"))))
+                except (TypeError, ValueError):
+                    used_fact = None
+                if used_fact is None:
+                    continue
+                fact = current_fact(db, calc.borrower_id, key, used_fact.period_end, used_fact.months)
+                if fact is None or fact.value == 0:
+                    continue
+                facts[str(fact.id)] = _summary(fact, labels)
+                found.append({"key": key, "fact_id": str(fact.id), "part_of": total.label, "beside": str(beside.get("key"))})
+    return found, facts
+
+
 def calculation_out(db: Session, calc: CalcRun, labels: _Labels) -> dict[str, Any]:
     """A calculation with its inputs joined to their facts and its steps named in plain words."""
     inputs = [i for i in (calc.inputs or []) if isinstance(i, dict)]
@@ -380,6 +422,7 @@ def calculation_out(db: Session, calc: CalcRun, labels: _Labels) -> dict[str, An
                       "period_end": step.get("period_end"), "inputs": components,
                       "unit": "ratio" if op == "div" else "usd", "final": index == len(raw_steps) - 1})
     version = db.get(TermsVersion, calc.terms_version_id) if calc.terms_version_id else None
+    left_out, left_facts = _left_out(db, calc, inputs, labels)
     return {
         "id": str(calc.id), "formula_key": calc.formula_key, "formula_version": calc.formula_version,
         "engine_version": calc.engine_version, "period_end": calc.period_end.isoformat(), "error": calc.error,
@@ -388,7 +431,8 @@ def calculation_out(db: Session, calc: CalcRun, labels: _Labels) -> dict[str, An
                           "effective_from": version.effective_from.isoformat()} if version else None,
         "expression": expression_text(trace["expression"]) if trace.get("expression") else None,
         "inputs": shaped_inputs, "steps": steps, "addbacks": plain(trace.get("addbacks") or []),
-        "outputs": plain(calc.outputs if isinstance(calc.outputs, dict) else {}), "facts": facts,
+        "outputs": plain(calc.outputs if isinstance(calc.outputs, dict) else {}), "facts": {**facts, **left_facts},
+        "left_out": left_out,
     }
 
 
