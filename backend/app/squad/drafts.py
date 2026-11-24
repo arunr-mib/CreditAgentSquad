@@ -83,10 +83,31 @@ def create_draft(db: Session, *, borrower_id: uuid.UUID, to: str, subject: str, 
     return get_draft(db, draft_id)
 
 
+def write_refusal(db: Session, borrower_id: Any, user: User | None) -> Exception | None:
+    """May this person write to this client (start, edit or send a draft)? None means yes. One answer for the
+    routes, the functions below and the thread's `may_write`: the permission to write client email, then the
+    engine's ownership rule (an analyst acts only on her own clients; owner answer 9)."""
+    from app.core.roles import Permission, can
+    from app.domain.workflow import client_refusal
+
+    if user is None:
+        return PermissionError("Sign in to write to a client.")
+    if not can(user.role, Permission.EDIT_COMMENTARY):
+        return PermissionError("Your role does not write to clients.")
+    return client_refusal(db, uuid.UUID(str(borrower_id)), user_id=user.id, user_role=user.role)
+
+
+def _may_write(db: Session, borrower_id: Any, user: User) -> None:
+    refused = write_refusal(db, borrower_id, user)
+    if refused is not None:
+        raise refused
+
+
 def edit_draft(db: Session, draft_id: uuid.UUID, user: User, *, subject: str | None = None,
                body: str | None = None) -> dict[str, Any]:
     ledger.lock(db)  # before the status check, so a concurrent send cannot slip in between
     current = get_draft(db, draft_id)
+    _may_write(db, current["borrower_id"], user)
     if current["status"] == "withdrawn":
         raise ValueError("this request is no longer needed and cannot be changed")
     if current["status"] == "sent":
@@ -107,6 +128,7 @@ def edit_draft(db: Session, draft_id: uuid.UUID, user: User, *, subject: str | N
 def send_draft(db: Session, draft_id: uuid.UUID, user: User) -> dict[str, Any]:
     ledger.lock(db)
     current = get_draft(db, draft_id)
+    _may_write(db, current["borrower_id"], user)
     if current["status"] == "withdrawn":
         raise ValueError("this request is no longer needed, so it cannot be sent")
     if current["status"] == "sent":

@@ -49,7 +49,7 @@ export function Trail({ workItemId }: { workItemId: string }) {
           </p>
         ) : data ? (
           data.steps.length === 0 && !data.calculation && data.checks.length === 0 ? (
-            <p className="sq-muted">No agent work is recorded behind this case.</p>
+            <p className="sq-muted">Nothing to show: no agent ran on this case. It was raised by code, or loaded with the book, so there are no agent steps or checks behind it.</p>
           ) : (
             <>
               <ol className="sq-steps">

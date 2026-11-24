@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 
 const NAV_KEY = 'squad.nav.collapsed';
 const WIDE = 1280;
+const ROOMY = 960; // names beside the icons from here up, unless the person folded them away
 
 function storedCollapsed(): boolean {
   try {
-    return localStorage.getItem(NAV_KEY) !== 'false'; // collapsed unless the person opened it
+    const kept = localStorage.getItem(NAV_KEY); // the person's own choice wins; with none, open wherever there is room
+    return kept === null ? window.innerWidth < ROOMY : kept === 'true';
   } catch {
-    return true;
+    return window.innerWidth < ROOMY;
   }
 }
 

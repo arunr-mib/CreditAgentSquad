@@ -120,6 +120,9 @@ function RouteForm({ c }: { c: CaseView }) {
   }
   return (
     <form className="sq-caseform" aria-label="Send for a decision" onSubmit={(e) => { e.preventDefault(); void submit(); }}>
+      {c.decisions.some((d) => d.permitted) ? null : (
+        <p className="sq-muted">This decision is not yours to record. Send the case, with your view, to the person who decides it.</p>
+      )}
       {c.route_to.length > 1 ? (
         <label className="sq-field">
           Send to
@@ -132,8 +135,30 @@ function RouteForm({ c }: { c: CaseView }) {
       <NeedsList needs={c.needs} label="Still asked of the client" only={(n) => n.state !== 'attached'} />
       <Field label="Your view (required): what you found and what you recommend" value={view} onChange={setView} />
       <Refused error={error} />
-      <button type="submit" className="sq-btn" disabled={!view.trim() || !person || route.isPending}>{person ? `Send to ${person.name}` : 'Choose who decides'}</button>
+      <button type="submit" className="sq-btn sq-btn-strong" disabled={!view.trim() || !person || route.isPending}>{person ? `Send to ${person.name}` : 'Choose who decides'}</button>
     </form>
+  );
+}
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+/** A month and a year as two plain lists (the browser's own month control would not take clicks everywhere). The value is
+ * "YYYY-MM" once both are chosen, and "YYYY-" or "-MM" until then, which the form does not accept. */
+function MonthPick({ index, value, onChange }: { index: number; value: string; onChange: (value: string) => void }) {
+  const [year = '', month = ''] = value.split('-');
+  const thisYear = new Date().getUTCFullYear();
+  const years = [thisYear + 1, thisYear, thisYear - 1, thisYear - 2, thisYear - 3].map(String);
+  return (
+    <>
+      <select className="sq-input" aria-label={`Month ${index}`} value={month} onChange={(e) => onChange(`${year}-${e.target.value}`)}>
+        <option value="" disabled>Month</option>
+        {MONTHS.map((name, m) => <option key={name} value={String(m + 1).padStart(2, '0')}>{name}</option>)}
+      </select>
+      <select className="sq-input" aria-label={`Year ${index}`} value={year} onChange={(e) => onChange(`${e.target.value}-${month}`)}>
+        <option value="" disabled>Year</option>
+        {years.map((y) => <option key={y} value={y}>{y}</option>)}
+      </select>
+    </>
   );
 }
 
@@ -170,14 +195,15 @@ function ReturnForm({ c }: { c: CaseView }) {
               <option value="" disabled>Document type</option>
               {choices.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
             </select>
-            <input className="sq-input" type="month" aria-label={`Month ${i + 1}`} value={r.month} onChange={(e) => change(i, { month: e.target.value })} />
+            <MonthPick index={i + 1} value={r.month} onChange={(month) => change(i, { month })} />
             <button type="button" className="sq-btn" aria-label={`Remove need ${i + 1}`} onClick={() => setRows((all) => all.filter((_, j) => j !== i))}>Remove</button>
           </div>
         ))}
         <button type="button" className="sq-btn" disabled={rows.length >= MAX_NEEDS} onClick={() => setRows((all) => [...all, { doc_type: '', month: '' }])}>Add something that is needed</button>
       </fieldset>
       <Refused error={error} />
-      <button type="submit" className="sq-btn" disabled={!reason.trim() || !complete || ret.isPending}>Return to {who}</button>
+      <button type="submit" className="sq-btn sq-btn-strong" disabled={!reason.trim() || !complete || ret.isPending}>Return to {who}</button>
+      {!reason.trim() ? <p className="sq-faint">Write what is missing to return the case.</p> : !complete ? <p className="sq-faint">Choose a document type, a month and a year for each thing needed, or remove it.</p> : null}
     </form>
   );
 }
@@ -237,7 +263,7 @@ export function CasePanel({ workItemId, onOpenCase }: { workItemId: string; onOp
   const q = useCase(workItemId);
   const detail = useWorkItem(workItemId);
   const [answer, setAnswer] = useState<CopilotReply | null>(null);
-  if (q.isPending) return <p role="status" className="sq-muted">Opening the case.</p>;
+  if (q.isPending) return <p role="status" className="sq-muted">Loading the case.</p>;
   if (q.error || !q.data)
     return (
       <div role="alert">

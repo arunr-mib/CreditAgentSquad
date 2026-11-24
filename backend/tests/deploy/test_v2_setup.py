@@ -118,7 +118,7 @@ class Api(BaseHTTPRequestHandler):
             "/api/v1/threads/c1": {"messages": [{"type": "ask", "status": "open"}]},
             "/api/v1/threads/c2": {"messages": [{"type": "draft", "status": "sent" if Api.sent else "draft",
                                                  "sent_at": "2026-11-23T10:00:00Z" if Api.sent else None}]},
-            "/api/v1/agents/status": {"model_connected": False, "reason": "No model key is set for this deployment."},
+            "/api/v1/agents/status": {"model_connected": False, "reason": "Agents are off on this site: no model is connected. Squad cannot answer questions or run a stage here."},
             "/api/v1/ledger/verify": {"ok": True, "append_only_for_this_role": True},
         }
         self._send(200, routes[self.path]) if self.path in routes else self._send(404, {"detail": "Not found."})

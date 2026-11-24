@@ -1,14 +1,17 @@
 // frontend/src/squad/thread/Time.tsx
-const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+const sameDay = (a: Date, b: Date) => a.getUTCFullYear() === b.getUTCFullYear() && a.getUTCMonth() === b.getUTCMonth() && a.getUTCDate() === b.getUTCDate();
+const two = (n: number) => String(n).padStart(2, '0');
 
-/** The time for today; the date and the time for any other day ("18 Nov, 2:02 PM"), with the year when it is not this year. */
+/** When something was recorded, in UTC and saying so, as the client file and the ledger show it: one convention for
+ * everyone, wherever they sit. The time for today ("14:02 UTC"); the date and the time for any other day
+ * ("18 Nov, 14:02 UTC"), with the year when it is not this year. */
 export function Time({ ts }: { ts: string }) {
   const d = new Date(ts);
   if (Number.isNaN(d.getTime())) return null;
   const now = new Date();
-  const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const time = `${two(d.getUTCHours())}:${two(d.getUTCMinutes())} UTC`;
   const text = sameDay(d, now)
     ? time
-    : `${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', ...(d.getFullYear() === now.getFullYear() ? {} : { year: 'numeric' }) })}, ${time}`;
-  return <time className="sq-faint sq-time" dateTime={ts} title={d.toLocaleString()}>{text}</time>;
+    : `${d.toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'short', ...(d.getUTCFullYear() === now.getUTCFullYear() ? {} : { year: 'numeric' }) })}, ${time}`;
+  return <time className="sq-faint sq-time" dateTime={ts} title={`${d.toISOString().slice(0, 16).replace('T', ' ')} UTC`}>{text}</time>;
 }

@@ -133,7 +133,16 @@ def test_missing_reporting_raises_one_item_with_a_draft_chaser(db, world):
     calendar.refresh_statuses(db, date(2026, 11, 17))
     item = chase_missing(db, borrower=borrower, cycle=cycle, today=date(2026, 11, 17))
     assert item.item_type == "intake.missing_document" and item.evidence["days_past_due"] == 3
-    assert "compliance certificate, interim statements" in item.evidence["draft_email"]
+    draft = item.evidence["draft_email"]
+    # each missing item with its own due date: one date for all of them was wrong whenever the dates differ
+    due = {m["document_type"]: date.fromisoformat(m["due_date"]) for m in item.evidence["missing"]}
+    for name, day in due.items():
+        assert f"- {name.replace('_', ' ')}, due {day:%B %-d, %Y}" in draft
+    assert "These were due on" not in draft
+    # the owner's word is "reminder email" (24 Nov); a person sends it, Squad emails nothing
+    assert "chaser" not in (item.question + draft).lower()
+    assert item.question == ("Reporting for this period is past due. Send the reminder email yourself, "
+                             "or record why it is not needed?")
     assert chase_missing(db, borrower=borrower, cycle=cycle, today=date(2026, 11, 17)).id == item.id  # no duplicate
     overdue_now = [o for o in obligations(db, "overdue") if o[1] == PERIOD]
     assert overdue_now == [("compliance_certificate", PERIOD), ("interim_statements", PERIOD)]

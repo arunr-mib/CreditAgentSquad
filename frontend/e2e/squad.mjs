@@ -103,17 +103,18 @@ journey('rows name the client once, and at 1000 px every Approvals subject is sh
   }
 });
 
-journey('nav: "Open cases" lists exactly the clients with something open, and each lands in its thread', async ({ page }) => {
+journey('nav: "Clients with open cases" lists exactly the clients with something open, and each lands in its thread', async ({ page }) => {
   await signIn(page, ANALYST);
   const { clients } = await record(page);
-  await page.getByRole('button', { name: /expand navigation/i }).click();
-  const links = page.getByRole('navigation', { name: 'Open cases' }).getByRole('link');
+  const expand = page.getByRole('button', { name: /expand navigation/i }); // open already where there is room
+  if (await expand.count()) await expand.click();
+  const links = page.getByRole('navigation', { name: 'Clients with open cases' }).getByRole('link');
   assert((await links.count()) === clients.length, 'Open cases differs from the clients with open work');
   const portfolio = (await api(page, '/me/portfolio')).sections.flatMap((x) => x.rows);
   for (const c of clients) assert(portfolio.find((r) => r.code === c.code)?.open === c.open, `${c.name}: the nav count differs from the Portfolio's Open`);
   assert(portfolio.filter((r) => r.open > 0).length === clients.length, 'a client with open cases is missing from Open cases, or one without is listed');
   for (const c of clients) {
-    await page.getByRole('navigation', { name: 'Open cases' }).getByRole('link', { name: new RegExp(c.name) }).click();
+    await page.getByRole('navigation', { name: 'Clients with open cases' }).getByRole('link', { name: new RegExp(c.name) }).click();
     await page.waitForURL(new RegExp(`/clients/${c.code}$`));
     await page.getByRole('heading', { level: 1, name: c.name }).waitFor();
   }
@@ -541,7 +542,7 @@ for (const [who, email] of [['analyst', ANALYST], ['officer', OFFICER]]) {
         if (m.type === 'case') {
           // a case opens CasePanel: its decision form is there exactly when the server permits a decision
           const view = await api(page, `/cases/${m.work_item_id}`);
-          // count only once the panel has loaded: while it says "Opening the case." no form is shown yet
+          // count only once the panel has loaded: while it says "Loading the case." no form is shown yet
           await card.locator(`[data-case="${m.work_item_id}"]`).waitFor();
           const decide = await card.getByRole('button', { name: 'Record decision' }).count();
           assert((decide > 0) === view.decisions.some((d) => d.permitted), `${b.name}: the decision form disagrees with the server for ${m.title}`);

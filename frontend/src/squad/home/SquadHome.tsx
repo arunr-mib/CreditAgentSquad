@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useAuth } from '@/auth/context';
+import { word } from '@/api/words';
 import { AgentBody } from '@/source/AgentBody';
 import { useBriefing, type CopilotReply } from '../api/hooks';
 import type { BriefingItem } from '../api/types';
@@ -8,7 +9,7 @@ import { threadHref } from '../links';
 import { AskReply } from '../thread/AskReply';
 import { Composer } from '../thread/Composer';
 
-const word = (n: number) => (n === 1 ? '1 needs you' : `${n} need you`);
+const count = (n: number) => (n === 1 ? '1 needs you' : `${n} need you`);
 
 function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boolean }) {
   const href = threadHref(item.borrower_code, item.work_item_id ?? undefined);
@@ -16,6 +17,7 @@ function Row({ item, showClient = true }: { item: BriefingItem; showClient?: boo
     <li>
       <Link {...href} className={item.needs_you ? 'sq-row sq-row-needs' : 'sq-row'}>
         <span className={`sq-dotmark sq-sev-${item.severity}`} aria-hidden />
+        <span className="sq-sr">{word('severities', item.severity)}: </span>
         <span className="sq-grow sq-rowtext">
           {/* the server's subject has the client's name taken off the front: the row names the client once */}
           <span className="sq-rowtitle">{showClient ? <><b>{item.borrower_name}</b><span className="sq-muted"> · {item.subject ?? item.title}</span></> : item.subject ?? item.title}</span>
@@ -57,7 +59,8 @@ export function SquadHome() {
   return (
     <div className="sq-home" data-ready="">
       <h1 className="sq-h1">Hello, {user?.name.split(' ')[0] ?? 'there'}.</h1>
-      <h2 className="sq-lede">{needs.length ? word(needs.length) : 'Nothing needs you.'}</h2>
+      <h2 className="sq-lede">{needs.length ? count(needs.length) : 'Nothing needs you.'}</h2>
+      {needs.length + watching.length > 1 ? <p className="sq-faint">Most serious first: critical, then high, medium and low.</p> : null}
       {needs.length > 0 ? (
         <ul className="sq-list" aria-label="Needs you">
           {needs.map((i) => <Row key={i.key} item={i} />)}

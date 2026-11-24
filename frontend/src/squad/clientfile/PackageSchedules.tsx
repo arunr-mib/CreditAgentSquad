@@ -4,7 +4,7 @@ import { get, post } from '@/api/client';
 import { word, wordTables } from '@/api/words';
 import { useAuth } from '@/auth/context';
 import { Button, Card, CardHeader, formatDate, Input, Select, StatusDot } from '@/design';
-import { quarterLabel } from '@/domain/labels';
+import { schedulePeriod } from '@/domain/labels';
 import { Refusal } from '@/repair/FigureForm';
 import { Load } from '@/screens/parts';
 
@@ -35,11 +35,11 @@ const FORMATS: Array<{ id: string; label: string }> = [
 const FORMAT_LABEL: Record<string, string> = Object.fromEntries(FORMATS.map((format) => [format.id, format.label]));
 
 /** What one run of the due schedules did, in words. Nothing is claimed that the server did not report. */
-export function runSentences(report: ScheduleRunReport, titles: Record<string, string>): Array<{ tone: 'neutral' | 'attention'; text: string }> {
+export function runSentences(report: ScheduleRunReport, titles: Record<string, string>, cadences: Record<string, string> = {}): Array<{ tone: 'neutral' | 'attention'; text: string }> {
   if (report.runs.length === 0) return [{ tone: 'neutral', text: `No schedule was due on ${formatDate(report.today)}. Nothing was generated.` }];
   return report.runs.map((run) => {
     const name = titles[run.schedule_id] ?? 'A schedule';
-    const period = quarterLabel(run.period_end);
+    const period = schedulePeriod(run.period_end, cadences[run.schedule_id]);
     if (run.error) return { tone: 'attention', text: `${name}, ${period}: not generated. The server said: “${run.error}” The schedule stays due and will be tried again.` };
     return { tone: 'neutral', text: `${name}, ${period}: a package was prepared, not released.${run.next_run ? ` Next run ${formatDate(run.next_run)}.` : ''}` };
   });
@@ -157,6 +157,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
   });
   const allowed = can('release_package');
   const titles = Object.fromEntries((schedules.data ?? []).map((row) => [row.id, row.title]));
+  const cadences = Object.fromEntries((schedules.data ?? []).map((row) => [row.id, row.cadence]));
 
   return (
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]" data-package-schedules>
@@ -226,7 +227,7 @@ export function PackageSchedules({ borrowerId, borrowerName }: { borrowerId: str
         <div aria-live="polite" data-schedule-run className="mt-2">
           {run.data ? (
             <ul className="space-y-1 text-body text-pretty">
-              {runSentences(run.data, titles).map((line) => (
+              {runSentences(run.data, titles, cadences).map((line) => (
                 <li key={line.text}>
                   <StatusDot tone={line.tone} className="whitespace-normal!">
                     {line.text}

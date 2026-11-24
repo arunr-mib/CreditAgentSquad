@@ -112,6 +112,8 @@ def _draft_call(db: Session, fn, *args, **kwargs) -> dict:
         out = fn(db, *args, **kwargs)
     except LookupError as exc:
         raise HTTPException(404, "Draft not found.") from exc
+    except PermissionError as exc:  # another analyst's client (owner answer 9)
+        raise HTTPException(403, str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
     db.commit()
@@ -123,6 +125,9 @@ def new_draft(borrower_id: uuid.UUID, body: DraftIn, db: Session = Depends(get_d
               user: User = Depends(require(Permission.EDIT_COMMENTARY))) -> dict:
     if db.get(Borrower, borrower_id) is None:
         raise HTTPException(404, "Client not found.")
+    refused = drafts.write_refusal(db, borrower_id, user)
+    if refused is not None:
+        raise HTTPException(403, str(refused))
     return _draft_call(db, drafts.create_draft, borrower_id=borrower_id, to=body.to, subject=body.subject,
                        body=body.body, kind=body.kind, work_item_id=body.work_item_id, actor=("user", str(user.id)))
 

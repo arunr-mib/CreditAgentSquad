@@ -296,18 +296,20 @@ def classify_documents(
 
 def chase_missing(db: Session, *, borrower: Borrower, cycle: Cycle, today: date) -> WorkItem | None:
     """If reporting for the cycle's period is past due, raise one item listing what is missing,
-    with a draft chaser. The draft is written by code and is never sent automatically."""
+    with a draft reminder email. The draft is written by code and is never sent: a person sends it themselves."""
     missing = [ob for ob in calendar.outstanding(db, borrower.id, cycle.period_end) if ob.due_date < today]
     if not missing:
         return None
-    names = sorted({ob.document_type.replace("_", " ") for ob in missing})
     oldest_due = min(ob.due_date for ob in missing)
+    # each item with its own due date: one date for all of them is wrong whenever the dates differ
+    items = sorted({(ob.document_type.replace("_", " "), ob.due_date) for ob in missing})
+    listed = "\n".join(f"- {name}, due {due:%B %-d, %Y}" for name, due in items)
     draft = (
         f"Subject: Reporting due for the period ended {cycle.period_end:%B %-d, %Y}\n\n"
         f"Dear {borrower.name} team,\n\n"
-        f"Our records show the following reporting items for the period ended {cycle.period_end:%B %-d, %Y} "
-        f"have not yet been received: {', '.join(names)}. These were due on {oldest_due:%B %-d, %Y} under the "
-        f"reporting requirements of your credit agreement.\n\n"
+        f"Our records show the following reporting for the period ended {cycle.period_end:%B %-d, %Y} "
+        f"has not yet been received, under the reporting requirements of your credit agreement:\n"
+        f"{listed}\n\n"
         f"Please send them at your earliest convenience, or let us know when we can expect them.\n\n"
         f"Thank you,\nBank of Stoic")
     return raise_item(
@@ -315,7 +317,7 @@ def chase_missing(db: Session, *, borrower: Borrower, cycle: Cycle, today: date)
         item_type="intake.missing_document", severity="high" if (today - oldest_due).days > 15 else "medium",
         # no figure in a title (final review I3): the days past due are counted in the evidence, the due date is shown
         title=f"{borrower.name}: reporting is past due",
-        question="Reporting for this period is past due. Send the chaser, or record why it is not needed?",
+        question="Reporting for this period is past due. Send the reminder email yourself, or record why it is not needed?",
         allowed_decisions=["chaser_sent", "extension_granted", "received_elsewhere"],
         required_permission="upload_document",
         evidence={"missing": [{"document_type": ob.document_type, "due_date": ob.due_date.isoformat(),

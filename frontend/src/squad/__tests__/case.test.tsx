@@ -208,7 +208,9 @@ describe('CasePanel', () => {
     await userEvent.click(within(form).getByRole('button', { name: 'Add something that is needed' }));
     expect(within(form).getAllByRole('option', { name: 'Bank statement' })).toHaveLength(1); // an alias is not offered twice
     await userEvent.selectOptions(within(form).getByRole('combobox', { name: 'Document type 1' }), 'bank_statement');
-    await userEvent.type(within(form).getByLabelText('Month 1'), '2026-09');
+    await userEvent.selectOptions(within(form).getByRole('combobox', { name: 'Month 1' }), '09');
+    expect(within(form).getByRole('button', { name: 'Return to Priya Raman' })).toBeDisabled(); // a month with no year is not a period
+    await userEvent.selectOptions(within(form).getByRole('combobox', { name: 'Year 1' }), '2026');
     await userEvent.type(within(form).getByLabelText(/What is missing/), 'Need the September statement.');
     await userEvent.click(within(form).getByRole('button', { name: 'Add something that is needed' }));
     await userEvent.click(within(form).getByRole('button', { name: 'Remove need 2' }));

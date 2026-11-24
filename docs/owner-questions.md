@@ -143,3 +143,12 @@ The one-table sign-off (91 unsigned rows, 28 of them signals, 22 of those low se
 1. ~~Supabase session pooler host~~ — owner (23 Nov): find it yourself. No Supabase login for the CLI here and no database port from this container; two candidates (`aws-0-us-east-1.pooler.supabase.com`, `aws-1-us-east-1.pooler.supabase.com`), settled from the v2 site at deploy time (the wrong one answers "Tenant or user not found").
 2. Confirm or change the 8 new client names (`docs/product/name-check-2026-11-22.md`). Default: proceed with them.
 3. ~~Session recording / facilitator~~ — **owner, 23 Nov: skip formal usability sessions** (analysts may not be comfortable in an observed setting). Instead: the owner walks the hosted v2 using the kit as a checklist; analysts may be given the link to try on their own, with an optional feedback note. Phase 5 is done when the hosted v2 passes its smoke test and the owner's walk-through findings are triaged.
+
+## Owner's walk of the hosted v2 (24 Nov)
+
+- **Triage:** agreed order: make the explanation visible, say what really happened, plain words and hierarchy; look and feel is one pass after those. Findings and their state: `docs/product/v2-usability-findings.md`, "Owner's walk".
+- **Downgrades agreed:** the Return button's look and the month picker are not blockers; the sign-in comma is not a product finding; step 15 is a walk-through fix. The Kestrel Bay "4.90x" report is withdrawn as unreproduced.
+- **Word:** "chaser" is "reminder email" wherever a person reads it (the owner said this had been agreed earlier; it was not written down). The stored decision key `chaser_sent` keeps its name: it is in the ledger.
+- **Document references in agent text:** a reference to a place the document has may pass the number guardrail (page ranges; a Section or Schedule after a capitalised opener).
+- **Merges:** the owner approved merging the walk-through fix pull requests once CI is green (24 Nov, "go ahead and merge once ready").
+- **`main`:** `slice-1/monitoring-cycle` was merged into `main` on 24 Nov with a merge commit (pull request 7), after the frozen v1 Vercel project was disconnected from GitHub on the owner's instruction.

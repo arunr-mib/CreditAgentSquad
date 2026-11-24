@@ -55,7 +55,7 @@ describe('Packages in the client file', () => {
   it('calls a client package a client package and says client where it means one', async () => {
     api({ 'GET /api/v1/packages': { status: 200, body: [PKG] } });
     const { container } = mount(['view']);
-    await screen.findByText(/Client package · Q3 2026/);
+    await screen.findByText(/Client package · period ended 30 Sep 2026/);
     expect(container.textContent).not.toMatch(/borrower/i);
   });
 

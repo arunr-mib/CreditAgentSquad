@@ -65,7 +65,7 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
       )}
       {open && mayAnswer ? (
         <>
-          <label className="sq-check-label"><input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> Remember this for next time</label>
+          <label className="sq-check-label"><input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> Remember this for next time (you will be asked why)</label>
           {remember ? (
             <div className="sq-why">
               <label htmlFor={noteId}>Why? Squad will remember this in your words</label>
@@ -74,6 +74,7 @@ export function AskMessage({ message, focused }: { message: Ask; focused: boolea
           ) : null}
           <div className="sq-actions">
             <button type="button" className="sq-btn sq-btn-primary" disabled={!ready || answer.isPending} onClick={() => void confirm()}>Confirm</button>
+            {ready ? null : <span className="sq-faint">{choice === null ? 'Choose an answer to confirm.' : 'Write why, so Squad can remember it in your words.'}</span>}
           </div>
         </>
       ) : null}

@@ -131,7 +131,7 @@ describe('collapsed nav', () => {
     expect(await screen.findByRole('link', { name: /squad/i })).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: /open cases/i })).not.toBeInTheDocument();
     expect(document.querySelectorAll('.sq-initial')).toHaveLength(0);
-    await userEvent.click(screen.getByRole('button', { name: 'Open cases: 1 client' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Clients with open cases: 1' }));
     expect(toggle).toHaveBeenCalled();
   });
 
