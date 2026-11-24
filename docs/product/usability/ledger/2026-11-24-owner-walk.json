@@ -1,7 +1,7 @@
 {
  "what": "What people's sign-ins (and Squad acting on them) wrote to schema squad2's ledger on the hosted v2 (credit-squad.vercel.app) during the owner's self-guided walk of 23 November 2026 (US Pacific; 24 November UTC), exported before the schema was dropped and reloaded for the batch 1 deploy. Synthetic data. Payloads are summarised; hashes are the ledger's own.",
- "not_listed": "The ledger held 24,676 events. Events up to 24,472 are the seed, and the squad demo follows it; both are reproducible from the book. Not listed: 11 auth.signed_in and 7 auth.signed_out events, 4 cycle.stage_changed events that followed two of the decisions, and 166 fact.recorded events written by the system when the two packages were prepared.",
- "ledger_events_total": 24676,
+ "not_listed": "The ledger held 24,678 events. Events up to 24,472 are the seed, and the squad demo follows it; both are reproducible from the book. Not listed: 11 auth.signed_in and 7 auth.signed_out events, 4 cycle.stage_changed events that followed two of the decisions, and 166 fact.recorded events written by the system when the two packages were prepared.",
+ "ledger_events_total": 24678,
  "events": [
   {
    "seq": 24480,
@@ -130,6 +130,23 @@
    "action": "package.generated",
    "summary": "A second package generated under Tomas Keller's sign-in",
    "hash": "e56c74d9ccc8e646b5a296b7aee3d97976a8717e0b96c79d8d25417a594290a1"
+  },
+  {
+   "seq": 24677,
+   "ts": "2026-11-24T08:08:57+00:00",
+   "by": "Tomas Keller",
+   "action": "snapshot.frozen",
+   "summary": "A third snapshot frozen for a package, minutes before the reload",
+   "hash": "4ebc998fe1522eeb4eba7ca67ef52ec04caf3782ec231daf67df45da0e8f9961"
+  },
+  {
+   "seq": 24678,
+   "ts": "2026-11-24T08:08:57+00:00",
+   "by": "Tomas Keller",
+   "action": "package.generated",
+   "summary": "A third package generated under Tomas Keller's sign-in",
+   "hash": "854f33df7e1a1af9b893e9e92609de99d25b64d946f87b847743c65f82a2c5a5"
   }
- ]
+ ],
+ "note": "Tomas Keller's sign-in was still in use at 08:01 and 08:08 UTC, after the walk the owner reported (06:46 to 07:06 UTC). Who was using it is not known to the session that made this export; the owner had asked for the reload."
 }
