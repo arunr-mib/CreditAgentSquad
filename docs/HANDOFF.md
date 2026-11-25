@@ -16,6 +16,24 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 | (note) | Commit 3629d3e ("the server serves every label") does not build on its own: it also carries the `git mv` renames and the deletion of `squad/oversight/describeEvent.ts`, so `tsc` fails at that commit (23 missing modules). It builds from 5e9ed95 on. History is not rewritten; bisect across 3629d3e..5e9ed95 as one step |
 | 5 Hosted release (Vercel project `credit-squad`, schema `squad2`) and the owner's walk-through | **Hosted and tested (24 Nov): `https://credit-squad.vercel.app`**, agents off, on a freshly loaded book. Open: the owner's walk-through and triage of its findings. Section "Hosted v2" below |
 
+## The owner's walk and its fixes (24 November 2026; no model call)
+
+- **The walk.** The owner walked the hosted v2 on 23 November and wrote up what failed. Each finding was checked against the code and the hosted data, then triaged with the owner: `docs/product/v2-usability-findings.md`, table W1 to W28. The verdict: the loop works; trust is where it failed (a figure that could not be traced, sources that would not open).
+- **Three batches, all merged into `slice-1/monitoring-cycle` and deployed.** Not in `main`.
+  - Batch 1, pull request 8 (merge 23450ad): what a calculation leaves out; a spreadsheet shown as its stored text; source pages that draw in older browsers; why a file is held; the headroom trend.
+  - Batches 2 and 3, pull request 9 (merge 3ebd222): W5 to W24. Reminder email wording, drafts under the own-clients rule, whose client it is, people only named on documents made inactive; then plain words and order (agents off, who decides a breach, briefing most serious first, grouped signals, package counts, UTC times, period labels, month and year lists, sidebar, walk-through steps).
+- **Tests.** vitest 657; `e2e:squad` 28 of 28 and `e2e:repair` 6 of 6 on scratch databases; CI green on both pull requests. On the hosted site after the last reload: `e2e:smoke` 50 of 50 (two checks are new: a source page draws; a spreadsheet shows as text) and `v2_setup.py check` printed "ready: the book is unused, agents as expected, ledger append-only".
+- **Reloads today: two more** (after batch 1, and after batches 2 and 3). What the walk wrote is in `docs/product/usability/ledger/2026-11-24-owner-walk.json`. Before the last reload no person's action was on the ledger, so nothing was exported.
+- **A step that did not confirm.** On the last load, `v2_setup.py run` ended with "the setup routes still answer (200) to the token that was just removed". Checked afterwards: `DEMO_SETUP_TOKEN` is not among the project's variables; the production deployment was built after the removal; the routes answer 404 with no token and with a wrong one; the code creates them only when the variable is set. Likely cause: the proof ran before the site switched to the new deployment. Not proven with the real token, which was never stored. A plain redeploy would settle it; the owner has been told.
+- **Frozen sites and v1, after both deploys.** `frozen_check.py compare` of the capture taken after the GitHub unlink and one taken now: unchanged. Schema `squad`, by SELECT: ledger head (seq 20088, same hash), alembic 0003, the two ledger triggers and role memberships equal the capture; neither site's serving role has USAGE on the other's schema. The capture's column and grant digests were not recomputed.
+- **Things a later session would trip on.**
+  - With W10, one person may decide a breach on this book, so the send form shows a button, not a "Send to" list. The journeys handle both.
+  - A demo user the book also names (Marcus Oyelaran, a relationship manager) must stay active whichever load runs first: `_named_on_record` in `backend/app/seed_book.py`.
+  - `frontend/src/test/words.json` is a snapshot of the server's word tables; regenerate it when a word changes (a backend test compares them).
+  - `.claude/settings.json` allows merging and opening pull requests without a prompt; database statements still ask. Commit authorship: `CLAUDE.md`, "Working with the owner".
+- **Not done.** The look-and-feel pass (W28), which now includes the agents-off sentence squeezed beside the Run button on the client file. Old signals never close, so a grouped signal's count of periods keeps growing. W25 (lists not refreshing) was not reproduced.
+- **Next:** the owner's second walk of the hosted site; then save the ledger and reload; then the look-and-feel pass; then `slice-1/monitoring-cycle` into `main` on the owner's ask.
+
 ## Document references in agent text (24 November 2026; owner decision; no model call)
 
 - **Owner decision, 24 Nov:** a document reference may pass the number guardrail when it points at a place the document has: yes to page ranges and to the Kestrel Bay schedule reference, in one change.
@@ -37,7 +55,7 @@ The owner chose to rebuild around the Squad experience (`docs/specs/2026-11-20-s
 - **Frozen sites and v1:** `frozen_check.py compare` of captures before the deploy and after the last reload: unchanged. Schema `squad`: columns, grants, triggers, alembic 0003, role memberships and the ledger head (seq 20088, same hash) equal to the capture. The capture was taken on 24 Nov after the roles existed (the 23 Nov session's baseline was in a container that is gone), so it covers this session's work only.
 - **v1 project disconnected from GitHub (owner's instruction, 24 Nov).** `credit-agent-squad` was linked to this repository with production branch `main`, so each pull request built a preview on the frozen project and a merge to `main` would have replaced v1. Link removed through the Vercel API; a capture afterwards differs from the one before only in the project's `updatedAt`; the site answers 200. `frozen_check.py` does not capture the link.
 - **Not verified:** nothing was looked at by a person; live agents on the hosted site; the 14 screens at phone and tablet widths beyond the sideways-scroll measure; other roles' screens at those widths.
-- **Next:** the owner walks `docs/product/usability/self-guided-walkthrough.md` on the site; findings go to `docs/product/v2-usability-findings.md` and are triaged; the book is reloaded after the walk (it changes it).
+- **Next:** done; see "The owner's walk and its fixes" above.
 
 ## Re-record of the eight renamed clients (23 November 2026, claude-opus-5-5, owner cap 20 US dollars)
 
