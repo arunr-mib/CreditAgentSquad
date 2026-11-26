@@ -576,6 +576,7 @@ function LeftOut({ calc }: { calc: Calculation }) {
     return fact ? [{ item, fact, beside: Object.values(calc.facts).find((f) => f.key === item.beside)?.label ?? 'an input' }] : [];
   });
   if (rows.length === 0) return null;
+  const reported = calc.reported_includes ? calc.facts[calc.reported_includes.reported_fact_id] : undefined;
   return (
     <Section title="Not counted in this calculation">
       <ul className="border-t border-ink">
@@ -589,6 +590,12 @@ function LeftOut({ calc }: { calc: Calculation }) {
           </li>
         ))}
       </ul>
+      {reported ? (
+        <p className="mt-2 text-body text-ink">
+          The reported figure, <InlineFact id={reported.id} text={formatFigure(toFact(reported).value, reported.unit).text} kind={reported.kind} label={reported.label} />, includes{' '}
+          {rows.length === 1 ? 'this line' : 'these lines'}: it equals this calculation’s result plus {rows.length === 1 ? 'it' : 'them'}. Checked by code.
+        </p>
+      ) : null}
     </Section>
   );
 }

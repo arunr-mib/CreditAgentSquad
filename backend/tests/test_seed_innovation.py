@@ -274,11 +274,16 @@ def test_a_calculation_names_the_cash_it_leaves_out_so_a_certificate_gap_can_be_
     assert (left["key"], left["part_of"]) == ("bs.cash_restricted", "Total cash")
     fact = out["facts"][left["fact_id"]]
     assert D(fact["value"]) == D("1500000") and fact["label"] == "Cash pledged or restricted"
+    # the certificate's figure is exactly the result plus that line, so the screen may say it includes it
+    includes = out["reported_includes"]
+    assert includes["lines"] == [left["fact_id"]]
+    assert D(out["facts"][includes["reported_fact_id"]]["value"]) == test.reported_value == test.value + D("1500000")
     # a calculation that touches no part of a total leaves nothing out
     plan = db.execute(select(CovenantTest).where(
         CovenantTest.borrower_id == datamarrow.id, CovenantTest.covenant_id == "revenue_vs_plan",
         CovenantTest.period_end == _day("2026-10-31"))).scalar_one()
-    assert calculation_out(db, db.get(CalcRun, plan.calc_run_id), _Labels(db))["left_out"] == []
+    nothing = calculation_out(db, db.get(CalcRun, plan.calc_run_id), _Labels(db))
+    assert nothing["left_out"] == [] and nothing["reported_includes"] is None
 
 
 def test_people_who_are_only_named_on_the_record_cannot_sign_in_or_be_sent_a_case(seeded):

@@ -391,6 +391,27 @@ def _left_out(db: Session, calc: CalcRun, inputs: list[dict[str, Any]], labels: 
     return found, facts
 
 
+def _reported_includes(db: Session, calc: CalcRun, left_out: list[dict[str, Any]], labels: _Labels) -> tuple[dict[str, Any] | None, dict[str, Any]]:
+    """Whether the figure someone reported for this covenant is exactly this calculation's result plus the lines it
+    left out. Decimal equality, checked here and nowhere else: when it holds, the screen may say in words that the
+    reported figure includes those lines; when it does not, nothing is said and the gap stays for the reader. No new
+    figure is produced: the result, the lines and the reported figure are all stored."""
+    if not left_out:
+        return None, {}
+    test = db.execute(select(CovenantTest).where(CovenantTest.calc_run_id == calc.id)
+                      .order_by(CovenantTest.created_at.desc())).scalars().first()
+    if test is None or test.value is None or test.reported_value is None or test.reported_fact_id is None:
+        return None, {}
+    lines = [db.get(Fact, uuid.UUID(item["fact_id"])) for item in left_out]
+    if any(f is None for f in lines) or test.value + sum((f.value for f in lines), Decimal(0)) != test.reported_value:
+        return None, {}
+    reported = db.get(Fact, test.reported_fact_id)
+    if reported is None:
+        return None, {}
+    return ({"reported_fact_id": str(reported.id), "lines": [item["fact_id"] for item in left_out]},
+            {str(reported.id): _summary(reported, labels)})
+
+
 def calculation_out(db: Session, calc: CalcRun, labels: _Labels) -> dict[str, Any]:
     """A calculation with its inputs joined to their facts and its steps named in plain words."""
     inputs = [i for i in (calc.inputs or []) if isinstance(i, dict)]
@@ -423,6 +444,7 @@ def calculation_out(db: Session, calc: CalcRun, labels: _Labels) -> dict[str, An
                       "unit": "ratio" if op == "div" else "usd", "final": index == len(raw_steps) - 1})
     version = db.get(TermsVersion, calc.terms_version_id) if calc.terms_version_id else None
     left_out, left_facts = _left_out(db, calc, inputs, labels)
+    reported_includes, reported_facts = _reported_includes(db, calc, left_out, labels)
     return {
         "id": str(calc.id), "formula_key": calc.formula_key, "formula_version": calc.formula_version,
         "engine_version": calc.engine_version, "period_end": calc.period_end.isoformat(), "error": calc.error,
@@ -431,8 +453,8 @@ def calculation_out(db: Session, calc: CalcRun, labels: _Labels) -> dict[str, An
                           "effective_from": version.effective_from.isoformat()} if version else None,
         "expression": expression_text(trace["expression"]) if trace.get("expression") else None,
         "inputs": shaped_inputs, "steps": steps, "addbacks": plain(trace.get("addbacks") or []),
-        "outputs": plain(calc.outputs if isinstance(calc.outputs, dict) else {}), "facts": {**facts, **left_facts},
-        "left_out": left_out,
+        "outputs": plain(calc.outputs if isinstance(calc.outputs, dict) else {}), "facts": {**facts, **left_facts, **reported_facts},
+        "left_out": left_out, "reported_includes": reported_includes,
     }
 
 

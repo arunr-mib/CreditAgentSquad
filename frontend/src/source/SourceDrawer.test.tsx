@@ -241,6 +241,21 @@ describe('a calculation that leaves a stored line out', () => {
     expect(await within(screen.getByRole('dialog')).findByText('Cash pledged or restricted', { selector: 'h2' })).toBeInTheDocument();
   });
 
+  it('says the reported figure includes the line only when the server found the sum exact', async () => {
+    const REPORTED = { ...PLEDGED, id: 'f-reported', key: 'cert.min_unrestricted_cash', label: 'Minimum Unrestricted Cash, as certified', value: '6100000' };
+    const told = { ...calculation(LEFT), reported_includes: { reported_fact_id: REPORTED.id, lines: [PLEDGED.id] } };
+    told.facts = { ...told.facts, [REPORTED.id]: REPORTED } as never;
+    mockApi({ [`/api/v1/ui/facts/${CASH.id}/source`]: base(CASH, { calculation: told as never }), '/api/v1/ui/facts?': { [OPERATING.id]: OPERATING, [PLEDGED.id]: PLEDGED } });
+    const section = await within(await openSource(CASH.id)).findByRole('region', { name: 'Not counted in this calculation' });
+    expect(section).toHaveTextContent('The reported figure, $6,100,000, includes this line: it equals this calculation’s result plus it. Checked by code.');
+  });
+
+  it('does not say so when the server found no exact sum', async () => {
+    mockApi({ [`/api/v1/ui/facts/${CASH.id}/source`]: base(CASH, { calculation: { ...calculation(LEFT), reported_includes: null } as never }), '/api/v1/ui/facts?': { [OPERATING.id]: OPERATING, [PLEDGED.id]: PLEDGED } });
+    const section = await within(await openSource(CASH.id)).findByRole('region', { name: 'Not counted in this calculation' });
+    expect(section).not.toHaveTextContent('includes');
+  });
+
   it('shows no such section when nothing was left out, or when an older API says nothing', async () => {
     mockApi({ [`/api/v1/ui/facts/${CASH.id}/source`]: base(CASH, { calculation: calculation([]) as never }), '/api/v1/ui/facts?': { [OPERATING.id]: OPERATING } });
     const drawer = await openSource(CASH.id);

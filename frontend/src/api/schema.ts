@@ -274,6 +274,8 @@ export interface Calculation {
   produced?: FactSummary[];
   /** Stored lines beside an input in a statement total that this method did not use (pledged cash beside operating cash). */
   left_out?: { key: string; fact_id: string; part_of: string; beside: string }[];
+  /** Set only when code found the reported figure equal to the result plus the lines left out. */
+  reported_includes?: { reported_fact_id: string; lines: string[] } | null;
 }
 
 export interface FactHistoryEntry {
